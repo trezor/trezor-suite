@@ -1,0 +1,906 @@
+{
+    "observations": [
+        {
+            "id": "runtime-web-t1b1-model-settings-overview",
+            "feature_ids": [
+                "device-settings.check-backup",
+                "device-settings.passphrase",
+                "device-settings.firmware-version",
+                "device-settings.firmware-type"
+            ],
+            "platform": "web",
+            "model": "T1B1",
+            "firmware": "1.14.1",
+            "status": "observed",
+            "navigation": "Settings > Device > Wallet backup / Passphrase / Firmware",
+            "description": "Model One settings visibly offer Check wallet backup, passphrase wallets, firmware 1.14.1 Universal and Switch to Bitcoin-only. No device-language selector is composed in this firmware section.",
+            "screenshot_ids": ["web-t1b1-model-settings-overview"],
+            "conditions": [
+                "Initialized synthetic QA fixture, PIN disabled; no secret was entered. Existing remembered QA account sidebar is not evidence of this model’s network support.",
+                "Known emulator firmware integrity warning is visible; it does not establish genuine-device authenticity.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:36:16.606754+00:00"
+        },
+        {
+            "id": "runtime-web-t1b1-model-security",
+            "feature_ids": ["device-settings.pin", "device-settings.safety-checks"],
+            "platform": "web",
+            "model": "T1B1",
+            "firmware": "1.14.1",
+            "status": "observed",
+            "navigation": "Settings > Device > Security",
+            "description": "Model One security shows a disabled PIN-protection switch and the Safety checks Change action; no hardware authenticity-check action is composed between security and customization.",
+            "screenshot_ids": ["web-t1b1-model-security"],
+            "conditions": [
+                "Initialized synthetic QA fixture, PIN disabled; no secret was entered. Existing remembered QA account sidebar is not evidence of this model’s network support.",
+                "Known emulator firmware integrity warning is visible; it does not establish genuine-device authenticity.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:36:16.672020+00:00"
+        },
+        {
+            "id": "runtime-web-t1b1-model-customization",
+            "feature_ids": [
+                "device-settings.name",
+                "device-settings.homescreen",
+                "device-settings.homescreen.upload",
+                "device-settings.homescreen.gallery",
+                "device-settings.forget"
+            ],
+            "platform": "web",
+            "model": "T1B1",
+            "firmware": "1.14.1",
+            "status": "observed",
+            "navigation": "Settings > Device > Customization / Device connection",
+            "description": "Model One customization offers device name and 128×64 black-and-white wallpaper Upload/Gallery/editor; connection offers Forget. Rotation, brightness and haptic controls are absent from the visible full customization card.",
+            "screenshot_ids": ["web-t1b1-model-customization"],
+            "conditions": [
+                "Initialized synthetic QA fixture, PIN disabled; no secret was entered. Existing remembered QA account sidebar is not evidence of this model’s network support.",
+                "Known emulator firmware integrity warning is visible; it does not establish genuine-device authenticity.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:36:16.735085+00:00"
+        },
+        {
+            "id": "runtime-web-t1b1-model-check-backup-instructions",
+            "feature_ids": ["device-settings.check-backup"],
+            "platform": "web",
+            "model": "T1B1",
+            "firmware": "1.14.1",
+            "status": "observed",
+            "navigation": "Settings > Device > Check wallet backup",
+            "description": "Model One Check wallet backup opens host-assisted recovery instructions and an acknowledgement that this simulated check does not affect funds.",
+            "screenshot_ids": ["web-t1b1-model-check-backup-instructions"],
+            "conditions": [
+                "Initialized synthetic QA fixture, PIN disabled; no secret was entered. Existing remembered QA account sidebar is not evidence of this model’s network support.",
+                "Known emulator firmware integrity warning is visible; it does not establish genuine-device authenticity.",
+                "Backup-check/dry-run preflight only, not completed wallet recovery or backup validation.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:36:16.795104+00:00"
+        },
+        {
+            "id": "runtime-web-t1b1-model-check-backup-word-count",
+            "feature_ids": ["device-settings.check-backup", "onboarding.recovery.word-count"],
+            "platform": "web",
+            "model": "T1B1",
+            "firmware": "1.14.1",
+            "status": "observed",
+            "navigation": "Settings > Device > Check wallet backup > Acknowledge > Start",
+            "description": "Model One backup-check preflight offers 12, 18 and 24-word selectors before any recovery words are entered.",
+            "screenshot_ids": ["web-t1b1-model-check-backup-word-count"],
+            "conditions": [
+                "Initialized synthetic QA fixture, PIN disabled; no secret was entered. Existing remembered QA account sidebar is not evidence of this model’s network support.",
+                "Known emulator firmware integrity warning is visible; it does not establish genuine-device authenticity.",
+                "Backup-check/dry-run preflight only, not completed wallet recovery or backup validation.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:36:16.856548+00:00"
+        },
+        {
+            "id": "runtime-web-t1b1-model-check-backup-modes",
+            "feature_ids": [
+                "device-settings.check-backup",
+                "onboarding.recovery.standard",
+                "onboarding.recovery.advanced"
+            ],
+            "platform": "web",
+            "model": "T1B1",
+            "firmware": "1.14.1",
+            "status": "observed",
+            "navigation": "Settings > Device > Check wallet backup > 24 words > Continue",
+            "description": "With 24 words selected, Model One backup check offers Standard recovery on the computer and Advanced recovery using the Trezor; the procedure was stopped before secret input.",
+            "screenshot_ids": ["web-t1b1-model-check-backup-modes"],
+            "conditions": [
+                "Initialized synthetic QA fixture, PIN disabled; no secret was entered. Existing remembered QA account sidebar is not evidence of this model’s network support.",
+                "Known emulator firmware integrity warning is visible; it does not establish genuine-device authenticity.",
+                "Backup-check/dry-run preflight only, not completed wallet recovery or backup validation.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:36:16.919716+00:00"
+        },
+        {
+            "id": "runtime-web-t1b1-model-empty-pin-matrix",
+            "feature_ids": ["device-settings.pin"],
+            "platform": "web",
+            "model": "T1B1",
+            "firmware": "1.14.1",
+            "status": "observed",
+            "navigation": "Settings > Device > PIN switch > Initial emulator confirmation",
+            "description": "Starting Model One PIN protection and acknowledging its device confirmation opens an empty 3×3 host matrix, empty entry field, Backspace, Confirm and Cancel; setup was canceled without entering or setting a PIN.",
+            "screenshot_ids": ["web-t1b1-model-empty-pin-matrix"],
+            "conditions": [
+                "Initialized synthetic QA fixture, PIN disabled; no secret was entered. Existing remembered QA account sidebar is not evidence of this model’s network support.",
+                "Known emulator firmware integrity warning is visible; it does not establish genuine-device authenticity.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:36:16.970504+00:00"
+        },
+        {
+            "id": "runtime-web-t2t1-model-settings-overview",
+            "feature_ids": [
+                "device-settings.check-backup",
+                "device-settings.passphrase",
+                "device-settings.firmware-version",
+                "device-settings.firmware-type",
+                "device-settings.language"
+            ],
+            "platform": "web",
+            "model": "T2T1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Settings > Device > Wallet backup / Passphrase / Firmware",
+            "description": "Model T settings visibly offer Check wallet backup, passphrase wallets, Universal firmware 2.12.5, Switch to Bitcoin-only and an English device-language selector.",
+            "screenshot_ids": ["web-t2t1-model-settings-overview"],
+            "conditions": [
+                "Initialized synthetic QA fixture; PIN protection disabled and no PIN/recovery word entered. Remembered account sidebar is not evidence of model-specific network support.",
+                "Firmware integrity/authenticity security checks are bypassed for emulator exploration; genuine-hardware verification is not claimed.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:40:20.972056+00:00"
+        },
+        {
+            "id": "runtime-web-t2t1-model-security",
+            "feature_ids": ["device-settings.pin", "device-settings.safety-checks"],
+            "platform": "web",
+            "model": "T2T1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Settings > Device > Security",
+            "description": "Model T security shows PIN protection and Safety checks; no hardware-authenticity Check device action is composed before Customization.",
+            "screenshot_ids": ["web-t2t1-model-security"],
+            "conditions": [
+                "Initialized synthetic QA fixture; PIN protection disabled and no PIN/recovery word entered. Remembered account sidebar is not evidence of model-specific network support.",
+                "Firmware integrity/authenticity security checks are bypassed for emulator exploration; genuine-hardware verification is not claimed.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:40:21.050193+00:00"
+        },
+        {
+            "id": "runtime-web-t2t1-model-customization",
+            "feature_ids": [
+                "device-settings.name",
+                "device-settings.homescreen",
+                "device-settings.homescreen.upload",
+                "device-settings.homescreen.gallery",
+                "device-settings.rotation",
+                "device-settings.brightness",
+                "device-settings.forget"
+            ],
+            "platform": "web",
+            "model": "T2T1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Settings > Device > Customization / Device connection",
+            "description": "Model T customization shows 240×240 wallpaper Upload/Gallery, four display rotations and Screen brightness Change. Haptic feedback is absent from the complete visible customization card.",
+            "screenshot_ids": ["web-t2t1-model-customization"],
+            "conditions": [
+                "Initialized synthetic QA fixture; PIN protection disabled and no PIN/recovery word entered. Remembered account sidebar is not evidence of model-specific network support.",
+                "Firmware integrity/authenticity security checks are bypassed for emulator exploration; genuine-hardware verification is not claimed.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:40:21.129744+00:00"
+        },
+        {
+            "id": "runtime-web-t2t1-model-check-backup-instructions",
+            "feature_ids": ["device-settings.check-backup", "onboarding.recovery.on-device"],
+            "platform": "web",
+            "model": "T2T1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Settings > Device > Check wallet backup",
+            "description": "Model T backup-check instructions explicitly require touchscreen word input on the device and list supported backup lengths; the app presents an acknowledgement and Start without host word input.",
+            "screenshot_ids": ["web-t2t1-model-check-backup-instructions"],
+            "conditions": [
+                "Initialized synthetic QA fixture; PIN protection disabled and no PIN/recovery word entered. Remembered account sidebar is not evidence of model-specific network support.",
+                "Firmware integrity/authenticity security checks are bypassed for emulator exploration; genuine-hardware verification is not claimed.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:40:21.205527+00:00"
+        },
+        {
+            "id": "runtime-web-t2t1-model-pin-on-device",
+            "feature_ids": ["device-settings.pin"],
+            "platform": "web",
+            "model": "T2T1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Settings > Device > PIN protection > Initial emulator confirmation",
+            "description": "Starting Model T PIN protection opens app-side Follow the instructions on your Trezor screen guidance with the Model T image; no host PIN matrix is present. Setup was canceled without entering or setting a PIN.",
+            "screenshot_ids": ["web-t2t1-model-pin-on-device"],
+            "conditions": [
+                "Initialized synthetic QA fixture; PIN protection disabled and no PIN/recovery word entered. Remembered account sidebar is not evidence of model-specific network support.",
+                "Firmware integrity/authenticity security checks are bypassed for emulator exploration; genuine-hardware verification is not claimed.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:40:21.273171+00:00"
+        },
+        {
+            "id": "runtime-web-t3b1-model-settings-overview",
+            "feature_ids": [
+                "device-settings.check-backup",
+                "device-settings.passphrase",
+                "device-settings.firmware-version",
+                "device-settings.firmware-type",
+                "device-settings.language"
+            ],
+            "platform": "web",
+            "model": "T3B1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Settings > Device > Wallet backup / Passphrase / Firmware",
+            "description": "Safe 3 T3B1 firmware settings show Universal 2.12.5, Switch to Bitcoin-only and a device-language selector, alongside backup-check and passphrase controls.",
+            "screenshot_ids": ["web-t3b1-model-settings-overview"],
+            "conditions": [
+                "Initialized synthetic QA fixture; no recovery words or PIN values entered. Account sidebar remnants do not establish model-specific network support.",
+                "Emulator hardware/firmware authenticity verification is bypassed; a visible Check device entry does not establish successful genuine-hardware validation.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:43:34.111918+00:00"
+        },
+        {
+            "id": "runtime-web-t3b1-model-security",
+            "feature_ids": [
+                "device-settings.pin",
+                "device-settings.safety-checks",
+                "device-settings.authenticity-check"
+            ],
+            "platform": "web",
+            "model": "T3B1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Settings > Device > Security",
+            "description": "Safe 3 T3B1 security shows PIN protection, Safety checks and the Check device hardware-authenticity entry.",
+            "screenshot_ids": ["web-t3b1-model-security"],
+            "conditions": [
+                "Initialized synthetic QA fixture; no recovery words or PIN values entered. Account sidebar remnants do not establish model-specific network support.",
+                "Emulator hardware/firmware authenticity verification is bypassed; a visible Check device entry does not establish successful genuine-hardware validation.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:43:34.177617+00:00"
+        },
+        {
+            "id": "runtime-web-t3b1-model-customization",
+            "feature_ids": [
+                "device-settings.name",
+                "device-settings.homescreen",
+                "device-settings.homescreen.upload",
+                "device-settings.homescreen.gallery",
+                "device-settings.forget"
+            ],
+            "platform": "web",
+            "model": "T3B1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Settings > Device > Customization / Device connection",
+            "description": "Safe 3 T3B1 customization shows a 128×64 black-and-white wallpaper with Upload/Gallery/editor and device name. Rotation, brightness and haptics are absent from the complete visible customization card; Forget is available below.",
+            "screenshot_ids": ["web-t3b1-model-customization"],
+            "conditions": [
+                "Initialized synthetic QA fixture; no recovery words or PIN values entered. Account sidebar remnants do not establish model-specific network support.",
+                "Emulator hardware/firmware authenticity verification is bypassed; a visible Check device entry does not establish successful genuine-hardware validation.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:43:34.244930+00:00"
+        },
+        {
+            "id": "runtime-web-t3b1-model-check-backup-instructions",
+            "feature_ids": ["device-settings.check-backup", "onboarding.recovery.on-device"],
+            "platform": "web",
+            "model": "T3B1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Settings > Device > Check wallet backup",
+            "description": "Safe 3 T3B1 backup-check guidance explicitly uses the two-button pad for recovery-word entry on the Trezor; no host word input or secret entry is shown.",
+            "screenshot_ids": ["web-t3b1-model-check-backup-instructions"],
+            "conditions": [
+                "Initialized synthetic QA fixture; no recovery words or PIN values entered. Account sidebar remnants do not establish model-specific network support.",
+                "Emulator hardware/firmware authenticity verification is bypassed; a visible Check device entry does not establish successful genuine-hardware validation.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:43:34.312101+00:00"
+        },
+        {
+            "id": "runtime-web-t3w1-model-thp-pairing-entry",
+            "feature_ids": ["connection.thp"],
+            "platform": "web",
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Connect local Safe 7 > Confirm secure connection on emulator > One-time security-code entry",
+            "description": "The Safe 7 local USB connection requires a six-position empty one-time security-code entry and directs the user to check the Trezor; the app capture contains no pairing code.",
+            "screenshot_ids": ["web-t3w1-model-thp-pairing-entry"],
+            "conditions": [
+                "Task-local Safe 7 emulator connected over USB/node-bridge with THP; no physical Bluetooth, NFC, wireless charging or battery behavior was exercised.",
+                "Fresh firmware Features and THP properties both confirmed T3W1 2.12.5 after secure pairing. Ephemeral pairing code was handled only in local memory and never printed, persisted or captured while populated.",
+                "Initialized synthetic QA fixture; remembered account/sidebar instances can remain across the reused emulator path and do not establish model-specific network support.",
+                "Emulator integrity/authenticity checks are bypassed; available Check device entry is not successful genuine-hardware validation.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:51:09.460392+00:00"
+        },
+        {
+            "id": "runtime-web-t3w1-model-settings-overview",
+            "feature_ids": [
+                "device-settings.check-backup",
+                "device-settings.passphrase",
+                "device-settings.firmware-version",
+                "device-settings.firmware-type",
+                "device-settings.language"
+            ],
+            "platform": "web",
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Settings > Device > Wallet backup / Passphrase / Firmware",
+            "description": "Safe 7 settings show Check wallet backup, passphrase wallets, Universal firmware 2.12.5, Switch to Bitcoin-only and a device-language selector.",
+            "screenshot_ids": ["web-t3w1-model-settings-overview"],
+            "conditions": [
+                "Task-local Safe 7 emulator connected over USB/node-bridge with THP; no physical Bluetooth, NFC, wireless charging or battery behavior was exercised.",
+                "Fresh firmware Features and THP properties both confirmed T3W1 2.12.5 after secure pairing. Ephemeral pairing code was handled only in local memory and never printed, persisted or captured while populated.",
+                "Initialized synthetic QA fixture; remembered account/sidebar instances can remain across the reused emulator path and do not establish model-specific network support.",
+                "Emulator integrity/authenticity checks are bypassed; available Check device entry is not successful genuine-hardware validation.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:51:09.530787+00:00"
+        },
+        {
+            "id": "runtime-web-t3w1-model-security",
+            "feature_ids": [
+                "device-settings.pin",
+                "device-settings.safety-checks",
+                "device-settings.authenticity-check"
+            ],
+            "platform": "web",
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Settings > Device > Security",
+            "description": "Safe 7 security shows PIN protection, Safety checks and Check device hardware-authenticity entry.",
+            "screenshot_ids": ["web-t3w1-model-security"],
+            "conditions": [
+                "Task-local Safe 7 emulator connected over USB/node-bridge with THP; no physical Bluetooth, NFC, wireless charging or battery behavior was exercised.",
+                "Fresh firmware Features and THP properties both confirmed T3W1 2.12.5 after secure pairing. Ephemeral pairing code was handled only in local memory and never printed, persisted or captured while populated.",
+                "Initialized synthetic QA fixture; remembered account/sidebar instances can remain across the reused emulator path and do not establish model-specific network support.",
+                "Emulator integrity/authenticity checks are bypassed; available Check device entry is not successful genuine-hardware validation.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:51:09.594793+00:00"
+        },
+        {
+            "id": "runtime-web-t3w1-model-customization",
+            "feature_ids": [
+                "device-settings.name",
+                "device-settings.homescreen",
+                "device-settings.homescreen.upload",
+                "device-settings.homescreen.gallery",
+                "device-settings.brightness",
+                "device-settings.haptics",
+                "device-settings.auto-connect",
+                "device-settings.forget"
+            ],
+            "platform": "web",
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Settings > Device > Customization / Device connection",
+            "description": "Safe 7 customization shows 380×520 wallpaper Upload/Gallery, Screen brightness and Haptic feedback; no rotation control is present. The visible connection card offers Auto-connect and Forget.",
+            "screenshot_ids": ["web-t3w1-model-customization"],
+            "conditions": [
+                "Task-local Safe 7 emulator connected over USB/node-bridge with THP; no physical Bluetooth, NFC, wireless charging or battery behavior was exercised.",
+                "Fresh firmware Features and THP properties both confirmed T3W1 2.12.5 after secure pairing. Ephemeral pairing code was handled only in local memory and never printed, persisted or captured while populated.",
+                "Initialized synthetic QA fixture; remembered account/sidebar instances can remain across the reused emulator path and do not establish model-specific network support.",
+                "Emulator integrity/authenticity checks are bypassed; available Check device entry is not successful genuine-hardware validation.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:51:09.659018+00:00"
+        },
+        {
+            "id": "runtime-web-t3w1-model-check-backup-instructions",
+            "feature_ids": ["device-settings.check-backup"],
+            "platform": "web",
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Settings > Device > Check wallet backup",
+            "description": "Safe 7 backup-check preflight directs recovery-word input to its touchscreen, lists supported lengths and asks for a simulated-check acknowledgement; no word was entered.",
+            "screenshot_ids": ["web-t3w1-model-check-backup-instructions"],
+            "conditions": [
+                "Task-local Safe 7 emulator connected over USB/node-bridge with THP; no physical Bluetooth, NFC, wireless charging or battery behavior was exercised.",
+                "Fresh firmware Features and THP properties both confirmed T3W1 2.12.5 after secure pairing. Ephemeral pairing code was handled only in local memory and never printed, persisted or captured while populated.",
+                "Initialized synthetic QA fixture; remembered account/sidebar instances can remain across the reused emulator path and do not establish model-specific network support.",
+                "Emulator integrity/authenticity checks are bypassed; available Check device entry is not successful genuine-hardware validation.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:51:09.723536+00:00"
+        },
+        {
+            "id": "runtime-web-t3w1-wallet-switcher",
+            "feature_ids": [
+                "wallet-access.switch",
+                "wallet-access.standard",
+                "wallet-access.hidden"
+            ],
+            "platform": "web",
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Top-left device/wallet selector",
+            "description": "The connected local QA wallet switcher shows Standard wallet entries, eject controls, Passphrase wallet and Connect Trezor; remembered duplicate QA instances reflect the reused emulator path.",
+            "screenshot_ids": ["web-t3w1-wallet-switcher"],
+            "conditions": [
+                "Task-local Safe 7 emulator connected over USB/node-bridge with THP; no physical Bluetooth, NFC, wireless charging or battery behavior was exercised.",
+                "Fresh firmware Features and THP properties both confirmed T3W1 2.12.5 after secure pairing. Ephemeral pairing code was handled only in local memory and never printed, persisted or captured while populated.",
+                "Initialized synthetic QA fixture; remembered account/sidebar instances can remain across the reused emulator path and do not establish model-specific network support.",
+                "Emulator integrity/authenticity checks are bypassed; available Check device entry is not successful genuine-hardware validation.",
+                "Passphrase protection was enabled on the disposable QA emulator solely to reveal entry forms. No passphrase/PIN/seed value was entered; no new hidden-wallet discovery outcome is claimed.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:51:09.786149+00:00"
+        },
+        {
+            "id": "runtime-web-t3w1-hidden-wallet-choices",
+            "feature_ids": [
+                "wallet-access.hidden",
+                "wallet-access.hidden.new",
+                "wallet-access.hidden.existing"
+            ],
+            "platform": "web",
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Wallet selector > Passphrase wallet",
+            "description": "Expanding Passphrase wallet offers New passphrase and Open previously used; this capture documents entry choices, not a created or opened hidden wallet.",
+            "screenshot_ids": ["web-t3w1-hidden-wallet-choices"],
+            "conditions": [
+                "Task-local Safe 7 emulator connected over USB/node-bridge with THP; no physical Bluetooth, NFC, wireless charging or battery behavior was exercised.",
+                "Fresh firmware Features and THP properties both confirmed T3W1 2.12.5 after secure pairing. Ephemeral pairing code was handled only in local memory and never printed, persisted or captured while populated.",
+                "Initialized synthetic QA fixture; remembered account/sidebar instances can remain across the reused emulator path and do not establish model-specific network support.",
+                "Emulator integrity/authenticity checks are bypassed; available Check device entry is not successful genuine-hardware validation.",
+                "Passphrase protection was enabled on the disposable QA emulator solely to reveal entry forms. No passphrase/PIN/seed value was entered; no new hidden-wallet discovery outcome is claimed.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:51:09.848463+00:00"
+        },
+        {
+            "id": "runtime-web-t3w1-empty-host-passphrase",
+            "feature_ids": ["wallet-access.hidden.existing", "wallet-access.passphrase.host"],
+            "platform": "web",
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Wallet selector > Passphrase wallet > Open previously used",
+            "description": "Open previously used displays an empty host passphrase field, show/hide control, disabled Confirm, recovery/case-character guidance and Enter passphrase on Trezor; no passphrase was typed.",
+            "screenshot_ids": ["web-t3w1-empty-host-passphrase"],
+            "conditions": [
+                "Task-local Safe 7 emulator connected over USB/node-bridge with THP; no physical Bluetooth, NFC, wireless charging or battery behavior was exercised.",
+                "Fresh firmware Features and THP properties both confirmed T3W1 2.12.5 after secure pairing. Ephemeral pairing code was handled only in local memory and never printed, persisted or captured while populated.",
+                "Initialized synthetic QA fixture; remembered account/sidebar instances can remain across the reused emulator path and do not establish model-specific network support.",
+                "Emulator integrity/authenticity checks are bypassed; available Check device entry is not successful genuine-hardware validation.",
+                "Passphrase protection was enabled on the disposable QA emulator solely to reveal entry forms. No passphrase/PIN/seed value was entered; no new hidden-wallet discovery outcome is claimed.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:51:09.910398+00:00"
+        },
+        {
+            "id": "runtime-web-t3w1-passphrase-on-device-prompt",
+            "feature_ids": ["wallet-access.passphrase.device"],
+            "platform": "web",
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Empty existing-wallet form > Enter passphrase on Trezor",
+            "description": "Choosing device entry opens Safe 7 app-side Enter passphrase on Trezor instructions and case-sensitivity guidance; the operation was canceled without entering a passphrase.",
+            "screenshot_ids": ["web-t3w1-passphrase-on-device-prompt"],
+            "conditions": [
+                "Task-local Safe 7 emulator connected over USB/node-bridge with THP; no physical Bluetooth, NFC, wireless charging or battery behavior was exercised.",
+                "Fresh firmware Features and THP properties both confirmed T3W1 2.12.5 after secure pairing. Ephemeral pairing code was handled only in local memory and never printed, persisted or captured while populated.",
+                "Initialized synthetic QA fixture; remembered account/sidebar instances can remain across the reused emulator path and do not establish model-specific network support.",
+                "Emulator integrity/authenticity checks are bypassed; available Check device entry is not successful genuine-hardware validation.",
+                "Passphrase protection was enabled on the disposable QA emulator solely to reveal entry forms. No passphrase/PIN/seed value was entered; no new hidden-wallet discovery outcome is claimed.",
+                "Actual internal_model and firmware version independently inspected before capture. Screenshot documents only visible application controls; physical device behavior and completed protected operations are not inferred."
+            ],
+            "date": "2026-11-15T08:51:09.973569+00:00"
+        }
+    ],
+    "screenshots": [
+        {
+            "id": "web-t1b1-model-settings-overview",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t1b1-model-settings-overview.png",
+            "feature_ids": [
+                "device-settings.check-backup",
+                "device-settings.passphrase",
+                "device-settings.firmware-version",
+                "device-settings.firmware-type"
+            ],
+            "platform": "web",
+            "model": "T1B1",
+            "firmware": "1.14.1",
+            "caption": "Model One settings visibly offer Check wallet backup, passphrase wallets, firmware 1.14.1 Universal and Switch to Bitcoin-only. No device-language selector is composed in this firmware section.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:36:16.606754+00:00"
+        },
+        {
+            "id": "web-t1b1-model-security",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t1b1-model-security.png",
+            "feature_ids": ["device-settings.pin", "device-settings.safety-checks"],
+            "platform": "web",
+            "model": "T1B1",
+            "firmware": "1.14.1",
+            "caption": "Model One security shows a disabled PIN-protection switch and the Safety checks Change action; no hardware authenticity-check action is composed between security and customization.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:36:16.672020+00:00"
+        },
+        {
+            "id": "web-t1b1-model-customization",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t1b1-model-customization.png",
+            "feature_ids": [
+                "device-settings.name",
+                "device-settings.homescreen",
+                "device-settings.homescreen.upload",
+                "device-settings.homescreen.gallery",
+                "device-settings.forget"
+            ],
+            "platform": "web",
+            "model": "T1B1",
+            "firmware": "1.14.1",
+            "caption": "Model One customization offers device name and 128×64 black-and-white wallpaper Upload/Gallery/editor; connection offers Forget. Rotation, brightness and haptic controls are absent from the visible full customization card.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:36:16.735085+00:00"
+        },
+        {
+            "id": "web-t1b1-model-check-backup-instructions",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t1b1-model-check-backup-instructions.png",
+            "feature_ids": ["device-settings.check-backup"],
+            "platform": "web",
+            "model": "T1B1",
+            "firmware": "1.14.1",
+            "caption": "Model One Check wallet backup opens host-assisted recovery instructions and an acknowledgement that this simulated check does not affect funds.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:36:16.795104+00:00"
+        },
+        {
+            "id": "web-t1b1-model-check-backup-word-count",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t1b1-model-check-backup-word-count.png",
+            "feature_ids": ["device-settings.check-backup", "onboarding.recovery.word-count"],
+            "platform": "web",
+            "model": "T1B1",
+            "firmware": "1.14.1",
+            "caption": "Model One backup-check preflight offers 12, 18 and 24-word selectors before any recovery words are entered.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:36:16.856548+00:00"
+        },
+        {
+            "id": "web-t1b1-model-check-backup-modes",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t1b1-model-check-backup-modes.png",
+            "feature_ids": [
+                "device-settings.check-backup",
+                "onboarding.recovery.standard",
+                "onboarding.recovery.advanced"
+            ],
+            "platform": "web",
+            "model": "T1B1",
+            "firmware": "1.14.1",
+            "caption": "With 24 words selected, Model One backup check offers Standard recovery on the computer and Advanced recovery using the Trezor; the procedure was stopped before secret input.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:36:16.919716+00:00"
+        },
+        {
+            "id": "web-t1b1-model-empty-pin-matrix",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t1b1-model-empty-pin-matrix.png",
+            "feature_ids": ["device-settings.pin"],
+            "platform": "web",
+            "model": "T1B1",
+            "firmware": "1.14.1",
+            "caption": "Starting Model One PIN protection and acknowledging its device confirmation opens an empty 3×3 host matrix, empty entry field, Backspace, Confirm and Cancel; setup was canceled without entering or setting a PIN.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:36:16.970504+00:00"
+        },
+        {
+            "id": "web-t2t1-model-settings-overview",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t2t1-model-settings-overview.png",
+            "feature_ids": [
+                "device-settings.check-backup",
+                "device-settings.passphrase",
+                "device-settings.firmware-version",
+                "device-settings.firmware-type",
+                "device-settings.language"
+            ],
+            "platform": "web",
+            "model": "T2T1",
+            "firmware": "2.12.5",
+            "caption": "Model T settings visibly offer Check wallet backup, passphrase wallets, Universal firmware 2.12.5, Switch to Bitcoin-only and an English device-language selector.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:40:20.972056+00:00"
+        },
+        {
+            "id": "web-t2t1-model-security",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t2t1-model-security.png",
+            "feature_ids": ["device-settings.pin", "device-settings.safety-checks"],
+            "platform": "web",
+            "model": "T2T1",
+            "firmware": "2.12.5",
+            "caption": "Model T security shows PIN protection and Safety checks; no hardware-authenticity Check device action is composed before Customization.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:40:21.050193+00:00"
+        },
+        {
+            "id": "web-t2t1-model-customization",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t2t1-model-customization.png",
+            "feature_ids": [
+                "device-settings.name",
+                "device-settings.homescreen",
+                "device-settings.homescreen.upload",
+                "device-settings.homescreen.gallery",
+                "device-settings.rotation",
+                "device-settings.brightness",
+                "device-settings.forget"
+            ],
+            "platform": "web",
+            "model": "T2T1",
+            "firmware": "2.12.5",
+            "caption": "Model T customization shows 240×240 wallpaper Upload/Gallery, four display rotations and Screen brightness Change. Haptic feedback is absent from the complete visible customization card.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:40:21.129744+00:00"
+        },
+        {
+            "id": "web-t2t1-model-check-backup-instructions",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t2t1-model-check-backup-instructions.png",
+            "feature_ids": ["device-settings.check-backup", "onboarding.recovery.on-device"],
+            "platform": "web",
+            "model": "T2T1",
+            "firmware": "2.12.5",
+            "caption": "Model T backup-check instructions explicitly require touchscreen word input on the device and list supported backup lengths; the app presents an acknowledgement and Start without host word input.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:40:21.205527+00:00"
+        },
+        {
+            "id": "web-t2t1-model-pin-on-device",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t2t1-model-pin-on-device.png",
+            "feature_ids": ["device-settings.pin"],
+            "platform": "web",
+            "model": "T2T1",
+            "firmware": "2.12.5",
+            "caption": "Starting Model T PIN protection opens app-side Follow the instructions on your Trezor screen guidance with the Model T image; no host PIN matrix is present. Setup was canceled without entering or setting a PIN.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:40:21.273171+00:00"
+        },
+        {
+            "id": "web-t3b1-model-settings-overview",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3b1-model-settings-overview.png",
+            "feature_ids": [
+                "device-settings.check-backup",
+                "device-settings.passphrase",
+                "device-settings.firmware-version",
+                "device-settings.firmware-type",
+                "device-settings.language"
+            ],
+            "platform": "web",
+            "model": "T3B1",
+            "firmware": "2.12.5",
+            "caption": "Safe 3 T3B1 firmware settings show Universal 2.12.5, Switch to Bitcoin-only and a device-language selector, alongside backup-check and passphrase controls.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:43:34.111918+00:00"
+        },
+        {
+            "id": "web-t3b1-model-security",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3b1-model-security.png",
+            "feature_ids": [
+                "device-settings.pin",
+                "device-settings.safety-checks",
+                "device-settings.authenticity-check"
+            ],
+            "platform": "web",
+            "model": "T3B1",
+            "firmware": "2.12.5",
+            "caption": "Safe 3 T3B1 security shows PIN protection, Safety checks and the Check device hardware-authenticity entry.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:43:34.177617+00:00"
+        },
+        {
+            "id": "web-t3b1-model-customization",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3b1-model-customization.png",
+            "feature_ids": [
+                "device-settings.name",
+                "device-settings.homescreen",
+                "device-settings.homescreen.upload",
+                "device-settings.homescreen.gallery",
+                "device-settings.forget"
+            ],
+            "platform": "web",
+            "model": "T3B1",
+            "firmware": "2.12.5",
+            "caption": "Safe 3 T3B1 customization shows a 128×64 black-and-white wallpaper with Upload/Gallery/editor and device name. Rotation, brightness and haptics are absent from the complete visible customization card; Forget is available below.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:43:34.244930+00:00"
+        },
+        {
+            "id": "web-t3b1-model-check-backup-instructions",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3b1-model-check-backup-instructions.png",
+            "feature_ids": ["device-settings.check-backup", "onboarding.recovery.on-device"],
+            "platform": "web",
+            "model": "T3B1",
+            "firmware": "2.12.5",
+            "caption": "Safe 3 T3B1 backup-check guidance explicitly uses the two-button pad for recovery-word entry on the Trezor; no host word input or secret entry is shown.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:43:34.312101+00:00"
+        },
+        {
+            "id": "web-t3w1-model-thp-pairing-entry",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3w1-model-thp-pairing-entry.png",
+            "feature_ids": ["connection.thp"],
+            "platform": "web",
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "caption": "The Safe 7 local USB connection requires a six-position empty one-time security-code entry and directs the user to check the Trezor; the app capture contains no pairing code.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:51:09.460392+00:00"
+        },
+        {
+            "id": "web-t3w1-model-settings-overview",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3w1-model-settings-overview.png",
+            "feature_ids": [
+                "device-settings.check-backup",
+                "device-settings.passphrase",
+                "device-settings.firmware-version",
+                "device-settings.firmware-type",
+                "device-settings.language"
+            ],
+            "platform": "web",
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "caption": "Safe 7 settings show Check wallet backup, passphrase wallets, Universal firmware 2.12.5, Switch to Bitcoin-only and a device-language selector.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:51:09.530787+00:00"
+        },
+        {
+            "id": "web-t3w1-model-security",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3w1-model-security.png",
+            "feature_ids": [
+                "device-settings.pin",
+                "device-settings.safety-checks",
+                "device-settings.authenticity-check"
+            ],
+            "platform": "web",
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "caption": "Safe 7 security shows PIN protection, Safety checks and Check device hardware-authenticity entry.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:51:09.594793+00:00"
+        },
+        {
+            "id": "web-t3w1-model-customization",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3w1-model-customization.png",
+            "feature_ids": [
+                "device-settings.name",
+                "device-settings.homescreen",
+                "device-settings.homescreen.upload",
+                "device-settings.homescreen.gallery",
+                "device-settings.brightness",
+                "device-settings.haptics",
+                "device-settings.auto-connect",
+                "device-settings.forget"
+            ],
+            "platform": "web",
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "caption": "Safe 7 customization shows 380×520 wallpaper Upload/Gallery, Screen brightness and Haptic feedback; no rotation control is present. The visible connection card offers Auto-connect and Forget.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:51:09.659018+00:00"
+        },
+        {
+            "id": "web-t3w1-model-check-backup-instructions",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3w1-model-check-backup-instructions.png",
+            "feature_ids": ["device-settings.check-backup"],
+            "platform": "web",
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "caption": "Safe 7 backup-check preflight directs recovery-word input to its touchscreen, lists supported lengths and asks for a simulated-check acknowledgement; no word was entered.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:51:09.723536+00:00"
+        },
+        {
+            "id": "web-t3w1-wallet-switcher",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3w1-wallet-switcher.png",
+            "feature_ids": [
+                "wallet-access.switch",
+                "wallet-access.standard",
+                "wallet-access.hidden"
+            ],
+            "platform": "web",
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "caption": "The connected local QA wallet switcher shows Standard wallet entries, eject controls, Passphrase wallet and Connect Trezor; remembered duplicate QA instances reflect the reused emulator path.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:51:09.786149+00:00"
+        },
+        {
+            "id": "web-t3w1-hidden-wallet-choices",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3w1-hidden-wallet-choices.png",
+            "feature_ids": [
+                "wallet-access.hidden",
+                "wallet-access.hidden.new",
+                "wallet-access.hidden.existing"
+            ],
+            "platform": "web",
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "caption": "Expanding Passphrase wallet offers New passphrase and Open previously used; this capture documents entry choices, not a created or opened hidden wallet.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:51:09.848463+00:00"
+        },
+        {
+            "id": "web-t3w1-empty-host-passphrase",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3w1-empty-host-passphrase.png",
+            "feature_ids": ["wallet-access.hidden.existing", "wallet-access.passphrase.host"],
+            "platform": "web",
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "caption": "Open previously used displays an empty host passphrase field, show/hide control, disabled Confirm, recovery/case-character guidance and Enter passphrase on Trezor; no passphrase was typed.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:51:09.910398+00:00"
+        },
+        {
+            "id": "web-t3w1-passphrase-on-device-prompt",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3w1-passphrase-on-device-prompt.png",
+            "feature_ids": ["wallet-access.passphrase.device"],
+            "platform": "web",
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "caption": "Choosing device entry opens Safe 7 app-side Enter passphrase on Trezor instructions and case-sensitivity guidance; the operation was canceled without entering a passphrase.",
+            "fixture_context": "Task-isolated local Trezor emulator with synthetic QA fixture and locally blocked/mocked network services; no physical device or real-user wallet. Firmware integrity/authenticity checks are not validated by emulator UI.",
+            "captured_at": "2026-11-15T08:51:09.973569+00:00"
+        }
+    ],
+    "new_features": [],
+    "errata": [
+        {
+            "observation_id": "runtime-web-t1b1-model-check-backup-word-count",
+            "screenshot_id": "web-t1b1-model-check-backup-word-count",
+            "description": "Model One backup-check preflight offers 12, 18 and 24-word selectors before any recovery words are entered. The observed navigation is specifically Check wallet backup (dry run), not device onboarding or actual wallet recovery.",
+            "feature_ids": ["device-settings.check-backup"],
+            "reason": "Flow-context correction: shared recovery components were observed only from Settings > Device > Check wallet backup. Their reuse does not establish that onboarding.recovery.* was reached. Original observations and screenshots are preserved."
+        },
+        {
+            "observation_id": "runtime-web-t1b1-model-check-backup-modes",
+            "screenshot_id": "web-t1b1-model-check-backup-modes",
+            "description": "With 24 words selected, Model One backup check offers Standard recovery on the computer and Advanced recovery using the Trezor; the procedure was stopped before secret input. The observed navigation is specifically Check wallet backup (dry run), not device onboarding or actual wallet recovery.",
+            "feature_ids": ["device-settings.check-backup"],
+            "reason": "Flow-context correction: shared recovery components were observed only from Settings > Device > Check wallet backup. Their reuse does not establish that onboarding.recovery.* was reached. Original observations and screenshots are preserved."
+        },
+        {
+            "observation_id": "runtime-web-t2t1-model-check-backup-instructions",
+            "screenshot_id": "web-t2t1-model-check-backup-instructions",
+            "description": "Model T backup-check instructions explicitly require touchscreen word input on the device and list supported backup lengths; the app presents an acknowledgement and Start without host word input. The observed navigation is specifically Check wallet backup (dry run), not device onboarding or actual wallet recovery.",
+            "feature_ids": ["device-settings.check-backup"],
+            "reason": "Flow-context correction: shared recovery components were observed only from Settings > Device > Check wallet backup. Their reuse does not establish that onboarding.recovery.* was reached. Original observations and screenshots are preserved."
+        },
+        {
+            "observation_id": "runtime-web-t3b1-model-check-backup-instructions",
+            "screenshot_id": "web-t3b1-model-check-backup-instructions",
+            "description": "Safe 3 T3B1 backup-check guidance explicitly uses the two-button pad for recovery-word entry on the Trezor; no host word input or secret entry is shown. The observed navigation is specifically Check wallet backup (dry run), not device onboarding or actual wallet recovery.",
+            "feature_ids": ["device-settings.check-backup"],
+            "reason": "Flow-context correction: shared recovery components were observed only from Settings > Device > Check wallet backup. Their reuse does not establish that onboarding.recovery.* was reached. Original observations and screenshots are preserved."
+        }
+    ]
+}

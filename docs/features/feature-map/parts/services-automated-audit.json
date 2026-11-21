@@ -1,0 +1,427 @@
+{
+    "sources": [
+        {
+            "path": "suite/e2e/tests/activity/activity-page.test.ts",
+            "feature_ids": ["help.activity.transactions", "help.activity.system"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Exercises injected transaction/system events in their respective tabs, checks toast differences, and verifies unseen transaction indicators clear after leaving and stay cleared on revisit. Debug injection is test setup, not a new consumer feature."
+        },
+        {
+            "path": "suite/e2e/tests/analytics/staking-events.test.ts",
+            "feature_ids": [],
+            "status": "reviewed-excluded",
+            "reason": "Internal/debug instrumentation excluded from the user feature taxonomy.",
+            "detail": "Asserts stakingNavigate telemetry payloads after account-menu and Dashboard stake actions for ETH/ADA. The event schema/reporting is instrumentation, not a separate user capability; navigation is already represented under Earn/Staking."
+        },
+        {
+            "path": "suite/e2e/tests/general/suite-guide.test.ts",
+            "feature_ids": [
+                "help.guide",
+                "help.guide.search",
+                "help.guide.images",
+                "help.support.bug",
+                "help.support.suggestion",
+                "help.support.versions"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Exercises category/article/back navigation, article search, article-image enlargement/close, bug and rated feedback submission, app/firmware version display, and Escape-to-close with and without a device."
+        },
+        {
+            "path": "suite/e2e/tests/metadata/legacy/account-metadata.test.ts",
+            "feature_ids": [
+                "wallet.accounts.rename",
+                "wallet.accounts.search",
+                "wallet.accounts.add",
+                "labeling.legacy.dropbox"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Uses mocked Dropbox; creates/edits account labels via Enter or submit control, discards edits with Escape, searches by labels, removes a label by clearing it, and labels a newly added account."
+        },
+        {
+            "path": "suite/e2e/tests/metadata/legacy/address-metadata.test.ts",
+            "feature_ids": ["wallet.receive.label", "labeling.legacy.google"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Uses mocked Google legacy metadata; opens Receive, creates an address label, edits it, and verifies the displayed updated text."
+        },
+        {
+            "path": "suite/e2e/tests/metadata/legacy/dropbox-api-errors.test.ts",
+            "feature_ids": ["labeling.legacy.dropbox", "wallet.accounts.rename"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Simulates malformed Dropbox token upload failure with error toast and unchanged account label; checks eventual GET retry recovery and incomplete provider data without a UI crash. These are existing storage/label failure cases."
+        },
+        {
+            "path": "suite/e2e/tests/metadata/legacy/google-api-errors.test.ts",
+            "feature_ids": ["labeling.legacy.google"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Simulates invalid Google credentials during provider setup and asserts the visible failed-to-connect labeling-provider error. Mock response retries do not constitute a separate user-facing feature."
+        },
+        {
+            "path": "suite/e2e/tests/metadata/legacy/interval-fetching.test.ts",
+            "feature_ids": [
+                "labeling.legacy.dropbox",
+                "labeling.legacy.google",
+                "wallet.accounts.rename"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Loads labels from each legacy provider, changes mocked remote file contents, advances the app clock by the metadata fetch interval, and checks the account label reflects the other-window change."
+        },
+        {
+            "path": "suite/e2e/tests/metadata/legacy/remembered-device.test.ts",
+            "feature_ids": [
+                "labeling.legacy.google",
+                "labeling.legacy.disconnect",
+                "labeling.mode",
+                "wallet.accounts.rename",
+                "wallet-access.remember"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Loads stored labels, disconnects/reconnects provider, switches labeling off/on, and confirms a remembered disconnected wallet can still edit legacy labels after keys were obtained. The mocked provider lifecycle is setup, not a new service."
+        },
+        {
+            "path": "suite/e2e/tests/metadata/legacy/wallet-metadata.test.ts",
+            "feature_ids": ["labeling.legacy", "labeling.legacy.dropbox", "wallet-access.hidden"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Creates/edits labels independently for standard and hidden wallets, reloads and checks persistence, declines then later authorizes labeling for a different wallet, and edits a wallet label while another wallet is selected. A dedicated wallet-label node is recommended separately."
+        },
+        {
+            "path": "suite/e2e/tests/metadata/suite-sync/multi-wallet.test.ts",
+            "feature_ids": [
+                "labeling.suite-sync",
+                "labeling.suite-sync.authorize",
+                "wallet.accounts.rename",
+                "wallet-access.hidden"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Sets distinct standard/hidden wallet labels, enables or declines Sync on separate passphrase wallets, authorizes via the keys-needed banner, edits account labels and verifies wallet-specific relay records. Test fixture secrets are not reproduced."
+        },
+        {
+            "path": "suite/e2e/tests/metadata/suite-sync/unsupported-device.test.ts",
+            "feature_ids": ["labeling.suite-sync"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Enables Sync on an unsupported-device scenario, checks the banner remains across wallet/send/receive navigation, dismisses it and checks it stays dismissed. This is Sync compatibility/error-state coverage, not a new label capability."
+        },
+        {
+            "path": "suite/e2e/tests/metadata/suite-sync/update-and-remove-labels.test.ts",
+            "feature_ids": [
+                "labeling.suite-sync",
+                "wallet.accounts.rename",
+                "wallet.receive.label",
+                "wallet.transactions.labels"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Seeds existing wallet/account/address/output labels on a local relay, updates all four entity types, verifies sync, removes each label, and checks relay label fields become null. Wallet-label management remains a distinct suggested taxonomy leaf."
+        },
+        {
+            "path": "suite/e2e/tests/trading/buy-ethereum.test.ts",
+            "feature_ids": [
+                "trade.buy",
+                "trade.buy.amount",
+                "trade.receive.activate-network",
+                "trade.receive.suite-account",
+                "trade.buy.provider-checkout",
+                "trade.buy.payment-status"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "With mocked provider redirect/statuses, buys ETH while its network is initially disabled, enables the receive network in the picker, verifies fiat-quoted input conversion and review values, follows provider return and transitions submitted purchase to success."
+        },
+        {
+            "path": "suite/e2e/tests/trading/buy-negative.test.ts",
+            "feature_ids": ["trade.buy.amount", "trade.buy.provider"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Replaces buy quote responses with above-max, below-min, crypto-min and empty cases; verifies the correct You get/You pay error placement, absent offers/provider and blocked continuation. These are purchase-validation edge cases."
+        },
+        {
+            "path": "suite/e2e/tests/trading/buy-solana-token.test.ts",
+            "feature_ids": [
+                "trade.buy.asset",
+                "trade.buy.network-filter",
+                "trade.buy.amount",
+                "trade.receive.suite-account",
+                "trade.buy.payment-status"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Selects Solana USDC, requests an exact crypto amount, checks request wantCrypto mode and fiat backfill, confirms provider/payment/receive details, follows a mocked provider return and verifies completion/order values."
+        },
+        {
+            "path": "suite/e2e/tests/trading/navigation.test.ts",
+            "feature_ids": ["trade.contextual-entry", "trade.buy", "trade.sell", "trade.swap"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Navigates to Buy from Dashboard/account/global/empty-account/token actions, Sell from global/account/token actions, and Swap from sidebar/account/token actions; asserts the expected form and asset context."
+        },
+        {
+            "path": "suite/e2e/tests/trading/sell-ethereum-token.test.ts",
+            "feature_ids": ["trade.sell.asset", "trade.sell.confirm-send", "trade.sell.status"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Selects an EVM token sale, reviews provider/network fee, follows mocked provider return, verifies recipient/token amount/fee on Suite and device, sends with broadcast blocked by the mock, and exercises order-status phases."
+        },
+        {
+            "path": "suite/e2e/tests/trading/sell-ethereum.test.ts",
+            "feature_ids": [
+                "trade.sell",
+                "trade.sell.fee",
+                "trade.sell.confirm-send",
+                "trade.sell.status"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Performs mocked ETH sale, sets custom gas limit/max fee/priority fee, checks device fee detail and transaction review, submits through blocked broadcast and observes provider status transitions. No live payout is established."
+        },
+        {
+            "path": "suite/e2e/tests/trading/swap-btc-to-eth-token.test.ts",
+            "feature_ids": [
+                "trade.swap.cex",
+                "trade.swap.pair",
+                "trade.receive.suite-account",
+                "trade.swap.status"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Exercises BTC-to-EVM-token CEX quote selection, receive-account choice, device recipient/amount/fee review and mocked send/status transitions, then verifies trade-detail values."
+        },
+        {
+            "path": "suite/e2e/tests/trading/swap-dex-lifi-approval.test.ts",
+            "feature_ids": [
+                "trade.swap.dex",
+                "trade.swap.approval",
+                "trade.swap.approval-limit",
+                "trade.swap.approval-fee"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Selects a LI.FI USDC-to-ETH DEX quote, enters token approval, reviews spender and approval amount/fee on device, submits with broadcast blocked and opens the approval transaction detail from its ID. It focuses on approval, not completed swap payout."
+        },
+        {
+            "path": "suite/e2e/tests/trading/swap-eth-to-sol.test.ts",
+            "feature_ids": [
+                "trade.swap.cex",
+                "trade.swap.pair",
+                "trade.receive.suite-account",
+                "trade.swap.status"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Exercises ETH-to-SOL centralized cross-network swap with receive-account selection, Suite/device amount and fee checks, blocked broadcast and mocked order progression/detail values."
+        },
+        {
+            "path": "suite/e2e/tests/trading/swap-eth-token-to-sol-token.test.ts",
+            "feature_ids": [
+                "trade.swap.pair",
+                "trade.swap.cex",
+                "trade.receive.suite-account",
+                "trade.swap.status"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Exercises EVM-token-to-SPL-token quote/recipient selection and review, blocked broadcast and mocked provider order transitions, including token amounts in the detail."
+        },
+        {
+            "path": "suite/e2e/tests/trading/swap-sol-to-btc.test.ts",
+            "feature_ids": [
+                "trade.swap.cex",
+                "trade.swap.pair",
+                "trade.receive.utxo-address",
+                "trade.swap.status",
+                "trade.history.details"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Exercises SOL-to-BTC CEX swap and source fee/device review; submits through mocked broadcast/statuses, opens mocked provider support/status page and checks order detail values. No live exchange settlement is claimed."
+        },
+        {
+            "path": "suite/e2e/tests/trading/swap-sol-token-to-eth.test.ts",
+            "feature_ids": [
+                "trade.swap.cex",
+                "trade.swap.pair",
+                "trade.receive.suite-account",
+                "trade.swap.status"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Exercises SPL-token-to-ETH centralized swap with receive-account choice and device/token amount/fee review, followed by blocked broadcast and mocked status/detail assertions."
+        },
+        {
+            "path": "suite/e2e/tests/trading/swap-token-to-disabled-network.test.ts",
+            "feature_ids": ["trade.receive.activate-network", "trade.swap.pair"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Starts with only Solana enabled, selects Stellar as receive network for a token swap, verifies provider quotes, then activates Stellar via the receive-account picker."
+        },
+        {
+            "path": "suite/e2e/tests/trading-live/live-send-base.test.ts",
+            "feature_ids": [
+                "wallet.send.form.asset",
+                "wallet.send.fees.gas-limit",
+                "wallet.send.fees.max-fee",
+                "wallet.send.fees.priority-fee",
+                "wallet.send.review"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Live-scenario source covers Base native ETH and token sends plus custom EIP-1559 fees, device recipient/maximum-total/fee-information review and send-confirmation history. This audit only read the file: it did not sign, send, access live secret values or run the live scenario."
+        },
+        {
+            "path": "suite/e2e/tests/trading-live/live-swap-coin-to-token.test.ts",
+            "feature_ids": [
+                "trade.swap.cex",
+                "trade.swap.pair",
+                "trade.receive.suite-account",
+                "trade.swap.status"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Live-scenario source describes SOL-to-Base-token CEX swaps, device signing, submitted status and return to Swap, with funding/refill housekeeping. Read-only inspection only; no live provider, wallet funding or chain action was executed."
+        },
+        {
+            "path": "suite/e2e/tests/trading-live/live-swap-spl-token-to-coin.test.ts",
+            "feature_ids": [
+                "trade.swap.cex",
+                "trade.swap.pair",
+                "trade.swap.status",
+                "trade.history.details"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Live-scenario source describes SPL-token-to-SOL CEX swap, fee/device review, broadcast, submitted/detail assertions and low-balance refill housekeeping. Explicitly tagged skipOnPR/specific firmware; inspected only and never run."
+        },
+        {
+            "path": "suite/e2e/tests/trezor-connect/connectPopupWebextension.test.ts",
+            "feature_ids": ["connect.permissions.grant", "connect.permissions.address"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Uses the real extension test harness to open Suite Web for getAddress, confirms address on device, cancels from permission/address/calling-app contexts, force-closes and retries the popup, and checks existing popup focus/reuse. Extension setup is an integration mechanism, not a new Suite feature."
+        },
+        {
+            "path": "suite/e2e/tests/trezor-connect/error.test.ts",
+            "feature_ids": ["connect.permissions.address"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Calls ethereumGetAddress with an invalid path and asserts the Suite popup displays Not a valid path. This is external-call input/error handling, not evidence of a successful address export."
+        },
+        {
+            "path": "suite/e2e/tests/trezor-connect/ethereumSignTransaction.test.ts",
+            "feature_ids": ["connect.walletconnect.transaction", "connect.permissions.grant"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Requests Ethereum transaction signing through Suite Desktop, grants permissions, reviews device recipient and transaction summary and expects a successful signing response. This direct Connect test supports the shared external-transaction review capability; it does not exercise WalletConnect pairing or broadcast."
+        },
+        {
+            "path": "suite/e2e/tests/trezor-connect/getAddress.test.ts",
+            "feature_ids": ["connect.permissions.address", "connect.permissions.grant"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Exercises single and bundled address export, manual verification, required show-on-device verification, and a repeated verification rejected on the device that renders an error badge."
+        },
+        {
+            "path": "suite/e2e/tests/trezor-connect/permissions.test.ts",
+            "feature_ids": [
+                "connect.permissions.remember",
+                "connect.permissions.revoke-all",
+                "connect.permissions.grant"
+            ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Remembers an app grant, confirms the next address request reuses it without another permission prompt, forgets the app from Connected apps and checks consent is requested again."
+        },
+        {
+            "path": "suite/e2e/tests/trezor-connect/selectAccount.test.ts",
+            "feature_ids": ["connect.permissions.account", "connect.permissions.grant"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Selects and verifies an account in multi mode, selects one in single mode, cancels a selection and expects Method_Cancel, and rejects a Connect-valid coin not represented by Suite before requesting permission."
+        },
+        {
+            "path": "suite/e2e/tests/trezor-connect/signTransaction.test.ts",
+            "feature_ids": ["connect.walletconnect.transaction", "connect.permissions.grant"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Requests Bitcoin signing through Suite Desktop, grants permissions and walks device review, then intentionally expects Input does not match scriptPubKey from the fixture. This is review/error-path coverage, not successful signing or broadcast."
+        },
+        {
+            "path": "suite/e2e/tests/trezor-connect/silentMode.test.ts",
+            "feature_ids": [],
+            "status": "reviewed-excluded",
+            "reason": "Internal/debug instrumentation excluded from the user feature taxonomy.",
+            "detail": "Enables debug mode, inspects the debug-only silent-mode option, instruments Electron app focus, and asserts a remembered app suppresses foreground focus while still showing device review. Excluded from ordinary user features because both the control and assertions are explicitly debug/instrumentation scoped."
+        },
+        {
+            "path": "suite/e2e/tests/trezor-connect/upfrontPermissions.test.ts",
+            "feature_ids": ["connect.permissions.grant", "connect.permissions.remember"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Declares BTC and LTC read-address permissions at Connect initialization, verifies both groups appear in the initial consent, remembers the declared set, and confirms the later LTC call requires no new grant. The API declaration itself is not a standalone user feature."
+        },
+        {
+            "status": "mapped",
+            "path": "suite/e2e/tests/staking/trx/vote-allocation.test.ts",
+            "feature_ids": ["earn.staking.trx.vote"],
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Splits Tron votes between two representatives, checks the remaining-votes counter, rejects assigning more votes than the staked amount and confirms the pending vote."
+        },
+        {
+            "status": "mapped",
+            "path": "suite/e2e/tests/trading/buy-inputs.test.ts",
+            "feature_ids": ["trade.buy.asset", "trade.buy.fiat-currency"],
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "The Buy form requests new quotes when the asset or the fiat currency changes."
+        },
+        {
+            "status": "mapped",
+            "path": "suite/e2e/tests/yield/cancel.test.ts",
+            "feature_ids": ["earn.yield.deposit", "earn.yield.withdraw", "earn.yield.claim"],
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Backs out of each yield modal (deposit with its explanation, withdraw and claim) without sending a transaction."
+        },
+        {
+            "status": "mapped",
+            "path": "suite-native-app/app/e2e/tests/manual/wallet/earnEnableNetwork.test.ts",
+            "feature_ids": ["earn.opportunities.account"],
+            "reason": "Manual procedure steps were inspected and reconciled with existing user capabilities; not an execution result.",
+            "detail": "Enable disabled Cardano and Tron from the Earn staking list (enable sheet, discovery, management screen), with and without a stake."
+        },
+        {
+            "status": "mapped",
+            "path": "suite-native-app/app/e2e/tests/manual/wallet/stakingAda.test.ts",
+            "feature_ids": ["mobile.earn.staking.view-only", "earn.staking.ada"],
+            "reason": "Manual procedure steps were inspected and reconciled with existing user capabilities; not an execution result.",
+            "detail": "Read-only ADA staking overview on mobile: position with APY, desktop-only management banner, auto-staked balance, rewards, Learn more sheets and staking transactions; no Stake or Unstake."
+        },
+        {
+            "status": "mapped",
+            "path": "suite-native-app/app/e2e/tests/manual/wallet/stakingTrx.test.ts",
+            "feature_ids": [
+                "mobile.earn.staking.view-only",
+                "earn.staking.trx",
+                "earn.staking.trx.resources"
+            ],
+            "reason": "Manual procedure steps were inspected and reconciled with existing user capabilities; not an execution result.",
+            "detail": "Read-only TRX staking overview on mobile: APR, unassigned votes alert, staked amount and rewards, ready-to-withdraw banner, unstaking list and Resources card; no Stake or Unstake."
+        }
+    ],
+    "notes": [
+        "All 38 assigned previously-unmapped automated test files were read for executable scenario actions, expected outcomes, fixture/provider behavior and failure conditions. No tests were run.",
+        "Source mapping records intended scenario coverage only. It does not assert that tests currently pass, that mocked provider flows settle real trades, or that live tests were executed.",
+        "Debug activity injection, mocked relay/provider data and environment setup are test machinery; they do not create new consumer feature nodes.",
+        "Analytics staking-event tests and Connect silent-mode app-focus instrumentation are explicitly reviewed-excluded; underlying ordinary staking/signing features remain mapped elsewhere.",
+        "Guide article image enlargement was added as help.guide.images in services.json with implementation and test evidence.",
+        "A distinct wallet-label management leaf is recommended under wallet access. Existing wallet metadata tests exercise standard/hidden-wallet labels independently from hardware device name; sources provisionally reference the existing legacy/secure labeling capability.",
+        "The direct Connect Ethereum/Bitcoin signing tests map to the common external-transaction review node currently named connect.walletconnect.transaction; they do not establish WalletConnect pairing coverage. A future taxonomy cleanup could reparent this shared review capability without duplicating it.",
+        "No fixture addresses, transaction identifiers, passphrases, seed values or exact wallet balances were copied into the audit artifact."
+    ]
+}

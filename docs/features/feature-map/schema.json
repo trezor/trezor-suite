@@ -1,0 +1,713 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:trezor:suite:user-feature-map:1.0.0",
+    "title": "Trezor Suite user feature map",
+    "type": "object",
+    "required": ["schema_version", "metadata", "statistics", "features", "edges"],
+    "properties": {
+        "schema_version": {
+            "const": "1.0.0"
+        },
+        "metadata": {
+            "type": "object",
+            "required": [
+                "title",
+                "audit_date",
+                "commit",
+                "availability_semantics",
+                "ownership_semantics"
+            ]
+        },
+        "statistics": {
+            "type": "object"
+        },
+        "features": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "parent_id",
+                    "name",
+                    "description",
+                    "level",
+                    "platforms",
+                    "navigation",
+                    "roots",
+                    "evidence",
+                    "ownership",
+                    "conditions",
+                    "screenshot",
+                    "source_ids",
+                    "variants",
+                    "depth",
+                    "breadcrumb",
+                    "path_ids",
+                    "is_leaf",
+                    "scope",
+                    "test_coverage"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$"
+                    },
+                    "parent_id": {
+                        "type": ["string", "null"]
+                    },
+                    "name": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "description": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "level": {
+                        "enum": ["area", "feature", "intent"]
+                    },
+                    "platforms": {
+                        "type": "object",
+                        "required": ["desktop", "web", "mobile"],
+                        "properties": {
+                            "desktop": {
+                                "enum": ["yes", "conditional", "no", "unknown"]
+                            },
+                            "web": {
+                                "enum": ["yes", "conditional", "no", "unknown"]
+                            },
+                            "mobile": {
+                                "enum": ["yes", "conditional", "no", "unknown"]
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "navigation": {
+                        "type": "object",
+                        "required": ["desktop", "web", "mobile"],
+                        "properties": {
+                            "desktop": {
+                                "type": ["string", "null"]
+                            },
+                            "web": {
+                                "type": ["string", "null"]
+                            },
+                            "mobile": {
+                                "type": ["string", "null"]
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "roots": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "type": "object",
+                            "required": ["path", "line", "local_link"],
+                            "properties": {
+                                "path": {
+                                    "type": "string",
+                                    "minLength": 1
+                                },
+                                "line": {
+                                    "type": "integer",
+                                    "minimum": 1
+                                },
+                                "local_link": {
+                                    "type": "string"
+                                },
+                                "symbol": {
+                                    "type": ["string", "null"]
+                                },
+                                "platform": {
+                                    "enum": ["desktop-web", "mobile", "shared"]
+                                },
+                                "kind": {
+                                    "enum": [
+                                        "implementation",
+                                        "automated-test",
+                                        "manual-test",
+                                        "documentation",
+                                        "route"
+                                    ]
+                                },
+                                "detail": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": true
+                        }
+                    },
+                    "evidence": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "type": "object",
+                            "required": ["path", "line", "local_link"],
+                            "properties": {
+                                "path": {
+                                    "type": "string",
+                                    "minLength": 1
+                                },
+                                "line": {
+                                    "type": "integer",
+                                    "minimum": 1
+                                },
+                                "local_link": {
+                                    "type": "string"
+                                },
+                                "symbol": {
+                                    "type": ["string", "null"]
+                                },
+                                "platform": {
+                                    "enum": ["desktop-web", "mobile", "shared"]
+                                },
+                                "kind": {
+                                    "enum": [
+                                        "implementation",
+                                        "automated-test",
+                                        "manual-test",
+                                        "documentation",
+                                        "route"
+                                    ]
+                                },
+                                "detail": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": true
+                        }
+                    },
+                    "ownership": {
+                        "type": "object",
+                        "required": ["team", "backend_team", "confidence", "basis", "source_paths"],
+                        "properties": {
+                            "team": {
+                                "description": "Frontend owner.",
+                                "enum": ["Connect", "Earn", "Growth", "Network", "Trade", "Wallet"]
+                            },
+                            "backend_team": {
+                                "description": "Backend owner; equals team unless team-ownership.json splits them.",
+                                "enum": ["Connect", "Earn", "Growth", "Network", "Trade", "Wallet"]
+                            },
+                            "backend_basis": {
+                                "type": ["string", "null"]
+                            },
+                            "confidence": {
+                                "enum": ["codeowners", "inferred", "agreed", "unknown"]
+                            },
+                            "basis": {
+                                "type": "string"
+                            },
+                            "source_paths": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "conditions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "screenshot": {
+                        "type": "object",
+                        "required": ["status", "path", "notes"],
+                        "properties": {
+                            "status": {
+                                "enum": ["not-captured", "existing-historical", "captured"]
+                            },
+                            "path": {
+                                "type": ["string", "null"]
+                            },
+                            "notes": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "source_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "variants": {
+                        "type": "array"
+                    },
+                    "depth": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "breadcrumb": {
+                        "type": "string"
+                    },
+                    "path_ids": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "is_leaf": {
+                        "type": "boolean"
+                    },
+                    "scope": {
+                        "enum": ["user-facing", "internal-reference"]
+                    },
+                    "related_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "runtime_observations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/$defs/runtimeObservation"
+                        }
+                    },
+                    "screenshots": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/$defs/runtimeScreenshot"
+                        }
+                    },
+                    "runtime_order": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "current_is_leaf": {
+                        "type": "boolean"
+                    },
+                    "runtime_added": {
+                        "type": "boolean"
+                    },
+                    "runtime_errata": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/$defs/runtimeErratum"
+                        }
+                    },
+                    "test_coverage": {
+                        "type": "object",
+                        "required": [
+                            "desktop_automated",
+                            "android_automated",
+                            "desktop_manual",
+                            "android_manual"
+                        ],
+                        "properties": {
+                            "desktop_automated": {
+                                "$ref": "#/$defs/testCoverageAssessment"
+                            },
+                            "android_automated": {
+                                "$ref": "#/$defs/testCoverageAssessment"
+                            },
+                            "desktop_manual": {
+                                "$ref": "#/$defs/testCoverageAssessment"
+                            },
+                            "android_manual": {
+                                "$ref": "#/$defs/testCoverageAssessment"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                },
+                "additionalProperties": true
+            }
+        },
+        "edges": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["source", "target", "type"],
+                "properties": {
+                    "source": {
+                        "type": "string"
+                    },
+                    "target": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "enum": ["contains", "related"]
+                    }
+                }
+            }
+        },
+        "runtime": {
+            "type": "object",
+            "required": ["observations", "screenshots", "new_feature_ids", "errata"],
+            "properties": {
+                "observations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/runtimeObservation"
+                    }
+                },
+                "screenshots": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/runtimeScreenshot"
+                    }
+                },
+                "new_feature_ids": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "errata": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/runtimeErratum"
+                    }
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "$defs": {
+        "runtimeObservation": {
+            "type": "object",
+            "required": [
+                "id",
+                "feature_ids",
+                "platform",
+                "model",
+                "firmware",
+                "status",
+                "navigation",
+                "description",
+                "screenshot_ids",
+                "conditions",
+                "date"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "feature_ids": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "platform": {
+                    "enum": ["desktop", "web", "mobile"]
+                },
+                "model": {
+                    "type": ["string", "null"]
+                },
+                "firmware": {
+                    "type": ["string", "null"]
+                },
+                "status": {
+                    "enum": ["observed", "blocked", "not-reached"]
+                },
+                "navigation": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "description": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "screenshot_ids": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "conditions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "date": {
+                    "type": "string",
+                    "minLength": 1
+                }
+            },
+            "additionalProperties": true
+        },
+        "runtimeScreenshot": {
+            "type": "object",
+            "required": [
+                "id",
+                "path",
+                "feature_ids",
+                "platform",
+                "model",
+                "firmware",
+                "caption",
+                "fixture_context",
+                "captured_at"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "path": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "feature_ids": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "platform": {
+                    "enum": ["desktop", "web", "mobile"]
+                },
+                "model": {
+                    "type": ["string", "null"]
+                },
+                "firmware": {
+                    "type": ["string", "null"]
+                },
+                "caption": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "fixture_context": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "captured_at": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "repository_path": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "explorer_path": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "local_link": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                },
+                "errata": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/runtimeErratum"
+                    }
+                },
+                "effective_feature_ids": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                }
+            },
+            "additionalProperties": true
+        },
+        "runtimeErratum": {
+            "type": "object",
+            "required": ["observation_id", "screenshot_id", "description", "feature_ids", "reason"],
+            "properties": {
+                "observation_id": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "screenshot_id": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "description": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "reason": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "feature_ids": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "testCoverageEvidence": {
+            "type": "object",
+            "required": [
+                "path",
+                "line",
+                "scenario",
+                "verification",
+                "execution",
+                "local_link",
+                "repository_link",
+                "github_url"
+            ],
+            "properties": {
+                "path": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "line": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "scenario": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "verification": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "execution": {
+                    "enum": ["active", "skipped", "not-selected", "manual-procedure"]
+                },
+                "local_link": {
+                    "type": "string"
+                },
+                "repository_link": {
+                    "type": "string"
+                },
+                "github_url": {
+                    "type": ["string", "null"]
+                }
+            }
+        },
+        "testCoverageAssessment": {
+            "type": "object",
+            "required": [
+                "score",
+                "confidence",
+                "applicability",
+                "basis",
+                "rationale",
+                "covered_intents",
+                "gaps",
+                "evidence"
+            ],
+            "properties": {
+                "score": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10
+                },
+                "confidence": {
+                    "enum": ["high", "medium", "low"]
+                },
+                "applicability": {
+                    "enum": ["applicable", "conditional", "not-supported", "unknown"]
+                },
+                "basis": {
+                    "enum": ["direct", "incidental", "none", "parent-synthesis"]
+                },
+                "rationale": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "covered_intents": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "gaps": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "evidence": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/testCoverageEvidence"
+                    }
+                }
+            },
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "score": {
+                                "minimum": 1
+                            }
+                        }
+                    },
+                    "then": {
+                        "properties": {
+                            "covered_intents": {
+                                "minItems": 1
+                            },
+                            "evidence": {
+                                "minItems": 1
+                            }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "score": {
+                                "maximum": 9
+                            }
+                        }
+                    },
+                    "then": {
+                        "properties": {
+                            "gaps": {
+                                "minItems": 1
+                            }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "score": {
+                                "const": 0
+                            }
+                        }
+                    },
+                    "then": {
+                        "properties": {
+                            "covered_intents": {
+                                "maxItems": 0
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

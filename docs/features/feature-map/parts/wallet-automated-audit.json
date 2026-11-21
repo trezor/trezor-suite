@@ -1,0 +1,157 @@
+{
+    "sources": [
+        {
+            "path": "suite/e2e/tests/dashboard/assets.test.ts",
+            "feature_ids": [
+                "wallet.portfolio.assets",
+                "wallet.portfolio.assets.layout",
+                "network-settings.enable",
+                "trade.buy"
+            ],
+            "status": "mapped",
+            "reason": "Read the complete test source and linked its intended regression scenarios; no test was executed.",
+            "detail": "Checks opening Buy from both table and grid layouts; enables Ethereum through the asset activation modal and verifies contents in both layouts."
+        },
+        {
+            "path": "suite/e2e/tests/general/wallet-discovery.test.ts",
+            "feature_ids": [
+                "wallet-access.standard",
+                "wallet-access.eject",
+                "wallet.accounts.select"
+            ],
+            "status": "mapped",
+            "reason": "Read the complete test source and linked its intended regression scenarios; no test was executed.",
+            "detail": "Ejects the current wallet, adds a standard wallet, checks its BTC account balance is visible, and switches to the account. perf.measure wraps discovery/account-switch timing; those timings are instrumentation, not additional features."
+        },
+        {
+            "path": "suite/e2e/tests/wallet/blockbook-discovery.test.ts",
+            "feature_ids": [
+                "network-settings.backends",
+                "network-settings.backends.urls",
+                "wallet.portfolio.history"
+            ],
+            "status": "mapped",
+            "reason": "Read the complete test source and linked its intended regression scenarios; no test was executed.",
+            "detail": "Configures custom Blockbook endpoints for Bitcoin and Litecoin, waits for discovery and asserts dashboard graph visibility. The source itself marks verification as needing improvement; graph visibility alone does not validate backend correctness comprehensively."
+        },
+        {
+            "path": "suite/e2e/tests/wallet/cardano.test.ts",
+            "feature_ids": [
+                "wallet.accounts.details.type",
+                "wallet.accounts.details.xpub",
+                "wallet.send.form",
+                "wallet.receive.verify",
+                "wallet.receive.copy"
+            ],
+            "status": "mapped",
+            "reason": "Read the complete test source and linked its intended regression scenarios; no test was executed.",
+            "detail": "Cardano walkthrough checks account-type/path/public-key descriptions, device public-key display and copy availability, Send form presence, then receive-address device verification and copy availability. It does not assert a completed Cardano payment."
+        },
+        {
+            "path": "suite/e2e/tests/wallet/coin-balance.test.ts",
+            "feature_ids": [
+                "wallet.accounts.overview.balance",
+                "wallet.accounts.select",
+                "network-settings.enable"
+            ],
+            "status": "mapped",
+            "reason": "Read the complete test source and linked its intended regression scenarios; no test was executed.",
+            "detail": "Discovers a funded regtest account, verifies a nonzero sidebar account balance, adds a mined incoming transaction and checks the displayed balance increments. Testnet setup is fixture preparation."
+        },
+        {
+            "path": "suite/e2e/tests/wallet/discovery.test.ts",
+            "feature_ids": [
+                "network-settings.enable",
+                "network-settings.discover",
+                "wallet.accounts",
+                "wallet.portfolio.assets"
+            ],
+            "status": "mapped",
+            "reason": "Read the complete test source and linked its intended regression scenarios; no test was executed.",
+            "detail": "Enables multiple networks, reloads during account discovery after a randomized delay, then checks discovery completion and each expected account balance is visible. The regression concerns discovery resilience after interruption; it does not introduce a separate reload-control feature."
+        },
+        {
+            "path": "suite/e2e/tests/wallet/multi-account-discovery-perf.test.ts",
+            "feature_ids": [],
+            "status": "reviewed-excluded",
+            "reason": "Read the complete source. Dedicated @perf instrumentation scenario; performance metrics/limits are not independent user-facing product features.",
+            "detail": "Enables BTC/ETH/LTC, ejects and re-adds a standard wallet inside a performance measurement, then checks BTC balance visibility. Its distinctive purpose is measuring high account-churn discovery performance; the underlying wallet access capabilities are mapped by ordinary scenarios."
+        },
+        {
+            "path": "suite/e2e/tests/wallet/pagination.test.ts",
+            "feature_ids": ["wallet.transactions.pagination"],
+            "status": "mapped",
+            "reason": "Read the complete test source and linked its intended regression scenarios; no test was executed.",
+            "detail": "Navigates a legacy account transaction history to a numbered page, jumps through the page-number input, then advances using the next-page arrow; asserts active-page markers and displayed transaction target rows."
+        },
+        {
+            "path": "suite/e2e/tests/wallet/send-doge.test.ts",
+            "feature_ids": [
+                "wallet.send.form.crypto-amount",
+                "wallet.send.advanced.broadcast",
+                "wallet.send.review.outputs"
+            ],
+            "status": "mapped",
+            "reason": "Read the complete test source and linked its intended regression scenarios; no test was executed.",
+            "detail": "Attempts signing an unusually large Dogecoin amount with broadcasting disabled, verifies address/amount/total/fee in app and hardware review, and expects the signing-error toast with an invalid-amount error. This is a failure-path regression, not evidence that the amount can be sent."
+        },
+        {
+            "path": "suite/e2e/tests/wallet/send-form-ltc.test.ts",
+            "feature_ids": [
+                "wallet.send",
+                "wallet.send.form.send-max",
+                "wallet.send.advanced.broadcast",
+                "wallet.send.review.outputs"
+            ],
+            "status": "mapped",
+            "reason": "Read the complete test source and linked its intended regression scenarios; no test was executed.",
+            "detail": "With a mocked Litecoin Blockbook dataset containing a Mimblewimble peg-out-origin UTXO, disables broadcast, fills a recipient, selects Send Max and confirms device signing. It does not expose or verify a standalone MWEB wallet/mixing UI or broadcast a live payment."
+        },
+        {
+            "path": "suite/e2e/tests/wallet/sign-verify-eth.test.ts",
+            "feature_ids": ["wallet.sign-verify.sign", "wallet.sign-verify.verify"],
+            "status": "mapped",
+            "reason": "Read the complete test source and linked its intended regression scenarios; no test was executed.",
+            "detail": "Signs an Ethereum message and asserts generated signature plus success toast; separately verifies a supplied signature with address/message confirmations and a valid-signature device result."
+        },
+        {
+            "path": "suite/e2e/tests/wallet/sign-verify.test.ts",
+            "feature_ids": [
+                "wallet.sign-verify.sign",
+                "wallet.sign-verify.verify",
+                "wallet.sign-verify.address",
+                "wallet.sign-verify.format",
+                "wallet.sign-verify.copy"
+            ],
+            "status": "mapped",
+            "reason": "Read the complete test source and linked its intended regression scenarios; no test was executed.",
+            "detail": "Selects a Bitcoin signing address; checks standard and Electrum-compatible signatures, signature/address/message clipboard copying and successful-form clearing. Verifies a correct signature and tests that altering the message yields failure without a success state."
+        },
+        {
+            "path": "suite/e2e/tests/wallet/transactions.test.ts",
+            "feature_ids": ["wallet.accounts.overview.history-graph", "wallet.transactions.search"],
+            "status": "mapped",
+            "reason": "Read the complete test source and linked its intended regression scenarios; no test was executed.",
+            "detail": "Cycles account balance history through day/week/month/year/all ranges and checks matching summary labels, then searches by a suffix from the latest transaction address and verifies a transaction row is visible. It does not assert exclusion of every nonmatching row."
+        },
+        {
+            "path": "suite/e2e/tests/wallet/without-device.test.ts",
+            "feature_ids": [
+                "wallet.send.form",
+                "wallet.send.review",
+                "connection",
+                "device-settings"
+            ],
+            "status": "mapped",
+            "reason": "Read the complete test source and linked its intended regression scenarios; no test was executed.",
+            "detail": "Powers off the device after opening a funded account, fills the Send form, verifies Review opens the device connection modal, and checks the disconnected-device banner in Device settings."
+        }
+    ],
+    "notes": [
+        "All 14 requested unmapped wallet/dashboard/general sources were read in full. Dashboard banners belong to the primary agent and are deliberately excluded from this file.",
+        "Mappings describe intended scenarios and limits of assertions, not an execution result or a coverage guarantee.",
+        "Dedicated multi-account discovery performance measurement is reviewed-excluded from the user capability inventory; general standard-wallet discovery still maps user-facing assertions even though it also hosts timing instrumentation.",
+        "No new capability required a separate node: reload-resilient discovery, large-amount signing rejection and Litecoin peg-out UTXO spending are conditions/regressions of existing capabilities.",
+        "No addresses, transaction IDs, balances, backup words, signatures or fixture-specific user text are copied into this audit."
+    ]
+}

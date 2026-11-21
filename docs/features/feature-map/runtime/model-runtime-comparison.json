@@ -1,0 +1,413 @@
+{
+    "title": "Runtime model comparison — isolated web QA",
+    "created_at": "2026-11-15T08:53:03.082349+00:00",
+    "platform": "web",
+    "viewport": {
+        "width": 1440,
+        "height": 1000
+    },
+    "locale": "English",
+    "source_manifest": "../parts/runtime-model-observations.json",
+    "capture_count": 25,
+    "observation_count": 25,
+    "flow_context_errata": [
+        {
+            "observation_id": "runtime-web-t1b1-model-check-backup-word-count",
+            "screenshot_id": "web-t1b1-model-check-backup-word-count",
+            "description": "Model One backup-check preflight offers 12, 18 and 24-word selectors before any recovery words are entered. The observed navigation is specifically Check wallet backup (dry run), not device onboarding or actual wallet recovery.",
+            "feature_ids": ["device-settings.check-backup"],
+            "reason": "Flow-context correction: shared recovery components were observed only from Settings > Device > Check wallet backup. Their reuse does not establish that onboarding.recovery.* was reached. Original observations and screenshots are preserved."
+        },
+        {
+            "observation_id": "runtime-web-t1b1-model-check-backup-modes",
+            "screenshot_id": "web-t1b1-model-check-backup-modes",
+            "description": "With 24 words selected, Model One backup check offers Standard recovery on the computer and Advanced recovery using the Trezor; the procedure was stopped before secret input. The observed navigation is specifically Check wallet backup (dry run), not device onboarding or actual wallet recovery.",
+            "feature_ids": ["device-settings.check-backup"],
+            "reason": "Flow-context correction: shared recovery components were observed only from Settings > Device > Check wallet backup. Their reuse does not establish that onboarding.recovery.* was reached. Original observations and screenshots are preserved."
+        },
+        {
+            "observation_id": "runtime-web-t2t1-model-check-backup-instructions",
+            "screenshot_id": "web-t2t1-model-check-backup-instructions",
+            "description": "Model T backup-check instructions explicitly require touchscreen word input on the device and list supported backup lengths; the app presents an acknowledgement and Start without host word input. The observed navigation is specifically Check wallet backup (dry run), not device onboarding or actual wallet recovery.",
+            "feature_ids": ["device-settings.check-backup"],
+            "reason": "Flow-context correction: shared recovery components were observed only from Settings > Device > Check wallet backup. Their reuse does not establish that onboarding.recovery.* was reached. Original observations and screenshots are preserved."
+        },
+        {
+            "observation_id": "runtime-web-t3b1-model-check-backup-instructions",
+            "screenshot_id": "web-t3b1-model-check-backup-instructions",
+            "description": "Safe 3 T3B1 backup-check guidance explicitly uses the two-button pad for recovery-word entry on the Trezor; no host word input or secret entry is shown. The observed navigation is specifically Check wallet backup (dry run), not device onboarding or actual wallet recovery.",
+            "feature_ids": ["device-settings.check-backup"],
+            "reason": "Flow-context correction: shared recovery components were observed only from Settings > Device > Check wallet backup. Their reuse does not establish that onboarding.recovery.* was reached. Original observations and screenshots are preserved."
+        }
+    ],
+    "method": [
+        "Only task-local emulator and bridge were controlled. Before each model switch Suite navigated to about:blank; helper stopped bridge/emulator, started a wiped version with device screenshot saving disabled, loaded the private local QA fixture internally and restarted node-bridge.",
+        "Actual UI selected the connected standard-wallet row and acknowledged existing-device recognition where required; no route or store mutation was used to fabricate model-control presence. Redux inspection was restricted to non-secret model/version/capability/boolean metadata.",
+        "Model/firmware were independently read from acquired Features; Safe 7 was not attributed until fresh Features and THP properties agreed after pairing. Reused emulator-path remembered states were not treated as fresh Safe 7 evidence.",
+        "Settings sections were scrolled individually and every new PNG was inspected locally before its associations were recorded. Only controls visible in those captures were mapped.",
+        "Model One and Model T PIN setup were canceled with no PIN entered. Backup-check remained a dry-run preflight with no words entered.",
+        "Safe 7 passphrase protection was temporarily enabled on the disposable fixture to reveal empty forms; no passphrase was typed and device-entry request was canceled."
+    ],
+    "models": [
+        {
+            "model": "T1B1",
+            "firmware": "1.14.1",
+            "runtime_status": "observed-in-this-pass",
+            "present_or_absent_controls": {
+                "device_language": false,
+                "display_rotation": false,
+                "screen_brightness": false,
+                "haptic_feedback": false,
+                "hardware_authenticity_check_action": false,
+                "trusted_autoconnect": false
+            },
+            "wallpaper_visible_guidance": "128×64; purely black and white, no grayscale; Upload/Gallery/editor.",
+            "backup_check_visible_guidance": "Host-assisted backup-check instructions, 12/18/24 word-count choices and Standard/Advanced choices after selecting 24. No words entered.",
+            "pin_entry_surface": "Empty 3×3 host matrix reached after initial emulator confirmation; canceled; pin_protection remained false.",
+            "capability_flags_observed": [],
+            "capture_ids": [
+                "web-t1b1-model-settings-overview",
+                "web-t1b1-model-security",
+                "web-t1b1-model-customization",
+                "web-t1b1-model-check-backup-instructions",
+                "web-t1b1-model-check-backup-word-count",
+                "web-t1b1-model-check-backup-modes",
+                "web-t1b1-model-empty-pin-matrix"
+            ],
+            "source_expectation_comparison": "Matches explicit Model One exclusions and monochrome/input-method source expectations. This pass observes backup-check context only; onboarding and real recovery are not claimed."
+        },
+        {
+            "model": "T2T1",
+            "firmware": "2.12.5",
+            "runtime_status": "observed-in-this-pass",
+            "present_or_absent_controls": {
+                "device_language": true,
+                "display_rotation": true,
+                "screen_brightness": true,
+                "haptic_feedback": false,
+                "hardware_authenticity_check_action": false,
+                "trusted_autoconnect": false
+            },
+            "wallpaper_visible_guidance": "240×240; Upload/Gallery.",
+            "backup_check_visible_guidance": "Touchscreen word input on Trezor; app instructions list backup lengths. No recovery procedure started or words entered.",
+            "pin_entry_surface": "App-side follow-instructions-on-Trezor prompt; no host PIN matrix; canceled and pin_protection remained false.",
+            "capability_flags_observed": [
+                "Capability_Shamir",
+                "Capability_ShamirGroups",
+                "Capability_PassphraseEntry",
+                "Capability_Translations",
+                "Capability_Brightness"
+            ],
+            "capture_ids": [
+                "web-t2t1-model-settings-overview",
+                "web-t2t1-model-security",
+                "web-t2t1-model-customization",
+                "web-t2t1-model-check-backup-instructions",
+                "web-t2t1-model-pin-on-device"
+            ],
+            "source_expectation_comparison": "Explicit rotation and no hardware-authentication action match source. Brightness is positively observed on current Model T firmware; source had deliberately retained a capability-driven expectation rather than denying it."
+        },
+        {
+            "model": "T3B1",
+            "firmware": "2.12.5",
+            "runtime_status": "observed-in-this-pass",
+            "present_or_absent_controls": {
+                "device_language": true,
+                "display_rotation": false,
+                "screen_brightness": false,
+                "haptic_feedback": false,
+                "hardware_authenticity_check_action": true,
+                "trusted_autoconnect": false
+            },
+            "wallpaper_visible_guidance": "128×64; purely black and white, no grayscale; Upload/Gallery/editor.",
+            "backup_check_visible_guidance": "Two-button pad on Trezor for backup-word entry; no word entered.",
+            "pin_entry_surface": "PIN settings toggle observed; deeper PIN entry not reached in this pass.",
+            "capability_flags_observed": [
+                "Capability_Shamir",
+                "Capability_ShamirGroups",
+                "Capability_PassphraseEntry",
+                "Capability_Translations"
+            ],
+            "capture_ids": [
+                "web-t3b1-model-settings-overview",
+                "web-t3b1-model-security",
+                "web-t3b1-model-customization",
+                "web-t3b1-model-check-backup-instructions"
+            ],
+            "source_expectation_comparison": "Matches explicit rotation exclusion, hardware-authentication support and monochrome image guidance. Does not test original T2B1 packaging/defaults."
+        },
+        {
+            "model": "T3W1",
+            "firmware": "2.12.5",
+            "runtime_status": "observed-in-this-pass",
+            "present_or_absent_controls": {
+                "device_language": true,
+                "display_rotation": false,
+                "screen_brightness": true,
+                "haptic_feedback": true,
+                "hardware_authenticity_check_action": true,
+                "trusted_autoconnect": true
+            },
+            "wallpaper_visible_guidance": "380×520; Upload/Gallery.",
+            "backup_check_visible_guidance": "Touchscreen word input on Trezor; no word entered.",
+            "pin_entry_surface": "PIN settings toggle observed; deeper PIN entry not reached in this pass.",
+            "capability_flags_observed": [
+                "Capability_Shamir",
+                "Capability_ShamirGroups",
+                "Capability_PassphraseEntry",
+                "Capability_Translations",
+                "Capability_Haptic",
+                "Capability_Brightness",
+                "Capability_BLE",
+                "Capability_NFC"
+            ],
+            "capture_ids": [
+                "web-t3w1-model-thp-pairing-entry",
+                "web-t3w1-model-settings-overview",
+                "web-t3w1-model-security",
+                "web-t3w1-model-customization",
+                "web-t3w1-model-check-backup-instructions",
+                "web-t3w1-wallet-switcher",
+                "web-t3w1-hidden-wallet-choices",
+                "web-t3w1-empty-host-passphrase",
+                "web-t3w1-passphrase-on-device-prompt"
+            ],
+            "source_expectation_comparison": "Matches explicit rotation exclusion despite touchscreen, capability-driven brightness/haptics, hardware-authenticity entry and THP credential-based Auto-connect. BLE/NFC flags are not functional radio/card observations.",
+            "transport_observed": "USB through task-local node-bridge; THP initial confirmation and ephemeral-code pairing completed. No code included in artifacts or populated-input screenshot.",
+            "wallet_access_observed": "Connected Standard wallet entries, hidden-wallet New/Open previously used choices, empty host passphrase form and app-side device-entry prompt. No passphrase typed or hidden-wallet discovery completed."
+        },
+        {
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "runtime_status": "retained-earlier-root-observations-not-rerun",
+            "present_or_absent_controls": {
+                "device_language": true,
+                "display_rotation": true,
+                "screen_brightness": true,
+                "haptic_feedback": true,
+                "hardware_authenticity_check_action": true,
+                "trusted_autoconnect": false
+            },
+            "capture_ids": [
+                "web-t3t1-device-settings",
+                "web-t3t1-device-customization",
+                "web-t3t1-device-brightness-prompt",
+                "web-t3t1-homescreen-gallery",
+                "web-t3t1-pin-setup"
+            ],
+            "wallpaper_visible_guidance": "240×240 color wallpaper in earlier root capture.",
+            "pin_entry_surface": "Earlier root onboarding Set PIN/Skip entry; no completed PIN setup inferred.",
+            "source_expectation_comparison": "Retains prior root screenshots and manifest records; this child did not rerun Safe 5. Presence describes those recorded fixture states, not all firmware."
+        },
+        {
+            "model": "T2B1",
+            "firmware": null,
+            "runtime_status": "source-only-no-distinct-emulator",
+            "present_or_absent_controls": null,
+            "capture_ids": [],
+            "source_expectation_comparison": "Do not label T3B1 emulator evidence as T2B1 testing. Both name Safe 3, but original T2B1 packaging changes default backup and seal guidance. The task helper exposes only T3B1, so T2B1 remains source-derived."
+        }
+    ],
+    "limitations": [
+        "Only initialized QA device settings and backup-check preflights were exercised. Fresh create/recover onboarding, new-wallet backup defaults, real recovery, backup validation, firmware install, PIN completion and physical display/vibration are not verified by this pass.",
+        "All transports here were local USB/node-bridge emulation; physical Bluetooth pairing, NFC backup/media, battery-low or wireless-charging behavior was not exercised. BLE/NFC advertised capability is not a passed hardware test.",
+        "Firmware/hardware authenticity protections were bypassed or their known emulator warning dismissed for exploration. Availability of Check device is not successful authentication; initial Model One capture retains the emulator integrity-warning banner.",
+        "The isolated QA account sidebar and remembered duplicate Standard wallet instances can survive reuse of the emulator path; they do not prove per-model asset compatibility, independent simultaneous device connections or real balances.",
+        "Four originally linked shared recovery-component observations have explicit flow-context errata restricting capture associations to device-settings.check-backup. They must not count as onboarding.recovery.* runtime execution.",
+        "Source-derived T2B1 packaging/default differences remain untested; no separate T2B1 emulator was available.",
+        "T3T1 evidence is retained from the root audit, not rerun by this agent."
+    ],
+    "new_feature_proposals": [],
+    "new_feature_review": "Existing canonical features cover the reached settings, backup-check, PIN setup and wallet-access entries; model differences add evidence/conditions rather than duplicate user features.",
+    "source_evidence": [
+        {
+            "path": "packages/suite/src/views/settings/SettingsDevice/DisplayRotation.tsx",
+            "line": 59,
+            "detail": "Only T2T1/T3T1 are allowed by explicit rotation gate.",
+            "link": "../../../../packages/suite/src/views/settings/SettingsDevice/DisplayRotation.tsx#L59"
+        },
+        {
+            "path": "packages/suite/src/views/settings/SettingsDevice/Brightness.tsx",
+            "line": 15,
+            "detail": "Brightness follows capability; actual observations include Model T and Safe 7.",
+            "link": "../../../../packages/suite/src/views/settings/SettingsDevice/Brightness.tsx#L15"
+        },
+        {
+            "path": "packages/suite/src/views/settings/SettingsDevice/HapticFeedback.tsx",
+            "line": 19,
+            "detail": "Haptic toggle follows capability; the anchor mistakenly reuses PinProtection, requiring .first() for the PIN section locator.",
+            "link": "../../../../packages/suite/src/views/settings/SettingsDevice/HapticFeedback.tsx#L19"
+        },
+        {
+            "path": "suite-common/device-authenticity/src/deviceAuthenticityConstants.ts",
+            "line": 3,
+            "detail": "Check-device support differs by model; an entry is not proof of genuine hardware.",
+            "link": "../../../../suite-common/device-authenticity/src/deviceAuthenticityConstants.ts#L3"
+        },
+        {
+            "path": "packages/suite/src/views/settings/SettingsDevice/ThpAutoconnect.tsx",
+            "line": 20,
+            "detail": "Auto-connect settings follow credential availability.",
+            "link": "../../../../packages/suite/src/views/settings/SettingsDevice/ThpAutoconnect.tsx#L20"
+        },
+        {
+            "path": "packages/suite/src/utils/suite/homescreen.ts",
+            "line": 24,
+            "detail": "Different image constraints by model.",
+            "link": "../../../../packages/suite/src/utils/suite/homescreen.ts#L24"
+        },
+        {
+            "path": "suite-common/device/src/deviceSelectors.ts",
+            "line": 553,
+            "detail": "New-wallet defaults and original Safe 3 packaging remain source-derived in this pass.",
+            "link": "../../../../suite-common/device/src/deviceSelectors.ts#L553"
+        },
+        {
+            "path": "suite/e2e/support/device.ts",
+            "line": 134,
+            "detail": "Established test-helper semantics used internally for local ephemeral pairing; no raw content or test error text copied.",
+            "link": "../../../../suite/e2e/support/device.ts#L134"
+        },
+        {
+            "path": "suite/e2e/support/pageObjects/onboarding/onboardingPage.ts",
+            "line": 115,
+            "detail": "Pairing digits filled through UI without logging or populated-field capture.",
+            "link": "../../../../suite/e2e/support/pageObjects/onboarding/onboardingPage.ts#L115"
+        }
+    ],
+    "handoff": {
+        "browser": "about:blank confirmed",
+        "task_bridge": "stopped successfully",
+        "task_emulator": "stopped successfully",
+        "runtime_control_released_to_root": true,
+        "pending_secret_input": "none; requests canceled or emulator stopped",
+        "note": "No further browser/TUE calls were made after release."
+    },
+    "captures": [
+        {
+            "id": "web-t1b1-model-settings-overview",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t1b1-model-settings-overview.png",
+            "sha256": "a5f0fa5ea447b87762e6f4f9fb5bf58ad4307e2c314f351bfe282ccb39f830f0"
+        },
+        {
+            "id": "web-t1b1-model-security",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t1b1-model-security.png",
+            "sha256": "69c3c85e0459b734d10f976283ee58373d0dca3487e6aac5452b0ee2cc7ec822"
+        },
+        {
+            "id": "web-t1b1-model-customization",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t1b1-model-customization.png",
+            "sha256": "5de9ab3da74e4253d8c485e68627a5efc9b17a7f6804fc02b2ef6919058c8d6e"
+        },
+        {
+            "id": "web-t1b1-model-check-backup-instructions",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t1b1-model-check-backup-instructions.png",
+            "sha256": "81cac9b3af96e686ecce8b3215cc071ed79b3e6893a7c56fcd191c60702b74e7"
+        },
+        {
+            "id": "web-t1b1-model-check-backup-word-count",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t1b1-model-check-backup-word-count.png",
+            "sha256": "66715265630a890de35176e50f88589f282885d441f79f8ca87f74769b3e0016"
+        },
+        {
+            "id": "web-t1b1-model-check-backup-modes",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t1b1-model-check-backup-modes.png",
+            "sha256": "b8d9f721191e1ca8e9aac2c3d371816919d11cd9e2bdfb4307aa6e5154373d31"
+        },
+        {
+            "id": "web-t1b1-model-empty-pin-matrix",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t1b1-model-empty-pin-matrix.png",
+            "sha256": "d6058e60b3df459853c03c6072301520dc7746c8936b20903bf10170bd6766fb"
+        },
+        {
+            "id": "web-t2t1-model-settings-overview",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t2t1-model-settings-overview.png",
+            "sha256": "b6a3170f624bf5c003648f9fa4a8e680444898f20384516929a3c77c6f60e93f"
+        },
+        {
+            "id": "web-t2t1-model-security",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t2t1-model-security.png",
+            "sha256": "a02ee6756db7d740d506569799087e49070f70aa703c34f33f5f114325c5134e"
+        },
+        {
+            "id": "web-t2t1-model-customization",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t2t1-model-customization.png",
+            "sha256": "ab758ef57b492a513bc220a76c3e6dd439d8905baf0327e8cb6082b19316adf6"
+        },
+        {
+            "id": "web-t2t1-model-check-backup-instructions",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t2t1-model-check-backup-instructions.png",
+            "sha256": "74eaa490037e68ccde450b66b6541a6d3a7b592075c5e3ce7d77fe683a8253c4"
+        },
+        {
+            "id": "web-t2t1-model-pin-on-device",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t2t1-model-pin-on-device.png",
+            "sha256": "37792cf01daa7ce22ba1c8912e7cf309361ea7353d4fba82c29dce335773c0cf"
+        },
+        {
+            "id": "web-t3b1-model-settings-overview",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3b1-model-settings-overview.png",
+            "sha256": "344a61ccf3d1ba68fd7cb1ce090d324b7ebfaf7b831178940fbe432b975f3f4a"
+        },
+        {
+            "id": "web-t3b1-model-security",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3b1-model-security.png",
+            "sha256": "9bd19249c6bd15495b0bd7bbb9311e5c3171abcfe6cfe178538018819b169a93"
+        },
+        {
+            "id": "web-t3b1-model-customization",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3b1-model-customization.png",
+            "sha256": "f3afc406003555b1fff3a82a9fb6f6b943e7d159310fee90e4e7114a1ef7db28"
+        },
+        {
+            "id": "web-t3b1-model-check-backup-instructions",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3b1-model-check-backup-instructions.png",
+            "sha256": "42aee3b24c9da7225042882650eac7234f751409246a486c1befdae293f378ef"
+        },
+        {
+            "id": "web-t3w1-model-thp-pairing-entry",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3w1-model-thp-pairing-entry.png",
+            "sha256": "7303ccccae2b3616c4090701092c224352bdd60bab1f4a5fd51304ba7198e277"
+        },
+        {
+            "id": "web-t3w1-model-settings-overview",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3w1-model-settings-overview.png",
+            "sha256": "19030b07a73de15a574f390627555d98d377f92390e7474a7fbee1ef34b1b25e"
+        },
+        {
+            "id": "web-t3w1-model-security",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3w1-model-security.png",
+            "sha256": "cfe39997b50ab3ed7af1176e1af18f6ac05b02b7a2e8cc8d6475147f7c8f72ae"
+        },
+        {
+            "id": "web-t3w1-model-customization",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3w1-model-customization.png",
+            "sha256": "095a235217d459b109bfb9dce24df0c86f99c36ec51050f3567eb9166d52f6b9"
+        },
+        {
+            "id": "web-t3w1-model-check-backup-instructions",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3w1-model-check-backup-instructions.png",
+            "sha256": "5ff2c861e421d3c1e7837818644aee5b6b366203301bc6221bc794b04c3d25cb"
+        },
+        {
+            "id": "web-t3w1-wallet-switcher",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3w1-wallet-switcher.png",
+            "sha256": "52bb7ce3c72d7a937b1f27c718033aa1a08e882454023fd1d02d664e9fba072b"
+        },
+        {
+            "id": "web-t3w1-hidden-wallet-choices",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3w1-hidden-wallet-choices.png",
+            "sha256": "8e71a23dbda68ce09f8a856a250bcdfb8d34f9807d67be8465714e71e4ae31c5"
+        },
+        {
+            "id": "web-t3w1-empty-host-passphrase",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3w1-empty-host-passphrase.png",
+            "sha256": "c6c68ff5c1d21f711689ae00e8f5ca8fca496be76e2a709ca46c28cbbf1a3938"
+        },
+        {
+            "id": "web-t3w1-passphrase-on-device-prompt",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3w1-passphrase-on-device-prompt.png",
+            "sha256": "1d117c765a6daa6834795f11c210c0d20f625c3d7e1a650ece7f7f91f5800b3c"
+        }
+    ]
+}

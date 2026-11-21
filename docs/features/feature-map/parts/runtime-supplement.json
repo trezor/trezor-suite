@@ -1,0 +1,365 @@
+{
+    "description": "Runtime captures added after the pinned runtime manifest (parts/runtime-observations.json stays byte-identical). build.ts appends these observations and screenshots to it.",
+    "sources": [
+        {
+            "scope": "2026 release-note review additions",
+            "captured_from_commit": "bfcc771f27d0cb6f6636ede85d0b574b80780511",
+            "environment": "Local web Suite at http://localhost:8000, Playwright Chromium 1440x1000, Trezor User Env emulator (T3T1, firmware 2.12.5) with a disposable QA seed and local synthetic backends and trading mocks, as described in runtime/README.md and runtime/fixtures.md."
+        }
+    ],
+    "observations": [
+        {
+            "id": "runtime-web-trade-history-rate",
+            "feature_ids": ["trade.history.rate"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Sidebar → Swap (Trade) → Buy → Trade history → select the 173 USD Buy order → select the smiling rating.",
+            "description": "A completed Buy order detail shows the emoji rating and comment form after selecting a rating.",
+            "screenshot_ids": ["web-trade-history-rate"],
+            "conditions": [
+                "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile.",
+                "Locally seeded completed Buy order and message-system tradingFeedbackForm variant B. Feedback was not submitted."
+            ],
+            "date": "2026-11-21T18:40:33.373Z"
+        },
+        {
+            "id": "runtime-web-trade-form-resume",
+            "feature_ids": ["trade.form-resume"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Sidebar → Swap (Trade) → Buy → enter 173 USD → Continue on the Local QA Provider quote → header Back arrow.",
+            "description": "Returning from the Buy review restores the entered 173 USD, Bitcoin and the quoted offer.",
+            "screenshot_ids": ["web-trade-form-resume"],
+            "conditions": [
+                "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile.",
+                "Local buy quote; form state persisted within Trading."
+            ],
+            "date": "2026-11-21T18:40:12.398Z"
+        },
+        {
+            "id": "runtime-web-wallet-access-hidden-caps-lock",
+            "feature_ids": ["wallet-access.hidden.caps-lock"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Wallet/device selector → Passphrase wallet → New passphrase → Got it on Passphrase best practices → focus the empty passphrase field → send a Caps Lock modifier.",
+            "description": "The empty passphrase field shows the Caps Lock is on hint.",
+            "screenshot_ids": ["web-wallet-access-hidden-caps-lock"],
+            "conditions": [
+                "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile.",
+                "Passphrase-enabled QA emulator and a synthetic Chromium keydown carrying the Caps Lock modifier. No passphrase was entered."
+            ],
+            "date": "2026-11-21T18:50:50.693Z"
+        },
+        {
+            "id": "runtime-web-wallet-send-network-safety-contract-recipient",
+            "feature_ids": ["wallet.send.network-safety.contract-recipient"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Sidebar → Ethereum #1 → Send → enter the USDT contract in Address or ENS → Tab out of the field.",
+            "description": "The Ethereum Send form flags the recipient as a contract address and offers a risk acknowledgment.",
+            "screenshot_ids": ["web-wallet-send-network-safety-contract-recipient"],
+            "conditions": [
+                "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile.",
+                "Local Ethereum Blockbook fixture returns USDT contract metadata and an Ethereum nonce."
+            ],
+            "date": "2026-11-21T18:43:22.173Z"
+        },
+        {
+            "id": "runtime-web-wallet-transactions-details-copy-id",
+            "feature_ids": ["wallet.transactions.details.copy-id"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Sidebar → Ethereum #1 → Transactions → Stake transaction → hover the Tx ID value.",
+            "description": "The hovered Tx ID displays the full identifier with a copy button. Clicking the copy button displayed a Copied toast.",
+            "screenshot_ids": ["web-wallet-transactions-details-copy-id"],
+            "conditions": [
+                "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile.",
+                "Ethereum Blockbook fixture with a historical stake transaction."
+            ],
+            "date": "2026-11-21T18:38:36.520Z"
+        },
+        {
+            "id": "runtime-web-wallet-sign-verify-copy-inputs",
+            "feature_ids": ["wallet.sign-verify.copy-inputs"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Sidebar → Bitcoin #1 → account header … → Sign & verify → enter a QA message → choose an address → Sign → confirm signing address and message on the emulator.",
+            "description": "After successfully signing a Bitcoin message, the result displays Copy buttons for Address and Message.",
+            "screenshot_ids": ["web-wallet-sign-verify-copy-inputs"],
+            "conditions": [
+                "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile.",
+                "Local Bitcoin QA account and a disposable signed text message. No transaction was constructed."
+            ],
+            "date": "2026-11-21T18:41:24.965Z"
+        },
+        {
+            "id": "runtime-web-wallet-send-form-recipient-warning",
+            "feature_ids": ["wallet.send.form.recipient-warning"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Dashboard → sidebar Ethereum #1 → Send → enter a valid new recipient in Address or ENS → Tab out of the field.",
+            "description": "The Ethereum Send form warns that this address has never been paid from the selected account.",
+            "screenshot_ids": ["web-wallet-send-form-recipient-warning"],
+            "conditions": [
+                "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile.",
+                "Local Ethereum history fixture and a synthetic unused recipient."
+            ],
+            "date": "2026-11-21T18:39:00.442Z"
+        },
+        {
+            "id": "runtime-web-earn-staking-trx-transactions",
+            "feature_ids": ["earn.staking.trx.transactions"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Sidebar → Tron #1 → Staking → scroll to Staking transactions.",
+            "description": "The Tron Staking tab shows the dedicated Staking transactions list with a Vote entry and the start of a Freeze entry.",
+            "screenshot_ids": ["web-earn-staking-trx-transactions"],
+            "conditions": [
+                "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile.",
+                "Local Tron Blockbook E2E rewarded state containing freeze and vote contract transactions."
+            ],
+            "date": "2026-11-21T18:39:03.624Z"
+        },
+        {
+            "id": "runtime-web-earn-staking-ada-voting-convert-drep",
+            "feature_ids": ["earn.staking.ada.voting.convert-drep"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Sidebar → Cardano #1 → Staking → Change delegate → Choose your own DRep → enter a legacy CIP-105 DRep ID.",
+            "description": "The legacy DRep ID warning offers Convert to new format in Change voting preference. Selecting it converted the ID and showed the conversion confirmation.",
+            "screenshot_ids": ["web-earn-staking-ada-voting-convert-drep"],
+            "conditions": [
+                "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile.",
+                "Local rewarded Cardano academic fixture and the public legacy DRep ID from VotingPreferenceCard tests. No delegation was submitted."
+            ],
+            "date": "2026-11-21T18:50:09.713Z"
+        },
+        {
+            "id": "runtime-web-trade-preview-fiat-value",
+            "feature_ids": ["trade.preview-fiat-value"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Sidebar → Swap (Trade) → Buy → enter 173 USD → Continue on the Local QA Provider quote.",
+            "description": "The Buy review shows an approximate fiat value beneath the Bitcoin amount in You get.",
+            "screenshot_ids": ["web-trade-preview-fiat-value"],
+            "conditions": [
+                "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile.",
+                "Local buy quote and synthetic BTC/USD rate; provider checkout was not opened."
+            ],
+            "date": "2026-11-21T18:40:12.188Z"
+        },
+        {
+            "id": "runtime-web-wallet-send-network-safety-xrp-reserve",
+            "feature_ids": ["wallet.send.network-safety.xrp-reserve"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Sidebar → XRP Ledger #1 → Send → enter 4 XRP in Amount → Tab out of the field.",
+            "description": "Entering 4 XRP triggers the network reserve warning for an account with 4.5 XRP total and a 1 XRP reserve.",
+            "screenshot_ids": ["web-wallet-send-network-safety-xrp-reserve"],
+            "conditions": [
+                "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile.",
+                "Local Ripple fixture with 4.5 XRP total and a 1 XRP base reserve."
+            ],
+            "date": "2026-11-21T18:42:47.409Z"
+        },
+        {
+            "id": "runtime-web-wallet-transactions-details-internal-transfers",
+            "feature_ids": ["wallet.transactions.details.internal-transfers"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Sidebar → Ethereum #1 → Transactions → Stake transaction → Inputs & outputs → Internal Transfers.",
+            "description": "The Inputs & outputs tab shows a dedicated Internal Transfers section on an Ethereum stake transaction.",
+            "screenshot_ids": ["web-wallet-transactions-details-internal-transfers"],
+            "conditions": [
+                "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile.",
+                "Ethereum Blockbook historical staking transaction fixture."
+            ],
+            "date": "2026-11-21T18:38:37.093Z"
+        },
+        {
+            "id": "runtime-web-trade-swap-source-asset-filter",
+            "feature_ids": ["trade.swap.source-asset-filter"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "status": "observed",
+            "navigation": "Sidebar → Swap → You pay asset picker → enter ETH in Search coin or token → wait for filtered results.",
+            "description": "The Swap source asset picker shows the ETH search and matching Ethereum assets.",
+            "screenshot_ids": ["web-trade-swap-source-asset-filter"],
+            "conditions": [
+                "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile.",
+                "Local trading asset catalog and QA wallet with discovered accounts."
+            ],
+            "date": "2026-11-21T18:47:29.154Z"
+        }
+    ],
+    "screenshots": [
+        {
+            "id": "web-trade-history-rate",
+            "path": "docs/features/feature-map/runtime/screenshots/web-trade-history-rate.png",
+            "feature_ids": ["trade.history.rate"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "caption": "A completed Buy order detail shows the emoji rating and comment form after selecting a rating.",
+            "fixture_context": "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile. Locally seeded completed Buy order and message-system tradingFeedbackForm variant B. Feedback was not submitted.",
+            "captured_at": "2026-11-21T18:40:33.373Z"
+        },
+        {
+            "id": "web-trade-form-resume",
+            "path": "docs/features/feature-map/runtime/screenshots/web-trade-form-resume.png",
+            "feature_ids": ["trade.form-resume"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "caption": "Returning from the Buy review restores the entered 173 USD, Bitcoin and the quoted offer.",
+            "fixture_context": "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile. Local buy quote; form state persisted within Trading.",
+            "captured_at": "2026-11-21T18:40:12.398Z"
+        },
+        {
+            "id": "web-wallet-access-hidden-caps-lock",
+            "path": "docs/features/feature-map/runtime/screenshots/web-wallet-access-hidden-caps-lock.png",
+            "feature_ids": ["wallet-access.hidden.caps-lock"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "caption": "The empty passphrase field shows the Caps Lock is on hint.",
+            "fixture_context": "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile. Passphrase-enabled QA emulator and a synthetic Chromium keydown carrying the Caps Lock modifier. No passphrase was entered.",
+            "captured_at": "2026-11-21T18:50:50.693Z"
+        },
+        {
+            "id": "web-wallet-send-network-safety-contract-recipient",
+            "path": "docs/features/feature-map/runtime/screenshots/web-wallet-send-network-safety-contract-recipient.png",
+            "feature_ids": ["wallet.send.network-safety.contract-recipient"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "caption": "The Ethereum Send form flags the recipient as a contract address and offers a risk acknowledgment.",
+            "fixture_context": "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile. Local Ethereum Blockbook fixture returns USDT contract metadata and an Ethereum nonce.",
+            "captured_at": "2026-11-21T18:43:22.173Z"
+        },
+        {
+            "id": "web-wallet-transactions-details-copy-id",
+            "path": "docs/features/feature-map/runtime/screenshots/web-wallet-transactions-details-copy-id.png",
+            "feature_ids": ["wallet.transactions.details.copy-id"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "caption": "The hovered Tx ID displays the full identifier with a copy button.",
+            "fixture_context": "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile. Ethereum Blockbook fixture with a historical stake transaction.",
+            "captured_at": "2026-11-21T18:38:36.520Z"
+        },
+        {
+            "id": "web-wallet-sign-verify-copy-inputs",
+            "path": "docs/features/feature-map/runtime/screenshots/web-wallet-sign-verify-copy-inputs.png",
+            "feature_ids": ["wallet.sign-verify.copy-inputs"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "caption": "After successfully signing a Bitcoin message, the result displays Copy buttons for Address and Message.",
+            "fixture_context": "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile. Local Bitcoin QA account and a disposable signed text message. No transaction was constructed.",
+            "captured_at": "2026-11-21T18:41:24.965Z"
+        },
+        {
+            "id": "web-wallet-send-form-recipient-warning",
+            "path": "docs/features/feature-map/runtime/screenshots/web-wallet-send-form-recipient-warning.png",
+            "feature_ids": ["wallet.send.form.recipient-warning"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "caption": "The Ethereum Send form warns that this address has never been paid from the selected account.",
+            "fixture_context": "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile. Local Ethereum history fixture and a synthetic unused recipient.",
+            "captured_at": "2026-11-21T18:39:00.442Z"
+        },
+        {
+            "id": "web-earn-staking-trx-transactions",
+            "path": "docs/features/feature-map/runtime/screenshots/web-earn-staking-trx-transactions.png",
+            "feature_ids": ["earn.staking.trx.transactions"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "caption": "The Tron Staking tab shows the dedicated Staking transactions list with a Vote entry and the start of a Freeze entry.",
+            "fixture_context": "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile. Local Tron Blockbook E2E rewarded state containing freeze and vote contract transactions.",
+            "captured_at": "2026-11-21T18:39:03.624Z"
+        },
+        {
+            "id": "web-earn-staking-ada-voting-convert-drep",
+            "path": "docs/features/feature-map/runtime/screenshots/web-earn-staking-ada-voting-convert-drep.png",
+            "feature_ids": ["earn.staking.ada.voting.convert-drep"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "caption": "The legacy DRep ID warning offers Convert to new format in Change voting preference.",
+            "fixture_context": "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile. Local rewarded Cardano academic fixture and the public legacy DRep ID from VotingPreferenceCard tests. No delegation was submitted.",
+            "captured_at": "2026-11-21T18:50:09.713Z"
+        },
+        {
+            "id": "web-trade-preview-fiat-value",
+            "path": "docs/features/feature-map/runtime/screenshots/web-trade-preview-fiat-value.png",
+            "feature_ids": ["trade.preview-fiat-value"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "caption": "The Buy review shows an approximate fiat value beneath the Bitcoin amount in You get.",
+            "fixture_context": "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile. Local buy quote and synthetic BTC/USD rate; provider checkout was not opened.",
+            "captured_at": "2026-11-21T18:40:12.188Z"
+        },
+        {
+            "id": "web-wallet-send-network-safety-xrp-reserve",
+            "path": "docs/features/feature-map/runtime/screenshots/web-wallet-send-network-safety-xrp-reserve.png",
+            "feature_ids": ["wallet.send.network-safety.xrp-reserve"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "caption": "Entering 4 XRP triggers the network reserve warning for an account with 4.5 XRP total and a 1 XRP reserve.",
+            "fixture_context": "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile. Local Ripple fixture with 4.5 XRP total and a 1 XRP base reserve.",
+            "captured_at": "2026-11-21T18:42:47.409Z"
+        },
+        {
+            "id": "web-wallet-transactions-details-internal-transfers",
+            "path": "docs/features/feature-map/runtime/screenshots/web-wallet-transactions-details-internal-transfers.png",
+            "feature_ids": ["wallet.transactions.details.internal-transfers"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "caption": "The Inputs & outputs tab shows a dedicated Internal Transfers section on an Ethereum stake transaction.",
+            "fixture_context": "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile. Ethereum Blockbook historical staking transaction fixture.",
+            "captured_at": "2026-11-21T18:38:37.093Z"
+        },
+        {
+            "id": "web-trade-swap-source-asset-filter",
+            "path": "docs/features/feature-map/runtime/screenshots/web-trade-swap-source-asset-filter.png",
+            "feature_ids": ["trade.swap.source-asset-filter"],
+            "platform": "web",
+            "model": "T3T1",
+            "firmware": "2.12.5",
+            "caption": "The Swap source asset picker shows the ETH search and matching Ethereum assets.",
+            "fixture_context": "Isolated Chromium 156 at 1440×1000, English UI; Trezor User Env QA emulator, local synthetic services, telemetry disabled and external account traffic blocked. Emulator firmware hash, revision and device authenticity checks disabled for this QA profile. Local trading asset catalog and QA wallet with discovered accounts.",
+            "captured_at": "2026-11-21T18:47:29.154Z"
+        }
+    ]
+}

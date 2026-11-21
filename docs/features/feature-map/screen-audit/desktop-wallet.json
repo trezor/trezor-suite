@@ -1,0 +1,1169 @@
+{
+    "platform": "desktop-web",
+    "scope": "Desktop/web dashboard, asset detail, wallet account, send, receive, transaction, token, NFT, message signing and Coinjoin page wrappers plus principal composed dialogs. Source inspection only; no runtime or tests executed.",
+    "screen_reviews": [
+        {
+            "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
+            "symbol": "DashboardPage",
+            "feature_ids": [
+                "wallet.portfolio",
+                "wallet.portfolio.discreet",
+                "wallet.portfolio.promotions",
+                "wallet.portfolio.promotions.carousel",
+                "wallet.portfolio.promotions.dismiss",
+                "wallet.portfolio.total",
+                "wallet.portfolio.history",
+                "wallet.portfolio.history.range",
+                "wallet.portfolio.history.visibility",
+                "wallet.portfolio.assets",
+                "wallet.portfolio.assets.layout",
+                "wallet.portfolio.assets.details",
+                "wallet.portfolio.assets.details.market-price",
+                "wallet.portfolio.assets.details.price-history",
+                "wallet.portfolio.assets.details.price-range",
+                "wallet.portfolio.assets.details.balance",
+                "wallet.portfolio.assets.details.accounts",
+                "wallet.portfolio.assets.details.history",
+                "wallet.portfolio.assets.details.identifiers",
+                "wallet.portfolio.assets.details.explorer",
+                "wallet.portfolio.asset-first",
+                "wallet.portfolio.asset-first.grouping",
+                "wallet.portfolio.asset-first.small-balances",
+                "wallet.portfolio.asset-first.nfts",
+                "wallet.portfolio.asset-first.value-change",
+                "wallet.portfolio.hidden-assets",
+                "wallet.portfolio.hidden-assets.unhide",
+                "wallet.portfolio.discovery-retry"
+            ],
+            "inspected_components": [
+                "packages/suite/src/views/dashboard/AssetsView/AssetsView.tsx",
+                "packages/suite/src/views/home/HomeAssetDashboard.tsx"
+            ],
+            "findings": [
+                "Inspected both experiment variants: classic portfolio/assets and asset-first Home. Existing nodes already distinguish graph, layout, grouping, small balances, NFTs, offers and discovery retry."
+            ],
+            "disposition": "mapped"
+        },
+        {
+            "path": "suite-app/module-assets/src/pages/AssetDetailPage.tsx",
+            "symbol": "AssetDetailPage",
+            "feature_ids": [
+                "wallet.portfolio.assets.details",
+                "wallet.portfolio.assets.details.market-price",
+                "wallet.portfolio.assets.details.price-history",
+                "wallet.portfolio.assets.details.price-range",
+                "wallet.portfolio.assets.details.balance",
+                "wallet.portfolio.assets.details.accounts",
+                "wallet.portfolio.assets.details.history",
+                "wallet.portfolio.assets.details.identifiers",
+                "wallet.portfolio.assets.details.explorer"
+            ],
+            "inspected_components": [
+                "packages/suite/src/views/home/AssetDetail/AssetDetailMarketPrice.tsx",
+                "packages/suite/src/views/home/AssetDetail/AssetDetailBalance.tsx",
+                "packages/suite/src/views/home/AssetDetail/AssetDetailTransactions.tsx",
+                "packages/suite/src/views/home/AssetDetail/AssetDetailMenu/AssetDetailMenu.tsx"
+            ],
+            "findings": [
+                "Market price/range, account selection, identifiers/copy, history and explorer are already represented. Contextual Earn/Sign & Verify/WalletConnect actions link to their existing target capabilities rather than duplicate nodes."
+            ],
+            "disposition": "mapped"
+        },
+        {
+            "path": "suite-app/module-home/src/pages/HiddenTokensPage.tsx",
+            "symbol": "HiddenTokensPage",
+            "feature_ids": [
+                "wallet.portfolio.hidden-assets",
+                "wallet.portfolio.hidden-assets.unhide"
+            ],
+            "inspected_components": [
+                "packages/suite/src/views/dashboard/HiddenTokens/HiddenTokensList.tsx"
+            ],
+            "findings": [
+                "Global hidden asset listing/unhide are represented; this wrapper is distinct from per-account hidden Tokens route."
+            ],
+            "disposition": "mapped"
+        },
+        {
+            "path": "suite-app/module-transactions/src/pages/TransactionsPage.tsx",
+            "symbol": "TransactionsPage",
+            "feature_ids": [
+                "wallet.accounts.overview",
+                "wallet.accounts.overview.balance",
+                "wallet.accounts.overview.history-graph",
+                "wallet.accounts.overview.summary",
+                "wallet.accounts.overview.tron-resources",
+                "wallet.transactions",
+                "wallet.transactions.list",
+                "wallet.transactions.pending",
+                "wallet.transactions.search",
+                "wallet.transactions.pagination",
+                "wallet.transactions.older-history",
+                "wallet.transactions.labels",
+                "wallet.transactions.suspicious",
+                "wallet.transactions.export",
+                "wallet.transactions.export.csv",
+                "wallet.transactions.export.pdf",
+                "wallet.transactions.export.json",
+                "wallet.transactions.details",
+                "wallet.transactions.details.status",
+                "wallet.transactions.details.amount",
+                "wallet.transactions.details.inputs-outputs",
+                "wallet.transactions.details.data",
+                "wallet.transactions.details.chained",
+                "wallet.transactions.details.explorer",
+                "wallet.transactions.details.scam-override",
+                "wallet.transactions.speed-up",
+                "wallet.transactions.cancel",
+                "wallet.transactions.details.price-change",
+                "wallet.transactions.export.filtered"
+            ],
+            "inspected_components": [
+                "packages/suite/src/views/wallet/transactions/TransactionList/TransactionList.tsx",
+                "packages/suite/src/views/wallet/transactions/TransactionList/TransactionListActions/FilterAction.tsx",
+                "packages/suite/src/views/wallet/transactions/TransactionList/TransactionListActions/ExportAction.tsx"
+            ],
+            "findings": [
+                "Checked populated, empty, direct-RPC older-history and Coinjoin branches. Found search-filtered export missing as a distinct intent. Suspicious transaction filter is already present; there is no independent direction filter in this composition."
+            ],
+            "disposition": "additions-proposed"
+        },
+        {
+            "path": "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx",
+            "symbol": "WalletDetailsPage",
+            "feature_ids": [
+                "wallet.accounts.details",
+                "wallet.accounts.details.type",
+                "wallet.accounts.details.xpub",
+                "wallet.accounts.details.nonce",
+                "wallet.accounts.labels",
+                "wallet.accounts.labels.export",
+                "wallet.accounts.labels.import",
+                "wallet.coinjoin.rescan"
+            ],
+            "inspected_components": [
+                "packages/suite/src/views/wallet/details/AccountNonce.tsx",
+                "packages/suite/src/views/wallet/details/RescanAccount.tsx",
+                "packages/suite/src/views/wallet/labels/Bip329Labels.tsx",
+                "packages/suite/src/views/wallet/details/CoinjoinLogs.tsx"
+            ],
+            "findings": [
+                "Type/path, xpub, nonce, Coinjoin rescan and BIP329 controls represented. Coinjoin log-folder control is debug-mode-only and excluded from ordinary user features."
+            ],
+            "disposition": "mapped"
+        },
+        {
+            "path": "suite-app/module-send/src/pages/WalletSendPage.tsx",
+            "symbol": "WalletSendPage",
+            "feature_ids": [
+                "wallet.send",
+                "wallet.send.global",
+                "wallet.send.form",
+                "wallet.send.form.recipient",
+                "wallet.send.form.qr",
+                "wallet.send.form.own-account",
+                "wallet.send.form.asset",
+                "wallet.send.form.crypto-amount",
+                "wallet.send.form.fiat-amount",
+                "wallet.send.form.send-max",
+                "wallet.send.form.bitcoin-unit",
+                "wallet.send.form.multi-recipient",
+                "wallet.send.form.csv",
+                "wallet.send.form.recipient-label",
+                "wallet.send.form.recipient-history",
+                "wallet.send.form.ens",
+                "wallet.send.form.clear",
+                "wallet.send.form.ens-reverse",
+                "wallet.send.fees",
+                "wallet.send.fees.preset",
+                "wallet.send.fees.custom",
+                "wallet.send.fees.bitcoin-rate",
+                "wallet.send.fees.gas-limit",
+                "wallet.send.fees.gas-price",
+                "wallet.send.fees.max-fee",
+                "wallet.send.fees.priority-fee",
+                "wallet.send.fees.tron-limit",
+                "wallet.send.fees.recommended-reset",
+                "wallet.send.coin-control",
+                "wallet.send.coin-control.enable",
+                "wallet.send.coin-control.select",
+                "wallet.send.coin-control.select-all",
+                "wallet.send.coin-control.search",
+                "wallet.send.coin-control.sort",
+                "wallet.send.coin-control.selection-total",
+                "wallet.send.coin-control.privacy",
+                "wallet.send.advanced",
+                "wallet.send.advanced.broadcast",
+                "wallet.send.advanced.raw",
+                "wallet.send.advanced.locktime",
+                "wallet.send.advanced.locktime-height",
+                "wallet.send.advanced.locktime-date",
+                "wallet.send.advanced.op-return",
+                "wallet.send.advanced.evm-data",
+                "wallet.send.advanced.evm-nonce",
+                "wallet.send.advanced.xrp-tag",
+                "wallet.send.advanced.stellar-memo",
+                "wallet.send.advanced.solana-memo",
+                "wallet.send.advanced.tron-note",
+                "wallet.send.advanced.tron-data",
+                "wallet.send.review",
+                "wallet.send.review.outputs",
+                "wallet.send.review.solana-expiry",
+                "wallet.send.review.signed-raw",
+                "wallet.send.review.download-raw",
+                "wallet.send.network-safety",
+                "wallet.send.network-safety.cardano",
+                "wallet.send.form.draft"
+            ],
+            "inspected_components": [
+                "packages/suite/src/views/wallet/send/SendForm.tsx",
+                "packages/suite/src/views/wallet/send/SendHeader.tsx",
+                "packages/suite/src/views/wallet/send/Outputs/Outputs.tsx",
+                "packages/suite/src/views/wallet/send/Options/Options.tsx",
+                "packages/suite/src/hooks/wallet/useSendForm.ts"
+            ],
+            "findings": [
+                "Network-dispatched options and outputs covered by existing send leaves; automatic account/token draft restoration was missing and is proposed."
+            ],
+            "disposition": "additions-proposed"
+        },
+        {
+            "path": "suite-app/module-receive/src/pages/ReceivePage.tsx",
+            "symbol": "ReceivePage",
+            "feature_ids": [
+                "wallet.receive",
+                "wallet.receive.global",
+                "wallet.receive.global.assets",
+                "wallet.receive.global.accounts",
+                "wallet.receive.global.network-setup",
+                "wallet.receive.global.add-account",
+                "wallet.receive.address",
+                "wallet.receive.copy",
+                "wallet.receive.qr",
+                "wallet.receive.verify",
+                "wallet.receive.copy-verification",
+                "wallet.receive.share",
+                "wallet.receive.fresh-address",
+                "wallet.receive.history",
+                "wallet.receive.history-detail",
+                "wallet.receive.label"
+            ],
+            "inspected_components": [
+                "suite/receive/src/ReceiveContent.tsx",
+                "suite/receive/src/NewestAddressCard.tsx",
+                "suite/receive/src/AddressCardDetail.tsx",
+                "suite/receive/src/AddressHistory.tsx",
+                "suite/receive/src/AddressHistoryRow.tsx"
+            ],
+            "findings": [
+                "Fresh/history addresses, copy, verification-after-copy, QR, labeling, browser-dependent sharing, network guidance and device locks represented."
+            ],
+            "disposition": "mapped"
+        },
+        {
+            "path": "suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx",
+            "symbol": "SignVerifyPage",
+            "feature_ids": [
+                "wallet.sign-verify",
+                "wallet.sign-verify.sign",
+                "wallet.sign-verify.verify",
+                "wallet.sign-verify.address",
+                "wallet.sign-verify.hex",
+                "wallet.sign-verify.format",
+                "wallet.sign-verify.cose",
+                "wallet.sign-verify.copy",
+                "wallet.sign-verify.clear"
+            ],
+            "inspected_components": ["suite/sign-verify/src/SignVerifyForm.tsx"],
+            "findings": [
+                "Successful-result Clear operation is distinct from send-form Clear and was missing. Inspected failure editing, success locking, format/public-key selection and copy actions."
+            ],
+            "disposition": "additions-proposed"
+        },
+        {
+            "path": "suite-app/module-account-detail/src/pages/TokensPage.tsx",
+            "symbol": "TokensPage",
+            "feature_ids": [
+                "wallet.tokens",
+                "wallet.tokens.holdings",
+                "wallet.tokens.search",
+                "wallet.tokens.hidden",
+                "wallet.tokens.hide",
+                "wallet.tokens.unhide",
+                "wallet.tokens.history",
+                "wallet.tokens.identifiers",
+                "wallet.tokens.explorer",
+                "wallet.tokens.defi",
+                "wallet.tokens.stellar",
+                "wallet.tokens.stellar.inactive",
+                "wallet.tokens.stellar.manual",
+                "wallet.tokens.stellar.activate",
+                "wallet.tokens.stellar.deactivate",
+                "wallet.tokens.stellar.remove-contract"
+            ],
+            "inspected_components": [
+                "packages/suite/src/views/wallet/tokens/common/TokensTable/TokenRow.tsx",
+                "packages/suite/src/views/wallet/tokens/common/TokensTable/TokenRowActions.tsx",
+                "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/StellarTokenInputModal.tsx"
+            ],
+            "findings": [
+                "Registered normal/hidden/inactive/DeFi branches and Stellar manual-entry modal inspected. Classic-token trustline deactivation and local contract-token watch removal are different outcomes; the latter was missing. Soroban manual contract-ID input and calldata already have existing map descriptions, so no duplicate nodes added."
+            ],
+            "disposition": "additions-proposed"
+        },
+        {
+            "path": "suite-app/module-account-detail/src/pages/NftsPage.tsx",
+            "symbol": "NftsPage",
+            "feature_ids": [
+                "wallet.nfts",
+                "wallet.nfts.collections",
+                "wallet.nfts.search",
+                "wallet.nfts.hidden",
+                "wallet.nfts.visibility",
+                "wallet.nfts.explorer",
+                "wallet.nfts.history",
+                "wallet.nfts.identifier"
+            ],
+            "inspected_components": [
+                "packages/suite/src/views/wallet/nfts/NftsTablesSection.tsx",
+                "packages/suite/src/views/wallet/nfts/NftsTable/NftsRow.tsx"
+            ],
+            "findings": [
+                "Normal/hidden collections, recognition grouping, search, identifier, history and explorer are mapped. Non-NFT networks redirect to account overview."
+            ],
+            "disposition": "mapped"
+        },
+        {
+            "path": "suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx",
+            "symbol": "WalletCoinjoinPage",
+            "feature_ids": [
+                "wallet.coinjoin",
+                "wallet.coinjoin.add-account",
+                "wallet.coinjoin.balance",
+                "wallet.coinjoin.setup",
+                "wallet.coinjoin.anonymity",
+                "wallet.coinjoin.mining-fee",
+                "wallet.coinjoin.skip-rounds",
+                "wallet.coinjoin.rescan",
+                "wallet.coinjoin.start-stop",
+                "wallet.coinjoin.confirmation"
+            ],
+            "inspected_components": [
+                "packages/suite/src/views/wallet/coinjoin/CoinjoinSetup/CoinjoinSetup.tsx",
+                "packages/suite/src/views/wallet/coinjoin/CoinjoinSetup/AnonymityLevelSetup.tsx",
+                "packages/suite/src/views/wallet/coinjoin/CoinjoinSetup/MaxMiningFeeSetup.tsx",
+                "packages/suite/src/views/wallet/coinjoin/CoinjoinSetup/SkipRoundsSetup.tsx",
+                "packages/suite/src/views/wallet/coinjoin/CoinjoinSummary/CoinjoinStatusWheel/CoinjoinProgressContent.tsx"
+            ],
+            "findings": [
+                "Syncing versus loaded states and recommended/custom settings, anonymity, fee cap, skipping rounds, private balance and start/stop/resume already mapped. Source presence is conditional, not proof a coordinator is currently available."
+            ],
+            "disposition": "mapped"
+        },
+        {
+            "path": "suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx",
+            "symbol": "WalletAnonymizePage",
+            "feature_ids": ["wallet.coinjoin.confirmation"],
+            "inspected_components": [
+                "packages/suite/src/views/wallet/anonymize/components/CoinjoinConfirmation.tsx"
+            ],
+            "findings": [
+                "Separate authorization/consent wrapper remains mapped to existing Coinjoin confirmation."
+            ],
+            "disposition": "mapped"
+        },
+        {
+            "path": "packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalSendModal/GlobalSendModal.tsx",
+            "symbol": "GlobalSendModal",
+            "feature_ids": ["wallet.send.global"],
+            "inspected_components": [
+                "packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter.tsx"
+            ],
+            "findings": [
+                "Global account/asset selection and network filtering are represented by global Send."
+            ],
+            "disposition": "mapped"
+        },
+        {
+            "path": "packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalReceiveModal/GlobalReceiveModal.tsx",
+            "symbol": "GlobalReceiveModal",
+            "feature_ids": [
+                "wallet.receive.global",
+                "wallet.receive.global.assets",
+                "wallet.receive.global.accounts",
+                "wallet.receive.global.network-setup",
+                "wallet.receive.global.add-account"
+            ],
+            "inspected_components": [
+                "packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalReceiveModal/steps/GlobalReceiveSearchStep.tsx",
+                "packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalReceiveModal/steps/GlobalReceiveAccountStep.tsx",
+                "packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalReceiveModal/steps/GlobalReceiveNetworkSetupStep.tsx"
+            ],
+            "findings": [
+                "Asset/account tabs, search/network filter, account creation and network setup represented. Retry control reuses wallet discovery intent."
+            ],
+            "disposition": "mapped"
+        },
+        {
+            "path": "packages/suite/src/views/wallet/send/Options/BitcoinOptions/CoinControl/CoinControl.tsx",
+            "symbol": "CoinControl",
+            "feature_ids": [
+                "wallet.send.coin-control",
+                "wallet.send.coin-control.enable",
+                "wallet.send.coin-control.select",
+                "wallet.send.coin-control.select-all",
+                "wallet.send.coin-control.search",
+                "wallet.send.coin-control.sort",
+                "wallet.send.coin-control.selection-total",
+                "wallet.send.coin-control.privacy"
+            ],
+            "inspected_components": [
+                "packages/suite/src/views/wallet/send/Options/BitcoinOptions/CoinControl/UtxoSortingSelect.tsx",
+                "packages/suite/src/views/wallet/send/Options/BitcoinOptions/CoinControl/UtxoSelectionList/UtxoSelection/UtxoSelection.tsx"
+            ],
+            "findings": [
+                "Enable, selected total, select all, sorting, search, private/nonprivate/dust grouping already mapped. Per-UTXO detail and labels navigate to existing transaction-detail/labeling capabilities."
+            ],
+            "disposition": "mapped"
+        },
+        {
+            "path": "packages/suite/src/components/wallet/Fees/CollapsibleFees/CollapsibleFees.tsx",
+            "symbol": "CollapsibleFees",
+            "feature_ids": [
+                "wallet.send.fees",
+                "wallet.send.fees.preset",
+                "wallet.send.fees.custom",
+                "wallet.send.fees.bitcoin-rate",
+                "wallet.send.fees.gas-limit",
+                "wallet.send.fees.gas-price",
+                "wallet.send.fees.max-fee",
+                "wallet.send.fees.priority-fee",
+                "wallet.send.fees.tron-limit",
+                "wallet.send.fees.recommended-reset"
+            ],
+            "inspected_components": [
+                "packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFeeEthereum.tsx",
+                "packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFeeTron.tsx",
+                "packages/suite/src/components/wallet/Fees/CollapsibleFees/FeeLevels/CustomFeePicker.tsx"
+            ],
+            "findings": [
+                "Preset/custom Bitcoin/EVM/Tron controls and recommended reset represented; low-fee warnings belong to fee-selection validation."
+            ],
+            "disposition": "mapped"
+        },
+        {
+            "path": "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx",
+            "symbol": "TransactionReviewModal",
+            "feature_ids": [
+                "wallet.send.review",
+                "wallet.send.review.outputs",
+                "wallet.send.review.solana-expiry",
+                "wallet.send.review.signed-raw",
+                "wallet.send.review.download-raw"
+            ],
+            "inspected_components": [
+                "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewModalBottomContent.tsx"
+            ],
+            "findings": [
+                "Review, device signing, signed raw-copy/download, countdown and outcome state belong to existing review nodes. Recovery button is noted as a variant rather than a separately reachable feature."
+            ],
+            "disposition": "mapped"
+        },
+        {
+            "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/HistoricRateChange.tsx",
+            "symbol": "HistoricRateChange",
+            "feature_ids": ["wallet.transactions.details.price-change"],
+            "inspected_components": [
+                "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/AmountDetails.tsx"
+            ],
+            "findings": [
+                "New price-change intent distinguished from simply displaying historical fiat amount."
+            ],
+            "disposition": "additions-proposed"
+        },
+        {
+            "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/Data.tsx",
+            "symbol": "Data",
+            "feature_ids": ["wallet.transactions.details.data"],
+            "inspected_components": [
+                "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/StellarContractCallRows.tsx"
+            ],
+            "findings": [
+                "Existing data node explicitly includes Stellar contract calls; decoded function, argument and authorized-call rows refine that existing scope."
+            ],
+            "disposition": "mapped"
+        },
+        {
+            "path": "packages/suite/src/components/wallet/WalletLayout/AccountException/AccountException.tsx",
+            "symbol": "AccountException",
+            "feature_ids": ["wallet.portfolio.discovery-retry", "wallet.accounts.add.activation"],
+            "inspected_components": [
+                "packages/suite/src/components/wallet/WalletLayout/AccountException/DiscoveryFailed.tsx",
+                "packages/suite/src/components/wallet/WalletLayout/AccountException/AccountNotLoaded.tsx",
+                "packages/suite/src/components/wallet/WalletLayout/AccountException/AccountNotEnabled.tsx"
+            ],
+            "findings": [
+                "Account retry/enable branches reuse existing discovery/network-activation outcomes. Missing account/loading screens are states rather than new capabilities."
+            ],
+            "disposition": "mapped"
+        }
+    ],
+    "new_features": [
+        {
+            "id": "wallet.send.form.draft",
+            "parent_id": "wallet.send.form",
+            "name": "Resume an unfinished send",
+            "description": "Automatically restore an unfinished transaction form when returning to the sending account.",
+            "level": "option",
+            "platforms": {
+                "desktop": "yes",
+                "web": "yes",
+                "mobile": "yes"
+            },
+            "platform_notes": "Desktop and web share the cited UI. Native mobile exposes the corresponding outcome in its own composition.",
+            "navigation": {
+                "desktop": "Account > Send > enter transaction > leave and return",
+                "web": "Account > Send > enter transaction > leave and return",
+                "mobile": "Send > choose account and asset > enter transaction > leave and return"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/hooks/wallet/useSendForm.ts",
+                    "symbol": "useSendForm"
+                },
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-send/src/hooks/useSendForm.tsx",
+                    "symbol": "useSendForm"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/hooks/wallet/useSendForm.ts",
+                    "detail": "Automatically restore an unfinished transaction form when returning to the sending account."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/hooks/useSendForm.tsx",
+                    "detail": "Reads the saved account/token draft and prefills and revalidates fields on form entry (lines 154\u2013155 and 341\u2013360); stores edits (300\u2013303)."
+                }
+            ],
+            "ownership": {
+                "team": "Suite Wallet",
+                "confidence": "inferred",
+                "basis": "Inferred from wallet capability scope and Wallet/Network manual test streams; not a confirmed accountable product owner.",
+                "source_paths": [
+                    "CODEOWNERS",
+                    "suite/e2e/tests/manual/account/transactions.test.ts"
+                ]
+            },
+            "conditions": [],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "No dedicated screenshot of this newly distinguished control was captured in this source audit."
+            },
+            "related_ids": ["wallet.send.form.clear"]
+        },
+        {
+            "id": "wallet.transactions.details.price-change",
+            "parent_id": "wallet.transactions.details",
+            "name": "Compare transaction-time and current value",
+            "description": "Compare historical and current fiat values and inspect the percentage price change since the transaction.",
+            "level": "option",
+            "platforms": {
+                "desktop": "conditional",
+                "web": "conditional",
+                "mobile": "conditional"
+            },
+            "platform_notes": "Desktop and web share the cited UI. Native mobile exposes the corresponding outcome in its own composition.",
+            "navigation": {
+                "desktop": "Account > Transactions > open transaction > Amount",
+                "web": "Account > Transactions > open transaction > Amount",
+                "mobile": "Account > Transactions > open transaction > Compare values"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/HistoricRateChange.tsx",
+                    "symbol": "HistoricRateChange"
+                },
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-transactions/src/components/TransactionDetailValuesSheet.tsx",
+                    "symbol": "TransactionDetailValuesSheet"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/HistoricRateChange.tsx",
+                    "detail": "Compare historical and current fiat values and inspect the percentage price change since the transaction."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-transactions/src/components/TransactionDetailValuesSheet.tsx",
+                    "detail": "TodayHeaderCell computes historical/current native-asset value difference; the sheet compares historical/current input, fee and total fiat values. Native token-level parity is not established."
+                }
+            ],
+            "ownership": {
+                "team": "Suite Wallet",
+                "confidence": "inferred",
+                "basis": "Inferred from wallet capability scope and Wallet/Network manual test streams; not a confirmed accountable product owner.",
+                "source_paths": [
+                    "CODEOWNERS",
+                    "suite/e2e/tests/manual/account/transactions.test.ts"
+                ]
+            },
+            "conditions": [
+                "A confirmed transaction and usable historical/current fiat rates are required; desktop token comparisons also require token rates."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "No dedicated screenshot of this newly distinguished control was captured in this source audit."
+            },
+            "related_ids": ["wallet.transactions.details.amount"]
+        },
+        {
+            "id": "wallet.transactions.export.filtered",
+            "parent_id": "wallet.transactions.export",
+            "name": "Export matching transactions",
+            "description": "Export only confirmed transactions matching the current transaction-history search.",
+            "level": "option",
+            "platforms": {
+                "desktop": "conditional",
+                "web": "conditional",
+                "mobile": "no"
+            },
+            "platform_notes": "Desktop and web share the cited UI. No corresponding user-facing control found in inspected native composition.",
+            "navigation": {
+                "desktop": "Account > Transactions > search > Export > choose CSV, PDF or JSON",
+                "web": "Account > Transactions > search > Export > choose CSV, PDF or JSON",
+                "mobile": null
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/wallet/transactions/TransactionList/TransactionListActions/ExportAction.tsx",
+                    "symbol": "ExportAction"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/transactions/TransactionList/TransactionListActions/ExportAction.tsx",
+                    "detail": "Export only confirmed transactions matching the current transaction-history search."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/actions/wallet/exportTransactionsActions.ts",
+                    "detail": "Filters out pending transactions, applies advancedSearchTransactions when searchQuery is nonempty, then formats and saves matching records (lines 70\u2013105). The export UI explains whether a search filter is active."
+                }
+            ],
+            "ownership": {
+                "team": "Suite Wallet",
+                "confidence": "inferred",
+                "basis": "Inferred from wallet capability scope and Wallet/Network manual test streams; not a confirmed accountable product owner.",
+                "source_paths": [
+                    "CODEOWNERS",
+                    "suite/e2e/tests/manual/account/transactions.test.ts"
+                ]
+            },
+            "conditions": [
+                "An exportable single-account history; exports omit unconfirmed transactions."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "No dedicated screenshot of this newly distinguished control was captured in this source audit."
+            },
+            "related_ids": ["wallet.transactions.search"]
+        },
+        {
+            "id": "wallet.tokens.stellar.remove-contract",
+            "parent_id": "wallet.tokens.stellar",
+            "name": "Remove a watched Stellar contract token",
+            "description": "Remove a manually watched Stellar contract token from the local watch list without a trustline-removal transaction.",
+            "level": "option",
+            "platforms": {
+                "desktop": "conditional",
+                "web": "conditional",
+                "mobile": "no"
+            },
+            "platform_notes": "Desktop and web share the cited UI. No corresponding user-facing control found in inspected native composition.",
+            "navigation": {
+                "desktop": "Stellar account > Tokens > manually watched contract token > More > Remove token",
+                "web": "Stellar account > Tokens > manually watched contract token > More > Remove token",
+                "mobile": null
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/wallet/tokens/common/TokensTable/TokenRow.tsx",
+                    "symbol": "TokenRow"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/tokens/common/TokensTable/TokenRow.tsx",
+                    "detail": "Remove a manually watched Stellar contract token from the local watch list without a trustline-removal transaction."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/tokens/common/TokensTable/TokenRowActions.tsx",
+                    "detail": "More menu labels contract-token action Remove token and hides it for unwatched contract tokens (lines 528\u2013538). Classic tokens instead use Deactivate token."
+                }
+            ],
+            "ownership": {
+                "team": "Suite Wallet",
+                "confidence": "inferred",
+                "basis": "Inferred from wallet capability scope and Wallet/Network manual test streams; not a confirmed accountable product owner.",
+                "source_paths": [
+                    "CODEOWNERS",
+                    "suite/e2e/tests/manual/account/transactions.test.ts"
+                ]
+            },
+            "conditions": [
+                "Stellar contract token manually present in the account watch list; curated tokens do not offer removal."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "No dedicated screenshot of this newly distinguished control was captured in this source audit."
+            },
+            "related_ids": ["wallet.tokens.stellar.manual", "wallet.tokens.stellar.deactivate"]
+        },
+        {
+            "id": "wallet.sign-verify.clear",
+            "parent_id": "wallet.sign-verify",
+            "name": "Clear a completed message operation",
+            "description": "Clear a successful signing or verification result and start a new message operation.",
+            "level": "option",
+            "platforms": {
+                "desktop": "conditional",
+                "web": "conditional",
+                "mobile": "conditional"
+            },
+            "platform_notes": "Desktop and web share the cited UI. Native mobile exposes the corresponding outcome in its own composition.",
+            "navigation": {
+                "desktop": "Account > Sign & Verify > complete signing or verification > Clear",
+                "web": "Account > Sign & Verify > complete signing or verification > Clear",
+                "mobile": "Account > Settings > Sign & Verify > complete signing or verification > Clear"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "suite/sign-verify/src/SignVerifyForm.tsx",
+                    "symbol": "SignVerifyForm"
+                },
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-sign-verify/src/components/SignMessageCard.tsx",
+                    "symbol": "SignMessageCard"
+                },
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-sign-verify/src/components/VerifyMessageCard.tsx",
+                    "symbol": "VerifyMessageCard"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite/sign-verify/src/SignVerifyForm.tsx",
+                    "detail": "Clear a successful signing or verification result and start a new message operation."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-sign-verify/src/components/SignMessageCard.tsx",
+                    "detail": "The successful result branch presents a Clear button connected to the form-reset handler."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-sign-verify/src/components/VerifyMessageCard.tsx",
+                    "detail": "The successful result branch presents a Clear button connected to the form-reset handler."
+                }
+            ],
+            "ownership": {
+                "team": "Suite Wallet",
+                "confidence": "inferred",
+                "basis": "Inferred from wallet capability scope and Wallet/Network manual test streams; not a confirmed accountable product owner.",
+                "source_paths": [
+                    "CODEOWNERS",
+                    "suite/e2e/tests/manual/account/transactions.test.ts"
+                ]
+            },
+            "conditions": [
+                "A supported signing/verification account and a successfully completed operation."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "No dedicated screenshot of this newly distinguished control was captured in this source audit."
+            },
+            "related_ids": []
+        }
+    ],
+    "assessments": [
+        {
+            "feature_id": "wallet.send.form.draft",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "applicable",
+                "basis": "none",
+                "rationale": "Focused searches and review of relevant send, transaction, token, export and sign/verify tests/procedures found no check of this distinct intent. Parent feature checks are not inherited.",
+                "covered_intents": [],
+                "gaps": ["No feature-specific checked outcome located."],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "applicable",
+                "basis": "none",
+                "rationale": "Focused searches and review of relevant send, transaction, token, export and sign/verify tests/procedures found no check of this distinct intent. Parent feature checks are not inherited.",
+                "covered_intents": [],
+                "gaps": ["No feature-specific checked outcome located."],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "applicable",
+                "basis": "none",
+                "rationale": "Focused searches and review of relevant send, transaction, token, export and sign/verify tests/procedures found no check of this distinct intent. Parent feature checks are not inherited.",
+                "covered_intents": [],
+                "gaps": ["No feature-specific checked outcome located."],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "applicable",
+                "basis": "none",
+                "rationale": "Focused searches and review of relevant send, transaction, token, export and sign/verify tests/procedures found no check of this distinct intent. Parent feature checks are not inherited.",
+                "covered_intents": [],
+                "gaps": ["No feature-specific checked outcome located."],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "wallet.transactions.details.price-change",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "Focused searches and review of relevant send, transaction, token, export and sign/verify tests/procedures found no check of this distinct intent. Parent feature checks are not inherited.",
+                "covered_intents": [],
+                "gaps": ["No feature-specific checked outcome located."],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "Focused searches and review of relevant send, transaction, token, export and sign/verify tests/procedures found no check of this distinct intent. Parent feature checks are not inherited.",
+                "covered_intents": [],
+                "gaps": ["No feature-specific checked outcome located."],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "Focused searches and review of relevant send, transaction, token, export and sign/verify tests/procedures found no check of this distinct intent. Parent feature checks are not inherited.",
+                "covered_intents": [],
+                "gaps": ["No feature-specific checked outcome located."],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 4,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "direct",
+                "rationale": "Written procedure opens Compare values and requires historical fiat values, but does not explicitly check the current-value column or percentage-change calculation.",
+                "covered_intents": [
+                    "Open transaction value-comparison sheet",
+                    "Verify crypto and historical fiat values"
+                ],
+                "gaps": [
+                    "Current-value accuracy",
+                    "Percentage difference",
+                    "Missing-rate behavior"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite-native-app/app/e2e/tests/manual/wallet/transactionDetail.test.ts",
+                        "line": 20,
+                        "scenario": "Transaction list and detail",
+                        "verification": "Open compare values and verify crypto/historical fiat values; current prices and percentage are not specified.",
+                        "execution": "manual-procedure"
+                    }
+                ]
+            }
+        },
+        {
+            "feature_id": "wallet.transactions.export.filtered",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "Focused searches and review of relevant send, transaction, token, export and sign/verify tests/procedures found no check of this distinct intent. Parent feature checks are not inherited.",
+                "covered_intents": [],
+                "gaps": ["No feature-specific checked outcome located."],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "No corresponding native control found; no unsupported-state test found.",
+                "covered_intents": [],
+                "gaps": ["No feature-specific checked outcome located."],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "Focused searches and review of relevant send, transaction, token, export and sign/verify tests/procedures found no check of this distinct intent. Parent feature checks are not inherited.",
+                "covered_intents": [],
+                "gaps": ["No feature-specific checked outcome located."],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "No corresponding native control found; no unsupported-state test found.",
+                "covered_intents": [],
+                "gaps": ["No feature-specific checked outcome located."],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "wallet.tokens.stellar.remove-contract",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "Focused searches and review of relevant send, transaction, token, export and sign/verify tests/procedures found no check of this distinct intent. Parent feature checks are not inherited.",
+                "covered_intents": [],
+                "gaps": ["No feature-specific checked outcome located."],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "No corresponding native control found; no unsupported-state test found.",
+                "covered_intents": [],
+                "gaps": ["No feature-specific checked outcome located."],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "Focused searches and review of relevant send, transaction, token, export and sign/verify tests/procedures found no check of this distinct intent. Parent feature checks are not inherited.",
+                "covered_intents": [],
+                "gaps": ["No feature-specific checked outcome located."],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "No corresponding native control found; no unsupported-state test found.",
+                "covered_intents": [],
+                "gaps": ["No feature-specific checked outcome located."],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "wallet.sign-verify.clear",
+            "desktop_automated": {
+                "score": 6,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "direct",
+                "rationale": "The active BTC signing scenario explicitly clears the successful result and checks empty message/signature, restored address picker and submit button, and hidden outcome/copy controls. Clear after verification and Cardano public-key reset remain unchecked.",
+                "covered_intents": [
+                    "Clear a successful Bitcoin signing result",
+                    "Restore editable empty form and remove result-only controls"
+                ],
+                "gaps": [
+                    "Clear after successful verification",
+                    "Cardano public-key/format reset behavior"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite/e2e/tests/wallet/sign-verify.test.ts",
+                        "line": 92,
+                        "scenario": "Signs message with standard Bitcoin signature format",
+                        "verification": "Clicks Clear and asserts empty message/signature, hidden signed outcome/copy buttons and restored submit/address input (92\u2013104).",
+                        "execution": "active"
+                    }
+                ]
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "Focused searches and review of relevant send, transaction, token, export and sign/verify tests/procedures found no check of this distinct intent. Parent feature checks are not inherited.",
+                "covered_intents": [],
+                "gaps": ["No feature-specific checked outcome located."],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "Focused searches and review of relevant send, transaction, token, export and sign/verify tests/procedures found no check of this distinct intent. Parent feature checks are not inherited.",
+                "covered_intents": [],
+                "gaps": ["No feature-specific checked outcome located."],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "Focused searches and review of relevant send, transaction, token, export and sign/verify tests/procedures found no check of this distinct intent. Parent feature checks are not inherited.",
+                "covered_intents": [],
+                "gaps": ["No feature-specific checked outcome located."],
+                "evidence": []
+            }
+        }
+    ],
+    "files_reviewed": [
+        "packages/suite/src/actions/wallet/exportTransactionsActions.ts",
+        "packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter.tsx",
+        "packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalReceiveModal/GlobalReceiveModal.tsx",
+        "packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalReceiveModal/steps/GlobalReceiveAccountStep.tsx",
+        "packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalReceiveModal/steps/GlobalReceiveNetworkSetupStep.tsx",
+        "packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalReceiveModal/steps/GlobalReceiveSearchStep.tsx",
+        "packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalSendModal/GlobalSendModal.tsx",
+        "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx",
+        "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewModalBottomContent.tsx",
+        "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/StellarTokenInputModal.tsx",
+        "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/AmountDetails.tsx",
+        "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/Data.tsx",
+        "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/HistoricRateChange.tsx",
+        "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/StellarContractCallRows.tsx",
+        "packages/suite/src/components/wallet/Fees/CollapsibleFees/CollapsibleFees.tsx",
+        "packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFeeEthereum.tsx",
+        "packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFeeTron.tsx",
+        "packages/suite/src/components/wallet/Fees/CollapsibleFees/FeeLevels/CustomFeePicker.tsx",
+        "packages/suite/src/components/wallet/WalletLayout/AccountException/AccountException.tsx",
+        "packages/suite/src/components/wallet/WalletLayout/AccountException/AccountNotEnabled.tsx",
+        "packages/suite/src/components/wallet/WalletLayout/AccountException/AccountNotLoaded.tsx",
+        "packages/suite/src/components/wallet/WalletLayout/AccountException/DiscoveryFailed.tsx",
+        "packages/suite/src/hooks/wallet/useSendForm.ts",
+        "packages/suite/src/views/dashboard/AssetsView/AssetsView.tsx",
+        "packages/suite/src/views/dashboard/HiddenTokens/HiddenTokensList.tsx",
+        "packages/suite/src/views/home/AssetDetail/AssetDetailBalance.tsx",
+        "packages/suite/src/views/home/AssetDetail/AssetDetailMarketPrice.tsx",
+        "packages/suite/src/views/home/AssetDetail/AssetDetailMenu/AssetDetailMenu.tsx",
+        "packages/suite/src/views/home/AssetDetail/AssetDetailTransactions.tsx",
+        "packages/suite/src/views/home/HomeAssetDashboard.tsx",
+        "packages/suite/src/views/wallet/anonymize/components/CoinjoinConfirmation.tsx",
+        "packages/suite/src/views/wallet/coinjoin/CoinjoinSetup/AnonymityLevelSetup.tsx",
+        "packages/suite/src/views/wallet/coinjoin/CoinjoinSetup/CoinjoinSetup.tsx",
+        "packages/suite/src/views/wallet/coinjoin/CoinjoinSetup/MaxMiningFeeSetup.tsx",
+        "packages/suite/src/views/wallet/coinjoin/CoinjoinSetup/SkipRoundsSetup.tsx",
+        "packages/suite/src/views/wallet/coinjoin/CoinjoinSummary/CoinjoinStatusWheel/CoinjoinProgressContent.tsx",
+        "packages/suite/src/views/wallet/details/AccountNonce.tsx",
+        "packages/suite/src/views/wallet/details/CoinjoinLogs.tsx",
+        "packages/suite/src/views/wallet/details/RescanAccount.tsx",
+        "packages/suite/src/views/wallet/labels/Bip329Labels.tsx",
+        "packages/suite/src/views/wallet/nfts/NftsTable/NftsRow.tsx",
+        "packages/suite/src/views/wallet/nfts/NftsTablesSection.tsx",
+        "packages/suite/src/views/wallet/send/Options/BitcoinOptions/CoinControl/CoinControl.tsx",
+        "packages/suite/src/views/wallet/send/Options/BitcoinOptions/CoinControl/UtxoSelectionList/UtxoSelection/UtxoSelection.tsx",
+        "packages/suite/src/views/wallet/send/Options/BitcoinOptions/CoinControl/UtxoSortingSelect.tsx",
+        "packages/suite/src/views/wallet/send/Options/Options.tsx",
+        "packages/suite/src/views/wallet/send/Outputs/Outputs.tsx",
+        "packages/suite/src/views/wallet/send/SendForm.tsx",
+        "packages/suite/src/views/wallet/send/SendHeader.tsx",
+        "packages/suite/src/views/wallet/tokens/common/TokensTable/TokenRow.tsx",
+        "packages/suite/src/views/wallet/tokens/common/TokensTable/TokenRowActions.tsx",
+        "packages/suite/src/views/wallet/transactions/TransactionList/TransactionList.tsx",
+        "packages/suite/src/views/wallet/transactions/TransactionList/TransactionListActions/ExportAction.tsx",
+        "packages/suite/src/views/wallet/transactions/TransactionList/TransactionListActions/FilterAction.tsx",
+        "suite-app/module-assets/src/pages/AssetDetailPage.tsx",
+        "suite-app/module-home/src/pages/DashboardPage.tsx",
+        "suite-app/module-home/src/pages/HiddenTokensPage.tsx",
+        "suite-app/module-account-detail/src/pages/NftsPage.tsx",
+        "suite-app/module-receive/src/pages/ReceivePage.tsx",
+        "suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx",
+        "suite-app/module-account-detail/src/pages/TokensPage.tsx",
+        "suite-app/module-transactions/src/pages/TransactionsPage.tsx",
+        "suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx",
+        "suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx",
+        "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx",
+        "suite-app/module-send/src/pages/WalletSendPage.tsx",
+        "suite-native-app/app/e2e/tests/manual/wallet/transactionDetail.test.ts",
+        "suite-native-app/module-send/src/hooks/useSendForm.tsx",
+        "suite-native-app/module-sign-verify/src/components/SignMessageCard.tsx",
+        "suite-native-app/module-sign-verify/src/components/VerifyMessageCard.tsx",
+        "suite-native-app/module-transactions/src/components/TransactionDetailValuesSheet.tsx",
+        "suite/e2e/tests/manual/account/send.test.ts",
+        "suite/e2e/tests/manual/account/sign-verify.test.ts",
+        "suite/e2e/tests/manual/account/tokens.test.ts",
+        "suite/e2e/tests/manual/account/transactions.test.ts",
+        "suite/e2e/tests/wallet/export-transactions.test.ts",
+        "suite/e2e/tests/wallet/send-form-regtest.test.ts",
+        "suite/e2e/tests/wallet/sign-verify-ada.test.ts",
+        "suite/e2e/tests/wallet/sign-verify-eth.test.ts",
+        "suite/e2e/tests/wallet/sign-verify.test.ts",
+        "suite/e2e/tests/wallet/transactions.test.ts",
+        "suite/receive/src/AddressCardDetail.tsx",
+        "suite/receive/src/AddressHistory.tsx",
+        "suite/receive/src/AddressHistoryRow.tsx",
+        "suite/receive/src/NewestAddressCard.tsx",
+        "suite/receive/src/ReceiveContent.tsx",
+        "suite/sign-verify/src/SignVerifyForm.tsx"
+    ],
+    "uncertainties": [
+        "Native parity was checked for each new capability; no native transaction-export or Stellar contract-watchlist removal control was located.",
+        "Product-team ownership remains inferred; CODEOWNERS alone does not establish accountable feature ownership.",
+        "This ledger inspects all 12 page wrappers in the assigned wallet scope and principal control-bearing composed surfaces; it is not a claim that every helper in their transitive import graph was read line by line.",
+        "Runtime screenshots are left untouched; no new screenshot is asserted for these fine-grained controls.",
+        "Coinjoin coordinator availability was not evaluated; source controls may be gated by flags/backend readiness."
+    ],
+    "corrections": [
+        {
+            "feature_id": "wallet.receive.history-detail",
+            "issue": "Existing description says historical rows open/expand, but current AddressHistoryRow directly renders copy/share/verify actions on hover/focus; there is no per-row expansion handler.",
+            "proposed_description": "Copy, share when supported, label or verify an address directly from receive-address history.",
+            "evidence": [
+                {
+                    "path": "suite/receive/src/AddressHistoryRow.tsx",
+                    "line": 180,
+                    "detail": "Direct row actions; wrapper has no expand/collapse click handler."
+                }
+            ],
+            "severity": "minor",
+            "status": "applied: catalog wording/navigation corrected; manual score4 reduced to1 for incidental list-presence verification"
+        }
+    ]
+}

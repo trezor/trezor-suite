@@ -1,0 +1,66 @@
+{
+    "errata": [
+        {
+            "observation_id": "runtime-web-t3t1-funded-dashboard",
+            "screenshot_id": "web-t3t1-funded-dashboard",
+            "description": "Dashboard total, chart axes and range selectors, promotional card, and global asset actions are visible; no populated history series is rendered.",
+            "feature_ids": [
+                "wallet.portfolio",
+                "wallet.portfolio.total",
+                "wallet.portfolio.history",
+                "wallet.portfolio.history.range",
+                "wallet.portfolio.promotions"
+            ],
+            "reason": "Screenshot-scope correction: the original observation may include controls inspected through the DOM, but this PNG viewport does not show the additional off-screen controls. Preserve the original observation and capture; use the corrected IDs for visual association."
+        },
+        {
+            "observation_id": "runtime-web-t3t1-bitcoin-fee-presets",
+            "screenshot_id": "web-t3t1-bitcoin-fee-presets",
+            "description": "Expanded Bitcoin fee section shows only the upper parts of Low, Normal and High preset cards; the populated form and Coin control search are visible.",
+            "feature_ids": [
+                "wallet.send.fees",
+                "wallet.send.fees.preset",
+                "wallet.send.coin-control.search"
+            ],
+            "reason": "Screenshot-scope correction: the original observation may include controls inspected through the DOM, but this PNG viewport does not show the additional off-screen controls. Preserve the original observation and capture; use the corrected IDs for visual association."
+        },
+        {
+            "observation_id": "runtime-web-t3t1-application-settings",
+            "screenshot_id": "web-t3t1-application-settings",
+            "description": "The Application tab shows Auto-eject wallets, Language, Currency, Bitcoin units and the Labeling selector.",
+            "feature_ids": [
+                "app-settings.auto-eject",
+                "app-settings.language",
+                "app-settings.fiat-currency",
+                "app-settings.bitcoin-unit",
+                "labeling.mode"
+            ],
+            "reason": "Screenshot-scope correction: the original observation may include controls inspected through the DOM, but this PNG viewport does not show the additional off-screen controls. Preserve the original observation and capture; use the corrected IDs for visual association."
+        },
+        {
+            "observation_id": "runtime-web-t3t1-device-settings",
+            "screenshot_id": "web-t3t1-device-settings",
+            "description": "Device settings show Wallet backup, Passphrase wallets, firmware Version/Type and Language; only the start of the Security/PIN section appears at the lower edge.",
+            "feature_ids": [
+                "device-settings.backup",
+                "device-settings.passphrase",
+                "device-settings.firmware-version",
+                "device-settings.firmware-type",
+                "device-settings.language"
+            ],
+            "reason": "Screenshot-scope correction: the original observation may include controls inspected through the DOM, but this PNG viewport does not show the additional off-screen controls. Preserve the original observation and capture; use the corrected IDs for visual association."
+        },
+        {
+            "observation_id": "runtime-web-t3t1-account-overview",
+            "screenshot_id": "web-t3t1-account-overview",
+            "description": "Account Overview shows crypto/fiat balance, graph axes/range selectors, zero-valued summary cards in the selected range, and the asset action row.",
+            "feature_ids": [
+                "wallet.accounts.overview",
+                "wallet.accounts.overview.balance",
+                "wallet.accounts.overview.history-graph",
+                "wallet.accounts.overview.summary"
+            ],
+            "reason": "Screenshot-scope correction: the original observation may include controls inspected through the DOM, but this PNG viewport does not show the additional off-screen controls. Preserve the original observation and capture; use the corrected IDs for visual association."
+        }
+    ]
+}

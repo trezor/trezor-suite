@@ -1,0 +1,341 @@
+{
+    "description": "Canonical product-team ownership. Every feature has one frontend team (team) and one backend team, the same for all platforms. The backend team equals the frontend team unless backend_team_assignments lists the feature. build.ts applies this file to the inventory ownership records.",
+    "teams": ["Connect", "Earn", "Growth", "Network", "Trade", "Wallet"],
+    "team_aliases": {
+        "Suite Wallet": "Wallet",
+        "@trezor/suite-wallet": "Wallet",
+        "Suite Sync / Wallet": "Wallet",
+        "Suite Earn": "Earn",
+        "Suite Trading": "Trade",
+        "Suite Networks": "Network",
+        "Suite Mobile / Growth": "Growth",
+        "Suite Experience": "Growth"
+    },
+    "agreed_team_changes": {
+        "Firmware": {
+            "team": "Growth",
+            "basis": "Team agreement (2026-11-18): Firmware is not a Suite team; its Suite features belong to Growth."
+        }
+    },
+    "feature_teams": {
+        "onboarding.mobile-unsupported-setup": {
+            "team": "Growth",
+            "basis": "Team agreement (2026-11-18)."
+        },
+        "labeling.password-manager": {
+            "team": "Connect",
+            "basis": "Team agreement (2026-11-18): the experimental password manager belongs to Connect."
+        },
+        "labeling.password-manager.provider": {
+            "team": "Connect",
+            "basis": "Team agreement (2026-11-18): the experimental password manager belongs to Connect."
+        },
+        "labeling.password-manager.entries": {
+            "team": "Connect",
+            "basis": "Team agreement (2026-11-18): the experimental password manager belongs to Connect."
+        },
+        "labeling.password-manager.filter": {
+            "team": "Connect",
+            "basis": "Team agreement (2026-11-18): the experimental password manager belongs to Connect."
+        },
+        "labeling.password-manager.decrypt": {
+            "team": "Connect",
+            "basis": "Team agreement (2026-11-18): the experimental password manager belongs to Connect."
+        },
+        "labeling.password-manager.remove": {
+            "team": "Connect",
+            "basis": "Team agreement (2026-11-18): the experimental password manager belongs to Connect."
+        },
+        "connection.bluetooth": {
+            "team": "Growth",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "connection.bluetooth.manual": {
+            "team": "Growth",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "connection.bluetooth.repair": {
+            "team": "Growth",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "connection.thp": {
+            "team": "Growth",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "connection.troubleshooting": {
+            "team": "Growth",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "connection.browser": {
+            "team": "Growth",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "connection.used-elsewhere": {
+            "team": "Growth",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "app-settings.bitcoin-unit": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "app-settings.application.blocking-message": {
+            "team": "Growth",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "app-settings.application.service-messages": {
+            "team": "Growth",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "app-settings.application.service-messages.banner": {
+            "team": "Growth",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "app-settings.application.service-messages.context": {
+            "team": "Growth",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "app-settings.security": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "network-settings.enable": {
+            "team": "Growth",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "network-settings.search": {
+            "team": "Growth",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "network-settings.discover": {
+            "team": "Growth",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "network-settings.gap-limit": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "wallet.portfolio.discreet": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "mobile.accounts.import": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "mobile.accounts.import.network": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "mobile.accounts.import.manual-xpub": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "mobile.accounts.import.qr.gallery": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "mobile.accounts.import.qr.permission": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "mobile.accounts.import.address": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "mobile.accounts.import.wrong-key": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "mobile.accounts.import.duplicate": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "mobile.accounts.import.help": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "wallet.tokens.stellar": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "wallet.tokens.stellar.inactive": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "wallet.tokens.stellar.manual": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "wallet.tokens.stellar.manual.contract-resolution": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "wallet.tokens.stellar.activate": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "wallet.tokens.stellar.deactivate": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "wallet.tokens.stellar.fees": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        },
+        "wallet.coinjoin.add-account": {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21)."
+        }
+    },
+    "backend_team_assignments": [
+        {
+            "team": "Connect",
+            "basis": "Direct Trezor device communication (connection, firmware, device setup and settings) belongs to Connect; team ownership review (2026-11-21).",
+            "feature_ids": [
+                "app-settings.tor",
+                "app-settings.tor-external",
+                "connection.bluetooth",
+                "connection.bluetooth.manual",
+                "connection.bluetooth.repair",
+                "connection.bootloader",
+                "connection.browser",
+                "connection.compromised",
+                "connection.firmware-required",
+                "connection.mobile-browser",
+                "connection.pin-unlock",
+                "connection.thp",
+                "connection.troubleshooting",
+                "connection.used-elsewhere",
+                "device-settings",
+                "device-settings.advanced",
+                "device-settings.authenticity-check",
+                "device-settings.auto-connect",
+                "device-settings.backup",
+                "device-settings.backup.additional-nfc",
+                "device-settings.check-backup",
+                "device-settings.connection",
+                "device-settings.custom-firmware",
+                "device-settings.factory-reset",
+                "device-settings.firmware",
+                "device-settings.firmware-type",
+                "device-settings.firmware-version",
+                "device-settings.firmware.bootloader-update",
+                "device-settings.firmware.custom-file",
+                "device-settings.firmware.low-battery",
+                "device-settings.firmware.official-update",
+                "device-settings.firmware.progress-check",
+                "device-settings.forget",
+                "device-settings.forget.on-device-pairing",
+                "device-settings.forget.os-pairing",
+                "device-settings.language",
+                "device-settings.passphrase",
+                "device-settings.safety-checks",
+                "device-settings.wipe",
+                "device-settings.wipe-code",
+                "labeling.legacy",
+                "labeling.legacy.dropbox",
+                "labeling.legacy.google",
+                "labeling.legacy.local",
+                "onboarding",
+                "onboarding.firmware",
+                "onboarding.new-wallet",
+                "onboarding.new-wallet.12-words",
+                "onboarding.new-wallet.24-words",
+                "onboarding.new-wallet.backup-type",
+                "onboarding.new-wallet.multi-share",
+                "onboarding.new-wallet.single-share",
+                "onboarding.recovery",
+                "wallet.coinjoin.add-account",
+                "wallet.portfolio.discovery-retry"
+            ]
+        },
+        {
+            "team": "Network",
+            "basis": "Team ownership review (2026-11-21).",
+            "feature_ids": [
+                "app-settings.fiat-currency",
+                "app-settings.network-reserve",
+                "app-settings.security",
+                "mobile.accounts.import.wrong-key",
+                "mobile.receive.tag",
+                "mobile.send.destination-tag",
+                "mobile.send.fee.eip1559",
+                "mobile.send.tag-review",
+                "network-settings.discover",
+                "network-settings.enable",
+                "network-settings.gap-limit",
+                "network-settings.search",
+                "wallet.accounts.overview.balance",
+                "wallet.nfts",
+                "wallet.nfts.collections",
+                "wallet.nfts.explorer",
+                "wallet.nfts.hidden",
+                "wallet.nfts.history",
+                "wallet.nfts.identifier",
+                "wallet.nfts.search",
+                "wallet.nfts.visibility",
+                "wallet.send.advanced",
+                "wallet.send.advanced.broadcast",
+                "wallet.send.advanced.evm-data",
+                "wallet.send.advanced.evm-nonce",
+                "wallet.send.advanced.locktime",
+                "wallet.send.advanced.locktime-date",
+                "wallet.send.advanced.locktime-height",
+                "wallet.send.advanced.op-return",
+                "wallet.send.advanced.raw",
+                "wallet.send.advanced.solana-memo",
+                "wallet.send.advanced.stellar-memo",
+                "wallet.send.advanced.tron-data",
+                "wallet.send.advanced.tron-note",
+                "wallet.send.advanced.xrp-tag",
+                "wallet.send.fees.bitcoin-rate",
+                "wallet.send.fees.custom",
+                "wallet.send.fees.gas-limit",
+                "wallet.send.fees.gas-price",
+                "wallet.send.fees.max-fee",
+                "wallet.send.fees.preset",
+                "wallet.send.fees.priority-fee",
+                "wallet.send.fees.recommended-reset",
+                "wallet.send.fees.tron-limit",
+                "wallet.send.form.ens",
+                "wallet.send.form.ens-reverse",
+                "wallet.send.network-safety",
+                "wallet.send.network-safety.contract-recipient",
+                "wallet.send.network-safety.xrp-reserve",
+                "wallet.tokens.stellar",
+                "wallet.tokens.stellar.activate",
+                "wallet.tokens.stellar.deactivate",
+                "wallet.tokens.stellar.fees",
+                "wallet.tokens.stellar.inactive",
+                "wallet.tokens.stellar.manual",
+                "wallet.tokens.stellar.manual.contract-resolution",
+                "wallet.transactions.speed-up"
+            ]
+        },
+        {
+            "team": "Trade",
+            "basis": "Team ownership review (2026-11-21).",
+            "feature_ids": [
+                "app-settings.application.blocking-message",
+                "app-settings.application.service-messages",
+                "app-settings.application.service-messages.banner",
+                "app-settings.application.service-messages.context",
+                "mobile.onboarding.residence"
+            ]
+        },
+        {
+            "team": "Wallet",
+            "basis": "Team ownership review (2026-11-21).",
+            "feature_ids": [
+                "app-settings.address-display",
+                "trade.buy.asset",
+                "trade.buy.network-filter",
+                "trade.receive.add-account",
+                "trade.receive.suite-account",
+                "trade.sell.asset",
+                "trade.swap.pair"
+            ]
+        }
+    ],
+    "conflict_rule": "When the desktop/web and mobile inventories recorded different teams, the primary (desktop/web) record wins unless feature_teams says otherwise."
+}

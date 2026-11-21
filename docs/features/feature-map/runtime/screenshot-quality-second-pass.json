@@ -1,0 +1,734 @@
+{
+    "id": "runtime-screenshot-quality-second-pass",
+    "created_at": "2026-11-15T08:31:30.662152+00:00",
+    "manifest_snapshot_sha256": "10cd6fa26d5c120be0f922868e845a20d586295b3a84d41646ff6e18bcb1c3e1",
+    "scope": {
+        "ordinals": [66, 110],
+        "images_reviewed": 45,
+        "new_images_since_first_pass": 44,
+        "overlap_with_first_pass": 1,
+        "platform": "web",
+        "device_model": "T3T1",
+        "firmware": "2.12.5"
+    },
+    "method": "Visual review of eight temporary locally composed contact sheets covering images 66\u2013110 inclusive, with full-resolution review of 70,85,107,109. No image/manifest/application edits. No browser or TUE control.",
+    "contact_sheets": "/tmp/feature-map-qc-second/sheet-{66,72,78,84,90,96,102,108}.png",
+    "summary": {
+        "findings": 11,
+        "high": 3,
+        "proposed_errata": 11
+    },
+    "reviews": [
+        {
+            "ordinal": 66,
+            "screenshot_id": "web-t3t1-earn-opportunities",
+            "observation_id": "runtime-web-t3t1-earn-opportunities",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-earn-opportunities.png",
+            "sha256": "4074debbb5a7b40c527eb7ac4f55050aa2d64dbea32edad364d7991d9b5ab900",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Initial enable/minimum-balance opportunity state. All three vault rows are visible; tooltip overlaps the Earn section boundary. This recertifies screenshot 66 only, not the other first-pass images."
+        },
+        {
+            "ordinal": 67,
+            "screenshot_id": "web-t3t1-discovery-fixture-mismatch",
+            "observation_id": "runtime-web-t3t1-discovery-fixture-mismatch",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-discovery-fixture-mismatch.png",
+            "sha256": "88cd85dd0dc1a19003b8a4c0ee2520a5e0c25e858cb63b48d70459807f568218",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 68,
+            "screenshot_id": "web-t3t1-application-reset-result",
+            "observation_id": "runtime-web-t3t1-application-reset-result",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-application-reset-result.png",
+            "sha256": "1a857cd4681ba71b3d45b7928b1d7eb551c7c16aff391a316d19d3fdace8c80e",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Resulting browser entry gate is visible. The PNG alone cannot establish which storage was cleared or show the reset control."
+        },
+        {
+            "ordinal": 69,
+            "screenshot_id": "web-t3t1-device-used-elsewhere",
+            "observation_id": "runtime-web-t3t1-device-used-elsewhere",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-device-used-elsewhere.png",
+            "sha256": "e9dbf234203df23cf15151c808118367d397dca3eb147f1f6d18748a0cec1ffd",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 70,
+            "screenshot_id": "web-t3t1-portfolio-assets-visible",
+            "observation_id": "runtime-web-t3t1-portfolio-assets-visible",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-portfolio-assets-visible.png",
+            "sha256": "690e3211b14f57a6ac4234f87f39cdd69e4c9f254a64964b227f8779986d83bd",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "correction-proposed",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 71,
+            "screenshot_id": "web-t3t1-token-holdings",
+            "observation_id": "runtime-web-t3t1-token-holdings",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-token-holdings.png",
+            "sha256": "0e14825cca9267f3a24b4f496c7995fc3f35c2aecbefddde6b42c5908eaf3c44",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 72,
+            "screenshot_id": "web-t3t1-token-actions",
+            "observation_id": "runtime-web-t3t1-token-actions",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-token-actions.png",
+            "sha256": "6866bbfb0f080957795b0e2448a3cee3ad4174e5cd04e1a15cd47df9465fee78",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 73,
+            "screenshot_id": "web-t3t1-hidden-token-management",
+            "observation_id": "runtime-web-t3t1-hidden-token-management",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-hidden-token-management.png",
+            "sha256": "38649dbad29441662d6fe050538a06322d93701bc1582d7d326068bd8571997d",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Hidden token and Show action are visible. This screenshot alone does not demonstrate successful unhiding."
+        },
+        {
+            "ordinal": 74,
+            "screenshot_id": "web-t3t1-ethereum-staking-position",
+            "observation_id": "runtime-web-t3t1-ethereum-staking-position",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-ethereum-staking-position.png",
+            "sha256": "22f0051d2b1d86ddd602aaf4608af155874db583f8098a37d186d3a71030fd79",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Fixture stake state, APY, balances and an existing fixture transaction are displayed. No actual stake transaction or activation was executed."
+        },
+        {
+            "ordinal": 75,
+            "screenshot_id": "web-t3t1-staking-explainer",
+            "observation_id": "runtime-web-t3t1-staking-explainer",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-staking-explainer.png",
+            "sha256": "abbe9ef30da751487f81b49e61e288aa10e9ccf07ccdb58ea119e5e83a61c83e",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 76,
+            "screenshot_id": "web-t3t1-staking-provider-consent",
+            "observation_id": "runtime-web-t3t1-staking-provider-consent",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-staking-provider-consent.png",
+            "sha256": "3374b3c71d5219c5a615daf6f110ed71dba4a971a3d3d20ec1485b9e97128dfe",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 77,
+            "screenshot_id": "web-t3t1-ethereum-stake-form",
+            "observation_id": "runtime-web-t3t1-ethereum-stake-form",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-ethereum-stake-form.png",
+            "sha256": "ff47e8aab6d46e6e53c3ae3723d30f29b5927cea66da6d33f027ab61a6bc7b70",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "correction-proposed",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 78,
+            "screenshot_id": "web-t3t1-ethereum-unstake-form",
+            "observation_id": "runtime-web-t3t1-ethereum-unstake-form",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-ethereum-unstake-form.png",
+            "sha256": "3677f7cb8e16bb80e97df110350f495dbee2e414b2b2169fa68a4dd56721f1ff",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "correction-proposed",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 79,
+            "screenshot_id": "web-t3t1-solana-staking-introduction",
+            "observation_id": "runtime-web-t3t1-solana-staking-introduction",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-solana-staking-introduction.png",
+            "sha256": "5495c5bef6af4672bcd2a4c160b2e830e5e3d6521bd18edc49adb0cfd149bc98",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 80,
+            "screenshot_id": "web-t3t1-solana-stake-form",
+            "observation_id": "runtime-web-t3t1-solana-stake-form",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-solana-stake-form.png",
+            "sha256": "decd23abde4abb8a0e4de8442dcc5c0a973deb0d64aeb8b7d2258757e7f8b655",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "correction-proposed",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 81,
+            "screenshot_id": "web-t3t1-tron-staking-introduction",
+            "observation_id": "runtime-web-t3t1-tron-staking-introduction",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-tron-staking-introduction.png",
+            "sha256": "3bde9df598c9a1e0d2b324726c39b4c54d78904865bcde437d9cf7afa933a889",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 82,
+            "screenshot_id": "web-t3t1-tron-provider-consent",
+            "observation_id": "runtime-web-t3t1-tron-provider-consent",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-tron-provider-consent.png",
+            "sha256": "42e777e23969d2763a73216f423e7dc29b13c431f0e500e0dce3967dd7909010",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "correction-proposed",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 83,
+            "screenshot_id": "web-t3t1-tron-freeze-resource-form",
+            "observation_id": "runtime-web-t3t1-tron-freeze-resource-form",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-tron-freeze-resource-form.png",
+            "sha256": "8f251ec9a619bc9175361029e3505b23bbb44e632cf44dbb3046a355e8fb16bf",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 84,
+            "screenshot_id": "web-t3t1-earn-funded-positions",
+            "observation_id": "runtime-web-t3t1-earn-funded-positions",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-earn-funded-positions.png",
+            "sha256": "ddf475552c26b0cf6264639dd4a1ec729c6a85c420eab24bd8607de2703b38d9",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "One fixture staking position is active; Yield positions show no deposits. The bottom of the Yield table is clipped."
+        },
+        {
+            "ordinal": 85,
+            "screenshot_id": "web-t3t1-yield-vault-opportunities",
+            "observation_id": "runtime-web-t3t1-yield-vault-opportunities",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-yield-vault-opportunities.png",
+            "sha256": "ddf475552c26b0cf6264639dd4a1ec729c6a85c420eab24bd8607de2703b38d9",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "correction-proposed",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 86,
+            "screenshot_id": "web-t3t1-yield-explainer",
+            "observation_id": "runtime-web-t3t1-yield-explainer",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-yield-explainer.png",
+            "sha256": "5cefa157dce8d8f8b4954360ab314f9269500d2da6e7f6e75618345a97fb329b",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 87,
+            "screenshot_id": "web-t3t1-yield-provider-consent",
+            "observation_id": "runtime-web-t3t1-yield-provider-consent",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-yield-provider-consent.png",
+            "sha256": "7fd3c948bd24993c3bc485633c8409030bf839a5ebf06a586ad583277f491683",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 88,
+            "screenshot_id": "web-t3t1-yield-native-wrap-step",
+            "observation_id": "runtime-web-t3t1-yield-native-wrap-step",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-yield-native-wrap-step.png",
+            "sha256": "5a1219b7d2f77c448866acc8735ecca37e6ad43669a19a71f34a2605c48dfb78",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Only the initial Wrap form and subsequent step labels are visible; no wrapping, approval or deposit was completed."
+        },
+        {
+            "ordinal": 89,
+            "screenshot_id": "web-t3t1-yield-token-explainer",
+            "observation_id": "runtime-web-t3t1-yield-token-explainer",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-yield-token-explainer.png",
+            "sha256": "698fecdbd673ef3d33ef02c44c4cfa2990794c8dddda46c2c7b897e76686345f",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 90,
+            "screenshot_id": "web-t3t1-application-error-recovery",
+            "observation_id": "runtime-web-t3t1-application-error-recovery",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-application-error-recovery.png",
+            "sha256": "c6fbe9b1ae06aee731ca7d430e2e8d25a66a077f58873f49d01b168e27087d43",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "The error boundary and its recovery buttons are visible. Successful recovery is subsequent session evidence, not visible inside this PNG."
+        },
+        {
+            "ordinal": 91,
+            "screenshot_id": "web-t3t1-yield-token-approval-step",
+            "observation_id": "runtime-web-t3t1-yield-token-approval-step",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-yield-token-approval-step.png",
+            "sha256": "8088b26dcc2cf9b465fa55db353a514a4a656781712c2c08e0aabbdbd57652f0",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Only the initial amount/approval form and subsequent Deposit label are visible; no allowance or deposit was executed."
+        },
+        {
+            "ordinal": 92,
+            "screenshot_id": "web-t3t1-buy-form",
+            "observation_id": "runtime-web-t3t1-buy-form",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-buy-form.png",
+            "sha256": "0d6c7e1a6537cb4aca01de5c004e80c9c3f5374cd91a9b03eb4360f7d533cc8b",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 93,
+            "screenshot_id": "web-t3t1-buy-offer-summary",
+            "observation_id": "runtime-web-t3t1-buy-offer-summary",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-buy-offer-summary.png",
+            "sha256": "595e35cfea587614208b391e0e949bccde7f1570bbb3220e869738e371d5134f",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Illustrative local quote and selector entry only; no provider checkout, KYC or payment."
+        },
+        {
+            "ordinal": 94,
+            "screenshot_id": "web-t3t1-trade-country-picker",
+            "observation_id": "runtime-web-t3t1-trade-country-picker",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-trade-country-picker.png",
+            "sha256": "f4e81254c3325f4ae9a008ec4421b1f9b83c68600f1436fa43105c3a18240c8b",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "correction-proposed",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 95,
+            "screenshot_id": "web-t3t1-buy-state-required",
+            "observation_id": "runtime-web-t3t1-buy-state-required",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-buy-state-required.png",
+            "sha256": "446750f854d8eb00d606dc2539db0834b425caeda09f22614795bf4048e909bc",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 96,
+            "screenshot_id": "web-t3t1-buy-state-picker",
+            "observation_id": "runtime-web-t3t1-buy-state-picker",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-buy-state-picker.png",
+            "sha256": "8b73073e8677c70e4f5b248950ef1f367633968aac4ea2f70ebeb697eb3e8878",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Search field and a subset of states/territories are visible; search behavior and the full list were not exercised by this PNG."
+        },
+        {
+            "ordinal": 97,
+            "screenshot_id": "web-t3t1-trade-receive-account-picker",
+            "observation_id": "runtime-web-t3t1-trade-receive-account-picker",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-trade-receive-account-picker.png",
+            "sha256": "548656f59f99bddbc8a4bbd2a3293c68fe3fd2b2da0aad436f2ad5237b0372ef",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 98,
+            "screenshot_id": "web-t3t1-trade-external-address",
+            "observation_id": "runtime-web-t3t1-trade-external-address",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-trade-external-address.png",
+            "sha256": "f875b1ec323f36bab6dbc195e56bfc5c7635f7bfe3f172b6d5ccc03503be6682",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 99,
+            "screenshot_id": "web-t3t1-buy-asset-picker",
+            "observation_id": "runtime-web-t3t1-buy-asset-picker",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-buy-asset-picker.png",
+            "sha256": "907b73431e16067fc331a6765dcc46556bfb7f607d7bb76060569cf474d8244b",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Search and network-filter entries are visible; filter results are not demonstrated."
+        },
+        {
+            "ordinal": 100,
+            "screenshot_id": "web-t3t1-sell-form",
+            "observation_id": "runtime-web-t3t1-sell-form",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-sell-form.png",
+            "sha256": "699584e23443e74b4ec399683e9d3c02ba0360c77372232f6077d295487a5dc6",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "correction-proposed",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 101,
+            "screenshot_id": "web-t3t1-sell-offer-summary",
+            "observation_id": "runtime-web-t3t1-sell-offer-summary",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-sell-offer-summary.png",
+            "sha256": "cc6a93f6500cb5089e04423000ef0c080b607fd97a83f46dd5d067972f2ea29f",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Local illustrative quote; source and quote conversion values are intentionally not market-consistent."
+        },
+        {
+            "ordinal": 102,
+            "screenshot_id": "web-t3t1-sell-compare-offers",
+            "observation_id": "runtime-web-t3t1-sell-compare-offers",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-sell-compare-offers.png",
+            "sha256": "80522d5693091c1c05c90532b72e55fa49564ceaa4258ec086ddbf24bd99efb1",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "One local QA provider only. Multi-provider ranking and live KYC rules are not established."
+        },
+        {
+            "ordinal": 103,
+            "screenshot_id": "web-t3t1-swap-form",
+            "observation_id": "runtime-web-t3t1-swap-form",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-swap-form.png",
+            "sha256": "63295ef7a11ffbc8f8cc901165d8d36126d0d1a5d3c18f0a2f72ea74937ddfda",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "correction-proposed",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 104,
+            "screenshot_id": "web-t3t1-swap-offer-summary",
+            "observation_id": "runtime-web-t3t1-swap-offer-summary",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-swap-offer-summary.png",
+            "sha256": "1c3bece4c567624c5ef3d8d4b2415285a14243f4b1010587ddc6d0bd32665cbc",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 105,
+            "screenshot_id": "web-t3t1-swap-provider-comparison",
+            "observation_id": "runtime-web-t3t1-swap-provider-comparison",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-swap-provider-comparison.png",
+            "sha256": "224c82cdcea37d0708993df6afc7ad3ea42eaf898eafa373ab1c6144f0b44fd8",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "One floating-rate centralized QA offer, provider category tabs and an empty fixed-rate section. No DEX/fixed quote or successful filtering is shown."
+        },
+        {
+            "ordinal": 106,
+            "screenshot_id": "web-t3t1-trade-history-empty",
+            "observation_id": "runtime-web-t3t1-trade-history-empty",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-trade-history-empty.png",
+            "sha256": "06065410ce59fc5bee9d29de331097b237f40e13192f82ba2e46cee373f7593f",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 107,
+            "screenshot_id": "web-t3t1-application-maintenance-visible",
+            "observation_id": "runtime-web-t3t1-application-maintenance-visible",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-application-maintenance-visible.png",
+            "sha256": "fa469f5a92c4f67a075d970bc12345e76143e686ad2d495bf7e104173e9da616",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "correction-proposed",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 108,
+            "screenshot_id": "web-t3t1-color-scheme-choices",
+            "observation_id": "runtime-web-t3t1-color-scheme-choices",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-color-scheme-choices.png",
+            "sha256": "7fc1209c3029fc5e4c5128f9d513f2bbc190d6eae1272e8d633a3663e2e4bc53",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "System/Light/Dark options are visible. No theme change or persistence is demonstrated."
+        },
+        {
+            "ordinal": 109,
+            "screenshot_id": "web-t3t1-device-security-visible",
+            "observation_id": "runtime-web-t3t1-device-security-visible",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-device-security-visible.png",
+            "sha256": "7851e34f0947beed98a67f309be0db2dd5ae3c1ce59b9e1624c883584e3fafe8",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "correction-proposed",
+            "limits": "Visible page/modal entries only; no unseen controls, completed actions, other platform or other device model are inferred."
+        },
+        {
+            "ordinal": 110,
+            "screenshot_id": "web-t3t1-device-safety-checks-dialog",
+            "observation_id": "runtime-web-t3t1-device-safety-checks-dialog",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-device-safety-checks-dialog.png",
+            "sha256": "0227263b5d296bfcdc2426ffcb8c11f18349b3e6348c9eb1485376004a019bbe",
+            "review_method": "Viewed actual PNG in local 2x3 contact sheet; selected clipped captures also viewed at original size.",
+            "result": "usable-with-scope-limits",
+            "limits": "Strict/Prompt choices are visible; no setting change is demonstrated."
+        }
+    ],
+    "findings": [
+        {
+            "screenshot_id": "web-t3t1-portfolio-assets-visible",
+            "observation_id": "runtime-web-t3t1-portfolio-assets-visible",
+            "severity": "high",
+            "title": "Asset rows remain below the viewport",
+            "visible_description": "Dashboard total, empty history axes/range controls and a promotion are visible. The My assets heading, Add networks and layout controls appear at the lower edge; no asset rows/cards are visible.",
+            "visible_feature_ids": ["wallet.portfolio.assets.layout"],
+            "recapture": [
+                {
+                    "locator": "page.getByTestId('@dashboard/assets')",
+                    "source": {
+                        "path": "packages/suite/src/views/dashboard/AssetsView/AssetsView.tsx",
+                        "line": 223
+                    },
+                    "action": "Scroll the asset container fully into view and capture at least one complete row/card with prices/actions; include layout controls in a second capture if necessary."
+                }
+            ],
+            "status": "proposed-erratum",
+            "interpretation": "Original observations and images are preserved. This correction concerns visible PNG evidence only; it does not invalidate separately recorded interaction or source evidence."
+        },
+        {
+            "screenshot_id": "web-t3t1-ethereum-stake-form",
+            "observation_id": "runtime-web-t3t1-ethereum-stake-form",
+            "severity": "low",
+            "title": "Fee and rewards are uncalculated or collapsed",
+            "visible_description": "Stake ETH shows an empty amount field, crypto/fiat input toggle, fractions/Max, a Maximum fee row reading To be calculated, activation timeline and a collapsed Estimated rewards section.",
+            "visible_feature_ids": [
+                "earn.staking.eth.deposit",
+                "earn.staking.amount",
+                "earn.staking.fees"
+            ],
+            "recapture": [
+                {
+                    "locator": "page.getByTestId('@staking/form')",
+                    "source": {
+                        "path": "packages/suite/src/components/earn/modals/StakeModal/StakeForm/StakeInputs.tsx",
+                        "line": 168
+                    },
+                    "action": "Enter a harmless QA amount without submitting; expand fee details and estimated rewards, wait for local calculation, then capture the form. If the mock cannot calculate them, keep the state explicitly uncalculated."
+                }
+            ],
+            "status": "proposed-erratum",
+            "interpretation": "Original observations and images are preserved. This correction concerns visible PNG evidence only; it does not invalidate separately recorded interaction or source evidence."
+        },
+        {
+            "screenshot_id": "web-t3t1-ethereum-unstake-form",
+            "observation_id": "runtime-web-t3t1-ethereum-unstake-form",
+            "severity": "low",
+            "title": "Reward estimate is not displayed",
+            "visible_description": "Unstake ETH shows a populated amount, fractions/Max and Rewards quick-select, a calculated maximum fee, deactivation timing and a later claim step. No separate estimated reward result is visible.",
+            "visible_feature_ids": ["earn.staking.eth.unstake"],
+            "recapture": [],
+            "status": "proposed-erratum",
+            "interpretation": "Original observations and images are preserved. This correction concerns visible PNG evidence only; it does not invalidate separately recorded interaction or source evidence."
+        },
+        {
+            "screenshot_id": "web-t3t1-solana-stake-form",
+            "observation_id": "runtime-web-t3t1-solana-stake-form",
+            "severity": "low",
+            "title": "Solana fee value is not calculated",
+            "visible_description": "Stake SOL shows an empty amount, fractions/Max, Network fee (including rent) reading To be calculated, activation/reward timeline and a collapsed Estimated rewards section; Continue is disabled.",
+            "visible_feature_ids": [
+                "earn.staking.sol.stake",
+                "earn.staking.amount",
+                "earn.staking.fees"
+            ],
+            "recapture": [
+                {
+                    "locator": "page.getByTestId('@staking/form')",
+                    "source": {
+                        "path": "packages/suite/src/components/earn/modals/StakeModal/StakeForm/StakeInputs.tsx",
+                        "line": 168
+                    },
+                    "action": "Enter a harmless QA amount without submitting; expand fee details and estimated rewards, wait for local calculation, then capture the form. If the mock cannot calculate them, keep the state explicitly uncalculated."
+                }
+            ],
+            "status": "proposed-erratum",
+            "interpretation": "Original observations and images are preserved. This correction concerns visible PNG evidence only; it does not invalidate separately recorded interaction or source evidence."
+        },
+        {
+            "screenshot_id": "web-t3t1-tron-provider-consent",
+            "observation_id": "runtime-web-t3t1-tron-provider-consent",
+            "severity": "medium",
+            "title": "Voting is explained but no vote form is shown",
+            "visible_description": "Tron provider consent explains representative voting, retained ownership, provider terms and transaction-ID processing, followed by an unchecked acknowledgement and disabled Confirm. This image does not show allocation or a completed vote.",
+            "visible_feature_ids": ["earn.staking.consent"],
+            "recapture": [
+                {
+                    "locator": "page.getByTestId('@staking/tron-vote/continue-button')",
+                    "source": {
+                        "path": "packages/suite/src/components/earn/staking/tron/vote/TronVoteSubmitButton.tsx",
+                        "line": 90
+                    },
+                    "action": "Reach the separate Vote step using a suitable local frozen-resource fixture; capture representative allocation without submitting."
+                }
+            ],
+            "status": "proposed-erratum",
+            "interpretation": "Original observations and images are preserved. This correction concerns visible PNG evidence only; it does not invalidate separately recorded interaction or source evidence."
+        },
+        {
+            "screenshot_id": "web-t3t1-yield-vault-opportunities",
+            "observation_id": "runtime-web-t3t1-yield-vault-opportunities",
+            "severity": "medium",
+            "title": "USDT vault row is outside the viewport",
+            "visible_description": "Earn shows staking opportunities and the beginning of DeFi Yield: the ETH vault row is complete, the USDC row is clipped, and the USDT vault row is not visible. The three-vault catalog is established separately by the initial opportunity capture and fixture source.",
+            "visible_feature_ids": [
+                "earn.yield",
+                "earn.opportunities.apy",
+                "earn.opportunities.account"
+            ],
+            "recapture": [
+                {
+                    "locator": "page.getByTestId('@earn/dashboard/row/steakusdt-prime-eth')",
+                    "source": {
+                        "path": "packages/suite/src/components/earn/dashboard/yield/EarnYieldAccountOpportunity.tsx",
+                        "line": 321
+                    },
+                    "action": "Scroll the USDT opportunity row fully into view and capture the complete Yield table, using more than one viewport if required."
+                }
+            ],
+            "status": "proposed-erratum",
+            "interpretation": "Original observations and images are preserved. This correction concerns visible PNG evidence only; it does not invalidate separately recorded interaction or source evidence."
+        },
+        {
+            "screenshot_id": "web-t3t1-trade-country-picker",
+            "observation_id": "runtime-web-t3t1-trade-country-picker",
+            "severity": "low",
+            "title": "Buy country picker does not directly verify Sell residence",
+            "visible_description": "Buy opens a Country of residence modal with a search field and a scrollable country subset. This capture is from Buy and does not directly demonstrate the same control in Sell.",
+            "visible_feature_ids": ["trade.buy.country"],
+            "recapture": [
+                {
+                    "locator": "page.getByTestId('@trading/form/country-select')",
+                    "source": {
+                        "path": "suite/trading/src/ui/Country/TradingCountryInput.tsx",
+                        "line": 55
+                    },
+                    "action": "Open Sell, then its residence selector, and record a separate capture if Sell-specific visual evidence is wanted."
+                }
+            ],
+            "status": "proposed-erratum",
+            "interpretation": "Original observations and images are preserved. This correction concerns visible PNG evidence only; it does not invalidate separately recorded interaction or source evidence."
+        },
+        {
+            "screenshot_id": "web-t3t1-sell-form",
+            "observation_id": "runtime-web-t3t1-sell-form",
+            "severity": "low",
+            "title": "Sell fraction controls are not visible",
+            "visible_description": "Sell shows source asset/account, crypto/fiat amount inputs, source balance, payout currency and residence. The fraction/Max controls are not visible in this idle screenshot.",
+            "visible_feature_ids": [
+                "trade.sell",
+                "trade.sell.asset",
+                "trade.sell.amount",
+                "trade.sell.payout-currency",
+                "trade.sell.residence"
+            ],
+            "recapture": [
+                {
+                    "locator": "page.getByTestId('@trading/form/fraction-buttons')",
+                    "source": {
+                        "path": "packages/suite/src/views/wallet/trading/common/TradingForm/TradingFractionButtons.tsx",
+                        "line": 41
+                    },
+                    "action": "Hover the source amount section or focus its fraction button before capture: source CSS intentionally sets opacity to zero until section hover/focus. Capture 25%, 50% and Max without submitting."
+                }
+            ],
+            "status": "proposed-erratum",
+            "interpretation": "Original observations and images are preserved. This correction concerns visible PNG evidence only; it does not invalidate separately recorded interaction or source evidence."
+        },
+        {
+            "screenshot_id": "web-t3t1-swap-form",
+            "observation_id": "runtime-web-t3t1-swap-form",
+            "severity": "low",
+            "title": "Swap fraction controls are not visible",
+            "visible_description": "Swap shows source/destination selectors, reverse-direction control, amounts and fiat references, source balance and receive account. Fraction/Max controls are not visible in this idle screenshot.",
+            "visible_feature_ids": [
+                "trade.swap",
+                "trade.swap.pair",
+                "trade.swap.reverse-pair",
+                "trade.swap.amount"
+            ],
+            "recapture": [
+                {
+                    "locator": "page.getByTestId('@trading/form/fraction-buttons')",
+                    "source": {
+                        "path": "packages/suite/src/views/wallet/trading/common/TradingForm/TradingFractionButtons.tsx",
+                        "line": 41
+                    },
+                    "action": "Hover the source amount section or focus its fraction button before capture: source CSS intentionally sets opacity to zero until section hover/focus. Capture 25%, 50% and Max without submitting."
+                }
+            ],
+            "status": "proposed-erratum",
+            "interpretation": "Original observations and images are preserved. This correction concerns visible PNG evidence only; it does not invalidate separately recorded interaction or source evidence."
+        },
+        {
+            "screenshot_id": "web-t3t1-application-maintenance-visible",
+            "observation_id": "runtime-web-t3t1-application-maintenance-visible",
+            "severity": "high",
+            "title": "Analytics, log and reset are below the image",
+            "visible_description": "Application settings show auto-eject, localization and labeling. The Color scheme row appears at the bottom; analytics, Show log, Reset app and app version are outside this viewport.",
+            "visible_feature_ids": ["app-settings.theme"],
+            "recapture": [
+                {
+                    "locator": "page.getByTestId('@analytics/toggle-switch')",
+                    "source": {
+                        "path": "packages/suite/src/views/settings/SettingsGeneral/Analytics.tsx",
+                        "line": 33
+                    },
+                    "action": "Scroll the Application section into view and capture the full analytics row."
+                },
+                {
+                    "locator": "page.getByTestId('@settings/show-log-button')",
+                    "source": {
+                        "path": "packages/suite/src/views/settings/SettingsGeneral/ShowApplicationLog.tsx",
+                        "line": 26
+                    },
+                    "action": "Capture the Show log entry without opening account-containing logs."
+                },
+                {
+                    "locator": "page.getByTestId('@settings/reset-app-button')",
+                    "source": {
+                        "path": "packages/suite/src/views/settings/SettingsGeneral/ClearStorage.tsx",
+                        "line": 29
+                    },
+                    "action": "Capture the reset entry and app version without executing another reset."
+                }
+            ],
+            "status": "proposed-erratum",
+            "interpretation": "Original observations and images are preserved. This correction concerns visible PNG evidence only; it does not invalidate separately recorded interaction or source evidence."
+        },
+        {
+            "screenshot_id": "web-t3t1-device-security-visible",
+            "observation_id": "runtime-web-t3t1-device-security-visible",
+            "severity": "high",
+            "title": "Safety action is clipped and Check device is absent",
+            "visible_description": "Device settings show backup checking, passphrase-wallet toggle, firmware version/type/language and the complete PIN toggle. Only the Safety checks label and upper edge of its Change button are visible; Check device is below the viewport.",
+            "visible_feature_ids": ["device-settings.pin"],
+            "recapture": [
+                {
+                    "locator": "page.getByTestId('@settings/device/safety-checks-button')",
+                    "source": {
+                        "path": "packages/suite/src/views/settings/SettingsDevice/SafetyChecks.tsx",
+                        "line": 30
+                    },
+                    "action": "Scroll the full Security block into view and capture Safety checks plus its action."
+                },
+                {
+                    "locator": "page.getByRole('button', {name:'Check device',exact:true})",
+                    "source": {
+                        "path": "packages/suite/src/views/settings/SettingsDevice/AuthenticateDevice.tsx",
+                        "line": 38
+                    },
+                    "action": "Scroll the authenticity entry fully into view and capture without initiating a hardware authenticity claim."
+                }
+            ],
+            "status": "proposed-erratum",
+            "interpretation": "Original observations and images are preserved. This correction concerns visible PNG evidence only; it does not invalidate separately recorded interaction or source evidence."
+        }
+    ],
+    "cross_context_rule": "A Buy country modal is not a direct Sell observation. Shared implementation evidence and separately reached states remain distinct. UI entry points and empty states do not establish successful transactions."
+}

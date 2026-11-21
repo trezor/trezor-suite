@@ -1,0 +1,862 @@
+{
+    "id": "runtime-mobile-screenshot-quality",
+    "created_at": "2026-11-15T08:41:21.298368+00:00",
+    "manifest_snapshot_sha256": "6c4e668ea9adf8b8f420dcedbb0d07a2fab4e71e85a12277f728cc2e5be7ee6c",
+    "scope": {
+        "screenshots": 58,
+        "platform": "mobile",
+        "os": "iOS 27.2 simulator",
+        "source_commit": "8d6be9edbf990465176d57b4abc007bac17ca5e6",
+        "product_version": "26.12.1",
+        "physical_device_model": null,
+        "build_conditions": "First storage-recovery image belongs to initial CODE_SIGNING_ALLOWED=NO task build; remaining captures follow the successful Release QA simulator ad-hoc signing rebuild. Existing manifest records the distinction."
+    },
+    "method": "Viewed all 58 actual PNGs through ten local 3x2 contact sheets; seven selected originals viewed at native resolution. No UI, device, image or main manifest changes.",
+    "temporary_contact_sheets": "/tmp/feature-map-qc-mobile/sheet-{1,7,13,19,25,31,37,43,49,55}.png",
+    "full_resolution_reviewed": [
+        "mobile-empty-home",
+        "mobile-settings-bitcoin-backend",
+        "mobile-tracker-xpub-help",
+        "mobile-tracker-manual-xpub",
+        "mobile-tracker-qr-scanner",
+        "mobile-tracker-qr-permission-fallback",
+        "mobile-connect-safe7-instructions"
+    ],
+    "privacy_review": {
+        "result": "No sensitive screenshot identified in reviewed captures.",
+        "details": "No visible seed/PIN/passphrase/wipe code, valid entered account descriptor or active-wallet address was found. Decorative QR source and the captured blurred tutorial frame are identified separately. Deliberately invalid drafts and public URL/preferences are not wallet data.",
+        "limit": "Visual inspection of saved PNGs only; does not attest that every frame of bundled source videos or unrecorded runtime states was reviewed."
+    },
+    "summary": {
+        "images_reviewed": 58,
+        "proposed_errata": 4,
+        "medium": 1,
+        "low": 3,
+        "sensitive_images_identified": 0
+    },
+    "reviews": [
+        {
+            "ordinal": 1,
+            "screenshot_id": "mobile-storage-recovery",
+            "observation_id": "runtime-mobile-storage-recovery",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-storage-recovery.png",
+            "sha256": "b982edec9ff42e147f2259ce68410c138a73c22c9bb7ef756e4fc0349abff5d6",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings.database-recovery"],
+            "limits": "The source observation conditions distinguish the initial unsigned QA build failure from the later successful simulator ad-hoc signed rebuild. The alert demonstrates recovery controls only; it is not a production-startup failure."
+        },
+        {
+            "ordinal": 2,
+            "screenshot_id": "mobile-onboarding-welcome",
+            "observation_id": "runtime-mobile-onboarding-welcome",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-onboarding-welcome.png",
+            "sha256": "16aeae0fe7406a3d738321b2e176caf867784a49a3ee74e9ba45202c37050d06",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-onboarding", "mobile.onboarding.welcome"],
+            "limits": "Welcome screen and start action only; no device onboarding or recovery completed."
+        },
+        {
+            "ordinal": 3,
+            "screenshot_id": "mobile-onboarding-analytics",
+            "observation_id": "runtime-mobile-onboarding-analytics",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-onboarding-analytics.png",
+            "sha256": "866ddbefc6968aa5d6d7286da7434231f9d0fbf8aea7fce580a3a4d131e32587",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-onboarding", "app-settings.analytics"],
+            "limits": "Consent text, enabled anonymous-help switch and Confirm/privacy entries are visible. No telemetry transmission is established by a PNG."
+        },
+        {
+            "ordinal": 4,
+            "screenshot_id": "mobile-onboarding-analytics-disabled",
+            "observation_id": "runtime-mobile-onboarding-analytics-disabled",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-onboarding-analytics-disabled.png",
+            "sha256": "b603f060dcb89bd4a2180fb42080705e4d7abe75a2e9a70f165687dd62fb07ae",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings.analytics"],
+            "limits": "The anonymous-help switch is visibly off; confirmation/persistence is reported session interaction, not proved by the still alone."
+        },
+        {
+            "ordinal": 5,
+            "screenshot_id": "mobile-onboarding-biometrics",
+            "observation_id": "runtime-mobile-onboarding-biometrics",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-onboarding-biometrics.png",
+            "sha256": "5519356a8e9dd1ebc7b47ede8fcf89d186319f5c20503e8553798d345358db30",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["mobile.onboarding.biometrics"],
+            "limits": "Biometric enable/skip choice only. No biometric enrollment or app-lock success."
+        },
+        {
+            "ordinal": 6,
+            "screenshot_id": "mobile-onboarding-residence",
+            "observation_id": "runtime-mobile-onboarding-residence",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-onboarding-residence.png",
+            "sha256": "37bb5166a3ed2522cecb390ae60a00c51345dfc33f0b10b63ac86f6dd17426f0",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["mobile.onboarding.residence"],
+            "limits": "Country selector and availability guidance only; no real residence or provider eligibility is established."
+        },
+        {
+            "ordinal": 7,
+            "screenshot_id": "mobile-empty-home",
+            "observation_id": "runtime-mobile-empty-home",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-empty-home.png",
+            "sha256": "3160f3a24b96d93823c48def34e150790b0d6f0b8c2a791d54ef7e9831c7b60e",
+            "width": 466,
+            "height": 678,
+            "result": "correction-proposed",
+            "visible_feature_ids": ["wallet.portfolio"],
+            "limits": "The no-wallet Home shows the Connect your Trezor Safe 7 card and Connect action, the beginning of a hardware promotion and the bottom navigation. Sync & Track is outside this image; the later mobile-home-tracker-entry capture separately shows it."
+        },
+        {
+            "ordinal": 8,
+            "screenshot_id": "mobile-settings-home",
+            "observation_id": "runtime-mobile-settings-home",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-home.png",
+            "sha256": "5f9040f75f554a0b1e1a5d70a0794ab19a38c51db9e66d7efe6dc98e7d7287f8",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings"],
+            "limits": "Settings entry viewport shows promotion and manager header. Lower settings groups are separate captures."
+        },
+        {
+            "ordinal": 9,
+            "screenshot_id": "mobile-settings-general",
+            "observation_id": "runtime-mobile-settings-general",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-general.png",
+            "sha256": "eb70446128bda5a31af6811e5adffc61bfd0f4fc550c2ab4510a5785bf9245b0",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings", "app-settings.privacy"],
+            "limits": "Preferences and Privacy & security entries are visible; this is not a capture of the complete Settings menu."
+        },
+        {
+            "ordinal": 10,
+            "screenshot_id": "mobile-settings-preferences",
+            "observation_id": "runtime-mobile-settings-preferences",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-preferences.png",
+            "sha256": "d024a387676f0d81484cdc6bdf2bace630e0aeb6f81b4d6d2d92da97b1780419",
+            "width": 466,
+            "height": 678,
+            "result": "correction-proposed",
+            "visible_feature_ids": ["app-settings.localization", "app-settings.appearance"],
+            "limits": "Preferences shows full Language, Currency and Bitcoin units cards. The Theme heading and tops of theme preview cards appear at the lower edge, but their complete labels/options are outside this screenshot; separate theme captures show those choices."
+        },
+        {
+            "ordinal": 11,
+            "screenshot_id": "mobile-settings-language",
+            "observation_id": "runtime-mobile-settings-language",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-language.png",
+            "sha256": "49ad16b87b4e24e69f77e6e42cb2c529b0a8c9250fed91193d91bff0beb818e8",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings.language", "app-settings.language-system"],
+            "limits": "System selection and a scrollable language subset are visible, not every translation."
+        },
+        {
+            "ordinal": 12,
+            "screenshot_id": "mobile-settings-currency",
+            "observation_id": "runtime-mobile-settings-currency",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-currency.png",
+            "sha256": "5ab5aab4d043b3c652f65bf070b02b1a74e06e8ed5eedc186e19b998e28d3874",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings.fiat-currency"],
+            "limits": "Selected currency and a scrollable currency subset only; no change or persistence."
+        },
+        {
+            "ordinal": 13,
+            "screenshot_id": "mobile-settings-bitcoin-unit",
+            "observation_id": "runtime-mobile-settings-bitcoin-unit",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-bitcoin-unit.png",
+            "sha256": "46ef8a59ade917fdbcf207fa61770b79cfb1bd2bb9e6ae8ee8dbc56227004756",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings.bitcoin-unit"],
+            "limits": "Both Bitcoin and Satoshis options are visible; no preference change."
+        },
+        {
+            "ordinal": 14,
+            "screenshot_id": "mobile-settings-theme",
+            "observation_id": "runtime-mobile-settings-theme",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-theme.png",
+            "sha256": "7175249e5fa92f2d49227c58d2d46ec0c18c2881c8a7e44d4860eaaa565fd553",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings.theme"],
+            "limits": "All three theme choices and active System outline are visible."
+        },
+        {
+            "ordinal": 15,
+            "screenshot_id": "mobile-settings-theme-dark",
+            "observation_id": "runtime-mobile-settings-theme-dark",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-theme-dark.png",
+            "sha256": "d253374c526b35f7ca529840535ecda47122648e27723a8f765d066cf0166373",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings.theme"],
+            "limits": "Dark appearance and Dark active outline are visible; restoring System is subsequent session interaction."
+        },
+        {
+            "ordinal": 16,
+            "screenshot_id": "mobile-settings-privacy",
+            "observation_id": "runtime-mobile-settings-privacy",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-privacy.png",
+            "sha256": "47e98a2bbfe190fc8efe769f17837ffc9ae7731eca256d4e2a026c28698e1fed",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "app-settings.privacy",
+                "app-settings.biometrics",
+                "wallet.portfolio.discreet",
+                "app-settings.analytics"
+            ],
+            "limits": "Three privacy controls visible. The discreet-mode amount is a fixed UI illustration, not an account balance."
+        },
+        {
+            "ordinal": 17,
+            "screenshot_id": "mobile-settings-support",
+            "observation_id": "runtime-mobile-settings-support",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-support.png",
+            "sha256": "0f44dc64cc0079b96adb8e030fc322adaec68608ec5f498a998828154f5cbad1",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["help.support", "mobile.settings.support.faq"],
+            "limits": "FAQ titles are visible; most answers remain collapsed. No claim that every answer was read."
+        },
+        {
+            "ordinal": 18,
+            "screenshot_id": "mobile-support-model-faq",
+            "observation_id": "runtime-mobile-support-model-faq",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-support-model-faq.png",
+            "sha256": "4de6a4888a410b318f021169e249f0a9364619de13398c4e0e1ce5eb1dcd2ed5",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["mobile.settings.support.faq"],
+            "limits": "Expanded FAQ gives iOS Safe 7 guidance. This does not verify a physical device, Android behavior, discovery or pairing."
+        },
+        {
+            "ordinal": 19,
+            "screenshot_id": "mobile-support-about-legal",
+            "observation_id": "runtime-mobile-support-about-legal",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-support-about-legal.png",
+            "sha256": "3704f968502659f8e3e72c4df878f80ea8b489a4d563dd8a91bb7e09f7d5a434",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "mobile.settings.support.legal",
+                "mobile.settings.support.about"
+            ],
+            "limits": "Social/legal entries and commit hash are visible. This supports recorded source-build provenance, not a complete independent binary-reproducibility audit."
+        },
+        {
+            "ordinal": 20,
+            "screenshot_id": "mobile-support-about",
+            "observation_id": "runtime-mobile-support-about",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-support-about.png",
+            "sha256": "b49bbf3049105758c7fb6a9d13602ca436a2e6beec883744fc6dc897e8007998",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "help.support.contact",
+                "app-settings.log",
+                "mobile.settings.support.about"
+            ],
+            "limits": "Support and Application log entries are visible; the About card begins below them and continues below the viewport. Raw logs were not opened."
+        },
+        {
+            "ordinal": 21,
+            "screenshot_id": "mobile-settings-trading-residence",
+            "observation_id": "runtime-mobile-settings-trading-residence",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-trading-residence.png",
+            "sha256": "402a68c6e571ecce42d7338ed0cfc3bcc384ece784e8d2ee16e84c5444fb7221",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["mobile.settings.trading-residence"],
+            "limits": "Trading location setting only; no residence confirmation/provider authorization."
+        },
+        {
+            "ordinal": 22,
+            "screenshot_id": "mobile-settings-features-lower",
+            "observation_id": "runtime-mobile-settings-features-lower",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-features-lower.png",
+            "sha256": "652822a35b18a446bcd063847b373252b2c4904e210cfde50aaf7c78cff81c74",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings"],
+            "limits": "Suite Sync, Security, Advanced, Experimental and product-version footer visible. Not the entire Settings list."
+        },
+        {
+            "ordinal": 23,
+            "screenshot_id": "mobile-settings-security",
+            "observation_id": "runtime-mobile-settings-security",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-security.png",
+            "sha256": "80edd4d8ef28553da3baa79540956a4444f8291c5763d970b0b9c37fb58796c8",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "app-settings.security",
+                "app-settings.mev",
+                "app-settings.dust"
+            ],
+            "limits": "MEV toggle, network guidance and Dust entry visible; no transaction was protected."
+        },
+        {
+            "ordinal": 24,
+            "screenshot_id": "mobile-settings-dust",
+            "observation_id": "runtime-mobile-settings-dust",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-dust.png",
+            "sha256": "042a8e7121c52a457dd17cfe3641fccf49628d3a70e4b9b52312d0209c79cdb3",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings.dust", "app-settings.dust-threshold"],
+            "limits": "Dust switch and preference threshold visible. Threshold is a setting, not confidential account data."
+        },
+        {
+            "ordinal": 25,
+            "screenshot_id": "mobile-settings-advanced",
+            "observation_id": "runtime-mobile-settings-advanced",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-advanced.png",
+            "sha256": "c3010f25257de77454f31791a69c7cfb752aacc04bb6c5ea5f30af8f2610fc3e",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "app-settings.advanced",
+                "device-settings.authenticity-opt-out",
+                "device-settings.firmware-authenticity",
+                "app-settings.address-display"
+            ],
+            "limits": "Authenticity and formatting preferences visible; no actual hardware or firmware authenticity verification."
+        },
+        {
+            "ordinal": 26,
+            "screenshot_id": "mobile-settings-advanced-lower",
+            "observation_id": "runtime-mobile-settings-advanced-lower",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-advanced-lower.png",
+            "sha256": "743fb32c473b3c28681034a41b09970cec2388013ca6d8d2cf0f343a0b2f8b08",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "app-settings.address-display",
+                "app-settings.testnets",
+                "app-settings.network-reserve"
+            ],
+            "limits": "Formatting/testnets/reserve controls visible. No preference change or network discovery."
+        },
+        {
+            "ordinal": 27,
+            "screenshot_id": "mobile-settings-experimental",
+            "observation_id": "runtime-mobile-settings-experimental",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-experimental.png",
+            "sha256": "30725a076def3d96120ec41e10d1bc5c07d9b5ffa6d6d0b419862f7997c57809",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings.experimental", "app-settings.slip24"],
+            "limits": "SLIP-24 preference entry only; no clear-signing flow."
+        },
+        {
+            "ordinal": 28,
+            "screenshot_id": "mobile-settings-suite-sync",
+            "observation_id": "runtime-mobile-settings-suite-sync",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-suite-sync.png",
+            "sha256": "90ab0f5934a25cc14532a6b8fc4a8fcf60b89a5cc3463053483a498d2b63577b",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["labeling.suite-sync"],
+            "limits": "Suite Sync disabled, server entry and Confirm visible; no wallet sync or authorization."
+        },
+        {
+            "ordinal": 29,
+            "screenshot_id": "mobile-settings-suite-sync-server",
+            "observation_id": "runtime-mobile-settings-suite-sync-server",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-suite-sync-server.png",
+            "sha256": "5d02f1bb871682157134a2706b36c1c43fa366c63bcd43a590906d229af270fb",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["labeling.suite-sync.server"],
+            "limits": "Default/Custom server choices visible; no entered URL or contacted wallet-data server."
+        },
+        {
+            "ordinal": 30,
+            "screenshot_id": "mobile-settings-auto-eject",
+            "observation_id": "runtime-mobile-settings-auto-eject",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-auto-eject.png",
+            "sha256": "d7afda201b843193c939fff05969749f48e0907d0e517f63c679befe5a91f7ca",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings.auto-eject"],
+            "limits": "Auto-eject explanation and off toggle visible; no connected wallet to eject."
+        },
+        {
+            "ordinal": 31,
+            "screenshot_id": "mobile-settings-networks",
+            "observation_id": "runtime-mobile-settings-networks",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-networks.png",
+            "sha256": "bb5cf421f4e8e49e384c947b08e00804103860594861a7954afd40d59bae4b05",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["network-settings", "network-settings.enable"],
+            "limits": "Only the visible beginning of the network list is captured. Switches and backend entry controls are shown without enabling networks."
+        },
+        {
+            "ordinal": 32,
+            "screenshot_id": "mobile-settings-bitcoin-backend",
+            "observation_id": "runtime-mobile-settings-bitcoin-backend",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-bitcoin-backend.png",
+            "sha256": "9f9be883212965e57097bb04277e8ec133a1f5d26a31a28d96f3eaf57ed792c8",
+            "width": 466,
+            "height": 678,
+            "result": "correction-proposed",
+            "visible_feature_ids": [
+                "network-settings.backends",
+                "network-settings.backends.connection-status",
+                "network-settings.explorer"
+            ],
+            "limits": "Bitcoin backend shows Disconnected, Trezor default server type and Connect. Explorer shows the default Root URL and full Transaction path field; the Address path field starts at the lower edge and is incomplete. No connection or configuration change is demonstrated."
+        },
+        {
+            "ordinal": 33,
+            "screenshot_id": "mobile-settings-backend-type",
+            "observation_id": "runtime-mobile-settings-backend-type",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-backend-type.png",
+            "sha256": "0018cad0a5e5270f99242d9ae87abb79981da20ff1bb9f24df21085f42e03ee3",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "network-settings.backends.type",
+                "network-settings.backends.electrum"
+            ],
+            "limits": "Server type choices visible. Electrum draft selection is separate from committed backend configuration."
+        },
+        {
+            "ordinal": 34,
+            "screenshot_id": "mobile-settings-electrum-form",
+            "observation_id": "runtime-mobile-settings-electrum-form",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-electrum-form.png",
+            "sha256": "81bad687533b27ea933dc6e68d4962c77270a3b53538be38753c0ed76e39e96a",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "network-settings.backends.urls",
+                "network-settings.backends.electrum"
+            ],
+            "limits": "Empty Electrum input and protocol example visible; no actual backend URL entered or connected."
+        },
+        {
+            "ordinal": 35,
+            "screenshot_id": "mobile-settings-backend-discard",
+            "observation_id": "runtime-mobile-settings-backend-discard",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-backend-discard.png",
+            "sha256": "a2ca08b0021e8a8720618d38d9a4ba8159066d9800021e8650632b3fbd2ac2fd",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["network-settings.backends.discard"],
+            "limits": "Discard/Keep editing modal visible. Completed discard is session interaction, not proved by the single frame."
+        },
+        {
+            "ordinal": 36,
+            "screenshot_id": "mobile-settings-network-search",
+            "observation_id": "runtime-mobile-settings-network-search",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-network-search.png",
+            "sha256": "ddef38612505a750d79be89ce9ea74702607ac0659ba0fd06fbe27215dbfeb76",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["network-settings.search"],
+            "limits": "Search field and keyboard visible; simulator/status-area overlap reduces presentation quality. This is not production-layout verification."
+        },
+        {
+            "ordinal": 37,
+            "screenshot_id": "mobile-settings-network-filtered",
+            "observation_id": "runtime-mobile-settings-network-filtered",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-network-filtered.png",
+            "sha256": "16cd1fcf664b4a3a8e223cee709d04f8268aa35e7698e61e7d2c0a4372ef1f5c",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["network-settings.search"],
+            "limits": "A public network-name query and matching rows are visible. No account data or network enabling."
+        },
+        {
+            "ordinal": 38,
+            "screenshot_id": "mobile-home-tracker-entry",
+            "observation_id": "runtime-mobile-home-tracker-entry",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-home-tracker-entry.png",
+            "sha256": "01d97eac1fb2e1f0ba35dcb902468cfa3139d4406ad81b8106ff12bb01ae1606",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["mobile.accounts.import"],
+            "limits": "Tracker entry is fully visible here and provides the separate evidence missing from the initial Home screenshot."
+        },
+        {
+            "ordinal": 39,
+            "screenshot_id": "mobile-tracker-network-selection",
+            "observation_id": "runtime-mobile-tracker-network-selection",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-network-selection.png",
+            "sha256": "aa7b89d50ea729d913af55b379868355c2e968d93b1ffe3058099c1ac5b4e463",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["mobile.accounts.import", "mobile.accounts.import.network"],
+            "limits": "Network-selection subset only; not the complete supported-network catalog."
+        },
+        {
+            "ordinal": 40,
+            "screenshot_id": "mobile-tracker-bitcoin-import",
+            "observation_id": "runtime-mobile-tracker-bitcoin-import",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-bitcoin-import.png",
+            "sha256": "a311e57a2f059e89ba0f931307ecceac30485797025f89345ff8408758a158e1",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["mobile.accounts.import.qr"],
+            "limits": "Bundled QR illustration and scan/help entries only. Static source is QRWithLaser using assets/qrCodeImport.svg, not a wallet-specific QR."
+        },
+        {
+            "ordinal": 41,
+            "screenshot_id": "mobile-tracker-xpub-help",
+            "observation_id": "runtime-mobile-tracker-xpub-help",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-xpub-help.png",
+            "sha256": "abb280e2bc81c2ec141e34c24829f6bfb1070423b16978dc411b542cd26ad140",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["mobile.accounts.import.help"],
+            "limits": "The captured bundled tutorial frame contains blurred illustrative account content and instruction text; no unblurred active-wallet key or secret was visible. This reviews the captured frame, not every frame of the source video."
+        },
+        {
+            "ordinal": 42,
+            "screenshot_id": "mobile-tracker-manual-xpub",
+            "observation_id": "runtime-mobile-tracker-manual-xpub",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-manual-xpub.png",
+            "sha256": "1e026c93ed39ca3f06e3d1b03d12b6e9eddefa2f75166030a5883f1e76258a36",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["mobile.accounts.import.manual-xpub"],
+            "limits": "Empty manual field and DEV-only fixture shortcuts are visible. Their presence is QA-build context, not a normal-user feature or an imported wallet."
+        },
+        {
+            "ordinal": 43,
+            "screenshot_id": "mobile-tracker-xpub-input",
+            "observation_id": "runtime-mobile-tracker-xpub-input",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-xpub-input.png",
+            "sha256": "35dcf2e11e83acaed74a385db31c9c6d64edd72502c57a8a1aae6ec2ef8e9a16",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["mobile.accounts.import.manual-xpub"],
+            "limits": "A deliberately invalid non-account draft and Confirm are visible. Input acceptance is not XPUB validation or completed import."
+        },
+        {
+            "ordinal": 44,
+            "screenshot_id": "mobile-tracker-address-import",
+            "observation_id": "runtime-mobile-tracker-address-import",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-address-import.png",
+            "sha256": "852633b29694262a8a47b778eff63855fe64e3770de2581bb986f11116b3dcf2",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["mobile.accounts.import.address", "mobile.accounts.import.qr"],
+            "limits": "Ethereum scan/help entry with static decorative QR; no wallet address is shown."
+        },
+        {
+            "ordinal": 45,
+            "screenshot_id": "mobile-tracker-manual-address",
+            "observation_id": "runtime-mobile-tracker-manual-address",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-manual-address.png",
+            "sha256": "cd3aea7e5d28782163231bb1e4bde6b8f27a57ff4d07097bbea6d52971c6cb72",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["mobile.accounts.import.address"],
+            "limits": "Empty address field and QA fixture shortcuts only. No shortcut/import executed."
+        },
+        {
+            "ordinal": 46,
+            "screenshot_id": "mobile-tracker-invalid-address",
+            "observation_id": "runtime-mobile-tracker-invalid-address",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-invalid-address.png",
+            "sha256": "9096c92c1e13d05576597842fa2f21200a4f958c0a016d3a7d7060c88685f6fe",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["mobile.accounts.import.wrong-key"],
+            "limits": "Locally rejected non-account draft and error state visible. It does not establish discovery or server-side validation."
+        },
+        {
+            "ordinal": 47,
+            "screenshot_id": "mobile-tracker-qr-scanner",
+            "observation_id": "runtime-mobile-tracker-qr-scanner",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-qr-scanner.png",
+            "sha256": "1e0a6e669ee6c00666f855ec3443a1b1e40982be1675a5fc6e6e2bc1198683ee",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["mobile.accounts.import.qr"],
+            "limits": "iOS camera authorization prompt overlays the scanner. The app name includes Debug in the QA build. Actual camera view, QR recognition and gallery selection are not demonstrated."
+        },
+        {
+            "ordinal": 48,
+            "screenshot_id": "mobile-tracker-qr-permission-fallback",
+            "observation_id": "runtime-mobile-tracker-qr-permission-fallback",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-qr-permission-fallback.png",
+            "sha256": "45600071708ee8f8692f65545132232034c71e168615a0cc891f27613022a5e2",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "mobile.accounts.import.qr.permission",
+                "mobile.accounts.import.qr.gallery"
+            ],
+            "limits": "Denied-camera message, Grant permission and Upload from gallery entries visible. No successful permission grant, photo access or import."
+        },
+        {
+            "ordinal": 49,
+            "screenshot_id": "mobile-empty-accounts",
+            "observation_id": "runtime-mobile-empty-accounts",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-empty-accounts.png",
+            "sha256": "c161a6d88d988d3316e2a4782da8250934e23689ff91fb149b5037a0fb41df64",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["wallet.accounts"],
+            "limits": "No-accounts state and search/add entries only; no account details."
+        },
+        {
+            "ordinal": 50,
+            "screenshot_id": "mobile-accounts-add-menu",
+            "observation_id": "runtime-mobile-accounts-add-menu",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-accounts-add-menu.png",
+            "sha256": "b66ae03011c28555d0060d961e6cb1b05270964cf408e7c8ad655ec02bc9d988",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["mobile.accounts.import.network"],
+            "limits": "Network-selection subset opened through Accounts; no completed import."
+        },
+        {
+            "ordinal": 51,
+            "screenshot_id": "mobile-empty-earn",
+            "observation_id": "runtime-mobile-empty-earn",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-empty-earn.png",
+            "sha256": "c79adcca0e87a0679d347dd75aa2ec4c7ca68a63a6b702fa266b03927de70c52",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["earn", "earn.opportunities"],
+            "limits": "All four staking rows are visible; the Yield section only starts at the bottom. Public indicative rates are UI content, not current recommendations or verified provider availability."
+        },
+        {
+            "ordinal": 52,
+            "screenshot_id": "mobile-earn-staking-gate",
+            "observation_id": "runtime-mobile-earn-staking-gate",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-earn-staking-gate.png",
+            "sha256": "838d4cd93eca276b7cfa51a02f751bc00c9f695c22f111f381238607ed33a7a5",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["earn.staking"],
+            "limits": "Portfolio-tracker restriction sheet only, with connect/desktop guidance. No device-backed stake flow."
+        },
+        {
+            "ordinal": 53,
+            "screenshot_id": "mobile-empty-yield",
+            "observation_id": "runtime-mobile-empty-yield",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-empty-yield.png",
+            "sha256": "4ee1246063953e9b364464ea17d2830f171bff40cfc873ae19c65885f16539d7",
+            "width": 466,
+            "height": 678,
+            "result": "correction-proposed",
+            "visible_feature_ids": ["earn.yield", "earn.opportunities"],
+            "limits": "The lower portion of the no-wallet Yield list shows USDC, USDT and ETH vault rows, including Ethereum and Base variants, with Morpho attribution. The top row is clipped; this is not a capture of the entire available Yield catalog. No deposit or approval is shown."
+        },
+        {
+            "ordinal": 54,
+            "screenshot_id": "mobile-earn-yield-gate",
+            "observation_id": "runtime-mobile-earn-yield-gate",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-earn-yield-gate.png",
+            "sha256": "40ab59945695a28c5dda495019d7b0cc6278f0fc25ce98be23dd9d8f3c2cc008",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["earn.yield"],
+            "limits": "The same restriction wording explicitly says Staking is disabled although opened from a Yield item. Preserve this actual UI wording; it does not demonstrate a Yield transaction."
+        },
+        {
+            "ordinal": 55,
+            "screenshot_id": "mobile-empty-activity",
+            "observation_id": "runtime-mobile-empty-activity",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-empty-activity.png",
+            "sha256": "9f84d8eca7a0728142c8bded60f4e13a82ab153b045d6f8a5d262380be32223f",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["help.activity"],
+            "limits": "Clean notification empty state and tab entries only."
+        },
+        {
+            "ordinal": 56,
+            "screenshot_id": "mobile-activity-release-notes",
+            "observation_id": "runtime-mobile-activity-release-notes",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-activity-release-notes.png",
+            "sha256": "bc5b852db95a58c2a09bbb58db039b487cbfa0072fef3f9e91791ce6cee51811",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["help.activity.release-notes", "app-settings.changelog"],
+            "limits": "Release-note version, New features and part of Improvements visible; later text is below the viewport. Listed features are release text, not runtime verification of those flows."
+        },
+        {
+            "ordinal": 57,
+            "screenshot_id": "mobile-empty-device-manager",
+            "observation_id": "runtime-mobile-empty-device-manager",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-empty-device-manager.png",
+            "sha256": "7ddb94f06db47b406607a833955a42a4a927c220b8715819afb1aadb39c5f514",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["wallet-access"],
+            "limits": "Empty manager and Connect Trezor entry visible; no saved wallet/device identities."
+        },
+        {
+            "ordinal": 58,
+            "screenshot_id": "mobile-connect-safe7-instructions",
+            "observation_id": "runtime-mobile-connect-safe7-instructions",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-connect-safe7-instructions.png",
+            "sha256": "82c04d7c5bac710f167828596bd5afc56cc10b7842ac56a7ef73644b58e3ab4f",
+            "width": 466,
+            "height": 678,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["connection.bluetooth", "connection.bluetooth.manual"],
+            "limits": "Bundled Safe 7 power-button animation and instruction title only. No Bluetooth discovery, pairing, unlocking, NFC or physical device was exercised."
+        }
+    ],
+    "findings": [
+        {
+            "screenshot_id": "mobile-empty-home",
+            "observation_id": "runtime-mobile-empty-home",
+            "severity": "medium",
+            "title": "Sync & Track is below the viewport",
+            "visible_description": "The no-wallet Home shows the Connect your Trezor Safe 7 card and Connect action, the beginning of a hardware promotion and the bottom navigation. Sync & Track is outside this image; the later mobile-home-tracker-entry capture separately shows it.",
+            "visible_feature_ids": ["wallet.portfolio"],
+            "recapture": [
+                {
+                    "locator": "Visible text: Sync & Track",
+                    "source": {
+                        "path": "suite-native-app/module-home/src/screens/HomeScreen/components/EmptyPortfolioCrossroads.tsx",
+                        "line": 125
+                    },
+                    "action": "Scroll Home to the tracker card and capture its complete heading, description and Sync & Track action; mobile-home-tracker-entry already supplies this separate state."
+                }
+            ],
+            "status": "proposed-additive-correction"
+        },
+        {
+            "screenshot_id": "mobile-settings-preferences",
+            "observation_id": "runtime-mobile-settings-preferences",
+            "severity": "low",
+            "title": "Theme choices continue below the capture",
+            "visible_description": "Preferences shows full Language, Currency and Bitcoin units cards. The Theme heading and tops of theme preview cards appear at the lower edge, but their complete labels/options are outside this screenshot; separate theme captures show those choices.",
+            "visible_feature_ids": ["app-settings.localization", "app-settings.appearance"],
+            "recapture": [
+                {
+                    "locator": "Visible Theme card; Standard, Dark and System labels",
+                    "source": {
+                        "path": "suite-native-app/module-settings/src/components/ColorSchemePicker.tsx",
+                        "line": 16
+                    },
+                    "action": "Scroll Theme into view without changing the selected mode; mobile-settings-theme already provides the complete selector."
+                }
+            ],
+            "status": "proposed-additive-correction"
+        },
+        {
+            "screenshot_id": "mobile-settings-bitcoin-backend",
+            "observation_id": "runtime-mobile-settings-bitcoin-backend",
+            "severity": "low",
+            "title": "Explorer address-path field is clipped",
+            "visible_description": "Bitcoin backend shows Disconnected, Trezor default server type and Connect. Explorer shows the default Root URL and full Transaction path field; the Address path field starts at the lower edge and is incomplete. No connection or configuration change is demonstrated.",
+            "visible_feature_ids": [
+                "network-settings.backends",
+                "network-settings.backends.connection-status",
+                "network-settings.explorer"
+            ],
+            "recapture": [
+                {
+                    "locator": "Explorer card: Root URL, Transaction path, Address path",
+                    "source": {
+                        "path": "suite-native-app/module-settings/src/components/NetworkExplorerCard.tsx",
+                        "line": 71
+                    },
+                    "action": "Scroll the complete Explorer card into view; capture each path and its input without entering or connecting to any account endpoint."
+                }
+            ],
+            "status": "proposed-additive-correction"
+        },
+        {
+            "screenshot_id": "mobile-empty-yield",
+            "observation_id": "runtime-mobile-empty-yield",
+            "severity": "low",
+            "title": "Yield list begins mid-table",
+            "visible_description": "The lower portion of the no-wallet Yield list shows USDC, USDT and ETH vault rows, including Ethereum and Base variants, with Morpho attribution. The top row is clipped; this is not a capture of the entire available Yield catalog. No deposit or approval is shown.",
+            "visible_feature_ids": ["earn.yield", "earn.opportunities"],
+            "recapture": [
+                {
+                    "locator": "Visible DeFi Yield section and vault-name rows",
+                    "source": {
+                        "path": "suite-native/module-earn/src/components/yield/YieldPromoListItem.tsx",
+                        "line": 63
+                    },
+                    "action": "Capture the top and bottom of the Yield opportunity list separately; do not label either viewport as the complete catalog unless every row is visible."
+                }
+            ],
+            "status": "proposed-additive-correction"
+        }
+    ],
+    "interpretation": [
+        "No physical model connection is inferred from Safe 7 FAQ or power-button media.",
+        "Permission prompt and denied-camera fallback are not successful scanning/gallery imports.",
+        "Native public no-wallet Earn rates are not assumed to originate from the separate web Playwright mock adapters.",
+        "Images have low saved resolution and simulator/status-area overlap; usable for visible controls, not pixel-accurate production layout or complete long-list evidence.",
+        "Original feature nodes, screenshots and observations remain intact; corrections are separate additive metadata."
+    ]
+}

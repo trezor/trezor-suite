@@ -1,0 +1,2994 @@
+{
+    "audits": [
+        {
+            "id": "screenshot-qc-20261115T081243Z",
+            "created_at": "2026-11-15T08:12:43.122903+00:00",
+            "manifest_snapshot_sha256": "cb4bd3c581a390055a5c71060cf7d89068a53f0ae34d1097e08b6d458e83db44",
+            "snapshot_screenshots": 66,
+            "snapshot_observations": 66,
+            "reviewed_screenshot_ids": [
+                "web-browser-compatibility-warning",
+                "web-initial-analytics-consent",
+                "web-t3t1-firmware-authenticity-warning",
+                "web-t3t1-device-detection",
+                "web-t3t1-device-doubts",
+                "web-t3t1-onboarding-firmware",
+                "web-t3t1-controls-tutorial",
+                "web-t3t1-create-or-recover",
+                "web-t3t1-backup-type",
+                "web-t3t1-legacy-backup-types",
+                "web-t3t1-backup-safety-guide",
+                "web-t3t1-defer-backup-confirmation",
+                "web-t3t1-pin-setup",
+                "web-t3t1-skip-pin-confirmation",
+                "web-t3t1-onboarding-complete",
+                "web-t3t1-initial-network-selection",
+                "web-t3t1-funded-dashboard",
+                "web-t3t1-global-send-selection",
+                "web-t3t1-bitcoin-send-form",
+                "web-t3t1-coin-control",
+                "web-t3t1-bitcoin-fee-presets",
+                "web-t3t1-bitcoin-custom-fee",
+                "web-t3t1-send-options",
+                "web-t3t1-locktime-and-message",
+                "web-t3t1-locktime-block",
+                "web-t3t1-raw-transaction",
+                "web-t3t1-global-receive",
+                "web-t3t1-receive-account-picker",
+                "web-t3t1-bitcoin-receive",
+                "web-t3t1-receive-device-verification",
+                "web-t3t1-receive-address-device-prompt",
+                "web-t3t1-application-settings",
+                "web-t3t1-language-menu",
+                "web-t3t1-fiat-currency-menu",
+                "web-t3t1-bitcoin-units",
+                "web-t3t1-labeling-mode",
+                "web-t3t1-security-preferences",
+                "web-t3t1-advanced-preferences",
+                "web-t3t1-experimental-preferences",
+                "web-t3t1-device-settings",
+                "web-t3t1-device-customization",
+                "web-t3t1-device-brightness-prompt",
+                "web-t3t1-homescreen-gallery",
+                "web-t3t1-wipe-device-warning",
+                "web-t3t1-custom-firmware-file",
+                "web-t3t1-forget-device-confirmation",
+                "web-t3t1-networks-list",
+                "web-t3t1-bitcoin-backend-settings",
+                "web-t3t1-backend-connection-info",
+                "web-t3t1-connected-apps",
+                "web-t3t1-walletconnect-pairing",
+                "web-t3t1-connect-permissions-empty",
+                "web-t3t1-account-overview",
+                "web-t3t1-transaction-export-menu",
+                "web-t3t1-transaction-details",
+                "web-t3t1-transaction-inputs-outputs",
+                "web-t3t1-account-details",
+                "web-t3t1-add-account-network",
+                "web-t3t1-add-account-types",
+                "web-t3t1-activity-center",
+                "web-t3t1-system-activity",
+                "web-t3t1-release-notes",
+                "web-t3t1-guide",
+                "web-t3t1-keyboard-shortcuts",
+                "web-t3t1-support-feedback",
+                "web-t3t1-earn-opportunities"
+            ],
+            "method": "All 66 snapshot images viewed via 11 locally composed 2×3 contact sheets; selected problematic captures also viewed at original size. Sharp composition was used only for temporary QC sheets; original PNGs, manifest observations, screenshots and feature records were not modified.",
+            "contact_sheets": {
+                "location": "/tmp/feature-map-qc",
+                "files": [
+                    "sheet-00.png",
+                    "sheet-06.png",
+                    "sheet-12.png",
+                    "sheet-18.png",
+                    "sheet-24.png",
+                    "sheet-30.png",
+                    "sheet-36.png",
+                    "sheet-42.png",
+                    "sheet-48.png",
+                    "sheet-54.png",
+                    "sheet-60.png"
+                ],
+                "retention": "Temporary local QC artifacts; not part of committed feature-map data."
+            },
+            "summary": {
+                "all_images_opened": true,
+                "blank_or_loading_only_captures": 0,
+                "open_findings": 9,
+                "already_corrected_findings": 1,
+                "proposed_screenshot_scope_errata": 5,
+                "record_linked_observed_feature_nodes": 160,
+                "conservative_visible_capture_linked_feature_nodes": 147,
+                "platforms": ["web"],
+                "models": ["T3T1"],
+                "interpretation": "Counts are linkage/surface metrics only. No below-fold control, action outcome, physical-device behavior, platform parity or complete-journey claim is inferred."
+            },
+            "reviews": [
+                {
+                    "screenshot_id": "web-browser-compatibility-warning",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-browser-compatibility-warning.png",
+                    "sha256": "1a857cd4681ba71b3d45b7928b1d7eb551c7c16aff391a316d19d3fdace8c80e",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Browser compatibility screen and the permitted Continue at my own risk entry.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-initial-analytics-consent",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-initial-analytics-consent.png",
+                    "sha256": "ad1ac0084312784c18ace58d40a71504420c8402d5d7aef5c1e3c1f09783276f",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Current initial analytics consent with data explanation and opt-in switch.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-firmware-authenticity-warning",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-firmware-authenticity-warning.png",
+                    "sha256": "f44d9ab77fec5d703a28f380900afd97255e716e9523bb7b1553a9b2ff1f6fbf",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Firmware integrity failure guidance shown for the local emulator.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-device-detection",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-device-detection.png",
+                    "sha256": "03c90d7d8e513d1bdc8c1c3ee2e1ebb25ec5b56bf73dab992fb6b6bdbb99b4e6",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Device recognition identifies Trezor Safe 5 and asks whether it has been used before; Continue, I have doubts, and different-device guidance are available.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-device-doubts",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-device-doubts.png",
+                    "sha256": "6d168e9549017164ae5a7fc24a8561e61a0759ccfd2564438afb75bf4c921993",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Doubts about prior use lead to a dedicated safety screen with Back and Contact Trezor Support.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-onboarding-firmware",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-onboarding-firmware.png",
+                    "sha256": "04a2251a85a70c61f57f7fdab5254e00676a7b6c064e3b75b5f2dc88cf6c2fbb",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Firmware onboarding shows current Universal 2.12.5 and offered 2.13.1, installation precautions, Install firmware, and Skip.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-controls-tutorial",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-controls-tutorial.png",
+                    "sha256": "e2901a669bb7fa4b020cf9d39d3ee730cbce6aca0b1017cdc0430c6bd443d9f6",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "A short device-controls tutorial asks the user to continue on Trezor, with an app-side Skip option.",
+                    "limitations": [
+                        "App continuation/skip state only; device tutorial steps are not captured."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-create-or-recover",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-create-or-recover.png",
+                    "sha256": "ddbc41b62751534ee9426e866b6804ee67bc613e59a1ed5645ee0cf55ffb46b7",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Wallet setup branches into Create a new wallet and Recover a wallet.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-backup-type",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-backup-type.png",
+                    "sha256": "befff03d64c6d1ebfab209781d27da1ea285aa4efeada6cd21bbc8d033baad63",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Safe 5 offers Single-share and Multi-share 20-word backups and an expandable legacy-backup section.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-legacy-backup-types",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-legacy-backup-types.png",
+                    "sha256": "d36180f2a8765ebed8f14de8da039bc533ece5574e82f1d428e02c77b99066e0",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Expanded legacy backup choices offer 12 and 24 words, with guidance that a legacy backup cannot be upgraded to Multi-share.",
+                    "limitations": [
+                        "Expanded dropdown clips the upper Single-share title, but the mapped 12/24-word choices are visible."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-backup-safety-guide",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-backup-safety-guide.png",
+                    "sha256": "9a30b4ea1141faeeda4ea695a40a729ed242f5d8c7ccaf4fac9375795755c22c",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Before wallet creation, Suite presents three backup-safety acknowledgements, Start backup, and Skip backup.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-defer-backup-confirmation",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-defer-backup-confirmation.png",
+                    "sha256": "6876ce34b9ede62a197723d6607d9a9ff0375de139b5e94d8a9f2133ab428083",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Skipping wallet backup requires a separate confirmation dialog offering Don’t skip and Skip.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-pin-setup",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-pin-setup.png",
+                    "sha256": "41be658e5d11466e60d417798b4a79f792d32b7ca2df609fe174be0df57b355d",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "The PIN setup screen offers Set PIN and Skip. PIN values remain on the device and are never captured.",
+                    "limitations": [
+                        "PIN setup entry and Skip only; no PIN values or completed PIN setup are captured."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-skip-pin-confirmation",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-skip-pin-confirmation.png",
+                    "sha256": "37b7a1cea5fb91226d016c988d1c15d5f3231709dd134e2632baca1ccc470f43",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Skipping PIN protection requires a separate confirmation dialog with Don’t skip and Skip.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-onboarding-complete",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-onboarding-complete.png",
+                    "sha256": "e1a97ddc7f5773e4c0b40baed90bbc2d54f6518ae0dc36931e471ba9e4a1ee1e",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Completed device setup offers Go to Dashboard.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-initial-network-selection",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-initial-network-selection.png",
+                    "sha256": "54d889df3e4f6cb0fd705012ad2aa715edbf8c1cdbf61a8f856c41165ca441d2",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "The first-wallet network chooser lists supported networks and explains that network selection can be changed later in Settings.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-funded-dashboard",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-funded-dashboard.png",
+                    "sha256": "0aa7580898be4cae4df9d01b62c83386627fbbe1e7098601b7d483bf4ea9bb28",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "partial-metadata-scope",
+                    "visible_summary": "Dashboard total, chart axes and range selectors, promotional card, and global asset actions are visible; no populated history series is rendered.",
+                    "limitations": [],
+                    "finding_ids": ["qc-dashboard-below-fold"]
+                },
+                {
+                    "screenshot_id": "web-t3t1-global-send-selection",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-global-send-selection.png",
+                    "sha256": "214fce6601097beb39d81dcd83439793cbde22e262f2e5f1e075bb1baa44b7a1",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Global Send opens an asset/account picker with network filtering and Bitcoin address-type distinctions.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-bitcoin-send-form",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-bitcoin-send-form.png",
+                    "sha256": "8b2caf08db4e4fadd5061eaa2d85411b540c71f7a4533b2a00807c2c4874d81c",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Bitcoin Send shows recipient/address and label entry, crypto and fiat amounts, Send max, Coin control, Add recipient, collapsible Fee, total, and Review & send.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-coin-control",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-coin-control.png",
+                    "sha256": "086e2b7c2b0b9a0c7b695b9019893ddc8808c882ed00b3d3d969d7a1a158ee29",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Expanded Coin control lists three fixture UTXOs with selection boxes, selected-input count and balance, sorting, dates, Detail, and labels.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-bitcoin-fee-presets",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-bitcoin-fee-presets.png",
+                    "sha256": "2bfdeec114c66fb955bf4601d65707964e53d23f6fac22e64120e87e98b6d1e0",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "partial-metadata-scope",
+                    "visible_summary": "Expanded Bitcoin fee section shows only the upper parts of Low, Normal and High preset cards; the populated form and Coin control search are visible.",
+                    "limitations": [],
+                    "finding_ids": ["qc-fees-clipped"]
+                },
+                {
+                    "screenshot_id": "web-t3t1-bitcoin-custom-fee",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-bitcoin-custom-fee.png",
+                    "sha256": "04b67c04247d5371b027eb0e09622277a0921b5ef0058c336816624cef40b3af",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Custom fee mode exposes a sat/vB field, current fee rate, transaction size, computed total, and Select standard fee.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-send-options",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-send-options.png",
+                    "sha256": "8258cd21771e8d027c46d7f23b6ec4c2f97ec4ccd2d66604b3d2c702910860d7",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "The Send menu offers Import, Attach message, Add Locktime, Broadcast toggle, and Send raw.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-locktime-and-message",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-locktime-and-message.png",
+                    "sha256": "2f527f07294a8e90f0f1b055a5606a5632b638b1c01c755c9d3121ba3389a4f1",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Advanced inputs expose locktime by UTC date and an OP_RETURN message in human-readable and hexadecimal formats.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-locktime-block",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-locktime-block.png",
+                    "sha256": "289bb593122c2d893ee6fd190f0da5636495a1a9ff10924cfa0a66347d3f40d7",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Locktime can be entered as a block height instead of a UTC date.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-raw-transaction",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-raw-transaction.png",
+                    "sha256": "98e0bcca329256c1a9b195e978c839ff4e6b51825a27d0273b9421c9960778f5",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Send raw provides a raw-transaction input and Send action; no transaction was submitted.",
+                    "limitations": [
+                        "Empty input state with disabled submit is intentional; no transaction submission is demonstrated."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-global-receive",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-global-receive.png",
+                    "sha256": "66182f04ee61c574651bee107199ddadff764ce1e5ae204c81c3055028bc8ef0",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Global Receive offers asset search, a network filter, and separate Assets and Accounts tabs.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-receive-account-picker",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-receive-account-picker.png",
+                    "sha256": "767abaddd1be6d55d5537a79b0e1f05c5d1e8c7d17b34c55b27f042a310627e1",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Receive account selection lists existing Bitcoin address types, abbreviated QA addresses and balances, plus Add account.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-bitcoin-receive",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-bitcoin-receive.png",
+                    "sha256": "32a850521bfa9fc72efda1b50e6073007cf44cbc0924676dd4f50bdd991df977",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Bitcoin Receive shows a fresh address, QR code, Copy and Verify, a next-address control, and funded address history.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-receive-device-verification",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-receive-device-verification.png",
+                    "sha256": "098c113fe0fb542b8b14af3f847c52429f7d61a0df73aac4d83c105cc306a392",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "metadata-mismatch-already-corrected",
+                    "visible_summary": "The modal is a missing-wallet-backup warning with Continue anyway and Create wallet backup; it is not device address approval.",
+                    "limitations": [],
+                    "finding_ids": ["qc-receive-preflight-known-erratum"]
+                },
+                {
+                    "screenshot_id": "web-t3t1-receive-address-device-prompt",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-receive-address-device-prompt.png",
+                    "sha256": "b8f13a22b11cbb0a58e40e470280f8d9fdc253ab36dedc7b33fe5cce538de2f6",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "After acknowledging the missing-backup warning, Suite displays Confirm on Trezor and View the address on your Trezor.",
+                    "limitations": [
+                        "App-side view-address instructions are visible; physical device address comparison and approval are not documented."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-application-settings",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-application-settings.png",
+                    "sha256": "a762c963ad03f00edb61717c1aac6d5b7445f19e42e24cb0146b11e1e60df1d3",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "partial-metadata-scope",
+                    "visible_summary": "The Application tab shows Auto-eject wallets, Language, Currency, Bitcoin units and the Labeling selector.",
+                    "limitations": [],
+                    "finding_ids": ["qc-app-settings-below-fold"]
+                },
+                {
+                    "screenshot_id": "web-t3t1-language-menu",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-language-menu.png",
+                    "sha256": "fb828870204471a9ecd0dc3b6ae81dcc20e063a7a2f8057ffb8504a700cfb1c3",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "partial-metadata-scope",
+                    "visible_summary": "System and several language options are visible; lower choices continue beyond the captured dropdown area.",
+                    "limitations": [],
+                    "finding_ids": ["qc-language-menu-clipped"]
+                },
+                {
+                    "screenshot_id": "web-t3t1-fiat-currency-menu",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-fiat-currency-menu.png",
+                    "sha256": "c256269245bf346fff9424bc38187494127bd181b22bd17467fb466e6e6a69b0",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "partial-metadata-scope",
+                    "visible_summary": "An opened Currency menu displays fiat codes and full names; no entered search query or filtered result is visible.",
+                    "limitations": [],
+                    "finding_ids": ["qc-currency-search-not-demonstrated"]
+                },
+                {
+                    "screenshot_id": "web-t3t1-bitcoin-units",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-bitcoin-units.png",
+                    "sha256": "3d8bd4da58ef001a1d9cc3c6bd601512c82fcfebe0018cd1788f134e21d81d47",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Bitcoin display units can be switched between Bitcoin and Satoshis.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-labeling-mode",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-labeling-mode.png",
+                    "sha256": "0c0047f1f12061f8582c87f0800dc79580309ae520d0b3ba5484a3e3987566bc",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Labeling modes are Off, Suite Sync, and Legacy.",
+                    "limitations": [
+                        "Only mode choices are shown; no successful synchronization, provider authentication or label migration is demonstrated."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-security-preferences",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-security-preferences.png",
+                    "sha256": "2268f6ff62ca0ed83701eec49c2d1138a257d5f053959e4f0511e30e36466a37",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Security preferences include MEV protection, dust phishing protection, and an editable fiat dust threshold with Save.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-advanced-preferences",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-advanced-preferences.png",
+                    "sha256": "a619b8722c6bc6a78f832a8f47d09ce779deba91271720ad60788cd28f21ac15",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Advanced preferences show address spacing, network reserves, testnet visibility, NFTs, and experimental-feature opt-in.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-experimental-preferences",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-experimental-preferences.png",
+                    "sha256": "ceb4b6e68fdbfa55c64472f7b891f05790e9ec0f3554649cae13a3f898b563ba",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Opt-in reveals Dropbox password migration, SLIP-24 clear signing, and a gap-limit preference, alongside experienced-user guidance.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-device-settings",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-device-settings.png",
+                    "sha256": "39f70f74ed4fb809b4414ab2ec6369990e787c63a134e95e3024b29de2d26ff8",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "partial-metadata-scope",
+                    "visible_summary": "Device settings show Wallet backup, Passphrase wallets, firmware Version/Type and Language; only the start of the Security/PIN section appears at the lower edge.",
+                    "limitations": [],
+                    "finding_ids": ["qc-device-security-below-fold"]
+                },
+                {
+                    "screenshot_id": "web-t3t1-device-customization",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-device-customization.png",
+                    "sha256": "31664280eb44b09d94a30e627eceab9bdfd39c81e78eef544542a050c516b531",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Safe 5 customization includes a name, wallpaper upload/gallery, four display rotations, brightness, and haptic feedback.",
+                    "limitations": [
+                        "All mapped customization controls are visible; physical haptic/brightness behavior is not verified."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-device-brightness-prompt",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-device-brightness-prompt.png",
+                    "sha256": "5580b40432f9da6cbc2b456665a2cfe6619df0b462e1f94a0f26f881cb9d029c",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Changing Safe 5 screen brightness opens instructions to complete the adjustment on the Trezor.",
+                    "limitations": [
+                        "App-side device instructions only; physical brightness output is not verified."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-homescreen-gallery",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-homescreen-gallery.png",
+                    "sha256": "66841e98f6d10dda267303bc66cc9fb6bd853c0a1c190b9f09b8b7d4643c57eb",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Safe 5 opens a model-sized color wallpaper gallery with selectable image previews.",
+                    "limitations": [
+                        "Gallery previews are visible; applying wallpaper and physical display output are not demonstrated."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-wipe-device-warning",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-wipe-device-warning.png",
+                    "sha256": "a1adf466a2d1df7e9f45f005b7673ee8a08207c97a89549b4d9a4e8d5d97cdc4",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "The wipe flow opens irreversible-erasure guidance, an I understand acknowledgement, and Go back; no wipe was executed.",
+                    "limitations": [
+                        "Safety preflight only; no erase action is claimed or required for screenshot completeness."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-custom-firmware-file",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-custom-firmware-file.png",
+                    "sha256": "9aad7684dd6313016bc56a236b44a53fe06df115694ec8f2b0de220a8d68ec17",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Custom firmware opens a compatible-file upload/drop area, official-release link, Continue, and Cancel; no firmware was uploaded.",
+                    "limitations": [
+                        "File chooser preflight only; no firmware upload or install result is shown."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-forget-device-confirmation",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-forget-device-confirmation.png",
+                    "sha256": "9177d06ff6dbc8d5f39cb585cdc49a5837667964d1d5af8a0c93338345fc3be8",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Forget opens a confirmation explaining that Suite removes its local device record while the wallet backup and funds remain intact.",
+                    "limitations": [
+                        "Confirmation preflight only; no device or OS pairing cleanup result is demonstrated."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-networks-list",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-networks-list.png",
+                    "sha256": "55ac8cfd3dbaa64e62f4b8a31b1c3dda7b42ebb5f4d0ae1ca202375a4754c7f5",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Network settings provide searchable network enablement with backend status and per-network advanced settings.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-bitcoin-backend-settings",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-bitcoin-backend-settings.png",
+                    "sha256": "e9593c0d607b5d99520479d05242aba0d969f9036ec83a3ab91b5108831ff451",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Bitcoin backend settings show backend type, custom URL rows with Add new/Remove, explorer selection, Connection Info, and Confirm/Cancel.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-backend-connection-info",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-backend-connection-info.png",
+                    "sha256": "fcc829e5a9122615e345a676887bb211a08c2cfcae4dccf27f4b934089acd35c",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Connection Info expands the active local backend URL, block hash/height, and backend version.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-connected-apps",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-connected-apps.png",
+                    "sha256": "2a3670bfc906d7cbb8d40ebffaf74300c20b6615e48b03ed8a1506dd9b5525fc",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Connected apps has separate WalletConnect and Trezor Connect tabs, an empty-state explanation, and Add with WalletConnect.",
+                    "limitations": [
+                        "Legitimate empty state and visible entry tabs; no established session or signing request is demonstrated."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-walletconnect-pairing",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-walletconnect-pairing.png",
+                    "sha256": "2bb04a0f07a385b9edf96900d2a79f5e8e91a68560cd05bfae3bfbf137291561",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "WalletConnect pairing accepts a connection string and offers Connect or Cancel; no external pairing was initiated.",
+                    "limitations": [
+                        "Empty input state with disabled Connect is intentional; no external connection was initiated."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-connect-permissions-empty",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-connect-permissions-empty.png",
+                    "sha256": "29b01c3fd26810626e055720b0c4f11c5f80cb0a1227d4cec05dd560eda1f2ec",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "The Trezor Connect tab provides the application-permission management surface; the fresh QA profile has no granted apps.",
+                    "limitations": [
+                        "Legitimate empty state; no grant/revoke/account-export action is demonstrated."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-account-overview",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-account-overview.png",
+                    "sha256": "e17daa5d7bcf57c8e8bd1039ab5be393019856d1ca5f0cf6526d663db10bafeb",
+                    "width": 1440,
+                    "height": 1089,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "partial-metadata-scope",
+                    "visible_summary": "Account Overview shows crypto/fiat balance, graph axes/range selectors, zero-valued summary cards in the selected range, and the asset action row.",
+                    "limitations": [],
+                    "finding_ids": ["qc-account-transactions-below-fold"]
+                },
+                {
+                    "screenshot_id": "web-t3t1-transaction-export-menu",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-transaction-export-menu.png",
+                    "sha256": "715f4c9b8c31ef627ae2c28557d796eea10fb2c98289f1aa3a62bafe0a10a901",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Transaction history export offers CSV, PDF, and JSON and explains that search filters the export.",
+                    "limitations": [
+                        "Export choices are readable, but menu and hover tooltips cover part of the transaction toolbar."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-transaction-details",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-transaction-details.png",
+                    "sha256": "8260e9c71019caed7084f39e9ca997c7c17f32a7dc13115127a79e2ee17703bd",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Transaction details show confirmation count, mined time, fee rate, transaction identifier, amount/fiat comparison, and an Inputs & outputs tab.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-transaction-inputs-outputs",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-transaction-inputs-outputs.png",
+                    "sha256": "f5519ff6414628119e64ddd5a19cebc1a0a27cd63d5a4795feb7db0a18ae4685",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "The transaction detail switches to its input/output breakdown for the synthetic Bitcoin transaction.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-account-details",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-account-details.png",
+                    "sha256": "6c05116d2af1a4f11250380e7990a9d28816bc17e0716301425d51722b97f4f1",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Account Details explains SegWit address type and derivation path and provides a privacy warning before Show public key.",
+                    "limitations": [
+                        "Show public key entry and warning are visible; public-key reveal was not captured."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-add-account-network",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-add-account-network.png",
+                    "sha256": "ed81d2e3d3ce4e90b21d17b0c5e9446ebfde80e17e14de64e7f623cb71ded4ca",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Add account lists active-network account counts and offers Enable for inactive networks, with network search and first-use guidance.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-add-account-types",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-add-account-types.png",
+                    "sha256": "50c8340d6df63ae4b9370e0640abde129b1fad1ad971b96adeb195e753e7256e",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Bitcoin account creation offers SegWit, Privacy, Taproot, Legacy SegWit, and Legacy, each with derivation and script-format information.",
+                    "limitations": [
+                        "Address-type options are visible; account creation is not demonstrated."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-activity-center",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-activity-center.png",
+                    "sha256": "5c4354addce7a02bc938db8bd89a654b8acc5b6ca6676ad3ce5fd6011a0873ff",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Activity separates Notifications, System, and Release notes; the fresh profile displays a notifications empty state.",
+                    "limitations": [
+                        "Legitimate notifications empty state; no actual transaction notification detail is captured."
+                    ],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-system-activity",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-system-activity.png",
+                    "sha256": "9c2f954825e5c31bf4d4cd4575c3259955b73f57d575dcdb70c6f3979311f54f",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "System activity lists device connection and canceled-action events with times and an All read action.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-release-notes",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-release-notes.png",
+                    "sha256": "bb5f5fcccc00ac09e3d16fabac4e13c8fc13aa409d63382a0a5e33854450207f",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "partial-metadata-scope",
+                    "visible_summary": "Current-version release notes show New features, Improvements and the upper Bug fixes list.",
+                    "limitations": [],
+                    "finding_ids": ["qc-release-notes-footer-below-fold"]
+                },
+                {
+                    "screenshot_id": "web-t3t1-guide",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-guide.png",
+                    "sha256": "83a2ccbd936764f8aa006f80d6e619a7fad9a6a81cd2540605c8e6084fa8a631",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "The help panel includes search, grouped guides, Help & Feedback, and Keyboard shortcuts.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-keyboard-shortcuts",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-keyboard-shortcuts.png",
+                    "sha256": "e2a18241f2f7b261f42e2b617e1453044ac3cc4edf49a1201f386caf39f433f5",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "partial-metadata-scope",
+                    "visible_summary": "Shortcut sidebar shows Security, Wallets & accounts, Navigation and the beginning of General.",
+                    "limitations": [],
+                    "finding_ids": ["qc-shortcuts-bottom-below-fold"]
+                },
+                {
+                    "screenshot_id": "web-t3t1-support-feedback",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-support-feedback.png",
+                    "sha256": "91009a1dbe16c7a0fb6793e7ba63578122a0695321e78c69dca82c2c9cabb775",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Support & Feedback offers Bug, Feedback, Trezor Support, Trezor Forum, and app/firmware version information.",
+                    "limitations": [],
+                    "finding_ids": []
+                },
+                {
+                    "screenshot_id": "web-t3t1-earn-opportunities",
+                    "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-earn-opportunities.png",
+                    "sha256": "4074debbb5a7b40c527eb7ac4f55050aa2d64dbea32edad364d7991d9b5ab900",
+                    "width": 1440,
+                    "height": 1000,
+                    "inspection": "Viewed in local 2×3 contact sheet; fee-presets and account-overview images additionally viewed full size.",
+                    "visual_status": "usable-for-visible-surface",
+                    "visible_summary": "Earn groups Ethereum, Solana, Tron, and Cardano staking alongside three DeFi Yield vaults, showing network-enable actions and minimum-balance guidance.",
+                    "limitations": [
+                        "Opportunity/enable-network entry states only; no staking or vault deposit/withdraw/claim workflow is shown."
+                    ],
+                    "finding_ids": []
+                }
+            ],
+            "findings": [
+                {
+                    "id": "qc-dashboard-below-fold",
+                    "screenshot_id": "web-t3t1-funded-dashboard",
+                    "observation_ids": ["runtime-web-t3t1-funded-dashboard"],
+                    "severity": "medium",
+                    "status": "open",
+                    "title": "Dashboard asset list is below the captured viewport",
+                    "visible_content": "Dashboard total, chart axes and range selectors, promotional card, and global asset actions are visible; no populated history series is rendered.",
+                    "unsupported_capture_claims": [
+                        "My assets list and Add networks control are below the image.",
+                        "Graph container is visible but no historical series is plotted; this is not a populated-history screenshot."
+                    ],
+                    "recapture_recommendations": [
+                        {
+                            "locator": "page.getByTestId('@dashboard/assets')",
+                            "focus": "scrollIntoViewIfNeeded(); inspect the resulting viewport before capture; move the pointer away from tooltips.",
+                            "purpose": "Capture My assets list/card and its actions.",
+                            "source": {
+                                "path": "packages/suite/src/views/dashboard/AssetsView/AssetsView.tsx",
+                                "line": 223,
+                                "link": "../../../../packages/suite/src/views/dashboard/AssetsView/AssetsView.tsx#L223"
+                            }
+                        },
+                        {
+                            "locator": "page.getByTestId('@dashboard/assets/enable-more-coins')",
+                            "focus": "scrollIntoViewIfNeeded(); inspect the resulting viewport before capture; move the pointer away from tooltips.",
+                            "purpose": "Capture Add networks entry with surrounding assets context.",
+                            "source": {
+                                "path": "packages/suite/src/views/dashboard/AssetsView/AssetsView.tsx",
+                                "line": 240,
+                                "link": "../../../../packages/suite/src/views/dashboard/AssetsView/AssetsView.tsx#L240"
+                            }
+                        }
+                    ],
+                    "interpretation": "Visual screenshot review only; this does not invalidate a separate DOM inspection or imply the feature implementation is absent.",
+                    "proposed_visible_feature_ids": [
+                        "wallet.portfolio",
+                        "wallet.portfolio.total",
+                        "wallet.portfolio.history",
+                        "wallet.portfolio.history.range",
+                        "wallet.portfolio.promotions"
+                    ]
+                },
+                {
+                    "id": "qc-fees-clipped",
+                    "screenshot_id": "web-t3t1-bitcoin-fee-presets",
+                    "observation_ids": ["runtime-web-t3t1-bitcoin-fee-presets"],
+                    "severity": "medium",
+                    "status": "open",
+                    "title": "Preset cards are cut off and Customize fee/Clear all are absent",
+                    "visible_content": "Expanded Bitcoin fee section shows only the upper parts of Low, Normal and High preset cards; the populated form and Coin control search are visible.",
+                    "unsupported_capture_claims": [
+                        "Preset amounts/rates are clipped at the bottom.",
+                        "Customize fee is below the image.",
+                        "Clear all is above the scrolled viewport."
+                    ],
+                    "recapture_recommendations": [
+                        {
+                            "locator": "page.getByTestId('@wallet/fee-details')",
+                            "focus": "scrollIntoViewIfNeeded(); inspect the resulting viewport before capture; move the pointer away from tooltips.",
+                            "purpose": "Capture all preset cards, confirmation estimates and fee amounts/rates.",
+                            "source": {
+                                "path": "packages/suite/src/components/wallet/Fees/CollapsibleFees/StandardFee/BitcoinFeeCards.tsx",
+                                "line": 51,
+                                "link": "../../../../packages/suite/src/components/wallet/Fees/CollapsibleFees/StandardFee/BitcoinFeeCards.tsx#L51"
+                            }
+                        },
+                        {
+                            "locator": "page.getByTestId('@wallet/fees/select-custom-fee')",
+                            "focus": "scrollIntoViewIfNeeded(); inspect the resulting viewport before capture; move the pointer away from tooltips.",
+                            "purpose": "Capture Customize fee together with fee cards.",
+                            "source": {
+                                "path": "packages/suite/src/components/wallet/Fees/CollapsibleFees/FeeLevels/StandardFeePicker.tsx",
+                                "line": 21,
+                                "link": "../../../../packages/suite/src/components/wallet/Fees/CollapsibleFees/FeeLevels/StandardFeePicker.tsx#L21"
+                            }
+                        },
+                        {
+                            "locator": "page.getByTestId('clear-form')",
+                            "focus": "scrollIntoViewIfNeeded(); inspect the resulting viewport before capture; move the pointer away from tooltips.",
+                            "purpose": "Take a separate send-header capture of Clear all; do not assume it fits with the fee section.",
+                            "source": {
+                                "path": "packages/suite/src/views/wallet/send/SendHeader.tsx",
+                                "line": 171,
+                                "link": "../../../../packages/suite/src/views/wallet/send/SendHeader.tsx#L171"
+                            }
+                        }
+                    ],
+                    "interpretation": "Visual screenshot review only; this does not invalidate a separate DOM inspection or imply the feature implementation is absent.",
+                    "proposed_visible_feature_ids": [
+                        "wallet.send.fees",
+                        "wallet.send.fees.preset",
+                        "wallet.send.coin-control.search"
+                    ]
+                },
+                {
+                    "id": "qc-app-settings-below-fold",
+                    "screenshot_id": "web-t3t1-application-settings",
+                    "observation_ids": ["runtime-web-t3t1-application-settings"],
+                    "severity": "medium",
+                    "status": "open",
+                    "title": "Application settings overview is mapped to off-screen controls",
+                    "visible_content": "The Application tab shows Auto-eject wallets, Language, Currency, Bitcoin units and the Labeling selector.",
+                    "unsupported_capture_claims": [
+                        "Theme, analytics, application log/reset/version, security, advanced and experimental controls are outside this PNG viewport.",
+                        "Later security/advanced/experimental screenshots cover some controls; this overview itself does not."
+                    ],
+                    "recapture_recommendations": [
+                        {
+                            "locator": "page.getByTestId('@theme/color-scheme-select')",
+                            "focus": "scrollIntoViewIfNeeded(); inspect the resulting viewport before capture; move the pointer away from tooltips.",
+                            "purpose": "Capture appearance selector and choices.",
+                            "source": {
+                                "path": "packages/suite/src/views/settings/SettingsGeneral/Theme.tsx",
+                                "line": 107,
+                                "link": "../../../../packages/suite/src/views/settings/SettingsGeneral/Theme.tsx#L107"
+                            }
+                        },
+                        {
+                            "locator": "page.getByTestId('@analytics/toggle-switch')",
+                            "focus": "scrollIntoViewIfNeeded(); inspect the resulting viewport before capture; move the pointer away from tooltips.",
+                            "purpose": "Capture analytics opt-in switch and explanatory text.",
+                            "source": {
+                                "path": "packages/suite/src/views/settings/SettingsGeneral/Analytics.tsx",
+                                "line": 33,
+                                "link": "../../../../packages/suite/src/views/settings/SettingsGeneral/Analytics.tsx#L33"
+                            }
+                        },
+                        {
+                            "locator": "page.getByTestId('@settings/show-log-button')",
+                            "focus": "scrollIntoViewIfNeeded(); inspect the resulting viewport before capture; move the pointer away from tooltips.",
+                            "purpose": "Capture Show log entry; any opened logs must be reviewed for fixture-only safe content.",
+                            "source": {
+                                "path": "packages/suite/src/views/settings/SettingsGeneral/ShowApplicationLog.tsx",
+                                "line": 26,
+                                "link": "../../../../packages/suite/src/views/settings/SettingsGeneral/ShowApplicationLog.tsx#L26"
+                            }
+                        },
+                        {
+                            "locator": "page.getByTestId('@settings/reset-app-button')",
+                            "focus": "scrollIntoViewIfNeeded(); inspect the resulting viewport before capture; move the pointer away from tooltips.",
+                            "purpose": "Capture reset entry without executing reset.",
+                            "source": {
+                                "path": "packages/suite/src/views/settings/SettingsGeneral/ClearStorage.tsx",
+                                "line": 29,
+                                "link": "../../../../packages/suite/src/views/settings/SettingsGeneral/ClearStorage.tsx#L29"
+                            }
+                        }
+                    ],
+                    "interpretation": "Visual screenshot review only; this does not invalidate a separate DOM inspection or imply the feature implementation is absent.",
+                    "proposed_visible_feature_ids": [
+                        "app-settings.auto-eject",
+                        "app-settings.language",
+                        "app-settings.fiat-currency",
+                        "app-settings.bitcoin-unit",
+                        "labeling.mode"
+                    ]
+                },
+                {
+                    "id": "qc-device-security-below-fold",
+                    "screenshot_id": "web-t3t1-device-settings",
+                    "observation_ids": ["runtime-web-t3t1-device-settings"],
+                    "severity": "medium",
+                    "status": "open",
+                    "title": "PIN, Safety checks and authenticity controls are outside the viewport",
+                    "visible_content": "Device settings show Wallet backup, Passphrase wallets, firmware Version/Type and Language; only the start of the Security/PIN section appears at the lower edge.",
+                    "unsupported_capture_claims": [
+                        "PIN toggle is not visibly usable in this image.",
+                        "Safety checks and Check device are below the image.",
+                        "Check device is visibly present at the top of the later customization screenshot, but that does not make it visible in this PNG."
+                    ],
+                    "recapture_recommendations": [
+                        {
+                            "locator": "page.getByTestId('@settings/device/pin-switch')",
+                            "focus": "scrollIntoViewIfNeeded(); inspect the resulting viewport before capture; move the pointer away from tooltips.",
+                            "purpose": "Capture full PIN section; no PIN values or entry screens.",
+                            "source": {
+                                "path": "packages/suite/src/views/settings/SettingsDevice/PinProtection.tsx",
+                                "line": 52,
+                                "link": "../../../../packages/suite/src/views/settings/SettingsDevice/PinProtection.tsx#L52"
+                            }
+                        },
+                        {
+                            "locator": "page.getByTestId('@settings/device/safety-checks-button')",
+                            "focus": "scrollIntoViewIfNeeded(); inspect the resulting viewport before capture; move the pointer away from tooltips.",
+                            "purpose": "Capture safety-check entry, optionally its current-value modal without making a change.",
+                            "source": {
+                                "path": "packages/suite/src/views/settings/SettingsDevice/SafetyChecks.tsx",
+                                "line": 30,
+                                "link": "../../../../packages/suite/src/views/settings/SettingsDevice/SafetyChecks.tsx#L30"
+                            }
+                        },
+                        {
+                            "locator": "page.getByRole('button', { name: 'Check device', exact: true })",
+                            "focus": "scrollIntoViewIfNeeded(); capture Check device and its surrounding explanatory text.",
+                            "purpose": "Capture device authenticity entry.",
+                            "source": {
+                                "path": "packages/suite/src/views/settings/SettingsDevice/AuthenticateDevice.tsx",
+                                "line": 38,
+                                "link": "../../../../packages/suite/src/views/settings/SettingsDevice/AuthenticateDevice.tsx#L38"
+                            }
+                        }
+                    ],
+                    "interpretation": "Visual screenshot review only; this does not invalidate a separate DOM inspection or imply the feature implementation is absent.",
+                    "proposed_visible_feature_ids": [
+                        "device-settings.backup",
+                        "device-settings.passphrase",
+                        "device-settings.firmware-version",
+                        "device-settings.firmware-type",
+                        "device-settings.language"
+                    ]
+                },
+                {
+                    "id": "qc-account-transactions-below-fold",
+                    "screenshot_id": "web-t3t1-account-overview",
+                    "observation_ids": ["runtime-web-t3t1-account-overview"],
+                    "severity": "medium",
+                    "status": "open",
+                    "title": "Account overview does not show the transaction toolbar or list",
+                    "visible_content": "Account Overview shows crypto/fiat balance, graph axes/range selectors, zero-valued summary cards in the selected range, and the asset action row.",
+                    "unsupported_capture_claims": [
+                        "Transaction list, search, suspicious-filter and export controls are below the captured viewport.",
+                        "No historical graph series is visible; this does not establish a populated balance-history graph.",
+                        "The later export-menu screenshot shows a transaction and search/export controls, but its menu/tooltips cover part of the filter area."
+                    ],
+                    "recapture_recommendations": [
+                        {
+                            "locator": "page.getByTestId('@wallet/accounts/search-icon')",
+                            "focus": "scrollIntoViewIfNeeded(); inspect the resulting viewport before capture; move the pointer away from tooltips.",
+                            "purpose": "Scroll the transaction toolbar into view, clear hover tooltips, and capture toolbar plus at least one synthetic transaction row.",
+                            "source": {
+                                "path": "packages/suite/src/views/wallet/transactions/TransactionList/TransactionListActions/TransactionListActions.tsx",
+                                "line": 64,
+                                "link": "../../../../packages/suite/src/views/wallet/transactions/TransactionList/TransactionListActions/TransactionListActions.tsx#L64"
+                            }
+                        },
+                        {
+                            "locator": "page.getByTestId('@wallet/accounts/hide-scam-transactions/dropdown')",
+                            "focus": "scrollIntoViewIfNeeded(); inspect the resulting viewport before capture; move the pointer away from tooltips.",
+                            "purpose": "Capture suspicious-filter entry or its menu unobscured.",
+                            "source": {
+                                "path": "packages/suite/src/views/wallet/transactions/TransactionList/TransactionListActions/FilterAction.tsx",
+                                "line": 87,
+                                "link": "../../../../packages/suite/src/views/wallet/transactions/TransactionList/TransactionListActions/FilterAction.tsx#L87"
+                            }
+                        },
+                        {
+                            "locator": "page.getByTestId('@wallet/accounts/export-transactions/dropdown')",
+                            "focus": "scrollIntoViewIfNeeded(); inspect the resulting viewport before capture; move the pointer away from tooltips.",
+                            "purpose": "Capture export entry without covering the other toolbar controls.",
+                            "source": {
+                                "path": "packages/suite/src/views/wallet/transactions/TransactionList/TransactionListActions/ExportAction.tsx",
+                                "line": 92,
+                                "link": "../../../../packages/suite/src/views/wallet/transactions/TransactionList/TransactionListActions/ExportAction.tsx#L92"
+                            }
+                        }
+                    ],
+                    "interpretation": "Visual screenshot review only; this does not invalidate a separate DOM inspection or imply the feature implementation is absent.",
+                    "proposed_visible_feature_ids": [
+                        "wallet.accounts.overview",
+                        "wallet.accounts.overview.balance",
+                        "wallet.accounts.overview.history-graph",
+                        "wallet.accounts.overview.summary"
+                    ]
+                },
+                {
+                    "id": "qc-receive-preflight-known-erratum",
+                    "screenshot_id": "web-t3t1-receive-device-verification",
+                    "observation_ids": ["runtime-web-t3t1-receive-device-verification"],
+                    "severity": "high",
+                    "status": "already-corrected",
+                    "title": "Known caption mismatch is already corrected",
+                    "visible_content": "The modal is a missing-wallet-backup warning with Continue anyway and Create wallet backup; it is not device address approval.",
+                    "unsupported_capture_claims": [
+                        "Original caption described receive-address approval."
+                    ],
+                    "recapture_recommendations": [],
+                    "interpretation": "Visual screenshot review only; this does not invalidate a separate DOM inspection or imply the feature implementation is absent."
+                },
+                {
+                    "id": "qc-language-menu-clipped",
+                    "screenshot_id": "web-t3t1-language-menu",
+                    "observation_ids": ["runtime-web-t3t1-language-menu"],
+                    "severity": "low",
+                    "status": "open",
+                    "title": "Language dropdown shows a scrollable subset, not every shipped language",
+                    "visible_content": "System and several language options are visible; lower choices continue beyond the captured dropdown area.",
+                    "unsupported_capture_claims": [
+                        "Caption says all shipped language choices, which are not all visible."
+                    ],
+                    "recapture_recommendations": [
+                        {
+                            "locator": "page.getByRole('combobox').filter(...) or the Language section selector; inspect actual DOM locator first",
+                            "focus": "Take a second capture after scrolling the dropdown list, or narrow the description to the visible subset.",
+                            "purpose": "Document remaining language options without claiming an unseen complete list.",
+                            "source": {
+                                "path": "packages/suite/src/views/settings/SettingsGeneral/Language.tsx",
+                                "line": 64,
+                                "link": "../../../../packages/suite/src/views/settings/SettingsGeneral/Language.tsx#L64"
+                            },
+                            "exact_locator_update": "page.getByTestId('@settings/language-select')",
+                            "exact_locator_source": {
+                                "path": "packages/suite/src/views/settings/SettingsGeneral/Language.tsx",
+                                "line": 123
+                            }
+                        }
+                    ],
+                    "interpretation": "Visual screenshot review only; this does not invalidate a separate DOM inspection or imply the feature implementation is absent."
+                },
+                {
+                    "id": "qc-currency-search-not-demonstrated",
+                    "screenshot_id": "web-t3t1-fiat-currency-menu",
+                    "observation_ids": ["runtime-web-t3t1-fiat-currency-menu"],
+                    "severity": "low",
+                    "status": "open",
+                    "title": "Currency options are visible but search interaction is not demonstrated",
+                    "visible_content": "An opened Currency menu displays fiat codes and full names; no entered search query or filtered result is visible.",
+                    "unsupported_capture_claims": [
+                        "Caption calls selection searchable; the screenshot alone does not establish successful search interaction."
+                    ],
+                    "recapture_recommendations": [
+                        {
+                            "locator": "Currency selector in Settings > Application > Localization",
+                            "focus": "Focus the selector, enter a harmless currency-code query and capture the filtered list; preserve the original menu screenshot.",
+                            "purpose": "Show search behavior separately from opening choices.",
+                            "source": {
+                                "path": "packages/suite/src/views/settings/SettingsGeneral/BaseCurrency.tsx",
+                                "line": 20,
+                                "link": "../../../../packages/suite/src/views/settings/SettingsGeneral/BaseCurrency.tsx#L20"
+                            },
+                            "exact_locator_update": "page.getByTestId('@settings/fiat-select')",
+                            "exact_locator_source": {
+                                "path": "packages/suite/src/views/settings/SettingsGeneral/BaseCurrency.tsx",
+                                "line": 70
+                            }
+                        }
+                    ],
+                    "interpretation": "Visual screenshot review only; this does not invalidate a separate DOM inspection or imply the feature implementation is absent."
+                },
+                {
+                    "id": "qc-release-notes-footer-below-fold",
+                    "screenshot_id": "web-t3t1-release-notes",
+                    "observation_ids": ["runtime-web-t3t1-release-notes"],
+                    "severity": "low",
+                    "status": "open",
+                    "title": "Full changelog link is below the captured notes",
+                    "visible_content": "Current-version release notes show New features, Improvements and the upper Bug fixes list.",
+                    "unsupported_capture_claims": [
+                        "The link to the full changelog is below the screenshot."
+                    ],
+                    "recapture_recommendations": [
+                        {
+                            "locator": "page.getByRole('link', { name: 'Open the changelog on GitHub', exact: true })",
+                            "focus": "scrollIntoViewIfNeeded(); capture the release-notes footer without opening the external link.",
+                            "purpose": "Document actual changelog link.",
+                            "source": {
+                                "path": "packages/suite/src/components/suite/notifications/ReleaseNotes/ReleaseNotes.tsx",
+                                "line": 28,
+                                "link": "../../../../packages/suite/src/components/suite/notifications/ReleaseNotes/ReleaseNotes.tsx#L28"
+                            }
+                        }
+                    ],
+                    "interpretation": "Visual screenshot review only; this does not invalidate a separate DOM inspection or imply the feature implementation is absent."
+                },
+                {
+                    "id": "qc-shortcuts-bottom-below-fold",
+                    "screenshot_id": "web-t3t1-keyboard-shortcuts",
+                    "observation_ids": ["runtime-web-t3t1-keyboard-shortcuts"],
+                    "severity": "low",
+                    "status": "open",
+                    "title": "General and keyboard-focus shortcuts continue below the image",
+                    "visible_content": "Shortcut sidebar shows Security, Wallets & accounts, Navigation and the beginning of General.",
+                    "unsupported_capture_claims": [
+                        "Keyboard focus controls are not visible; most General rows extend below the viewport."
+                    ],
+                    "recapture_recommendations": [
+                        {
+                            "locator": "page.getByText('Focus next element', { exact: true })",
+                            "focus": "scrollIntoViewIfNeeded() inside the help drawer; capture the lower General and focus-control sections.",
+                            "purpose": "Document remaining shortcut groups.",
+                            "source": {
+                                "path": "packages/suite/src/components/guide/GuideShortcuts.tsx",
+                                "line": 164,
+                                "link": "../../../../packages/suite/src/components/guide/GuideShortcuts.tsx#L164"
+                            }
+                        }
+                    ],
+                    "interpretation": "Visual screenshot review only; this does not invalidate a separate DOM inspection or imply the feature implementation is absent."
+                }
+            ],
+            "planned_checklist_comparison": {
+                "source": "../parts/runtime-checklist.json",
+                "area_linkage": [
+                    {
+                        "area_id": "app-onboarding",
+                        "name": "Application onboarding",
+                        "planned_feature_nodes": 5,
+                        "planned_baseline_leaf_nodes": 4,
+                        "record_linked_leaf_nodes": 1,
+                        "not_record_linked_leaf_ids": [
+                            "mobile.onboarding.biometrics",
+                            "mobile.onboarding.residence",
+                            "mobile.onboarding.welcome"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 1,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "connection",
+                        "name": "Device connection and authorization",
+                        "planned_feature_nodes": 19,
+                        "planned_baseline_leaf_nodes": 16,
+                        "record_linked_leaf_nodes": 2,
+                        "not_record_linked_leaf_ids": [
+                            "connection.bluetooth.manual",
+                            "connection.bluetooth.repair",
+                            "connection.bootloader",
+                            "connection.bridge",
+                            "connection.local-network",
+                            "connection.mobile-browser",
+                            "connection.offline",
+                            "connection.payment-uri",
+                            "connection.pin-unlock",
+                            "connection.thp",
+                            "connection.troubleshooting",
+                            "connection.udev",
+                            "connection.usb",
+                            "connection.used-elsewhere"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 2,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "onboarding",
+                        "name": "Device onboarding",
+                        "planned_feature_nodes": 28,
+                        "planned_baseline_leaf_nodes": 23,
+                        "record_linked_leaf_nodes": 11,
+                        "not_record_linked_leaf_ids": [
+                            "mobile.device-onboarding.backup-failure",
+                            "mobile.device-onboarding.create-or-recover",
+                            "mobile.device-onboarding.recovery-instructions",
+                            "mobile.device-onboarding.security",
+                            "onboarding.authenticity",
+                            "onboarding.feedback",
+                            "onboarding.new-wallet.nfc",
+                            "onboarding.recovery.advanced",
+                            "onboarding.recovery.on-device",
+                            "onboarding.recovery.retry",
+                            "onboarding.recovery.standard",
+                            "onboarding.recovery.word-count"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 11,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "wallet-access",
+                        "name": "Wallet and device access",
+                        "planned_feature_nodes": 13,
+                        "planned_baseline_leaf_nodes": 11,
+                        "record_linked_leaf_nodes": 0,
+                        "not_record_linked_leaf_ids": [
+                            "wallet-access.eject",
+                            "wallet-access.hidden.existing",
+                            "wallet-access.hidden.new",
+                            "wallet-access.passphrase.device",
+                            "wallet-access.passphrase.host",
+                            "wallet-access.passphrase.mismatch",
+                            "wallet-access.remember",
+                            "wallet-access.rename",
+                            "wallet-access.session-conflict",
+                            "wallet-access.standard",
+                            "wallet-access.switch"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 0,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "wallet.portfolio",
+                        "name": "Portfolio and asset overview",
+                        "planned_feature_nodes": 32,
+                        "planned_baseline_leaf_nodes": 25,
+                        "record_linked_leaf_nodes": 2,
+                        "not_record_linked_leaf_ids": [
+                            "mobile.portfolio.feedback",
+                            "mobile.portfolio.inspect-chart",
+                            "mobile.portfolio.questionnaire",
+                            "mobile.portfolio.refresh",
+                            "wallet.portfolio.asset-first.grouping",
+                            "wallet.portfolio.asset-first.nfts",
+                            "wallet.portfolio.asset-first.small-balances",
+                            "wallet.portfolio.asset-first.value-change",
+                            "wallet.portfolio.assets.details.accounts",
+                            "wallet.portfolio.assets.details.balance",
+                            "wallet.portfolio.assets.details.explorer",
+                            "wallet.portfolio.assets.details.history",
+                            "wallet.portfolio.assets.details.identifiers",
+                            "wallet.portfolio.assets.details.market-price",
+                            "wallet.portfolio.assets.details.price-history",
+                            "wallet.portfolio.assets.details.price-range",
+                            "wallet.portfolio.assets.layout",
+                            "wallet.portfolio.discovery-retry",
+                            "wallet.portfolio.discreet",
+                            "wallet.portfolio.hidden-assets.unhide",
+                            "wallet.portfolio.history.visibility",
+                            "wallet.portfolio.promotions.carousel",
+                            "wallet.portfolio.promotions.dismiss"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 2,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "wallet.accounts",
+                        "name": "Account management",
+                        "planned_feature_nodes": 33,
+                        "planned_baseline_leaf_nodes": 27,
+                        "record_linked_leaf_nodes": 12,
+                        "not_record_linked_leaf_ids": [
+                            "mobile.accounts.import.address",
+                            "mobile.accounts.import.duplicate",
+                            "mobile.accounts.import.manual-xpub",
+                            "mobile.accounts.import.network",
+                            "mobile.accounts.import.qr",
+                            "mobile.accounts.import.wrong-key",
+                            "mobile.accounts.overview.remove",
+                            "wallet.accounts.details.nonce",
+                            "wallet.accounts.labels.export",
+                            "wallet.accounts.labels.import",
+                            "wallet.accounts.network-filter",
+                            "wallet.accounts.overview.tron-resources",
+                            "wallet.accounts.rename",
+                            "wallet.accounts.search",
+                            "wallet.accounts.select"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 12,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "wallet.send",
+                        "name": "Send",
+                        "planned_feature_nodes": 61,
+                        "planned_baseline_leaf_nodes": 53,
+                        "record_linked_leaf_nodes": 23,
+                        "not_record_linked_leaf_ids": [
+                            "mobile.send.address-review",
+                            "mobile.send.destination-tag",
+                            "mobile.send.fee.eip1559",
+                            "mobile.send.tag-review",
+                            "wallet.send.advanced.evm-data",
+                            "wallet.send.advanced.evm-nonce",
+                            "wallet.send.advanced.solana-memo",
+                            "wallet.send.advanced.stellar-memo",
+                            "wallet.send.advanced.tron-data",
+                            "wallet.send.advanced.tron-note",
+                            "wallet.send.advanced.xrp-tag",
+                            "wallet.send.coin-control.privacy",
+                            "wallet.send.coin-control.select-all",
+                            "wallet.send.fees.gas-limit",
+                            "wallet.send.fees.gas-price",
+                            "wallet.send.fees.max-fee",
+                            "wallet.send.fees.priority-fee",
+                            "wallet.send.fees.tron-limit",
+                            "wallet.send.form.asset",
+                            "wallet.send.form.bitcoin-unit",
+                            "wallet.send.form.ens",
+                            "wallet.send.form.ens-reverse",
+                            "wallet.send.form.own-account",
+                            "wallet.send.form.qr",
+                            "wallet.send.form.recipient-history",
+                            "wallet.send.network-safety.cardano",
+                            "wallet.send.review.download-raw",
+                            "wallet.send.review.outputs",
+                            "wallet.send.review.signed-raw",
+                            "wallet.send.review.solana-expiry"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 22,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "wallet.receive",
+                        "name": "Receive",
+                        "planned_feature_nodes": 18,
+                        "planned_baseline_leaf_nodes": 16,
+                        "record_linked_leaf_nodes": 9,
+                        "not_record_linked_leaf_ids": [
+                            "mobile.receive.reuse",
+                            "mobile.receive.tag",
+                            "wallet.receive.copy-verification",
+                            "wallet.receive.global.network-setup",
+                            "wallet.receive.history-detail",
+                            "wallet.receive.label",
+                            "wallet.receive.share"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 9,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "wallet.transactions",
+                        "name": "Transaction history",
+                        "planned_feature_nodes": 22,
+                        "planned_baseline_leaf_nodes": 19,
+                        "record_linked_leaf_nodes": 10,
+                        "not_record_linked_leaf_ids": [
+                            "wallet.transactions.cancel",
+                            "wallet.transactions.details.chained",
+                            "wallet.transactions.details.data",
+                            "wallet.transactions.details.scam-override",
+                            "wallet.transactions.labels",
+                            "wallet.transactions.older-history",
+                            "wallet.transactions.pagination",
+                            "wallet.transactions.pending",
+                            "wallet.transactions.speed-up"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 7,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "wallet.tokens",
+                        "name": "Token management",
+                        "planned_feature_nodes": 16,
+                        "planned_baseline_leaf_nodes": 14,
+                        "record_linked_leaf_nodes": 0,
+                        "not_record_linked_leaf_ids": [
+                            "mobile.accounts.tokens.visibility",
+                            "wallet.tokens.defi",
+                            "wallet.tokens.explorer",
+                            "wallet.tokens.hidden",
+                            "wallet.tokens.hide",
+                            "wallet.tokens.history",
+                            "wallet.tokens.holdings",
+                            "wallet.tokens.identifiers",
+                            "wallet.tokens.search",
+                            "wallet.tokens.stellar.activate",
+                            "wallet.tokens.stellar.deactivate",
+                            "wallet.tokens.stellar.inactive",
+                            "wallet.tokens.stellar.manual",
+                            "wallet.tokens.unhide"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 0,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "wallet.nfts",
+                        "name": "NFT viewing and visibility",
+                        "planned_feature_nodes": 8,
+                        "planned_baseline_leaf_nodes": 7,
+                        "record_linked_leaf_nodes": 0,
+                        "not_record_linked_leaf_ids": [
+                            "wallet.nfts.collections",
+                            "wallet.nfts.explorer",
+                            "wallet.nfts.hidden",
+                            "wallet.nfts.history",
+                            "wallet.nfts.identifier",
+                            "wallet.nfts.search",
+                            "wallet.nfts.visibility"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 0,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "wallet.sign-verify",
+                        "name": "Sign and verify messages",
+                        "planned_feature_nodes": 8,
+                        "planned_baseline_leaf_nodes": 7,
+                        "record_linked_leaf_nodes": 0,
+                        "not_record_linked_leaf_ids": [
+                            "wallet.sign-verify.address",
+                            "wallet.sign-verify.copy",
+                            "wallet.sign-verify.cose",
+                            "wallet.sign-verify.format",
+                            "wallet.sign-verify.hex",
+                            "wallet.sign-verify.sign",
+                            "wallet.sign-verify.verify"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 0,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "trade",
+                        "name": "Trade",
+                        "planned_feature_nodes": 63,
+                        "planned_baseline_leaf_nodes": 57,
+                        "record_linked_leaf_nodes": 0,
+                        "not_record_linked_leaf_ids": [
+                            "mobile.trade.buy.preview",
+                            "mobile.trade.sell.preview",
+                            "mobile.trade.swap.preview",
+                            "trade.buy.amount",
+                            "trade.buy.asset",
+                            "trade.buy.country",
+                            "trade.buy.fiat-currency",
+                            "trade.buy.network-filter",
+                            "trade.buy.payment-method",
+                            "trade.buy.payment-status",
+                            "trade.buy.provider",
+                            "trade.buy.provider-checkout",
+                            "trade.buy.state",
+                            "trade.concierge",
+                            "trade.contextual-entry",
+                            "trade.history.details",
+                            "trade.history.export",
+                            "trade.history.filter",
+                            "trade.network-reserve",
+                            "trade.receive.activate-network",
+                            "trade.receive.add-account",
+                            "trade.receive.address-search",
+                            "trade.receive.external-address",
+                            "trade.receive.scan-address",
+                            "trade.receive.stellar-activation",
+                            "trade.receive.suite-account",
+                            "trade.receive.tag-memo",
+                            "trade.receive.utxo-address",
+                            "trade.sell.amount",
+                            "trade.sell.asset",
+                            "trade.sell.bank-account",
+                            "trade.sell.confirm-send",
+                            "trade.sell.fee",
+                            "trade.sell.payout-currency",
+                            "trade.sell.payout-method",
+                            "trade.sell.provider",
+                            "trade.sell.residence",
+                            "trade.sell.status",
+                            "trade.swap.amount",
+                            "trade.swap.approval",
+                            "trade.swap.approval-fee",
+                            "trade.swap.approval-limit",
+                            "trade.swap.cex",
+                            "trade.swap.clear-signing",
+                            "trade.swap.dex",
+                            "trade.swap.mev-status",
+                            "trade.swap.minimum-received",
+                            "trade.swap.network-fee",
+                            "trade.swap.pair",
+                            "trade.swap.provider",
+                            "trade.swap.provider-filter",
+                            "trade.swap.rate-type",
+                            "trade.swap.refresh",
+                            "trade.swap.reverse-pair",
+                            "trade.swap.revoke",
+                            "trade.swap.slippage",
+                            "trade.swap.status"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 0,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "earn",
+                        "name": "Earn",
+                        "planned_feature_nodes": 66,
+                        "planned_baseline_leaf_nodes": 58,
+                        "record_linked_leaf_nodes": 0,
+                        "not_record_linked_leaf_ids": [
+                            "earn.opportunities.account",
+                            "earn.opportunities.apy",
+                            "earn.staking.ada.claim",
+                            "earn.staking.ada.delegate",
+                            "earn.staking.ada.provider",
+                            "earn.staking.ada.undelegate",
+                            "earn.staking.ada.voting",
+                            "earn.staking.amount",
+                            "earn.staking.consent",
+                            "earn.staking.eth.activation",
+                            "earn.staking.eth.claim",
+                            "earn.staking.eth.deposit",
+                            "earn.staking.eth.instant",
+                            "earn.staking.eth.transactions",
+                            "earn.staking.eth.unstake",
+                            "earn.staking.explainer",
+                            "earn.staking.fees",
+                            "earn.staking.sol.claim",
+                            "earn.staking.sol.external",
+                            "earn.staking.sol.rewards",
+                            "earn.staking.sol.stake",
+                            "earn.staking.sol.unstake",
+                            "earn.staking.trx.allocation",
+                            "earn.staking.trx.claim",
+                            "earn.staking.trx.freeze",
+                            "earn.staking.trx.reassign",
+                            "earn.staking.trx.representative",
+                            "earn.staking.trx.resource",
+                            "earn.staking.trx.resources",
+                            "earn.staking.trx.unfreeze",
+                            "earn.staking.trx.vote",
+                            "earn.staking.trx.withdraw",
+                            "earn.yield.approval",
+                            "earn.yield.approval-edit",
+                            "earn.yield.bonus-rewards",
+                            "earn.yield.claim",
+                            "earn.yield.claim-fee-warning",
+                            "earn.yield.deposit",
+                            "earn.yield.deposit-amount",
+                            "earn.yield.explanation",
+                            "earn.yield.pending",
+                            "earn.yield.position",
+                            "earn.yield.provider-consent",
+                            "earn.yield.standalone-unwrap",
+                            "earn.yield.standalone-wrap",
+                            "earn.yield.unwrap",
+                            "earn.yield.withdraw",
+                            "earn.yield.withdraw-max",
+                            "earn.yield.withdraw-unit",
+                            "earn.yield.wrap",
+                            "mobile.earn.staking.claim",
+                            "mobile.earn.staking.review",
+                            "mobile.earn.staking.stake",
+                            "mobile.earn.staking.unstake",
+                            "mobile.earn.staking.view-only",
+                            "mobile.earn.yield.claim-review",
+                            "mobile.earn.yield.review",
+                            "mobile.earn.yield.withdraw-review"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 0,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "connect",
+                        "name": "Connected applications",
+                        "planned_feature_nodes": 21,
+                        "planned_baseline_leaf_nodes": 17,
+                        "record_linked_leaf_nodes": 1,
+                        "not_record_linked_leaf_ids": [
+                            "connect.permissions.account",
+                            "connect.permissions.address",
+                            "connect.permissions.grant",
+                            "connect.permissions.remember",
+                            "connect.permissions.revoke-all",
+                            "connect.permissions.revoke-one",
+                            "connect.walletconnect.account-switch",
+                            "connect.walletconnect.activate-network",
+                            "connect.walletconnect.disconnect",
+                            "connect.walletconnect.fees",
+                            "connect.walletconnect.message-signing",
+                            "connect.walletconnect.proposal",
+                            "connect.walletconnect.risk",
+                            "connect.walletconnect.simulation",
+                            "connect.walletconnect.typed-data",
+                            "mobile.connect.walletconnect.scan"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 1,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "labeling",
+                        "name": "Labeling and secure synchronization",
+                        "planned_feature_nodes": 20,
+                        "planned_baseline_leaf_nodes": 16,
+                        "record_linked_leaf_nodes": 1,
+                        "not_record_linked_leaf_ids": [
+                            "labeling.legacy.disconnect",
+                            "labeling.legacy.dropbox",
+                            "labeling.legacy.google",
+                            "labeling.legacy.local",
+                            "labeling.legacy.return",
+                            "labeling.password-manager.decrypt",
+                            "labeling.password-manager.entries",
+                            "labeling.password-manager.filter",
+                            "labeling.password-manager.provider",
+                            "labeling.password-manager.remove",
+                            "labeling.suite-sync.authorize",
+                            "labeling.suite-sync.local-fallback",
+                            "labeling.suite-sync.migration",
+                            "labeling.suite-sync.server",
+                            "labeling.suite-sync.status"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 1,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "app-settings",
+                        "name": "Application settings",
+                        "planned_feature_nodes": 43,
+                        "planned_baseline_leaf_nodes": 33,
+                        "record_linked_leaf_nodes": 17,
+                        "not_record_linked_leaf_ids": [
+                            "app-settings.auto-start",
+                            "app-settings.automatic-updates",
+                            "app-settings.biometrics",
+                            "app-settings.changelog",
+                            "app-settings.check-update",
+                            "app-settings.database-blocking",
+                            "app-settings.database-recovery",
+                            "app-settings.early-access",
+                            "app-settings.experimental-networks",
+                            "app-settings.mcp",
+                            "app-settings.mcp-token",
+                            "app-settings.onion-links",
+                            "app-settings.tor",
+                            "app-settings.tor-external",
+                            "app-settings.tray",
+                            "mobile.settings.trading-residence"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 13,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "network-settings",
+                        "name": "Network settings",
+                        "planned_feature_nodes": 11,
+                        "planned_baseline_leaf_nodes": 9,
+                        "record_linked_leaf_nodes": 7,
+                        "not_record_linked_leaf_ids": [
+                            "network-settings.backends.electrum",
+                            "network-settings.discover"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 7,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "device-settings",
+                        "name": "Device settings",
+                        "planned_feature_nodes": 39,
+                        "planned_baseline_leaf_nodes": 31,
+                        "record_linked_leaf_nodes": 17,
+                        "not_record_linked_leaf_ids": [
+                            "device-settings.authenticity-opt-out",
+                            "device-settings.auto-connect",
+                            "device-settings.auto-lock",
+                            "device-settings.backup.additional-nfc",
+                            "device-settings.backup.create-backup",
+                            "device-settings.backup.multi-share",
+                            "device-settings.change-pin",
+                            "device-settings.check-backup",
+                            "device-settings.factory-reset",
+                            "device-settings.firmware-authenticity",
+                            "device-settings.firmware.bootloader-update",
+                            "device-settings.firmware.official-update",
+                            "device-settings.firmware.progress-check",
+                            "device-settings.wipe-code"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 14,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "help",
+                        "name": "Help and activity",
+                        "planned_feature_nodes": 22,
+                        "planned_baseline_leaf_nodes": 17,
+                        "record_linked_leaf_nodes": 10,
+                        "not_record_linked_leaf_ids": [
+                            "help.activity.detail",
+                            "help.guide.context",
+                            "help.guide.images",
+                            "help.referral.prototype",
+                            "mobile.settings.support.about",
+                            "mobile.settings.support.faq",
+                            "mobile.settings.support.legal"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 10,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "app-controls",
+                        "name": "Application navigation and window controls",
+                        "planned_feature_nodes": 11,
+                        "planned_baseline_leaf_nodes": 9,
+                        "record_linked_leaf_nodes": 0,
+                        "not_record_linked_leaf_ids": [
+                            "app-controls.find.matches",
+                            "app-controls.fullscreen",
+                            "app-controls.macos-speech",
+                            "app-controls.quit",
+                            "app-controls.reload",
+                            "app-controls.restart",
+                            "app-controls.shortcuts",
+                            "app-controls.window",
+                            "app-controls.zoom"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 0,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    },
+                    {
+                        "area_id": "wallet.coinjoin",
+                        "name": "Coinjoin privacy account",
+                        "planned_feature_nodes": 10,
+                        "planned_baseline_leaf_nodes": 9,
+                        "record_linked_leaf_nodes": 0,
+                        "not_record_linked_leaf_ids": [
+                            "wallet.coinjoin.add-account",
+                            "wallet.coinjoin.anonymity",
+                            "wallet.coinjoin.balance",
+                            "wallet.coinjoin.confirmation",
+                            "wallet.coinjoin.mining-fee",
+                            "wallet.coinjoin.rescan",
+                            "wallet.coinjoin.setup",
+                            "wallet.coinjoin.skip-rounds",
+                            "wallet.coinjoin.start-stop"
+                        ],
+                        "qc_visible_capture_linked_leaf_nodes": 0,
+                        "interpretation": "Feature-ID linkage only, not journey completion, platform parity, below-fold visibility or a passed test."
+                    }
+                ],
+                "journey_linkage": [
+                    {
+                        "id": "app-first-run",
+                        "name": "Fresh application first run",
+                        "area_id": "app-onboarding",
+                        "navigation": "New isolated QA browser profile > First launch",
+                        "planned_feature_ids": ["onboarding.analytics"],
+                        "record_linked_feature_ids": ["onboarding.analytics"],
+                        "not_record_linked_feature_ids": [],
+                        "linkage_status": "all-ids-linked-not-complete",
+                        "planned_screenshot_states": [
+                            "Analytics consent before confirmation",
+                            "Completed consent and connection entry"
+                        ],
+                        "prerequisites": [
+                            "Fresh isolated profile; optional analytics disabled through user-facing controls."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "connect-device",
+                        "name": "Connect and authorize a fixture device",
+                        "area_id": "connection",
+                        "navigation": "Device selector > Connect Trezor",
+                        "planned_feature_ids": [
+                            "connection.usb",
+                            "connection.thp",
+                            "connection.troubleshooting"
+                        ],
+                        "record_linked_feature_ids": [],
+                        "not_record_linked_feature_ids": [
+                            "connection.thp",
+                            "connection.troubleshooting",
+                            "connection.usb"
+                        ],
+                        "linkage_status": "no-linked-observation",
+                        "planned_screenshot_states": [
+                            "Connection-method entry",
+                            "Detected connected fixture device",
+                            "Connection troubleshooting"
+                        ],
+                        "prerequisites": [
+                            "Owned trezor-user-env instance and fixture device only."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "connection-browser",
+                        "name": "Browser transport and compatibility",
+                        "area_id": "connection",
+                        "navigation": "Suite web > Browser/transport guidance",
+                        "planned_feature_ids": [
+                            "connection.browser",
+                            "connection.bridge",
+                            "connection.local-network"
+                        ],
+                        "record_linked_feature_ids": ["connection.browser"],
+                        "not_record_linked_feature_ids": [
+                            "connection.bridge",
+                            "connection.local-network"
+                        ],
+                        "linkage_status": "partial-ids-linked",
+                        "planned_screenshot_states": [
+                            "Permission/help message where actually triggered",
+                            "No-transport recovery entry"
+                        ],
+                        "prerequisites": [
+                            "Separate ordinary browser support from any harness compatibility override."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "connection-errors",
+                        "name": "Connection and offline states",
+                        "area_id": "connection",
+                        "navigation": "Disconnect only the owned fixture emulator or disable only the task browser network",
+                        "planned_feature_ids": [
+                            "connection.offline",
+                            "connection.used-elsewhere",
+                            "connection.bootloader"
+                        ],
+                        "record_linked_feature_ids": [],
+                        "not_record_linked_feature_ids": [
+                            "connection.bootloader",
+                            "connection.offline",
+                            "connection.used-elsewhere"
+                        ],
+                        "linkage_status": "no-linked-observation",
+                        "planned_screenshot_states": [
+                            "Disconnected-device guidance",
+                            "Offline banner and restoration"
+                        ],
+                        "prerequisites": ["Do not stop unrelated device/Bridge services."],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "device-new-wallet",
+                        "name": "Create-device onboarding",
+                        "area_id": "onboarding",
+                        "navigation": "Fresh uninitialized fixture > Set up device > Create wallet",
+                        "planned_feature_ids": [
+                            "onboarding.firmware",
+                            "onboarding.authenticity",
+                            "onboarding.tutorial",
+                            "onboarding.new-wallet",
+                            "onboarding.new-wallet.backup-type",
+                            "onboarding.pin",
+                            "onboarding.complete",
+                            "onboarding.network-selection"
+                        ],
+                        "record_linked_feature_ids": [
+                            "onboarding.complete",
+                            "onboarding.firmware",
+                            "onboarding.network-selection",
+                            "onboarding.new-wallet",
+                            "onboarding.new-wallet.backup-type",
+                            "onboarding.pin",
+                            "onboarding.tutorial"
+                        ],
+                        "not_record_linked_feature_ids": ["onboarding.authenticity"],
+                        "linkage_status": "partial-ids-linked",
+                        "planned_screenshot_states": [
+                            "Firmware entry or already-installed step",
+                            "Device authenticity entry when supported",
+                            "Backup type chooser",
+                            "PIN setup entry without PIN input",
+                            "Completion and initial network selection"
+                        ],
+                        "prerequisites": [
+                            "Fresh disposable fixture; firmware list captured as model/version aliases and actual version, not raw device state."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "device-recovery",
+                        "name": "Recover-device onboarding",
+                        "area_id": "onboarding",
+                        "navigation": "Fresh fixture > Recover wallet",
+                        "planned_feature_ids": [
+                            "onboarding.recovery",
+                            "onboarding.recovery.word-count",
+                            "onboarding.recovery.standard",
+                            "onboarding.recovery.advanced",
+                            "onboarding.recovery.on-device"
+                        ],
+                        "record_linked_feature_ids": ["onboarding.recovery"],
+                        "not_record_linked_feature_ids": [
+                            "onboarding.recovery.advanced",
+                            "onboarding.recovery.on-device",
+                            "onboarding.recovery.standard",
+                            "onboarding.recovery.word-count"
+                        ],
+                        "linkage_status": "partial-ids-linked",
+                        "planned_screenshot_states": [
+                            "Recovery entry and supported method chooser",
+                            "Model One word-count/method chooser before word entry",
+                            "Completion after controlled fixture recovery"
+                        ],
+                        "prerequisites": [
+                            "Use a disposable local QA backup; input stays local and out of artifacts."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "backup-format-variants",
+                        "name": "Backup-format and packaging variants",
+                        "area_id": "onboarding",
+                        "navigation": "Create wallet > Wallet backup type",
+                        "planned_feature_ids": [
+                            "onboarding.new-wallet.12-words",
+                            "onboarding.new-wallet.24-words",
+                            "onboarding.new-wallet.single-share",
+                            "onboarding.new-wallet.multi-share",
+                            "onboarding.new-wallet.nfc"
+                        ],
+                        "record_linked_feature_ids": [
+                            "onboarding.new-wallet.12-words",
+                            "onboarding.new-wallet.24-words",
+                            "onboarding.new-wallet.multi-share",
+                            "onboarding.new-wallet.single-share"
+                        ],
+                        "not_record_linked_feature_ids": ["onboarding.new-wallet.nfc"],
+                        "linkage_status": "partial-ids-linked",
+                        "planned_screenshot_states": [
+                            "12/24-word format options where offered",
+                            "Single-share and multi-share options where offered",
+                            "NFC medium choice only if genuinely enabled"
+                        ],
+                        "prerequisites": [
+                            "Do not manufacture production rollout from a debug-only override."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "wallet-selector",
+                        "name": "Wallet and device management",
+                        "area_id": "wallet-access",
+                        "navigation": "Top-left wallet/device selector",
+                        "planned_feature_ids": [
+                            "wallet-access.switch",
+                            "wallet-access.hidden",
+                            "wallet-access.rename",
+                            "wallet-access.remember",
+                            "wallet-access.eject"
+                        ],
+                        "record_linked_feature_ids": [],
+                        "not_record_linked_feature_ids": [
+                            "wallet-access.eject",
+                            "wallet-access.hidden",
+                            "wallet-access.remember",
+                            "wallet-access.rename",
+                            "wallet-access.switch"
+                        ],
+                        "linkage_status": "no-linked-observation",
+                        "planned_screenshot_states": [
+                            "Standard and hidden-wallet entry",
+                            "Switchable QA device/wallet instances",
+                            "Wallet-label editing",
+                            "Remembered disconnected fixture wallet",
+                            "Eject/forget confirmation"
+                        ],
+                        "prerequisites": [
+                            "Known QA device and a separate disposable hidden-wallet fixture."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "portfolio-overview",
+                        "name": "Portfolio and asset-first Home",
+                        "area_id": "wallet.portfolio",
+                        "navigation": "Home > Portfolio > Asset detail",
+                        "planned_feature_ids": [
+                            "wallet.portfolio",
+                            "wallet.portfolio.assets",
+                            "wallet.portfolio.assets.details",
+                            "wallet.portfolio.hidden-assets",
+                            "wallet.portfolio.promotions"
+                        ],
+                        "record_linked_feature_ids": [
+                            "wallet.portfolio",
+                            "wallet.portfolio.assets",
+                            "wallet.portfolio.promotions"
+                        ],
+                        "not_record_linked_feature_ids": [
+                            "wallet.portfolio.assets.details",
+                            "wallet.portfolio.hidden-assets"
+                        ],
+                        "linkage_status": "partial-ids-linked",
+                        "planned_screenshot_states": [
+                            "Overview and empty-state actions",
+                            "Graph range and value inspection",
+                            "Assets grid/list or current experiment variant",
+                            "Asset detail and price graph",
+                            "Hidden-asset view",
+                            "Promotional offer carousel and dismissal where eligible"
+                        ],
+                        "prerequisites": [
+                            "Deterministic QA discovery fixtures; record asset-first experiment state."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "account-management",
+                        "name": "Account creation and organization",
+                        "area_id": "wallet.accounts",
+                        "navigation": "Account list > Add account / Account detail",
+                        "planned_feature_ids": [
+                            "wallet.accounts.add",
+                            "wallet.accounts.add.type",
+                            "wallet.accounts.search",
+                            "wallet.accounts.overview",
+                            "wallet.accounts.details",
+                            "wallet.accounts.rename"
+                        ],
+                        "record_linked_feature_ids": [
+                            "wallet.accounts.add",
+                            "wallet.accounts.add.type",
+                            "wallet.accounts.details",
+                            "wallet.accounts.overview"
+                        ],
+                        "not_record_linked_feature_ids": [
+                            "wallet.accounts.rename",
+                            "wallet.accounts.search"
+                        ],
+                        "linkage_status": "partial-ids-linked",
+                        "planned_screenshot_states": [
+                            "Account search/filter",
+                            "Network and address-type chooser",
+                            "Loaded account overview",
+                            "Technical account-details controls without exporting values",
+                            "Account-label editing"
+                        ],
+                        "prerequisites": [
+                            "Bitcoin-family and at least one EVM QA account; respect inactive network/device firmware support."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "send-core",
+                        "name": "Core sending form",
+                        "area_id": "wallet.send",
+                        "navigation": "Account > Send or global Send",
+                        "planned_feature_ids": [
+                            "wallet.send.global",
+                            "wallet.send.form",
+                            "wallet.send.form.multi-recipient",
+                            "wallet.send.form.csv",
+                            "wallet.send.review"
+                        ],
+                        "record_linked_feature_ids": [
+                            "wallet.send.form",
+                            "wallet.send.form.csv",
+                            "wallet.send.form.multi-recipient",
+                            "wallet.send.global"
+                        ],
+                        "not_record_linked_feature_ids": ["wallet.send.review"],
+                        "linkage_status": "partial-ids-linked",
+                        "planned_screenshot_states": [
+                            "Asset/account selector",
+                            "Recipient and amount controls using QA fixture input",
+                            "QR/own-account entry where exposed",
+                            "Multiple-recipient and CSV import entry where exposed",
+                            "Review before signing/broadcast"
+                        ],
+                        "prerequisites": [
+                            "Disposable QA accounts; only local/regtest or clearly isolated test fixtures."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "send-fees",
+                        "name": "Fees and coin control",
+                        "area_id": "wallet.send",
+                        "navigation": "Bitcoin/EVM account > Send > Fee / Coin control",
+                        "planned_feature_ids": [
+                            "wallet.send.fees",
+                            "wallet.send.fees.custom",
+                            "wallet.send.coin-control"
+                        ],
+                        "record_linked_feature_ids": [
+                            "wallet.send.coin-control",
+                            "wallet.send.fees",
+                            "wallet.send.fees.custom"
+                        ],
+                        "not_record_linked_feature_ids": [],
+                        "linkage_status": "all-ids-linked-not-complete",
+                        "planned_screenshot_states": [
+                            "Recommended fee selector",
+                            "Custom Bitcoin fee",
+                            "EVM legacy or EIP-1559 fields when applicable",
+                            "Manual UTXO selection, search, sorting and totals"
+                        ],
+                        "prerequisites": [
+                            "Funded local/regtest Bitcoin UTXOs for coin control; QA EVM account for gas controls."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "send-network-options",
+                        "name": "Network-specific advanced options",
+                        "area_id": "wallet.send",
+                        "navigation": "Network-specific QA account > Send > Advanced options",
+                        "planned_feature_ids": [
+                            "wallet.send.advanced",
+                            "wallet.send.advanced.xrp-tag",
+                            "wallet.send.advanced.stellar-memo",
+                            "wallet.send.advanced.solana-memo",
+                            "wallet.send.advanced.tron-note"
+                        ],
+                        "record_linked_feature_ids": ["wallet.send.advanced"],
+                        "not_record_linked_feature_ids": [
+                            "wallet.send.advanced.solana-memo",
+                            "wallet.send.advanced.stellar-memo",
+                            "wallet.send.advanced.tron-note",
+                            "wallet.send.advanced.xrp-tag"
+                        ],
+                        "linkage_status": "partial-ids-linked",
+                        "planned_screenshot_states": [
+                            "Bitcoin locktime / OP_RETURN / broadcast controls",
+                            "EVM data and nonce controls",
+                            "XRP destination-tag control",
+                            "Stellar memo control",
+                            "Solana memo and validity guidance",
+                            "Tron note/data/fee guidance"
+                        ],
+                        "prerequisites": [
+                            "Each network enabled and supported by the selected fixture model."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "receive-addresses",
+                        "name": "Receive and address verification",
+                        "area_id": "wallet.receive",
+                        "navigation": "Global Receive / Account > Receive",
+                        "planned_feature_ids": [
+                            "wallet.receive.global",
+                            "wallet.receive.qr",
+                            "wallet.receive.verify",
+                            "wallet.receive.fresh-address",
+                            "wallet.receive.history",
+                            "wallet.receive.label"
+                        ],
+                        "record_linked_feature_ids": [
+                            "wallet.receive.fresh-address",
+                            "wallet.receive.global",
+                            "wallet.receive.history",
+                            "wallet.receive.qr",
+                            "wallet.receive.verify"
+                        ],
+                        "not_record_linked_feature_ids": ["wallet.receive.label"],
+                        "linkage_status": "partial-ids-linked",
+                        "planned_screenshot_states": [
+                            "Asset/account selection",
+                            "Address QR and copy/share controls using QA data",
+                            "On-device verification entry",
+                            "Fresh address and address-history controls",
+                            "Address labeling"
+                        ],
+                        "prerequisites": [
+                            "QA wallet only; emulator model input can confirm verification without real-device identifiers."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "transaction-history",
+                        "name": "History, details and exports",
+                        "area_id": "wallet.transactions",
+                        "navigation": "Account > Transactions",
+                        "planned_feature_ids": [
+                            "wallet.transactions.list",
+                            "wallet.transactions.search",
+                            "wallet.transactions.details",
+                            "wallet.transactions.export",
+                            "wallet.transactions.speed-up",
+                            "wallet.transactions.cancel"
+                        ],
+                        "record_linked_feature_ids": [
+                            "wallet.transactions.details",
+                            "wallet.transactions.export",
+                            "wallet.transactions.list",
+                            "wallet.transactions.search"
+                        ],
+                        "not_record_linked_feature_ids": [
+                            "wallet.transactions.cancel",
+                            "wallet.transactions.speed-up"
+                        ],
+                        "linkage_status": "partial-ids-linked",
+                        "planned_screenshot_states": [
+                            "Loaded history and pending states",
+                            "Search and suspicious-filter controls",
+                            "Expanded transaction details",
+                            "CSV/PDF/JSON export menu",
+                            "Speed-up/cancel entry where a suitable test pending transaction exists"
+                        ],
+                        "prerequisites": [
+                            "Deterministic QA history/pending transactions; never import a real user account."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "tokens",
+                        "name": "Token management",
+                        "area_id": "wallet.tokens",
+                        "navigation": "Account/asset > Tokens / Token settings",
+                        "planned_feature_ids": [
+                            "wallet.tokens",
+                            "wallet.tokens.hide",
+                            "wallet.tokens.unhide",
+                            "wallet.tokens.stellar"
+                        ],
+                        "record_linked_feature_ids": [],
+                        "not_record_linked_feature_ids": [
+                            "wallet.tokens",
+                            "wallet.tokens.hide",
+                            "wallet.tokens.stellar",
+                            "wallet.tokens.unhide"
+                        ],
+                        "linkage_status": "no-linked-observation",
+                        "planned_screenshot_states": [
+                            "Token holdings and search",
+                            "Hide/unhide and identifiers",
+                            "DeFi positions when supplied by fixtures",
+                            "Inactive Stellar token and activation entry"
+                        ],
+                        "prerequisites": [
+                            "QA token balances/metadata; network-specific token support recorded separately."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "nft-visibility",
+                        "name": "NFT collections and visibility",
+                        "area_id": "wallet.nfts",
+                        "navigation": "Supported QA account > NFT section",
+                        "planned_feature_ids": ["wallet.nfts", "wallet.nfts.visibility"],
+                        "record_linked_feature_ids": [],
+                        "not_record_linked_feature_ids": ["wallet.nfts", "wallet.nfts.visibility"],
+                        "linkage_status": "no-linked-observation",
+                        "planned_screenshot_states": [
+                            "NFT section enablement entry",
+                            "Collection list/search",
+                            "Collection visibility menu and explorer action"
+                        ],
+                        "prerequisites": ["Synthetic/public QA NFT fixture; NFT section enabled."],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "message-signing",
+                        "name": "Message signing and verification",
+                        "area_id": "wallet.sign-verify",
+                        "navigation": "Account > Sign and verify",
+                        "planned_feature_ids": [
+                            "wallet.sign-verify",
+                            "wallet.sign-verify.sign",
+                            "wallet.sign-verify.verify"
+                        ],
+                        "record_linked_feature_ids": [],
+                        "not_record_linked_feature_ids": [
+                            "wallet.sign-verify",
+                            "wallet.sign-verify.sign",
+                            "wallet.sign-verify.verify"
+                        ],
+                        "linkage_status": "no-linked-observation",
+                        "planned_screenshot_states": [
+                            "Sign message form with harmless fixture text",
+                            "Signature-format or hexadecimal options where exposed",
+                            "Verify form and success/error state using QA input"
+                        ],
+                        "prerequisites": [
+                            "Harmless fixed test message; no authentication challenge from a live third-party service."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "trade-buy",
+                        "name": "Purchase offer journey",
+                        "area_id": "trade",
+                        "navigation": "Trade/Buy > Select asset > Amount > Offer",
+                        "planned_feature_ids": ["trade.buy", "trade.buy.provider", "trade.receive"],
+                        "record_linked_feature_ids": [],
+                        "not_record_linked_feature_ids": [
+                            "trade.buy",
+                            "trade.buy.provider",
+                            "trade.receive"
+                        ],
+                        "linkage_status": "no-linked-observation",
+                        "planned_screenshot_states": [
+                            "Asset/network/fiat selection",
+                            "Country/subdivision/payment-method controls",
+                            "Provider comparison",
+                            "Receive-account selection",
+                            "Quote review and status layout where fixture-supported"
+                        ],
+                        "prerequisites": [
+                            "Record provider availability and use quoted/fake order fixtures where possible."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "trade-sell",
+                        "name": "Sale offer journey",
+                        "area_id": "trade",
+                        "navigation": "Trade/Sell > Asset > Amount > Offer",
+                        "planned_feature_ids": [
+                            "trade.sell",
+                            "trade.sell.provider",
+                            "trade.sell.bank-account",
+                            "trade.sell.fee"
+                        ],
+                        "record_linked_feature_ids": [],
+                        "not_record_linked_feature_ids": [
+                            "trade.sell",
+                            "trade.sell.bank-account",
+                            "trade.sell.fee",
+                            "trade.sell.provider"
+                        ],
+                        "linkage_status": "no-linked-observation",
+                        "planned_screenshot_states": [
+                            "Sale asset/amount",
+                            "Payout method and residence",
+                            "Provider comparison",
+                            "Bank-account selection entry with placeholder fixture data",
+                            "Fee/review and order detail"
+                        ],
+                        "prerequisites": [
+                            "Suitable QA asset; provider eligibility and network fees may block quotes."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "trade-swap",
+                        "name": "CEX and DEX swap journey",
+                        "area_id": "trade",
+                        "navigation": "Swap > Source/destination > Offers",
+                        "planned_feature_ids": [
+                            "trade.swap",
+                            "trade.swap.provider-filter",
+                            "trade.swap.slippage",
+                            "trade.swap.approval-limit",
+                            "trade.history",
+                            "trade.contextual-entry"
+                        ],
+                        "record_linked_feature_ids": [],
+                        "not_record_linked_feature_ids": [
+                            "trade.contextual-entry",
+                            "trade.history",
+                            "trade.swap",
+                            "trade.swap.approval-limit",
+                            "trade.swap.provider-filter",
+                            "trade.swap.slippage"
+                        ],
+                        "linkage_status": "no-linked-observation",
+                        "planned_screenshot_states": [
+                            "Asset pair and reverse direction",
+                            "Provider filters/rate types",
+                            "Slippage and minimum-received controls",
+                            "Approval limit/revoke review where allowance fixture applies",
+                            "Trade history/filter/export",
+                            "Contextual account/token entry to resolve parity question"
+                        ],
+                        "prerequisites": [
+                            "At least one CEX and one DEX eligible test pair; do not conflate lack of a live quote with absent UI."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "earn-staking",
+                        "name": "Staking journeys by network",
+                        "area_id": "earn",
+                        "navigation": "Earn > Eligible network/account > Stake / Unstake / Claim",
+                        "planned_feature_ids": [
+                            "earn.opportunities",
+                            "earn.staking",
+                            "earn.staking.eth",
+                            "earn.staking.sol",
+                            "earn.staking.ada",
+                            "earn.staking.trx"
+                        ],
+                        "record_linked_feature_ids": ["earn.opportunities", "earn.staking"],
+                        "not_record_linked_feature_ids": [
+                            "earn.staking.ada",
+                            "earn.staking.eth",
+                            "earn.staking.sol",
+                            "earn.staking.trx"
+                        ],
+                        "linkage_status": "partial-ids-linked",
+                        "planned_screenshot_states": [
+                            "Opportunity overview and rate breakdown",
+                            "Provider consent and amount/fee form",
+                            "Network-specific stake review",
+                            "Unstake and matured-claim entry where fixtures support it",
+                            "ADA DRep and TRX voting/resource controls on supported desktop/web"
+                        ],
+                        "prerequisites": [
+                            "Separate funded/active/matured QA states; native ADA/TRX is source-expected view-only."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "earn-yield",
+                        "name": "Yield-vault journeys",
+                        "area_id": "earn",
+                        "navigation": "Earn > Vault > Deposit / Withdraw / Claim",
+                        "planned_feature_ids": [
+                            "earn.yield",
+                            "earn.yield.deposit",
+                            "earn.yield.withdraw",
+                            "earn.yield.claim",
+                            "earn.yield.standalone-wrap",
+                            "earn.yield.standalone-unwrap"
+                        ],
+                        "record_linked_feature_ids": ["earn.yield"],
+                        "not_record_linked_feature_ids": [
+                            "earn.yield.claim",
+                            "earn.yield.deposit",
+                            "earn.yield.standalone-unwrap",
+                            "earn.yield.standalone-wrap",
+                            "earn.yield.withdraw"
+                        ],
+                        "linkage_status": "partial-ids-linked",
+                        "planned_screenshot_states": [
+                            "Vault detail and reward breakdown",
+                            "Deposit consent/amount/approval/wrap steps",
+                            "Withdrawal unit and Max controls",
+                            "Unwrap and reward claim review",
+                            "Standalone wrap/unwrap entry with actual gate recorded"
+                        ],
+                        "prerequisites": [
+                            "QA eligible vault positions and message-system availability; record any dev-utils-only entry separately."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "external-apps",
+                        "name": "Connected applications and external requests",
+                        "area_id": "connect",
+                        "navigation": "Settings > Connected apps; test dApp request",
+                        "planned_feature_ids": [
+                            "connect.permissions",
+                            "connect.permissions.account",
+                            "connect.walletconnect",
+                            "connect.walletconnect.transaction",
+                            "connect.walletconnect.simulation"
+                        ],
+                        "record_linked_feature_ids": [
+                            "connect.permissions",
+                            "connect.walletconnect"
+                        ],
+                        "not_record_linked_feature_ids": [
+                            "connect.permissions.account",
+                            "connect.walletconnect.simulation",
+                            "connect.walletconnect.transaction"
+                        ],
+                        "linkage_status": "partial-ids-linked",
+                        "planned_screenshot_states": [
+                            "App permission request and remembered permission list",
+                            "Revoke controls",
+                            "WalletConnect URI pairing and session proposal",
+                            "Account selection/switch/disconnect",
+                            "External transaction simulation and risk disclosure",
+                            "Plain/typed message request review where supported"
+                        ],
+                        "prerequisites": [
+                            "Local/public QA dApp requests to the fixture wallet; no production login/auth challenge."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "label-storage",
+                        "name": "Label storage and synchronization",
+                        "area_id": "labeling",
+                        "navigation": "Settings > Application > Labeling / Suite Sync",
+                        "planned_feature_ids": [
+                            "labeling.suite-sync",
+                            "labeling.suite-sync.server",
+                            "labeling.suite-sync.status",
+                            "labeling.legacy",
+                            "wallet.accounts.labels"
+                        ],
+                        "record_linked_feature_ids": ["labeling.legacy", "labeling.suite-sync"],
+                        "not_record_linked_feature_ids": [
+                            "labeling.suite-sync.server",
+                            "labeling.suite-sync.status",
+                            "wallet.accounts.labels"
+                        ],
+                        "linkage_status": "partial-ids-linked",
+                        "planned_screenshot_states": [
+                            "Label mode and provider choices",
+                            "Local sync/server settings",
+                            "Synchronization status or its absence to resolve parity question",
+                            "Legacy migration entry",
+                            "BIP329 import/export dialogs using a disposable fixture file"
+                        ],
+                        "prerequisites": [
+                            "Use isolated local relay/storage when available; no personal cloud-provider login."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "app-preferences",
+                        "name": "User application preferences",
+                        "area_id": "app-settings",
+                        "navigation": "Settings > Application",
+                        "planned_feature_ids": [
+                            "app-settings.language",
+                            "app-settings.theme",
+                            "app-settings.privacy",
+                            "app-settings.security",
+                            "app-settings.advanced",
+                            "app-settings.experimental"
+                        ],
+                        "record_linked_feature_ids": [
+                            "app-settings.language",
+                            "app-settings.theme"
+                        ],
+                        "not_record_linked_feature_ids": [
+                            "app-settings.advanced",
+                            "app-settings.experimental",
+                            "app-settings.privacy",
+                            "app-settings.security"
+                        ],
+                        "linkage_status": "partial-ids-linked",
+                        "planned_screenshot_states": [
+                            "Localization and theme choices",
+                            "Privacy/auto-eject/Tor entry",
+                            "Analytics choice and application-log entry",
+                            "Security thresholds and reserve/MEV controls",
+                            "Advanced and experimental choices clearly labeled",
+                            "Version/release notes/update settings in actual supported platform"
+                        ],
+                        "prerequisites": [
+                            "Use fixture profile; keep diagnostics sensitive-information toggle off."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "network-preferences",
+                        "name": "Enabled networks and connection settings",
+                        "area_id": "network-settings",
+                        "navigation": "Settings > Networks > Network gear",
+                        "planned_feature_ids": [
+                            "network-settings",
+                            "network-settings.backends",
+                            "network-settings.backends.electrum",
+                            "network-settings.explorer",
+                            "network-settings.gap-limit"
+                        ],
+                        "record_linked_feature_ids": [
+                            "network-settings.backends",
+                            "network-settings.explorer",
+                            "network-settings.gap-limit"
+                        ],
+                        "not_record_linked_feature_ids": [
+                            "network-settings",
+                            "network-settings.backends.electrum"
+                        ],
+                        "linkage_status": "partial-ids-linked",
+                        "planned_screenshot_states": [
+                            "Enable/disable and search",
+                            "Custom backend type and endpoint controls without secrets",
+                            "Electrum selector where supported",
+                            "Explorer URL and experimental gap-limit field",
+                            "Load newly enabled networks"
+                        ],
+                        "prerequisites": [
+                            "Use local QA endpoints; avoid screenshots of auth-bearing backend URLs."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "device-settings-compare",
+                        "name": "Device settings across all fixture models",
+                        "area_id": "device-settings",
+                        "navigation": "Settings > Device",
+                        "planned_feature_ids": [
+                            "device-settings",
+                            "device-settings.brightness",
+                            "device-settings.haptics",
+                            "device-settings.rotation",
+                            "device-settings.auto-lock",
+                            "device-settings.firmware",
+                            "device-settings.backup"
+                        ],
+                        "record_linked_feature_ids": [
+                            "device-settings.backup",
+                            "device-settings.brightness",
+                            "device-settings.haptics",
+                            "device-settings.rotation"
+                        ],
+                        "not_record_linked_feature_ids": [
+                            "device-settings",
+                            "device-settings.auto-lock",
+                            "device-settings.firmware"
+                        ],
+                        "linkage_status": "partial-ids-linked",
+                        "planned_screenshot_states": [
+                            "Entire settings page per model",
+                            "Backup/check-backup entries",
+                            "PIN/passphrase/safety settings without secret input",
+                            "Device name and supported homescreen controls",
+                            "Brightness/haptics/rotation/auto-lock entries",
+                            "Firmware/language/Bitcoin-only controls",
+                            "Trusted host/forget cleanup",
+                            "Advanced authenticity and wipe/factory-reset entry"
+                        ],
+                        "prerequisites": [
+                            "Same app build, firmware track and network configuration for comparable runs; record actual capabilities and explicit unavailable states."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "firmware-modes",
+                        "name": "Firmware/device modes and update sequence",
+                        "area_id": "device-settings",
+                        "navigation": "Supported fixture > Device firmware / Bootloader mode",
+                        "planned_feature_ids": [
+                            "device-settings.firmware.official-update",
+                            "device-settings.firmware.progress-check",
+                            "device-settings.factory-reset",
+                            "device-settings.firmware.bootloader-update"
+                        ],
+                        "record_linked_feature_ids": [],
+                        "not_record_linked_feature_ids": [
+                            "device-settings.factory-reset",
+                            "device-settings.firmware.bootloader-update",
+                            "device-settings.firmware.official-update",
+                            "device-settings.firmware.progress-check"
+                        ],
+                        "linkage_status": "no-linked-observation",
+                        "planned_screenshot_states": [
+                            "Required-update prompt",
+                            "Low-battery/backup readiness warning if fixture-controllable",
+                            "Update progress/help without device secrets",
+                            "Bootloader factory-reset entry",
+                            "Observed bootloader-update sequence, if distinguishable"
+                        ],
+                        "prerequisites": [
+                            "Disposable emulator and available firmware aliases; distinguish UI gate from simulated hardware behavior."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "help-activity",
+                        "name": "Help, support and activity",
+                        "area_id": "help",
+                        "navigation": "Guide / Help > Support and feedback; Activity",
+                        "planned_feature_ids": [
+                            "help.guide",
+                            "help.guide.images",
+                            "help.support",
+                            "help.activity",
+                            "help.referral"
+                        ],
+                        "record_linked_feature_ids": [
+                            "help.activity",
+                            "help.guide",
+                            "help.support"
+                        ],
+                        "not_record_linked_feature_ids": ["help.guide.images", "help.referral"],
+                        "linkage_status": "partial-ids-linked",
+                        "planned_screenshot_states": [
+                            "Guide search/article/image lightbox",
+                            "Shortcut reference",
+                            "Support/feedback form entry",
+                            "Version details",
+                            "Transaction and system-activity tabs",
+                            "External referral entry with internal prototype kept separate"
+                        ],
+                        "prerequisites": [
+                            "Do not submit actual support messages; use fixture activity."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "desktop-shell",
+                        "name": "Desktop-only navigation and shell controls",
+                        "area_id": "app-controls",
+                        "navigation": "Electron native menu / keyboard shortcuts",
+                        "planned_feature_ids": [
+                            "app-controls",
+                            "app-controls.find",
+                            "app-controls.zoom",
+                            "app-controls.fullscreen",
+                            "app-settings.auto-start",
+                            "app-settings.tray"
+                        ],
+                        "record_linked_feature_ids": [],
+                        "not_record_linked_feature_ids": [
+                            "app-controls",
+                            "app-controls.find",
+                            "app-controls.fullscreen",
+                            "app-controls.zoom",
+                            "app-settings.auto-start",
+                            "app-settings.tray"
+                        ],
+                        "linkage_status": "no-linked-observation",
+                        "planned_screenshot_states": [
+                            "Find-in-page bar and match navigation",
+                            "Zoom/full-screen/window controls",
+                            "Shortcut entry points",
+                            "Tray/start-up settings on an actual desktop runtime"
+                        ],
+                        "prerequisites": [
+                            "Actual Electron app; browser-native controls do not establish desktop-app parity."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    },
+                    {
+                        "id": "coinjoin-conditional",
+                        "name": "Conditional Coinjoin entry",
+                        "area_id": "wallet.coinjoin",
+                        "navigation": "Eligible desktop QA profile > Privacy account",
+                        "planned_feature_ids": ["wallet.coinjoin", "wallet.coinjoin.setup"],
+                        "record_linked_feature_ids": [],
+                        "not_record_linked_feature_ids": [
+                            "wallet.coinjoin",
+                            "wallet.coinjoin.setup"
+                        ],
+                        "linkage_status": "no-linked-observation",
+                        "planned_screenshot_states": [
+                            "Availability gate or absent account type",
+                            "Setup/account/configuration UI only when actually enabled"
+                        ],
+                        "prerequisites": [
+                            "Desktop app and eligible remote/source configuration; do not treat a debug override as general live availability."
+                        ],
+                        "note": "Even all planned IDs linked cannot establish every screenshot state, model variant, action outcome or full journey completion."
+                    }
+                ],
+                "next_useful_journeys": [
+                    {
+                        "priority": 1,
+                        "journeys": [
+                            "app-preferences",
+                            "device-settings-compare",
+                            "portfolio-overview",
+                            "transaction-history",
+                            "send-fees"
+                        ],
+                        "why": "Finish the five concrete capture-scope gaps first; the relevant web Safe 5 state is already available.",
+                        "suggested_scope": "Focused recaptures described in findings; preserve originals and append corrections."
+                    },
+                    {
+                        "priority": 2,
+                        "journeys": ["trade-buy", "trade-sell", "trade-swap"],
+                        "why": "Trade has the largest untouched commercial-journey branch: 57 baseline leaves lack linked observations at this snapshot.",
+                        "suggested_scope": "Open Buy/Sell/Swap entry and safe forms, asset/account selectors, amount/currency, country/residence, fee/provider/offers and detail/history states; stop before purchase/payment/sign/broadcast. Record provider/region/network blocks honestly."
+                    },
+                    {
+                        "priority": 3,
+                        "journeys": ["earn-staking", "earn-yield"],
+                        "why": "Earn entry is captured, but all 58 baseline leaf records remain unlinked; the opportunity table is not a staking or vault flow.",
+                        "suggested_scope": "Enable only QA networks where available; inspect staking stake/unstake/claim preflights and vault selection/deposit/withdraw/approval states without submitting."
+                    },
+                    {
+                        "priority": 4,
+                        "journeys": [
+                            "wallet-selector",
+                            "message-signing",
+                            "tokens",
+                            "nft-visibility"
+                        ],
+                        "why": "Wallet access, message signing, tokens and NFTs have no linked leaf observations in the snapshot.",
+                        "suggested_scope": "Wallet/device switcher and hidden-wallet entry without secrets; sign/verify empty forms; token visibility/manage dialogs; NFT disabled/enabled and collection empty states using QA fixture data."
+                    },
+                    {
+                        "priority": 5,
+                        "journeys": [
+                            "device-recovery",
+                            "backup-format-variants",
+                            "device-settings-compare",
+                            "firmware-modes"
+                        ],
+                        "why": "Only Safe 5 is model-observed. Model One host-matrix recovery, original Safe 3 packaging defaults and Safe 7 wireless/THP differences remain untested visually.",
+                        "suggested_scope": "Use isolated model fixtures; capture recovery entry/word-count/mode guidance without seed words, model-specific settings, bootloader guidance, Bluetooth/THP and charging preflights. Keep all secret input off screenshots."
+                    },
+                    {
+                        "priority": 6,
+                        "journeys": ["external-apps", "label-storage"],
+                        "why": "Only connection/labeling entries and empty states are captured. Permission/session operations and label synchronization are not covered.",
+                        "suggested_scope": "Local QA dApp permission/proposal and session review if available; Suite Sync setup/status, label edit and sync conflict states; external provider authorization only within preauthorized safe QA context."
+                    },
+                    {
+                        "priority": 7,
+                        "journeys": ["desktop-shell", "app-first-run", "portfolio-overview"],
+                        "why": "No Electron desktop or native mobile screenshots exist in this snapshot; web screenshots do not prove native parity.",
+                        "suggested_scope": "Desktop native menu/auto-update/OS integrations and mobile onboarding, asset-first Home, account import, camera, biometric app lock and device-connect states if a prepared simulator/build is available."
+                    }
+                ]
+            },
+            "limitations": [
+                "Only the 66 captures in the explicit manifest snapshot were reviewed. Later screenshots require another QC pass.",
+                "Safe QA fixture context is inherited from capture metadata; image inspection cannot independently prove that all underlying data originated from fixtures.",
+                "No confidential values visible in fixture screenshots were transcribed into findings; UI control names and feature IDs only.",
+                "An empty historical graph is noted as fixture/data-state limitation, not diagnosed as a loading failure.",
+                "DOM inspection and screenshot visibility are separate evidence scopes. The original observations remain preserved even when screenshot associations need narrowing.",
+                "No browser, Trezor User Env, device, server, account, permission or application setting was controlled for this task."
+            ]
+        }
+    ]
+}

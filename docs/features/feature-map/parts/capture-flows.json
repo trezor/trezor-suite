@@ -1,0 +1,2572 @@
+{
+    "description": "Replayable flows that reach each native mobile runtime screenshot in parts/runtime-mobile-observations.json. Suite Native screens expose their content to iOS accessibility as a single element (Screen.tsx renders an accessible container), so steps tap exposed testIDs or visible text located by OCR. capture-flows.ts replay runs the steps through agent-device and records each outcome here; capture-flows.ts check OCRs every capture for the arrival landmarks (runtime/flow-checks.json).",
+    "app_id": "io.trezor.suite.debug",
+    "recorded_on": "iPhone 18 Pro",
+    "start_states": {
+        "fresh-install": {
+            "description": "The app was uninstalled, the simulator keychain reset and the debug build reinstalled before replay (outside the app); the flow starts on the onboarding Welcome screen.",
+            "prepare": "bash runtime/flows/prepare-start-state.sh fresh-install <simulator-udid> <TrezorSuiteDebug.app>",
+            "setup": []
+        },
+        "keychain-unavailable": {
+            "description": "The app was uninstalled, the simulator keychain reset and a copy of the debug build without entitlements installed (outside the app). Keychain access fails, so the app cannot read or create its storage encryption key and shows the native \"Unable to load app data\" alert at startup.",
+            "prepare": "bash runtime/flows/prepare-start-state.sh keychain-unavailable <simulator-udid> <TrezorSuiteDebug.app>",
+            "setup": []
+        },
+        "onboarded-empty": {
+            "description": "The setup steps were replayed after a fresh install (analytics off, biometrics skipped, trading country skipped); app data is kept between relaunches. No wallet, device or account is connected or imported.",
+            "setup": [
+                {
+                    "do": "launch",
+                    "lands_on": "OnboardingStack/Welcome"
+                },
+                {
+                    "do": "tap",
+                    "text": "Let's get started",
+                    "test_id": "@onboarding/Welcome/nextBtn",
+                    "lands_on": "OnboardingStack/AnalyticsConsent"
+                },
+                {
+                    "do": "tap",
+                    "text": "Help us anonymously",
+                    "test_id": "@onboarding/AnalyticsConsent/consentSwitch",
+                    "lands_on": "OnboardingStack/AnalyticsConsent"
+                },
+                {
+                    "do": "tap",
+                    "text": "More about privacy",
+                    "test_id": "@onboarding/AnalyticsConsent/nextBtn",
+                    "lands_on": "OnboardingStack/Biometrics",
+                    "dy": -61
+                },
+                {
+                    "do": "tap",
+                    "text": "Not now",
+                    "test_id": "@onboarding/Biometrics/skipBtn",
+                    "lands_on": "OnboardingStack/TradingLocation"
+                },
+                {
+                    "do": "tap",
+                    "text": "Not now",
+                    "test_id": "@onboarding/skipLocation",
+                    "lands_on": "HomeStack/Home"
+                }
+            ]
+        }
+    },
+    "flows": [
+        {
+            "screenshot_id": "mobile-accounts-add-menu",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/AccountsStack",
+                    "lands_on": "AccountsStack/Accounts"
+                },
+                {
+                    "do": "tap",
+                    "text": "Accounts",
+                    "x_from_right": 36,
+                    "test_id": "@myAssets/addAccountButton",
+                    "lands_on": "AccountsImport/SelectNetwork"
+                }
+            ],
+            "arrival": {
+                "route": "SelectNetwork",
+                "landmarks": [
+                    "Sync my assets",
+                    "Select a network to sync",
+                    "Polygon PoS",
+                    "BNB Smart Chain"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:08:45.680Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-activity-release-notes",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@device-manager/device-switch",
+                    "right_of": 39,
+                    "lands_on": "ActivityCenterStack/ActivityCenter"
+                },
+                {
+                    "do": "tap",
+                    "text": "Release notes",
+                    "lands_on": "ActivityCenterStack/ActivityCenter"
+                }
+            ],
+            "arrival": {
+                "route": "ActivityCenter",
+                "landmarks": ["Version", "New features", "Improvements"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:08:59.064Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-connect-safe7-instructions",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@device-manager/device-switch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "text": "Connect Trezor",
+                    "lands_on": "AuthorizeDeviceStack/TurnOnAndUnlockDevice"
+                }
+            ],
+            "arrival": {
+                "route": "TurnOnAndUnlockDevice",
+                "landmarks": ["Turn on & unlock", "your Trezor Safe 7"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:09:10.929Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-earn-staking-gate",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/EarnStack",
+                    "lands_on": "EarnStack/Earn"
+                },
+                {
+                    "do": "tap",
+                    "text": "Ethereum",
+                    "lands_on": "EarnStack/Earn"
+                }
+            ],
+            "arrival": {
+                "route": "Earn",
+                "landmarks": [
+                    "Staking is disabled in the portfolio",
+                    "Connect your device for full functionality",
+                    "Tap to copy"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:09:22.516Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-earn-yield-gate",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/EarnStack",
+                    "lands_on": "EarnStack/Earn"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Trezor Steakhouse USDT",
+                    "lands_on": "EarnStack/Earn"
+                },
+                {
+                    "do": "tap",
+                    "text": "Trezor Steakhouse USDT",
+                    "lands_on": "EarnStack/Earn"
+                }
+            ],
+            "arrival": {
+                "route": "Earn",
+                "landmarks": [
+                    "Staking is disabled in the portfolio",
+                    "Connect your device for full functionality",
+                    "Tap to copy"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:09:44.594Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-empty-accounts",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/AccountsStack",
+                    "lands_on": "AccountsStack/Accounts"
+                }
+            ],
+            "arrival": {
+                "route": "Accounts",
+                "landmarks": [
+                    "No accounts",
+                    "Connect your Trezor or sync networks to view",
+                    "track accounts"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:09:52.712Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-empty-activity",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@device-manager/device-switch",
+                    "right_of": 39,
+                    "lands_on": "ActivityCenterStack/ActivityCenter"
+                }
+            ],
+            "arrival": {
+                "route": "ActivityCenter",
+                "landmarks": [
+                    "No notifications",
+                    "You'll see all important notifications here",
+                    "Release notes"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:10:01.100Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-empty-device-manager",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@device-manager/device-switch",
+                    "lands_on": "HomeStack/Home"
+                }
+            ],
+            "arrival": {
+                "route": "Home",
+                "landmarks": ["Connect Trezor", "Trezor"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:10:09.207Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-empty-earn",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/EarnStack",
+                    "lands_on": "EarnStack/Earn"
+                }
+            ],
+            "arrival": {
+                "route": "Earn",
+                "landmarks": [
+                    "Explore earn opportunities",
+                    "operated by independent providers",
+                    "Staking"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:10:18.262Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-empty-home",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                }
+            ],
+            "arrival": {
+                "route": "Home",
+                "landmarks": ["Connect your Trezor Safe 7", "Manage your assets with your Trezor"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:10:24.587Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-empty-yield",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/EarnStack",
+                    "lands_on": "EarnStack/Earn"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Powered by",
+                    "lands_on": "EarnStack/Earn"
+                }
+            ],
+            "arrival": {
+                "route": "Earn",
+                "landmarks": ["Trezor Steakhouse USDT", "Trezor Steakhouse ETH", "Powered by"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:10:52.029Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-home-tracker-entry",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Sync & Track",
+                    "lands_on": "HomeStack/Home"
+                }
+            ],
+            "arrival": {
+                "route": "Home",
+                "landmarks": ["Track your assets", "with portfolio tracker", "Sync & Track"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:11:09.710Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-onboarding-analytics",
+            "start_state": "fresh-install",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "OnboardingStack/Welcome"
+                },
+                {
+                    "do": "tap",
+                    "text": "Let's get started",
+                    "test_id": "@onboarding/Welcome/nextBtn",
+                    "lands_on": "OnboardingStack/AnalyticsConsent"
+                }
+            ],
+            "arrival": {
+                "route": "AnalyticsConsent",
+                "landmarks": [
+                    "allowing anonymous data collection",
+                    "Help us anonymously",
+                    "More about privacy",
+                    "potential technical issues"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T19:26:20.030Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-onboarding-analytics-disabled",
+            "start_state": "fresh-install",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "OnboardingStack/Welcome"
+                },
+                {
+                    "do": "tap",
+                    "text": "Let's get started",
+                    "test_id": "@onboarding/Welcome/nextBtn",
+                    "lands_on": "OnboardingStack/AnalyticsConsent"
+                },
+                {
+                    "do": "tap",
+                    "text": "Help us anonymously",
+                    "test_id": "@onboarding/AnalyticsConsent/consentSwitch",
+                    "lands_on": "OnboardingStack/AnalyticsConsent"
+                }
+            ],
+            "arrival": {
+                "route": "AnalyticsConsent",
+                "landmarks": [
+                    "allowing anonymous data collection",
+                    "Help us anonymously",
+                    "More about privacy",
+                    "potential technical issues"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T19:26:37.830Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-onboarding-biometrics",
+            "start_state": "fresh-install",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "OnboardingStack/Welcome"
+                },
+                {
+                    "do": "tap",
+                    "text": "Let's get started",
+                    "test_id": "@onboarding/Welcome/nextBtn",
+                    "lands_on": "OnboardingStack/AnalyticsConsent"
+                },
+                {
+                    "do": "tap",
+                    "text": "Help us anonymously",
+                    "test_id": "@onboarding/AnalyticsConsent/consentSwitch",
+                    "lands_on": "OnboardingStack/AnalyticsConsent"
+                },
+                {
+                    "do": "tap",
+                    "text": "More about privacy",
+                    "test_id": "@onboarding/AnalyticsConsent/nextBtn",
+                    "lands_on": "OnboardingStack/Biometrics",
+                    "dy": -61
+                }
+            ],
+            "arrival": {
+                "route": "Biometrics",
+                "landmarks": ["Biometric authentication", "unauthorized access", "Not now"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T19:27:06.194Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-onboarding-residence",
+            "start_state": "fresh-install",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "OnboardingStack/Welcome"
+                },
+                {
+                    "do": "tap",
+                    "text": "Let's get started",
+                    "test_id": "@onboarding/Welcome/nextBtn",
+                    "lands_on": "OnboardingStack/AnalyticsConsent"
+                },
+                {
+                    "do": "tap",
+                    "text": "Help us anonymously",
+                    "test_id": "@onboarding/AnalyticsConsent/consentSwitch",
+                    "lands_on": "OnboardingStack/AnalyticsConsent"
+                },
+                {
+                    "do": "tap",
+                    "text": "More about privacy",
+                    "test_id": "@onboarding/AnalyticsConsent/nextBtn",
+                    "lands_on": "OnboardingStack/Biometrics",
+                    "dy": -61
+                },
+                {
+                    "do": "tap",
+                    "text": "Not now",
+                    "test_id": "@onboarding/Biometrics/skipBtn",
+                    "lands_on": "OnboardingStack/TradingLocation"
+                }
+            ],
+            "arrival": {
+                "route": "TradingLocation",
+                "landmarks": [
+                    "Trading is now available",
+                    "Country of residence",
+                    "Trading is available",
+                    "Swap and buy crypto directly"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T19:27:32.775Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-onboarding-welcome",
+            "start_state": "fresh-install",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "OnboardingStack/Welcome"
+                }
+            ],
+            "arrival": {
+                "route": "Welcome",
+                "landmarks": ["Take control", "Let's get started"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-19T09:46:59.666Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-advanced",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Advanced",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Advanced",
+                    "test_id": "@settings/advanced",
+                    "lands_on": "SettingsScreenStack/SettingsAdvanced"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsAdvanced",
+                "landmarks": [
+                    "Device authenticity check",
+                    "Firmware authenticity check",
+                    "Spaced address formatting",
+                    "Verify that your Trezor device"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:11:59.704Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-advanced-lower",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Advanced",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Advanced",
+                    "test_id": "@settings/advanced",
+                    "lands_on": "SettingsScreenStack/SettingsAdvanced"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Network reserve",
+                    "lands_on": "SettingsScreenStack/SettingsAdvanced"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsAdvanced",
+                "landmarks": [
+                    "Network reserve",
+                    "Reserve a small amount of the native",
+                    "Testnet networks",
+                    "Spaced address formatting"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:12:59.542Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-auto-eject",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Eject wallets",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Eject wallets",
+                    "test_id": "@settings/eject-wallets",
+                    "lands_on": "SettingsScreenStack/SettingsViewOnly"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsViewOnly",
+                "landmarks": [
+                    "Eject wallets",
+                    "Auto-eject wallets",
+                    "Automatically eject all wallets when",
+                    "Your balances remain visible when you"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:13:36.531Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-backend-discard",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Networks",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Networks",
+                    "test_id": "@settings/coin-enabling",
+                    "lands_on": "SettingsScreenStack/SettingsNetworks"
+                },
+                {
+                    "do": "tap",
+                    "text": "Bitcoin",
+                    "x_from_right": 48,
+                    "dy": 54,
+                    "lands_on": "SettingsScreenStack/SettingsNetworkBackends"
+                },
+                {
+                    "do": "tap",
+                    "text": "Trezor (default)",
+                    "lands_on": "SettingsScreenStack/SettingsNetworkBackends"
+                },
+                {
+                    "do": "tap",
+                    "text": "Electrum",
+                    "lands_on": "SettingsScreenStack/SettingsNetworkBackends"
+                },
+                {
+                    "do": "tap",
+                    "id": "@screen/sub-header/go-back-button",
+                    "lands_on": "SettingsScreenStack/SettingsNetworkBackends"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsNetworkBackends",
+                "landmarks": [
+                    "Discard changes?",
+                    "Any unsaved changes will be lost.",
+                    "Keep editing"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:14:27.502Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-backend-type",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Networks",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Networks",
+                    "test_id": "@settings/coin-enabling",
+                    "lands_on": "SettingsScreenStack/SettingsNetworks"
+                },
+                {
+                    "do": "tap",
+                    "text": "Bitcoin",
+                    "x_from_right": 48,
+                    "dy": 54,
+                    "lands_on": "SettingsScreenStack/SettingsNetworkBackends"
+                },
+                {
+                    "do": "tap",
+                    "text": "Trezor (default)",
+                    "lands_on": "SettingsScreenStack/SettingsNetworkBackends"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsNetworkBackends",
+                "landmarks": ["Server type", "Blockbook", "Electrum", "Trezor (default)"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:15:12.370Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-bitcoin-backend",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Networks",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Networks",
+                    "test_id": "@settings/coin-enabling",
+                    "lands_on": "SettingsScreenStack/SettingsNetworks"
+                },
+                {
+                    "do": "tap",
+                    "text": "Bitcoin",
+                    "x_from_right": 48,
+                    "dy": 54,
+                    "lands_on": "SettingsScreenStack/SettingsNetworkBackends"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsNetworkBackends",
+                "landmarks": [
+                    "Bitcoin backend",
+                    "Disconnected",
+                    "Default explorer",
+                    "Root URL",
+                    "Transaction path"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:15:54.982Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-bitcoin-unit",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Preferences",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Preferences",
+                    "test_id": "@settings/preferences",
+                    "lands_on": "SettingsScreenStack/SettingsPreferences"
+                },
+                {
+                    "do": "tap",
+                    "text": "Bitcoin",
+                    "test_id": "@settings/localization/bitcoin-units-selector",
+                    "lands_on": "SettingsScreenStack/SettingsPreferences"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsPreferences",
+                "landmarks": ["Bitcoin units", "Satoshis"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:16:11.614Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-currency",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Preferences",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Preferences",
+                    "test_id": "@settings/preferences",
+                    "lands_on": "SettingsScreenStack/SettingsPreferences"
+                },
+                {
+                    "do": "tap",
+                    "text": "USD",
+                    "test_id": "@settings/localization/currency-selector",
+                    "lands_on": "SettingsScreenStack/SettingsPreferences"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsPreferences",
+                "landmarks": ["Pound Sterling", "Argentine Peso", "Australian Dollar"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-19T09:22:53.346Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-dust",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Security",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Security",
+                    "test_id": "@settings/security",
+                    "lands_on": "SettingsScreenStack/SettingsSecurity"
+                },
+                {
+                    "do": "tap",
+                    "text": "Dust phishing protection",
+                    "lands_on": "SettingsScreenStack/SettingsDustPhishing"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsDustPhishing",
+                "landmarks": [
+                    "Enable protection",
+                    "Dust phishing threshold",
+                    "Enter dust threshold in USD",
+                    "Transactions below this amount are marked as"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:17:18.394Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-electrum-form",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Networks",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Networks",
+                    "test_id": "@settings/coin-enabling",
+                    "lands_on": "SettingsScreenStack/SettingsNetworks"
+                },
+                {
+                    "do": "tap",
+                    "text": "Bitcoin",
+                    "x_from_right": 48,
+                    "dy": 54,
+                    "lands_on": "SettingsScreenStack/SettingsNetworkBackends"
+                },
+                {
+                    "do": "tap",
+                    "text": "Trezor (default)",
+                    "lands_on": "SettingsScreenStack/SettingsNetworkBackends"
+                },
+                {
+                    "do": "tap",
+                    "text": "Electrum",
+                    "lands_on": "SettingsScreenStack/SettingsNetworkBackends"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsNetworkBackends",
+                "landmarks": ["Server address", "Electrum", "Bitcoin backend", "Root URL"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:18:07.973Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-experimental",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Experimental",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Experimental",
+                    "test_id": "@settings/experimental",
+                    "lands_on": "SettingsScreenStack/SettingsExperimental"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsExperimental",
+                "landmarks": [
+                    "For experienced users only. Use at your own risk.",
+                    "SLIP-24 (clear signing)",
+                    "View transaction details on your"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:19:01.261Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-features-lower",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Trezor Suite",
+                    "lands_on": "AppTabs/Settings"
+                }
+            ],
+            "arrival": {
+                "route": "Settings",
+                "landmarks": [
+                    "Sync data across your devices",
+                    "Protect your transactions",
+                    "Get early access to new features",
+                    "Experimental"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:19:52.440Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-general",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Privacy & security",
+                    "lands_on": "AppTabs/Settings"
+                }
+            ],
+            "arrival": {
+                "route": "Settings",
+                "landmarks": ["preferences and theme", "Enable biometric", "set data preferences"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:20:12.308Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-home",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                }
+            ],
+            "arrival": {
+                "route": "Settings",
+                "landmarks": ["Secure your crypto offline", "Easy to set up", "simple to recover"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:20:20.957Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-language",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Preferences",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Preferences",
+                    "test_id": "@settings/preferences",
+                    "lands_on": "SettingsScreenStack/SettingsPreferences"
+                },
+                {
+                    "do": "tap",
+                    "text": "System",
+                    "test_id": "@settings/localization/language-selector",
+                    "lands_on": "SettingsScreenStack/SettingsPreferences"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsPreferences",
+                "landmarks": ["Bahasa Indonesia", "Deutsch", "English"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:20:37.772Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-network-filtered",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Networks",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Networks",
+                    "test_id": "@settings/coin-enabling",
+                    "lands_on": "SettingsScreenStack/SettingsNetworks"
+                },
+                {
+                    "do": "tap",
+                    "id": "@screen/sub-header/icon-right",
+                    "lands_on": "SettingsScreenStack/SettingsNetworks"
+                },
+                {
+                    "do": "type",
+                    "value": "Bitcoin",
+                    "lands_on": "SettingsScreenStack/SettingsNetworks"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsNetworks",
+                "landmarks": ["Bitcoin", "Cash"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:36:57.397Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-network-search",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Networks",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Networks",
+                    "test_id": "@settings/coin-enabling",
+                    "lands_on": "SettingsScreenStack/SettingsNetworks"
+                },
+                {
+                    "do": "tap",
+                    "id": "@screen/sub-header/icon-right",
+                    "lands_on": "SettingsScreenStack/SettingsNetworks"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsNetworks",
+                "landmarks": ["Ethereum", "Polygon PoS"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:37:37.741Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-networks",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Networks",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Networks",
+                    "test_id": "@settings/coin-enabling",
+                    "lands_on": "SettingsScreenStack/SettingsNetworks"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsNetworks",
+                "landmarks": [
+                    "Enable networks to buy or receive assets",
+                    "unused networks for faster loading",
+                    "Polygon PoS",
+                    "BNB Smart Chain"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:22:41.274Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-preferences",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Preferences",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Preferences",
+                    "test_id": "@settings/preferences",
+                    "lands_on": "SettingsScreenStack/SettingsPreferences"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsPreferences",
+                "landmarks": ["Language", "United States Dollar", "Bitcoin units", "Theme"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:22:55.089Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-privacy",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Privacy & security",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Privacy & security",
+                    "test_id": "@settings/privacy",
+                    "lands_on": "SettingsScreenStack/SettingsPrivacy"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsPrivacy",
+                "landmarks": [
+                    "Biometric authentication",
+                    "Discreet mode",
+                    "Usage data",
+                    "fingerprint verification"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:23:17.922Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-security",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Security",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Security",
+                    "test_id": "@settings/security",
+                    "lands_on": "SettingsScreenStack/SettingsSecurity"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsSecurity",
+                "landmarks": [
+                    "MEV protection",
+                    "Dust phishing protection",
+                    "Stay safe and secure fair prices by",
+                    "Hide suspicious micro transactions from"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:24:04.192Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-suite-sync",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Suite Sync",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Suite Sync",
+                    "test_id": "@settings/suite-sync",
+                    "lands_on": "SettingsScreenStack/SettingsSuiteSync"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsSuiteSync",
+                "landmarks": [
+                    "Name your wallets, personalize accounts, and",
+                    "Keeps your data up to date on all",
+                    "Trezor (default)"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:24:43.210Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-suite-sync-server",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Suite Sync",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Suite Sync",
+                    "test_id": "@settings/suite-sync",
+                    "lands_on": "SettingsScreenStack/SettingsSuiteSync"
+                },
+                {
+                    "do": "tap",
+                    "text": "Trezor (default)",
+                    "lands_on": "SettingsScreenStack/SettingsSuiteSync"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsSuiteSync",
+                "landmarks": ["Custom", "Trezor (default)", "Server"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:25:31.158Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-support",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Support",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Support",
+                    "test_id": "@settings/support",
+                    "lands_on": "SettingsScreenStack/SettingsSupport"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsSupport",
+                "landmarks": [
+                    "connect my Trezor to Trezor Suite",
+                    "Connected Trezor functionality",
+                    "Which firmware versions are supported",
+                    "What does the graph display"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:25:53.970Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-theme",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Preferences",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Preferences",
+                    "test_id": "@settings/preferences",
+                    "lands_on": "SettingsScreenStack/SettingsPreferences"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Theme",
+                    "lands_on": "SettingsScreenStack/SettingsPreferences"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsPreferences",
+                "landmarks": ["Theme", "Standard", "Dark"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-19T09:23:16.367Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-theme-dark",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Preferences",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Preferences",
+                    "test_id": "@settings/preferences",
+                    "lands_on": "SettingsScreenStack/SettingsPreferences"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Theme",
+                    "lands_on": "SettingsScreenStack/SettingsPreferences"
+                },
+                {
+                    "do": "tap",
+                    "text": "Dark",
+                    "lands_on": "SettingsScreenStack/SettingsPreferences"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsPreferences",
+                "landmarks": ["Theme", "Standard", "Dark"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T19:23:48.493Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-settings-trading-residence",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Enable trading",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Enable trading",
+                    "test_id": "@settings/trading",
+                    "lands_on": "SettingsScreenStack/SettingsTradingLocation"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsTradingLocation",
+                "landmarks": [
+                    "Trading is now available",
+                    "Country of residence",
+                    "Swap and buy crypto directly on your phone"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:26:39.223Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-storage-recovery",
+            "start_state": "keychain-unavailable",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "system-alert"
+                }
+            ],
+            "arrival": {
+                "route": "system-alert",
+                "landmarks": ["Unable to load app data", "Clear app storage"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-19T09:45:16.559Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ],
+            "note": "Stop on the alert: \"Clear app storage\" wipes app storage and \"Restart app\" only shows the alert again. Reinstall the signed build (fresh-install) afterwards."
+        },
+        {
+            "screenshot_id": "mobile-support-about",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Support",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Support",
+                    "test_id": "@settings/support",
+                    "lands_on": "SettingsScreenStack/SettingsSupport"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Application log",
+                    "lands_on": "SettingsScreenStack/SettingsSupport"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsSupport",
+                "landmarks": [
+                    "Get more help",
+                    "Trezor Support",
+                    "Application log",
+                    "About Trezor Suite"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:27:11.990Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-support-about-legal",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Support",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Support",
+                    "test_id": "@settings/support",
+                    "lands_on": "SettingsScreenStack/SettingsSupport"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Privacy policy",
+                    "lands_on": "SettingsScreenStack/SettingsSupport"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsSupport",
+                "landmarks": ["Legal", "Terms & conditions", "Privacy policy"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:28:09.202Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-support-model-faq",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "id": "@tabBar/Settings",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Support",
+                    "lands_on": "AppTabs/Settings"
+                },
+                {
+                    "do": "tap",
+                    "text": "Support",
+                    "test_id": "@settings/support",
+                    "lands_on": "SettingsScreenStack/SettingsSupport"
+                },
+                {
+                    "do": "tap",
+                    "text": "Can I connect my Trezor",
+                    "lands_on": "SettingsScreenStack/SettingsSupport"
+                }
+            ],
+            "arrival": {
+                "route": "SettingsSupport",
+                "landmarks": [
+                    "you can connect your Trezor Safe 7",
+                    "companion to the desktop version",
+                    "standalone"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:28:35.813Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-tracker-address-import",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Sync & Track",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "text": "Sync & Track",
+                    "test_id": "@home/portfolio/sync-coins-button",
+                    "lands_on": "AccountsImport/SelectNetwork"
+                },
+                {
+                    "do": "tap",
+                    "text": "Ethereum",
+                    "test_id": "@onboarding/select-coin/eth",
+                    "lands_on": "AccountsImport/XpubScan"
+                }
+            ],
+            "arrival": {
+                "route": "XpubScan",
+                "landmarks": ["Ethereum", "ETH +Tokens", "Where is my receive address?"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:28:58.167Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-tracker-bitcoin-import",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Sync & Track",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "text": "Sync & Track",
+                    "test_id": "@home/portfolio/sync-coins-button",
+                    "lands_on": "AccountsImport/SelectNetwork"
+                },
+                {
+                    "do": "tap",
+                    "text": "Bitcoin",
+                    "test_id": "@onboarding/select-coin/btc",
+                    "lands_on": "AccountsImport/XpubScan"
+                }
+            ],
+            "arrival": {
+                "route": "XpubScan",
+                "landmarks": ["Bitcoin", "BTC", "Where is my public key (XPUB)?"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:29:20.202Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-tracker-invalid-address",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Sync & Track",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "text": "Sync & Track",
+                    "test_id": "@home/portfolio/sync-coins-button",
+                    "lands_on": "AccountsImport/SelectNetwork"
+                },
+                {
+                    "do": "tap",
+                    "text": "Ethereum",
+                    "test_id": "@onboarding/select-coin/eth",
+                    "lands_on": "AccountsImport/XpubScan"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Enter address manually",
+                    "lands_on": "AccountsImport/XpubScan"
+                },
+                {
+                    "do": "type",
+                    "text": "Enter address manually",
+                    "test_id": "@accounts-import/sync-coins/xpub-input",
+                    "value": "not-an-address",
+                    "lands_on": "AccountsImport/XpubScan"
+                },
+                {
+                    "do": "tap",
+                    "text": "Enter address manually",
+                    "dy": 82,
+                    "test_id": "@accounts-import/sync-coins/xpub-submit",
+                    "lands_on": "AccountsImport/XpubScan"
+                }
+            ],
+            "arrival": {
+                "route": "XpubScan",
+                "landmarks": ["Enter address manually", "Address is not valid", "Sync my assets"]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:29:54.892Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-tracker-manual-address",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Sync & Track",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "text": "Sync & Track",
+                    "test_id": "@home/portfolio/sync-coins-button",
+                    "lands_on": "AccountsImport/SelectNetwork"
+                },
+                {
+                    "do": "tap",
+                    "text": "Ethereum",
+                    "test_id": "@onboarding/select-coin/eth",
+                    "lands_on": "AccountsImport/XpubScan"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "DEV: Huge account",
+                    "lands_on": "AccountsImport/XpubScan"
+                }
+            ],
+            "arrival": {
+                "route": "XpubScan",
+                "landmarks": [
+                    "Enter address manually",
+                    "DEV: Huge account (20k+ transactions)",
+                    "Where is my receive address?"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:30:27.928Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-tracker-manual-xpub",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Sync & Track",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "text": "Sync & Track",
+                    "test_id": "@home/portfolio/sync-coins-button",
+                    "lands_on": "AccountsImport/SelectNetwork"
+                },
+                {
+                    "do": "tap",
+                    "text": "Bitcoin",
+                    "test_id": "@onboarding/select-coin/btc",
+                    "lands_on": "AccountsImport/XpubScan"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "DEV: Taproot",
+                    "lands_on": "AccountsImport/XpubScan"
+                }
+            ],
+            "arrival": {
+                "route": "XpubScan",
+                "landmarks": [
+                    "Enter public key (XPUB) manually",
+                    "DEV: Taproot (zero value)",
+                    "Where is my public key (XPUB)?"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:30:59.958Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-tracker-network-selection",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Sync & Track",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "text": "Sync & Track",
+                    "test_id": "@home/portfolio/sync-coins-button",
+                    "lands_on": "AccountsImport/SelectNetwork"
+                }
+            ],
+            "arrival": {
+                "route": "SelectNetwork",
+                "landmarks": [
+                    "Sync my assets",
+                    "Select a network to sync",
+                    "Polygon PoS",
+                    "BNB Smart Chain"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:31:19.822Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-tracker-qr-permission-fallback",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Sync & Track",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "text": "Sync & Track",
+                    "test_id": "@home/portfolio/sync-coins-button",
+                    "lands_on": "AccountsImport/SelectNetwork"
+                },
+                {
+                    "do": "tap",
+                    "text": "Bitcoin",
+                    "test_id": "@onboarding/select-coin/btc",
+                    "lands_on": "AccountsImport/XpubScan"
+                },
+                {
+                    "do": "tap",
+                    "text": "Scan public key (XPUB)",
+                    "lands_on": "system-alert"
+                },
+                {
+                    "do": "alert",
+                    "value": "dismiss",
+                    "lands_on": "AccountsImport/XpubScan"
+                }
+            ],
+            "arrival": {
+                "route": "XpubScan",
+                "landmarks": [
+                    "Camera access denied",
+                    "Enable camera access in your device settings",
+                    "Upload from gallery"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T19:33:01.269Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-tracker-qr-scanner",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Sync & Track",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "text": "Sync & Track",
+                    "test_id": "@home/portfolio/sync-coins-button",
+                    "lands_on": "AccountsImport/SelectNetwork"
+                },
+                {
+                    "do": "tap",
+                    "text": "Bitcoin",
+                    "test_id": "@onboarding/select-coin/btc",
+                    "lands_on": "AccountsImport/XpubScan"
+                },
+                {
+                    "do": "tap",
+                    "text": "Scan public key (XPUB)",
+                    "lands_on": "system-alert"
+                }
+            ],
+            "arrival": {
+                "route": "system-alert",
+                "landmarks": [
+                    "access your camera",
+                    "camera for QR code scanning",
+                    "Upload from gallery"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T19:30:01.583Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-tracker-xpub-help",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Sync & Track",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "text": "Sync & Track",
+                    "test_id": "@home/portfolio/sync-coins-button",
+                    "lands_on": "AccountsImport/SelectNetwork"
+                },
+                {
+                    "do": "tap",
+                    "text": "Bitcoin",
+                    "test_id": "@onboarding/select-coin/btc",
+                    "lands_on": "AccountsImport/XpubScan"
+                },
+                {
+                    "do": "tap",
+                    "text": "Where is my public key",
+                    "test_id": "@accounts-import/sync-coins/xpub-help-link",
+                    "lands_on": "AccountsImport/XpubScan"
+                }
+            ],
+            "arrival": {
+                "route": "XpubScan",
+                "landmarks": [
+                    "Where is my public key (XPUB)?",
+                    "plug in your Trezor, then select Details",
+                    "Got it"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:31:45.778Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        },
+        {
+            "screenshot_id": "mobile-tracker-xpub-input",
+            "start_state": "onboarded-empty",
+            "steps": [
+                {
+                    "do": "launch",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Sync & Track",
+                    "lands_on": "HomeStack/Home"
+                },
+                {
+                    "do": "tap",
+                    "text": "Sync & Track",
+                    "test_id": "@home/portfolio/sync-coins-button",
+                    "lands_on": "AccountsImport/SelectNetwork"
+                },
+                {
+                    "do": "tap",
+                    "text": "Bitcoin",
+                    "test_id": "@onboarding/select-coin/btc",
+                    "lands_on": "AccountsImport/XpubScan"
+                },
+                {
+                    "do": "scroll_to",
+                    "text": "Enter public key (XPUB) manually",
+                    "lands_on": "AccountsImport/XpubScan"
+                },
+                {
+                    "do": "type",
+                    "text": "Enter public key (XPUB) manually",
+                    "test_id": "@accounts-import/sync-coins/xpub-input",
+                    "value": "not-an-account-key",
+                    "lands_on": "AccountsImport/XpubScan"
+                }
+            ],
+            "arrival": {
+                "route": "XpubScan",
+                "landmarks": [
+                    "Enter public key (XPUB) manually",
+                    "Sync my assets",
+                    "Where is my public key (XPUB)?"
+                ]
+            },
+            "status": "replayed",
+            "replays": [
+                {
+                    "device": "iPhone 18 Pro",
+                    "date": "2026-11-18T20:32:16.322Z",
+                    "result": "pass",
+                    "landing": "pass",
+                    "note": ""
+                }
+            ]
+        }
+    ]
+}

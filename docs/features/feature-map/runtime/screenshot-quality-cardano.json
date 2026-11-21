@@ -1,0 +1,206 @@
+{
+    "id": "runtime-cardano-screenshot-quality",
+    "created_at": "2026-11-15T09:22:59.704890+00:00",
+    "manifest_snapshot_sha256": "98a41fbdac4ca9bdf5fdf7d9e843d0c2afc95bfbe512ecfd430f980ab129575d",
+    "scope": {
+        "ordinals": [229, 238],
+        "images_reviewed": 10,
+        "platform": "web",
+        "model": "T3T1",
+        "firmware": "2.12.5",
+        "fixture_context": "Separate academic Cardano QA seed in a fresh disposable app profile, candidate backend mode funded then rewarded. Strict original descriptor guard retained."
+    },
+    "method": "All ten actual PNGs reviewed through two local contact sheets; delegated dashboard, voting-preference dialog and key-format form additionally viewed at native size. Source chain checked for Change delegate and separate provider update. No UI, device, server or main-manifest/image changes.",
+    "temporary_contact_sheets": "/tmp/feature-map-qc-cardano/sheet-{1,7}.png",
+    "full_resolution_reviewed": [
+        "web-t3t1-cardano-delegated-position",
+        "web-t3t1-cardano-change-voting-preference",
+        "web-t3t1-cardano-signature-key-format"
+    ],
+    "summary": {
+        "images_reviewed": 10,
+        "proposed_errata": 1,
+        "sensitive_images_identified": 0
+    },
+    "privacy_review": "No seed/PIN/passphrase, actual user input or authentication token identified. Holdings/rewards are established QA fixtures; current DRep identifier is existing provider/test fixture metadata, not a user-entered wallet key. Signing fields are empty. Values are not copied into this report.",
+    "reviews": [
+        {
+            "ordinal": 229,
+            "screenshot_id": "web-t3t1-cardano-staking-introduction",
+            "observation_id": "runtime-web-t3t1-cardano-staking-introduction",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-cardano-staking-introduction.png",
+            "sha256": "ab400857e3c75c33503b24f4d0951d11626c342880dedb71d71b0062ce0ad439",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["earn.staking.ada", "earn.staking.explainer"],
+            "limits": "Staking introduction and Start staking entry only. Retained spending access, deposit and APY are explanatory/fixture UI; no actual delegation."
+        },
+        {
+            "ordinal": 230,
+            "screenshot_id": "web-t3t1-cardano-provider-consent",
+            "observation_id": "runtime-web-t3t1-cardano-provider-consent",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-cardano-provider-consent.png",
+            "sha256": "8c98da5938e55d4091890ac35f21a234aa285a2ac01a150c944d20b058013fad",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["earn.staking.consent"],
+            "limits": "Provider consent and unchecked acknowledgement visible. Consent explains switching pools but does not demonstrate the pool-provider update flow."
+        },
+        {
+            "ordinal": 231,
+            "screenshot_id": "web-t3t1-cardano-delegation-form",
+            "observation_id": "runtime-web-t3t1-cardano-delegation-form",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-cardano-delegation-form.png",
+            "sha256": "bfc82f5e657203ffba07c8ea965e994089c431633e6b4afa849b6ce82d45f453",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["earn.staking.ada.delegate"],
+            "limits": "Full-balance delegation form, refundable deposit explanation, calculated QA fee and timeline visible. No delegation or hardware confirmation submitted."
+        },
+        {
+            "ordinal": 232,
+            "screenshot_id": "web-t3t1-cardano-voting-preference",
+            "observation_id": "runtime-web-t3t1-cardano-voting-preference",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-cardano-voting-preference.png",
+            "sha256": "bfc82f5e657203ffba07c8ea965e994089c431633e6b4afa849b6ce82d45f453",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["earn.staking.ada.voting"],
+            "limits": "Abstain, Everstake and custom DRep options visible with Abstain selected. No vote transaction executed."
+        },
+        {
+            "ordinal": 233,
+            "screenshot_id": "web-t3t1-cardano-custom-drep",
+            "observation_id": "runtime-web-t3t1-cardano-custom-drep",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-cardano-custom-drep.png",
+            "sha256": "bbb2e9ea9220331cc4561be671292ca82609344e64fcf480bd19fdd5bef0ea00",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["earn.staking.ada.voting"],
+            "limits": "Custom DRep selected and its empty identifier input visible. Fee reads To be calculated and Continue is disabled; no identifier entered/validated or submitted."
+        },
+        {
+            "ordinal": 234,
+            "screenshot_id": "web-t3t1-cardano-delegated-position",
+            "observation_id": "runtime-web-t3t1-cardano-delegated-position",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-cardano-delegated-position.png",
+            "sha256": "48c554d27b119aaccfb04857d65dbbd0d568b5a582bd9c1066cf51b801f36218",
+            "width": 1440,
+            "height": 1000,
+            "result": "correction-proposed",
+            "visible_feature_ids": ["earn.staking.ada", "earn.staking.ada.voting"],
+            "limits": "Existing Cardano delegation shows APY, reward cycle, full-balance staking, restaked-reward fixture state and Claim rewards, Unstake and Change delegate entries. Change delegate opens the separate Change voting preference dialog; this is a voting-delegation entry, not evidence of changing the staking-pool provider."
+        },
+        {
+            "ordinal": 235,
+            "screenshot_id": "web-t3t1-cardano-claim-rewards",
+            "observation_id": "runtime-web-t3t1-cardano-claim-rewards",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-cardano-claim-rewards.png",
+            "sha256": "ce65a2763cdb8f44a4d9090b807a2044a1412bd0ff26533c75dc19f619dfaccd",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["earn.staking.ada.claim"],
+            "limits": "Rewards fixture and calculated QA network fee visible. Claim rewards action was not submitted; no claim result."
+        },
+        {
+            "ordinal": 236,
+            "screenshot_id": "web-t3t1-cardano-unstake-form",
+            "observation_id": "runtime-web-t3t1-cardano-unstake-form",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-cardano-unstake-form.png",
+            "sha256": "577f14a694a2d805d3afb208cb88f71b531e11fdeb515886fe2b716ab4e0ea67",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["earn.staking.ada.undelegate"],
+            "limits": "Unstake explanation, calculated QA fee and refundable-deposit/reward timeline visible. Continue not submitted; no undelegation/refund occurred."
+        },
+        {
+            "ordinal": 237,
+            "screenshot_id": "web-t3t1-cardano-change-voting-preference",
+            "observation_id": "runtime-web-t3t1-cardano-change-voting-preference",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-cardano-change-voting-preference.png",
+            "sha256": "1b7aab8436a5bf8f7da3f65ac5006b208117e4f58b4010f734c1b4fbbd5aa742",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["earn.staking.ada.voting"],
+            "limits": "Current fixture Everstake DRep record and alternative voting choices visible. Fee reads To be calculated and Continue is disabled until a valid new choice. This changes governance voting, not pool provider."
+        },
+        {
+            "ordinal": 238,
+            "screenshot_id": "web-t3t1-cardano-signature-key-format",
+            "observation_id": "runtime-web-t3t1-cardano-signature-key-format",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-cardano-signature-key-format.png",
+            "sha256": "e3822ec2e5bbf0f83e5d22049050dafcbf800305441af55a3347b11270d3f082",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["wallet.sign-verify.cose", "wallet.sign-verify.sign"],
+            "limits": "Raw key is selected, COSE (CIP-30) option visible, address/message/signature/public-key fields empty and Hex toggle off. No COSE output, message signature or hardware confirmation was generated."
+        }
+    ],
+    "findings": [
+        {
+            "screenshot_id": "web-t3t1-cardano-delegated-position",
+            "severity": "medium",
+            "title": "Change delegate is governance voting, not pool-provider migration",
+            "effective_feature_ids": ["earn.staking.ada", "earn.staking.ada.voting"],
+            "description": "Existing Cardano delegation shows APY, reward cycle, full-balance staking, restaked-reward fixture state and Claim rewards, Unstake and Change delegate entries. Change delegate opens the separate Change voting preference dialog; this is a voting-delegation entry, not evidence of changing the staking-pool provider.",
+            "source_references": [
+                {
+                    "path": "packages/suite/src/views/wallet/staking/components/StakingDashboard/components/StakingCard.tsx",
+                    "line": 233
+                },
+                {
+                    "path": "suite-app/app-modal/src/UserContextModal.tsx",
+                    "line": 189
+                },
+                {
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/StakeChangeDelegateModal/StakeChangeDelegateModal.tsx",
+                    "line": 197
+                }
+            ],
+            "separate_provider_flow": {
+                "path": "packages/suite/src/views/wallet/staking/components/StakingDashboard/components/NewProviderCard.tsx",
+                "line": 38
+            }
+        }
+    ],
+    "source_cross_checks": [
+        {
+            "path": "packages/suite/src/views/wallet/staking/components/StakingDashboard/components/StakingCard.tsx",
+            "line": 233
+        },
+        {
+            "path": "suite-app/app-modal/src/UserContextModal.tsx",
+            "line": 189
+        },
+        {
+            "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/StakeChangeDelegateModal/StakeChangeDelegateModal.tsx",
+            "line": 197
+        },
+        {
+            "path": "packages/suite/src/components/earn/modals/shared/VotingDelegations/VotingPreferenceCard.tsx",
+            "line": 221
+        },
+        {
+            "path": "packages/suite/src/views/wallet/staking/components/StakingDashboard/components/NewProviderCard.tsx",
+            "line": 38
+        },
+        {
+            "path": "suite/sign-verify/src/SignVerifyForm.tsx",
+            "line": 159
+        }
+    ],
+    "interpretation": [
+        "Mode changes inject established test states; no delegation, claim, undelegation, DRep transaction or signature was performed.",
+        "The provider migration feature remains in the map but this batch provides no direct visual proof of that flow.",
+        "The COSE selector proves the available format choice only, not generated or verified COSE output."
+    ]
+}
