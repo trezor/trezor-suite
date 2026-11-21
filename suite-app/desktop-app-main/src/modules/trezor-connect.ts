@@ -8,6 +8,7 @@ import TrezorConnect, {
 import { ERRORS, initLog } from '@trezor/connect-common';
 import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { NodeUsbTransport, UdpTransport } from '@trezor/transport';
+import { type BluetoothTransport } from '@trezor/transport-bluetooth';
 import { BridgeTransport } from '@trezor/transport-common';
 import { parseElectrumUrl } from '@trezor/utils';
 
@@ -61,14 +62,14 @@ export const transportFactory = (
 // 1) translate legacy string transports to DI references (see above)
 // 2) add BluetoothTransport if the bluetooth module is enabled
 export const getTransportsParam = (
-    rawTransports?: ConnectSettings['transports'],
-    createLogger?: CreateLogger,
-    usbImplementation?: UsbImplementation,
+    rawTransports: ConnectSettings['transports'],
+    createLogger: CreateLogger | undefined,
+    usbImplementation: UsbImplementation,
+    bluetooth: BluetoothTransport | undefined,
 ): ConnectSettings['transports'] => {
     const transports = rawTransports
         ?.map(transport => transportFactory(transport, createLogger, usbImplementation))
         .filter((transport): transport is ConnectSettingsTransport => transport !== undefined);
-    const bluetooth = bluetoothModuleState.getTransport();
 
     // An explicit non-empty selection (e.g. from the debug transport picker) is honored as-is.
     if (transports && transports.length > 0) {
@@ -156,6 +157,9 @@ export const initBackground: ModuleInitBackground = ({
                         settings.transports,
                         createLogger,
                         getUsbImplementation(),
+                        // The helper starts in parallel with the boot; a start still in progress is
+                        // awaited so the Bluetooth transport is not left out of this init.
+                        await bluetoothModuleState.getTransportWhenStarted(),
                     );
 
                     const response = await TrezorConnect.init(settings);
@@ -206,6 +210,8 @@ export const initBackground: ModuleInitBackground = ({
                         params[0].transports,
                         createLogger,
                         getUsbImplementation(),
+                        // Init has already waited for a helper start in progress.
+                        bluetoothModuleState.getTransport(),
                     );
                 }
 

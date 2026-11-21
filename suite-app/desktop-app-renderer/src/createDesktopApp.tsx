@@ -102,7 +102,12 @@ export const createDesktopApp =
 
         // init bluetooth module
         // TODO should it really be here instead of initAction.ts?
-        await deps.services.bluetooth.init();
+        /**
+         * The bluetooth helper takes a few hundred milliseconds to start,
+         * so the app renders without waiting for it.
+         * Init does not reject, it reports its own failures to the user.
+         */
+        void deps.services.bluetooth.init();
 
         // finally render whole app
         root.render(
