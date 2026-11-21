@@ -88,8 +88,8 @@
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "@trezor/websocket-client": "workspace:*",
-        "@types/web": "^0.0.345",
-        "socks-proxy-agent": "8.0.5",
+        "@types/web": "^0.0.360",
+        "socks-proxy-agent": "10.1.0",
         "viem": "^2.57.2"
     },
     "peerDependencies": {
