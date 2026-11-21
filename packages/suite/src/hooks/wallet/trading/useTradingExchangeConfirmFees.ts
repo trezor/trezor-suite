@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
@@ -58,17 +58,32 @@ export const useTradingExchangeConfirmFees = (account: Account | undefined) => {
     const dexTransactionData = selectedQuote?.dexTx?.data;
 
     const composeRequestRef = useRef<{ abort: () => void } | null>(null);
+    const [composableFeeLevels, setComposableFeeLevels] = useState<string[]>();
 
     const compose = useCallback(
         (composeAccount: Account) => {
             composeRequestRef.current?.abort();
-            composeRequestRef.current = dispatch(
+            const request = dispatch(
                 exchangeThunks.composeTradeFeeLevelsThunk({
                     account: composeAccount,
                     decimals,
                     shouldSendInSats,
                 }),
             );
+            composeRequestRef.current = request;
+
+            request.then(result => {
+                if (
+                    composeRequestRef.current !== request ||
+                    !exchangeThunks.composeTradeFeeLevelsThunk.fulfilled.match(result)
+                ) {
+                    return;
+                }
+
+                setComposableFeeLevels(previous =>
+                    previous?.join() === result.payload?.join() ? previous : result.payload,
+                );
+            });
         },
         [dispatch, decimals, shouldSendInSats],
     );
@@ -138,5 +153,5 @@ export const useTradingExchangeConfirmFees = (account: Account | undefined) => {
         compose(account);
     };
 
-    return { feeInfo, composeFormState, applySelectedFee };
+    return { feeInfo, composeFormState, applySelectedFee, composableFeeLevels };
 };

@@ -1,6 +1,7 @@
 import { type CryptoId, type SellFiatFlowType } from 'invity-api';
 
 import { type NetworkType, asNetworkSymbol } from '@suite-common/wallet-config';
+import { type FeeLevelLabel } from '@suite-common/wallet-types';
 
 import { getRandomAccountDescriptor } from './utils/apiKeyUtils';
 
@@ -14,6 +15,8 @@ export const TRADING_THUNK_PREFIX = `${TRADING_PREFIX}/thunk`;
 export const TRADING_BUY_THUNK_PREFIX = `${TRADING_BUY_PREFIX}/thunk`;
 export const TRADING_EXCHANGE_THUNK_PREFIX = `${TRADING_EXCHANGE_PREFIX}/thunk`;
 export const TRADING_SELL_THUNK_PREFIX = `${TRADING_SELL_PREFIX}/thunk`;
+
+export const TRADING_FEE_LEVEL_PRIORITY: FeeLevelLabel[] = ['high', 'normal', 'low', 'economy'];
 
 export const TRADING_DEFAULT_CRYPTO_CURRENCY = asNetworkSymbol('btc');
 export const TRADING_EXCHANGE_DEFAULT_SEND_CRYPTO_ID =

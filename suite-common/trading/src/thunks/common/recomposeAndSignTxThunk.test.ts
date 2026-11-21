@@ -255,17 +255,21 @@ describe('recomposeAndSignTxThunk', () => {
     const missingFeeLevel: TradingError = { type: 'sign-tx-error', code: 'missing-fee-level' };
 
     it.each<[string, unknown, TradingError]>([
-        ['when levels were not found', undefined, missingFeeLevel],
-        ['when levels do not contain a normal object', {}, missingFeeLevel],
+        ['when levels were not found', undefined, { ...missingFeeLevel, composableFeeLevels: [] }],
+        [
+            'when levels do not contain a normal object',
+            {},
+            { ...missingFeeLevel, composableFeeLevels: [] },
+        ],
         [
             'when levels contain normal object with type not final',
             { normal: { type: 'nonfinal', feeLimit: '10' } },
-            missingFeeLevel,
+            { ...missingFeeLevel, composableFeeLevels: ['normal'] },
         ],
         [
             'when levels contain normal object without feeLimit',
             { normal: { type: 'final' } },
-            missingFeeLevel,
+            { ...missingFeeLevel, composableFeeLevels: ['normal'] },
         ],
         [
             'when levels contain normal object with error message',
@@ -273,6 +277,7 @@ describe('recomposeAndSignTxThunk', () => {
             {
                 ...missingFeeLevel,
                 cause: { source: 'precompose', errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' } },
+                composableFeeLevels: [],
             },
         ],
     ])('should return error for custom fees %s', async (_, levels, expectedPayload) => {
@@ -485,6 +490,7 @@ describe('recomposeAndSignTxThunk', () => {
         expect(response.payload).toEqual({
             type: 'sign-tx-error',
             code: 'cannot-create-transaction',
+            composableFeeLevels: [],
         });
 
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(0);
@@ -517,6 +523,7 @@ describe('recomposeAndSignTxThunk', () => {
         expect(response.payload).toEqual({
             type: 'sign-tx-error',
             code: 'cannot-create-transaction',
+            composableFeeLevels: [],
         });
 
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(0);
@@ -561,6 +568,7 @@ describe('recomposeAndSignTxThunk', () => {
                 source: 'precompose',
                 errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH', values: { error: 'error' } },
             },
+            composableFeeLevels: [],
         });
 
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(0);
