@@ -1,9 +1,28 @@
-import { ContentSecurityPolicyRules } from '../types/securityHeaders';
+import {
+    ContentSecurityPolicyKeyword,
+    ContentSecurityPolicyRules,
+    ContentSecurityPolicySource,
+} from '../types/securityHeaders';
 
-const quotedDirectivesValues = new Set(['self', 'none', 'unsafe-inline', 'unsafe-eval']);
+const keywords = new Set(
+    Object.keys({
+        none: true,
+        self: true,
+        'unsafe-inline': true,
+        'unsafe-eval': true,
+        'wasm-unsafe-eval': true,
+        'trusted-types-eval': true,
+        'unsafe-hashes': true,
+        'strict-dynamic': true,
+        'report-sample': true,
+        'inline-speculation-rules': true,
+    } satisfies Record<ContentSecurityPolicyKeyword, true>),
+);
 
-function quoteDirectiveValue(value: string) {
-    return quotedDirectivesValues.has(value) ? `'${value}'` : value;
+const nonceOrHashPattern = /^(?:nonce|sha256|sha384|sha512)-[\w+/-]+={0,2}$/;
+
+function quoteDirectiveValue(value: ContentSecurityPolicySource) {
+    return keywords.has(value) || nonceOrHashPattern.test(value) ? `'${value}'` : value;
 }
 
 export function formatContentSecurityPolicy<Rules extends Partial<ContentSecurityPolicyRules>>(

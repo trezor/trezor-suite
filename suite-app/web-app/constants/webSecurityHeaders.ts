@@ -7,7 +7,8 @@ const SENTRY_REPORT_URL =
 
 /**
  * Response security headers applied during `yarn build:preview` / `yarn preview` command.
- * - There's equal to the ones deployed in production (https://suite.trezor.io).
+ * - There should be equal to the ones deployed in production (https://suite.trezor.io) and staging (https://staging-suite.trezor.io/web) environments.
+ * - The environments get them only by a manual deployment, so change them by the process in `skills/security-headers/SKILL.md`.
  */
 const PRODUCTION_SECURITY_HEADERS = {
     /**
@@ -66,7 +67,7 @@ const PRODUCTION_SECURITY_HEADERS = {
         // Note that connect-src is a CSP policy that has nothing to do with the former TrezorConnect parameter of the same name
         'connect-src': ['data:', '*'],
         'upgrade-insecure-requests': true,
-        'script-src': ['self'],
+        'script-src': ['self', 'wasm-unsafe-eval'],
         'form-action': ['self'],
         'frame-ancestors': ['self'],
         'base-uri': ['none'],
@@ -87,4 +88,34 @@ export function getSecurityHeaders() {
             PRODUCTION_SECURITY_HEADERS['content-security-policy'],
         ),
     } as const;
+}
+
+/**
+ * Response security headers of `connect-popup/bootstrap.html`, equal to the production ones
+ * (https://suite.trezor.io/web/connect-popup/bootstrap.html).
+ * - Third-party pages embed it in an iframe, so any site may frame it: no `frame-ancestors` and no `x-frame-options`.
+ * - The iframe calls `document.requestStorageAccess()`, which `storage-access=()` in `permissions-policy` would block.
+ * - Production sends no `cross-origin-opener-policy` either. The popup gets it once it moves on to `connect-popup/`.
+ */
+export function getConnectPopupBootstrapSecurityHeaders() {
+    const {
+        'x-frame-options': xFrameOptions,
+        'permissions-policy': permissionsPolicy,
+        'cross-origin-opener-policy': crossOriginOpenerPolicy,
+        'content-security-policy': { 'frame-ancestors': frameAncestors, ...contentSecurityPolicy },
+        ...headers
+    } = PRODUCTION_SECURITY_HEADERS;
+
+    return {
+        ...headers,
+        'content-security-policy': formatContentSecurityPolicy(contentSecurityPolicy),
+    } as const;
+}
+
+/**
+ * Paths that production serves with their own security headers, keyed by the path in the build.
+ * Every other path gets `getSecurityHeaders()`.
+ */
+export function getSecurityHeadersByPath(): ReadonlyMap<string, Readonly<Record<string, string>>> {
+    return new Map([['/connect-popup/bootstrap.html', getConnectPopupBootstrapSecurityHeaders()]]);
 }
