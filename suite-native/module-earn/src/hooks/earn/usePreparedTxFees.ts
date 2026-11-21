@@ -82,7 +82,10 @@ type UsePreparedTxFeesParams<TComposed extends ComposedTxBase, TReason extends s
     fallbackReason: TReason;
     /** Empty string marks a missing draft context; the store is then only cleared, never written. */
     formDraftKey: string;
-    /** True when required inputs are missing — composing stops and stored drafts are cleared. */
+    /**
+     * True when required inputs are missing — composing stops, the stored fee levels are cleared and
+     * the draft is not returned. It stays stored, so the fee choice survives until the inputs are back.
+     */
     hasInvalidContext: boolean;
     isEnabled: boolean;
     symbol: NetworkSymbol | undefined;
@@ -121,6 +124,7 @@ export const usePreparedTxFees = <
         null,
     );
     const [isPreparingFee, setIsPreparingFee] = useState(false);
+    const [isCustomFeeReplaced, setIsCustomFeeReplaced] = useState(false);
     const {
         feeEstimationRetryKey,
         hasFeeEstimationError,
@@ -147,19 +151,19 @@ export const usePreparedTxFees = <
         storedFeeLevelsRef.current = null;
     }, [dispatch, feeLevelsRef]);
 
-    const clearFeeStore = useCallback(() => {
-        clearFeeLevels();
+    const failPreparation = useCallback(
+        (reason?: TReason) => {
+            if (reason) {
+                reportComposeError(reason);
+            }
 
-        if (formDraftKey) {
-            dispatch(formDraftActions.removeDraft({ key: formDraftKey }));
-        }
-    }, [clearFeeLevels, dispatch, formDraftKey]);
-
-    const clearFeeState = useCallback(() => {
-        setBaseActionContext(null);
-        setIsPreparingFee(false);
-        clearFeeStore();
-    }, [clearFeeStore]);
+            setHasFeeEstimationError(true);
+            setBaseActionContext(null);
+            setIsPreparingFee(false);
+            clearFeeLevels();
+        },
+        [clearFeeLevels, reportComposeError, setHasFeeEstimationError],
+    );
 
     const canCompose = isEnabled && !hasInvalidContext;
 
@@ -183,16 +187,13 @@ export const usePreparedTxFees = <
             }
 
             if (result.type === 'not-ready') {
-                setHasFeeEstimationError(true);
-                clearFeeState();
+                failPreparation();
 
                 return;
             }
 
             if (result.type === 'error') {
-                reportComposeError(result.reason ?? fallbackReason);
-                setHasFeeEstimationError(true);
-                clearFeeState();
+                failPreparation(result.reason ?? fallbackReason);
 
                 return;
             }
@@ -203,9 +204,7 @@ export const usePreparedTxFees = <
 
             // A transaction that composed but cannot be priced is a failure, not a pending state.
             if (!baseFeePreview) {
-                reportComposeError(fallbackReason);
-                setHasFeeEstimationError(true);
-                clearFeeState();
+                failPreparation(fallbackReason);
 
                 return;
             }
@@ -219,14 +218,7 @@ export const usePreparedTxFees = <
             });
             setIsPreparingFee(false);
         },
-        [
-            clearFeeState,
-            composeTransaction,
-            fallbackReason,
-            formDraftKey,
-            reportComposeError,
-            setHasFeeEstimationError,
-        ],
+        [composeTransaction, failPreparation, fallbackReason, formDraftKey],
     );
 
     const currentBaseActionContext =
@@ -298,6 +290,12 @@ export const usePreparedTxFees = <
             return;
         }
 
+        if (feeDraftState.isCustomFeeReplaced) {
+            setIsCustomFeeReplaced(true);
+        } else if (feeDraftState.formDraft.selectedFee !== 'normal') {
+            setIsCustomFeeReplaced(false);
+        }
+
         if (
             feeLevelsRef.current !== storedFeeLevelsRef.current ||
             !deepEqual(storedFeeLevelsRef.current, feeDraftState.feeLevels)
@@ -358,7 +356,7 @@ export const usePreparedTxFees = <
             setIsPreparingFee(false);
 
             if (hasInvalidContext) {
-                clearFeeStore();
+                clearFeeLevels();
             }
 
             return;
@@ -370,7 +368,7 @@ export const usePreparedTxFees = <
     }, [
         amount,
         canPrepareFee,
-        clearFeeStore,
+        clearFeeLevels,
         debounce,
         feeEstimationRetryKey,
         hasInvalidContext,
@@ -381,9 +379,14 @@ export const usePreparedTxFees = <
     useEffect(
         () => () => {
             requestIdRef.current += 1;
-            clearFeeStore();
+            setIsCustomFeeReplaced(false);
+            clearFeeLevels();
+
+            if (formDraftKey) {
+                dispatch(formDraftActions.removeDraft({ key: formDraftKey }));
+            }
         },
-        [clearFeeStore],
+        [clearFeeLevels, dispatch, formDraftKey],
     );
 
     const getCustomFeeLevel = useCallback<CustomFeeLevelBuilder>(
@@ -409,6 +412,8 @@ export const usePreparedTxFees = <
         },
         [availableBalance, canCompose, currentBaseActionContext, feeInfo, isCurrentFeePreparing],
     );
+
+    const onFeeConfirmed = useCallback(() => setIsCustomFeeReplaced(false), []);
 
     const hasFeeDraftEstimationError = canCompose && !!feeInfo && hasMissingFeeDraft;
 
@@ -441,9 +446,11 @@ export const usePreparedTxFees = <
 
     return {
         getCustomFeeLevel,
-        formDraft,
+        formDraft: hasInvalidContext ? undefined : formDraft,
         formDraftKey,
         hasFeeEstimationError: hasFeeError,
+        isCustomFeeReplaced,
+        onFeeConfirmed,
         isFeePreparing: isCurrentFeePreparing,
         isFeeReady,
         isFeeUnavailable,
