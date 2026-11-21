@@ -1,5 +1,5 @@
 export { prepareThpReducer, initialThpState } from './thpReducer';
-export type { ThpStep, ThpState } from './thpReducer';
+export type { ThpAutoconnectStep, ThpStep, ThpState } from './thpReducer';
 export type { GetThpSettingsDep, ThpHostNameDep, ThpRootState } from './thpSelectors';
 export {
     selectThp,

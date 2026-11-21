@@ -47,6 +47,12 @@ export const useCommonApplicationLogs = (hideSensitiveInfo: boolean) => {
             return _devicesWithTelemetry;
         },
         staleTime: 60 * 1000,
+        /**
+         * Telemetry only enriches devices the log already describes, and the log falls back to
+         * them unenriched. Retrying a device call that threw would hold the whole log back through
+         * every backoff, which is a long wait for an enrichment the reader may not even need.
+         */
+        retry: false,
     });
     if (envInfo === null || isLoading) return null;
 
