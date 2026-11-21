@@ -48,6 +48,9 @@ export abstract class AbstractMessageChannel<
     private readonly handshakeMaxRetries = 5;
     private readonly handshakeRetryInterval = 2000;
     private handshakeFinished: Deferred<void> | undefined;
+    // Bumped by abortHandshake(), so the retry loop of an aborted handshake
+    // stops even when init() has already started the next one.
+    private handshakeGeneration = 0;
 
     protected lazyHandshake?: boolean;
     protected logger?: Log;
@@ -95,9 +98,15 @@ export abstract class AbstractMessageChannel<
      */
     protected handshakeWithPeer(): Promise<void> {
         this.logger?.log(this.channel.here, 'handshake');
+        const generation = this.handshakeGeneration;
+        const isAborted = () => generation !== this.handshakeGeneration;
 
         return scheduleAction(
             async () => {
+                // abortHandshake() clears `handshakeFinished`, so without this
+                // the next attempt would post another request, await nothing,
+                // resolve, and report the aborted handshake as confirmed.
+                if (isAborted()) throw new Error('handshake aborted');
                 this.postMessage(
                     {
                         type: 'channel-handshake-request',
@@ -110,6 +119,7 @@ export abstract class AbstractMessageChannel<
             {
                 attempts: this.handshakeMaxRetries,
                 timeout: this.handshakeRetryInterval,
+                attemptFailureHandler: error => (isAborted() ? error : undefined),
             },
         )
             .then(() => {
@@ -121,6 +131,8 @@ export abstract class AbstractMessageChannel<
                 this.messagesQueue = [];
             })
             .catch(() => {
+                // The deferred of a handshake started after the abort is not ours.
+                if (isAborted()) return;
                 this.handshakeFinished?.reject(new Error('handshake failed'));
                 this.handshakeFinished = undefined;
             });
@@ -225,6 +237,7 @@ export abstract class AbstractMessageChannel<
     }
 
     abortHandshake(reason?: string) {
+        this.handshakeGeneration += 1;
         this.handshakeFinished?.reject(new Error(reason ?? 'Handshake aborted'));
         this.handshakeFinished = undefined;
     }
