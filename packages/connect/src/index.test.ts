@@ -18,8 +18,9 @@ jest.mock('@trezor/connect-core/src/core', () => ({
     }),
 }));
 
-jest.mock('@trezor/connect-core/src/backend/BlockchainLink', () => ({
-    updateProxy: jest.fn(() => Promise.resolve()),
+jest.mock('@trezor/blockchain-core', () => ({
+    ...jest.requireActual('@trezor/blockchain-core'),
+    TrezorBlockchain: { updateSettings: jest.fn(() => Promise.resolve()) },
 }));
 
 jest.mock('usb', () => ({ WebUSB: class {} }));

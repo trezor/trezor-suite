@@ -3,15 +3,16 @@ import { type AbstractTransportParams, BridgeTransport } from '@trezor/transport
 
 import { CoreInModuleNode } from './core-in-module-node';
 
-jest.mock('@trezor/connect-core/src/backend/BlockchainLink', () => ({
-    updateProxy: jest.fn(() => Promise.resolve()),
+jest.mock('@trezor/blockchain-core', () => ({
+    ...jest.requireActual('@trezor/blockchain-core'),
+    TrezorBlockchain: { updateSettings: jest.fn(() => Promise.resolve()) },
 }));
 
 // The repo-wide `usb` mock throws on construction to keep the native binding out of unit tests;
 // NodeUsbTransport constructs a WebUSB instance, so stub it here.
 jest.mock('usb', () => ({ WebUSB: class {} }));
 
-const { updateProxy } = jest.requireMock('@trezor/connect-core/src/backend/BlockchainLink');
+const { TrezorBlockchain } = jest.requireMock('@trezor/blockchain-core');
 
 class Probe extends CoreInModuleNode {
     public getDefaultTransports(params: AbstractTransportParams) {
@@ -49,7 +50,7 @@ describe('CoreInModuleNode', () => {
         const proxy = { uri: 'socks://localhost:9050' };
         await new Probe().callUpdateProxy(proxy);
 
-        expect(updateProxy).toHaveBeenCalledWith(proxy);
+        expect(TrezorBlockchain.updateSettings).toHaveBeenCalledWith({ proxy });
     });
 
     it('accepts an undefined proxy', async () => {

@@ -1,0 +1,41 @@
+{
+    "name": "@trezor/blockchain-core",
+    "version": "10.0.1",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "license": "See LICENSE.md in repo root",
+    "description": "Blockchain backends of Trezor Suite, next to Connect.",
+    "sideEffects": false,
+    "main": "src/index.ts",
+    "browser": {
+        "./src/workers/workers": "./src/workers/workers.browser.ts"
+    },
+    "react-native": {
+        "./src/workers/workers": "./src/workers/workers.native.ts"
+    },
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@trezor/blockchain-link": "workspace:*",
+        "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
+        "@trezor/connect-data": "workspace:*",
+        "@trezor/schema-utils": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "author": "Trezor <info@trezor.io>"
+}
