@@ -34,6 +34,12 @@ export const getDiscoveryOutcome = (
 export const hasDiscoveryEnded = (discovery: DiscoveryStatus | undefined) =>
     getDiscoveryOutcome(discovery) !== undefined;
 
+export const getDiscoveryLoadDurationMs = (discovery: DiscoveryStatus | undefined, now: number) => {
+    if (discovery?.loadStartTimestamp === undefined) return 0;
+
+    return (discovery.loadEndTimestamp ?? now) - discovery.loadStartTimestamp;
+};
+
 type FirmwareFailureType = keyof typeof PROTO.Enum_FailureType;
 
 // Connect declares the THP error codes only as a type. The mapped type makes adding a code there a

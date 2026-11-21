@@ -6,6 +6,7 @@ import type { AttributeDef, EventDef } from '../eventDefinition';
 type Attributes = {
     outcome: AttributeDef<DiscoveryOutcome>;
     trigger: AttributeDef<DiscoveryTrigger>;
+    durationMs: AttributeDef<number>;
     errorCode?: AttributeDef<string>;
 };
 
@@ -26,6 +27,11 @@ export const accountsDiscoveryResultEvent: EventDef<Attributes, EventType.Accoun
                 changelog: [{ version: '26.11.0', notes: 'added' }],
                 description:
                     'What started the run: `device-connect` (device connected or acquired, including app start), `device-switch` (another device or wallet selected), `device-check` (a failed entropy check was dismissed, or on mobile the compromised device warning was dismissed), `coin-toggle`, `account-update` (an account changed and further accounts may be discoverable), `add-wallet` (standard or hidden wallet, including passphrase retries), `add-account`, `retry` (user retried a failed discovery, or activated an already enabled network from Earn), `reconnect` (connectivity regained, desktop only) or `onboarding` (desktop onboarding finished, or mobile wallet created or recovered). On desktop, a run that had to wait for a screen, flow or device check that blocks discovery reports why discovery was needed instead: `device-connect` for a wallet not discovered yet, `coin-toggle` for an enabled coin without accounts, or `account-update`',
+            },
+            durationMs: {
+                changelog: [{ version: '26.12.0', notes: 'added' }],
+                description:
+                    'How long the run spent loading accounts from Trezor Connect, in milliseconds: from the start of account discovery until it returns or the run ends, whichever comes first. Preparing the device before loading (PIN, passphrase, pairing) and confirming an empty passphrase after loading are left out; a PIN entered during loading because the device locked is included. `0` when the run ends before accounts start loading, e.g. `passphrase-duplicate` or a cancelled passphrase prompt',
             },
             errorCode: {
                 changelog: [{ version: '26.11.0', notes: 'added' }],
