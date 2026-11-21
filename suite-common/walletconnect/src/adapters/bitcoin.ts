@@ -19,6 +19,7 @@ import {
     type WalletConnectAdapter,
     type WalletConnectNamespace,
 } from '../walletConnectTypes';
+import { isWalletConnectSupportedAccount } from '../walletConnectUtils';
 
 const methods = [
     'sendTransfer',
@@ -29,6 +30,8 @@ const methods = [
 
 const findAccount = (accounts: Account[], firstAddress: string) =>
     accounts.find(account => {
+        if (!isWalletConnectSupportedAccount(account)) return false;
+
         const usedAddresses = account.addresses?.used.map(a => a.address) ?? [];
         const unusedAddresses = account.addresses?.unused.map(a => a.address) ?? [];
 
