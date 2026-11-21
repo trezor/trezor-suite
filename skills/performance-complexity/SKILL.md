@@ -1,6 +1,6 @@
 ---
 name: performance-complexity
-description: Collection-handling performance for Trezor Suite — indexing before iteration, O(1) sort comparators, and reduce accumulators that don't allocate. Use when writing a loop, sort or reduce over accounts, tokens, transactions or UTXOs.
+description: 'Use when writing or reviewing loops, sorting or reductions over growing Trezor Suite collections, such as transactions, tokens or UTXOs. Covers repeated scans and accumulator copying.'
 ---
 
 # Asymptotic Complexity

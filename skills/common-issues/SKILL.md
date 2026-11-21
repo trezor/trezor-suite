@@ -1,6 +1,6 @@
 ---
 name: common-issues
-description: Known issues and their solutions in the Trezor Suite monorepo. Use when encountering build failures, test failures, or environment problems.
+description: 'Use when troubleshooting Trezor Suite Playwright installation failures, network timeouts or TypeScript errors. Contains brief notes for these problems.'
 ---
 
 # Common Issues

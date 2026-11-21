@@ -1,6 +1,6 @@
 ---
 name: tests-commands
-description: Commands for running unit tests in the Trezor Suite monorepo. Use when you need to run tests for specific packages or the entire project.
+description: 'Use when choosing commands to run Trezor Suite unit tests for a file, package or the whole project.'
 ---
 
 # Testing

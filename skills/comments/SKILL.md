@@ -1,6 +1,6 @@
 ---
 name: comments
-description: Comment conventions for Trezor Suite — prefer self-documenting code, and how to write and format a comment when one is actually needed. Use when writing or reviewing code comments.
+description: 'Use when writing or reviewing Trezor Suite code comments. Covers when comments are needed, their content and formatting.'
 ---
 
 # Comments

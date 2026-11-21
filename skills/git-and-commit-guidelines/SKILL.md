@@ -1,6 +1,6 @@
 ---
 name: git-and-commit-guidelines
-description: Conventional Commits format, commit types, scopes, submodule bumps, and PR best practices for Trezor Suite. Use when committing code, bumping submodule, or creating pull requests.
+description: 'Use when writing commits, updating submodules or creating or editing Trezor Suite pull requests. Covers Conventional Commits and PR conventions.'
 ---
 
 # Git and Commit Guidelines

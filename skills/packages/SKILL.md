@@ -1,6 +1,6 @@
 ---
 name: packages
-description: How to create and structure packages in the Trezor Suite monorepo, including scopes and sizing guidance. Use when creating new packages or resolving cyclic dependencies.
+description: 'Use when creating Trezor Suite packages, moving code between them or resolving cyclic dependencies. Covers scopes, dependency boundaries and package sizing.'
 ---
 
 # Packages
