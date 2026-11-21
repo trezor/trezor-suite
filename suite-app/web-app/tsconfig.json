@@ -1,8 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "./libDev"
-    },
+    "compilerOptions": { "outDir": "./libDev" },
     "include": ["."],
     "references": [
         { "path": "../app" },
@@ -22,15 +20,25 @@
         { "path": "../module-sign-verify" },
         { "path": "../module-trading" },
         { "path": "../module-transactions" },
+        { "path": "../../suite-common/firmware" },
+        {
+            "path": "../../suite-common/react-query"
+        },
         {
             "path": "../../suite-common/suite-utils"
         },
+        {
+            "path": "../../suite-common/token-definitions"
+        },
         { "path": "../../suite/debug" },
         { "path": "../../suite/desktop-app-api" },
+        { "path": "../../suite/locks" },
         {
             "path": "../../suite/platform-encryption-webauthn"
         },
         { "path": "../../suite/router" },
+        { "path": "../../suite/service-worker" },
+        { "path": "../../suite/settings" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/dependency-injection"
