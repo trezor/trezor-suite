@@ -3,7 +3,7 @@ import { RequireExactlyOne } from 'type-fest';
 
 import { step } from './common';
 import { expect } from './testExtends/customMatchers';
-import { EventPayload, SuiteDesktopAnalyticsEventsForE2e } from './types';
+import { EventPayload, ExtractByEventType, SuiteDesktopAnalyticsEventsForE2e } from './types';
 
 type AnalyticsOptions = RequireExactlyOne<
     {
@@ -156,6 +156,40 @@ export class AnalyticsFixture {
         return [...this.requests].reverse().find(req => req.c_type === eventType);
     }
 
+    /**
+     * Returns every intercepted request of the given event type in the order the app sent them.
+     * Pair it with `expect.poll` when the last event is reported asynchronously.
+     */
+    findAnalyticsEventsByType(eventType: string) {
+        return this.requests.filter(req => req.c_type === eventType);
+    }
+
+    /**
+     * Tracks how many events of the given type were already checked, so each check expects
+     * exactly one new event. Analytics requests are sent asynchronously after the UI action,
+     * so the new event is polled for.
+     */
+    trackEvents<T extends SuiteDesktopAnalyticsEventsForE2e['type']>(eventType: T) {
+        let checkedCount = 0;
+        const findUncheckedEvents = () =>
+            this.findAnalyticsEventsByType(eventType).slice(checkedCount);
+
+        return {
+            expectNext: async (
+                expected: Partial<Record<keyof EventPayload<ExtractByEventType<T>>, unknown>>,
+            ) => {
+                await expect
+                    .poll(() => findUncheckedEvents().length, `expected a new ${eventType} event`)
+                    .toBeGreaterThanOrEqual(1);
+
+                const uncheckedEvents = findUncheckedEvents();
+                expect(uncheckedEvents, `unexpected extra ${eventType} event`).toHaveLength(1);
+                expect(uncheckedEvents[0]).toMatchObject(expected);
+                checkedCount += 1;
+            },
+        };
+    }
+
     @step()
     async interceptAnalytics() {
         await this.page.route('**://data.trezor.io/suite/log/**', route => {
@@ -164,6 +198,13 @@ export class AnalyticsFixture {
             this.requests.push(Object.fromEntries(params.entries()));
             route.continue();
         });
+    }
+
+    @step()
+    async stubFeedback() {
+        await this.page.route('**://data.trezor.io/suite/feedback/**', route =>
+            route.fulfill({ headers: { 'access-control-allow-origin': '*' } }),
+        );
     }
 
     @step()
