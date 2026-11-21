@@ -39,6 +39,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "@trezor/utxo-lib": "workspace:*",
         "date-fns": "^4.1.0",
         "react": "19.3.0",
         "react-hook-form": "^7.91.0"
