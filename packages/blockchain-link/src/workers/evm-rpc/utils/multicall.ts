@@ -2,6 +2,7 @@ import { type Abi, type PublicClient, decodeFunctionResult, encodeFunctionData }
 
 import { cachePerClient } from './client';
 import { getErrorName } from './errors';
+import { recordRateLimitLoss } from './rateLimit';
 
 // Canonical CREATE2 deployment, identical on every chain Multicall3 is deployed to.
 export const MULTICALL3_ADDRESS = '0xcA11bde05977b3631167028862bE2a173976CA11' as const;
@@ -116,7 +117,9 @@ const readIndividually = (client: PublicClient, calls: readonly BatchCall[]) =>
                 const result = await client.call({ to: call.address, data: encodeCall(call) });
 
                 return result.data ? decodeCall(call, result.data) : undefined;
-            } catch {
+            } catch (error) {
+                recordRateLimitLoss(client, error);
+
                 return undefined;
             }
         }),

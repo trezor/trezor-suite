@@ -25,6 +25,8 @@ interface MapGetAccountInfoResponseParams {
     historyCoveredSince?: number;
     /** A known token holds a balance, checked when `tokens` was not asked for. */
     holdsKnownToken?: boolean;
+    /** The provider's rate limit cost this answer part of what it should hold. */
+    isRateLimited?: boolean;
 }
 
 export const mapGetAccountInfoResponse = ({
@@ -41,6 +43,7 @@ export const mapGetAccountInfoResponse = ({
     olderHistoryFrom,
     historyCoveredSince,
     holdsKnownToken = false,
+    isRateLimited = false,
 }: MapGetAccountInfoResponseParams): Responses.GetAccountInfo => {
     // Tokens and transactions both count: an address that only ever received an ERC-20 has no
     // balance and no nonce, and reporting it as empty would cut account discovery short. A token
@@ -69,6 +72,7 @@ export const mapGetAccountInfoResponse = ({
                 stakingPools: stakingPools && stakingPools.length > 0 ? stakingPools : undefined,
                 olderHistoryFrom,
                 historyCoveredSince,
+                ...(isRateLimited && { isRateLimited }),
             },
             page,
         },
