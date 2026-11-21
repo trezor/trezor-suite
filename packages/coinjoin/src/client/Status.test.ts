@@ -3,6 +3,7 @@ import { coordinatorRequest } from './coordinatorRequest';
 import { createServer } from '../../mocks/server';
 import { DEFAULT_ROUND, STATUS_EVENT, createCoinjoinRound } from '../__fixtures__/round.fixture';
 import { STATUS_TIMEOUT } from '../constants';
+import { RoundPhase } from '../enums';
 
 jest.mock('./coordinatorRequest', () => ({
     ...jest.requireActual('./coordinatorRequest'),
@@ -169,6 +170,34 @@ describe('Status', () => {
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const call2: (typeof mockCalls)[number] = mockCalls[2];
         expect(call2[1]).toEqual(STATUS_TIMEOUT.enabled); // setTimeout is set to 3000ms (coinjoinRound.phaseDeadline > defaultTimeout)
+    });
+
+    it('ends a known round which disappears from the status', async () => {
+        let roundStates = [DEFAULT_ROUND];
+        (coordinatorRequest as jest.Mock).mockImplementation(() =>
+            Promise.resolve({ ...STATUS_EVENT, RoundStates: roundStates }),
+        );
+
+        status = new Status(server?.requestOptions);
+        const onUpdate = jest.fn();
+        status.on('update', onUpdate);
+        await status.start();
+        expect(onUpdate).toHaveBeenCalledTimes(1);
+
+        roundStates = [];
+        await status.getStatus();
+        expect(onUpdate).toHaveBeenCalledTimes(2);
+        expect(onUpdate).toHaveBeenLastCalledWith(
+            expect.objectContaining({
+                changed: [
+                    expect.objectContaining({ Id: DEFAULT_ROUND.Id, Phase: RoundPhase.Ended }),
+                ],
+            }),
+        );
+
+        // Ended once, a later status without the round reports nothing.
+        await status.getStatus();
+        expect(onUpdate).toHaveBeenCalledTimes(2);
     });
 
     it('Status identities', async () => {
