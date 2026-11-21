@@ -6,7 +6,11 @@ import userEvent from '@testing-library/user-event';
 import { messages } from '@suite/intl';
 import { initialMetadataState } from '@suite/metadata';
 import { mockStakingState } from '@suite-common/earn-staking/mocks';
-import { type StakingPosition, stakingAmountSchema } from '@suite-common/earn-staking-common';
+import {
+    type StakingPosition,
+    stakingAmountSchema,
+    stakingProviderIdSchema,
+} from '@suite-common/earn-staking-common';
 import {
     mockStakingPosition,
     mockStakingProductDescriptor,
@@ -108,6 +112,21 @@ type RenderAccountParams = {
     stakingPositions?: Partial<Record<AccountKey, readonly StakingPosition[]>>;
 };
 
+const externalProduct = (provider: 'external' | 'fivebinaries') =>
+    mockStakingProductDescriptor({
+        networkSymbol: asNetworkSymbol('ada'),
+        providerId: stakingProviderIdSchema.parse(provider),
+        type: 'native',
+        operations: ['unstake', 'claim', 'vote'],
+    });
+
+const fiveBinariesProduct = externalProduct('fivebinaries');
+const externalPoolProduct = externalProduct('external');
+const tronProduct = mockStakingProductDescriptor({
+    networkSymbol: asNetworkSymbol('trx'),
+    type: 'native',
+});
+
 const renderAccount = ({
     account = ethAccount,
     tokens = account.tokens ?? [],
@@ -121,7 +140,13 @@ const renderAccount = ({
         ...mockInitialAppState,
         earn: {
             staking: mockStakingState({
-                descriptors: [ETH_STAKING_PRODUCT, ADA_STAKING_PRODUCT],
+                descriptors: [
+                    ETH_STAKING_PRODUCT,
+                    ADA_STAKING_PRODUCT,
+                    fiveBinariesProduct,
+                    externalPoolProduct,
+                    tronProduct,
+                ],
                 positions: stakingPositions,
             }),
         },
@@ -151,6 +176,16 @@ const renderAccount = ({
         { ...services, networks: { networkIcon } },
         <AccountSection account={account} tokens={tokens} selected />,
     );
+};
+
+const renderFiveBinariesAccount = (isCollapsed = false) => {
+    const account = mockCardanoStakingAccount('fiveBinaries');
+    const position = mockStakingPosition({
+        productId: fiveBinariesProduct.id,
+        warnings: [{ code: 'outdated-provider', providerId: fiveBinariesProduct.providerId }],
+    });
+
+    return renderAccount({ account, isCollapsed, stakingPositions: { [account.key]: [position] } });
 };
 
 describe('compact account sidebar', () => {
@@ -241,11 +276,12 @@ describe('compact account sidebar', () => {
     });
 
     it('shows the no-rewards warning inline and in its tooltip', async () => {
-        renderAccount({ account: mockCardanoStakingAccount('fiveBinaries') });
+        renderFiveBinariesAccount();
         const label = messages.TR_STAKING_REWARDS_REDUCED.defaultMessage;
         const badge = screen.getByRole('img', { name: label });
 
         expect(screen.getByText(label)).toBeInTheDocument();
+        expect(badge.querySelector('[data-icon="Warning"]')).toBeInTheDocument();
 
         await userEvent.hover(badge);
 
@@ -278,7 +314,7 @@ describe('compact account sidebar', () => {
     it.each([false, true])(
         'explains staking warnings on keyboard focus and dismisses with Escape when collapsed is %s',
         async isCollapsed => {
-            renderAccount({ account: mockCardanoStakingAccount('fiveBinaries'), isCollapsed });
+            renderFiveBinariesAccount(isCollapsed);
             const label = messages.TR_STAKING_REWARDS_REDUCED.defaultMessage;
 
             await userEvent.tab();
@@ -298,17 +334,30 @@ describe('compact account sidebar', () => {
     it.each([
         {
             account: mockCardanoStakingAccount('externalPool'),
+            position: mockStakingPosition({ productId: externalPoolProduct.id }),
             label: messages.TR_STAKING_DIFFERENT_PROVIDER.defaultMessage,
         },
         {
             account: mockTronStakingAccount('frozenNotVoted'),
+            position: mockStakingPosition({
+                productId: tronProduct.id,
+                details: {
+                    kind: 'tron-staking',
+                    frozen: { bandwidth: amount('0'), energy: amount('1000000000') },
+                    delegated: { bandwidth: amount('0'), energy: amount('0') },
+                    votingPower: amount('1000000000'),
+                    unallocatedVotingPower: amount('1000000000'),
+                    rewardClaimAvailableAt: null,
+                },
+            }),
             label: messages.TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES_NO_APR.defaultMessage,
         },
-    ])('explains the staking warning for $account.symbol', async ({ account, label }) => {
-        renderAccount({ account });
+    ])('explains the staking notice for $account.symbol', async ({ account, position, label }) => {
+        renderAccount({ account, stakingPositions: { [account.key]: [position] } });
         const badge = screen.getByRole('img', { name: label });
 
         expect(screen.queryByText(label)).not.toBeInTheDocument();
+        expect(badge.querySelector('[data-icon="Info"]')).toBeInTheDocument();
 
         await userEvent.hover(badge);
 
