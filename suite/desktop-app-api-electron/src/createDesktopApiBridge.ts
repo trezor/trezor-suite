@@ -6,6 +6,7 @@ import {
     type StrictIpcRenderer,
     inAppBrowserBounds,
     inAppBrowserOpenPayload,
+    legacyOriginStorageImportReport,
 } from '@suite/desktop-app-api';
 import { appsEmbeddingEntryId } from '@suite-common/apps-embedding';
 
@@ -230,6 +231,16 @@ export const createDesktopApiBridge = <R extends StrictIpcRenderer<any, IpcRende
 
     // Browser Window
     reloadBrowserWindow: () => ipcRenderer.invoke('browser-window/reload'),
+
+    // Legacy-origin storage
+    pullLegacyOriginStorage: () => ipcRenderer.invoke('legacy-origin-storage/pull'),
+    reportLegacyOriginStorageImport: report => {
+        if (legacyOriginStorageImportReport.safeParse(report).success) {
+            return ipcRenderer.invoke('legacy-origin-storage/report-import', report);
+        }
+
+        return Promise.resolve();
+    },
 
     // In-app browser (debug-only)
     inAppBrowserOpenView: payload => {

@@ -25,6 +25,7 @@ export class Store {
         bioAuthSettings: BioAuthSettings;
         mcpSettings: McpSettings;
         isDebugModeActive: boolean;
+        legacyOriginStorageSettings: LegacyOriginStorageSettings;
     }>;
 
     private constructor() {
@@ -161,6 +162,14 @@ export class Store {
 
     public setIsDebugModeActive(isDebugModeActive: boolean) {
         this.store.set('isDebugModeActive', isDebugModeActive);
+    }
+
+    public getLegacyOriginStorageSettings() {
+        return this.store.get('legacyOriginStorageSettings', { isMigrated: false });
+    }
+
+    public setLegacyOriginStorageSettings(settings: LegacyOriginStorageSettings) {
+        this.store.set('legacyOriginStorageSettings', settings);
     }
 
     /** Deletes all items from the store. */

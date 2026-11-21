@@ -17,6 +17,8 @@ import {
     type InAppBrowserHostEvent,
     type InAppBrowserOpenPayload,
     type InvokeResult,
+    type LegacyOriginStorage,
+    type LegacyOriginStorageImportReport,
     type LoggerConfig,
     type Status,
     type SuiteThemeVariant,
@@ -183,6 +185,10 @@ export interface InvokeChannels {
     // Browser Window
     'browser-window/reload': () => void;
 
+    // Legacy-origin storage: the one-time move from `file://` to the renderer origin
+    'legacy-origin-storage/pull': () => InvokeResult<LegacyOriginStorage | undefined>;
+    'legacy-origin-storage/report-import': (report: LegacyOriginStorageImportReport) => void;
+
     // In app browser (debug-only)
     'in-app-browser/open-view': (payload: InAppBrowserOpenPayload) => void;
     'in-app-browser/close-view': () => void;
@@ -285,6 +291,10 @@ export type DesktopApi = {
 
     // Browser Window
     reloadBrowserWindow: DesktopApiInvoke<'browser-window/reload'>;
+
+    // Legacy-origin storage
+    pullLegacyOriginStorage: DesktopApiInvoke<'legacy-origin-storage/pull'>;
+    reportLegacyOriginStorageImport: DesktopApiInvoke<'legacy-origin-storage/report-import'>;
 
     // In-app browser (debug-only)
     inAppBrowserOpenView: DesktopApiInvoke<'in-app-browser/open-view'>;
