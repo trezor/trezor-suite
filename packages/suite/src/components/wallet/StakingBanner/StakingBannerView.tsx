@@ -1,15 +1,19 @@
-import { useMemo } from 'react';
-
 import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
+import {
+    formatStakingAmount,
+    getPotentialStakingRewards,
+    selectStakeableStakingProductDescriptorBySymbol,
+    useNetworkStakingRate,
+} from '@suite-common/earn-staking';
 import { useFormatters } from '@suite-common/formatters';
-import { getDisplaySymbol, getNetworkType } from '@suite-common/wallet-config';
-import { getPotentialStakingRewards } from '@suite-common/wallet-core';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
 
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
-import { useStakingRate } from '#src/hooks/earn/useStakingRate';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { type StakingBannerAccounts } from './useStakingBanner';
 
@@ -22,22 +26,40 @@ type StakingBannerViewProps = {
 export const StakingBannerView = ({ accounts, onExplore, onClose }: StakingBannerViewProps) => {
     const [account] = accounts;
     const { CryptoAmountFormatter } = useFormatters();
+
     const formatApyValue = useFormatApy();
-    const { rate } = useStakingRate({ symbol: account.symbol, accountKey: account.key });
+
+    const { rate, rateKind } = useNetworkStakingRate({
+        networkSymbol: account.symbol,
+        accountKey: account.key,
+    });
+
+    const stakeableDescriptor = useSelector(state =>
+        selectStakeableStakingProductDescriptorBySymbol(state, account.symbol),
+    );
 
     const displaySymbol = getDisplaySymbol(account.symbol);
-    // Tron pays its rate as an APR, as its Earn modal says.
-    const isAprRate = getNetworkType(account.symbol) === 'tron';
+    const isAprRate = rateKind === 'apr';
     const formattedRate = formatApyValue(rate);
 
-    const rewards = useMemo(() => getPotentialStakingRewards(accounts, rate), [accounts, rate]);
-    const potentialRewards = CryptoAmountFormatter.format(rewards.toFixed(), {
-        symbol: account.symbol,
-        isBalance: true,
-        withSymbol: false,
-        isEllipsisAppended: false,
-        maxDisplayedDecimals: 8,
+    const rewards = getPotentialStakingRewards({
+        accounts,
+        limits: stakeableDescriptor?.limits ?? null,
+        rate,
     });
+
+    const hasPotentialRewards = isPositiveBalance(rewards);
+
+    const potentialRewards = CryptoAmountFormatter.format(
+        formatStakingAmount({ amount: rewards, networkSymbol: account.symbol }),
+        {
+            symbol: account.symbol,
+            isBalance: true,
+            withSymbol: false,
+            isEllipsisAppended: false,
+            maxDisplayedDecimals: 8,
+        },
+    );
 
     return (
         <Banner
@@ -57,7 +79,7 @@ export const StakingBannerView = ({ accounts, onExplore, onClose }: StakingBanne
                 )
             }
             description={
-                rewards.gt(0) ? (
+                hasPotentialRewards ? (
                     <Translation
                         id={
                             isAprRate

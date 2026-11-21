@@ -1,12 +1,15 @@
-import { useMemo } from 'react';
-
 import { Translation } from '@suite/intl';
+import {
+    type SolanaStakeAccountsStatus,
+    getSolanaStakeAccountsStatus,
+} from '@suite-common/earn-staking';
+import { type StakingOperation, type StakingPosition } from '@suite-common/earn-staking-common';
 import { type NetworkType } from '@suite-common/wallet-config';
 import {
     CARDANO_ACTIVATION_PERIOD_MAX_DAYS,
     CARDANO_ACTIVATION_PERIOD_MIN_DAYS,
 } from '@suite-common/wallet-constants';
-import { getStakingAccountCurrentStatus, getTxStakeType } from '@suite-common/wallet-core';
+import { getTxStakeType } from '@suite-common/wallet-core';
 import {
     type Account,
     type StakeType,
@@ -14,21 +17,18 @@ import {
 } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 import { Column, Paragraph } from '@trezor/components';
-import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { type ProgressLabelData } from '../components/ProgressLabels/types';
 
 type BuildEthereumLabelsParams = {
     isStakeConfirming: boolean;
     isStakePending: boolean;
-    isDaysToAddToPoolShown: boolean;
-    daysToAddToPool?: number;
+    daysToAddToPool: number | null;
 };
 
 const buildEthereumLabels = ({
     isStakeConfirming,
     isStakePending,
-    isDaysToAddToPoolShown,
     daysToAddToPool,
 }: BuildEthereumLabelsParams): ProgressLabelData[] => [
     {
@@ -52,7 +52,7 @@ const buildEthereumLabels = ({
         children: (
             <Column>
                 <Translation id="TR_EARN_ADDING_TO_POOL" />
-                {isDaysToAddToPoolShown && (
+                {daysToAddToPool !== null && (
                     <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">
                         <Translation
                             id="TR_EARN_APPROXIMATE_DAYS"
@@ -80,22 +80,20 @@ const buildEthereumLabels = ({
 ];
 
 type BuildSolanaLabelsParams = {
-    solStakingAccountStatus: string | null;
+    stakeAccountsStatus: SolanaStakeAccountsStatus | null;
     isStakeConfirming: boolean;
+    daysToAddToPool: number | null;
 };
 
 const buildSolanaLabels = ({
-    solStakingAccountStatus,
+    stakeAccountsStatus,
     isStakeConfirming,
+    daysToAddToPool,
 }: BuildSolanaLabelsParams): ProgressLabelData[] => [
     {
         id: 0,
         'data-testid': '@staking/transaction-status',
-        progressState: (() => {
-            if (solStakingAccountStatus === 'inactive') return 'active';
-
-            return 'done';
-        })(),
+        progressState: stakeAccountsStatus === 'inactive' ? 'active' : 'done',
         children: isStakeConfirming ? (
             <Translation id="TR_TX_CONFIRMING" />
         ) : (
@@ -105,30 +103,23 @@ const buildSolanaLabels = ({
     {
         id: 1,
         'data-testid': '@staking/adding-to-pool-status',
-        progressState: (() => (solStakingAccountStatus === 'activating' ? 'active' : 'done'))(),
+        progressState: stakeAccountsStatus === 'activating' ? 'active' : 'done',
         children: (
             <Column>
                 <Translation id="TR_EARN_WARM_UP_PERIOD" />
-
-                <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">
-                    <Translation
-                        id="TR_UP_TO_DAYS"
-                        values={{
-                            count: SOLANA_EPOCH_DAYS,
-                        }}
-                    />
-                </Paragraph>
+                {daysToAddToPool !== null && (
+                    <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">
+                        <Translation id="TR_UP_TO_DAYS" values={{ count: daysToAddToPool }} />
+                    </Paragraph>
+                )}
             </Column>
         ),
     },
     {
         id: 2,
         'data-testid': '@staking/reward-status',
-        progressState: (() => {
-            if (solStakingAccountStatus === 'active') return 'active';
-
-            return 'stale';
-        })(),
+        // Every stake account is past its warm-up once none is inactive or activating.
+        progressState: stakeAccountsStatus === null ? 'active' : 'stale',
         children: <Translation id="TR_STAKE_STAKED_AND_EARNING" />,
     },
 ];
@@ -205,39 +196,33 @@ const buildCardanoLabels = ({
 
 type ShouldHideProgressBarParams = {
     networkType: NetworkType;
-    pendingTxStakeType?: StakeType;
+    pendingOperation: StakingOperation | null;
     lastTxStakeType?: StakeType;
-    isStakedWithEverstake: boolean;
+    isStakedWithProvider: boolean;
 };
 
 const shouldHideProgressBar = ({
     networkType,
-    pendingTxStakeType,
+    pendingOperation,
     lastTxStakeType,
-    isStakedWithEverstake,
+    isStakedWithProvider,
 }: ShouldHideProgressBarParams) => {
-    const isClaimPending = pendingTxStakeType === 'claim';
-    const isUnstakePending = pendingTxStakeType === 'unstake';
-    const isChangeDelegatePending = pendingTxStakeType === 'change-delegate';
-    const isClaimLast = lastTxStakeType === 'claim';
-    const hasNoPendingTx = !pendingTxStakeType;
-
     switch (networkType) {
         case 'cardano': {
             // Cardano does not support progress bar for claim
-            if (isClaimPending || isClaimLast) return true;
+            if (pendingOperation === 'claim' || lastTxStakeType === 'claim') return true;
 
             // progress bar should be hidden for change-delegate
-            if (isChangeDelegatePending) return true;
+            if (pendingOperation === 'vote') return true;
 
             // Hide progress not staking with us,
             // but show it when pending tx as it can be update provider
-            return !isStakedWithEverstake && hasNoPendingTx;
+            return !isStakedWithProvider && pendingOperation === null;
         }
 
         case 'ethereum': {
             // Ethereum does not show progress for unstake or claim
-            return isUnstakePending || isClaimPending;
+            return pendingOperation === 'unstake' || pendingOperation === 'withdraw';
         }
         case 'solana':
         default:
@@ -246,77 +231,64 @@ const shouldHideProgressBar = ({
 };
 
 type UseProgressLabelsData = {
-    daysToAddToPool?: number;
-    isDaysToAddToPoolShown: boolean;
+    daysToAddToPool: number | null;
     isStakeConfirming: boolean;
     isStakePending: boolean;
     account: Account;
+    position: StakingPosition | null;
     stakeTxs: WalletAccountTransaction[];
-    isStakedWithEverstake: boolean;
+    isStakedWithProvider: boolean;
 };
 
 export const useProgressLabelsData = ({
     daysToAddToPool,
-    isDaysToAddToPoolShown,
     isStakeConfirming,
     isStakePending,
     account,
+    position,
     stakeTxs,
-    isStakedWithEverstake,
-}: UseProgressLabelsData) => {
-    const lastPendingStakeTx = stakeTxs.find(tx => isPending(tx));
-    const pendingTxStakeType = lastPendingStakeTx ? getTxStakeType(lastPendingStakeTx) : undefined;
-    const isUnstake = pendingTxStakeType === 'unstake';
+    isStakedWithProvider,
+}: UseProgressLabelsData): ProgressLabelData[] => {
+    const pendingOperation = position?.pendingTransactions[0]?.operation ?? null;
+    const isUnstake = pendingOperation === 'unstake';
 
+    // The last confirmed operation is not on the position, so it stays on the transactions.
     const lastStakeTx = stakeTxs.find(tx => !isPending(tx));
     const lastTxStakeType = lastStakeTx ? getTxStakeType(lastStakeTx) : undefined;
 
-    const solStakingAccountStatus = getStakingAccountCurrentStatus(account);
+    const stakeAccountsStatus = getSolanaStakeAccountsStatus(position?.details ?? null);
 
-    return useMemo(() => {
-        if (
-            shouldHideProgressBar({
-                networkType: account.networkType,
-                pendingTxStakeType,
-                lastTxStakeType,
-                isStakedWithEverstake,
-            })
-        ) {
+    if (
+        shouldHideProgressBar({
+            networkType: account.networkType,
+            pendingOperation,
+            lastTxStakeType,
+            isStakedWithProvider,
+        })
+    ) {
+        return [];
+    }
+
+    switch (account.networkType) {
+        case 'ethereum':
+            return buildEthereumLabels({
+                isStakeConfirming,
+                isStakePending,
+                daysToAddToPool,
+            });
+        case 'solana':
+            return buildSolanaLabels({
+                stakeAccountsStatus,
+                isStakeConfirming,
+                daysToAddToPool,
+            });
+        case 'cardano':
+            return buildCardanoLabels({
+                isStakeConfirming,
+                isStakePending,
+                isUnstake,
+            });
+        default:
             return [];
-        }
-
-        switch (account.networkType) {
-            case 'ethereum':
-                return buildEthereumLabels({
-                    isStakeConfirming,
-                    isStakePending,
-                    isDaysToAddToPoolShown,
-                    daysToAddToPool,
-                });
-            case 'solana':
-                return buildSolanaLabels({
-                    solStakingAccountStatus,
-                    isStakeConfirming,
-                });
-            case 'cardano':
-                return buildCardanoLabels({
-                    isStakeConfirming,
-                    isStakePending,
-                    isUnstake,
-                });
-            default:
-                return [];
-        }
-    }, [
-        account.networkType,
-        daysToAddToPool,
-        isDaysToAddToPoolShown,
-        isStakeConfirming,
-        isStakePending,
-        isStakedWithEverstake,
-        isUnstake,
-        pendingTxStakeType,
-        solStakingAccountStatus,
-        lastTxStakeType,
-    ]);
+    }
 };

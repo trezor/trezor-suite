@@ -1,14 +1,17 @@
 import { useEffect } from 'react';
 
-import { CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
+import {
+    selectHasStakingAccountWarning,
+    selectIsStakingAccountActive,
+    selectIsStakingAccountDelegatedOutside,
+    useNetworkStakingRate,
+    useStakingAccountPosition,
+    useStakingPeriods,
+} from '@suite-common/earn-staking';
+import { hasPendingStakingOperation } from '@suite-common/earn-staking-common';
 import {
     fetchAllTransactionsForAccountThunk,
-    hasPendingStakeTypeTransaction,
-    isCardanoStakedWithEverstake,
-    selectAccountIsStakingActive,
-    selectCardanoPoolsInfo,
     selectHasRunningDiscovery,
-    selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Column, Flex } from '@trezor/components';
@@ -34,7 +37,7 @@ interface AdaStakingDashboardProps {
 
 export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProps) => {
     const { account } = selectedAccount;
-    const accountKey = account?.key ?? '';
+    const accountKey = account.key;
 
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
@@ -51,15 +54,28 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
         }
     }, [accountKey, dispatch]);
 
-    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
+    const { productId, position } = useStakingAccountPosition(accountKey);
+    const { rate } = useNetworkStakingRate({ networkSymbol: account.symbol, accountKey });
+    const { rewardPeriodDays } = useStakingPeriods(productId);
 
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
-    const hasPendingTx = useSelector(state => hasPendingStakeTypeTransaction(state, account.key));
-    const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
-    const isStakedWithEverstake =
-        isCardanoStakedWithEverstake(account, cardanoStakingPools) || hasPendingTx;
+    const isStakingActive = useSelector(state => selectIsStakingAccountActive(state, accountKey));
 
-    const shouldShowStakingDashboard = isStakingActive || hasPendingTx;
+    const isDelegatedOutside = useSelector(state =>
+        selectIsStakingAccountDelegatedOutside(state, accountKey),
+    );
+    // A retired provider pays nothing, which reads as a zero rate, as on mobile.
+    const hasOutdatedProvider = useSelector(state =>
+        selectHasStakingAccountWarning(state, accountKey, 'outdated-provider'),
+    );
+    const hasPendingOperation = position !== null && hasPendingStakingOperation(position);
+
+    // The rate belongs to a delegation Suite offers; a registered key without a pool has none to
+    // show until a transaction that may delegate it is pending.
+    const isStakedWithProvider =
+        position !== null && position.targets.length > 0 && !isDelegatedOutside;
+    const shownRate = isStakedWithProvider || hasPendingOperation ? rate : null;
+
+    const shouldShowStakingDashboard = isStakingActive || hasPendingOperation;
 
     return (
         <StakingDashboard
@@ -74,15 +90,14 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
                                 <CardanoNewProviderCard account={account} />
 
                                 <Flex gap={12}>
-                                    <ApyCard apy={isStakedWithEverstake ? apy : undefined} />
+                                    <ApyCard apy={shownRate} isNotEarning={hasOutdatedProvider} />
+
                                     <PayoutCardFrequencyRewards
-                                        rewardFrequency={CARDANO_EPOCH_DAYS}
+                                        rewardFrequency={rewardPeriodDays}
                                     />
                                 </Flex>
-                                <StakingCard
-                                    account={account}
-                                    isValidatorsQueueLoading={undefined}
-                                />
+
+                                <StakingCard account={account} />
                                 <DebugOnlyCardanoStakingCard account={account} />
                             </Column>
                         </DashboardSection>

@@ -3,27 +3,28 @@ import { useMemo, useState } from 'react';
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useNetworkStakingPeriods } from '@suite-common/earn-staking';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    getDaysToAddToPoolInitial,
-    getStakingHelpCenterLink,
-    selectEthereumValidatorsQueue,
-} from '@suite-common/wallet-core';
+import { getStakingHelpCenterLink } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ClockIcon, HandIcon } from '@trezor/icons';
-import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { earnFlowToEventTypeMap } from '#src/constants/suite/staking';
-import { useSelector } from '#src/hooks/suite/useSelector';
 
-const getStakeEnteringMessage = (networkType?: NetworkType) => {
-    if (networkType === 'ethereum') return 'TR_STAKE_ENTERING_POOL_MAY_TAKE';
+const getStakeEnteringMessageId = (networkType: NetworkType, entryPeriodDays: number | null) => {
+    if (networkType === 'ethereum') {
+        return entryPeriodDays === null
+            ? 'TR_STAKE_ENTERING_POOL_MAY_TAKE_WITHOUT_DAYS'
+            : 'TR_STAKE_ENTERING_POOL_MAY_TAKE';
+    }
 
-    return 'TR_STAKE_ACTIVATION_COULD_TAKE';
+    return entryPeriodDays === null
+        ? 'TR_STAKE_ACTIVATION_COULD_TAKE_WITHOUT_DAYS'
+        : 'TR_STAKE_ACTIVATION_COULD_TAKE';
 };
 
 type ConfirmStakeModalProps = {
@@ -41,11 +42,10 @@ export const ConfirmStakeModal = ({
     onCancel,
     flow,
 }: ConfirmStakeModalProps) => {
-    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [hasAgreed, setHasAgreed] = useState(false);
-    const validatorsQueue = useSelector(selectEthereumValidatorsQueue);
 
-    const daysToAddToPool = getDaysToAddToPoolInitial(validatorsQueue);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const { entryPeriodDays } = useNetworkStakingPeriods(account.symbol);
 
     const isDisabled = !hasAgreed || isLoading;
 
@@ -113,13 +113,10 @@ export const ConfirmStakeModal = ({
                     icon={ClockIcon}
                     description={
                         <Translation
-                            id={getStakeEnteringMessage(account.networkType)}
+                            id={getStakeEnteringMessageId(account.networkType, entryPeriodDays)}
                             values={{
                                 networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
-                                count:
-                                    account.networkType === 'ethereum'
-                                        ? daysToAddToPool
-                                        : SOLANA_EPOCH_DAYS,
+                                count: entryPeriodDays ?? undefined,
                             }}
                         />
                     }

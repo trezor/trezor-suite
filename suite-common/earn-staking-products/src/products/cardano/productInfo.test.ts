@@ -3,10 +3,8 @@ import { stakingProductInfoSchema } from '@suite-common/earn-staking-common';
 import {
     MOCK_CARDANO_EVERSTAKE_OTHER_POOL,
     MOCK_CARDANO_EVERSTAKE_POOL,
-    MOCK_CARDANO_EXTERNAL_POOL,
 } from '@suite-common/wallet-types/mocks';
 import { createMockDeps } from '@trezor/dependency-injection';
-import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import {
     CARDANO_UNMANAGED_PRODUCT_INFO,
@@ -15,7 +13,7 @@ import {
 } from './productInfo';
 import { everstakeProvider } from '../../providers/everstake';
 
-const everstakePools = everstakeProvider.identities[asNetworkSymbol('ada')] ?? [];
+const UNBUNDLED_POOL = 'pool1pu5jlj4q9w9jlxeu370a3c9myx47md5j5m2str0naunn2q3lkdy';
 
 const adaPools: AdaPools = {
     pools: [
@@ -30,11 +28,7 @@ const createDeps = (pools: AdaPools = adaPools) =>
     });
 
 const fetchEverstakeInfo = (deps: CardanoProductInfoDeps, abortSignal?: AbortSignal) =>
-    fetchCardanoProductInfo(deps, {
-        abortSignal,
-        provider: everstakeProvider,
-        poolIds: everstakePools,
-    });
+    fetchCardanoProductInfo(deps, { abortSignal, provider: everstakeProvider });
 
 describe('fetchCardanoProductInfo', () => {
     it('lists the provider pools and promotes the least saturated one', async () => {
@@ -63,20 +57,18 @@ describe('fetchCardanoProductInfo', () => {
         });
     });
 
-    it('leaves out a pool the provider does not own', async () => {
+    it('keeps a pool the bundled identities predate and promotes it when least saturated', async () => {
         const info = await fetchEverstakeInfo(
             createDeps({
-                pools: [
-                    ...adaPools.pools,
-                    { apy: 9.9, saturation: 1, id: MOCK_CARDANO_EXTERNAL_POOL },
-                ],
+                pools: [...adaPools.pools, { apy: 9.9, saturation: 1, id: UNBUNDLED_POOL }],
             }),
         );
 
-        expect(info.rate).toBe(2.06);
+        expect(info.rate).toBe(9.9);
         expect(info.targets.map(({ address }) => address)).toEqual([
             MOCK_CARDANO_EVERSTAKE_OTHER_POOL,
             MOCK_CARDANO_EVERSTAKE_POOL,
+            UNBUNDLED_POOL,
         ]);
     });
 

@@ -42,22 +42,29 @@ test.describe('Staking - Tron', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
         },
     });
 
-    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock }) => {
-        await onboardingPage.completeOnboarding();
+    test.beforeEach(
+        async ({
+            onboardingPage,
+            settingsPage,
+            blockbookMock,
+            tronEarnApiMock: _tronEarnApiMock,
+        }) => {
+            await onboardingPage.completeOnboarding();
 
-        await test.step('Enable Tron and set mocked backend', async () => {
-            await settingsPage.navigateTo('coins');
-            await blockbookMock.start('trx');
-            await settingsPage.changeNetworks({
-                enableNetworks: [
-                    {
-                        symbol: trxSymbol,
-                        backend: { type: 'blockbook', url: blockbookMock.url },
-                    },
-                ],
+            await test.step('Enable Tron and set mocked backend', async () => {
+                await settingsPage.navigateTo('coins');
+                await blockbookMock.start('trx');
+                await settingsPage.changeNetworks({
+                    enableNetworks: [
+                        {
+                            symbol: trxSymbol,
+                            backend: { type: 'blockbook', url: blockbookMock.url },
+                        },
+                    ],
+                });
             });
-        });
-    });
+        },
+    );
 
     test(
         'Stake Tron',

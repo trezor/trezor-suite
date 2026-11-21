@@ -1,9 +1,14 @@
 import { useCallback, useState } from 'react';
 
 import {
-    hasPendingStakeTypeTransaction,
+    selectStakeableStakingProductDescriptorBySymbol,
+    selectStakingAccountPositionEntry,
+    selectStakingAccountTotals,
+    useStakingProductTargets,
+} from '@suite-common/earn-staking';
+import { hasPendingStakingOperation } from '@suite-common/earn-staking-common';
+import {
     isCardanoWithdrawalBlockedByMissingDrep,
-    selectCardanoPoolsInfo,
     selectCardanoProtocolParameters,
     selectStakeVotingDelegation,
 } from '@suite-common/wallet-core';
@@ -18,7 +23,10 @@ import { type PrecomposedTransactionCardano } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 import { isArrayMember } from '@trezor/utils';
 
-import { prepareTxPlan } from '#src/actions/wallet/stake/stakeFormCardanoActions';
+import {
+    getCardanoPoolsFromTargets,
+    prepareTxPlan,
+} from '#src/actions/wallet/stake/stakeFormCardanoActions';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 const COMPOSE_ERROR_REASONS = [
@@ -49,12 +57,22 @@ type UseCardanoStakingParams = {
 export const useCardanoStaking = ({ account }: UseCardanoStakingParams): CardanoStaking => {
     const isCardano = account.networkType === 'cardano';
 
-    const cardanoPools = useSelector(selectCardanoPoolsInfo);
+    // A delegation goes to the product the network stakes on; its cached targets are the pools.
+    const stakeableProductId = useSelector(
+        state => selectStakeableStakingProductDescriptorBySymbol(state, account.symbol)?.id ?? null,
+    );
+    const cardanoPools = getCardanoPoolsFromTargets(useStakingProductTargets(stakeableProductId));
     const votingDelegation = useSelector(selectStakeVotingDelegation);
     const protocolParameters = useSelector(state =>
         selectCardanoProtocolParameters(state, account.symbol),
     );
-    const hasPendingTx = useSelector(state => hasPendingStakeTypeTransaction(state, account.key));
+    const hasPendingTx = useSelector(state => {
+        const positionEntry = selectStakingAccountPositionEntry(state, account.key);
+
+        return positionEntry !== null && hasPendingStakingOperation(positionEntry.position);
+    });
+    // The reward balance Blockfrost reports, in lovelace, which the withdrawal composes with.
+    const rewards = useSelector(state => selectStakingAccountTotals(state, account.key).rewards);
 
     const [deposit, setDeposit] = useState<undefined | string>(undefined);
     const [fee, setFee] = useState<undefined | string>(undefined);
@@ -69,8 +87,6 @@ export const useCardanoStaking = ({ account }: UseCardanoStakingParams): Cardano
     >({
         status: false,
     });
-
-    const { rewards: rewardsAmount } = isCardano ? account.misc.staking : {};
 
     const isStakingDisabled =
         (account.availableBalance === '0' || !delegatingAvailable.status || hasPendingTx) &&
@@ -142,7 +158,7 @@ export const useCardanoStaking = ({ account }: UseCardanoStakingParams): Cardano
         loading,
         delegatingAvailable,
         withdrawingAvailable,
-        rewards: rewardsAmount,
+        rewards,
         calculateFeeAndDeposit,
     };
 };

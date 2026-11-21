@@ -228,11 +228,26 @@ describe('getStakingPositionRate', () => {
     it.each([
         { name: 'has no targets', targets: [] },
         { name: 'has no rated target', targets: [outside] },
-        { name: 'has rated targets without an amount', targets: [{ ...p2p, amount: amount('0') }] },
     ])('is the product rate when the position $name', ({ targets }) => {
         const position = mockStakingPosition({ targets });
 
         expect(getStakingPositionRate({ position, productInfo })).toBe(3.3);
+    });
+
+    it.each([
+        { name: 'its one target', targets: [{ ...p2p, amount: amount('0') }], rate: 3.6 },
+        {
+            name: 'its targets evenly',
+            targets: [
+                { ...luganodes, amount: amount('0') },
+                { ...p2p, amount: amount('0') },
+            ],
+            rate: 3.4,
+        },
+    ])('is rated on $name while the position holds nothing', ({ targets, rate }) => {
+        const position = mockStakingPosition({ targets });
+
+        expect(getStakingPositionRate({ position, productInfo })).toBe(rate);
     });
 
     it('is unknown when neither the targets nor the product are rated', () => {

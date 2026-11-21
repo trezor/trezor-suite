@@ -1,20 +1,25 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api/src/staking';
+import {
+    formatStakingAmount,
+    isStakingOperationAvailable,
+    selectHasStakingAccountWarning,
+    selectIsStakingAccountDelegatedOutside,
+    useStakingAccountPosition,
+} from '@suite-common/earn-staking';
+import {
+    type StakingAmount,
+    type StakingOperation,
+    getStakingPositionPrincipal,
+    hasPendingStakingOperation,
+    stakingAmountSchema,
+} from '@suite-common/earn-staking-common';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    getStakingDataForNetwork,
-    isCardanoStakedWithEverstake,
-    isCardanoWithdrawalBlockedByMissingDrep,
-    selectAccountIsStakingActive,
-    selectAccountStakeTypeTransactions,
-    selectCardanoPoolsInfo,
-    stakeActions,
-} from '@suite-common/wallet-core';
+import { selectAccountStakeTypeTransactions, stakeActions } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { isPending } from '@suite-common/wallet-utils';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import {
     Badge,
     Button,
@@ -35,14 +40,16 @@ import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useStakingOperationSwitch } from '#src/hooks/earn/useStakingOperationSwitch';
+import { useStakingTotalRewards } from '#src/hooks/earn/useStakingTotalRewards';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
-import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
 import { ProgressLabels } from './ProgressLabels/ProgressLabels';
-import { getStakingTotalRewards } from './utils/stakingTotalRewards';
+
+const ZERO_STAKING_AMOUNT = stakingAmountSchema.parse('0');
 
 type ItemProps = {
     label: React.ReactNode;
@@ -85,146 +92,150 @@ const Item = ({
         )}
     </InfoItem>
 );
+
 type StakingCardProps = {
-    isValidatorsQueueLoading?: boolean;
-    daysToAddToPool?: number;
-    daysToUnstake?: number;
     account: Account;
+    daysToAddToPool?: number | null;
+    daysToUnstake?: number | null;
 };
 
 export const StakingCard = ({
-    isValidatorsQueueLoading,
-    daysToAddToPool,
-    daysToUnstake,
     account,
+    daysToAddToPool = null,
+    daysToUnstake = null,
 }: StakingCardProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isBelowLaptop } = useLayoutSize();
 
-    const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
-
-    const solanaRewardsTotalQuery = useSolanaRewardsTotal(account);
-    const { totalRewards, isTotalRewardsLoading } = getStakingTotalRewards(
-        account,
-        solanaRewardsTotalQuery,
+    const { productId, descriptor, position, totals, access } = useStakingAccountPosition(
+        account.key,
+    );
+    const isDrepDelegationRequired = useSelector(state =>
+        selectHasStakingAccountWarning(state, account.key, 'missing-drep'),
+    );
+    const isDelegatedOutside = useSelector(state =>
+        selectIsStakingAccountDelegatedOutside(state, account.key),
     );
 
-    const {
-        isStakingDisabled,
-        isUnstakingDisabled,
-        isClaimingDisabled,
-        isVotingDisabled,
-        stakingMessageContent,
-        unstakingMessageContent,
-        claimingMessageContent,
-        votingMessageContent,
-    } = useMessageSystemStaking(account.symbol);
+    const stakeTxs = useSelector(state => selectAccountStakeTypeTransactions(state, account.key));
 
-    const {
-        autocompoundBalance = '0',
-        depositedBalance = '0',
-        totalPendingStakeBalance = '0',
-        withdrawTotalAmount = '0',
-        claimableAmount = '0',
-        restakedReward = '0',
-    } = getStakingDataForNetwork(account) ?? {};
+    const { totalRewards, isTotalRewardsLoading } = useStakingTotalRewards(account);
 
-    const isUnstakePending = new BigNumber(withdrawTotalAmount).gt(0);
+    const { message: stakingMessageContent } = useStakingOperationSwitch(productId, 'stake');
+    const { message: unstakingMessageContent } = useStakingOperationSwitch(productId, 'unstake');
+    const { message: claimingMessageContent } = useStakingOperationSwitch(productId, 'claim');
+    const { message: votingMessageContent } = useStakingOperationSwitch(productId, 'vote');
+
+    const isAvailable = (operation: StakingOperation) =>
+        isStakingOperationAvailable({ position, access, operation });
+
+    const isWithheld = (operation: StakingOperation) => access.disabled[operation] !== undefined;
+
+    const formatAmount = (amount: StakingAmount) =>
+        formatStakingAmount({ amount, networkSymbol: account.symbol });
+
+    const principal =
+        position === null || descriptor === null
+            ? ZERO_STAKING_AMOUNT
+            : getStakingPositionPrincipal(position, descriptor.rewardsKind);
+    const depositedBalance = formatAmount(principal);
+    const totalPendingStakeBalance = formatAmount(totals.pending);
+    const unstakingBalance = formatAmount(totals.unstaking);
+
+    const isCardanoNetworkType = account.networkType === 'cardano';
+    const isStakedWithProvider =
+        position !== null && position.targets.length > 0 && !isDelegatedOutside;
+
+    // A registered Cardano key reports no pending balance; legacy read a delegation as activating
+    // until its first reward, which keeps the timeline on the tab until then.
+    const isCardanoActivating =
+        isCardanoNetworkType && isStakedWithProvider && !isPositiveBalance(totals.rewards);
+
+    const isStakePending = isPositiveBalance(totalPendingStakeBalance) || isCardanoActivating;
+    const isPendingUnstakeShown = isPositiveBalance(unstakingBalance);
 
     const { isTxStatusShown } = useIsTxStatusShown(
-        new BigNumber(totalPendingStakeBalance),
+        new BigNumber(isCardanoActivating ? depositedBalance : totalPendingStakeBalance),
         account.descriptor,
     );
 
-    const isDaysToAddToPoolShown = daysToAddToPool !== undefined && !isValidatorsQueueLoading;
-    const isPendingUnstakeShown =
-        isUnstakePending && !new BigNumber(withdrawTotalAmount).eq(claimableAmount);
-    const isDaysToUnstakeShown = daysToUnstake !== undefined && !isValidatorsQueueLoading;
+    const isDaysToUnstakeShown = daysToUnstake !== null;
 
-    const stakeTxs = useSelector(state =>
-        selectAccountStakeTypeTransactions(state, account.key || ''),
-    );
     // A pending Solana stake-type tx is only the stand-in kept until the backend reports it; it
     // does not lock unstaking or reward claims the way an unconfirmed Ethereum stake does.
     const isStakeConfirming =
-        account.networkType !== 'solana' && stakeTxs.some(tx => isPending(tx));
+        account.networkType !== 'solana' &&
+        position !== null &&
+        hasPendingStakingOperation(position);
 
-    const isCardanoNetworkType = account.networkType === 'cardano';
-    const canUnstake =
-        (new BigNumber(autocompoundBalance).gt(0) || (isCardanoNetworkType && isStakingActive)) &&
-        !isStakeConfirming;
-    const canClaimRewards = new BigNumber(restakedReward).gt(0) && !isStakeConfirming;
-    const isStakePending = new BigNumber(totalPendingStakeBalance).gt(0);
-
-    const isStakedWithEverstake = isCardanoStakedWithEverstake(account, cardanoStakingPools);
+    const isStakingDisabled = !isAvailable('stake');
+    const isUnstakeDisabled = !isAvailable('unstake');
+    const isClaimDisabled = !isAvailable('claim');
+    const isChangeDelegateDisabled = !isAvailable('vote') || isStakeConfirming;
 
     const progressLabelsData = useProgressLabelsData({
         daysToAddToPool,
-        isDaysToAddToPoolShown,
         isStakeConfirming,
         isStakePending,
         account,
+        position,
         stakeTxs,
-        isStakedWithEverstake,
+        isStakedWithProvider,
     });
 
     const shouldShowProgressLabels =
         (isStakeConfirming || isTxStatusShown) && !!progressLabelsData.length;
 
-    const isDrepDelegationRequired = isCardanoWithdrawalBlockedByMissingDrep(account);
-    const isClaimDisabled = !canClaimRewards || isClaimingDisabled || isDrepDelegationRequired;
     const drepDelegationRequiredMessage = isDrepDelegationRequired ? (
         <Translation id="TR_STAKE_DREP_DELEGATION_REQUIRED" />
     ) : undefined;
 
     const openStakeModal = () => {
-        if (!isStakingDisabled) {
-            dispatch(
-                openModal({
-                    type: 'earn-in-a-nutshell',
-                    flow: EarnFlow.Stake,
-                    provider: EarnProvider.Everstake,
-                    account,
-                    analyticsStep: 'staking-dashboard',
-                }),
-            );
-        }
+        if (isStakingDisabled) return;
+
+        dispatch(
+            openModal({
+                type: 'earn-in-a-nutshell',
+                flow: EarnFlow.Stake,
+                provider: EarnProvider.Everstake,
+                account,
+                analyticsStep: 'staking-dashboard',
+            }),
+        );
     };
 
     const openClaimModal = () => {
-        if (canClaimRewards && !isClaimingDisabled && !isDrepDelegationRequired) {
-            dispatch(openModal({ type: 'claim', account }));
+        if (isClaimDisabled) return;
 
-            analytics.report({
-                type: events.stakingClaimEvent.name,
-                payload: {
-                    action: 'continue',
-                    step: 'staking-dashboard',
-                    networkSymbol: account.symbol,
-                },
-            });
-        }
+        dispatch(openModal({ type: 'claim', account }));
+
+        analytics.report({
+            type: events.stakingClaimEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol: account.symbol,
+            },
+        });
     };
 
     const openUnstakeModal = () => {
-        if (!isUnstakingDisabled && !isDrepDelegationRequired) {
-            dispatch(openModal({ type: 'unstake', accountKey: account.key }));
+        if (isUnstakeDisabled) return;
 
-            analytics.report({
-                type: events.stakingUnstakeEvent.name,
-                payload: {
-                    action: 'continue',
-                    step: 'staking-dashboard',
-                    networkSymbol: account.symbol,
-                },
-            });
-        }
+        dispatch(openModal({ type: 'unstake', accountKey: account.key }));
+
+        analytics.report({
+            type: events.stakingUnstakeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol: account.symbol,
+            },
+        });
     };
 
     const openChangeDelegateModal = () => {
-        if (!isCardanoNetworkType || !isStakingActive || isStakeConfirming || isVotingDisabled)
-            return;
+        if (!isCardanoNetworkType || isChangeDelegateDisabled) return;
 
         dispatch(
             stakeActions.setAccountVotingDelegation({
@@ -295,13 +306,13 @@ export const StakingCard = ({
                             title={
                                 <FormattedCryptoAmount
                                     data-testid="@account/staking/staked"
-                                    value={depositedBalance || '0'}
+                                    value={depositedBalance}
                                     networkSymbol={account.symbol}
                                 />
                             }
                             description={
                                 <BaseCurrencyValue
-                                    amount={depositedBalance || '0'}
+                                    amount={depositedBalance}
                                     symbol={account.symbol}
                                     showApproximationIndicator
                                 />
@@ -381,13 +392,13 @@ export const StakingCard = ({
                             title={
                                 <FormattedCryptoAmount
                                     data-testid="@account/staking/unstaking"
-                                    value={withdrawTotalAmount}
+                                    value={unstakingBalance}
                                     networkSymbol={account.symbol}
                                 />
                             }
                             description={
                                 <BaseCurrencyValue
-                                    amount={withdrawTotalAmount}
+                                    amount={unstakingBalance}
                                     symbol={account.symbol}
                                     showApproximationIndicator
                                 />
@@ -402,7 +413,7 @@ export const StakingCard = ({
                             <Button
                                 onClick={openStakeModal}
                                 isDisabled={isStakingDisabled}
-                                iconLeft={isStakingDisabled ? InfoIcon : undefined}
+                                iconLeft={isWithheld('stake') ? InfoIcon : undefined}
                                 intent="neutral"
                                 priority="secondary"
                                 data-testid="@account/staking/stake-more-button"
@@ -416,7 +427,7 @@ export const StakingCard = ({
                                 onClick={openClaimModal}
                                 isDisabled={isClaimDisabled}
                                 iconLeft={
-                                    isClaimingDisabled || isDrepDelegationRequired
+                                    isWithheld('claim') || isDrepDelegationRequired
                                         ? InfoIcon
                                         : undefined
                                 }
@@ -430,12 +441,10 @@ export const StakingCard = ({
                     )}
                     <Tooltip content={unstakingMessageContent ?? drepDelegationRequiredMessage}>
                         <Button
-                            isDisabled={
-                                !canUnstake || isUnstakingDisabled || isDrepDelegationRequired
-                            }
+                            isDisabled={isUnstakeDisabled}
                             onClick={openUnstakeModal}
                             iconLeft={
-                                isUnstakingDisabled || isDrepDelegationRequired
+                                isWithheld('unstake') || isDrepDelegationRequired
                                     ? InfoIcon
                                     : undefined
                             }
@@ -456,10 +465,8 @@ export const StakingCard = ({
                         <Tooltip content={votingMessageContent}>
                             <Button
                                 onClick={openChangeDelegateModal}
-                                isDisabled={
-                                    !isStakingActive || isStakeConfirming || isVotingDisabled
-                                }
-                                iconLeft={isVotingDisabled ? InfoIcon : undefined}
+                                isDisabled={isChangeDelegateDisabled}
+                                iconLeft={isWithheld('vote') ? InfoIcon : undefined}
                                 intent={isDrepDelegationRequired ? 'brand' : 'neutral'}
                                 priority={isDrepDelegationRequired ? 'primary' : 'secondary'}
                                 data-testid="@account/staking/change-delegate-button"

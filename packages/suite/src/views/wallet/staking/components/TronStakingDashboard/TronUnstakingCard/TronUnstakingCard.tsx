@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
 import {
-    getTronPendingUnstakeBalance,
-    getTronPendingUnstakingBatches,
-    selectTronUnstakingBatchesByAccountKey,
-} from '@suite-common/wallet-core';
+    formatStakingAmount,
+    selectStakingAccountPositionEntry,
+    settleTronUnlocks,
+} from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
 import {
     Card,
@@ -28,23 +28,24 @@ const HEADER_PADDING = { vertical: 12, horizontal: 20 } satisfies Padding;
 
 type TronUnstakingCardProps = {
     account: Account;
-    nowSeconds: number;
+    nowMs: number;
 };
 
-export const TronUnstakingCard = ({ account, nowSeconds }: TronUnstakingCardProps) => {
-    const batches = useSelector(state =>
-        selectTronUnstakingBatchesByAccountKey(state, account.key),
+export const TronUnstakingCard = ({ account, nowMs }: TronUnstakingCardProps) => {
+    const position = useSelector(
+        state => selectStakingAccountPositionEntry(state, account.key)?.position ?? null,
     );
 
-    const pendingBatches = getTronPendingUnstakingBatches({
-        batches,
-        symbol: account.symbol,
-        nowSeconds,
+    if (position === null) return null;
+
+    const { unlocks, unstaking } = settleTronUnlocks({ position, nowMs });
+
+    if (unlocks.length === 0) return null;
+
+    const pendingBalance = formatStakingAmount({
+        amount: unstaking,
+        networkSymbol: account.symbol,
     });
-
-    if (pendingBatches.length === 0) return null;
-
-    const pendingBalance = getTronPendingUnstakeBalance(account, nowSeconds);
 
     return (
         <Card paddingType="none" data-testid="@staking/tron-unstaking-card/container">
@@ -59,6 +60,7 @@ export const TronUnstakingCard = ({ account, nowSeconds }: TronUnstakingCardProp
                         <Text typographyStyle="body-sm-strong">
                             <Translation id="TR_EARN_TRON_UNSTAKING_TITLE" />
                         </Text>
+
                         <Row gap={16} alignItems="center">
                             <Column gap={2} alignItems="flex-end">
                                 <Text
@@ -70,6 +72,7 @@ export const TronUnstakingCard = ({ account, nowSeconds }: TronUnstakingCardProp
                                         networkSymbol={account.symbol}
                                     />
                                 </Text>
+
                                 <Text
                                     typographyStyle="body-sm"
                                     intent="neutral"
@@ -82,6 +85,7 @@ export const TronUnstakingCard = ({ account, nowSeconds }: TronUnstakingCardProp
                                     />
                                 </Text>
                             </Column>
+
                             <Collapsible.ToggleIcon size={20} />
                         </Row>
                     </Row>
@@ -89,14 +93,18 @@ export const TronUnstakingCard = ({ account, nowSeconds }: TronUnstakingCardProp
 
                 <Collapsible.Content>
                     <Divider margin={{}} color="elementBorderNeutralSofter" />
+
                     <Table colWidths={COL_WIDTHS} typographyStyle="body-sm">
                         <Table.Body>
-                            {pendingBatches.map(({ amount, expireTime }, index) => (
+                            {unlocks.map(({ amount, availableAt }, index) => (
                                 <TronUnstakingRow
-                                    key={`${expireTime}-${index}`}
+                                    key={`${availableAt}-${index}`}
                                     index={index}
-                                    amount={amount}
-                                    expireTime={expireTime}
+                                    amount={formatStakingAmount({
+                                        amount,
+                                        networkSymbol: account.symbol,
+                                    })}
+                                    availableAt={availableAt}
                                     symbol={account.symbol}
                                 />
                             ))}

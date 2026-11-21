@@ -1,10 +1,13 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { useDevice } from '@suite/device';
-import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
-import { Translation, useTranslation } from '@suite/intl';
+import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { getTronStakingRewards, isTronClaimSupported } from '@suite-common/wallet-core';
+import {
+    formatStakingAmount,
+    selectStakingAccountPositionDetails,
+    useStakingAccountPosition,
+} from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import {
     Box,
     Button,
@@ -17,15 +20,15 @@ import {
 } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
-import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { CountdownTimer } from '#src/components/suite/CountdownTimer';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { useFirmwareUpgradeModal } from '#src/hooks/suite/useFirmwareUpgradeModal';
-import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
+import { useTronFirmwareUpgradeModal } from '#src/hooks/earn/useTronFirmwareUpgradeModal';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { useTronRewardsClaimCoolDown } from './hooks/useTronRewardsClaimCoolDown';
+import { useTronStakingOperation } from './hooks/useTronStakingOperation';
 
 interface TronVotingRewardsCardProps {
     account: Account;
@@ -33,28 +36,31 @@ interface TronVotingRewardsCardProps {
 
 export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const { device } = useDevice();
-    const { translationString } = useTranslation();
-    const { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware } =
-        useFirmwareUpgradeModal();
 
-    const rewards = getTronStakingRewards(account);
-    const { isClaimOnCooldown, claimCooldownEndsAt } = useTronRewardsClaimCoolDown(account);
-    const isClaimFirmwareOutdated = !isTronClaimSupported(device);
+    const { productId, totals } = useStakingAccountPosition(account.key);
 
-    const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(account.symbol);
+    const stakingDetails = useSelector(state =>
+        selectStakingAccountPositionDetails(state, account.key, 'tron-staking'),
+    );
 
-    if (new BigNumber(rewards).lte(0)) {
+    const claim = useTronStakingOperation(productId, 'claim');
+    const { openFirmwareModal, firmwareModal } = useTronFirmwareUpgradeModal();
+
+    const rewards = formatStakingAmount({ amount: totals.rewards, networkSymbol: account.symbol });
+    // The countdown re-enables the claim at the deadline, before the position is synced again.
+    const { isClaimOnCooldown, claimCooldownEndsAt } = useTronRewardsClaimCoolDown(
+        stakingDetails?.rewardClaimAvailableAt ?? null,
+    );
+
+    if (!isPositiveBalance(rewards)) {
         return null;
     }
 
     const goToClaim = () => {
-        if (isClaimingDisabled) {
-            return;
-        }
+        if (claim.isDisabled) return;
 
-        if (isClaimFirmwareOutdated) {
-            openFirmwareModal();
+        if (claim.isFirmwareOutdated) {
+            openFirmwareModal('TR_EARN_TRON_CLAIM_TITLE');
 
             return;
         }
@@ -80,14 +86,14 @@ export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) =
         });
     };
 
-    const claimButtonTooltipProps = isClaimingDisabled
-        ? ({ content: claimingMessageContent } as const)
+    const claimButtonTooltipProps = claim.isDisabled
+        ? ({ content: claim.message } as const)
         : ({
               isActive: isClaimOnCooldown,
               tooltipMaxWidth: 220,
               content: claimCooldownEndsAt !== null && (
                   <CountdownTimer
-                      deadline={claimCooldownEndsAt * 1000}
+                      deadline={claimCooldownEndsAt}
                       message="TR_EARN_TRON_CLAIM_COOLDOWN"
                       minUnit="minute"
                       unitDisplay="narrow"
@@ -100,13 +106,8 @@ export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) =
 
     return (
         <>
-            {isFirmwareModalOpen && (
-                <FirmwareUpgradeNeededModal
-                    onClose={closeFirmwareModal}
-                    onUpdate={updateFirmware}
-                    featureName={translationString('TR_EARN_TRON_CLAIM_TITLE')}
-                />
-            )}
+            {firmwareModal}
+
             <Card paddingType="none" data-testid="@staking/tron-rewards-card/container">
                 <Box padding={{ vertical: 12, horizontal: 20 }}>
                     <Row justifyContent="space-between" alignItems="center">
@@ -142,7 +143,7 @@ export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) =
                                     intent="neutral"
                                     priority="secondary"
                                     onClick={goToClaim}
-                                    isDisabled={isClaimOnCooldown || isClaimingDisabled}
+                                    isDisabled={isClaimOnCooldown || claim.isDisabled}
                                     data-testid="@staking/tron-rewards-card/claim-button"
                                 >
                                     <Translation id="TR_STAKE_CLAIM" />

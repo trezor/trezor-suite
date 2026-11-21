@@ -1,4 +1,3 @@
-import type { EthValidatorsQueue, StakingBatch } from '@suite-common/earn-staking-api';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
@@ -15,44 +14,8 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
     });
 
-    test.beforeEach(async ({ page, onboardingPage, settingsPage, blockbookMock }) => {
-        await page.context().route('**/staking/v1**', async route => {
-            await route.fulfill({
-                status: 200,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                json: {
-                    data: [
-                        {
-                            symbol: 'eth',
-                            stats: {
-                                apy: 1,
-                                nextRewardPayout: 1,
-                            },
-                            validators: {
-                                activationTime: 0,
-                                addingDelay: 60 * 60 * 24,
-                            },
-                        },
-                    ],
-                    errors: [],
-                } satisfies StakingBatch,
-            });
-        });
-
-        await page.context().route('**/eth/validators-queue**', async route => {
-            await route.fulfill({
-                status: 200,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                json: {
-                    activationTime: 0,
-                    addingDelay: 60 * 60 * 24,
-                } satisfies EthValidatorsQueue,
-            });
-        });
+    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock, earnStakingApiMock }) => {
+        earnStakingApiMock.ethValidatorsQueue = { activationTime: 0, addingDelay: 60 * 60 * 24 };
 
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('coins');
@@ -253,7 +216,7 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                             withdrawTotalAmount: '0',
                             claimableAmount: '0',
                             restakedReward: '234000000000000000000',
-                            autocompoundBalance: '3234000000000000000000',
+                            autocompoundBalance: '3234100204158497493752', // deposited plus restaked
                         },
                     ],
                 });

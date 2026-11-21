@@ -7,8 +7,6 @@ export type AssetData = {
     network: Network;
     failed: boolean;
     assetNativeCryptoBalance: AmountUnit;
-    stakingAccounts: Account[];
     assetTokens: TokenInfo[];
-    isStakeNetwork?: boolean;
     accounts: Account[];
 };

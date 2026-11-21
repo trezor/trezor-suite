@@ -1,10 +1,10 @@
 import { Translation } from '@suite/intl';
-import { Paragraph } from '@trezor/components';
+import { Paragraph, Skeleton } from '@trezor/components';
 
 import { PayoutCard } from './PayoutCard';
 
 interface PayoutCardFrequencyRewardsProps {
-    rewardFrequency: number;
+    rewardFrequency: number | null;
 }
 
 export const PayoutCardFrequencyRewards = ({
@@ -12,9 +12,13 @@ export const PayoutCardFrequencyRewards = ({
 }: PayoutCardFrequencyRewardsProps) => (
     <PayoutCard>
         <>
-            <Paragraph typographyStyle="headline-md">
-                <Translation id="TR_STAKE_DAYS" values={{ count: rewardFrequency }} />
-            </Paragraph>
+            {rewardFrequency === null ? (
+                <Skeleton width={80} height={32} animate />
+            ) : (
+                <Paragraph typographyStyle="headline-md">
+                    <Translation id="TR_STAKE_DAYS" values={{ count: rewardFrequency }} />
+                </Paragraph>
+            )}
             <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                 <Translation id="TR_STAKE_NEXT_PAYOUT_FREQUENCY" />
             </Paragraph>

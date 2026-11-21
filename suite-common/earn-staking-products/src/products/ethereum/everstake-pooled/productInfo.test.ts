@@ -64,8 +64,30 @@ describe('fetchEthereumEverstakePooledProductInfo', () => {
         expect(deps.getEthereumValidatorsQueue).toHaveBeenCalledWith({ signal: abortSignal });
     });
 
-    it('leaves a period unknown when the queue lacks one of its parts', async () => {
+    it('reads a period from the parts the queue reports when it lacks the other', async () => {
         const deps = createDeps(ethStats, { activationTime: 3 * SECONDS_IN_DAY, exitTime: 0 });
+
+        await expect(
+            fetchEthereumEverstakePooledProductInfo(deps, { networkSymbol: eth }),
+        ).resolves.toMatchObject({
+            entryPeriodDays: 3,
+            exitPeriodDays: 0,
+        });
+    });
+
+    it('keeps the exit countdown on the withdraw time alone', async () => {
+        const deps = createDeps(ethStats, { withdrawTime: 3 * SECONDS_IN_DAY });
+
+        await expect(
+            fetchEthereumEverstakePooledProductInfo(deps, { networkSymbol: eth }),
+        ).resolves.toMatchObject({
+            entryPeriodDays: null,
+            exitPeriodDays: 3,
+        });
+    });
+
+    it('leaves both periods unknown when the queue reports none of their parts', async () => {
+        const deps = createDeps(ethStats, {});
 
         await expect(
             fetchEthereumEverstakePooledProductInfo(deps, { networkSymbol: eth }),

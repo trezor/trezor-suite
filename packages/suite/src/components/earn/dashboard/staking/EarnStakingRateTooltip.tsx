@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { type NetworkType } from '@suite-common/wallet-config';
+import { type StakingRateKind } from '@suite-common/earn-staking-common';
 import { Text, Tooltip } from '@trezor/components';
 
 import { ApyValue } from '#src/views/wallet/staking/components/ApyValue';
@@ -14,11 +14,11 @@ const Abbr = styled.abbr`
 `;
 
 interface EarnStakingRateTooltipProps {
-    networkType: NetworkType;
+    rateKind: StakingRateKind | null;
     rate: number | null;
 }
 
-export const EarnStakingRateTooltip = ({ networkType, rate }: EarnStakingRateTooltipProps) => {
+export const EarnStakingRateTooltip = ({ rateKind, rate }: EarnStakingRateTooltipProps) => {
     if (!rate) {
         return (
             <Text typographyStyle="body-sm">
@@ -32,7 +32,7 @@ export const EarnStakingRateTooltip = ({ networkType, rate }: EarnStakingRateToo
             content={
                 <Translation
                     id={
-                        networkType === 'tron'
+                        rateKind === 'apr'
                             ? 'TR_EARN_STAKING_APR_TOOLTIP'
                             : 'TR_EARN_STAKING_APY_TOOLTIP'
                     }
@@ -41,7 +41,12 @@ export const EarnStakingRateTooltip = ({ networkType, rate }: EarnStakingRateToo
             tooltipMaxWidth={280}
             placement="top"
         >
-            <Text typographyStyle="body-sm-strong" intent="neutral" priority="primary">
+            <Text
+                typographyStyle="body-sm-strong"
+                intent="neutral"
+                priority="primary"
+                data-testid="@earn/dashboard/staking-rate"
+            >
                 <Abbr>
                     <ApyValue apy={rate} />
                 </Abbr>

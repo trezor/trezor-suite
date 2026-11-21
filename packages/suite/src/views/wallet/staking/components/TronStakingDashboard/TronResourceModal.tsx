@@ -1,20 +1,27 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
+import {
+    formatStakingAmount,
+    selectStakingAccountPositionDetails,
+    useStakingAccountPosition,
+} from '@suite-common/earn-staking';
 import { getResourceGain } from '@suite-common/wallet-core';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
-import { getTronResources, getTronStakingInfo, sunToTrx } from '@suite-common/wallet-utils';
+import { getTronResources } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Divider, Icon, Modal, Row, Text, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
+import { useTronFirmwareUpgradeModal } from '#src/hooks/earn/useTronFirmwareUpgradeModal';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import {
     TronResourceBreakdownRow,
     type TronResourceBreakdownRowProps,
 } from './TronResourceBreakdownRow';
+import { useTronStakingOperation } from './hooks/useTronStakingOperation';
 
 interface TronResourceModalProps {
     account: Account;
@@ -24,11 +31,18 @@ interface TronResourceModalProps {
 
 export const TronResourceModal = ({ account, resourceType, onClose }: TronResourceModalProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    // Resource meters are account data, not staking state.
     const resources = getTronResources(account);
-    const stakingInfo = getTronStakingInfo(account);
     const isEnergy = resourceType === 'energy';
 
-    const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account.symbol);
+    const { productId } = useStakingAccountPosition(account.key);
+
+    const stakingDetails = useSelector(state =>
+        selectStakingAccountPositionDetails(state, account.key, 'tron-staking'),
+    );
+
+    const stake = useTronStakingOperation(productId, 'stake');
+    const { openFirmwareModal, isFirmwareModalOpen, firmwareModal } = useTronFirmwareUpgradeModal();
 
     const freeBandwidth = resources?.totalFreeBandwidth ?? 0;
     const stakedBandwidth = resources?.totalStakedBandwidth ?? 0;
@@ -38,10 +52,16 @@ export const TronResourceModal = ({ account, resourceType, onClose }: TronResour
     const totalEnergy = resources?.totalEnergy ?? 0;
     const availableEnergy = resources?.availableEnergy ?? 0;
 
-    const delegatedSun = isEnergy
-        ? (stakingInfo?.delegatedBalanceEnergy ?? '0')
-        : (stakingInfo?.delegatedBalanceBandwidth ?? '0');
-    const delegatedTrx = sunToTrx(delegatedSun, account.symbol);
+    const delegatedTrx =
+        stakingDetails === null
+            ? '0'
+            : formatStakingAmount({
+                  amount: isEnergy
+                      ? stakingDetails.delegated.energy
+                      : stakingDetails.delegated.bandwidth,
+                  networkSymbol: account.symbol,
+              });
+
     const delegatedToOthers = Math.round(
         getResourceGain(delegatedTrx, resourceType, resources) ?? 0,
     );
@@ -81,7 +101,11 @@ export const TronResourceModal = ({ account, resourceType, onClose }: TronResour
         : formatBandwidthValue(availableFreeBandwidth, availableStakedBandwidth);
 
     const goToFreeze = () => {
-        if (isStakingDisabled) {
+        if (stake.isDisabled) return;
+
+        if (stake.isFirmwareOutdated) {
+            openFirmwareModal('TR_EARN_TRON_STAKE_TITLE');
+
             return;
         }
 
@@ -108,101 +132,111 @@ export const TronResourceModal = ({ account, resourceType, onClose }: TronResour
     };
 
     return (
-        <Modal
-            width={400}
-            data-testid="@modal/tron-resource"
-            heading={
-                <Translation
-                    id={isEnergy ? 'TR_EARN_TRON_MY_ENERGY' : 'TR_EARN_TRON_MY_BANDWIDTH'}
-                />
-            }
-            onCancel={onClose}
-            bottomContent={
-                <Row gap={8}>
-                    <Tooltip content={stakingMessageContent}>
+        <>
+            {firmwareModal}
+
+            {/* Every mounted modal handles Escape, so the dialog yields it to the prompt above. */}
+            <Modal
+                width={400}
+                data-testid="@modal/tron-resource"
+                heading={
+                    <Translation
+                        id={isEnergy ? 'TR_EARN_TRON_MY_ENERGY' : 'TR_EARN_TRON_MY_BANDWIDTH'}
+                    />
+                }
+                onCancel={onClose}
+                isBackdropCancelable={!isFirmwareModalOpen}
+                bottomContent={
+                    <Row gap={8}>
+                        <Tooltip content={stake.message}>
+                            <Button
+                                intent="brand"
+                                priority="primary"
+                                onClick={goToFreeze}
+                                isDisabled={stake.isDisabled}
+                                data-testid="@modal/tron-resource/get-more-button"
+                            >
+                                <Translation id="TR_EARN_TRON_GET_MORE" />
+                            </Button>
+                        </Tooltip>
+
                         <Button
-                            intent="brand"
-                            priority="primary"
-                            onClick={goToFreeze}
-                            isDisabled={isStakingDisabled}
-                            data-testid="@modal/tron-resource/get-more-button"
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={onClose}
+                            data-testid="@modal/tron-resource/close-button"
                         >
-                            <Translation id="TR_EARN_TRON_GET_MORE" />
+                            <Translation id="TR_CLOSE" />
                         </Button>
-                    </Tooltip>
+                    </Row>
+                }
+            >
+                <Column gap={12} alignItems="stretch">
+                    <Card>
+                        <Column gap={12} alignItems="stretch">
+                            {rows.map(row => (
+                                <TronResourceBreakdownRow key={row.label} {...row} />
+                            ))}
 
-                    <Button
-                        intent="neutral"
-                        priority="secondary"
-                        onClick={onClose}
-                        data-testid="@modal/tron-resource/close-button"
-                    >
-                        <Translation id="TR_CLOSE" />
-                    </Button>
-                </Row>
-            }
-        >
-            <Column gap={12} alignItems="stretch">
-                <Card>
-                    <Column gap={12} alignItems="stretch">
-                        {rows.map(row => (
-                            <TronResourceBreakdownRow key={row.label} {...row} />
-                        ))}
+                            <Divider margin={{}} />
 
-                        <Divider margin={{}} />
+                            <Column gap={4} alignItems="stretch">
+                                <Row justifyContent="space-between">
+                                    <Text typographyStyle="body-md-strong">
+                                        <Translation
+                                            id={
+                                                isEnergy
+                                                    ? 'TR_EARN_TRON_TOTAL_ENERGY'
+                                                    : 'TR_EARN_TRON_TOTAL_BANDWIDTH'
+                                            }
+                                        />
+                                    </Text>
 
-                        <Column gap={4} alignItems="stretch">
-                            <Row justifyContent="space-between">
-                                <Text typographyStyle="body-md-strong">
-                                    <Translation
-                                        id={
-                                            isEnergy
-                                                ? 'TR_EARN_TRON_TOTAL_ENERGY'
-                                                : 'TR_EARN_TRON_TOTAL_BANDWIDTH'
-                                        }
-                                    />
-                                </Text>
-                                <Text
-                                    typographyStyle="body-md-strong"
-                                    data-testid="@modal/tron-resource/total"
-                                >
-                                    {total}
-                                </Text>
-                            </Row>
-                            <Row justifyContent="space-between">
-                                <Text
-                                    typographyStyle="body-sm"
-                                    intent="neutral"
-                                    priority="secondary"
-                                >
-                                    <Translation id="TR_EARN_TRON_AVAILABLE_NOW" />
-                                </Text>
-                                <Text
-                                    typographyStyle="body-sm"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    data-testid="@modal/tron-resource/available"
-                                >
-                                    {available}
-                                </Text>
-                            </Row>
+                                    <Text
+                                        typographyStyle="body-md-strong"
+                                        data-testid="@modal/tron-resource/total"
+                                    >
+                                        {total}
+                                    </Text>
+                                </Row>
+
+                                <Row justifyContent="space-between">
+                                    <Text
+                                        typographyStyle="body-sm"
+                                        intent="neutral"
+                                        priority="secondary"
+                                    >
+                                        <Translation id="TR_EARN_TRON_AVAILABLE_NOW" />
+                                    </Text>
+
+                                    <Text
+                                        typographyStyle="body-sm"
+                                        intent="neutral"
+                                        priority="secondary"
+                                        data-testid="@modal/tron-resource/available"
+                                    >
+                                        {available}
+                                    </Text>
+                                </Row>
+                            </Column>
                         </Column>
-                    </Column>
-                </Card>
+                    </Card>
 
-                <Row gap={8} alignItems="center">
-                    <Icon as={InfoIcon} size={20} intent="neutral" priority="secondary" />
-                    <Text typographyStyle="body-md" intent="neutral" priority="secondary">
-                        <Translation
-                            id={
-                                isEnergy
-                                    ? 'TR_EARN_TRON_ENERGY_BALANCE_NOTE'
-                                    : 'TR_EARN_TRON_BANDWIDTH_BALANCE_NOTE'
-                            }
-                        />
-                    </Text>
-                </Row>
-            </Column>
-        </Modal>
+                    <Row gap={8} alignItems="center">
+                        <Icon as={InfoIcon} size={20} intent="neutral" priority="secondary" />
+
+                        <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                            <Translation
+                                id={
+                                    isEnergy
+                                        ? 'TR_EARN_TRON_ENERGY_BALANCE_NOTE'
+                                        : 'TR_EARN_TRON_BANDWIDTH_BALANCE_NOTE'
+                                }
+                            />
+                        </Text>
+                    </Row>
+                </Column>
+            </Modal>
+        </>
     );
 };

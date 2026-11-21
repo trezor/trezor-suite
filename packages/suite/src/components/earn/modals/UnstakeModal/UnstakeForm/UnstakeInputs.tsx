@@ -1,8 +1,14 @@
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { formatStakingAmount, useStakingAccountPosition } from '@suite-common/earn-staking';
+import {
+    getStakingPositionPrincipal,
+    stakingAmountSchema,
+} from '@suite-common/earn-staking-common';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { AMOUNT_MAX_LENGTH, getStakingDataForNetwork } from '@suite-common/wallet-core';
+import { AMOUNT_MAX_LENGTH } from '@suite-common/wallet-core';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { Column, type FractionButtonProps, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
 
@@ -20,6 +26,8 @@ import {
     validateSolanaUnstakeAmount,
     validateSolanaUnstakeFiatAmount,
 } from '#src/utils/suite/validation';
+
+const ZERO_STAKING_AMOUNT = stakingAmountSchema.parse('0');
 
 export const UnstakeInputs = () => {
     // React Compiler: `getValues` keeps one identity for the form's whole life, so a compiled
@@ -45,18 +53,23 @@ export const UnstakeInputs = () => {
         currentRate,
         setRatioAmount,
         setCurrency,
+        unstakableBalance,
     } = useWithdrawalFormContext();
 
-    const {
-        autocompoundBalance = '0',
-        depositedBalance = '0',
-        restakedReward = '0',
-    } = getStakingDataForNetwork(account) ?? {};
-
-    const isRewardsVisible = restakedReward != '';
-    const isRewardsDisabled = restakedReward === '0';
-
     const { symbol } = account;
+
+    const { descriptor, position, totals } = useStakingAccountPosition(account.key);
+
+    const principal =
+        position === null || descriptor === null
+            ? ZERO_STAKING_AMOUNT
+            : getStakingPositionPrincipal(position, descriptor.rewardsKind);
+    const depositedBalance = formatStakingAmount({ amount: principal, networkSymbol: symbol });
+    const rewards = formatStakingAmount({ amount: totals.rewards, networkSymbol: symbol });
+
+    // Only rewards restaked into the balance can be unstaked on their own.
+    const isRewardsVisible = descriptor?.rewardsKind === 'compounded';
+    const isRewardsDisabled = !isPositiveBalance(rewards);
     const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
 
     const { outputs } = getValues();
@@ -195,7 +208,7 @@ export const UnstakeInputs = () => {
                         tooltip: (
                             <Column alignItems="flex-end">
                                 <FormattedCryptoAmount
-                                    value={autocompoundBalance}
+                                    value={unstakableBalance}
                                     networkSymbol={symbol}
                                 />
                                 <Text typographyStyle="body-sm">
@@ -211,7 +224,7 @@ export const UnstakeInputs = () => {
                                             {' + '}
                                             <Text intent="brand">
                                                 <BaseCurrencyValue
-                                                    amount={restakedReward}
+                                                    amount={rewards}
                                                     symbol={symbol}
                                                 />
                                             </Text>
@@ -220,7 +233,7 @@ export const UnstakeInputs = () => {
                                 </Text>
                             </Column>
                         ),
-                        onClick: () => onCryptoAmountChange(autocompoundBalance),
+                        onClick: () => onCryptoAmountChange(unstakableBalance),
                     },
                     ...(isRewardsVisible
                         ? [
@@ -232,21 +245,18 @@ export const UnstakeInputs = () => {
                                   ) : (
                                       <Column alignItems="flex-end">
                                           <FormattedCryptoAmount
-                                              value={restakedReward}
+                                              value={rewards}
                                               networkSymbol={symbol}
                                           />
                                           <Text intent="brand">
-                                              <BaseCurrencyValue
-                                                  amount={restakedReward}
-                                                  symbol={symbol}
-                                              />
+                                              <BaseCurrencyValue amount={rewards} symbol={symbol} />
                                           </Text>
                                       </Column>
                                   ),
                                   isSubtle: true,
                                   variant: 'primary',
                                   isDisabled: isRewardsDisabled,
-                                  onClick: () => onCryptoAmountChange(restakedReward),
+                                  onClick: () => onCryptoAmountChange(rewards),
                               } as FractionButtonProps,
                           ]
                         : []),

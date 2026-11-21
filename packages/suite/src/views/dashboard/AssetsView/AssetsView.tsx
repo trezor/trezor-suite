@@ -14,16 +14,8 @@ import {
     selectTradingBuyLoadingTimestampAndStatus,
     tradingThunks,
 } from '@suite-common/trading';
+import { type NetworkSymbol, getNetwork, isNetworkSymbol } from '@suite-common/wallet-config';
 import {
-    type NetworkSymbol,
-    getNetwork,
-    getNetworkFeatures,
-    isNetworkSymbol,
-} from '@suite-common/wallet-config';
-import {
-    isSupportedEthStakingNetworkSymbol,
-    isSupportedSolStakingNetworkSymbol,
-    isSupportedTronStakingNetworkSymbol,
     selectAllAccountsToList,
     selectBaseCurrency,
     selectCurrentFiatRates,
@@ -181,14 +173,7 @@ export const AssetsView = () => {
                 ? assetNativeCryptoBalance
                 : AMOUNT_UNIT_ZERO,
             assetTokens: assetTokens?.length ? assetTokens : [],
-            stakingAccounts: accounts.filter(
-                account =>
-                    isSupportedEthStakingNetworkSymbol(account.symbol) ||
-                    isSupportedSolStakingNetworkSymbol(account.symbol) ||
-                    isSupportedTronStakingNetworkSymbol(account.symbol),
-            ),
             accounts,
-            isStakeNetwork: getNetworkFeatures(symbol).includes('staking'),
         };
     });
 
@@ -279,12 +264,10 @@ export const AssetsView = () => {
                                 failed={asset.failed}
                                 cryptoValue={asset.assetNativeCryptoBalance}
                                 assetsFiatBalances={assetsFiatBalances}
-                                stakingAccounts={asset.stakingAccounts}
                                 assetTokens={asset.assetTokens}
                                 localCurrency={baseCurrencyCode}
                                 currentFiatRates={currentFiatRates}
                                 accounts={asset.accounts}
-                                isStakeNetwork={asset.isStakeNetwork}
                             />
                         ))}
                         {discoveryInProgress && <AssetCardSkeleton />}

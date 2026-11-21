@@ -1,16 +1,18 @@
 import { useState } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { getTronVotedApr, useTronStakingStats } from '@suite-common/earn-staking-api';
 import {
-    getTronAvailableVotingPower,
-    getTronTotalVotingPower,
-    getTronVotes,
-} from '@suite-common/wallet-core';
+    formatStakingAmount,
+    getStakingOperationAvailability,
+    selectStakingAccountPositionDetails,
+    useNetworkStakingRate,
+    useStakingAccountPosition,
+} from '@suite-common/earn-staking';
+import { type StakingAmount, type StakingOperation } from '@suite-common/earn-staking-common';
 import { type Account } from '@suite-common/wallet-types';
-import { getTronAccountTotalStakingBalance } from '@suite-common/wallet-utils';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import {
     Button,
     Card,
@@ -24,14 +26,47 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
-import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
-import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
+import { useTronFirmwareUpgradeModal } from '#src/hooks/earn/useTronFirmwareUpgradeModal';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TronVoteAllocationModal } from './TronVoteAllocationModal/TronVoteAllocationModal';
+import {
+    type TronStakingOperation,
+    useTronStakingOperation,
+} from './hooks/useTronStakingOperation';
+
+type TronFlowRoute = 'earn-tron-stake' | 'earn-tron-unstake' | 'earn-tron-vote';
+
+type TronFlow = {
+    operation: StakingOperation;
+    featureName: TranslationKey;
+    event:
+        | typeof events.stakingStakeEvent.name
+        | typeof events.stakingUnstakeEvent.name
+        | typeof events.stakingUpdateProviderEvent.name;
+};
+
+const TRON_FLOWS: Record<TronFlowRoute, TronFlow> = {
+    'earn-tron-stake': {
+        operation: 'stake',
+        featureName: 'TR_EARN_TRON_STAKE_TITLE',
+        event: events.stakingStakeEvent.name,
+    },
+    'earn-tron-unstake': {
+        operation: 'unstake',
+        featureName: 'TR_EARN_TRON_UNSTAKE_TITLE',
+        event: events.stakingUnstakeEvent.name,
+    },
+    'earn-tron-vote': {
+        operation: 'vote',
+        featureName: 'TR_EARN_TRON_VOTE',
+        event: events.stakingUpdateProviderEvent.name,
+    },
+};
 
 interface TronStakedCardProps {
     account: Account;
@@ -41,36 +76,58 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
     const formatApyValue = useFormatApy();
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [isVoteAllocationOpen, setIsVoteAllocationOpen] = useState(false);
-    const { stats, maxApr } = useTronStakingStats();
 
-    const {
-        isStakingDisabled,
-        stakingMessageContent,
-        isUnstakingDisabled,
-        unstakingMessageContent,
-        isVotingDisabled,
-        votingMessageContent,
-    } = useMessageSystemStaking(account.symbol);
+    const { productId, position, totals, access } = useStakingAccountPosition(account.key);
 
-    const stakedBalance = getTronAccountTotalStakingBalance(account) ?? '0';
-    const hasStake = new BigNumber(stakedBalance).gt(0);
-    const votes = getTronVotes(account);
-    const apr = votes.length > 0 ? getTronVotedApr(stats.data, votes) : maxApr;
-    const remainingVotes = getTronAvailableVotingPower(account);
-    const totalVotes = getTronTotalVotingPower(account);
-    const hasRemainingVotes = new BigNumber(remainingVotes).gt(0);
-    const shouldShowRemainingVotes = new BigNumber(remainingVotes).plus(totalVotes).gt(0);
+    const { rate } = useNetworkStakingRate({
+        networkSymbol: account.symbol,
+        accountKey: account.key,
+    });
 
-    const goToFlow = (routeName: 'earn-tron-stake' | 'earn-tron-unstake' | 'earn-tron-vote') => {
-        if (isStakingDisabled && routeName === 'earn-tron-stake') {
-            return;
-        }
+    const stakingDetails = useSelector(state =>
+        selectStakingAccountPositionDetails(state, account.key, 'tron-staking'),
+    );
 
-        if (isUnstakingDisabled && routeName === 'earn-tron-unstake') {
-            return;
-        }
+    const stake = useTronStakingOperation(productId, 'stake');
+    const unstake = useTronStakingOperation(productId, 'unstake');
+    const vote = useTronStakingOperation(productId, 'vote');
+    const { openFirmwareModal, firmwareModal } = useTronFirmwareUpgradeModal();
 
-        if (isVotingDisabled && routeName === 'earn-tron-vote') {
+    const operations: Record<StakingOperation, TronStakingOperation | null> = {
+        stake,
+        unstake,
+        vote,
+        withdraw: null,
+        claim: null,
+        redelegate: null,
+    };
+
+    const formatAmount = (amount: StakingAmount) =>
+        formatStakingAmount({ amount, networkSymbol: account.symbol });
+
+    const stakedBalance = formatAmount(totals.staked);
+    const hasStake = isPositiveBalance(stakedBalance);
+
+    // The position offers unstake while TRX is frozen and vote while anything is staked.
+    const isOffered = (operation: StakingOperation) =>
+        getStakingOperationAvailability({ position, access, operation }) !== 'unavailable';
+
+    const remainingVotes =
+        stakingDetails === null ? '0' : formatAmount(stakingDetails.unallocatedVotingPower);
+    const totalVotes = stakingDetails === null ? '0' : formatAmount(stakingDetails.votingPower);
+    const hasRemainingVotes = isPositiveBalance(remainingVotes);
+    const shouldShowRemainingVotes =
+        isPositiveBalance(remainingVotes) || isPositiveBalance(totalVotes);
+
+    const goToFlow = (routeName: TronFlowRoute) => {
+        const flow = TRON_FLOWS[routeName];
+        const operation = operations[flow.operation];
+
+        if (operation?.isDisabled) return;
+
+        if (operation?.isFirmwareOutdated) {
+            openFirmwareModal(flow.featureName);
+
             return;
         }
 
@@ -85,14 +142,8 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
             }),
         );
 
-        const eventTypeByRoute = {
-            'earn-tron-stake': events.stakingStakeEvent.name,
-            'earn-tron-unstake': events.stakingUnstakeEvent.name,
-            'earn-tron-vote': events.stakingUpdateProviderEvent.name,
-        } as const;
-
         analytics.report({
-            type: eventTypeByRoute[routeName],
+            type: flow.event,
             payload: {
                 action: 'continue',
                 step: 'staking-dashboard',
@@ -102,135 +153,146 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
     };
 
     return (
-        <Card
-            paddingType="normal"
-            data-testid="@staking/tron-staked-card/container"
-            header={
-                <Column gap={2} alignItems="flex-start">
-                    <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                        <Translation id="TR_EARN_TRON_STAKED" />
-                    </Text>
-                    <Text
-                        typographyStyle="headline-sm"
-                        data-testid="@staking/tron-staked-card/staked-amount"
-                    >
-                        <FormattedCryptoAmount
-                            value={stakedBalance}
-                            networkSymbol={account.symbol}
-                        />
-                    </Text>
-                    <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                        <BaseCurrencyValue
-                            amount={stakedBalance}
-                            symbol={account.symbol}
-                            showApproximationIndicator
-                        />
-                    </Text>
-                </Column>
-            }
-            footer={
-                <Row gap={8}>
-                    <Tooltip content={stakingMessageContent}>
-                        <Button
-                            intent="brand"
-                            priority="primary"
-                            onClick={() => goToFlow('earn-tron-stake')}
-                            isDisabled={isStakingDisabled}
-                            data-testid="@staking/tron-staked-card/stake-button"
+        <>
+            {firmwareModal}
+
+            <Card
+                paddingType="normal"
+                data-testid="@staking/tron-staked-card/container"
+                header={
+                    <Column gap={2} alignItems="flex-start">
+                        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                            <Translation id="TR_EARN_TRON_STAKED" />
+                        </Text>
+
+                        <Text
+                            typographyStyle="headline-sm"
+                            data-testid="@staking/tron-staked-card/staked-amount"
                         >
-                            <Translation
-                                id={
-                                    hasStake
-                                        ? 'TR_EARN_STAKING_DASHBOARD_STAKE_MORE'
-                                        : 'TR_EARN_STAKING_DASHBOARD_STAKE_NOW'
-                                }
+                            <FormattedCryptoAmount
+                                value={stakedBalance}
+                                networkSymbol={account.symbol}
                             />
-                        </Button>
-                    </Tooltip>
+                        </Text>
 
-                    {hasStake && (
-                        <Tooltip content={unstakingMessageContent}>
+                        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                            <BaseCurrencyValue
+                                amount={stakedBalance}
+                                symbol={account.symbol}
+                                showApproximationIndicator
+                            />
+                        </Text>
+                    </Column>
+                }
+                footer={
+                    <Row gap={8}>
+                        <Tooltip content={stake.message}>
                             <Button
-                                intent="neutral"
-                                priority="secondary"
-                                onClick={() => goToFlow('earn-tron-unstake')}
-                                isDisabled={isUnstakingDisabled}
-                                data-testid="@staking/tron-staked-card/unstake-button"
+                                intent="brand"
+                                priority="primary"
+                                onClick={() => goToFlow('earn-tron-stake')}
+                                isDisabled={stake.isDisabled}
+                                data-testid="@staking/tron-staked-card/stake-button"
                             >
-                                <Translation id="TR_EARN_TRON_UNSTAKE_TITLE" />
+                                <Translation
+                                    id={
+                                        hasStake
+                                            ? 'TR_EARN_STAKING_DASHBOARD_STAKE_MORE'
+                                            : 'TR_EARN_STAKING_DASHBOARD_STAKE_NOW'
+                                    }
+                                />
                             </Button>
                         </Tooltip>
-                    )}
 
-                    {hasStake && (
-                        <Tooltip content={votingMessageContent}>
-                            <Button
-                                intent="neutral"
-                                priority="secondary"
-                                onClick={() => goToFlow('earn-tron-vote')}
-                                isDisabled={isVotingDisabled}
-                                data-testid="@staking/tron-staked-card/vote-button"
-                            >
-                                <Translation id="TR_EARN_TRON_VOTE" />
-                            </Button>
+                        {isOffered('unstake') && (
+                            <Tooltip content={unstake.message}>
+                                <Button
+                                    intent="neutral"
+                                    priority="secondary"
+                                    onClick={() => goToFlow('earn-tron-unstake')}
+                                    isDisabled={unstake.isDisabled}
+                                    data-testid="@staking/tron-staked-card/unstake-button"
+                                >
+                                    <Translation id="TR_EARN_TRON_UNSTAKE_TITLE" />
+                                </Button>
+                            </Tooltip>
+                        )}
+
+                        {isOffered('vote') && (
+                            <Tooltip content={vote.message}>
+                                <Button
+                                    intent="neutral"
+                                    priority="secondary"
+                                    onClick={() => goToFlow('earn-tron-vote')}
+                                    isDisabled={vote.isDisabled}
+                                    data-testid="@staking/tron-staked-card/vote-button"
+                                >
+                                    <Translation id="TR_EARN_TRON_VOTE" />
+                                </Button>
+                            </Tooltip>
+                        )}
+                    </Row>
+                }
+            >
+                <Row justifyContent="space-between" alignItems="center">
+                    <Text
+                        typographyStyle="body-md-strong"
+                        data-testid="@staking/tron-staked-card/apr"
+                    >
+                        <Translation id="TR_EARN_TRON_APR_LABEL" />{' '}
+                        <span data-testid="@staking/tron-staked-card/apr-value">
+                            {formatApyValue(rate, { withSymbol: true })}
+                        </span>
+                    </Text>
+
+                    {hasRemainingVotes ? (
+                        <Tooltip content={<Translation id="TR_EARN_TRON_ASSIGN_VOTES_TOOLTIP" />}>
+                            <Row gap={4} alignItems="center">
+                                <IconCircle icon={WarningIcon} size={24} intent="warning" />
+
+                                <TextButton
+                                    size="small"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    isUnderlined
+                                    onClick={() => setIsVoteAllocationOpen(true)}
+                                    data-testid="@staking/tron-staked-card/votes-to-allocate-button"
+                                >
+                                    <Translation
+                                        id="TR_EARN_TRON_VOTES_TO_ALLOCATE"
+                                        values={{ count: remainingVotes }}
+                                    />
+                                </TextButton>
+                            </Row>
                         </Tooltip>
+                    ) : (
+                        <>
+                            {shouldShowRemainingVotes && (
+                                <TextButton
+                                    size="small"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    isUnderlined
+                                    onClick={() => setIsVoteAllocationOpen(true)}
+                                    data-testid="@staking/tron-staked-card/remaining-votes-button"
+                                >
+                                    <Translation
+                                        id="TR_EARN_TRON_REMAINING_VOTES"
+                                        values={{ remaining: remainingVotes, total: totalVotes }}
+                                    />
+                                </TextButton>
+                            )}
+                        </>
                     )}
                 </Row>
-            }
-        >
-            <Row justifyContent="space-between" alignItems="center">
-                <Text typographyStyle="body-md-strong" data-testid="@staking/tron-staked-card/apr">
-                    <Translation id="TR_EARN_TRON_APR_LABEL" />{' '}
-                    <span data-testid="@staking/tron-staked-card/apr-value">
-                        {formatApyValue(apr, { withSymbol: true })}
-                    </span>
-                </Text>
-                {hasRemainingVotes ? (
-                    <Tooltip content={<Translation id="TR_EARN_TRON_ASSIGN_VOTES_TOOLTIP" />}>
-                        <Row gap={4} alignItems="center">
-                            <IconCircle icon={WarningIcon} size={24} intent="warning" />
-                            <TextButton
-                                size="small"
-                                intent="neutral"
-                                priority="secondary"
-                                isUnderlined
-                                onClick={() => setIsVoteAllocationOpen(true)}
-                                data-testid="@staking/tron-staked-card/votes-to-allocate-button"
-                            >
-                                <Translation
-                                    id="TR_EARN_TRON_VOTES_TO_ALLOCATE"
-                                    values={{ count: remainingVotes }}
-                                />
-                            </TextButton>
-                        </Row>
-                    </Tooltip>
-                ) : (
-                    <>
-                        {shouldShowRemainingVotes && (
-                            <TextButton
-                                size="small"
-                                intent="neutral"
-                                priority="secondary"
-                                isUnderlined
-                                onClick={() => setIsVoteAllocationOpen(true)}
-                                data-testid="@staking/tron-staked-card/remaining-votes-button"
-                            >
-                                <Translation
-                                    id="TR_EARN_TRON_REMAINING_VOTES"
-                                    values={{ remaining: remainingVotes, total: totalVotes }}
-                                />
-                            </TextButton>
-                        )}
-                    </>
-                )}
-            </Row>
 
-            {isVoteAllocationOpen && (
-                <TronVoteAllocationModal
-                    account={account}
-                    onClose={() => setIsVoteAllocationOpen(false)}
-                />
-            )}
-        </Card>
+                {isVoteAllocationOpen && (
+                    <TronVoteAllocationModal
+                        account={account}
+                        onClose={() => setIsVoteAllocationOpen(false)}
+                    />
+                )}
+            </Card>
+        </>
     );
 };

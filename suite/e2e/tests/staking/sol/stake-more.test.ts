@@ -22,20 +22,27 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
     });
 
-    test.beforeEach(async ({ onboardingPage, settingsPage, solanaStakingMock }) => {
-        await solanaStakingMock.setupStakedAccount();
-        await solanaStakingMock.setEpoch(solStakingAccountSecond.activationEpoch);
-        solanaStakingMock.setSimulatedTransaction(solSimulateStakeMoreTransaction);
-        await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({
-            enableNetworks: [
-                {
-                    symbol: asNetworkSymbol('sol'),
-                    backend: { type: 'solana', url: solanaStakingMock.url },
-                },
-            ],
-        });
-    });
+    test.beforeEach(
+        async ({
+            onboardingPage,
+            settingsPage,
+            solanaStakingMock,
+            earnStakingApiMock: _earnStakingApiMock,
+        }) => {
+            await solanaStakingMock.setupStakedAccount();
+            await solanaStakingMock.setEpoch(solStakingAccountSecond.activationEpoch);
+            solanaStakingMock.setSimulatedTransaction(solSimulateStakeMoreTransaction);
+            await onboardingPage.completeOnboarding();
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    {
+                        symbol: asNetworkSymbol('sol'),
+                        backend: { type: 'solana', url: solanaStakingMock.url },
+                    },
+                ],
+            });
+        },
+    );
 
     test(
         'stake more on SOL account',

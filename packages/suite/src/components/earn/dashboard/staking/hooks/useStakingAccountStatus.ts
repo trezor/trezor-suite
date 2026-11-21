@@ -1,15 +1,14 @@
-import { useMemo } from 'react';
-
-import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import {
-    getStakingLimitsByNetworkSymbol,
-    getTronAvailableVotingPower,
-    isCardanoStakedOutsideEverstake,
-    selectAccountIsStakingActive,
-    selectCardanoPoolsInfo,
-} from '@suite-common/wallet-core';
+    selectHasStakingAccountWarning,
+    selectIsStakingAccountActive,
+    selectIsStakingAccountDelegatedOutside,
+    selectStakeableStakingProductDescriptorBySymbol,
+    selectStakingAccountPositionDetails,
+    selectStakingAccountPositionEntry,
+} from '@suite-common/earn-staking';
+import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { type Account } from '@suite-common/wallet-types';
-import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
@@ -24,66 +23,60 @@ export type StakingAccountStatus =
     | 'staking-remaining-votes';
 
 export const useStakingAccountStatus = (account: Account): StakingAccountStatus => {
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
-    const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
+    const isStakingActive = useSelector(state => selectIsStakingAccountActive(state, account.key));
+
+    const hasOutdatedProvider = useSelector(state =>
+        selectHasStakingAccountWarning(state, account.key, 'outdated-provider'),
+    );
+    const isDelegatedOutside = useSelector(state =>
+        selectIsStakingAccountDelegatedOutside(state, account.key),
+    );
+    // A liquid position stakes the whole balance, so there is nothing more to stake.
+    const isLiquidPosition = useSelector(
+        state =>
+            selectStakingAccountPositionEntry(state, account.key)?.position.lockup === 'liquid',
+    );
+
+    const unallocatedVotingPower = useSelector(
+        state =>
+            selectStakingAccountPositionDetails(state, account.key, 'tron-staking')
+                ?.unallocatedVotingPower ?? null,
+    );
+
+    const minStakeAmountForDashboard = useSelector(
+        state =>
+            selectStakeableStakingProductDescriptorBySymbol(state, account.symbol)?.limits
+                .minStakeAmountForDashboard ?? null,
+    );
+
     const isNewProviderBannerEnabled = useSelector(state =>
         selectIsFeatureEnabled(state, Feature.banners.staking.ada.newProvider, true),
     );
 
-    const accountBalance = account.formattedBalance;
-    const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
-    const isCardanoNetworkType = account.networkType === 'cardano';
-    const minStakingAmount = getStakingLimitsByNetworkSymbol(
-        account.symbol,
-    )?.MIN_AMOUNT_FOR_STAKING_DASHBOARD;
+    if ((hasOutdatedProvider || isDelegatedOutside) && isNewProviderBannerEnabled) {
+        return 'staking-outdated-provider';
+    }
 
-    return useMemo(() => {
-        if (
-            isCardanoStakedOutsideEverstake(account, cardanoStakingPools) &&
-            isNewProviderBannerEnabled
-        ) {
-            return 'staking-outdated-provider';
-        }
+    // The active flag is the account menu's reading, so a rewards-only Tron account is staked here too.
+    if (
+        isStakingActive &&
+        unallocatedVotingPower !== null &&
+        isPositiveBalance(unallocatedVotingPower)
+    ) {
+        return 'staking-remaining-votes';
+    }
 
-        if (account.symbol === 'trx' && stakingBalance !== '0') {
-            const remainingVotes = getTronAvailableVotingPower(account);
+    if (isStakingActive && (!isPositiveBalance(account.availableBalance) || isLiquidPosition)) {
+        return 'staking-max';
+    }
 
-            if (remainingVotes !== '0') {
-                return 'staking-remaining-votes';
-            }
-        }
+    const hasEnoughBalanceForStaking =
+        minStakeAmountForDashboard !== null &&
+        new BigNumber(account.availableBalance).gte(minStakeAmountForDashboard);
 
-        if (
-            (accountBalance === '0' && stakingBalance !== '0') ||
-            (isCardanoNetworkType && isStakingActive)
-        ) {
-            return 'staking-max';
-        }
+    if (isStakingActive) {
+        return hasEnoughBalanceForStaking ? 'staking-active' : 'staked-but-insufficient-funds';
+    }
 
-        const hasEnoughBalanceForStaking =
-            minStakingAmount && new BigNumber(accountBalance).gte(minStakingAmount);
-
-        if (stakingBalance !== '0') {
-            if (!hasEnoughBalanceForStaking) {
-                return 'staked-but-insufficient-funds';
-            }
-
-            return 'staking-active';
-        }
-
-        if (!hasEnoughBalanceForStaking) {
-            return 'insufficient-funds';
-        }
-
-        return 'staking-inactive';
-    }, [
-        account,
-        accountBalance,
-        stakingBalance,
-        minStakingAmount,
-        isCardanoNetworkType,
-        isStakingActive,
-        cardanoStakingPools,
-        isNewProviderBannerEnabled,
-    ]);
+    return hasEnoughBalanceForStaking ? 'staking-inactive' : 'insufficient-funds';
 };

@@ -5,12 +5,14 @@ import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@t
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Analytics Events - Staking Navigate', { tag: ['@T3W1', '@optional'] }, () => {
-    test.beforeEach(async ({ onboardingPage, settingsPage }) => {
-        await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({
-            enableNetworks: [asNetworkSymbol('eth'), asNetworkSymbol('ada')],
-        });
-    });
+    test.beforeEach(
+        async ({ onboardingPage, settingsPage, earnStakingApiMock: _earnStakingApiMock }) => {
+            await onboardingPage.completeOnboarding();
+            await settingsPage.changeNetworks({
+                enableNetworks: [asNetworkSymbol('eth'), asNetworkSymbol('ada')],
+            });
+        },
+    );
 
     // --- Staking Navigation Events ---
     const coins: NetworkSymbol[] = [asNetworkSymbol('eth'), asNetworkSymbol('ada')];

@@ -6,10 +6,11 @@ import {
     type Selector,
     type SelectorArray,
     createSelectorCreator,
+    lruMemoize,
     weakMapMemoize,
 } from 'reselect';
 
-export { weakMapMemoize };
+export { lruMemoize, weakMapMemoize };
 
 const EMPTY_STABLE_ARRAY: unknown[] = [];
 

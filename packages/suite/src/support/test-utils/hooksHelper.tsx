@@ -26,16 +26,22 @@ const testQueryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
 });
 
-type SuiteProvidersProps<Services extends { store: Store }> = {
+export type RenderWithProvidersOptions = {
+    /** A seeded client, for a component that reads the query cache. */
+    queryClient?: QueryClient;
+};
+
+type SuiteProvidersProps<Services extends { store: Store }> = RenderWithProvidersOptions & {
     services: Services;
     children: ReactNode;
 };
 
 const SuiteProviders = <Services extends { store: Store }>({
     services,
+    queryClient = testQueryClient,
     children,
 }: SuiteProvidersProps<Services>) => (
-    <QueryClientProvider client={testQueryClient}>
+    <QueryClientProvider client={queryClient}>
         <Provider store={services.store}>
             <ServicesProvider services={services}>
                 <ConnectedThemeProvider>
@@ -54,17 +60,30 @@ const SuiteProviders = <Services extends { store: Store }>({
 export const renderWithProviders = <Services extends { store: Store }>(
     services: Services,
     children: ReactNode,
-): RenderResult => render(<SuiteProviders services={services}>{children}</SuiteProviders>);
+    { queryClient }: RenderWithProvidersOptions = {},
+): RenderResult =>
+    render(
+        <SuiteProviders services={services} queryClient={queryClient}>
+            {children}
+        </SuiteProviders>,
+    );
 
 export const renderHookWithProviders = <Result, Props, Services extends { store: Store }>(
     services: Services,
     callback: (props: Props) => Result,
-    options?: Omit<RenderHookOptions<Props>, 'wrapper'>,
-) =>
-    renderHook(callback, {
-        wrapper: ({ children }) => <SuiteProviders services={services}>{children}</SuiteProviders>,
-        ...options,
+    options?: Omit<RenderHookOptions<Props>, 'wrapper'> & RenderWithProvidersOptions,
+) => {
+    const { queryClient, ...renderHookOptions } = options ?? {};
+
+    return renderHook(callback, {
+        wrapper: ({ children }) => (
+            <SuiteProviders services={services} queryClient={queryClient}>
+                {children}
+            </SuiteProviders>
+        ),
+        ...renderHookOptions,
     });
+};
 
 export const waitForLoader = (text = /Loading/i) => {
     try {

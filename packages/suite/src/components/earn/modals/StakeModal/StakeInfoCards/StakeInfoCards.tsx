@@ -1,10 +1,8 @@
 import { Translation } from '@suite/intl';
+import { useNetworkStakingRate } from '@suite-common/earn-staking';
 import { type EarnFlow } from '@suite-common/suite-types/src/staking';
-import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { CollapsibleBox, Column, H3 } from '@trezor/components';
-
-import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { EstimatedGains } from './EstimatedGains';
 import { EarnStakingInfo } from '../../EarnInANutshell/components/EarnStakingInfo';
@@ -15,7 +13,7 @@ type StakeInfoCardsProps = {
 };
 
 export const StakeInfoCards = ({ account, flow }: StakeInfoCardsProps) => {
-    const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
+    const { rate: apy } = useNetworkStakingRate({ networkSymbol: account.symbol });
 
     const cards = [
         {

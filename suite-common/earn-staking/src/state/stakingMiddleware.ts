@@ -56,7 +56,7 @@ export const prepareStakingMiddleware = createMiddlewareWithExtraDeps<
     }
 
     if (changeNetworks.match(action)) {
-        dispatch(refreshStakingProductInfoThunk());
+        dispatch(refreshStakingProductInfoThunk({ force: true }));
     }
 
     if (stakingActions.productsRegistered.match(action)) {

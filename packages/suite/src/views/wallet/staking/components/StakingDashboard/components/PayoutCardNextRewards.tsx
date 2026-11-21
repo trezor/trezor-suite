@@ -1,54 +1,51 @@
-import { useMemo } from 'react';
-
 import { Translation } from '@suite/intl';
-import { BACKUP_REWARD_PAYOUT_DAYS, getStakingDataForNetwork } from '@suite-common/wallet-core';
+import { useStakingActivationDays } from '@suite-common/earn';
+import {
+    useStakingAccountPosition,
+    useStakingDaysUntil,
+    useStakingPeriods,
+} from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
-import { secondsToDays } from '@suite-common/wallet-utils';
-import { Paragraph } from '@trezor/components';
-import { BigNumber } from '@trezor/utils';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { Paragraph, Skeleton } from '@trezor/components';
 
 import { PayoutCard } from './PayoutCard';
 
 interface PayoutCardNextRewardsProps {
     account: Account;
-    nextRewardPayout?: number | null;
-    daysToAddToPool?: number;
-    validatorWithdrawTime?: number;
 }
 
-export const PayoutCardNextRewards = ({
-    account,
-    nextRewardPayout,
-    daysToAddToPool,
-    validatorWithdrawTime,
-}: PayoutCardNextRewardsProps) => {
-    const { autocompoundBalance = '0' } = getStakingDataForNetwork(account) ?? {};
+export const PayoutCardNextRewards = ({ account }: PayoutCardNextRewardsProps) => {
+    const { productId, totals } = useStakingAccountPosition(account.key);
+    const { nextRewardAt } = useStakingPeriods(productId);
 
-    const payout = useMemo(() => {
-        if (!nextRewardPayout || !daysToAddToPool) return undefined;
+    const nextRewardInDays = useStakingDaysUntil(nextRewardAt);
+    const daysUntilActivation = useStakingActivationDays(account.key);
+    const hasStake = isPositiveBalance(totals.staked);
 
-        if (new BigNumber(autocompoundBalance).gt(0) || daysToAddToPool <= nextRewardPayout) {
-            return nextRewardPayout;
+    const getPayoutInDays = () => {
+        if (nextRewardInDays === null) return null;
+
+        // Nothing earns before the first activation, so a payout before it waits for the next.
+        if (hasStake || daysUntilActivation === null || daysUntilActivation <= nextRewardInDays) {
+            return nextRewardInDays;
         }
 
-        if (!validatorWithdrawTime) return undefined;
+        return daysUntilActivation + nextRewardInDays;
+    };
 
-        return secondsToDays(validatorWithdrawTime) + nextRewardPayout;
-    }, [autocompoundBalance, daysToAddToPool, nextRewardPayout, validatorWithdrawTime]);
+    const payoutInDays = getPayoutInDays();
 
     return (
         <PayoutCard>
             <>
-                <Paragraph typographyStyle="headline-md">
-                    {payout === undefined ? (
-                        <Translation
-                            id="TR_STAKE_MAX_REWARD_DAYS"
-                            values={{ count: BACKUP_REWARD_PAYOUT_DAYS }}
-                        />
-                    ) : (
-                        <Translation id="TR_STAKE_DAYS" values={{ count: payout }} />
-                    )}
-                </Paragraph>
+                {payoutInDays === null ? (
+                    <Skeleton width={80} height={32} animate />
+                ) : (
+                    <Paragraph typographyStyle="headline-md">
+                        <Translation id="TR_STAKE_DAYS" values={{ count: payoutInDays }} />
+                    </Paragraph>
+                )}
                 <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                     <Translation id="TR_STAKE_NEXT_PAYOUT" />
                 </Paragraph>

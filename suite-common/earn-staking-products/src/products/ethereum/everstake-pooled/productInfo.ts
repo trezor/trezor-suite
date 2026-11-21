@@ -8,11 +8,15 @@ import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-type
 
 const SECONDS_IN_DAY = 24 * 60 * 60;
 
-// Exact, so a period end is not rounded twice: here and again where the days left are shown.
-const getPeriodDays = (firstSeconds?: number, secondSeconds?: number): number | null => {
-    if (firstSeconds === undefined || secondSeconds === undefined) return null;
+// Exact, so a period end is not rounded twice: here and again where the days left are shown. The
+// queue marks each part optional, so a period sums the parts it reports and is unknown only
+// without any.
+const getPeriodDays = (...partsInSeconds: (number | undefined)[]): number | null => {
+    const reportedParts = partsInSeconds.filter(part => part !== undefined);
 
-    return (firstSeconds + secondSeconds) / SECONDS_IN_DAY;
+    if (reportedParts.length === 0) return null;
+
+    return reportedParts.reduce((sum, part) => sum + part, 0) / SECONDS_IN_DAY;
 };
 
 const HOUR_MS = 60 * 60 * 1000;

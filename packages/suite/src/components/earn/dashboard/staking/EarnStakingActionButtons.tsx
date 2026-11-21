@@ -1,12 +1,17 @@
 import { type MouseEvent, type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { Button, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
 import { type StakingAccountStatus } from './hooks/useStakingAccountStatus';
 import { EarnBuyButton } from '../common/EarnBuyButton';
+
+const CLAIM_LABEL_BY_NETWORK_TYPE: Partial<Record<NetworkType, TranslationKey>> = {
+    cardano: 'TR_EARN_CLAIM_REWARDS',
+    tron: 'TR_EARN_TRON_WITHDRAW_TITLE',
+};
 
 type EarnStakingActionButtonsProps = {
     stakingStatus: StakingAccountStatus;
@@ -56,19 +61,22 @@ export const EarnStakingActionButtons = ({
                         isDisabled={isClaimButtonDisabled}
                         iconLeft={isClaimButtonDisabled ? InfoIcon : undefined}
                         onClick={onClaim}
-                        data-testid="@account/staking/claim-button"
+                        data-testid={
+                            networkType === 'tron'
+                                ? '@earn/dashboard/withdraw-button'
+                                : '@account/staking/claim-button'
+                        }
                     >
                         <Translation
                             id={
-                                networkType === 'cardano'
-                                    ? 'TR_EARN_CLAIM_REWARDS'
-                                    : 'TR_EARN_STAKING_DASHBOARD_CLAIM_FUNDS'
+                                CLAIM_LABEL_BY_NETWORK_TYPE[networkType] ??
+                                'TR_EARN_STAKING_DASHBOARD_CLAIM_FUNDS'
                             }
                         />
                     </Button>
                 </Tooltip>
             ) : (
-                <EarnBuyButton onClick={onBuy} />
+                <EarnBuyButton onClick={onBuy} data-testid="@earn/dashboard/buy-button" />
             ))}
 
         {stakingStatus === 'staking-active' && (
@@ -79,6 +87,7 @@ export const EarnStakingActionButtons = ({
                     isDisabled={isStakingDisabled}
                     iconLeft={isStakingDisabled ? InfoIcon : undefined}
                     onClick={onStake}
+                    data-testid="@earn/dashboard/stake-more-button"
                 >
                     <Translation id="TR_EARN_STAKING_DASHBOARD_STAKE_MORE" />
                 </Button>
@@ -93,6 +102,7 @@ export const EarnStakingActionButtons = ({
                     isDisabled={isStakingDisabled}
                     iconLeft={isStakingDisabled ? InfoIcon : undefined}
                     onClick={onStakeNow}
+                    data-testid="@earn/dashboard/stake-now-button"
                 >
                     <Translation id="TR_EARN_STAKING_DASHBOARD_STAKE_NOW" />
                 </Button>
@@ -122,6 +132,7 @@ export const EarnStakingActionButtons = ({
                     isDisabled={isVotingDisabled}
                     iconLeft={isVotingDisabled ? InfoIcon : undefined}
                     onClick={onVote}
+                    data-testid="@earn/dashboard/vote-button"
                 >
                     <Translation id="TR_EARN_TRON_VOTE" />
                 </Button>

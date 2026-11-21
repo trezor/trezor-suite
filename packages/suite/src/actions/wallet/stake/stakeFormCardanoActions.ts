@@ -6,7 +6,14 @@ import {
     events,
 } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import {
+    type StakingRootState,
+    getCachedStakingProductInfo,
+    selectStakeableStakingProductDescriptorBySymbol,
+} from '@suite-common/earn-staking';
 import { type AdaPools } from '@suite-common/earn-staking-api';
+import { type StakingProductTarget } from '@suite-common/earn-staking-common';
+import { type QueryClient, type QueryClientDep } from '@suite-common/react-query';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     EVERSTAKE_POOL_NAMES,
@@ -31,7 +38,6 @@ import {
     isCardanoWithdrawalBlockedByMissingDrep,
     isEarnSigningCancelled,
     selectBestCardanoPool,
-    selectCardanoPoolsInfo,
     selectCardanoProtocolParameters,
     selectStakeVotingDelegation,
 } from '@suite-common/wallet-core';
@@ -67,7 +73,7 @@ import {
     getStakingPath,
 } from '@trezor/network-cardano-suite-common';
 import type { EstimatedFee } from '@trezor/network-solana/types'; // TODO should be Cardano instead?
-import { type WithServices } from '@trezor/redux-utils';
+import { type WithServices, weakMapMemoize } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 /**
@@ -86,6 +92,33 @@ export class CardanoComposeError extends Error {
         this.code = code;
     }
 }
+
+// The pool shape the pool choice and the delegation analytics read: a target without a rate or a
+// saturation cannot be ranked and is left out.
+export const getCardanoPoolsFromTargets = weakMapMemoize(
+    (targets: readonly StakingProductTarget[]): AdaPools['pools'] =>
+        targets.flatMap(({ address, rate, saturation }) =>
+            rate === null || saturation === null ? [] : [{ id: address, apy: rate, saturation }],
+        ),
+);
+
+// The pools of the product the network stakes on, as the last refresh cached them; an empty cache
+// leaves the pool choice to its default pool.
+const getCachedCardanoPools = (
+    state: StakingRootState,
+    queryClient: QueryClient,
+    networkSymbol: NetworkSymbol,
+): AdaPools['pools'] => {
+    const productId = selectStakeableStakingProductDescriptorBySymbol(state, networkSymbol)?.id;
+
+    if (productId === undefined) {
+        return [];
+    }
+
+    const productInfo = getCachedStakingProductInfo(queryClient, productId);
+
+    return productInfo === null ? [] : getCardanoPoolsFromTargets(productInfo.targets);
+};
 
 const calculateTransaction = (
     availableBalance: string,
@@ -328,13 +361,25 @@ const getComposeErrorLevels = (
     return Object.fromEntries(predefinedLevels.map(level => [level.label, errorLevel]));
 };
 
-type ComposeTransactionThunkState = StakeRootState & BlockchainRootState;
+export type ComposeTransactionThunkState = StakeRootState & BlockchainRootState & StakingRootState;
+
+export type ComposeTransactionThunkDeps = WithServices<QueryClientDep>;
 
 export const composeTransactionThunk =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
-    async (_: Dispatch<UnknownAction>, getState: () => ComposeTransactionThunkState) => {
+    async (
+        _: Dispatch<UnknownAction>,
+        getState: () => ComposeTransactionThunkState,
+        extra: ComposeTransactionThunkDeps,
+    ) => {
         const { account } = formState;
-        const cardanoPools = selectCardanoPoolsInfo(getState());
+
+        const cardanoPools = getCachedCardanoPools(
+            getState(),
+            extra.services.queryClient,
+            account.symbol,
+        );
+
         const votingDelegation = selectStakeVotingDelegation(getState());
         const protocolParameters = selectCardanoProtocolParameters(getState(), account.symbol);
 
@@ -428,9 +473,12 @@ const getPoolDelegation = (
     };
 };
 
-type SignTransactionThunkState = DeviceRootState & StakeRootState & BlockchainRootState;
+type SignTransactionThunkState = DeviceRootState &
+    StakeRootState &
+    BlockchainRootState &
+    StakingRootState;
 
-type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
+type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep & QueryClientDep>;
 
 type SignTransactionThunkParams = {
     account: Account;
@@ -454,9 +502,15 @@ export const signTransactionThunk =
             return;
         }
 
-        const cardanoPools = selectCardanoPoolsInfo(getState());
+        const cardanoPools = getCachedCardanoPools(
+            getState(),
+            extra.services.queryClient,
+            account.symbol,
+        );
+
         const votingDelegation = selectStakeVotingDelegation(getState());
         const protocolParameters = selectCardanoProtocolParameters(getState(), account.symbol);
+
         const txData = await getTransactionData(formValues, {
             account,
             cardanoPools,

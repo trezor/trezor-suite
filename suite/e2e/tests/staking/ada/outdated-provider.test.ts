@@ -1,5 +1,4 @@
 import { messages } from '@suite/intl';
-import type { StakingBatch } from '@suite-common/earn-staking-api';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     CARDANO_ACTIVATION_PERIOD_MAX_DAYS,
@@ -24,54 +23,38 @@ test.describe(
     () => {
         test.use({ deviceSetup: { mnemonic: 'mnemonic_academic' } });
 
-        test.beforeEach(async ({ page, onboardingPage, settingsPage, blockbookMock }) => {
-            await test.step('Mock Everstake Cardano pool stats', async () => {
-                await page.route(/\/staking\/v1\/\?networks=/, route =>
-                    route.fulfill({
-                        json: {
-                            data: [
-                                {
-                                    symbol: 'ada',
-                                    pools: [
-                                        {
-                                            apy: everstakePoolApy,
-                                            saturation: 50,
-                                            id: everstakePoolId,
-                                        },
-                                    ],
-                                },
-                            ],
-                            errors: [],
-                        } satisfies StakingBatch,
-                    }),
-                );
-            });
+        test.beforeEach(
+            async ({ onboardingPage, settingsPage, blockbookMock, earnStakingApiMock }) => {
+                earnStakingApiMock.adaPools = [
+                    { apy: everstakePoolApy, saturation: 50, id: everstakePoolId },
+                ];
 
-            await onboardingPage.completeOnboarding();
+                await onboardingPage.completeOnboarding();
 
-            await test.step('Enable Cardano with account staked to a FiveBinaries pool', async () => {
-                await settingsPage.navigateTo('coins');
-                await blockbookMock.start('ada', 'blockfrost');
-                blockbookMock.updateAccountState({
-                    misc: {
-                        staking: {
-                            ...ADA_MOCKED_ACCOUNT.misc.staking,
-                            isActive: true,
-                            poolId: fiveBinariesPoolId,
+                await test.step('Enable Cardano with account staked to a FiveBinaries pool', async () => {
+                    await settingsPage.navigateTo('coins');
+                    await blockbookMock.start('ada', 'blockfrost');
+                    blockbookMock.updateAccountState({
+                        misc: {
+                            staking: {
+                                ...ADA_MOCKED_ACCOUNT.misc.staking,
+                                isActive: true,
+                                poolId: fiveBinariesPoolId,
+                            },
                         },
-                    },
-                });
+                    });
 
-                await settingsPage.changeNetworks({
-                    enableNetworks: [
-                        {
-                            symbol: adaSymbol,
-                            backend: { type: 'blockfrost', url: blockbookMock.url },
-                        },
-                    ],
+                    await settingsPage.changeNetworks({
+                        enableNetworks: [
+                            {
+                                symbol: adaSymbol,
+                                backend: { type: 'blockfrost', url: blockbookMock.url },
+                            },
+                        ],
+                    });
                 });
-            });
-        });
+            },
+        );
 
         test(
             'User staked with FiveBinaries is warned to update provider',

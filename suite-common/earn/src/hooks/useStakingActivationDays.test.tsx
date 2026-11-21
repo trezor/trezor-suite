@@ -1,20 +1,28 @@
-import { mockStakingState } from '@suite-common/earn-staking/mocks';
+/**
+ * @jest-environment jsdom
+ */
+import { type StakingDep, type StakingRootState } from '@suite-common/earn-staking';
+import { mockStakingServices, mockStakingState } from '@suite-common/earn-staking/mocks';
 import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
 import {
     type StakingPositionActivation,
+    type StakingProductDescriptor,
     stakingAmountSchema,
 } from '@suite-common/earn-staking-common';
 import {
     mockStakingPosition,
     mockStakingProductDescriptor,
 } from '@suite-common/earn-staking-common/mocks';
-import { messageSystemInitialState } from '@suite-common/message-system';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { type AccountsRootState } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { useStakingActivationDays } from './useStakingActivationDays';
+
+type HookDeps = { services: StakingDep };
+type HookState = StakingRootState & AccountsRootState;
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const DAY_S = 24 * 60 * 60;
@@ -31,7 +39,6 @@ jest.mock('@suite-common/earn-staking-api', () => ({
         mockUseEthereumValidatorsQueue(...args),
 }));
 
-const selectedDevice = mockSuiteDevice();
 const eth = mockStakingProductDescriptor();
 const sol = mockStakingProductDescriptor({ networkSymbol: asNetworkSymbol('sol'), type: 'native' });
 const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
@@ -46,18 +53,18 @@ const minedStake: StakingPositionActivation = {
 };
 
 const renderActivationDays = (
-    account: typeof ethAccount,
-    descriptor: typeof eth,
+    account: Account,
+    descriptor: StakingProductDescriptor,
     activation: StakingPositionActivation,
-) =>
-    renderHookWithStoreProvider(() => useStakingActivationDays(account.key), {
+) => {
+    const { services } = createTestCompositionRoot<HookDeps, HookState>({
+        reducer: {
+            earn: (state: HookState['earn'] = { staking: mockStakingState() }) => state,
+            wallet: (state: HookState['wallet'] = { accounts: [] }) => state,
+        },
         preloadedState: {
-            device: { devices: [selectedDevice], selectedDevice },
-            messageSystem: messageSystemInitialState,
-            wallet: { accounts: [account] },
             earn: {
                 staking: mockStakingState({
-                    platform: 'mobile',
                     descriptors: [descriptor],
                     positions: {
                         [account.key]: [
@@ -70,8 +77,13 @@ const renderActivationDays = (
                     },
                 }),
             },
+            wallet: { accounts: [account] },
         },
+        services: () => ({ staking: mockStakingServices() }),
     });
+
+    return renderHookWithStoreProvider(() => useStakingActivationDays(account.key), { services });
+};
 
 describe('useStakingActivationDays', () => {
     beforeEach(() => {
@@ -84,12 +96,12 @@ describe('useStakingActivationDays', () => {
         jest.useRealTimers();
     });
 
-    it('dates an Ethereum activation from the queue at the time the stake mined', async () => {
+    it('dates an Ethereum activation from the queue at the time the stake mined', () => {
         mockUseEthereumValidatorsQueue.mockReturnValue({
             data: { addingDelay: DAY_S, activationTime: 9 * DAY_S },
         });
 
-        const { result } = await renderActivationDays(ethAccount, eth, minedStake);
+        const { result } = renderActivationDays(ethAccount, eth, minedStake);
 
         expect(result.current).toBe(8);
         expect(mockUseEthereumValidatorsQueue).toHaveBeenCalledWith(
@@ -98,14 +110,14 @@ describe('useStakingActivationDays', () => {
         );
     });
 
-    it('dates the activation from the position while the queue at that time is unknown', async () => {
-        const { result } = await renderActivationDays(ethAccount, eth, minedStake);
+    it('dates the activation from the position while the queue at that time is unknown', () => {
+        const { result } = renderActivationDays(ethAccount, eth, minedStake);
 
         expect(result.current).toBe(1);
     });
 
-    it('does not ask the queue for a network without one', async () => {
-        const { result } = await renderActivationDays(solAccount, sol, {
+    it('does not ask the queue for a network without one', () => {
+        const { result } = renderActivationDays(solAccount, sol, {
             amount: pending,
             startedAt: null,
             availableAt: null,

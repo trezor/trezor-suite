@@ -9,9 +9,10 @@ import {
     selectWalletAssetStakingAmount,
     selectWalletAssetStakingRatio,
 } from '@suite-common/assets';
+import { selectIsStakingSupportedSymbol, useNetworkStakingRate } from '@suite-common/earn-staking';
 import { getNetworkType } from '@suite-common/wallet-config';
-import { type WalletAssetKey, isSupportedStakingNetworkSymbol } from '@suite-common/wallet-core';
-import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { type WalletAssetKey } from '@suite-common/wallet-core';
+import { isApyAvailable, isPositiveBalance } from '@suite-common/wallet-utils';
 import { Box, Card, Column, Row, SegmentedBar, Text, TextButton } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowRightIcon } from '@trezor/icons';
@@ -20,7 +21,6 @@ import { type Color } from '@trezor/theme';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
-import { useStakingRate } from '#src/hooks/earn/useStakingRate';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AssetDetailEarnLegendSquare } from './AssetDetailEarnLegendSquare';
@@ -41,14 +41,43 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
     const availableAmount = useSelector(state => selectWalletAssetAvailableAmount(state, assetKey));
     const stakingAmount = useSelector(state => selectWalletAssetStakingAmount(state, assetKey));
     const stakingRatio = useSelector(state => selectWalletAssetStakingRatio(state, assetKey)) ?? 0;
-    // The rate staking pays on the network, Tron's included, as the trade box and Earn show it.
-    const { rate: apy } = useStakingRate({ symbol: networkSymbol });
+
+    const isStakingSupported = useSelector(
+        state =>
+            networkSymbol !== undefined && selectIsStakingSupportedSymbol(state, networkSymbol),
+    );
+
+    const {
+        rate,
+        rateKind,
+        isPending: isRatePending,
+    } = useNetworkStakingRate({ networkSymbol: networkSymbol ?? null });
     const formatApy = useFormatApy();
+
+    // A product without a rate, a testnet, says so once its info is cached.
+    const isRateShown = !isRatePending && rateKind !== null;
+    const isApr = rateKind === 'apr';
+
+    const renderRate = () => {
+        if (rate === null || !isApyAvailable(rate)) {
+            return (
+                <Translation
+                    id={isApr ? 'TR_EARN_APR_NOT_AVAILABLE' : 'TR_EARN_APY_NOT_AVAILABLE'}
+                />
+            );
+        }
+
+        return isApr ? (
+            <Translation id="TR_EARN_APR_APPROX" values={{ aprPercent: formatApy(rate) }} />
+        ) : (
+            <Translation id="TR_EARN_YIELD_BADGE_RATE_APY" values={{ rate: formatApy(rate) }} />
+        );
+    };
 
     if (
         networkSymbol === undefined ||
         contractAddress !== undefined ||
-        !isSupportedStakingNetworkSymbol(networkSymbol) ||
+        !isStakingSupported ||
         amount === undefined ||
         !isPositiveBalance(amount) ||
         availableAmount === undefined
@@ -132,20 +161,9 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
                                 </Text>
                             </Row>
                             <Row gap={12} alignItems="center">
-                                {apy != null && apy > 0 && (
+                                {isRateShown && (
                                     <Text typographyStyle="body-sm" intent="brand">
-                                        {/* Tron pays its rate as an APR, as its Earn modal says. */}
-                                        {getNetworkType(networkSymbol) === 'tron' ? (
-                                            <Translation
-                                                id="TR_EARN_APR_APPROX"
-                                                values={{ aprPercent: formatApy(apy) }}
-                                            />
-                                        ) : (
-                                            <Translation
-                                                id="TR_EARN_YIELD_BADGE_RATE"
-                                                values={{ apy: formatApy(apy) }}
-                                            />
-                                        )}
+                                        {renderRate()}
                                     </Text>
                                 )}
                                 <Text typographyStyle="body-md-strong">

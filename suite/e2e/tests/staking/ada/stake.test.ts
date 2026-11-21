@@ -1,4 +1,3 @@
-import type { StakingBatch } from '@suite-common/earn-staking-api';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
@@ -13,7 +12,7 @@ const adaSymbol = asNetworkSymbol('ada');
 // mocked and expected values
 const startingBalance = Number(ADA_MOCKED_ACCOUNT.balance);
 const startingBalanceFormatted = toADA(startingBalance);
-const EXPECTED_CARDANO_POOL_ID = 'pool1k2qhlrrweu8fecd4hx4hn22lv00nrd3rjdxj6durax7m78q7ynu';
+const EXPECTED_CARDANO_POOL_ID = 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj';
 // Mocked 44 lovelace/byte; the vote delegation certificate carries the predefined abstain
 // DRep, which is 30 bytes smaller than a key-hash DRep.
 const feeAmount = 176281;
@@ -24,22 +23,8 @@ const finalBalanceFormatted = toADA(finalBalance);
 test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic' } });
 
-    test.beforeEach(async ({ page, onboardingPage, settingsPage, blockbookMock }) => {
-        await test.step('Mock Cardano pool address', async () => {
-            await page.route(/\/staking\/v1\/\?networks=/, route =>
-                route.fulfill({
-                    json: {
-                        data: [
-                            {
-                                symbol: 'ada',
-                                pools: [{ apy: 3.9, saturation: 50, id: EXPECTED_CARDANO_POOL_ID }],
-                            },
-                        ],
-                        errors: [],
-                    } satisfies StakingBatch,
-                }),
-            );
-        });
+    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock, earnStakingApiMock }) => {
+        earnStakingApiMock.adaPools = [{ apy: 3.9, saturation: 50, id: EXPECTED_CARDANO_POOL_ID }];
 
         await onboardingPage.completeOnboarding();
 

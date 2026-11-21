@@ -1,8 +1,12 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import {
+    selectHasStakingAccountWarning,
+    selectStakeableStakingProductDescriptorBySymbol,
+    useNetworkStakingRate,
+} from '@suite-common/earn-staking';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { isCardanoStakedWithFiveBinaries, selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Link, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -11,7 +15,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_ADA_STAKING_UPDATE_PROVIDER } from '@trezor/urls';
 
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
-import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
+import { useStakingOperationSwitch } from '#src/hooks/earn/useStakingOperationSwitch';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 interface NewProviderCardProps {
@@ -22,13 +26,21 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
     const { dispatch } = useServices(injectDispatch);
     const formatApyValue = useFormatApy();
 
-    const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account?.symbol);
+    // The provider on offer: the product the network stakes on, not the one the account is on.
+    const stakeableDescriptor = useSelector(state =>
+        selectStakeableStakingProductDescriptorBySymbol(state, account.symbol),
+    );
 
-    const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
+    const { isDisabled: isStakingDisabled, message: stakingMessageContent } =
+        useStakingOperationSwitch(stakeableDescriptor?.id ?? null, 'stake');
 
-    const isStakedWithFiveBinaries = isCardanoStakedWithFiveBinaries(account);
+    const { rate } = useNetworkStakingRate({ networkSymbol: account.symbol });
 
-    const displaySymbol = account?.symbol ? getNetworkDisplaySymbol(account.symbol) : '';
+    const hasOutdatedProvider = useSelector(state =>
+        selectHasStakingAccountWarning(state, account.key, 'outdated-provider'),
+    );
+
+    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
 
     const openStakeInANutshellModal = () => {
         if (!isStakingDisabled) {
@@ -47,16 +59,16 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
     return (
         <Banner
             icon
-            intent={isStakedWithFiveBinaries ? 'warning' : 'info'}
+            intent={hasOutdatedProvider ? 'warning' : 'info'}
             title={
                 <span data-testid="@staking/new-provider-card/header">
                     <Translation
                         id={
-                            isStakedWithFiveBinaries
+                            hasOutdatedProvider
                                 ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TITLE'
                                 : 'TR_STAKING_NEW_PROVIDER_TITLE'
                         }
-                        values={{ apy: formatApyValue(apy) }}
+                        values={{ apy: formatApyValue(rate) }}
                     />
                 </span>
             }
@@ -65,14 +77,15 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
                     <span data-testid="@staking/new-provider-card/paragraph">
                         <Translation
                             id={
-                                isStakedWithFiveBinaries
+                                hasOutdatedProvider
                                     ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT'
                                     : 'TR_STAKING_NEW_PROVIDER_TEXT'
                             }
-                            values={{ apy: formatApyValue(apy), displaySymbol }}
+                            values={{ apy: formatApyValue(rate), displaySymbol }}
                         />
                     </span>
-                    {isStakedWithFiveBinaries && (
+
+                    {hasOutdatedProvider && (
                         <>
                             {' '}
                             <Link

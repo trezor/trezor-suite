@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 
-import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type StakingRateKind } from '@suite-common/earn-staking-common';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, Column, Paragraph, Row, Table } from '@trezor/components';
 
 import { EarnAccountCell } from './EarnAccountCell';
@@ -10,6 +11,7 @@ import { EarnStakingRateTooltip } from '../staking/EarnStakingRateTooltip';
 type EarnInactiveNetworkOpportunityProps = {
     symbol: NetworkSymbol;
     rate: number | null;
+    rateKind: StakingRateKind | null;
     note?: ReactNode;
     isCardLayout: boolean;
 };
@@ -17,25 +19,26 @@ type EarnInactiveNetworkOpportunityProps = {
 export const EarnInactiveNetworkOpportunity = ({
     symbol,
     rate,
+    rateKind,
     note,
     isCardLayout,
 }: EarnInactiveNetworkOpportunityProps) => {
-    const networkType = getNetworkType(symbol);
-
     const noteParagraph = note && (
         <Paragraph typographyStyle="body-sm" intent="neutral">
             {note}
         </Paragraph>
     );
 
+    const rowTestId = `@earn/dashboard/activate-row/${symbol}`;
+
     if (isCardLayout) {
         return (
-            <Card paddingType="small">
+            <Card paddingType="small" data-testid={rowTestId}>
                 <Column gap={12} width="100%">
                     <Row justifyContent="space-between" alignItems="flex-start">
                         <EarnAccountCell symbol={symbol} />
 
-                        <EarnStakingRateTooltip networkType={networkType} rate={rate} />
+                        <EarnStakingRateTooltip rateKind={rateKind} rate={rate} />
                     </Row>
 
                     {noteParagraph}
@@ -49,13 +52,13 @@ export const EarnInactiveNetworkOpportunity = ({
     }
 
     return (
-        <Table.Row>
+        <Table.Row data-testid={rowTestId}>
             <Table.Cell>
                 <EarnAccountCell symbol={symbol} />
             </Table.Cell>
 
             <Table.Cell>
-                <EarnStakingRateTooltip networkType={networkType} rate={rate} />
+                <EarnStakingRateTooltip rateKind={rateKind} rate={rate} />
             </Table.Cell>
 
             <Table.Cell colSpan={2}>{noteParagraph}</Table.Cell>

@@ -1,7 +1,13 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
+import {
+    formatStakingAmount,
+    settleTronUnlocks,
+    useStakingAccountPosition,
+} from '@suite-common/earn-staking';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
+import { type StakingAmount, stakingAmountSchema } from '@suite-common/earn-staking-common';
 import {
     TRON_REPRESENTATIVE_TERMS_OF_SERVICE_URLS,
     type TronFlow,
@@ -10,8 +16,6 @@ import {
     type TronStakeStepId,
     type TronStakeSubmittedAmount,
     getCurrentVoteAllocations,
-    getTronStakingRewards,
-    getTronWithdrawableBalance,
     selectTronStakeSession,
     submitTronClaimThunk,
     submitTronFreezeThunk,
@@ -30,6 +34,8 @@ import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { type useTronStakeForm } from './useTronStakeForm';
 import { getVotingDelegationAnalyticsValue, parseVoteAllocations } from '../utils/voteUtils';
+
+const ZERO_STAKING_AMOUNT = stakingAmountSchema.parse('0');
 
 interface UseTronStakeActionsProps {
     account: Account;
@@ -59,6 +65,11 @@ export const useTronStakeActions = ({
     const { step, isSubmitting, error, pendingTxid, freeze, submitted } = useSelector(state =>
         selectTronStakeSession(state, account.key, flow),
     );
+    const { position, totals } = useStakingAccountPosition(account.key);
+
+    // The amounts the complete step shows, as the pages showed them before the submit.
+    const formatAmount = (amount: StakingAmount) =>
+        formatStakingAmount({ amount, networkSymbol: account.symbol });
 
     const {
         isStakingDisabled,
@@ -197,7 +208,14 @@ export const useTronStakeActions = ({
             case 'withdraw':
                 if (isWithdrawingDisabled) break;
 
-                form.methods.setValue('amount', getTronWithdrawableBalance(account));
+                form.methods.setValue(
+                    'amount',
+                    formatAmount(
+                        position === null
+                            ? ZERO_STAKING_AMOUNT
+                            : settleTronUnlocks({ position, nowMs: Date.now() }).withdrawable,
+                    ),
+                );
                 dispatch(
                     submitTronWithdrawThunk({
                         account,
@@ -214,7 +232,7 @@ export const useTronStakeActions = ({
             case 'claim':
                 if (isClaimingDisabled) break;
 
-                form.methods.setValue('amount', getTronStakingRewards(account));
+                form.methods.setValue('amount', formatAmount(totals.rewards));
                 dispatch(
                     submitTronClaimThunk({
                         account,

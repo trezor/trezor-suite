@@ -20,7 +20,7 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
         },
     });
 
-    test.beforeEach(async ({ solanaStakingMock }) => {
+    test.beforeEach(async ({ solanaStakingMock, earnStakingApiMock: _earnStakingApiMock }) => {
         await solanaStakingMock.setEpoch(solStakingAccountExternal.activationEpoch + 1);
     });
 

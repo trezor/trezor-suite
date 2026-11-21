@@ -4,14 +4,13 @@ import {
     type StakingRootState,
     formatStakingAmount,
     selectStakingAccountPositionEntry,
+    settleTronUnlocks,
 } from '@suite-common/earn-staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-
-import { settleTronUnlocks } from '../../utils/staking/settleTronUnlocks';
 
 type TronStakingWithdrawBannerProps = {
     accountKey: AccountKey;

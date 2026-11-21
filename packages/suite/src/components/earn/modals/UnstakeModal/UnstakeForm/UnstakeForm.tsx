@@ -1,12 +1,13 @@
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
+import {
+    formatStakingAmount,
+    getStakingOperationAvailability,
+    useStakingAccountPosition,
+} from '@suite-common/earn-staking';
 import { useFormatters } from '@suite-common/formatters';
 import { getDisplaySymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    getSolanaUnstakeAmountBounds,
-    getStakingDataForNetwork,
-    getStakingHelpCenterLink,
-} from '@suite-common/wallet-core';
+import { getSolanaUnstakeAmountBounds, getStakingHelpCenterLink } from '@suite-common/wallet-core';
 import { Banner, Card, Column, InfoItem, Link, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
@@ -38,20 +39,25 @@ export const UnstakeForm = () => {
         methods,
         onCryptoAmountChange,
         getValues,
+        unstakableBalance,
+        isCardanoBalanceEmpty,
     } = useWithdrawalFormContext();
     const { CryptoAmountFormatter } = useFormatters();
+    const { position, totals, access } = useStakingAccountPosition(account.key);
 
     const { symbol, networkType } = account;
 
     const isCardanoNetwork = networkType === 'cardano';
 
-    const {
-        autocompoundBalance = '0',
-        canClaim = false,
-        claimableAmount = '0',
-    } = getStakingDataForNetwork(account) ?? {};
+    // The claim banner follows the position's offer; a kill switch disables the claim elsewhere.
+    const canClaim =
+        getStakingOperationAvailability({ position, access, operation: 'withdraw' }) !==
+        'unavailable';
 
-    const isCardanoBalanceEmpty = isCardanoNetwork && new BigNumber(autocompoundBalance).lte(0);
+    const claimableAmount = formatStakingAmount({
+        amount: totals.withdrawable,
+        networkSymbol: symbol,
+    });
 
     const inputError = errors[CRYPTO_INPUT] || errors[FIAT_INPUT] || errors?.outputs?.[0]?.amount;
     const showError = inputError && !['required', 'min'].includes(inputError.type);
@@ -114,7 +120,7 @@ export const UnstakeForm = () => {
                 {!isCardanoNetwork && (
                     <>
                         <EarnAvailableBalance
-                            formattedBalance={autocompoundBalance}
+                            formattedBalance={unstakableBalance}
                             symbol={symbol}
                         />
 

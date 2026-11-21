@@ -7,11 +7,22 @@ import { screen, within } from '@testing-library/react';
 import { initialState as selectedAccountInitialState } from '@suite/account';
 import { messages } from '@suite/intl';
 import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import { type StakingDep } from '@suite-common/earn-staking';
+import {
+    mockStakingQueryClient,
+    mockStakingServices,
+    mockStakingState,
+} from '@suite-common/earn-staking/mocks';
+import {
+    mockStakingProductDescriptor,
+    mockStakingProductInfo,
+} from '@suite-common/earn-staking-common/mocks';
 import {
     Feature,
     type MessageSystemState,
     messageSystemInitialState,
 } from '@suite-common/message-system';
+import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { mockNetworkIcon, mockNetworksState } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -104,10 +115,25 @@ const messageSystemWithYieldDepositsOff = {
     },
 } as unknown as MessageSystemState;
 
+const getMessageSystem = ({
+    areYieldDepositsOff,
+    isEthStakeOff,
+}: Pick<InitialStateParams, 'areYieldDepositsOff' | 'isEthStakeOff'>): MessageSystemState => {
+    if (areYieldDepositsOff) {
+        return messageSystemWithYieldDepositsOff;
+    }
+
+    if (isEthStakeOff) {
+        return mockMessageSystemStateWithFeatureFlags({ [Feature.stake.eth]: false });
+    }
+
+    return mockInitialAppState.messageSystem;
+};
+
 type InitialStateParams = {
-    /** What the Earn API says Ethereum staking pays, as a percentage; nothing by default. */
-    ethStakingApy?: number;
     areYieldDepositsOff?: boolean;
+    /** Ethereum staking switched off remotely; the stake kill switch, not the rate. */
+    isEthStakeOff?: boolean;
     accounts?: Account[];
     firmwareType?: FirmwareType;
     grouping?: HomeAssetsTableGrouping;
@@ -115,18 +141,17 @@ type InitialStateParams = {
 };
 
 const getInitialState = ({
-    ethStakingApy,
     areYieldDepositsOff = false,
+    isEthStakeOff = false,
     accounts = [ethereumAccount, bitcoinAccount],
     firmwareType = FirmwareType.Universal,
     grouping = 'default',
     areSmallBalancesShown = true,
 }: InitialStateParams = {}): MockSuiteState => ({
     ...mockInitialAppState,
-    messageSystem: areYieldDepositsOff
-        ? messageSystemWithYieldDepositsOff
-        : mockInitialAppState.messageSystem,
+    messageSystem: getMessageSystem({ areYieldDepositsOff, isEthStakeOff }),
     networks: mockNetworksState([BTC, ETH]),
+    earn: { staking: mockStakingState() },
     device: {
         ...mockInitialAppState.device,
         selectedDevice: mockSuiteDevice({
@@ -156,22 +181,6 @@ const getInitialState = ({
                 [getFiatRateKey(ETH, 'usd')]: mockRate(3000),
                 [getFiatRateKey(BTC, 'usd')]: mockRate(100000),
                 [getFiatRateKey(ETH, 'usd', USDC_ON_ETH)]: mockRate(1),
-            },
-        },
-        stake: {
-            ...mockInitialAppState.wallet.stake,
-            data: {
-                ...mockInitialAppState.wallet.stake.data,
-                data: {
-                    ...mockInitialAppState.wallet.stake.data.data,
-                    eth:
-                        ethStakingApy === undefined
-                            ? undefined
-                            : {
-                                  stats: { apy: ethStakingApy, nextRewardPayout: 0 },
-                                  validators: {},
-                              },
-                },
             },
         },
     },
@@ -206,15 +215,33 @@ const vaultsQuery = (vaults?: YieldDtoV2[]) =>
     ({ data: vaults }) as ReturnType<typeof useAllYieldOpportunities>;
 
 const intl = createIntl({ locale: 'en' });
-const upToApyMessage: MessageDescriptor = messages.TR_EARN_YIELD_BADGE_UP_TO_RATE;
+const upToApyMessage: MessageDescriptor = messages.TR_EARN_YIELD_BADGE_UP_TO_RATE_APY;
 
 /** What the badge says for a rate, as the user reads it. */
-const upToApy = (apy: string) => intl.formatMessage(upToApyMessage, { apy });
+const upToApy = (rate: string) => intl.formatMessage(upToApyMessage, { rate });
 
-const renderTable = (state: MockSuiteState) => {
-    const { services } = createTestCompositionRoot<void, MockSuiteState>({ preloadedState: state });
+type RenderTableOptions = {
+    /** What the staking API says Ethereum staking pays, as a percentage; nothing by default. */
+    ethStakingApy?: number;
+};
 
-    renderWithProviders({ ...services, networks: { networkIcon } }, <HomeAssetTable />);
+const ETH_PRODUCT = mockStakingProductDescriptor();
+
+const renderTable = (state: MockSuiteState, { ethStakingApy }: RenderTableOptions = {}) => {
+    const { services } = createTestCompositionRoot<{ services: StakingDep }, MockSuiteState>({
+        preloadedState: state,
+        services: () => ({ staking: mockStakingServices() }),
+    });
+    const queryClient = mockStakingQueryClient({
+        productInfo:
+            ethStakingApy === undefined
+                ? {}
+                : { [ETH_PRODUCT.id]: mockStakingProductInfo({ rate: ethStakingApy }) },
+    });
+
+    renderWithProviders({ ...services, networks: { networkIcon } }, <HomeAssetTable />, {
+        queryClient,
+    });
 
     return services;
 };
@@ -268,7 +295,7 @@ describe('the home-asset table', () => {
 
     describe('the APY badge next to the ticker', () => {
         it('offers a coin its staking rate, and nothing to what cannot earn', () => {
-            renderTable(getInitialState({ ethStakingApy: 3.2 }));
+            renderTable(getInitialState(), { ethStakingApy: 3.2 });
 
             expect(badgeIn('eth/coin')?.textContent).toBe(upToApy('3.2'));
             expect(badgeIn(`eth/${USDC_ON_ETH}`)).toBeNull();
@@ -278,7 +305,7 @@ describe('the home-asset table', () => {
         it('offers a coin the better of staking and its wrapped-coin vault, and a token its vault', () => {
             mockUseAllYieldOpportunities.mockReturnValue(vaultsQuery([wethVault, usdcVault]));
 
-            renderTable(getInitialState({ ethStakingApy: 3.2 }));
+            renderTable(getInitialState(), { ethStakingApy: 3.2 });
 
             expect(badgeIn('eth/coin')?.textContent).toBe(upToApy('4'));
             expect(badgeIn(`eth/${USDC_ON_ETH}`)?.textContent).toBe(upToApy('4.5'));
@@ -288,13 +315,19 @@ describe('the home-asset table', () => {
             // What a cache another page filled hands back: the switch cannot rely on the fetch alone.
             mockUseAllYieldOpportunities.mockReturnValue(vaultsQuery([wethVault, usdcVault]));
 
-            renderTable(getInitialState({ ethStakingApy: 3.2, areYieldDepositsOff: true }));
+            renderTable(getInitialState({ areYieldDepositsOff: true }), { ethStakingApy: 3.2 });
 
             expect(badgeIn('eth/coin')?.textContent).toBe(upToApy('3.2'));
             expect(badgeIn(`eth/${USDC_ON_ETH}`)).toBeNull();
             expect(mockUseAllYieldOpportunities).not.toHaveBeenCalledWith(
                 expect.objectContaining({ enabled: true }),
             );
+        });
+
+        it('keeps the staking rate while the stake is switched off, as the table always did', () => {
+            renderTable(getInitialState({ isEthStakeOff: true }), { ethStakingApy: 3.2 });
+
+            expect(badgeIn('eth/coin')?.textContent).toBe(upToApy('3.2'));
         });
     });
 

@@ -1,16 +1,11 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import {
-    getStakingDataForNetwork,
-    selectAreFeesLoading,
-    selectHasRunningDiscovery,
-} from '@suite-common/wallet-core';
+import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
-import { BigNumber } from '@trezor/utils';
 
 import { useEarnDeviceStatus } from '#src/hooks/earn/useEarnDeviceStatus';
 import { useWithdrawalFormContext } from '#src/hooks/earn/useWithdrawalForm';
@@ -26,8 +21,17 @@ export const UnstakeButton = () => {
 
     const deviceStatus = useEarnDeviceStatus();
     const { device, isLocked } = useDevice();
-    const { account, network, isComposing, formState, handleSubmit, watch, signTx, currency } =
-        useWithdrawalFormContext();
+    const {
+        account,
+        network,
+        isComposing,
+        formState,
+        handleSubmit,
+        watch,
+        signTx,
+        currency,
+        isCardanoBalanceEmpty,
+    } = useWithdrawalFormContext();
     const { isUnstakingDisabled, unstakingMessageContent } = useMessageSystemStaking(
         network.symbol,
     );
@@ -38,10 +42,6 @@ export const UnstakeButton = () => {
     const formIsValid = Object.keys(errors).length === 0;
 
     const isDeviceConnected = device?.connected && device?.available;
-
-    const { autocompoundBalance = '0' } = getStakingDataForNetwork(account) ?? {};
-    const isCardanoBalanceEmpty =
-        account.networkType === 'cardano' && new BigNumber(autocompoundBalance).lte(0);
 
     const isDisabled =
         !(formIsValid && hasValues) ||

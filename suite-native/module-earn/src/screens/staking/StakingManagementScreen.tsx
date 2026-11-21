@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { refreshStakingProductInfoThunk } from '@suite-common/earn-staking';
+import { useRefreshStakingProductInfo } from '@suite-common/earn-staking';
 import { getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -38,20 +38,9 @@ export const StakingManagementScreen = () => {
         dispatch(fetchAllTransactionsForAccountThunk({ accountKey, noLoading: true }));
     }, [accountKey, dispatch]);
 
-    const refreshProductInfo = useCallback(
-        () => dispatch(refreshStakingProductInfoThunk()),
-        [dispatch],
-    );
+    const refreshProductInfo = useRefreshStakingProductInfo();
     // A pull asks for fresh data even within the maximum age, as the legacy fetch did.
-    const refreshProductInfoNow = useCallback(
-        () => dispatch(refreshStakingProductInfoThunk({ force: true })),
-        [dispatch],
-    );
-
-    // Until the scheduler lands, screen mounts and pull-to-refresh are the only refresh paths after startup.
-    useEffect(() => {
-        refreshProductInfo();
-    }, [refreshProductInfo]);
+    const refreshProductInfoNow = () => refreshProductInfo({ force: true });
 
     const listHeaderComponent = useMemo(
         () => <StakingManagementListHeader accountKey={accountKey} />,

@@ -1,4 +1,5 @@
 export { useEarnMissingRateTickersQuery } from './hooks/useEarnMissingRateTickersQuery';
+export { useStakingActivationDays } from './hooks/useStakingActivationDays';
 export {
     selectEarnFiatValuations,
     selectEarnMissingTickerIds,

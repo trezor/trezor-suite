@@ -37,14 +37,12 @@ import {
 import {
     type InitBlockchainThunkDeps,
     type InitBlockchainThunkState,
-    type InitStakeDataThunkState,
     type PeriodicFetchFiatRatesThunkDeps,
     type PeriodicFetchFiatRatesThunkState,
     type UpdateMissingTxFiatRatesThunkState,
     type WalletSettingsRootState,
     initBlockchainThunk,
     initDevicesThunk,
-    periodicCheckStakeDataThunk,
     periodicFetchFiatRatesThunk,
     selectBaseCurrency,
     updateMissingTxFiatRatesThunk,
@@ -68,7 +66,6 @@ export type InitThunkState = ConnectInitThunkState &
     FlagsRootState &
     GotoThunkState &
     InitBlockchainThunkState &
-    InitStakeDataThunkState &
     InitTokenDefinitionsThunkState &
     MessageSystemRootState &
     MetadataRootState &
@@ -191,15 +188,12 @@ export const initThunk =
         // immediately after suite start.
         dispatch(metadataLabelingActions.fetchAndSaveMetadataForAllDevicesThunk());
 
-        // 13. start fetching staking data if needed, does need to be waited
-        dispatch(periodicCheckStakeDataThunk());
-
-        // 14. init wallet connect
+        // 13. init wallet connect
         dispatch(walletConnectActions.walletConnectInitThunk());
-        // 15. bio auth
+        // 14. bio auth
         if (isDesktop()) {
             dispatch(bioAuthThunks.initBioAuthThunk());
         }
-        // 16. backend connected, suite is ready to use
+        // 15. backend connected, suite is ready to use
         dispatch(onSuiteReady());
     };

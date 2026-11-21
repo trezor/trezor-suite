@@ -5,6 +5,8 @@ import {
 } from '@suite-common/earn-staking-common';
 import { BigNumber } from '@trezor/utils';
 
+import { getStakeableBalance } from './getStakeableBalance';
+
 const ZERO_STAKING_AMOUNT = stakingAmountSchema.parse('0');
 
 export type PotentialStakingRewardsAccount = {
@@ -33,10 +35,7 @@ export const getPotentialStakingRewards = ({
             return sum;
         }
 
-        const stakeable = BigNumber.max(
-            new BigNumber(availableBalance).minus(limits.registrationDeposit),
-            0,
-        );
+        const stakeable = new BigNumber(getStakeableBalance({ availableBalance, limits }));
 
         return sum.plus(stakeable.times(rate).div(100));
     }, new BigNumber(0));

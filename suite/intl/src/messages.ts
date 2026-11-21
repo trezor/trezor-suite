@@ -11243,13 +11243,21 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_DEPOSIT_BUTTON',
         defaultMessage: 'Deposit',
     },
-    TR_EARN_YIELD_BADGE_RATE: {
-        id: 'TR_EARN_YIELD_BADGE_RATE',
-        defaultMessage: '{apy}% APY',
+    TR_EARN_YIELD_BADGE_RATE_APY: {
+        id: 'TR_EARN_YIELD_BADGE_RATE_APY',
+        defaultMessage: '{rate}% APY',
     },
-    TR_EARN_YIELD_BADGE_UP_TO_RATE: {
-        id: 'TR_EARN_YIELD_BADGE_UP_TO_RATE',
-        defaultMessage: 'up to {apy}% APY',
+    TR_EARN_YIELD_BADGE_RATE_APR: {
+        id: 'TR_EARN_YIELD_BADGE_RATE_APR',
+        defaultMessage: '{rate}% APR',
+    },
+    TR_EARN_YIELD_BADGE_UP_TO_RATE_APY: {
+        id: 'TR_EARN_YIELD_BADGE_UP_TO_RATE_APY',
+        defaultMessage: 'up to {rate}% APY',
+    },
+    TR_EARN_YIELD_BADGE_UP_TO_RATE_APR: {
+        id: 'TR_EARN_YIELD_BADGE_UP_TO_RATE_APR',
+        defaultMessage: 'up to {rate}% APR',
     },
     TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST: {
         id: 'TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST',
@@ -11945,6 +11953,14 @@ export const messages = defineMessages({
         id: 'TR_EARN_APY_N_A',
         defaultMessage: 'N/A',
     },
+    TR_EARN_APY_NOT_AVAILABLE: {
+        id: 'TR_EARN_APY_NOT_AVAILABLE',
+        defaultMessage: 'N/A APY',
+    },
+    TR_EARN_APR_NOT_AVAILABLE: {
+        id: 'TR_EARN_APR_NOT_AVAILABLE',
+        defaultMessage: 'N/A APR',
+    },
     TR_EARN_APY_REQUIRED: {
         id: 'TR_EARN_APY_REQUIRED',
         defaultMessage: 'A rate is needed for an estimate',
@@ -12482,6 +12498,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_REWARDS_EVERY',
         defaultMessage: 'Receive rewards every ~{days, plural, one {# day} other {# days}}',
     },
+    TR_EARN_REWARDS_EVERY_WITHOUT_DAYS: {
+        id: 'TR_EARN_REWARDS_EVERY_WITHOUT_DAYS',
+        defaultMessage: 'Receive rewards regularly',
+    },
     TR_EARN_COOL_DOWN_PERIOD: {
         id: 'TR_EARN_COOL_DOWN_PERIOD',
         defaultMessage: 'Staking deactivation',
@@ -12528,11 +12548,21 @@ export const messages = defineMessages({
         defaultMessage:
             'Unstaking currently takes approximately {count, plural, one {# day} other {# days}}. Once completed, just claim your funds and use them freely.',
     },
+    TR_EARN_ETH_UNSTAKING_TAKES_WITHOUT_DAYS: {
+        id: 'TR_EARN_ETH_UNSTAKING_TAKES_WITHOUT_DAYS',
+        defaultMessage:
+            'Unstaking currently takes a few days. Once completed, just claim your funds and use them freely.',
+    },
     TR_EARN_SOL_UNSTAKING_TAKES: {
         id: 'TR_EARN_SOL_UNSTAKING_TAKES',
         defaultMessage:
             'Unstaking takes approximately {count, plural, one {# day} other {# days}}. Once completed, just claim your funds and use them freely.',
         description: 'In comparison with ETH, it always takes 1 epoch',
+    },
+    TR_EARN_SOL_UNSTAKING_TAKES_WITHOUT_DAYS: {
+        id: 'TR_EARN_SOL_UNSTAKING_TAKES_WITHOUT_DAYS',
+        defaultMessage:
+            'Unstaking takes a few days. Once completed, just claim your funds and use them freely.',
     },
     TR_EARN_STAKE_REWARDS: {
         id: 'TR_EARN_STAKE_REWARDS',
@@ -12679,6 +12709,15 @@ export const messages = defineMessages({
         defaultMessage:
             'Due to network rules, it takes up to {count, plural, one {# day} other {# days}} to stake your {networkDisplaySymbol}.',
     },
+    TR_STAKE_ENTERING_POOL_MAY_TAKE_WITHOUT_DAYS: {
+        id: 'TR_STAKE_ENTERING_POOL_MAY_TAKE_WITHOUT_DAYS',
+        defaultMessage: 'Due to network rules, staking activation may take a few days.',
+    },
+    TR_STAKE_ACTIVATION_COULD_TAKE_WITHOUT_DAYS: {
+        id: 'TR_STAKE_ACTIVATION_COULD_TAKE_WITHOUT_DAYS',
+        defaultMessage:
+            'Due to network rules, it takes a few days to stake your {networkDisplaySymbol}.',
+    },
     TR_STAKE_ETH_WILL_BE_BLOCKED: {
         id: 'TR_STAKE_ETH_WILL_BE_BLOCKED',
         defaultMessage:
@@ -12787,10 +12826,6 @@ export const messages = defineMessages({
     TR_EARN_APPROXIMATE_DAYS_RANGE: {
         id: 'TR_EARN_APPROXIMATE_DAYS_RANGE',
         defaultMessage: '~{minDays}–{maxDays} days',
-    },
-    TR_STAKE_MAX_REWARD_DAYS: {
-        id: 'TR_STAKE_MAX_REWARD_DAYS',
-        defaultMessage: 'Max {count, plural, one {# day} other {# days}}',
     },
     TR_STAKE_NEXT_PAYOUT: {
         id: 'TR_STAKE_NEXT_PAYOUT',

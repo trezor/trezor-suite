@@ -5,6 +5,7 @@ import {
     type StakingRootState,
     formatStakingAmount,
     selectStakingAccountPositionEntry,
+    settleTronUnlocks,
 } from '@suite-common/earn-staking';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -20,7 +21,6 @@ import { ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 
 import { TronStakingUnstakeRow } from './TronStakingUnstakeRow';
-import { settleTronUnlocks } from '../../../utils/staking/settleTronUnlocks';
 import { EarnApproximateFiatAmount } from '../../earn/EarnApproximateFiatAmount';
 
 type TronStakingUnstakeCardProps = {

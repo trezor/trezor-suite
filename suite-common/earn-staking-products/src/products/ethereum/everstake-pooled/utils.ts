@@ -76,6 +76,12 @@ export const getEverstakeLatestTxBlockTimeByOperation = ({
     return blockTimes.length === 0 ? null : Math.max(...blockTimes) * 1000;
 };
 
+// The pool collects a stake until it can fund a validator; only then does the stake wait in the
+// validators queue, so legacy read the queue at the stake time once the pool reported it deposited.
+export const isEverstakeStakeQueued = (pool: EverstakePool): boolean =>
+    isPositiveStakingAmount(pool.pendingDepositedBalance) &&
+    !isPositiveStakingAmount(pool.pendingBalance);
+
 type GetPeriodEndParams = {
     startedAt: number | null;
     periodDays: number | null;

@@ -6,11 +6,10 @@ import userEvent from '@testing-library/user-event';
 import { messages } from '@suite/intl';
 import { initialMetadataState } from '@suite/metadata';
 import { mockStakingState } from '@suite-common/earn-staking/mocks';
-import { type StakingPosition, stakingAmountSchema } from '@suite-common/earn-staking-common';
 import {
-    mockStakingPosition,
-    mockStakingProductDescriptor,
-} from '@suite-common/earn-staking-common/mocks';
+    type StakingPosition,
+    type StakingProductDescriptor,
+} from '@suite-common/earn-staking-common';
 import { mockNetworkIcon, mockNetworksState } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TokenAddress } from '@suite-common/tokens';
@@ -22,6 +21,10 @@ import {
     type Timestamp,
 } from '@suite-common/wallet-types';
 import {
+    MOCK_CARDANO_EVERSTAKE_DREP_ID,
+    MOCK_CARDANO_EVERSTAKE_POOL,
+    MOCK_CARDANO_EXTERNAL_POOL,
+    MOCK_CARDANO_FIVE_BINARIES_POOL,
     mockAccountToken,
     mockCardanoStakingAccount,
     mockEthereumStakingAccount,
@@ -35,6 +38,18 @@ import { mock } from '@trezor/dependency-injection';
 import { type useGoToWithAnalytics } from '#src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
 import { SIDEBAR_MIN_WIDTH } from '#src/components/suite/layouts/SuiteLayout/Sidebar/consts';
 import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
+import {
+    TRON_DETAILS,
+    adaEverstakeProduct,
+    adaExternalProduct,
+    adaFiveBinariesProduct,
+    amount,
+    ethProduct,
+    mockPosition,
+    products,
+    solProduct,
+    trxProduct,
+} from '#src/views/wallet/staking/components/stakingDashboardTestState';
 
 import { AccountSection } from './AccountSection';
 import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
@@ -52,16 +67,6 @@ const ethAccount = mockEthereumStakingAccount('none', { tokens: [token] });
 const networkIcon = mockNetworkIcon();
 const tokenCountLabel = '+1';
 
-const ETH_STAKING_PRODUCT = mockStakingProductDescriptor();
-const ADA_STAKING_PRODUCT = mockStakingProductDescriptor({
-    networkSymbol: asNetworkSymbol('ada'),
-    type: 'native',
-    operations: ['stake', 'unstake', 'claim', 'vote'],
-    rewardsKind: 'claimable',
-});
-
-const amount = (value: string) => stakingAmountSchema.parse(value);
-
 const zeroBalances = {
     staked: amount('0'),
     pending: amount('0'),
@@ -72,18 +77,95 @@ const zeroBalances = {
 
 /** 2.05 ether with Everstake, on top of the account balance. */
 const mockEthereumStake = () =>
-    mockStakingPosition({
+    mockPosition(ethProduct.id, {
         balances: { ...zeroBalances, staked: amount('2050000000000000000') },
-        unlocks: [],
+        operations: ['stake', 'unstake'],
     });
 
-const mockCardanoDelegation = () =>
-    mockStakingPosition({
-        productId: ADA_STAKING_PRODUCT.id,
+/** A first stake of 0.75 ether on its way into the pool. */
+const mockEthereumPendingStake = () =>
+    mockPosition(ethProduct.id, {
+        status: 'activating',
+        balances: { ...zeroBalances, pending: amount('750000000000000000') },
+        activations: [{ amount: amount('750000000000000000'), startedAt: null, availableAt: null }],
+        operations: ['stake'],
+    });
+
+/** A filled withdrawal request of 0.5 ether beside 1.02 ether still staked. */
+const mockEthereumClaimableStake = () =>
+    mockPosition(ethProduct.id, {
+        balances: {
+            ...zeroBalances,
+            staked: amount('1020000000000000000'),
+            withdrawable: amount('500000000000000000'),
+        },
+        operations: ['stake', 'unstake', 'withdraw'],
+    });
+
+const mockSolanaStake = () =>
+    mockPosition(solProduct.id, {
+        balances: { ...zeroBalances, staked: amount('2500000000') },
+        operations: ['stake', 'unstake'],
+        details: {
+            kind: 'solana-stake-accounts',
+            epoch: 500,
+            stakeAccounts: [
+                {
+                    status: 'active',
+                    stake: amount('2500000000'),
+                    rentExemptReserve: amount('2282880'),
+                    activationEpoch: 400,
+                },
+            ],
+        },
+    });
+
+type MockCardanoDelegationParams = {
+    product?: StakingProductDescriptor;
+    poolId?: string | null;
+    hasDrep?: boolean;
+};
+
+const mockCardanoDelegation = ({
+    product = adaEverstakeProduct,
+    poolId = MOCK_CARDANO_EVERSTAKE_POOL,
+    hasDrep = true,
+}: MockCardanoDelegationParams = {}) =>
+    mockPosition(product.id, {
         lockup: 'liquid',
         balances: { ...zeroBalances, staked: amount('1000000000') },
-        unlocks: [],
         operations: ['unstake', 'claim', 'vote'],
+        targets:
+            poolId === null
+                ? []
+                : [
+                      {
+                          address: poolId,
+                          providerId: product.providerId,
+                          amount: amount('1000000000'),
+                      },
+                  ],
+        warnings:
+            product === adaFiveBinariesProduct
+                ? [{ code: 'outdated-provider', providerId: product.providerId }]
+                : [],
+        details: {
+            kind: 'cardano-delegation',
+            poolId,
+            drep: hasDrep ? { id: MOCK_CARDANO_EVERSTAKE_DREP_ID, hasScript: false } : null,
+        },
+    });
+
+/** 1000 frozen TRX with every vote still to cast. */
+const mockTronStake = () =>
+    mockPosition(trxProduct.id, {
+        balances: { ...zeroBalances, staked: amount('1000000000') },
+        operations: ['stake', 'unstake', 'vote'],
+        details: {
+            ...TRON_DETAILS,
+            votingPower: amount('1000000000'),
+            unallocatedVotingPower: amount('1000000000'),
+        },
     });
 
 const createRate = (rate: number | undefined, isLoading = false): CurrentRate => {
@@ -120,10 +202,7 @@ const renderAccount = ({
     const state: MockSuiteState = {
         ...mockInitialAppState,
         earn: {
-            staking: mockStakingState({
-                descriptors: [ETH_STAKING_PRODUCT, ADA_STAKING_PRODUCT],
-                positions: stakingPositions,
-            }),
+            staking: mockStakingState({ descriptors: products, positions: stakingPositions }),
         },
         metadata: initialMetadataState,
         networks: mockNetworksState([account.symbol]),
@@ -204,19 +283,38 @@ describe('compact account sidebar', () => {
     });
 
     it.each([
-        mockEthereumStakingAccount('pending'),
-        mockEthereumStakingAccount('claimable'),
-        mockSolanaStakingAccount('active'),
-        mockCardanoStakingAccount('everstake'),
-        mockTronStakingAccount('frozenNotVoted'),
-    ])('keeps a staking indicator for $symbol', account => {
-        renderAccount({ account });
+        { account: mockEthereumStakingAccount('pending'), position: mockEthereumPendingStake() },
+        {
+            account: mockEthereumStakingAccount('claimable'),
+            position: mockEthereumClaimableStake(),
+        },
+        { account: mockSolanaStakingAccount('active'), position: mockSolanaStake() },
+        { account: mockCardanoStakingAccount('everstake'), position: mockCardanoDelegation() },
+        { account: mockTronStakingAccount('frozenNotVoted'), position: mockTronStake() },
+    ])('keeps a staking indicator for $account.symbol', ({ account, position }) => {
+        renderAccount({ account, stakingPositions: { [account.key]: [position] } });
 
         expect(screen.getByTestId('@account-menu/staking/badge')).toBeInTheDocument();
         expect(screen.getAllByRole('button')).toHaveLength(1);
         expect(
             screen.queryByTestId(`@wallet/coin-balance/value-${account.symbol}`),
         ).not.toBeInTheDocument();
+    });
+
+    it('shows no staking indicator for a pool entry that holds nothing', () => {
+        const account = mockEthereumStakingAccount('none');
+
+        renderAccount({
+            account,
+            stakingPositions: {
+                [account.key]: [
+                    mockPosition(ethProduct.id, { status: 'inactive', operations: ['stake'] }),
+                ],
+            },
+        });
+
+        expect(screen.queryByTestId('@account-menu/staking/badge')).not.toBeInTheDocument();
+        expect(screen.getByTestId('@wallet/coin-balance/value-eth')).toBeInTheDocument();
     });
 
     it('includes staking in the total even without tokens', () => {
@@ -241,7 +339,19 @@ describe('compact account sidebar', () => {
     });
 
     it('shows the no-rewards warning inline and in its tooltip', async () => {
-        renderAccount({ account: mockCardanoStakingAccount('fiveBinaries') });
+        const account = mockCardanoStakingAccount('fiveBinaries');
+
+        renderAccount({
+            account,
+            stakingPositions: {
+                [account.key]: [
+                    mockCardanoDelegation({
+                        product: adaFiveBinariesProduct,
+                        poolId: MOCK_CARDANO_FIVE_BINARIES_POOL,
+                    }),
+                ],
+            },
+        });
         const label = messages.TR_STAKING_REWARDS_REDUCED.defaultMessage;
         const badge = screen.getByRole('img', { name: label });
 
@@ -256,13 +366,13 @@ describe('compact account sidebar', () => {
         'keeps a neutral staking indicator for a registered Cardano key without a pool (DRep: %s)',
         hasDrep => {
             const account = mockCardanoStakingAccount('everstake');
-            account.misc.staking = {
-                ...account.misc.staking,
-                poolId: null,
-                drep: hasDrep ? account.misc.staking.drep : null,
-            };
 
-            renderAccount({ account });
+            renderAccount({
+                account,
+                stakingPositions: {
+                    [account.key]: [mockCardanoDelegation({ poolId: null, hasDrep })],
+                },
+            });
 
             expect(
                 screen.getByRole('img', { name: messages.TR_EARN_STAKING.defaultMessage }),
@@ -278,7 +388,20 @@ describe('compact account sidebar', () => {
     it.each([false, true])(
         'explains staking warnings on keyboard focus and dismisses with Escape when collapsed is %s',
         async isCollapsed => {
-            renderAccount({ account: mockCardanoStakingAccount('fiveBinaries'), isCollapsed });
+            const account = mockCardanoStakingAccount('fiveBinaries');
+
+            renderAccount({
+                account,
+                isCollapsed,
+                stakingPositions: {
+                    [account.key]: [
+                        mockCardanoDelegation({
+                            product: adaFiveBinariesProduct,
+                            poolId: MOCK_CARDANO_FIVE_BINARIES_POOL,
+                        }),
+                    ],
+                },
+            });
             const label = messages.TR_STAKING_REWARDS_REDUCED.defaultMessage;
 
             await userEvent.tab();
@@ -298,14 +421,20 @@ describe('compact account sidebar', () => {
     it.each([
         {
             account: mockCardanoStakingAccount('externalPool'),
+            position: mockCardanoDelegation({
+                product: adaExternalProduct,
+                poolId: MOCK_CARDANO_EXTERNAL_POOL,
+                hasDrep: false,
+            }),
             label: messages.TR_STAKING_DIFFERENT_PROVIDER.defaultMessage,
         },
         {
             account: mockTronStakingAccount('frozenNotVoted'),
+            position: mockTronStake(),
             label: messages.TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES_NO_APR.defaultMessage,
         },
-    ])('explains the staking warning for $account.symbol', async ({ account, label }) => {
-        renderAccount({ account });
+    ])('explains the staking warning for $account.symbol', async ({ account, position, label }) => {
+        renderAccount({ account, stakingPositions: { [account.key]: [position] } });
         const badge = screen.getByRole('img', { name: label });
 
         expect(screen.queryByText(label)).not.toBeInTheDocument();
@@ -373,12 +502,15 @@ describe('compact account sidebar', () => {
     it.each([false, true])(
         'keeps the same Ledger information when collapsed is %s',
         async isCollapsed => {
+            const account = mockEthereumStakingAccount('active', {
+                accountType: 'ledger',
+                tokens: [token],
+            });
+
             renderAccount({
-                account: mockEthereumStakingAccount('active', {
-                    accountType: 'ledger',
-                    tokens: [token],
-                }),
+                account,
                 isCollapsed,
+                stakingPositions: { [account.key]: [mockEthereumStake()] },
             });
 
             if (isCollapsed) {

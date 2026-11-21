@@ -12531,10 +12531,13 @@ __metadata:
   dependencies:
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/earn-staking": "workspace:*"
+    "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/earn-staking-common": "workspace:*"
     "@suite-common/networks": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
     "@suite-common/tokens": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"

@@ -1,12 +1,12 @@
 import { selectRouteName } from '@suite/router';
-import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import {
-    hasPendingStakeTypeTransaction,
-    isCardanoStakedOutsideEverstake,
-    isCardanoStakedWithFiveBinaries,
-    selectAccountIsStakingActive,
-    selectCardanoPoolsInfo,
-} from '@suite-common/wallet-core';
+    selectHasStakingAccountWarning,
+    selectIsStakingAccountActive,
+    selectIsStakingAccountDelegatedOutside,
+    selectStakingAccountPositionEntry,
+} from '@suite-common/earn-staking';
+import { hasPendingStakingOperation } from '@suite-common/earn-staking-common';
+import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { type Account } from '@suite-common/wallet-types';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
@@ -20,25 +20,35 @@ interface CardanoNewProviderCardProps {
 export function CardanoNewProviderCard({ account }: CardanoNewProviderCardProps) {
     const routeName = useSelector(selectRouteName);
 
-    const hasPendingTx = useSelector(state => hasPendingStakeTypeTransaction(state, account.key));
-    const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
-    const isStakedOutsideEverstake = isCardanoStakedOutsideEverstake(account, cardanoStakingPools);
-    const isStakedWithFiveBinaries = isCardanoStakedWithFiveBinaries(account);
     const isStakingRoute = routeName?.includes('staking');
+
+    const hasPendingOperation = useSelector(state => {
+        const positionEntry = selectStakingAccountPositionEntry(state, account.key);
+
+        return positionEntry !== null && hasPendingStakingOperation(positionEntry.position);
+    });
+
+    const isDelegatedOutside = useSelector(state =>
+        selectIsStakingAccountDelegatedOutside(state, account.key),
+    );
+    const hasOutdatedProvider = useSelector(state =>
+        selectHasStakingAccountWarning(state, account.key, 'outdated-provider'),
+    );
 
     const isNewProviderBannerEnabled = useSelector(state =>
         selectIsFeatureEnabled(state, Feature.banners.staking.ada.newProvider, true),
     );
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+
+    const isStakingActive = useSelector(state => selectIsStakingAccountActive(state, account.key));
     const isCardanoNetworkType = account?.networkType === 'cardano';
 
     if (
-        !isStakedOutsideEverstake ||
-        hasPendingTx ||
+        !isDelegatedOutside ||
+        hasPendingOperation ||
         !isNewProviderBannerEnabled ||
         !isCardanoNetworkType ||
         !isStakingActive ||
-        (!isStakedWithFiveBinaries && !isStakingRoute)
+        (!hasOutdatedProvider && !isStakingRoute)
     ) {
         return null;
     }

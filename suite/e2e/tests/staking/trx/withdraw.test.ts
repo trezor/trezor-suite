@@ -61,20 +61,30 @@ test.describe('Staking - Tron', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
         },
     });
 
-    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock }) => {
-        await onboardingPage.completeOnboarding();
+    test.beforeEach(
+        async ({
+            onboardingPage,
+            settingsPage,
+            blockbookMock,
+            tronEarnApiMock: _tronEarnApiMock,
+        }) => {
+            await onboardingPage.completeOnboarding();
 
-        await test.step('Enable Tron with an account whose unstaked TRX is withdrawable', async () => {
-            await settingsPage.navigateTo('coins');
-            await blockbookMock.start('trx');
-            blockbookMock.updateAccountState(buildTrxUnstakingAccountState(unstakedAccount));
-            await settingsPage.changeNetworks({
-                enableNetworks: [
-                    { symbol: trxSymbol, backend: { type: 'blockbook', url: blockbookMock.url } },
-                ],
+            await test.step('Enable Tron with an account whose unstaked TRX is withdrawable', async () => {
+                await settingsPage.navigateTo('coins');
+                await blockbookMock.start('trx');
+                blockbookMock.updateAccountState(buildTrxUnstakingAccountState(unstakedAccount));
+                await settingsPage.changeNetworks({
+                    enableNetworks: [
+                        {
+                            symbol: trxSymbol,
+                            backend: { type: 'blockbook', url: blockbookMock.url },
+                        },
+                    ],
+                });
             });
-        });
-    });
+        },
+    );
 
     test(
         'Withdraw unstaked Tron',

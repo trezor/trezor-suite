@@ -2,11 +2,11 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { useForm, useWatch } from 'react-hook-form';
 import { useDebounce } from 'react-use';
 
+import { formatStakingAmount, useStakingAccountPosition } from '@suite-common/earn-staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     getStakeFormsDefaultValues,
     getStakingContractAddress,
-    getStakingDataForNetwork,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectRawNetworkFeeInfo,
@@ -18,6 +18,7 @@ import {
     fromBaseCurrencyToCryptoUnit,
     getConvertedOrDefaultFeeInfo,
     getFiatRateKey,
+    isPositiveBalance,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
@@ -38,6 +39,10 @@ import { useFees } from '../wallet/form/useFees';
 import { useStakeCompose } from '../wallet/form/useStakeCompose';
 
 type WithdrawalContextValues = WithdrawalContextValuesBase & {
+    /** What the position holds to unstake, in the network's main unit. */
+    unstakableBalance: string;
+    /** A Cardano account with nothing spendable cannot pay the deregistration fee. */
+    isCardanoBalanceEmpty: boolean;
     amountLimits: AmountLimitProps;
     approximatedInstantEthAmount?: string | null;
     setRatioAmount: (divisor: number) => void;
@@ -74,12 +79,20 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, baseCurrencyCode), 'current'),
     );
 
-    const { autocompoundBalance = '0' } = getStakingDataForNetwork(account) ?? {};
+    // The form validates against the amount it shows: the staked balance of the position.
+    const { totals } = useStakingAccountPosition(account.key);
+    const unstakableBalance = formatStakingAmount({ amount: totals.staked, networkSymbol: symbol });
+
+    // The staked balance includes the reward balance, which the deregistration withdraws in the
+    // same transaction, so the fee check reads the spendable balance alone.
+    const isCardanoBalanceEmpty =
+        account.networkType === 'cardano' && !isPositiveBalance(account.availableBalance);
+
     const amountLimits: AmountLimitProps = {
         currency: symbol,
-        maxCrypto: autocompoundBalance,
+        maxCrypto: unstakableBalance,
         maxFiat:
-            toFiatCurrency({ amount: autocompoundBalance, rate: currentRate?.rate })?.toFixed(2) ??
+            toFiatCurrency({ amount: unstakableBalance, rate: currentRate?.rate })?.toFixed(2) ??
             undefined,
     };
 
@@ -90,10 +103,10 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
             ...getStakeFormsDefaultValues({
                 address: stakingContractAddress,
                 stakeType: 'unstake',
-                amount: autocompoundBalance,
+                amount: unstakableBalance,
             }),
         } as WithdrawalFormState;
-    }, [account, autocompoundBalance]);
+    }, [account, unstakableBalance]);
 
     const { saveDraft, draft, removeDraft } = useFormDraft<WithdrawalFormState>(
         'unstake',
@@ -176,7 +189,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
     });
 
     useRevalidateAmountOnBalanceChange({
-        stakedBalance: autocompoundBalance,
+        stakedBalance: unstakableBalance,
         getValues,
         trigger,
         composeRequest,
@@ -262,7 +275,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
             setValue(CRYPTO_INPUT, undefined, { shouldDirty: true });
             clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
 
-            const amount = new BigNumber(autocompoundBalance)
+            const amount = new BigNumber(unstakableBalance)
                 .dividedBy(divisor)
                 .decimalPlaces(network.decimals)
                 .toString();
@@ -270,7 +283,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
             setValue(CRYPTO_INPUT, amount, { shouldDirty: true, shouldValidate: true });
             await onCryptoAmountChange(amount);
         },
-        [autocompoundBalance, clearErrors, network.decimals, onCryptoAmountChange, setValue],
+        [unstakableBalance, clearErrors, network.decimals, onCryptoAmountChange, setValue],
     );
 
     const clearForm = useCallback(async () => {
@@ -314,6 +327,8 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         network,
         formState,
         register,
+        unstakableBalance,
+        isCardanoBalanceEmpty,
         amountLimits,
         onCryptoAmountChange,
         onFiatAmountChange,

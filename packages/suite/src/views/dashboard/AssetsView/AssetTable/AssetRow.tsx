@@ -7,6 +7,10 @@ import { selectIsRegionRestricted } from '@suite/regions';
 import { gotoThunk } from '@suite/router';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import {
+    type StakingDeviceRootState,
+    selectStakeableStakingProductDescriptorBySymbol,
+} from '@suite-common/earn-staking';
+import {
     Feature,
     type MessageSystemRootState,
     selectIsFeatureDisabled,
@@ -21,14 +25,9 @@ import {
     selectIsTradingBuyAvailableForNetworkSymbol,
 } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
-import {
-    type AccountsRootState,
-    type TransactionsRootState,
-    selectAnyAccountIsStakingActive,
-    useDisplayBaseCurrency,
-} from '@suite-common/wallet-core';
+import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type Account, type RatesByKey } from '@suite-common/wallet-types';
-import { type AmountUnit, isTestnet } from '@suite-common/wallet-utils';
+import { type AmountUnit, isPositiveBalance, isTestnet } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 import { Column, Icon, IconButton, Row, Table, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -45,7 +44,8 @@ import { TokenIconSetWrapper } from '#src/components/wallet/TokenIconSetWrapper'
 import { AssetActionButton } from '../AssetActionButton';
 import { AssetCoinLogo } from '../AssetCoinLogo';
 import { AssetCoinName } from '../AssetCoinName';
-import { handleTokensAndStakingData } from '../assetsViewUtils';
+import { selectDashboardAssetStakingAmount } from '../assetsViewSelectors';
+import { getAssetTokensData } from '../assetsViewUtils';
 import { AssetStakingRow } from './AssetStakingRow';
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 import { AssetTokenRow } from './AssetTokenRow';
@@ -54,9 +54,7 @@ export interface AssetTableRowProps {
     network: Network;
     failed: boolean;
     assetNativeCryptoBalance: AmountUnit;
-    stakingAccounts: Account[];
     assetTokens: TokenInfo[];
-    isStakeNetwork?: boolean;
     assetsFiatBalances: AssetFiatBalance[];
     accounts: Account[];
     baseCurrencyCode: BaseCurrencyCode;
@@ -69,12 +67,10 @@ export const AssetRow = memo(
         failed,
         assetNativeCryptoBalance,
         assetTokens,
-        stakingAccounts,
         assetsFiatBalances,
         baseCurrencyCode,
         currentFiatRates,
         accounts,
-        isStakeNetwork,
     }: AssetTableRowProps) => {
         const { symbol } = network;
         const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
@@ -102,23 +98,18 @@ export const AssetRow = memo(
         const isBuyAvailable = useSelector((state: TradingRootState & NetworksRootState) =>
             selectIsTradingBuyAvailableForNetworkSymbol(state, symbol),
         );
-        const stakingAccountsForAsset = stakingAccounts.filter(
-            account => account.symbol === network.symbol,
-        );
 
-        const isStakingActive = useSelector((state: TransactionsRootState & AccountsRootState) =>
-            selectAnyAccountIsStakingActive(state, stakingAccountsForAsset),
+        const isStakeNetwork = useSelector(
+            (state: StakingDeviceRootState) =>
+                selectStakeableStakingProductDescriptorBySymbol(state, symbol) !== null,
         );
+        const assetStakingBalance = useSelector((state: StakingDeviceRootState) =>
+            selectDashboardAssetStakingAmount(state, symbol),
+        );
+        const shouldRenderStakingRow = isPositiveBalance(assetStakingBalance);
 
-        const {
-            tokensFiatBalance,
-            assetStakingBalance,
-            shouldRenderStakingRow,
-            shouldRenderTokenRow,
-        } = handleTokensAndStakingData(
+        const { tokensFiatBalance, shouldRenderTokenRow } = getAssetTokensData(
             assetTokens,
-            stakingAccountsForAsset,
-            isStakingActive,
             symbol,
             baseCurrencyCode,
             coinDefinitions,
@@ -248,7 +239,7 @@ export const AssetRow = memo(
                 </Table.Row>
                 {shouldRenderStakingRow && (
                     <AssetStakingRow
-                        stakingTotalBalance={assetStakingBalance.toFixed()}
+                        stakingTotalBalance={assetStakingBalance}
                         symbol={symbol}
                         shouldRenderTokenRow={shouldRenderTokenRow}
                     />

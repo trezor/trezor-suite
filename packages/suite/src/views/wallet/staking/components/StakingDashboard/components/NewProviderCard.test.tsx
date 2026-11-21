@@ -3,35 +3,58 @@ import '@suite-common/test-utils/globalOverrides';
 import { screen } from '@testing-library/react';
 
 import { messages } from '@suite/intl';
-import { createTestCompositionRoot } from '@suite-common/test-utils';
-import { FIVE_BINARIES_POOLS, asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
-import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
-
-import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
+import { type StakingProductDescriptor } from '@suite-common/earn-staking-common';
 
 import { NewProviderCard } from './NewProviderCard';
 import {
-    type MockSuiteState,
-    mockInitialAppState,
-} from '../../../../../../../mocks/mockInitialAppState';
+    adaAccount,
+    adaExternalProduct,
+    adaFiveBinariesProduct,
+    amount,
+    createStakingDashboardState,
+    mockPosition,
+    renderStakingDashboardComponent,
+} from '../../stakingDashboardTestState';
 
-const renderCard = (poolId: string | null) => {
-    const account: Account = {
-        ...mockWalletAccount({ symbol: asNetworkSymbol('ada') }),
-        ...networkSpecificDefaultCardano,
-        misc: { staking: { ...networkSpecificDefaultCardano.misc.staking, poolId } },
-    };
-    const { services } = createTestCompositionRoot<void, MockSuiteState>({
-        preloadedState: mockInitialAppState,
+const POOL_ID = 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj';
+
+const renderCard = (product: StakingProductDescriptor) =>
+    renderStakingDashboardComponent(<NewProviderCard account={adaAccount} />, {
+        state: createStakingDashboardState({
+            accounts: [adaAccount],
+            positions: {
+                [adaAccount.key]: [
+                    mockPosition(product.id, {
+                        lockup: 'liquid',
+                        balances: {
+                            staked: amount('100000000'),
+                            pending: amount('0'),
+                            unstaking: amount('0'),
+                            withdrawable: amount('0'),
+                            rewards: amount('0'),
+                        },
+                        targets: [
+                            {
+                                address: POOL_ID,
+                                providerId: product.providerId,
+                                amount: amount('100000000'),
+                            },
+                        ],
+                        operations: ['unstake', 'vote'],
+                        warnings:
+                            product === adaFiveBinariesProduct
+                                ? [{ code: 'outdated-provider', providerId: product.providerId }]
+                                : [],
+                        details: { kind: 'cardano-delegation', poolId: POOL_ID, drep: null },
+                    }),
+                ],
+            },
+        }),
     });
-
-    return renderWithProviders(services, <NewProviderCard account={account} />);
-};
 
 describe('NewProviderCard', () => {
     it('adds an inline migration article link while retaining the single Update provider button', () => {
-        renderCard(FIVE_BINARIES_POOLS[0] ?? null);
+        renderCard(adaFiveBinariesProduct);
 
         const link = screen.getByRole('link', { name: messages.TR_LEARN_MORE.defaultMessage });
         const url = new URL(link.getAttribute('href') ?? '');
@@ -50,7 +73,7 @@ describe('NewProviderCard', () => {
     });
 
     it('does not add the migration link for another staking provider', () => {
-        renderCard('another-pool');
+        renderCard(adaExternalProduct);
 
         expect(screen.queryByRole('link')).toBeNull();
         expect(screen.getAllByRole('button')).toHaveLength(1);

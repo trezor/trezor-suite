@@ -28,18 +28,20 @@ export type ReportedStakingTxId = {
 export const TRON_LUGANODES_ADDRESS = LUGANODES_TRON_SRS[0] as string;
 export const TRON_P2P_ADDRESS = P2P_ORG_TRON_SRS[0] as string;
 
+export const TRON_REPRESENTATIVE_STATS: readonly TronRepresentativeStats[] = [
+    {
+        address: TRON_LUGANODES_ADDRESS,
+        name: 'Luganodes',
+        url: 'https://luganodes.com',
+        apr: 4.2,
+    },
+    { address: TRON_P2P_ADDRESS, name: 'P2P.org', url: 'https://p2p.org', apr: 3.8 },
+];
+
 // Mocks the Earn API used by the Tron staking flows: the representative list with APRs the vote
 // step is built from, and the endpoint the vote txid is reported to.
 export class TronEarnApiMock {
-    readonly representatives: TronRepresentativeStats[] = [
-        {
-            address: TRON_LUGANODES_ADDRESS,
-            name: 'Luganodes',
-            url: 'https://luganodes.com',
-            apr: 4.2,
-        },
-        { address: TRON_P2P_ADDRESS, name: 'P2P.org', url: 'https://p2p.org', apr: 3.8 },
-    ];
+    readonly representatives: TronRepresentativeStats[] = [...TRON_REPRESENTATIVE_STATS];
     readonly reportedTxIds: ReportedStakingTxId[] = [];
 
     constructor(private readonly page: Page) {}

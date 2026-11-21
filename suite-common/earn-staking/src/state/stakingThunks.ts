@@ -120,7 +120,7 @@ export const syncAllStakingPositionsThunk = createThunk<
     );
 });
 
-type RefreshStakingProductInfoParams = {
+export type RefreshStakingProductInfoParams = {
     force?: boolean;
 };
 

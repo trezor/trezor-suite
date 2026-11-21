@@ -1,14 +1,14 @@
-import { useMemo } from 'react';
-
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import {
-    getStakingDataForNetwork,
-    selectAccountClaimTransactions,
-} from '@suite-common/wallet-core';
+    formatStakingAmount,
+    getStakingOperationAvailability,
+    selectIsStakingOperationPending,
+    useStakingAccountPosition,
+} from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
-import { isPending } from '@suite-common/wallet-utils';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ChecksIcon, InfoIcon, LightningIcon, SpinnerGapIcon } from '@trezor/icons';
@@ -16,7 +16,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
+import { useStakingOperationSwitch } from '#src/hooks/earn/useStakingOperationSwitch';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 type ClaimCardProps = {
@@ -25,12 +25,29 @@ type ClaimCardProps = {
 
 export const ClaimCard = ({ account }: ClaimCardProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const claimTxs = useSelector(state => selectAccountClaimTransactions(state, account.key));
-    const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(account.symbol);
 
-    const isClaimPending = useMemo(() => claimTxs.some(tx => isPending(tx)), [claimTxs]);
+    const { productId, position, totals, access } = useStakingAccountPosition(account.key);
 
-    const { canClaim = false, claimableAmount = '0' } = getStakingDataForNetwork(account) ?? {};
+    const isClaimPending = useSelector(state =>
+        selectIsStakingOperationPending(state, account.key, 'withdraw'),
+    );
+    const { message: claimingMessageContent } = useStakingOperationSwitch(productId, 'withdraw');
+
+    const availability = getStakingOperationAvailability({
+        position,
+        access,
+        operation: 'withdraw',
+    });
+
+    const isClaimingDisabled = availability !== 'available';
+    const isClaimWithheld = availability === 'withheld';
+
+    const claimableAmount = formatStakingAmount({
+        amount: totals.withdrawable,
+        networkSymbol: account.symbol,
+    });
+
+    const canClaim = isPositiveBalance(totals.withdrawable);
 
     const openClaimModal = () => {
         if (!isClaimingDisabled) {
@@ -98,7 +115,7 @@ export const ClaimCard = ({ account }: ClaimCardProps) => {
                     <Button
                         onClick={openClaimModal}
                         isDisabled={isClaimingDisabled}
-                        iconLeft={isClaimingDisabled ? InfoIcon : undefined}
+                        iconLeft={isClaimWithheld ? InfoIcon : undefined}
                         data-testid="@account/staking/claim-button"
                     >
                         <Translation id="TR_STAKE_CLAIM" />

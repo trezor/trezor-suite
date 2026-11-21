@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { useStakingActivationDays } from '@suite-common/earn';
 import {
     type StakingRootState,
     formatStakingAmount,
@@ -28,7 +29,6 @@ import {
     StakingDetailModalStep,
     StakingManagementModalStepIndicator,
 } from './StakingManagementModalStepIndicator';
-import { useStakingActivationDays } from '../../hooks/staking/useStakingActivationDays';
 
 type StakingManagementPendingStakeModalProps = {
     ref: BottomSheetModalRef;

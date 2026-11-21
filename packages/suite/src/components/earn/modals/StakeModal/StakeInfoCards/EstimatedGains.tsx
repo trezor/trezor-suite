@@ -2,10 +2,12 @@ import React, { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
 import {
-    calculateGains,
-    getNetworkAdjustedStakingBalance,
-    selectPoolStatsApy,
-} from '@suite-common/wallet-core';
+    formatStakingAmount,
+    getStakeableBalance,
+    selectStakeableStakingProductDescriptorBySymbol,
+    useNetworkStakingRate,
+} from '@suite-common/earn-staking';
+import { calculateGains } from '@suite-common/wallet-core';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
@@ -23,6 +25,10 @@ export const EstimatedGains = () => {
 
     const { account, getValues, formState } = useStakeFormContext();
     const formatApyValue = useFormatApy();
+    const stakeableLimits = useSelector(
+        state =>
+            selectStakeableStakingProductDescriptorBySymbol(state, account.symbol)?.limits ?? null,
+    );
 
     const value = getValues(CRYPTO_INPUT);
     const hasInvalidFormState =
@@ -30,8 +36,17 @@ export const EstimatedGains = () => {
         formState.errors[CRYPTO_INPUT]?.type !== 'reserveOrBalance'; // provide gains calculation even if the user has not enough balance
 
     const cryptoInput = useMemo(() => {
+        // Cardano stakes the whole balance, less the registration deposit the product asks for.
         if (account.networkType === 'cardano') {
-            return getNetworkAdjustedStakingBalance(account.formattedBalance, account) ?? '0';
+            return stakeableLimits === null
+                ? '0'
+                : formatStakingAmount({
+                      amount: getStakeableBalance({
+                          availableBalance: account.availableBalance,
+                          limits: stakeableLimits,
+                      }),
+                      networkSymbol: account.symbol,
+                  });
         }
 
         if (!hasInvalidFormState && value) {
@@ -39,9 +54,9 @@ export const EstimatedGains = () => {
         }
 
         return '0';
-    }, [hasInvalidFormState, value, account]);
+    }, [hasInvalidFormState, value, account, stakeableLimits]);
 
-    const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
+    const { rate: apy } = useNetworkStakingRate({ networkSymbol: account.symbol });
 
     const gains = [
         {

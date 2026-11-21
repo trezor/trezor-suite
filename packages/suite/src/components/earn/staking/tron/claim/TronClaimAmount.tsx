@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { getTronStakingRewards } from '@suite-common/wallet-core';
+import { formatStakingAmount, useStakingAccountPosition } from '@suite-common/earn-staking';
 import { Card, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
@@ -17,7 +17,12 @@ export const TronClaimAmount = () => {
 
     const { account, form } = useTronStakeContext();
     const snapshotAmount = form.methods.watch('amount');
-    const reward = snapshotAmount || getTronStakingRewards(account);
+
+    const { totals } = useStakingAccountPosition(account.key);
+
+    const reward =
+        snapshotAmount ||
+        formatStakingAmount({ amount: totals.rewards, networkSymbol: account.symbol });
 
     return (
         <Card paddingType="none">

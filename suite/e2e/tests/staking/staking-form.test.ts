@@ -18,18 +18,25 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
     });
 
-    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock }) => {
-        await onboardingPage.completeOnboarding();
-        await settingsPage.navigateTo('coins');
-        await blockbookMock.start('eth');
-        blockbookMock.updateCurrentFiatRate(0.5);
+    test.beforeEach(
+        async ({
+            onboardingPage,
+            settingsPage,
+            blockbookMock,
+            earnStakingApiMock: _earnStakingApiMock,
+        }) => {
+            await onboardingPage.completeOnboarding();
+            await settingsPage.navigateTo('coins');
+            await blockbookMock.start('eth');
+            blockbookMock.updateCurrentFiatRate(0.5);
 
-        await settingsPage.changeNetworks({
-            enableNetworks: [
-                { symbol: ethSymbol, backend: { type: 'blockbook', url: blockbookMock.url } },
-            ],
-        });
-    });
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    { symbol: ethSymbol, backend: { type: 'blockbook', url: blockbookMock.url } },
+                ],
+            });
+        },
+    );
 
     test(
         'Staking form % inputs and limits',

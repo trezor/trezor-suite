@@ -55,6 +55,10 @@ export {
     useNetworkStakingRate,
     type UseNetworkStakingRateParams,
 } from './hooks/useNetworkStakingRate';
+export {
+    useRefreshStakingProductInfo,
+    type RefreshStakingProductInfo,
+} from './hooks/useRefreshStakingProductInfo';
 export { useStakingAccess } from './hooks/useStakingAccess';
 export {
     useStakingAccountPosition,
@@ -212,6 +216,7 @@ export {
     refreshStakingProductInfoThunk,
     syncAllStakingPositionsThunk,
     syncStakingPositionsThunk,
+    type RefreshStakingProductInfoParams,
     type RefreshStakingProductInfoThunkDeps,
     type RefreshStakingProductInfoThunkState,
     type SyncAllStakingPositionsThunkDeps,
@@ -221,10 +226,15 @@ export {
 } from './state/stakingThunks';
 export { formatStakingAmount, type FormatStakingAmountParams } from './utils/formatStakingAmount';
 export {
+    getSolanaStakeAccountsStatus,
+    type SolanaStakeAccountsStatus,
+} from './utils/getSolanaStakeAccountsStatus';
+export {
     getPotentialStakingRewards,
     type GetPotentialStakingRewardsParams,
     type PotentialStakingRewardsAccount,
 } from './utils/getPotentialStakingRewards';
+export { getStakeableBalance, type GetStakeableBalanceParams } from './utils/getStakeableBalance';
 export { getStakingDaysUntil } from './utils/getStakingDaysUntil';
 export {
     getStakingOperationAvailability,
@@ -236,3 +246,8 @@ export {
     isStakingOperationAvailable,
     type IsStakingOperationAvailableParams,
 } from './utils/isStakingOperationAvailable';
+export {
+    settleTronUnlocks,
+    TRON_UNLOCKS_REFRESH_INTERVAL_MS,
+    type SettledTronUnlocks,
+} from './utils/settleTronUnlocks';
