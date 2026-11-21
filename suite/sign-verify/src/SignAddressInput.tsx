@@ -1,11 +1,35 @@
 import { type ReactNode } from 'react';
 
 import { Address } from '@suite/address';
-import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
+import { type TranslationKey, useTranslation } from '@suite/intl';
+import {
+    type SignAddress,
+    type SignAddressCategory,
+    type SignAddressGroup,
+} from '@suite-common/sign-verify';
+import { type Account } from '@suite-common/wallet-types';
 import { isUtxoBased } from '@suite-common/wallet-utils';
 import { Box, Row, Select, type SelectProps, Text } from '@trezor/components';
 
-import { type AddressItem, useSignAddressOptions } from './useSignAddressOptions';
+const CATEGORY_LABELS: Record<SignAddressCategory, TranslationKey> = {
+    fresh: 'TR_ADDRESSES_FRESH',
+    used: 'TR_ADDRESSES_USED',
+    change: 'TR_ADDRESSES_CHANGE',
+    stake: 'TR_STAKING_STAKE_ADDRESS',
+};
+
+type AddressItem = {
+    label: string;
+    value: string;
+};
+
+const toAddressItem = ({ address, path }: SignAddress): AddressItem => ({
+    label: address,
+    value: path,
+});
+
+// A group shares the derivation level of its addresses, as in `m/1/i` for change.
+const getPathPattern = (addresses: SignAddress[]) => `m/${addresses[0]?.path.split('/').at(-2)}/i`;
 
 const optionToAddress = (option: AddressItem | null) =>
     option ? { address: option.label, path: option.value } : null;
@@ -22,17 +46,28 @@ const singleAddressComponents = { ...wrappedValueComponents, DropdownIndicator: 
 
 type SignAddressInputProps = {
     account?: Account;
-    touchedAddresses: ReceiveInfo[];
+    addressGroups: SignAddressGroup[];
 } & SelectProps;
 
 export const SignAddressInput = ({
     account,
-    touchedAddresses,
+    addressGroups,
     value,
     onChange,
     ...selectProps
 }: SignAddressInputProps) => {
-    const { getValue, groupedOptions } = useSignAddressOptions(account, touchedAddresses);
+    const { translationString } = useTranslation();
+
+    const selectedAddress = addressGroups
+        .flatMap(group => group.addresses)
+        .find(({ path }) => path === value);
+
+    const groupedOptions = addressGroups.map(({ category, addresses }) => ({
+        label: category
+            ? `${translationString(CATEGORY_LABELS[category])} ${getPathPattern(addresses)}`
+            : '',
+        options: addresses.map(toAddressItem),
+    }));
 
     const hasMultipleAddresses = !!account && isUtxoBased(account);
 
@@ -50,7 +85,7 @@ export const SignAddressInput = ({
     return (
         <Select
             {...selectProps}
-            value={getValue(value)}
+            value={selectedAddress ? toAddressItem(selectedAddress) : null}
             options={groupedOptions}
             onChange={option => onChange?.(optionToAddress(option))}
             formatOptionLabel={formatOptionLabel}

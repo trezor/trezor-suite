@@ -5,6 +5,7 @@
         { "path": "../analytics" },
         { "path": "../device" },
         { "path": "../networks" },
+        { "path": "../receive" },
         { "path": "../suite-types" },
         { "path": "../toast-notifications" },
         { "path": "../wallet-config" },
@@ -21,6 +22,7 @@
         {
             "path": "../../networks/network-module/suite-common/suite-common-types"
         },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/type-utils"
         }
