@@ -24,6 +24,8 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { applySettingsThunk } from '#src/actions/settings/deviceSettingsActions';
 import { type DiscoveryStatusType } from '#src/types/wallet/wallet';
 
+import { type DiscoveryFailureCause, getDiscoveryFailureCause } from './getDiscoveryFailureCause';
+
 interface CTA {
     label?: TranslationKey;
     intent?: ComponentProps<typeof Button>['intent'];
@@ -40,6 +42,20 @@ interface ContainerProps {
     dataTestBase: string;
     image?: React.ReactNode;
 }
+
+const DISCOVERY_FAILURE_TITLES: Record<DiscoveryFailureCause, TranslationKey> = {
+    stopped: 'TR_DASHBOARD_DISCOVERY_STOPPED',
+    'device-connection': 'TR_DASHBOARD_DISCOVERY_DEVICE_CONNECTION_ERROR',
+    loading: 'TR_DASHBOARD_DISCOVERY_ERROR',
+};
+
+const DISCOVERY_FAILURE_DESCRIPTIONS: Record<
+    Exclude<DiscoveryFailureCause, 'loading'>,
+    TranslationKey
+> = {
+    stopped: 'TR_DASHBOARD_DISCOVERY_STOPPED_DESC',
+    'device-connection': 'TR_DASHBOARD_DISCOVERY_DEVICE_CONNECTION_ERROR_DESC',
+};
 
 // Common wrapper for all views
 const Container = ({ title, description, cta, dataTestBase, image }: ContainerProps) => {
@@ -166,15 +182,21 @@ export const PortfolioCardException = ({
                     dataTestBase={exception.type}
                 />
             );
-        case 'discovery-failed':
+        case 'discovery-failed': {
+            const failureCause = getDiscoveryFailureCause(discovery);
+
             return (
                 <Container
-                    title="TR_DASHBOARD_DISCOVERY_ERROR"
+                    title={DISCOVERY_FAILURE_TITLES[failureCause]}
                     description={
-                        <Translation
-                            id="TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC"
-                            values={{ details: discoveryFailedMessage(discovery, failed) }}
-                        />
+                        failureCause === 'loading' ? (
+                            <Translation
+                                id="TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC"
+                                values={{ details: discoveryFailedMessage(discovery, failed) }}
+                            />
+                        ) : (
+                            DISCOVERY_FAILURE_DESCRIPTIONS[failureCause]
+                        )
                     }
                     cta={{
                         action: () => dispatch(startOrRestartDiscoveryThunk({ trigger: 'retry' })),
@@ -183,6 +205,7 @@ export const PortfolioCardException = ({
                     dataTestBase={exception.type}
                 />
             );
+        }
         case 'device-unavailable':
             return (
                 <Container
