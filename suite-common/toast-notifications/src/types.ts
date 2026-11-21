@@ -162,6 +162,11 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
           device?: TrezorDevice;
       }
     | {
+          type: 'watch-only-device-call';
+          method: string;
+          payload: string;
+      }
+    | {
           type:
               | 'settings-applied'
               | 'pin-changed'

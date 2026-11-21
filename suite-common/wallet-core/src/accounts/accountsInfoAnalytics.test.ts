@@ -3,6 +3,7 @@ import {
     FIVE_BINARIES_POOLS,
     LUGANODES_TRON_SRS,
     P2P_ORG_TRON_SRS,
+    WATCH_ONLY_ACCOUNT_TYPE,
     asNetworkSymbol,
 } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -11,7 +12,10 @@ import { EVERSTAKE_VOTER_PUBKEYS, StakeState } from '@trezor/network-solana/cons
 import { type DeepPartial } from '@trezor/type-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
-import { getAccountInfoAnalyticsPayload } from './accountsInfoAnalytics';
+import {
+    getAccountInfoAnalyticsPayload,
+    isAccountActiveForAnalytics,
+} from './accountsInfoAnalytics';
 
 const mockAccount = (
     account: Parameters<typeof mockWalletAccount>[0],
@@ -232,5 +236,24 @@ describe('accounts/info staking attributes', () => {
         const account = mockAccount({ symbol: asNetworkSymbol('btc'), balance: '100000000' });
 
         expect(getStakingPayload(account)).toEqual({ hasStaked: false, stakingProviders: [] });
+    });
+});
+
+describe(isAccountActiveForAnalytics.name, () => {
+    it('counts an account with history', () => {
+        expect(
+            isAccountActiveForAnalytics(mockWalletAccount({ symbol: asNetworkSymbol('btc') })),
+        ).toBe(true);
+    });
+
+    it('never counts a watch-only account, which the user does not own', () => {
+        expect(
+            isAccountActiveForAnalytics(
+                mockWalletAccount({
+                    symbol: asNetworkSymbol('eth'),
+                    accountType: WATCH_ONLY_ACCOUNT_TYPE,
+                }),
+            ),
+        ).toBe(false);
     });
 });

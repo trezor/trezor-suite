@@ -27,7 +27,7 @@ const getInitialState = (): ConnectInitThunkState => ({
     device: deviceInitialState,
     firmware: firmwareInitialState,
     messageSystem: messageSystemInitialState,
-    wallet: { settings: initialWalletSettingsState },
+    wallet: { settings: initialWalletSettingsState, accounts: [] },
 });
 
 const createTestRoot = (lockDevice = mock<LockDevice>()) =>

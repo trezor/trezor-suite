@@ -3,6 +3,8 @@ export enum EventType {
     AccountsEmptyAccountReceive = 'accounts/empty-account/receive',
     AccountsNewAccount = 'accounts/new-account',
     AccountsTransactionsExport = 'accounts/transactions-export',
+    AccountsWatchAccountAdded = 'accounts/watch-account-added',
+    AccountsWatchAccountRemoved = 'accounts/watch-account-removed',
     // eslint-disable-next-line local-rules/analytics-event-name
     AddToken = 'add-token',
     // eslint-disable-next-line local-rules/analytics-event-name

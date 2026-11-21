@@ -14,6 +14,8 @@ export const modalAppParams = ['cancelable', 'variant'] as const;
 export const dashboardParams = ['modal', 'networkSymbol'] as const;
 export const earnParams = ['symbol', 'accountIndex', 'accountType', 'vaultAddress'] as const;
 export const assetParams = ['symbol', 'contractAddress'] as const;
+// For example #/eth/vitalik.eth, the address can also be a name
+export const watchAccountParams = ['symbol', 'address'] as const;
 
 // Do not export, only for type-checking `routes` itself, instead use the inferred `Route` in @suite/router.
 type RouteDefinition = {
@@ -47,6 +49,13 @@ export const routes = [
         pattern: '/',
         app: 'dashboard',
         params: dashboardParams,
+    },
+    // Debug only: watch an address or name, see analytics redactRouterUrl
+    {
+        name: 'suite-watch-account',
+        pattern: '/watch',
+        app: 'dashboard',
+        params: watchAccountParams,
     },
     {
         name: 'suite-hidden-tokens',

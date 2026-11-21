@@ -17,12 +17,16 @@ import {
 } from '@suite-common/suite-types';
 import { type GetThpSettingsDep, type ThpHostNameDep } from '@suite-common/thp';
 import {
+    type AccountsRootState,
     type DefaultTrezorUIEventHandlerThunkDeps,
+    WATCH_ONLY_DEVICE_CALL_ERROR,
     type WalletSettingsRootState,
     defaultTrezorUIEventHandlerThunk,
     deviceConnectThunk,
     isScopedCallId,
+    notifyWatchOnlyDeviceCallThunk,
     selectEnabledNetworks,
+    selectWatchOnlyAccountForDeviceCall,
 } from '@suite-common/wallet-core';
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
@@ -51,7 +55,8 @@ const CONNECT_INIT_MODULE = '@common/connect-init';
 // packages/suite/src/support/createSuiteCompositionRoot.ts or
 // suite-native/state/src/createNativeCompositionRoot.ts.
 
-export type ConnectInitThunkState = DeviceRootState &
+export type ConnectInitThunkState = AccountsRootState &
+    DeviceRootState &
     FirmwareRootState &
     MessageSystemRootState &
     WalletSettingsRootState;
@@ -160,6 +165,12 @@ export const connectInitThunk = createThunk<
     TrezorConnect.call = async (params: CallMethodPayload) => {
         if (isArrayMember(params.method, blacklist)) {
             return original(params);
+        }
+
+        if (selectWatchOnlyAccountForDeviceCall(getState(), params)) {
+            dispatch(notifyWatchOnlyDeviceCallThunk({ params }));
+
+            return { success: false, payload: WATCH_ONLY_DEVICE_CALL_ERROR };
         }
 
         lockDevice(true);
