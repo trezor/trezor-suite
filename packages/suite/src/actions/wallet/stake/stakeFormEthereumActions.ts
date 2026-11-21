@@ -281,5 +281,5 @@ export const signTransactionThunk =
             return;
         }
 
-        return signedTx.payload.serializedTx;
+        return { serializedTx: signedTx.payload.serializedTx, transaction: txData.tx };
     };

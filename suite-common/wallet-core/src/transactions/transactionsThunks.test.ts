@@ -2,7 +2,9 @@ import { type TestCompositionStore, createTestCompositionRoot } from '@suite-com
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
+    type FormState,
     type PrecomposedTransactionCardanoFinal,
+    type PrecomposedTransactionFinal,
     type SolanaTxMeta,
     type StakeType,
     asAccountDescriptor,
@@ -10,6 +12,7 @@ import {
 import {
     mockWalletAccount,
     networkSpecificDefaultCardano,
+    networkSpecificDefaultEthereum,
     networkSpecificDefaultSolana,
 } from '@suite-common/wallet-types/mocks';
 import { isPending } from '@suite-common/wallet-utils';
@@ -21,11 +24,15 @@ import {
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
 import { transactionsActions } from './transactionsActions';
+import { transactionsInitialState } from './transactionsReducer';
 import {
     type AddFakePendingCardanoTxThunkState,
+    type AddFakePendingEvmTxThunkState,
     type AddFakePendingSolanaTxThunkState,
     type AddFakePendingStellarTxThunkState,
     addFakePendingCardanoTxThunk,
+    addFakePendingEvmSignedTxThunk,
+    addFakePendingEvmTxThunk,
     addFakePendingSolanaSendTxThunk,
     addFakePendingSolanaStakeTxThunk,
     addFakePendingStellarTxThunk,
@@ -586,6 +593,248 @@ describe('Solana fake pending transactions', () => {
                 stakeType: 'claim',
                 txid: 'ada-claim-txid',
                 account,
+            })(dispatch, getState, {});
+
+            expect(getAddedTransaction(actions)).toBeUndefined();
+        });
+    });
+});
+
+describe('EVM fake pending transactions', () => {
+    const EVM_RECIPIENT = '0x00000000219ab540356cBB839Cbe05303d7705Fa';
+    const EVM_TXID = `0x${'cd'.repeat(32)}`;
+    const EVM_BLOCK_TIME = 12;
+    const EVM_DEADLINE = BLOCK_HEIGHT + (15 * 60) / EVM_BLOCK_TIME;
+
+    const ethAccount = mockWalletAccount(
+        { symbol: asNetworkSymbol('eth') },
+        networkSpecificDefaultEthereum,
+    );
+
+    const state: AddFakePendingEvmTxThunkState = {
+        wallet: {
+            blockchain: {
+                ...blockchainInitialState,
+                eth: { ...blockchainInitialState.eth, blockHeight: BLOCK_HEIGHT },
+            },
+            fees: {
+                eth: {
+                    status: 'loaded',
+                    data: {
+                        blockHeight: BLOCK_HEIGHT,
+                        blockTime: EVM_BLOCK_TIME,
+                        minFee: 1,
+                        maxFee: 100,
+                        minPriorityFee: 1,
+                        levels: [],
+                    },
+                },
+            },
+            transactions: transactionsInitialState,
+            accounts: [ethAccount],
+        },
+    };
+    const getState = () => state;
+
+    const getAddedTransaction = (actions: unknown[]) =>
+        actions.find(transactionsActions.addTransaction.match)?.payload.transactions[0];
+
+    describe('addFakePendingEvmTxThunk', () => {
+        it('stores a send form transaction with the nonce it was signed with', async () => {
+            const { actions, dispatch } = createMockDispatch({ getState });
+
+            await addFakePendingEvmTxThunk({
+                precomposedTransaction: {
+                    type: 'final',
+                    outputs: [{ type: 'payment', address: EVM_RECIPIENT, amount: '1000' }],
+                    fee: '42000',
+                    feePerByte: '2',
+                    feeLimit: '21000',
+                    totalSpent: '43000',
+                } as unknown as PrecomposedTransactionFinal,
+                precomposedForm: { transactionData: '' } as FormState,
+                txid: EVM_TXID,
+                account: ethAccount,
+                ethereumNonce: '7',
+            })(dispatch, getState, {});
+
+            expect(getAddedTransaction(actions)).toEqual(
+                expect.objectContaining({
+                    txid: EVM_TXID,
+                    type: 'sent',
+                    amount: '1000',
+                    fee: '42000',
+                    deadline: EVM_DEADLINE,
+                    targets: [
+                        { n: 0, addresses: [EVM_RECIPIENT], isAddress: true, amount: '1000' },
+                    ],
+                    ethereumSpecific: expect.objectContaining({
+                        status: -1,
+                        nonce: 7,
+                        gasLimit: 21000,
+                        gasPrice: '2000000000',
+                        maxFeePerGas: undefined,
+                    }),
+                }),
+            );
+        });
+    });
+
+    describe('addFakePendingEvmSignedTxThunk', () => {
+        it('stores an EIP-1559 transaction from its signed hex fields, with the maximum fee', async () => {
+            const { actions, dispatch } = createMockDispatch({ getState });
+
+            await addFakePendingEvmSignedTxThunk({
+                transaction: {
+                    to: EVM_RECIPIENT,
+                    value: '0x3e8',
+                    data: '0x095ea7b3',
+                    gasLimit: '0xc350',
+                    maxFeePerGas: '0x77359400',
+                    maxPriorityFeePerGas: '0x3b9aca00',
+                    nonce: '0x7',
+                },
+                txid: EVM_TXID,
+                account: ethAccount,
+            })(dispatch, getState, {});
+
+            expect(getAddedTransaction(actions)).toEqual(
+                expect.objectContaining({
+                    txid: EVM_TXID,
+                    type: 'sent',
+                    amount: '1000',
+                    // 50000 gas at 2 gwei
+                    fee: '100000000000000',
+                    deadline: EVM_DEADLINE,
+                    tokens: [],
+                    targets: [
+                        { n: 0, addresses: [EVM_RECIPIENT], isAddress: true, amount: '1000' },
+                    ],
+                    ethereumSpecific: expect.objectContaining({
+                        status: -1,
+                        nonce: 7,
+                        gasLimit: 50000,
+                        gasPrice: undefined,
+                        maxFeePerGas: '2000000000',
+                        maxPriorityFeePerGas: '1000000000',
+                        data: '0x095ea7b3',
+                    }),
+                }),
+            );
+        });
+
+        it('stores a legacy transaction with its gas price', async () => {
+            const { actions, dispatch } = createMockDispatch({ getState });
+
+            await addFakePendingEvmSignedTxThunk({
+                transaction: {
+                    to: EVM_RECIPIENT,
+                    value: '0x0',
+                    gasLimit: '0x5208',
+                    gasPrice: '0x3b9aca00',
+                    nonce: '0x0',
+                },
+                txid: EVM_TXID,
+                account: ethAccount,
+            })(dispatch, getState, {});
+
+            expect(getAddedTransaction(actions)).toEqual(
+                expect.objectContaining({
+                    amount: '0',
+                    fee: '21000000000000',
+                    ethereumSpecific: expect.objectContaining({
+                        nonce: 0,
+                        gasLimit: 21000,
+                        gasPrice: '1000000000',
+                        maxFeePerGas: undefined,
+                    }),
+                }),
+            );
+        });
+
+        it('stores a legacy transaction when the EIP-1559 priority fee is missing, as Connect signs it', async () => {
+            const { actions, dispatch } = createMockDispatch({ getState });
+
+            await addFakePendingEvmSignedTxThunk({
+                transaction: {
+                    to: EVM_RECIPIENT,
+                    value: '0x0',
+                    gasLimit: '0x5208',
+                    gasPrice: '0x3b9aca00',
+                    maxFeePerGas: '0x77359400',
+                    nonce: '0x0',
+                },
+                txid: EVM_TXID,
+                account: ethAccount,
+            })(dispatch, getState, {});
+
+            expect(getAddedTransaction(actions)).toEqual(
+                expect.objectContaining({
+                    fee: '21000000000000',
+                    ethereumSpecific: expect.objectContaining({
+                        gasPrice: '1000000000',
+                        maxFeePerGas: undefined,
+                        maxPriorityFeePerGas: undefined,
+                    }),
+                }),
+            );
+        });
+
+        it('does nothing when the network fee info is not loaded', async () => {
+            const getStateWithoutFees = () => ({ ...state, wallet: { ...state.wallet, fees: {} } });
+            const { actions, dispatch } = createMockDispatch({ getState: getStateWithoutFees });
+
+            const result = await addFakePendingEvmSignedTxThunk({
+                transaction: {
+                    to: EVM_RECIPIENT,
+                    value: '0x0',
+                    gasLimit: '0x5208',
+                    gasPrice: '0x1',
+                    nonce: '0x0',
+                },
+                txid: EVM_TXID,
+                account: ethAccount,
+            })(dispatch, getStateWithoutFees, {});
+
+            expect(addFakePendingEvmSignedTxThunk.fulfilled.match(result)).toBe(true);
+            expect(getAddedTransaction(actions)).toBeUndefined();
+        });
+
+        it('does nothing for a contract deployment, which has no recipient', async () => {
+            const { actions, dispatch } = createMockDispatch({ getState });
+
+            await addFakePendingEvmSignedTxThunk({
+                transaction: {
+                    to: null,
+                    value: '0x0',
+                    data: '0x6080',
+                    gasLimit: '0x5208',
+                    gasPrice: '0x1',
+                    nonce: '0x0',
+                },
+                txid: EVM_TXID,
+                account: ethAccount,
+            })(dispatch, getState, {});
+
+            expect(getAddedTransaction(actions)).toBeUndefined();
+        });
+
+        it('does nothing for an account on another network', async () => {
+            const { actions, dispatch } = createMockDispatch({ getState });
+
+            await addFakePendingEvmSignedTxThunk({
+                transaction: {
+                    to: EVM_RECIPIENT,
+                    value: '0x0',
+                    gasLimit: '0x5208',
+                    gasPrice: '0x1',
+                    nonce: '0x0',
+                },
+                txid: EVM_TXID,
+                account: mockWalletAccount(
+                    { symbol: asNetworkSymbol('sol'), descriptor: asAccountDescriptor('sol') },
+                    networkSpecificDefaultSolana,
+                ),
             })(dispatch, getState, {});
 
             expect(getAddedTransaction(actions)).toBeUndefined();

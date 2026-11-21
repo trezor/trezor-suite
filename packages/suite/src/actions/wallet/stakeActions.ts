@@ -16,6 +16,7 @@ import {
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    type AddFakePendingEvmSignedTxThunkState,
     type BlockchainRootState,
     type EthereumGetCurrentNonceThunkState,
     type ReplaceTransactionThunkState,
@@ -24,6 +25,7 @@ import {
     type SyncAccountsWithBlockchainThunkState,
     type WalletSettingsRootState,
     addFakePendingCardanoTxThunk,
+    addFakePendingEvmSignedTxThunk,
     addFakePendingSolanaStakeTxThunk,
     isSupportedAdaStakingNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
@@ -52,7 +54,10 @@ import {
     isRbfBumpFeeTransaction,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, {
+    type EthereumTransaction,
+    type EthereumTransactionEIP1559,
+} from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type WithServices } from '@trezor/redux-utils';
@@ -131,7 +136,8 @@ export const cancelSignTxThunk =
         }
     };
 
-type PushTransactionThunkState = DeviceRootState &
+type PushTransactionThunkState = AddFakePendingEvmSignedTxThunkState &
+    DeviceRootState &
     MevProtectionRootState &
     ReplaceTransactionThunkState &
     StakeRootState &
@@ -141,9 +147,17 @@ type PushTransactionThunkState = DeviceRootState &
 type PushTransactionThunkDeps = WithServices<DesktopAnalyticsDep> &
     SyncAccountsWithBlockchainThunkDeps;
 
+type PushTransactionThunkOptions = {
+    cardanoPoolDelegation?: StakingCardanoPoolDelegationPayload;
+    signedEvmTransaction?: EthereumTransaction | EthereumTransactionEIP1559;
+};
+
 // private, called from signTransaction only
 const pushTransactionThunk =
-    (stakeType: StakeType, cardanoPoolDelegation?: StakingCardanoPoolDelegationPayload) =>
+    (
+        stakeType: StakeType,
+        { cardanoPoolDelegation, signedEvmTransaction }: PushTransactionThunkOptions = {},
+    ) =>
     async (
         dispatch: ThunkDispatch<PushTransactionThunkState, PushTransactionThunkDeps, UnknownAction>,
         getState: () => PushTransactionThunkState,
@@ -250,9 +264,16 @@ const pushTransactionThunk =
                 );
             }
 
-            // notification from the backend may be delayed.
-            // modify affected account balance.
-            // TODO: make it work with ETH accounts
+            // A bump already moved the replaced record to the new txid in replaceTransactionThunk.
+            if (signedEvmTransaction && !isRbfBumpFeeTransaction(precomposedTx)) {
+                dispatch(
+                    addFakePendingEvmSignedTxThunk({
+                        transaction: signedEvmTransaction,
+                        txid,
+                        account,
+                    }),
+                );
+            }
 
             // there is no point in fetching account data right after tx submit
             //  as the account will update only after the tx is confirmed
@@ -280,7 +301,8 @@ const pushTransactionThunk =
         return sentTx;
     };
 
-export type SignTransactionThunkState = DeviceRootState &
+export type SignTransactionThunkState = AddFakePendingEvmSignedTxThunkState &
+    DeviceRootState &
     EthereumGetCurrentNonceThunkState &
     MevProtectionRootState &
     ReplaceTransactionThunkState &
@@ -328,14 +350,17 @@ export const signTransactionThunk =
 
         // signTransaction by Trezor
         let serializedTx: undefined | string | Err<SerializedError>;
+        let signedEvmTransaction: PushTransactionThunkOptions['signedEvmTransaction'];
         if (isSupportedEthStakingNetworkSymbol(account.symbol)) {
-            serializedTx = await dispatch(
+            const signResult = await dispatch(
                 stakeFormEthereumActions.signTransactionThunk({
                     account,
                     formValues,
                     transactionInfo: enhancedTxInfo,
                 }),
             );
+            serializedTx = signResult?.serializedTx;
+            signedEvmTransaction = signResult?.transaction;
         }
 
         if (isSupportedSolStakingNetworkSymbol(account.symbol)) {
@@ -402,14 +427,14 @@ export const signTransactionThunk =
                 }),
             });
 
-            return dispatch(pushTransactionThunk(formValues.stakeType, cardanoPoolDelegation));
+            return dispatch(pushTransactionThunk(formValues.stakeType, { cardanoPoolDelegation }));
         }
 
         // Open a deferred modal and get the decision
         const decision = await dispatch(openDeferredModal({ type: 'review-transaction' }));
         if (decision) {
             // push tx to the network
-            return dispatch(pushTransactionThunk(formValues.stakeType));
+            return dispatch(pushTransactionThunk(formValues.stakeType, { signedEvmTransaction }));
         }
 
         extra.services.analytics.report({
