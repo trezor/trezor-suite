@@ -3,7 +3,10 @@ import { type JSX } from 'react';
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { isWalletConnectSupportedNetwork } from '@suite-common/walletconnect';
+import {
+    isWalletConnectSupportedAccount,
+    isWalletConnectSupportedNetwork,
+} from '@suite-common/walletconnect';
 import { Dropdown, type DropdownMenuItemProps, type IconComponent } from '@trezor/components';
 import { PencilLineIcon, WalletConnectIcon } from '@trezor/icons';
 
@@ -56,7 +59,10 @@ export const HeaderDropdown = ({ isDisabled, showSignVerify }: HeaderDropdownPro
             },
             title: <Translation id="TR_WALLETCONNECT" />,
             icon: WalletConnectIcon,
-            isHidden: account ? !isWalletConnectSupportedNetwork(account.symbol) : true,
+            isHidden: account
+                ? !isWalletConnectSupportedNetwork(account.symbol) ||
+                  !isWalletConnectSupportedAccount(account)
+                : true,
         },
     ];
 
