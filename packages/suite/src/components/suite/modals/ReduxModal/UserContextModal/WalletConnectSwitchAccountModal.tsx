@@ -8,6 +8,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { sortByCoin } from '@suite-common/wallet-utils';
 import {
     getSessionNetworks,
+    isWalletConnectSupportedAccount,
     selectSessions,
     switchSelectedAccountThunk,
     walletConnectActions,
@@ -40,7 +41,11 @@ export const WalletConnectSwitchAccountModal = ({
                       getSessionNetworks(session)
                           .filter(network => network.status === 'active')
                           .flatMap(network =>
-                              accounts.filter(account => account.symbol === network.symbol),
+                              accounts.filter(
+                                  account =>
+                                      account.symbol === network.symbol &&
+                                      isWalletConnectSupportedAccount(account),
+                              ),
                           ),
                       supportedNetworks,
                   )
@@ -48,7 +53,9 @@ export const WalletConnectSwitchAccountModal = ({
         [accounts, session, supportedNetworks],
     );
     const [selectedDefaultAccount, setSelectedDefaultAccount] = useState<Account | null>(
-        session?.lastAccount || selectableAccounts[0] || null,
+        selectableAccounts.find(account => account.key === session?.lastAccount?.key) ??
+            selectableAccounts[0] ??
+            null,
     );
 
     const handleSwitch = () => {
