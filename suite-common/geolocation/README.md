@@ -38,3 +38,15 @@ zone or the region, otherwise `strong`. `estimatePresence.test.ts` covers every 
 
 `src/presence/timeZoneCountries.ts` is a static file, created on 2026-11-11 from
 https://data.iana.org/time-zones/releases/tzdata2026f.tar.gz.
+
+## IP country
+
+`fetchCountryCodeThunk` fetches the country (10 s timeout, concurrent calls share one request) and records
+`countryCodeFetch: { status, timestamp }`. A failed fetch keeps the last known `countryCode`, so presence detection
+keeps using it until a refresh succeeds.
+
+`refreshPresenceIpCountryThunk` (`@suite-common/regions`) runs for every user whatever the flag, because flag targeting
+may need `countryCode`. It checks at app start and every 60 s, and refetches after 1 h, or 5 min after a failure. With
+Suite Tor on, the endpoint returns `T1`, a missing IP.
+
+The `geolocation` slice is not persisted, and its values must not reach logs, Sentry or analytics.
