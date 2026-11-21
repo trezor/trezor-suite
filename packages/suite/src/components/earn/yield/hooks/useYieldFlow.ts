@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
-import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
@@ -18,6 +18,7 @@ import {
     type YieldNativeFeeStatus,
     type YieldPendingTransactionState,
     type YieldPositionFlowType,
+    type YieldRootState,
     handleYieldApproveCancelThunk,
     handleYieldApproveSuccessTxidThunk,
     hasYieldSessionTransactionActivity,
@@ -40,7 +41,7 @@ import { submitYieldDepositThunk } from '#src/actions/wallet/stablecoin-yield/su
 import { submitYieldWithdrawThunk } from '#src/actions/wallet/stablecoin-yield/submitYieldWithdrawThunk';
 import { submitUnwrapNativeTokenThunk } from '#src/actions/wallet/unwrapNativeTokenThunks';
 import { submitWrapNativeTokenThunk } from '#src/actions/wallet/wrapNativeTokenThunks';
-import { useSelector } from '#src/hooks/suite/useSelector';
+import { useDeviceReadyGuardWithToast } from '#src/hooks/wallet/useDeviceReadyGuardWithToast';
 
 import { type YieldAmountCardFiatToggleProps } from '../common/YieldAmountCard';
 import {
@@ -48,7 +49,6 @@ import {
     isAmountGreaterThan,
     shouldInitializeYieldAllowance,
 } from '../yieldFlowUtils';
-import { useEnsureYieldDeviceSession } from './useEnsureYieldDeviceSession';
 import { useYieldFlowData } from './useYieldFlowData';
 import { type AmountIssue, useYieldForm } from './useYieldForm';
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
@@ -132,7 +132,6 @@ export const useYieldFlow = ({
     flowType,
 }: UseYieldFlowProps): UseYieldFlowResult => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const { device } = useDevice();
     const initAllowancePromiseRef = useRef<{ abort: () => void } | null>(null);
 
     const yieldFlowData = useYieldFlowData({ account, vault });
@@ -141,7 +140,9 @@ export const useYieldFlow = ({
     const depositedSharesAmount = yieldFlowData.depositedSharesAmount ?? '0';
     const flowKey = yieldFlowData.flowKey ?? '';
 
-    const session = useSelector(state => selectYieldSession(state, flowType, flowKey));
+    const session = useSelector((state: YieldRootState) =>
+        selectYieldSession(state, flowType, flowKey),
+    );
     // Fresh rather than commit-lagging: callbacks read the current step and pending transaction
     // when invoked, including before the next effect commit.
     const sessionRef = useFreshRef(session);
@@ -184,7 +185,7 @@ export const useYieldFlow = ({
         receiptToken,
     });
 
-    const ensureDeviceSession = useEnsureYieldDeviceSession({ flowType, flowKey });
+    const ensureDeviceReady = useDeviceReadyGuardWithToast();
 
     const isWrappedNativeVault = isWrappedNativeToken(account.symbol, vault.token.address);
     const hasWrappedTokenBalance = isAmountGreaterThan({
@@ -349,15 +350,6 @@ export const useYieldFlow = ({
         );
     }, [dispatch, flowType, flowKey, methodsRef, sessionRef, maxAmount]);
 
-    const openDeviceConnectionModal = useCallback(() => {
-        if (device?.descriptor?.apiType === 'bluetooth') {
-            dispatch(setConnectionMode('bluetooth'));
-        }
-        dispatch(setConnectionModal(true));
-    }, [device, dispatch]);
-
-    const isDeviceConnected = !!device?.connected && !!device?.available;
-
     const resolveWrappedNativeStep = useCallback(
         (step: 'wrap' | 'unwrap') => {
             dispatch(
@@ -377,12 +369,6 @@ export const useYieldFlow = ({
                 (step === 'wrap' && flowType !== 'deposit') ||
                 (step === 'unwrap' && !isYieldWithdrawFlow(flowType))
             ) {
-                return;
-            }
-
-            if (!isDeviceConnected) {
-                openDeviceConnectionModal();
-
                 return;
             }
 
@@ -406,9 +392,7 @@ export const useYieldFlow = ({
                 return;
             }
 
-            const isSessionReady = await ensureDeviceSession();
-
-            if (!isSessionReady) {
+            if (!(await ensureDeviceReady())) {
                 return;
             }
 
@@ -474,12 +458,10 @@ export const useYieldFlow = ({
         [
             account,
             dispatch,
-            ensureDeviceSession,
+            ensureDeviceReady,
             flowKey,
             flowType,
-            isDeviceConnected,
             methodsRef,
-            openDeviceConnectionModal,
             resolveWrappedNativeStep,
             token,
             vault.id,
@@ -511,12 +493,6 @@ export const useYieldFlow = ({
             return;
         }
 
-        if (!isDeviceConnected) {
-            openDeviceConnectionModal();
-
-            return;
-        }
-
         if (!token || !receiptToken) {
             dispatch(
                 yieldActions.setError({
@@ -529,13 +505,11 @@ export const useYieldFlow = ({
             return;
         }
 
-        const amount = methodsRef.current.getValues('amountInput');
-
-        const isSessionReady = await ensureDeviceSession();
-
-        if (!isSessionReady) {
+        if (!(await ensureDeviceReady())) {
             return;
         }
+
+        const amount = methodsRef.current.getValues('amountInput');
 
         await dispatch(
             submitYieldApproveThunk({
@@ -554,18 +528,10 @@ export const useYieldFlow = ({
         token,
         vault,
         methodsRef,
-        ensureDeviceSession,
-        isDeviceConnected,
-        openDeviceConnectionModal,
+        ensureDeviceReady,
     ]);
 
     const revokeAllowance = useCallback(async () => {
-        if (!isDeviceConnected) {
-            openDeviceConnectionModal();
-
-            return;
-        }
-
         if (!token || !receiptToken) {
             dispatch(
                 yieldActions.setError({
@@ -580,9 +546,7 @@ export const useYieldFlow = ({
 
         const amount = session.approval.allowanceAmount || '0';
 
-        const isSessionReady = await ensureDeviceSession();
-
-        if (!isSessionReady) {
+        if (!(await ensureDeviceReady())) {
             return;
         }
 
@@ -605,9 +569,7 @@ export const useYieldFlow = ({
         vault,
         resetAmountsRef,
         session.approval.allowanceAmount,
-        ensureDeviceSession,
-        isDeviceConnected,
-        openDeviceConnectionModal,
+        ensureDeviceReady,
     ]);
 
     const approvalAction = getAllowanceAction({
@@ -639,12 +601,6 @@ export const useYieldFlow = ({
     }, [dispatch, flowKey, flowType, methodsRef]);
 
     const submitAction = useCallback(async () => {
-        if (!isDeviceConnected) {
-            openDeviceConnectionModal();
-
-            return;
-        }
-
         if (!token || !receiptToken) {
             dispatch(
                 yieldActions.setError({
@@ -657,13 +613,11 @@ export const useYieldFlow = ({
             return;
         }
 
-        const amount = methodsRef.current.getValues('amountInput');
-
-        const isSessionReady = await ensureDeviceSession();
-
-        if (!isSessionReady) {
+        if (!(await ensureDeviceReady())) {
             return;
         }
+
+        const amount = methodsRef.current.getValues('amountInput');
 
         if (isYieldWithdrawFlow(flowType)) {
             await dispatch(
@@ -694,9 +648,7 @@ export const useYieldFlow = ({
         token,
         vault,
         methodsRef,
-        ensureDeviceSession,
-        isDeviceConnected,
-        openDeviceConnectionModal,
+        ensureDeviceReady,
     ]);
 
     const handleApproveModalCancel = useCallback(async () => {

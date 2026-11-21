@@ -219,6 +219,9 @@ export const selectIsDeviceInteractionModalActive = (state: ModalRootState) =>
     state.modal.context === MODAL_CONTEXT_DEVICE ||
     state.modal.context === MODAL_CONTEXT_DEVICE_CONFIRMATION;
 
+export const selectUserContextModalPayload = (state: ModalRootState) =>
+    state.modal.context === MODAL_CONTEXT_USER ? state.modal.payload : undefined;
+
 export const selectModalRequestId = (state: ModalRootState) =>
     state.modal.context === MODAL_CONTEXT_DEVICE ? state.modal.requestId : undefined;
 

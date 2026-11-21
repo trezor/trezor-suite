@@ -1,7 +1,8 @@
 import { useCallback, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
-import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
+import { useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
@@ -11,6 +12,7 @@ import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
 import {
     YIELD_FLOW_AVAILABLE_STEPS,
+    type YieldRootState,
     hasYieldSessionTransactionActivity,
     isYieldSupported,
     selectYieldSession,
@@ -26,7 +28,7 @@ import { claimMerklRewardsThunk } from '#src/actions/wallet/stablecoin-yield/cla
 import { useEarnDeviceStatus } from '#src/hooks/earn/useEarnDeviceStatus';
 import { useFirmwareUpgradeModal } from '#src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemYield } from '#src/hooks/suite/useMessageSystemYield';
-import { useSelector } from '#src/hooks/suite/useSelector';
+import { useDeviceReadyGuardWithToast } from '#src/hooks/wallet/useDeviceReadyGuardWithToast';
 
 import { YieldClaimFeeWarning } from './YieldClaimFeeWarning';
 import { YieldRewardsList } from './YieldRewardsList';
@@ -35,7 +37,6 @@ import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowCompleteClaim } from '../common/YieldFlowCompleteClaim';
 import { YieldFlowStepList } from '../common/YieldFlowStepList';
 import { YieldPendingTransaction } from '../common/YieldPendingTransaction';
-import { useEnsureYieldDeviceSession } from '../hooks/useEnsureYieldDeviceSession';
 import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
 
 type YieldClaimProps = {
@@ -53,7 +54,9 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         useFirmwareUpgradeModal();
 
     const yieldTxReview = useSelector(selectYieldTxReview);
-    const claimSession = useSelector(state => selectYieldSession(state, 'claim', flowKey));
+    const claimSession = useSelector((state: YieldRootState) =>
+        selectYieldSession(state, 'claim', flowKey),
+    );
     const isClaimSubmitting =
         claimSession.action.isSubmitting ||
         (!!yieldTxReview.precomposedTx && yieldTxReview.accountKey === account.key);
@@ -62,10 +65,9 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     // and the completion stay visible after the feature is disabled remotely.
     const isFormHidden =
         isDisabled && !isClaimSubmitting && !hasYieldSessionTransactionActivity(claimSession);
-    const isDeviceConnected = !!device?.connected && device.available;
     const isClaimFirmwareOutdated = !isYieldSupported(device, { flowType: 'claim' });
 
-    const ensureDeviceSession = useEnsureYieldDeviceSession({ flowType: 'claim', flowKey });
+    const ensureDeviceReady = useDeviceReadyGuardWithToast();
     const { merklRewardsQuery, missingRateTickersQuery } = useMerklRewards(account);
     const accountRewards: YieldAccountRewards | undefined =
         merklRewardsQuery.data?.accountsRewards[0];
@@ -110,18 +112,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
             },
         });
 
-        if (!isDeviceConnected) {
-            if (device?.descriptor?.apiType === 'bluetooth') {
-                dispatch(setConnectionMode('bluetooth'));
-            }
-            dispatch(setConnectionModal(true));
-
-            return;
-        }
-
-        const isSessionReady = await ensureDeviceSession();
-
-        if (!isSessionReady) {
+        if (!(await ensureDeviceReady())) {
             return;
         }
 

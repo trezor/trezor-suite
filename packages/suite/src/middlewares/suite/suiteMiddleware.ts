@@ -36,6 +36,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type WithServices, createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
+import { cancelSigningModalOnDisconnectThunk } from '#src/actions/suite/cancelSigningModalOnDisconnectThunk';
 import { handleProtocolRequestThunk } from '#src/actions/suite/protocolActions';
 import { desktopHandshake, setRecentlyDisconnectedDevice } from '#src/actions/suite/suiteActions';
 
@@ -45,8 +46,7 @@ type SuiteMiddlewareState = AccountsRootState &
     RouterRootState &
     WalletSettingsRootState & {
         flags: Pick<FlagsRootState['flags'], 'hasSeenDisconnectTooltip'>;
-        modal: Pick<ModalRootState['modal'], 'context'>;
-    };
+    } & ModalRootState;
 
 const isActionDeviceRelated = (action: UnknownAction): boolean => {
     if (
@@ -96,6 +96,7 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
             // eslint-disable-next-line no-restricted-syntax
             const state = getState();
             const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(state);
+            dispatch(cancelSigningModalOnDisconnectThunk());
             // A run that never reached Connect would otherwise never report an outcome.
             dispatch(
                 endUnfinishedDiscoveryThunk({

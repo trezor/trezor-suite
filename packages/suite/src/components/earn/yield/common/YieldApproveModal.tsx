@@ -16,6 +16,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { type AllowanceProvider } from '#src/components/wallet/Allowance/AllowanceProviderInfo';
 import { ApproveModal } from '#src/components/wallet/Allowance/ApproveModal';
 import { RevokeModal } from '#src/components/wallet/Allowance/RevokeModal';
+import { useDeviceReadyGuardWithToast } from '#src/hooks/wallet/useDeviceReadyGuardWithToast';
 
 export type YieldApproveModalProps = {
     amount: string;
@@ -77,6 +78,7 @@ export const YieldApproveModal = ({
     onSuccess,
 }: YieldApproveModalProps) => {
     const { analytics } = useServices(injectDesktopAnalytics);
+    const ensureDeviceReady = useDeviceReadyGuardWithToast();
 
     const { data: vaultName } = useYieldOpportunity(vaultId, {
         select: yieldOpportunity => yieldOpportunity.metadata.name,
@@ -159,6 +161,7 @@ export const YieldApproveModal = ({
                     onCancel={handleOnApproveCancel}
                     onConfirm={handleOnApproveConfirm}
                     onSent={onSuccess}
+                    ensureDeviceReady={ensureDeviceReady}
                 />
             );
         case 'revoke':
@@ -177,6 +180,7 @@ export const YieldApproveModal = ({
                     onCancel={handleOnRevokeCancel}
                     onConfirm={handleOnRevokeConfirm}
                     onSent={onSuccess}
+                    ensureDeviceReady={ensureDeviceReady}
                 />
             );
         default:
