@@ -9,8 +9,7 @@ import {
     ScreenHeader,
     type StackProps,
 } from '@suite-native/navigation';
-
-import { SignVerifyForms } from '../components/SignVerifyForms';
+import { SignVerifyForms } from '@suite-native/sign-verify';
 
 export const SignVerifyScreen = ({
     route,

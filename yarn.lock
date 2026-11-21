@@ -14807,27 +14807,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native-app/module-sign-verify@workspace:suite-native-app/module-sign-verify"
   dependencies:
-    "@react-navigation/native": "npm:7.1.31"
     "@react-navigation/native-stack": "npm:7.12.0"
-    "@suite-common/device": "workspace:*"
-    "@suite-common/formatters": "workspace:*"
-    "@suite-common/sign-verify": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/accounts": "workspace:*"
-    "@suite-native/atoms": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
-    "@suite-native/forms": "workspace:*"
-    "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@trezor/dependency-injection": "workspace:*"
-    "@trezor/network-cardano-suite-common": "workspace:*"
-    "@trezor/network-module-suite-common-types": "workspace:*"
-    "@trezor/styles-native": "workspace:*"
-    "@trezor/type-utils": "workspace:*"
-    "@trezor/utils": "workspace:*"
+    "@suite-native/sign-verify": "workspace:*"
     react: "npm:19.3.0"
     react-redux: "npm:9.3.0"
   languageName: unknown
@@ -16679,6 +16665,32 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     react: "npm:19.3.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/sign-verify@workspace:*, @suite-native/sign-verify@workspace:suite-native/sign-verify":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/sign-verify@workspace:suite-native/sign-verify"
+  dependencies:
+    "@react-navigation/native": "npm:7.1.31"
+    "@suite-common/device": "workspace:*"
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/sign-verify": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/device-authorization": "workspace:*"
+    "@suite-native/forms": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/network-cardano-suite-common": "workspace:*"
+    "@trezor/network-module-suite-common-types": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    react: "npm:19.3.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
