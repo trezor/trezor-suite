@@ -6,6 +6,7 @@ pub mod message_handler;
 pub mod methods;
 pub mod notification_registry;
 pub mod platform;
+pub mod radio_lock;
 pub mod types;
 pub mod utils;
 

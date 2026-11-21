@@ -7,6 +7,7 @@ use crate::server::{
 };
 
 pub async fn stop_scan(manager: AdapterManager) -> MethodResult {
+    let _radio = manager.lock_discovery_for_stop().await?;
     // Notify the watcher of every connection. The scan may have been started
     // by another client whose start_scan loop listens on its own channel only,
     // and would keep running (and spawn a duplicate on the next start_scan).
@@ -16,15 +17,18 @@ pub async fn stop_scan(manager: AdapterManager) -> MethodResult {
 
     // Reset the flag right away — it must not stay set when the adapter call
     // below fails.
-    manager.set_scanning(false).await;
+    let was_scanning = manager.take_scanning().await;
 
-    let adapter = manager.get_powered_adapter_or_die().await?;
-    let success = match adapter.stop_scan().await {
-        Ok(_) => true,
-        Err(err) => {
+    // the flag is authoritative, without a scan there is nothing to stop
+    let success = if was_scanning {
+        let adapter = manager.get_powered_adapter_or_die().await?;
+        let result = adapter.stop_scan().await;
+        if let Err(err) = &result {
             info!("stop_scan/adapter.stop_scan error: {err}");
-            false
         }
+        result.is_ok()
+    } else {
+        true
     };
 
     manager.clear_serviceless_devices().await;

@@ -18,12 +18,17 @@ use tokio::{
 use crate::server::{
     device::{DeviceConnectionStatus, TrezorDevice, SERVICE_UUID},
     notification_registry::{NotificationRegistry, RemovedStream},
+    radio_lock::{ConnectionGuard, DiscoveryGuard, RadioLock},
     types::{
         AbortProcess, AdapterState, ChannelMessage, KnownDevice, NotificationCharacteristic,
         NotificationEvent,
     },
     utils, ConnectionBroadcast,
 };
+
+// client requests give up before the websocket client's default 20 s request timeout
+const RADIO_REQUEST_WAIT: Duration = Duration::from_secs(15);
+pub const MIN_CONNECT_TIMEOUT_MS: u32 = 5_000;
 
 #[derive(Clone)]
 pub struct ServicelessDevice {
@@ -41,6 +46,7 @@ pub struct AdapterManager {
     serviceless_peripherals: Arc<DashMap<String, ServicelessDevice>>,
     serviceless_peripherals_prune_ts: Arc<Mutex<u128>>,
     notification_streams: NotificationRegistry,
+    radio_lock: RadioLock,
 }
 
 struct ManagerState {
@@ -83,6 +89,9 @@ pub enum AdapterError {
     #[error("ClientDisconnected")]
     ClientDisconnected,
 
+    #[error("RadioBusy")]
+    RadioBusy,
+
     #[error("Btleplug error: {0}")]
     BtleplugError(#[from] btleplug::Error),
 }
@@ -109,7 +118,59 @@ impl AdapterManager {
             serviceless_peripherals: Arc::new(DashMap::new()),
             serviceless_peripherals_prune_ts: Arc::new(Mutex::new(0)),
             notification_streams: NotificationRegistry::default(),
+            radio_lock: RadioLock::default(),
         })
+    }
+
+    /// Waits without a limit, for callers no client request is waiting on.
+    pub async fn lock_discovery(&self, owner: &str) -> DiscoveryGuard<'_> {
+        self.radio_lock.lock_discovery(owner).await
+    }
+
+    /// Fails with `RadioBusy` instead of outliving the client's request timeout.
+    pub async fn lock_discovery_for_request(
+        &self,
+        owner: &str,
+    ) -> Result<DiscoveryGuard<'_>, AdapterError> {
+        self.radio_lock
+            .lock_discovery_within(owner, RADIO_REQUEST_WAIT)
+            .await
+            .ok_or(AdapterError::RadioBusy)
+    }
+
+    pub async fn lock_discovery_for_stop(&self) -> Result<DiscoveryGuard<'_>, AdapterError> {
+        tokio::time::timeout(
+            RADIO_REQUEST_WAIT,
+            self.radio_lock
+                .lock_discovery_if_needed("stop_scan", self.is_scanning()),
+        )
+        .await
+        .map_err(|_| AdapterError::RadioBusy)
+    }
+
+    pub async fn lock_connection_for_request(
+        &self,
+        device_id: &str,
+        timeout_ms: &mut u32,
+    ) -> Result<ConnectionGuard<'_>, AdapterError> {
+        use tokio::time::{timeout, Instant};
+
+        let started = Instant::now();
+        let spare_ms = timeout_ms
+            .checked_sub(MIN_CONNECT_TIMEOUT_MS)
+            .ok_or(AdapterError::RadioBusy)?;
+        let guard = timeout(
+            Duration::from_millis(spare_ms.into()).min(RADIO_REQUEST_WAIT),
+            self.radio_lock.lock_connection("connect_device", device_id),
+        )
+        .await
+        .map_err(|_| AdapterError::RadioBusy)?;
+        let elapsed_ms = started.elapsed().as_millis();
+        if elapsed_ms > u128::from(spare_ms) {
+            return Err(AdapterError::RadioBusy);
+        }
+        *timeout_ms -= elapsed_ms as u32;
+        Ok(guard)
     }
 
     // get current adapter or start loader if there is none
@@ -284,6 +345,11 @@ impl AdapterManager {
     pub async fn set_scanning(&self, value: bool) {
         let mut state = self.manager_state.lock().await;
         state.is_scanning = value;
+    }
+
+    pub async fn take_scanning(&self) -> bool {
+        let mut state = self.manager_state.lock().await;
+        std::mem::take(&mut state.is_scanning)
     }
 
     pub async fn set_known_peripherals(&self, value: Vec<KnownDevice>) {
@@ -663,6 +729,15 @@ impl AdapterManager {
         state.listeners.push(listener.clone());
     }
 
+    pub async fn has_listener(&self, listener: &ConnectionBroadcast) -> bool {
+        self.manager_state
+            .lock()
+            .await
+            .listeners
+            .iter()
+            .any(|item| item.same_channel(listener))
+    }
+
     pub async fn remove_listener(&self, listener: &ConnectionBroadcast) {
         // Unregister the listener before sweeping its streams. A request of
         // this connection still being processed then either registers its
@@ -678,6 +753,10 @@ impl AdapterManager {
         self.close_notification_streams(Some(listener.get_peer()), None, None)
             .await;
 
+        if !self.manager_state.lock().await.listeners.is_empty() {
+            return;
+        }
+        let _radio = self.lock_discovery("remove_listener").await;
         let mut state = self.manager_state.lock().await;
         if !state.listeners.is_empty() {
             return;
@@ -928,5 +1007,163 @@ mod tests {
         // The last client disconnects.
         manager.remove_listener(&client_b).await;
         assert!(!manager.is_scanning().await);
+    }
+
+    #[tokio::test]
+    async fn queued_starts_do_not_publish_a_scan_or_outlive_their_client() {
+        let manager = AdapterManager::new().await.expect("manager");
+        let client = ConnectionBroadcast::new("client".to_string()).expect("broadcast");
+        manager.add_listener(client.clone()).await;
+        let discovery = manager.lock_discovery("scan").await;
+
+        let start = || {
+            Box::pin(crate::server::methods::start_scan(
+                manager.clone(),
+                client.clone(),
+            ))
+        };
+        let mut first = start();
+        let mut second = start();
+        assert!(futures::poll!(&mut first).is_pending());
+        assert!(futures::poll!(&mut second).is_pending());
+        assert!(!manager.is_scanning().await);
+        let mut cleanup = Box::pin(manager.remove_listener(&client));
+        assert!(futures::poll!(&mut cleanup).is_pending());
+
+        drop(discovery);
+        for request in [first, second] {
+            assert!(matches!(
+                request.await,
+                Err(crate::server::types::MethodError::Adapter(
+                    AdapterError::ClientDisconnected
+                ))
+            ));
+        }
+        cleanup.await;
+        assert!(!manager.is_scanning().await);
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn busy_scan_requests_leave_state_and_watchers_untouched() {
+        use crate::server::{methods, types::MethodError};
+        use tokio::sync::broadcast::error::TryRecvError;
+
+        let manager = AdapterManager::new().await.expect("manager");
+        let starter = ConnectionBroadcast::new("starter".to_string()).expect("broadcast");
+        let stopper = ConnectionBroadcast::new("stopper".to_string()).expect("broadcast");
+        manager.add_listener(starter.clone()).await;
+        manager.add_listener(stopper).await;
+        let mut watcher = starter.subscribe();
+        let _discovery = manager.lock_discovery("scan").await;
+
+        for scanning in [false, true] {
+            manager.set_scanning(scanning).await;
+            let (stop, start) = tokio::join!(
+                methods::stop_scan(manager.clone()),
+                methods::start_scan(manager.clone(), starter.clone()),
+            );
+            for result in [stop, start] {
+                assert!(matches!(
+                    result,
+                    Err(MethodError::Adapter(AdapterError::RadioBusy))
+                ));
+            }
+            assert_eq!(manager.is_scanning().await, scanning);
+            assert!(matches!(watcher.try_recv(), Err(TryRecvError::Empty)));
+        }
+    }
+
+    #[tokio::test]
+    async fn last_listener_cleans_up_after_a_cancelled_stop() {
+        let manager = AdapterManager::new().await.expect("manager");
+        let client = ConnectionBroadcast::new("client".to_string()).expect("broadcast");
+        manager.add_listener(client.clone()).await;
+        manager.set_scanning(true).await;
+        let discovery = manager.lock_discovery("scan").await;
+
+        let mut stop = Box::pin(crate::server::methods::stop_scan(manager.clone()));
+        assert!(futures::poll!(&mut stop).is_pending());
+        assert!(manager.is_scanning().await);
+        let mut cleanup = Box::pin(manager.remove_listener(&client));
+        assert!(futures::poll!(&mut cleanup).is_pending());
+        drop(stop);
+        assert!(manager.is_scanning().await);
+
+        drop(discovery);
+        cleanup.await;
+        assert!(!manager.is_scanning().await);
+    }
+
+    #[cfg(target_os = "linux")]
+    #[tokio::test(start_paused = true)]
+    async fn idle_stop_after_busy_start_does_not_wait_for_connection_again() {
+        use crate::server::{
+            methods,
+            types::{MethodError, WsResponsePayload},
+        };
+
+        let manager = AdapterManager::new().await.expect("manager");
+        let client = ConnectionBroadcast::new("client".to_string()).expect("broadcast");
+        manager.add_listener(client.clone()).await;
+        let mut watcher = client.subscribe();
+        let _connection = manager
+            .radio_lock
+            .lock_connection("connect", "device")
+            .await;
+        assert!(matches!(
+            methods::start_scan(manager.clone(), client).await,
+            Err(MethodError::Adapter(AdapterError::RadioBusy))
+        ));
+
+        let started = tokio::time::Instant::now();
+        assert!(matches!(
+            methods::stop_scan(manager.clone()).await,
+            Ok(WsResponsePayload::Success { success: true })
+        ));
+        assert_eq!(started.elapsed(), Duration::ZERO);
+        assert!(matches!(
+            watcher.try_recv(),
+            Ok(ChannelMessage::Abort(AbortProcess::Scan))
+        ));
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn duplicate_connection_cannot_start_after_its_budget_expires() {
+        let manager = AdapterManager::new().await.expect("manager");
+        let first = manager
+            .radio_lock
+            .lock_connection("connect", "device")
+            .await;
+        let mut retry_budget = MIN_CONNECT_TIMEOUT_MS + 10;
+        let mut retry = Box::pin(manager.lock_connection_for_request("device", &mut retry_budget));
+        assert!(futures::poll!(&mut retry).is_pending());
+        let mut budget = MIN_CONNECT_TIMEOUT_MS + 10;
+        assert!(matches!(
+            manager
+                .lock_connection_for_request("device", &mut budget)
+                .await,
+            Err(AdapterError::RadioBusy)
+        ));
+        drop(first);
+        assert!(retry.await.is_ok());
+        assert_eq!(retry_budget, MIN_CONNECT_TIMEOUT_MS);
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn long_connect_budget_does_not_extend_radio_wait() {
+        let manager = AdapterManager::new().await.expect("manager");
+        let _first = manager
+            .radio_lock
+            .lock_connection("connect", "device")
+            .await;
+        let mut budget = 30_000;
+        let started = tokio::time::Instant::now();
+        assert!(matches!(
+            manager
+                .lock_connection_for_request("device", &mut budget)
+                .await,
+            Err(AdapterError::RadioBusy)
+        ));
+        assert_eq!(started.elapsed(), Duration::from_secs(15));
     }
 }

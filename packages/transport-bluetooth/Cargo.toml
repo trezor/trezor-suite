@@ -27,6 +27,9 @@ btleplug = { git = "https://github.com/trezor/btleplug", rev="9513190e425f71d8f6
 dashmap = "6.2.1"
 uuid = "1.26.1"
 
+[dev-dependencies]
+tokio = { version = "^1.53.1", features = ["test-util"] }
+
 [target.'cfg(target_os = "linux")'.dependencies]
 dbus = {version = "0.9.12", features = ["vendored"]}
 dbus-crossroads="0.5.3"
