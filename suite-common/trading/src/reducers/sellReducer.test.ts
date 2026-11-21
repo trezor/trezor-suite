@@ -47,8 +47,7 @@ const FORM_VALUES: TradingSellFormProps = {
     sendCryptoSelect: {
         id: 'bitcoin' as CryptoId,
         isNativeToken: true,
-        name: 'Bitcoin',
-        symbol: btcSymbol,
+        displayName: 'Bitcoin',
         coingeckoId: 'bitcoin',
         displaySymbol: 'BTC',
         contractAddress: null,

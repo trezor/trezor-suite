@@ -3,10 +3,10 @@ import { useMemo } from 'react';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import {
     type TradeableAssetBalance,
-    type TradeableAssetSearchFields,
     type TradingAssetOption,
     buildTradeableAssetSearchIndex,
     filterTradeableAssetsBySearch,
+    getTradingAssetSearchFields,
     orderTradeableAssetsByOwnership,
     selectTradeableAssetBalances,
     usePreferredCurrencyUsdThreshold,
@@ -24,14 +24,6 @@ export type TradingAssetListItem = {
 };
 
 const getAssetCryptoId = (asset: TradingAssetOption) => asset.id;
-
-const getAssetSearchFields = (asset: TradingAssetOption): TradeableAssetSearchFields => ({
-    name: asset.displaySymbolName ?? asset.name,
-    symbol: asset.displaySymbol,
-    networkName: asset.networkName,
-    networkSymbol: asset.networkSymbol,
-    contractAddress: asset.contractAddress ?? '',
-});
 
 export interface UseBuildTradingAssetOptionsProps {
     search: string;
@@ -57,7 +49,7 @@ export function useBuildTradingAssetOptions({
         () =>
             buildTradeableAssetSearchIndex({
                 assets: includedAssets,
-                getSearchFields: getAssetSearchFields,
+                getSearchFields: getTradingAssetSearchFields,
             }),
         [includedAssets],
     );

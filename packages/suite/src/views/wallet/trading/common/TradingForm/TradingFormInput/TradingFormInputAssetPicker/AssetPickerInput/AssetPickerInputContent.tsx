@@ -1,12 +1,13 @@
+import { AssetIcon, AssetSymbol } from '@suite/assets';
 import {
     type TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     type TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     type TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingAssetOption,
     type TradingAssetSellOption,
+    cryptoIdToNetworkSymbolAndContractAddress,
 } from '@suite-common/trading';
 import { Row } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 
 export type AssetPickerInputContentProps = {} & (
     | {
@@ -22,23 +23,24 @@ export type AssetPickerInputContentProps = {} & (
 );
 
 export function AssetPickerInputContent({ value }: AssetPickerInputContentProps) {
-    const { isNativeToken, networkSymbol, symbol, displaySymbol, contractAddress } = value;
-    const showNetwork = networkSymbol !== displaySymbol.toLowerCase();
+    const { networkSymbol } = value;
+    const { contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(value.id);
 
     return (
         <Row gap={8} alignItems="center">
-            {isNativeToken ? (
-                <TokenIcon size={24} networkSymbol={symbol} showNetworkIcon />
-            ) : (
-                <TokenIcon
-                    size={24}
+            <AssetIcon
+                size={24}
+                networkSymbol={networkSymbol}
+                contractAddress={contractAddress}
+                showNetworkIcon
+            />
+            <span data-testid="@asset-picker/display-symbol">
+                <AssetSymbol
                     networkSymbol={networkSymbol}
                     contractAddress={contractAddress}
-                    placeholder={displaySymbol}
-                    showNetworkIcon={showNetwork}
+                    isTruncated
                 />
-            )}
-            <span data-testid="@asset-picker/display-symbol">{displaySymbol}</span>
+            </span>
         </Row>
     );
 }

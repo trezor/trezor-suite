@@ -14,10 +14,8 @@ describe('TradingAsset', () => {
         const { getByTestId, getByText } = await renderWithStoreProvider(
             <TradingAsset
                 assetType="crypto"
-                contractAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                name="USD Coin"
+                contractAddress={toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48')}
                 networkSymbol={asNetworkSymbol('eth')}
-                symbol="USDC"
                 testID="@test/trading-asset"
             />,
             {
@@ -55,11 +53,9 @@ describe('TradingAsset', () => {
         const { getByTestId, queryByTestId } = await renderWithStoreProvider(
             <TradingAsset
                 assetType="crypto"
-                name="USD Coin"
                 networkDisplay="text"
                 networkSymbol={asNetworkSymbol('eth')}
                 primaryLabel="symbol"
-                symbol="USDC"
                 testID="@test/trading-asset"
             />,
             {
@@ -68,7 +64,7 @@ describe('TradingAsset', () => {
             },
         );
 
-        expect(getByTestId('@test/trading-asset/primary-label')).toHaveTextContent('USDC');
+        expect(getByTestId('@test/trading-asset/primary-label')).toHaveTextContent('ETH');
         expect(queryByTestId('@test/trading-asset/secondary-symbol')).not.toBeOnTheScreen();
         expect(getByTestId('@test/trading-asset/network-text')).toHaveTextContent('Ethereum');
     });

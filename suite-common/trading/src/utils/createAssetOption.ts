@@ -1,8 +1,8 @@
 import { type CoinInfo, type CryptoId, type PlatformsInfo } from 'invity-api';
 
-import { type NetworkMetadata } from '@suite-common/networks';
+import { type NetworkMetadata, getNativeTokenName } from '@suite-common/networks';
+import { getTokenDisplayName, getTokenDisplaySymbol } from '@suite-common/token';
 import { toTokenAddress } from '@suite-common/tokens';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 
 import {
     type TradingAssetOption,
@@ -10,6 +10,7 @@ import {
     type TradingAssetOptionWithContractAddress,
 } from '../types';
 import { isCryptoIdForNativeToken, parseCryptoId } from '../utils';
+import { coinInfoToTokenMetadata } from './coinInfoToTokenMetadata';
 
 interface CreateAssetOptionProps {
     cryptoId: CryptoId;
@@ -48,14 +49,16 @@ export function createAssetOption({
         return {
             isNativeToken: true,
             id: networkConfig.tradeCryptoId as CryptoId,
-            name: networkConfig.name,
             coingeckoId: networkConfig.coingeckoId,
-            symbol: networkSymbol,
-            displaySymbol: networkConfig.displaySymbol,
             contractAddress: contractAddress as TradingAssetOptionNativeToken['contractAddress'],
             networkName: networkConfig.name,
             networkSymbol,
-            displaySymbolName: networkConfig.displaySymbolName || networkConfig.name,
+            displayName:
+                getNativeTokenName(
+                    symbol => networkConfigs.find(config => config.symbol === symbol),
+                    networkSymbol,
+                ) ?? '',
+            displaySymbol: networkConfig.displaySymbol ?? '',
         } satisfies TradingAssetOptionNativeToken;
     }
 
@@ -63,18 +66,16 @@ export function createAssetOption({
         return null;
     }
 
-    const coinInfoSymbol = coinInfo.symbol;
+    const token = coinInfoToTokenMetadata(toTokenAddress(contractAddress), coinInfo);
 
     return {
         isNativeToken: false,
         id: cryptoId,
-        name: coinInfo.name,
-        symbol: coinInfoSymbol,
         coingeckoId: networkConfig.coingeckoId,
-        displaySymbol: getDisplaySymbol(coinInfoSymbol.toUpperCase(), contractAddress),
-        contractAddress: toTokenAddress(contractAddress),
+        contractAddress: token.contract,
         networkName: networkConfig.name,
         networkSymbol,
-        displaySymbolName: coinInfo.name,
+        displayName: getTokenDisplayName(token) ?? '',
+        displaySymbol: getTokenDisplaySymbol(token) ?? '',
     } satisfies TradingAssetOptionWithContractAddress;
 }

@@ -20,6 +20,7 @@
         },
         { "path": "../accounts" },
         { "path": "../alerts" },
+        { "path": "../assets" },
         { "path": "../atoms" },
         { "path": "../icons" },
         { "path": "../intl" },

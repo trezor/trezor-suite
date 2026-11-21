@@ -14,10 +14,9 @@ const btcSymbol = toNetworkSymbolNonTestnet('btc');
 const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     id: 'bitcoin' as CryptoId,
     isNativeToken: true,
-    name: 'Bitcoin',
+    displayName: 'Bitcoin',
     coingeckoId: 'bitcoin',
     contractAddress: null,
-    symbol: btcSymbol,
     displaySymbol: 'BTC',
     networkName: 'Bitcoin',
     networkSymbol: btcSymbol,

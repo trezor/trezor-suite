@@ -182,7 +182,7 @@ describe('useGlobalReceiveAssets', () => {
         expect(first.result.current.catalogStatus).toBe('loading');
         await waitFor(() => expect(first.result.current.catalogStatus).toBe('ready'));
         expect(first.result.current.assets).toContainEqual(
-            expect.objectContaining({ name: 'Wrapped SOL', displaySymbol: 'WSOL' }),
+            expect.objectContaining({ displayName: 'Wrapped SOL', displaySymbol: 'WSOL' }),
         );
         expect(first.services.store.getActions()).toEqual([]);
         first.unmount();
@@ -211,7 +211,9 @@ describe('useGlobalReceiveAssets', () => {
 
         rerender({ search: 'WrÁppéd', networkSymbols: [] });
         expect(result.current.otherAssets).toEqual([
-            expect.objectContaining({ asset: expect.objectContaining({ name: 'Wrapped SOL' }) }),
+            expect.objectContaining({
+                asset: expect.objectContaining({ displayName: 'Wrapped SOL' }),
+            }),
         ]);
 
         rerender({ search: 'wsol', networkSymbols: [asNetworkSymbol('eth')] });
@@ -267,7 +269,9 @@ describe('useGlobalReceiveAssets', () => {
         );
         rerender({ search: 'newtokenmint', networkSymbols: [] });
         expect(result.current.otherAssets).toEqual([
-            expect.objectContaining({ asset: expect.objectContaining({ name: 'New Token' }) }),
+            expect.objectContaining({
+                asset: expect.objectContaining({ displayName: 'New Token' }),
+            }),
         ]);
         unmount();
         queryClient.clear();

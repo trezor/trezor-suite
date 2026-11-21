@@ -67,7 +67,6 @@ describe('createAssetOption', () => {
             }),
         ).toMatchObject({
             isNativeToken: true,
-            symbol,
             networkSymbol: symbol,
             networkName: 'New Network',
             displaySymbol: 'NEW',
@@ -125,14 +124,12 @@ describe('createAssetOption', () => {
         ).toEqual({
             isNativeToken: true,
             id: 'bitcoin',
-            name: 'Bitcoin',
             coingeckoId: 'bitcoin',
-            symbol: 'btc',
             displaySymbol: 'BTC',
             contractAddress: null,
             networkName: 'Bitcoin',
             networkSymbol: 'btc',
-            displaySymbolName: 'Bitcoin',
+            displayName: 'Bitcoin',
         });
     });
 
@@ -151,14 +148,12 @@ describe('createAssetOption', () => {
         ).toEqual({
             isNativeToken: true,
             id: 'base--0x0000000000000000000000000000000000000000',
-            name: 'Base',
             coingeckoId: 'base',
-            symbol: 'base',
             displaySymbol: 'ETH',
             contractAddress: '0x0000000000000000000000000000000000000000',
             networkName: 'Base',
             networkSymbol: 'base',
-            displaySymbolName: 'Base Ethereum',
+            displayName: 'Ethereum',
         });
     });
 
@@ -177,14 +172,12 @@ describe('createAssetOption', () => {
         ).toEqual({
             isNativeToken: false,
             id: 'ethereum--0x07150e919b4de5fd6a63de1f9384828396f25fdc',
-            name: 'Base Protocol',
-            symbol: 'base',
             coingeckoId: 'ethereum',
             displaySymbol: 'BASE',
             contractAddress: '0x07150e919b4de5fd6a63de1f9384828396f25fdc',
             networkName: 'Ethereum',
             networkSymbol: 'eth',
-            displaySymbolName: 'Base Protocol',
+            displayName: 'Base Protocol',
         });
     });
 
@@ -203,14 +196,12 @@ describe('createAssetOption', () => {
         ).toEqual({
             isNativeToken: false,
             id: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            name: 'USDC',
-            symbol: 'usdc',
             coingeckoId: 'ethereum',
             displaySymbol: 'USDC',
             contractAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             networkName: 'Ethereum',
             networkSymbol: 'eth',
-            displaySymbolName: 'USDC',
+            displayName: 'USDC',
         });
     });
 
@@ -230,13 +221,11 @@ describe('createAssetOption', () => {
             coingeckoId: 'ethereum',
             contractAddress: '0x0b925ed163218f6662a35e0f0371ac234f9e9371',
             displaySymbol: 'AWSTETH',
-            displaySymbolName: 'Aave v3 wstETH',
+            displayName: 'Aave v3 wstETH',
             id: 'ethereum--0x0b925ed163218f6662a35e0f0371ac234f9e9371',
             isNativeToken: false,
-            name: 'Aave v3 wstETH',
             networkName: 'Ethereum',
             networkSymbol: 'eth',
-            symbol: 'awsteth',
         });
     });
 });

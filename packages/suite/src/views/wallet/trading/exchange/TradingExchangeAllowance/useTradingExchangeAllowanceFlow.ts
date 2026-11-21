@@ -11,6 +11,7 @@ import {
     getApprovalFlowSteps,
     parseCryptoId,
     requiresTokenApproval,
+    selectTradingCoins,
     selectTradingExchangeFormValues,
     selectTradingExchangeProviders,
     selectTradingExchangeSelectedQuote,
@@ -47,6 +48,7 @@ export const useTradingExchangeAllowanceFlow = () => {
     );
     const formValues = useSelector(selectTradingExchangeFormValues);
     const exchangeProviders = useSelector(selectTradingExchangeProviders);
+    const coins = useSelector(selectTradingCoins);
     const [hasRevoked, setHasRevoked] = useState(false);
 
     const { allowanceKey, currentAllowance, chainAllowance, isFirstReadRunning } =
@@ -155,6 +157,7 @@ export const useTradingExchangeAllowanceFlow = () => {
             values: formValues ?? {},
             quoteExchange: quote?.exchange,
             exchangeProviders,
+            coins,
         });
 
         analytics.report({

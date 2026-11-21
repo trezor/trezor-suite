@@ -31,8 +31,7 @@ const usdt: TradingAssetSellOption = {
     networkName: 'Ethereum',
     networkSymbol: asNetworkSymbol('eth'),
     isNativeToken: false,
-    name: 'Tether',
-    symbol: 'usdt',
+    displayName: 'Tether',
     displaySymbol: 'USDT',
     contractAddress: toTokenAddress('0xdac17f958d2ee523a2206206994597c13d831ec7'),
     accountKey: mockWalletAccount({ symbol: asNetworkSymbol('eth') }).key,
@@ -43,8 +42,7 @@ const eth: TradingAssetOption = {
     networkName: 'Ethereum',
     networkSymbol: asNetworkSymbol('eth'),
     isNativeToken: true,
-    name: 'Ethereum',
-    symbol: asNetworkSymbol('eth'),
+    displayName: 'Ethereum',
     displaySymbol: 'ETH',
     contractAddress: null,
 };
@@ -61,6 +59,10 @@ const provider: ExchangeProviderInfo = {
     supportUrl: '',
     kycPolicyType: 'noKYC',
 };
+const coinServices = {
+    coingeckoId: 'ethereum',
+    services: { buy: true, sell: true, exchange: true },
+};
 const selectedQuote: ExchangeTrade = { exchange: provider.name, status: 'CONFIRM' };
 
 const renderGetCryptoInfo = () => {
@@ -70,6 +72,13 @@ const renderGetCryptoInfo = () => {
             ...mockInitialAppState.wallet,
             trading: {
                 ...initialState,
+                info: {
+                    ...initialState.info,
+                    coins: {
+                        [usdt.id]: { ...coinServices, symbol: 'usdt', name: 'Tether' },
+                        [eth.id]: { ...coinServices, symbol: 'eth', name: 'Ethereum' },
+                    },
+                },
                 exchange: {
                     ...initialState.exchange,
                     selectedQuote,

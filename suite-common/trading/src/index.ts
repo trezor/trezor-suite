@@ -55,6 +55,8 @@ export * from './utils/receiveAccountUtils';
 export * from './utils/tradeableAssetBalanceUtils';
 export * from './utils/tradeableAssetGroupUtils';
 export * from './utils/tradeableAssetListUtils';
+export { getTradingAssetSearchFields } from './utils/tradingAssetSearchFields';
+export { getTradingCoinSymbolByCryptoId } from './utils/infoUtils';
 export * from './utils/tradeOperationUtils';
 export * from './utils/tradeHistoryExportUtils';
 export * from './utils/exchange/approvalFlowUtils';

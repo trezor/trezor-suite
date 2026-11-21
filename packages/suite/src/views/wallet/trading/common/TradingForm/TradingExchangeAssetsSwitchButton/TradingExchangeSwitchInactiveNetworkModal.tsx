@@ -1,9 +1,9 @@
 import { useEvent } from 'react-use';
 
+import { AssetIcon } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { Column, H3, Modal, Text } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 
 type TradingExchangeSwitchInactiveNetworkModalProps = {
     asset: TradingAssetOption;
@@ -35,17 +35,12 @@ export const TradingExchangeSwitchInactiveNetworkModal = ({
                 }
             >
                 <Column gap={16} alignItems="flex-start">
-                    {asset.isNativeToken ? (
-                        <TokenIcon size={48} networkSymbol={asset.symbol} showNetworkIcon />
-                    ) : (
-                        <TokenIcon
-                            size={48}
-                            networkSymbol={asset.networkSymbol}
-                            contractAddress={asset.contractAddress}
-                            placeholder={asset.displaySymbol}
-                            showNetworkIcon
-                        />
-                    )}
+                    <AssetIcon
+                        size={48}
+                        networkSymbol={asset.networkSymbol}
+                        contractAddress={asset.isNativeToken ? undefined : asset.contractAddress}
+                        showNetworkIcon
+                    />
                     <Column gap={4} alignItems="flex-start">
                         <H3>
                             <Translation id="TR_TRADING_SWITCH_ASSETS_INACTIVE_NETWORK_TITLE" />

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type ExchangeTrade } from 'invity-api';
+import { type Coins, type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { type events } from '@suite/analytics';
 import { type EventInstance } from '@suite-common/analytics';
@@ -9,6 +9,8 @@ import {
     type TradingExchangeFormProps,
     type TradingExchangeType,
     type TradingRootState,
+    getTradingCoinSymbolByCryptoId,
+    selectTradingCoins,
     selectTradingExchangeProviders,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
@@ -21,12 +23,17 @@ type GetTradingExchangeCryptoInfoParams = {
     >;
     quoteExchange: ExchangeTrade['exchange'];
     exchangeProviders: ReturnType<typeof selectTradingExchangeProviders>;
+    coins: Coins | undefined;
 };
+
+const getCryptoLabel = (coins: Coins | undefined, cryptoId: CryptoId | undefined) =>
+    cryptoId && getTradingCoinSymbolByCryptoId(coins ?? {}, cryptoId);
 
 export const getTradingExchangeCryptoInfo = ({
     values: { sendCryptoSelect, receiveCryptoSelect, selectedFee },
     quoteExchange,
     exchangeProviders,
+    coins,
 }: GetTradingExchangeCryptoInfoParams): Pick<
     EventInstance<typeof events.tradeApprovalEvent>['payload'],
     | 'sendCryptoLabel'
@@ -41,11 +48,11 @@ export const getTradingExchangeCryptoInfo = ({
     const quoteProviderName = quoteExchange && exchangeProviders?.[quoteExchange]?.companyName;
 
     return {
-        sendCryptoLabel: sendCryptoSelect?.displaySymbol,
+        sendCryptoLabel: getCryptoLabel(coins, sendCryptoSelect?.id),
         sendCryptoNetworkSymbol: sendCryptoSelect?.networkSymbol,
         sendCryptoContractAddress: sendCryptoSelect?.contractAddress ?? undefined,
 
-        receiveCryptoLabel: receiveCryptoSelect?.displaySymbol,
+        receiveCryptoLabel: getCryptoLabel(coins, receiveCryptoSelect?.id),
         receiveCryptoNetworkSymbol: receiveCryptoSelect?.networkSymbol,
         receiveCryptoContractAddress: receiveCryptoSelect?.contractAddress ?? undefined,
 
@@ -60,6 +67,7 @@ export const useTradingExchangeCryptoAndProviderInfo = () => {
         (state: TradingRootState) => selectTradingExchangeSelectedQuote(state)?.exchange,
     );
     const exchangeProviders = useSelector(selectTradingExchangeProviders);
+    const coins = useSelector(selectTradingCoins);
 
     const getCryptoInfo = useCallback(
         () =>
@@ -67,8 +75,9 @@ export const useTradingExchangeCryptoAndProviderInfo = () => {
                 values: getValues(),
                 quoteExchange,
                 exchangeProviders,
+                coins,
             }),
-        [getValues, quoteExchange, exchangeProviders],
+        [getValues, quoteExchange, exchangeProviders, coins],
     );
 
     return getCryptoInfo;

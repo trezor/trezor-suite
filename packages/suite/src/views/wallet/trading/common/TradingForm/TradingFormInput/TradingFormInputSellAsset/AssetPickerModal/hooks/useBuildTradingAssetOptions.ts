@@ -1,6 +1,5 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-import { useAccountsWithTokenDisplayNames } from '#src/components/suite/asset-picker/hooks/useAccountsWithTokenDisplayNames';
 import { useFilterAccountsWithTokens } from '#src/components/suite/asset-picker/hooks/useFilterAccountsWithTokens';
 import { useInsertGroupLabelsAndSpaces } from '#src/components/suite/asset-picker/hooks/useInsertGroupLabelsAndSpaces';
 import { type AssetGroupKey } from '#src/components/suite/asset-picker/utils/assetGroupKey';
@@ -21,9 +20,8 @@ export function useBuildTradingAssetOptions({
 }: UseBuildTradingAssetOptionsProps) {
     const { networks, assetRows } = useSellAssetRows({ networkSymbolFilter: networkSymbol });
 
-    const assetRowsWithDisplayNames = useAccountsWithTokenDisplayNames(assetRows);
     const filteredAssetRows = useFilterAccountsWithTokens({
-        accountsWithTokens: assetRowsWithDisplayNames,
+        accountsWithTokens: assetRows,
         search,
         shouldKeepAccountWithMatchedToken: false,
     });

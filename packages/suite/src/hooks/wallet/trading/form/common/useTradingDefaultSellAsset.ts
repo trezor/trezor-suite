@@ -6,6 +6,7 @@ import { type CryptoId } from 'invity-api';
 import {
     type TradingAssetSellOption,
     createAssetNativeTokenOption,
+    createAssetTokenOption,
     parseCryptoId,
     selectTradingCoins,
     useTradingAssets,
@@ -28,7 +29,7 @@ export function useTradingDefaultSellAsset({
     cryptoId,
 }: UseTradingDefaultSellAssetProps) {
     const findAccountOrToken = useTradingFindAccountOrToken();
-    const { createAssetOptionFromCryptoId, resolveAssetTokenOption } = useTradingAssets();
+    const { createAssetOptionFromCryptoId } = useTradingAssets();
     const coins = useSelector(selectTradingCoins);
     const accountOrToken = useMemo(() => {
         if (!cryptoId || !accountKey) {
@@ -50,7 +51,7 @@ export function useTradingDefaultSellAsset({
 
         if (token) {
             return {
-                ...resolveAssetTokenOption(account.symbol, token),
+                ...createAssetTokenOption(account.symbol, token),
                 accountKey: account.key,
             } satisfies TradingAssetSellOption;
         }
@@ -69,7 +70,7 @@ export function useTradingDefaultSellAsset({
             ),
             accountKey: account.key,
         } satisfies TradingAssetSellOption;
-    }, [accountOrToken, coins, createAssetOptionFromCryptoId, cryptoId, resolveAssetTokenOption]);
+    }, [accountOrToken, coins, createAssetOptionFromCryptoId, cryptoId]);
 
     return { account, defaultAsset };
 }
