@@ -69,7 +69,7 @@ test.describe(
         test(
             'Initial run with device that is already in recovery mode',
             { annotation: createTestAnnotation({ stream: TestStream.Growth }) },
-            async ({ page, device, onboardingPage, devicePrompt, indexedDb }) => {
+            async ({ page, device, onboardingPage, analyticsSection, devicePrompt, indexedDb }) => {
                 await test.step('Start recovery with some device', async () => {
                     await page.getByTestId('@onboarding/recovery/start-button').click();
                     await devicePrompt.confirmOnDevicePromptIsShown();
@@ -97,7 +97,7 @@ test.describe(
                 await test.step('Restart emulator and disable firmware hash check and analytics', async () => {
                     await device.powerOn();
                     await onboardingPage.disableNecessaryFirmwareChecks();
-                    await onboardingPage.passThroughAnalyticsAndDeviceCheck();
+                    await analyticsSection.continueButton.click();
                 });
 
                 await test.step('Recovery device persisted after reload', async () => {
