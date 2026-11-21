@@ -1,5 +1,5 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { MOCK_CARDANO_EVERSTAKE_POOL, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { getStakingDashboardAnalytics } from './useStakingTableData';
 
@@ -23,7 +23,10 @@ describe('staking dashboard analytics', () => {
 
     it('counts each offered network once across all accounts, including hidden positions', () => {
         const emptyAccount = mockWalletAccount({ symbol: ada, balance: '0' });
-        const activeAccount = mockWalletAccount({ symbol: ada, index: 9, balance: '1000000' });
+        const activeAccount = mockWalletAccount(
+            { symbol: ada, index: 9, balance: '1000000' },
+            { misc: { staking: { poolId: MOCK_CARDANO_EVERSTAKE_POOL } } },
+        );
 
         expect(
             getStakingDashboardAnalytics({

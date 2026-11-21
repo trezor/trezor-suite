@@ -10,6 +10,7 @@ import {
 } from '@suite-common/earn-staking';
 import {
     getStakingPositionAmount,
+    hasPendingStakingOperation,
     hasStakingPositionWarning,
 } from '@suite-common/earn-staking-common';
 import { useFormatters } from '@suite-common/formatters';
@@ -59,6 +60,9 @@ export const StakingPositionCard = ({ entry, onClose }: StakingPositionCardProps
     );
 
     const hasOutdatedProvider = hasStakingPositionWarning(position, 'outdated-provider');
+    const hasNoPool =
+        hasStakingPositionWarning(position, 'no-stake-pool') &&
+        !hasPendingStakingOperation(position, 'stake');
 
     const amount = formatStakingAmount({
         amount: getStakingPositionAmount(position),
@@ -73,8 +77,8 @@ export const StakingPositionCard = ({ entry, onClose }: StakingPositionCardProps
             ? formatStakingAmount({ amount: unallocatedVotingPower, networkSymbol: symbol })
             : null;
 
-    const isRateShown = isDelegatedOutside || !isPending;
-    const isRateAvailable = !isDelegatedOutside && isApyAvailable(rate);
+    const isRateShown = hasNoPool || isDelegatedOutside || !isPending;
+    const isRateAvailable = !hasNoPool && !isDelegatedOutside && isApyAvailable(rate);
 
     const onPress = useCallback(() => {
         if (!account) return;
@@ -130,7 +134,12 @@ export const StakingPositionCard = ({ entry, onClose }: StakingPositionCardProps
                                 values={{ apy: PercentageFormatter.format(rate) }}
                             />
                         ) : (
-                            <ApyValue apy={null} withLabel rateType={rateKind ?? 'apy'} />
+                            <ApyValue
+                                apy={null}
+                                isNotEarning={hasNoPool}
+                                withLabel
+                                rateType={rateKind ?? 'apy'}
+                            />
                         )}
                     </Text>
                 ))

@@ -13,6 +13,8 @@ import {
 } from '@suite-common/earn-staking';
 import {
     getStakingPositionPrincipal,
+    hasPendingStakingOperation,
+    hasStakingPositionWarning,
     stakingAmountSchema,
 } from '@suite-common/earn-staking-common';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
@@ -107,6 +109,10 @@ export const StakingManagementStakedCard = ({
     const hasOutdatedProvider = useSelector((state: StakingRootState) =>
         selectHasStakingAccountWarning(state, accountKey, 'outdated-provider'),
     );
+    const hasNoPool =
+        position !== null &&
+        hasStakingPositionWarning(position, 'no-stake-pool') &&
+        !hasPendingStakingOperation(position, 'stake');
     const stakeMessage = useStakingOperationMessage(productId, 'stake');
     const unstakeMessage = useStakingOperationMessage(productId, 'unstake');
     const { rate, rateKind } = useNetworkStakingRate({ networkSymbol, accountKey });
@@ -272,7 +278,7 @@ export const StakingManagementStakedCard = ({
                     <Text variant="body-sm">
                         <ApyValue
                             apy={rate}
-                            isNotEarning={hasOutdatedProvider}
+                            isNotEarning={hasOutdatedProvider || hasNoPool}
                             withLabel
                             rateType={rateKind ?? 'apy'}
                         />

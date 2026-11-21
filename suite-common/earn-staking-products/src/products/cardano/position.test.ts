@@ -304,6 +304,7 @@ describe('getCardanoProductPosition', () => {
             balances: balances({ staked: `40${ADA}` }),
             targets: [],
             operations: ['unstake', 'vote'],
+            warnings: [{ code: 'no-stake-pool' }],
             details: { kind: 'cardano-delegation', poolId: null, drep: null },
         });
     });
