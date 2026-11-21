@@ -23,6 +23,7 @@ import {
     type PendingConnectionProposalNetwork,
     type WalletConnectAdapter,
 } from '../walletConnectTypes';
+import { isWalletConnectSupportedAccount } from '../walletConnectUtils';
 
 export type WalletConnectRequestThunkState = BitcoinRequestThunkState &
     EthereumRequestThunkState &
@@ -51,7 +52,7 @@ export const getAdapterByNetwork = (networkType: string) =>
 
 export const getNamespaces = (accounts: Account[]) => {
     const accountsDeduped: Account[] = [];
-    accounts.forEach(account => {
+    accounts.filter(isWalletConnectSupportedAccount).forEach(account => {
         if (
             !accountsDeduped.some(
                 a => a.descriptor === account.descriptor && a.symbol === account.symbol,
@@ -75,7 +76,10 @@ export const processNamespaces = (
     networks: PendingConnectionProposalNetwork[],
     namespaces: ProposalTypes.RequiredNamespaces,
     required: boolean,
-) =>
+) => {
+    const supportedAccounts = accounts.filter(isWalletConnectSupportedAccount);
+
     adapters.forEach(adapter =>
-        adapter.processNamespaces(accounts, networks, namespaces, required),
+        adapter.processNamespaces(supportedAccounts, networks, namespaces, required),
     );
+};

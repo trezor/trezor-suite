@@ -12,6 +12,7 @@ import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { sortByCoin } from '@suite-common/wallet-utils';
 import {
+    isWalletConnectSupportedAccount,
     selectPendingProposal,
     sessionProposalApproveThunk,
     sessionProposalRejectThunk,
@@ -70,7 +71,11 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                 pendingProposal?.networks
                     .filter(network => network.status === 'active')
                     .flatMap(network =>
-                        accounts.filter(account => account.symbol === network.symbol),
+                        accounts.filter(
+                            account =>
+                                account.symbol === network.symbol &&
+                                isWalletConnectSupportedAccount(account),
+                        ),
                     ) ?? [],
                 supportedNetworks,
             ),
