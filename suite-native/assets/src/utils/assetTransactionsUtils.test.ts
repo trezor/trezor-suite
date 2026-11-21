@@ -239,6 +239,24 @@ describe('getAccountPaging', () => {
         ).toBe(false);
     });
 
+    it('keeps paging a history whose total the backend does not report', () => {
+        expect(getAccountPaging({ ...paging, historyTotal: -1, fetchedPage: 1 })).toMatchObject({
+            nextPageRequest: { accountKey: FIRST, page: 2 },
+            hasMoreTransactions: true,
+        });
+    });
+
+    it('has no more of a history without a total once all transactions are loaded', () => {
+        expect(
+            getAccountPaging({
+                ...paging,
+                historyTotal: -1,
+                fetchedPage: 1,
+                areAllTransactionsLoaded: true,
+            }).hasMoreTransactions,
+        ).toBe(false);
+    });
+
     it('has no more once an empty page ended the history', () => {
         expect(
             getAccountPaging({ ...paging, fetchedPage: 1, isExhausted: true }).hasMoreTransactions,

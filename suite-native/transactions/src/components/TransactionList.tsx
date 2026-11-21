@@ -222,9 +222,12 @@ export const TransactionList = ({
     const isYieldFilter = filter.type === 'yield';
     const isAutoFilledView = !!tokenContract || isYieldFilter;
     // The loader and footer must agree when history ends, even if cached counts differ.
+    const isHistoryTotalReported = account.history.total >= 0;
     const hasMoreTransactions =
         !areAllTransactionsLoaded &&
-        (!isAutoFilledView || page < Math.ceil(account.history.total / txnsPerPage));
+        (!isAutoFilledView ||
+            !isHistoryTotalReported ||
+            page < Math.ceil(account.history.total / txnsPerPage));
     const shouldDeferEmptyState = (!!tokenContract || filter.type !== 'all') && hasMoreTransactions;
     // Direct-RPC history ends at the scanned window, not the first transaction. Reaching past it is
     // left to the button, as auto-fill would keep scanning back for a token with no transfers.

@@ -26,6 +26,7 @@ import {
     selectAccountStakeTransactions,
     selectAccountStakeTypeTransactions,
     selectAccountYieldVaultTransactions,
+    selectAreAllAccountTransactionsLoaded,
     selectEvmPrivatePendingHint,
     selectHasUnseenNonPhishingTransactionNotifications,
     selectHistoryCoveredSince,
@@ -511,5 +512,38 @@ describe('selectHistoryCoveredSince', () => {
         ]);
 
         expect(coveredSince).toBeUndefined();
+    });
+});
+
+describe(selectAreAllAccountTransactionsLoaded.name, () => {
+    const getAreAllLoaded = (historyTotal: number, areAllTransactionsLoaded?: boolean) =>
+        selectAreAllAccountTransactionsLoaded(
+            {
+                wallet: {
+                    transactions: {
+                        transactions: {
+                            [ACCOUNT_KEY]: [testMocks.getWalletTransaction({ txid: 'a' })],
+                        },
+                        fetchStatusDetail:
+                            areAllTransactionsLoaded === undefined
+                                ? {}
+                                : { [ACCOUNT_KEY]: { status: 'idle', areAllTransactionsLoaded } },
+                    },
+                    accounts: [{ ...ethAccount, history: { total: historyTotal } }],
+                },
+            } as unknown as TransactionsRootState & AccountsRootState,
+            ACCOUNT_KEY,
+        );
+
+    it('is true once the stored transactions reach the reported total', () => {
+        expect(getAreAllLoaded(1)).toBe(true);
+    });
+
+    it('is false while a history without a reported total has a page after', () => {
+        expect(getAreAllLoaded(-1)).toBe(false);
+    });
+
+    it('is true once fetching reached the end of a history without a reported total', () => {
+        expect(getAreAllLoaded(-1, true)).toBe(true);
     });
 });
