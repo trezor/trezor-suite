@@ -7,7 +7,7 @@ import { createThunk } from '@trezor/redux-utils';
 import { deviceActions } from './deviceActions';
 import { DEVICE_MODULE_PREFIX } from './deviceConstants';
 import { type DeviceRootState } from './deviceReducer';
-import { selectDevices, selectIsSameOrNewDevice } from './deviceSelectors';
+import { selectDevices, selectIsSameOrNewDevice, selectSelectedDevice } from './deviceSelectors';
 
 type SelectDeviceThunkParams = {
     device: Device | TrezorDevice | undefined;
@@ -60,6 +60,35 @@ export const selectNewlyConnectedDeviceThunk = createThunk<
 >(
     `${DEVICE_MODULE_PREFIX}/selectNewlyConnectedDevice`,
     ({ device }, { dispatch, getState, rejectWithValue }) => {
+        // The reducer keeps the device that is already connected over another transport (USB) when
+        // the same device also connects over Bluetooth, so no device has the Bluetooth path and
+        // selecting by it would deselect the device.
+        const devices = selectDevices(getState());
+        const deviceConnectedOverOtherTransport =
+            device?.descriptor.apiType === 'bluetooth' && device.id
+                ? devices.find(
+                      d =>
+                          d.id === device.id && d.connected && d.descriptor.apiType !== 'bluetooth',
+                  )
+                : undefined;
+        if (deviceConnectedOverOtherTransport) {
+            const selectedDevice = selectSelectedDevice(getState());
+            // Native selects the unacquired Bluetooth entry first; the reducer has now replaced it
+            // with the kept device, so select that instead of keeping a selection that no longer exists.
+            if (selectedDevice && !getSelectedDevice(selectedDevice, devices)) {
+                dispatch(
+                    selectDeviceThunk({
+                        device: deviceConnectedOverOtherTransport,
+                        isNewlyConnected: true,
+                    }),
+                );
+
+                return;
+            }
+
+            return rejectWithValue('already-connected-over-other-transport');
+        }
+
         if (!isNative() && !selectIsSameOrNewDevice(getState(), device)) {
             // Select automatically when it is the first known device (none selected),
             // or when we connected physical device corresponding to a selected remembered wallet.

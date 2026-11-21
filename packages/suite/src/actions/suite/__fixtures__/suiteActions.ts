@@ -11,6 +11,7 @@ import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
 import { setSuiteError } from '../suiteActions';
 
 const SUITE_DEVICE = mockSuiteDevice({ path: '1' });
+const SUITE_DEVICE_CONNECTED = mockSuiteDevice({ path: '1', connected: true });
 const SUITE_DEVICE_UNACQUIRED = mockSuiteDevice({
     type: 'unacquired',
     path: '2',
@@ -227,6 +228,36 @@ const selectNewlyConnectedDevice = [
         },
         newlyConnectedDevice: SUITE_DEVICE_UNACQUIRED,
         expectedNextActionType: selectNewlyConnectedDeviceThunk.rejected.type,
+    },
+    {
+        description: `doesn't select a Bluetooth connection of a device already connected over USB`,
+        state: {
+            device: {
+                devices: [SUITE_DEVICE_CONNECTED],
+                selectedDevice: SUITE_DEVICE_CONNECTED,
+            },
+            suite: {},
+        },
+        newlyConnectedDevice: mockConnectDevice({
+            path: '2',
+            descriptor: { apiType: 'bluetooth', id: 'bluetooth-id' },
+        }),
+        expectedNextActionType: selectNewlyConnectedDeviceThunk.rejected.type,
+    },
+    {
+        description: `selects the device kept over USB when the selected Bluetooth entry was replaced by it`,
+        state: {
+            device: {
+                devices: [SUITE_DEVICE_CONNECTED],
+                selectedDevice: SUITE_DEVICE_UNACQUIRED,
+            },
+            suite: {},
+        },
+        newlyConnectedDevice: mockConnectDevice({
+            path: '2',
+            descriptor: { apiType: 'bluetooth', id: 'bluetooth-id' },
+        }),
+        expectedNextActionType: selectNewlyConnectedDeviceThunk.fulfilled.type,
     },
 ];
 
