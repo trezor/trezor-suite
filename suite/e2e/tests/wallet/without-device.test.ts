@@ -63,6 +63,16 @@ test.describe('Without device', { tag: ['@T3W1', '@T3T1'] }, () => {
                     page.getByTestId('@settings/device/disconnected-device-banner'),
                 ).toBeVisible();
             });
+
+            // Recurring bug: https://github.com/trezor/trezor-suite/issues/23670
+            await test.step('Reconnecting the device keeps the selected account', async () => {
+                await walletPage.openAccount({ symbol: asNetworkSymbol('regtest') });
+                await walletPage.openSendFormButton.click();
+
+                await device.powerOn();
+                await expect(walletPage.deviceConnectedStatus).toBeVisible({ timeout: 30_000 });
+                await page.expectReduxObjectToEqual('router.params.symbol', 'regtest');
+            });
         },
     );
 });

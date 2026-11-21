@@ -108,6 +108,19 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(metadataPage.copyAddressButton).toBeVisible();
                 await expect(metadataPage.copyAddressButton).toBeEnabled();
             });
+
+            // Recurring bug: https://github.com/trezor/trezor-suite/pull/23457
+            await test.step('Standard wallet still shows its address after the reconnect', async () => {
+                await dashboardPage.openDeviceSwitcher();
+                await dashboardPage.walletAtIndex(0).click();
+                await walletPage.receiveButton.click();
+                await walletPage.verifyAddressButton.click();
+                const standardWalletAddress = await devicePrompt.getAddressFromDisplay();
+                await devicePrompt.waitForPromptAndConfirm();
+
+                await expect(metadataPage.copyAddressButton).toBeEnabled();
+                expect(standardWalletAddress).toMatch(/^bc1q[a-z0-9]{38}$/);
+            });
         },
     );
 });

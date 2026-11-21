@@ -124,6 +124,25 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
                     values: { networkName: 'Bitcoin Regtest', index: '1' },
                 });
             });
+
+            // Recurring bug: https://github.com/trezor/trezor-suite/issues/26504
+            await test.step('Global send starts from an empty form', async () => {
+                await tradingPage.sendAddressInput.fill(REGTEST_ADDRESS);
+                await tradingPage.sendAmountInput.fill('0.1');
+                await page.expectReduxObjectNotToBeEmpty('wallet.send.drafts');
+
+                await dashboardPage.navigateTo();
+                await page.getByTestId('@wallet/menu/wallet-global-send').click();
+                await tradingPage.assetPicker.filterSendReceiveByNetwork(regtestSymbol);
+                await tradingPage.assetPicker
+                    .sendOption({
+                        accountType: 'normal',
+                        accountSymbol: regtestSymbol,
+                        index: 0,
+                    })
+                    .click();
+                await page.expectReduxObjectToEqual('wallet.send.drafts', {});
+            });
         },
     );
 });

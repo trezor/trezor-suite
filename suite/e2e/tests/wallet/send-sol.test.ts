@@ -56,6 +56,16 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
                 await expect(tradingPage.sendButton).toBeDisabled();
             });
 
+            // Recurring bug: https://github.com/trezor/trezor-suite/issues/25986
+            await test.step('Turning Send Max off hides the network reserve banner', async () => {
+                await tradingPage.sendAddressInput.fill(RECIPIENT_ADDRESS);
+                await tradingPage.setMax.click();
+                await expect(tradingPage.fees.networkReserveBanner).toBeVisible();
+
+                await tradingPage.setMax.click();
+                await expect(tradingPage.fees.networkReserveBanner).toBeHidden();
+            });
+
             await test.step('Fill recipient address, toggle Send Max & verify calculation', async () => {
                 await tradingPage.sendAddressInput.fill(RECIPIENT_ADDRESS);
                 await tradingPage.setMax.click();

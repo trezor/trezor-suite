@@ -151,5 +151,39 @@ describe('redirectMiddleware', () => {
             });
             expect(store.getState().router.route?.name).toBe('wallet-index');
         });
+
+        // Recurring bug: https://github.com/trezor/trezor-suite/issues/23670
+        it('SUITE.SELECT_DEVICE of the already selected device keeps wallet params', () => {
+            const walletParams = { symbol: 'btc', accountIndex: 2, accountType: 'normal' } as const;
+            const reconnectedDevice = mockSuiteDevice({ path: '2' }, { device_id: 'same-device' });
+            const store = initStore(
+                getInitialState(
+                    undefined,
+                    { devices: [], selectedDevice: reconnectedDevice },
+                    {
+                        app: 'wallet',
+                        params: walletParams,
+                        route: {
+                            name: 'wallet-send',
+                            pattern: '/accounts/send',
+                            app: 'wallet',
+                            params: ['symbol', 'accountIndex', 'accountType'],
+                            isForegroundApp: undefined,
+                            isFullscreenApp: undefined,
+                            isNestedRoute: undefined,
+                            clearUrl: undefined,
+                            hasNestedRoutes: undefined,
+                        },
+                    },
+                ),
+            );
+
+            store.dispatch({
+                type: deviceActions.selectDevice.type,
+                payload: reconnectedDevice,
+            });
+
+            expect(store.getState().router.params).toEqual(walletParams);
+        });
     });
 });
