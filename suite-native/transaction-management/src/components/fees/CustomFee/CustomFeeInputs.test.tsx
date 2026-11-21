@@ -6,9 +6,11 @@ import type { AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
+    act,
     createStoreFromPreloadedState,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
+    userEvent,
 } from '@suite-native/test-utils-store';
 
 import { CustomFeeInputs, type CustomFeeInputsProps } from './CustomFeeInputs';
@@ -182,6 +184,24 @@ describe('CustomFeeInputs', () => {
                     }),
                 ),
             ).toBeNull();
+        });
+    });
+
+    describe('Clearing', () => {
+        it('should keep a cleared fee rate empty when its default is refreshed', async () => {
+            const { result, rerender } = await renderHookWithStoreProvider(useFeesForm, {
+                initialProps: { accountKey: ETH_ACCOUNT_KEY, defaultFeePerUnit: '1' },
+                services: { store },
+                preloadedState: defaultState,
+            });
+            const { getByTestId } = await renderCustomFeeInputs({ form: result.current });
+            const input = getByTestId('@transactionManagement/customFeePerUnit-input');
+            expect(input.props.value).toBe('1');
+
+            await userEvent.clear(input);
+            await act(() => rerender({ accountKey: ETH_ACCOUNT_KEY, defaultFeePerUnit: '2' }));
+
+            expect(input.props.value).toBe('');
         });
     });
 });

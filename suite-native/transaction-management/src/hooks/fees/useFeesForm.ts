@@ -40,17 +40,22 @@ const syncCustomFeeDefaults = (
     referenceFee: PrecomposedTransactionFinal | undefined,
 ) => {
     const values = form.getValues();
+    // A field the user cleared is dirty and must stay empty while they retype it.
+    const isMissing = (name: keyof FeesFormValues) =>
+        !values[name] && !form.getFieldState(name).isDirty;
 
-    if (!values.customFeePerUnit && feePerUnit) {
+    if (isMissing('customFeePerUnit') && feePerUnit) {
         form.setValue('customFeePerUnit', feePerUnit);
     }
     const defaultFeeLimit = getDefaultFeeLimit(networkType, referenceFee);
     const shouldUpdateFeeLimit =
-        networkType === 'tron' ? !!defaultFeeLimit : !values.customFeeLimit && !!defaultFeeLimit;
-    if (!values.customMaxFeePerGas && referenceFee?.maxFeePerGas) {
+        networkType === 'tron'
+            ? !!defaultFeeLimit
+            : isMissing('customFeeLimit') && !!defaultFeeLimit;
+    if (isMissing('customMaxFeePerGas') && referenceFee?.maxFeePerGas) {
         form.setValue('customMaxFeePerGas', referenceFee.maxFeePerGas);
     }
-    if (!values.customMaxPriorityFeePerGas && referenceFee?.maxPriorityFeePerGas) {
+    if (isMissing('customMaxPriorityFeePerGas') && referenceFee?.maxPriorityFeePerGas) {
         form.setValue('customMaxPriorityFeePerGas', referenceFee.maxPriorityFeePerGas);
     }
     if (shouldUpdateFeeLimit) {

@@ -67,7 +67,8 @@ describe('useFeesForm', () => {
     };
 
     const renderUseFeesForm = (props: UseFeesFormProps = mockProps) =>
-        renderHookWithStoreProvider(() => useFeesForm(props), {
+        renderHookWithStoreProvider(useFeesForm, {
+            initialProps: props,
             preloadedState: {
                 wallet: {
                     fees: {},
@@ -161,6 +162,29 @@ describe('useFeesForm', () => {
         });
 
         expect(result.current.getValues('customFeeLimit')).toBe('21000');
+    });
+
+    it('should keep a cleared custom fee rate empty when its default is refreshed', async () => {
+        const { result, rerender } = await renderUseFeesForm();
+
+        await act(() => {
+            result.current.setValue('customFeePerUnit', '', { shouldDirty: true });
+        });
+        await act(() => rerender({ ...mockProps, defaultFeePerUnit: '30000000000' }));
+
+        expect(result.current.getValues('customFeePerUnit')).toBe('');
+    });
+
+    it('should fill an untouched custom fee rate when its default arrives late', async () => {
+        const { result, rerender } = await renderUseFeesForm({
+            ...mockProps,
+            defaultFeePerUnit: undefined,
+        });
+        expect(result.current.getValues('customFeePerUnit')).toBeUndefined();
+
+        await act(() => rerender(mockProps));
+
+        expect(result.current.getValues('customFeePerUnit')).toBe('20000000000');
     });
 
     it('should handle empty fee levels without crashing', async () => {
