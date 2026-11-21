@@ -521,12 +521,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/index.tsx",
+                    "path": "suite-app/module-onboarding/src/Onboarding.tsx",
                     "detail": "Additional inspected desktop/web composition supporting the parity decision.",
                     "line": 1,
-                    "local_link": "packages/suite/src/views/onboarding/index.tsx:1",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/index.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/index.tsx#L1"
+                    "local_link": "suite-app/module-onboarding/src/Onboarding.tsx:1",
+                    "repository_link": "../../../suite-app/module-onboarding/src/Onboarding.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-onboarding/src/Onboarding.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -606,12 +606,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/index.tsx",
+                    "path": "suite-app/module-onboarding/src/Onboarding.tsx",
                     "detail": "Additional inspected desktop/web composition supporting the parity decision.",
                     "line": 1,
-                    "local_link": "packages/suite/src/views/onboarding/index.tsx:1",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/index.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/index.tsx#L1"
+                    "local_link": "suite-app/module-onboarding/src/Onboarding.tsx:1",
+                    "repository_link": "../../../suite-app/module-onboarding/src/Onboarding.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-onboarding/src/Onboarding.tsx#L1"
                 }
             ],
             "roots": [
@@ -645,12 +645,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/index.tsx",
+                    "path": "suite-app/module-onboarding/src/Onboarding.tsx",
                     "detail": "Connect a Trezor and create or recover a wallet before using it.",
                     "line": 1,
-                    "local_link": "packages/suite/src/views/onboarding/index.tsx:1",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/index.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/index.tsx#L1"
+                    "local_link": "suite-app/module-onboarding/src/Onboarding.tsx:1",
+                    "repository_link": "../../../suite-app/module-onboarding/src/Onboarding.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-onboarding/src/Onboarding.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -674,12 +674,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/onboarding/index.tsx",
+                    "path": "suite-app/module-onboarding/src/Onboarding.tsx",
                     "symbol": "Onboarding",
                     "line": 27,
-                    "local_link": "packages/suite/src/views/onboarding/index.tsx:27",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/index.tsx#L27",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/index.tsx#L27",
+                    "local_link": "suite-app/module-onboarding/src/Onboarding.tsx:27",
+                    "repository_link": "../../../suite-app/module-onboarding/src/Onboarding.tsx#L27",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-onboarding/src/Onboarding.tsx#L27",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -714,12 +714,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/steps/FirmwareStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/FirmwareStep/FirmwareStep.tsx",
                     "detail": "Install firmware on an uninitialized device and follow device confirmation and reconnect instructions.",
                     "line": 1,
-                    "local_link": "packages/suite/src/views/onboarding/steps/FirmwareStep/index.tsx:1",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/FirmwareStep/index.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/FirmwareStep/index.tsx#L1"
+                    "local_link": "packages/suite/src/views/onboarding/steps/FirmwareStep/FirmwareStep.tsx:1",
+                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/FirmwareStep/FirmwareStep.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/FirmwareStep/FirmwareStep.tsx#L1"
                 },
                 {
                     "kind": "automated-test",
@@ -770,12 +770,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/onboarding/steps/FirmwareStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/FirmwareStep/FirmwareStep.tsx",
                     "symbol": "FirmwareStep",
                     "line": 27,
-                    "local_link": "packages/suite/src/views/onboarding/steps/FirmwareStep/index.tsx:27",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/FirmwareStep/index.tsx#L27",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/FirmwareStep/index.tsx#L27",
+                    "local_link": "packages/suite/src/views/onboarding/steps/FirmwareStep/FirmwareStep.tsx:27",
+                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/FirmwareStep/FirmwareStep.tsx#L27",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/FirmwareStep/FirmwareStep.tsx#L27",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -1804,12 +1804,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "detail": "Restore access to a wallet from an existing backup.",
                     "line": 1,
-                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx:1",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L1"
+                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx:1",
+                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L1"
                 },
                 {
                     "kind": "automated-test",
@@ -1860,12 +1860,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "symbol": "RecoveryStep",
                     "line": 28,
-                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx:28",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L28",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L28",
+                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx:28",
+                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L28",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L28",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -1900,12 +1900,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "detail": "Choose the backup word count before recovery on Model One.",
                     "line": 1,
-                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx:1",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L1"
+                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx:1",
+                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -1947,12 +1947,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "symbol": "RecoveryStep",
                     "line": 28,
-                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx:28",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L28",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L28",
+                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx:28",
+                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L28",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L28",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 }
@@ -1976,12 +1976,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "detail": "Restore a Model One wallet by entering requested backup words in Suite.",
                     "line": 1,
-                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx:1",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L1"
+                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx:1",
+                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L1"
                 },
                 {
                     "kind": "automated-test",
@@ -2032,12 +2032,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "symbol": "RecoveryStep",
                     "line": 28,
-                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx:28",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L28",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L28",
+                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx:28",
+                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L28",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L28",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 }
@@ -2061,12 +2061,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "detail": "Use the scrambled recovery matrix to recover a Model One wallet.",
                     "line": 1,
-                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx:1",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L1"
+                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx:1",
+                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L1"
                 },
                 {
                     "kind": "automated-test",
@@ -2117,12 +2117,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "symbol": "RecoveryStep",
                     "line": 28,
-                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx:28",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L28",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L28",
+                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx:28",
+                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L28",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L28",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 }
@@ -2146,12 +2146,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "detail": "Enter a supported word or share backup directly on the Trezor.",
                     "line": 1,
-                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx:1",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L1"
+                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx:1",
+                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L1"
                 },
                 {
                     "kind": "automated-test",
@@ -2202,12 +2202,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "symbol": "RecoveryStep",
                     "line": 28,
-                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx:28",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L28",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L28",
+                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx:28",
+                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L28",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L28",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -2242,12 +2242,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "detail": "Retry failed recovery and continue an interrupted recovery when the device permits it.",
                     "line": 1,
-                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx:1",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L1"
+                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx:1",
+                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L1"
                 },
                 {
                     "kind": "automated-test",
@@ -2289,12 +2289,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "symbol": "RecoveryStep",
                     "line": 28,
-                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx:28",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L28",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L28",
+                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx:28",
+                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L28",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L28",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -2796,12 +2796,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx",
                     "detail": "Inspect the device and packaging using the onboarding security guidance.",
                     "line": 1,
-                    "local_link": "suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx:1",
-                    "repository_link": "../../../suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx#L1"
+                    "local_link": "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx:1",
+                    "repository_link": "../../../suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx#L1"
                 },
                 {
                     "kind": "manual-test",
@@ -2843,12 +2843,12 @@
             "roots": [
                 {
                     "platform": "mobile",
-                    "path": "suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx",
                     "symbol": "SecurityCheckScreen",
                     "line": 94,
-                    "local_link": "suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx:94",
-                    "repository_link": "../../../suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx#L94",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx#L94",
+                    "local_link": "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx:94",
+                    "repository_link": "../../../suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx#L94",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx#L94",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -3001,12 +3001,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "detail": "RecoveryStep presents backup/recovery guidance before starting the device-dependent restoration flow; it is the containing desktop/web recovery step rather than a separate native instruction screen.",
                     "line": 1,
-                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx:1",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L1"
+                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx:1",
+                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L1"
                 }
             ],
             "roots": [
@@ -3023,12 +3023,12 @@
                 },
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "symbol": "RecoveryStep",
                     "line": 28,
-                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx:28",
-                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L28",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx#L28",
+                    "local_link": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx:28",
+                    "repository_link": "../../../packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L28",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx#L28",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 }
@@ -3917,12 +3917,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/suite/bridge/index.tsx",
+                    "path": "packages/suite/src/views/suite/bridge/BridgeUnavailable.tsx",
                     "detail": "Open desktop Suite when browser transport is unavailable and inspect the current transport status.",
                     "line": 1,
-                    "local_link": "packages/suite/src/views/suite/bridge/index.tsx:1",
-                    "repository_link": "../../../packages/suite/src/views/suite/bridge/index.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/suite/bridge/index.tsx#L1"
+                    "local_link": "packages/suite/src/views/suite/bridge/BridgeUnavailable.tsx:1",
+                    "repository_link": "../../../packages/suite/src/views/suite/bridge/BridgeUnavailable.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/suite/bridge/BridgeUnavailable.tsx#L1"
                 },
                 {
                     "kind": "manual-test",
@@ -3955,12 +3955,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/suite/bridge/index.tsx",
+                    "path": "packages/suite/src/views/suite/bridge/BridgeUnavailable.tsx",
                     "symbol": "BridgeUnavailable",
                     "line": 18,
-                    "local_link": "packages/suite/src/views/suite/bridge/index.tsx:18",
-                    "repository_link": "../../../packages/suite/src/views/suite/bridge/index.tsx#L18",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/suite/bridge/index.tsx#L18",
+                    "local_link": "packages/suite/src/views/suite/bridge/BridgeUnavailable.tsx:18",
+                    "repository_link": "../../../packages/suite/src/views/suite/bridge/BridgeUnavailable.tsx#L18",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/suite/bridge/BridgeUnavailable.tsx#L18",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 }
@@ -3984,12 +3984,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/suite/udev/index.tsx",
+                    "path": "packages/suite/src/views/suite/udev/UdevRules.tsx",
                     "detail": "Find Linux USB permission rules and reconnect instructions.",
                     "line": 1,
-                    "local_link": "packages/suite/src/views/suite/udev/index.tsx:1",
-                    "repository_link": "../../../packages/suite/src/views/suite/udev/index.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/suite/udev/index.tsx#L1"
+                    "local_link": "packages/suite/src/views/suite/udev/UdevRules.tsx:1",
+                    "repository_link": "../../../packages/suite/src/views/suite/udev/UdevRules.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/suite/udev/UdevRules.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -4004,12 +4004,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/suite/udev/index.tsx",
+                    "path": "packages/suite/src/views/suite/udev/UdevRules.tsx",
                     "symbol": null,
                     "line": 1,
-                    "local_link": "packages/suite/src/views/suite/udev/index.tsx:1",
-                    "repository_link": "../../../packages/suite/src/views/suite/udev/index.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/suite/udev/index.tsx#L1",
+                    "local_link": "packages/suite/src/views/suite/udev/UdevRules.tsx:1",
+                    "repository_link": "../../../packages/suite/src/views/suite/udev/UdevRules.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/suite/udev/UdevRules.tsx#L1",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 }
@@ -5918,46 +5918,46 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/DesktopSettingsGeneralPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/DesktopSettingsGeneralPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/DesktopSettingsGeneralPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/DesktopSettingsGeneralPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/DesktopSettingsGeneralPage.tsx#L1"
+                    "local_link": "suite-app/module-settings/src/pages/DesktopSettingsGeneralPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/DesktopSettingsGeneralPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/DesktopSettingsGeneralPage.tsx#L1"
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/WebSettingsGeneralPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/WebSettingsGeneralPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/WebSettingsGeneralPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/WebSettingsGeneralPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WebSettingsGeneralPage.tsx#L1"
+                    "local_link": "suite-app/module-settings/src/pages/WebSettingsGeneralPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/WebSettingsGeneralPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/WebSettingsGeneralPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/WebSettingsGeneralPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/WebSettingsGeneralPage.tsx",
                     "symbol": "WebSettingsGeneralPage",
                     "role": "screen-entry",
                     "supported_platforms": ["web"],
                     "line": 4,
-                    "local_link": "suite-app/app/src/pages/WebSettingsGeneralPage.tsx:4",
-                    "repository_link": "../../../suite-app/app/src/pages/WebSettingsGeneralPage.tsx#L4",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WebSettingsGeneralPage.tsx#L4",
+                    "local_link": "suite-app/module-settings/src/pages/WebSettingsGeneralPage.tsx:4",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/WebSettingsGeneralPage.tsx#L4",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/WebSettingsGeneralPage.tsx#L4",
                     "codeowners": null
                 },
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/DesktopSettingsGeneralPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/DesktopSettingsGeneralPage.tsx",
                     "symbol": "DesktopSettingsGeneralPage",
                     "role": "screen-entry",
                     "supported_platforms": ["desktop"],
                     "line": 9,
-                    "local_link": "suite-app/app/src/pages/DesktopSettingsGeneralPage.tsx:9",
-                    "repository_link": "../../../suite-app/app/src/pages/DesktopSettingsGeneralPage.tsx#L9",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/DesktopSettingsGeneralPage.tsx#L9",
+                    "local_link": "suite-app/module-settings/src/pages/DesktopSettingsGeneralPage.tsx:9",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/DesktopSettingsGeneralPage.tsx#L9",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/DesktopSettingsGeneralPage.tsx#L9",
                     "codeowners": null
                 },
                 {
@@ -9132,12 +9132,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "detail": "Choose supported networks and customize their blockchain connections.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/SettingsCoinsPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsCoinsPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsCoinsPage.tsx#L1"
+                    "local_link": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsCoinsPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsCoinsPage.tsx#L1"
                 },
                 {
                     "kind": "automated-test",
@@ -9186,24 +9186,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/SettingsCoinsPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsCoinsPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsCoinsPage.tsx#L1"
+                    "local_link": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsCoinsPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsCoinsPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "symbol": "SettingsCoinsPage",
                     "role": "screen-entry",
                     "line": 52,
-                    "local_link": "suite-app/app/src/pages/SettingsCoinsPage.tsx:52",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsCoinsPage.tsx#L52",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsCoinsPage.tsx#L52",
+                    "local_link": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx:52",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsCoinsPage.tsx#L52",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsCoinsPage.tsx#L52",
                     "codeowners": null
                 },
                 {
@@ -9237,12 +9237,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "detail": "Choose which supported networks appear and participate in discovery.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/SettingsCoinsPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsCoinsPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsCoinsPage.tsx#L1"
+                    "local_link": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsCoinsPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsCoinsPage.tsx#L1"
                 },
                 {
                     "kind": "automated-test",
@@ -9311,12 +9311,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "symbol": "SettingsCoinsPage",
                     "line": 52,
-                    "local_link": "suite-app/app/src/pages/SettingsCoinsPage.tsx:52",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsCoinsPage.tsx#L52",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsCoinsPage.tsx#L52",
+                    "local_link": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx:52",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsCoinsPage.tsx#L52",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsCoinsPage.tsx#L52",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -9350,12 +9350,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "detail": "Find networks by name or symbol in the network settings list.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/SettingsCoinsPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsCoinsPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsCoinsPage.tsx#L1"
+                    "local_link": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsCoinsPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsCoinsPage.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -9379,12 +9379,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "symbol": "SettingsCoinsPage",
                     "line": 52,
-                    "local_link": "suite-app/app/src/pages/SettingsCoinsPage.tsx:52",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsCoinsPage.tsx#L52",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsCoinsPage.tsx#L52",
+                    "local_link": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx:52",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsCoinsPage.tsx#L52",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsCoinsPage.tsx#L52",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -9419,12 +9419,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "detail": "Load accounts for networks enabled since the last discovery.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/SettingsCoinsPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsCoinsPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsCoinsPage.tsx#L1"
+                    "local_link": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsCoinsPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsCoinsPage.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -9457,12 +9457,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "symbol": "SettingsCoinsPage",
                     "line": 52,
-                    "local_link": "suite-app/app/src/pages/SettingsCoinsPage.tsx:52",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsCoinsPage.tsx#L52",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsCoinsPage.tsx#L52",
+                    "local_link": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx:52",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsCoinsPage.tsx#L52",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsCoinsPage.tsx#L52",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -10106,12 +10106,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "detail": "Maintain, secure and personalize a connected Trezor.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/SettingsDevicePage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsDevicePage.tsx#L1"
+                    "local_link": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx:1",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -10142,24 +10142,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/SettingsDevicePage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsDevicePage.tsx#L1"
+                    "local_link": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx:1",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "symbol": "SettingsDevicePage",
                     "role": "screen-entry",
                     "line": 75,
-                    "local_link": "suite-app/app/src/pages/SettingsDevicePage.tsx:75",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L75",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsDevicePage.tsx#L75",
+                    "local_link": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx:75",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L75",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L75",
                     "codeowners": null
                 },
                 {
@@ -10192,12 +10192,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "detail": "Create, check or extend a device wallet backup.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/SettingsDevicePage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsDevicePage.tsx#L1"
+                    "local_link": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx:1",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -10230,12 +10230,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "symbol": "SettingsDevicePage",
                     "line": 75,
-                    "local_link": "suite-app/app/src/pages/SettingsDevicePage.tsx:75",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L75",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsDevicePage.tsx#L75",
+                    "local_link": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx:75",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L75",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L75",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -10669,12 +10669,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "detail": "Manage PIN, passphrase, wipe code and safety settings.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/SettingsDevicePage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsDevicePage.tsx#L1"
+                    "local_link": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx:1",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -10698,12 +10698,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "symbol": "SettingsDevicePage",
                     "line": 75,
-                    "local_link": "suite-app/app/src/pages/SettingsDevicePage.tsx:75",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L75",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsDevicePage.tsx#L75",
+                    "local_link": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx:75",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L75",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L75",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -11273,12 +11273,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "detail": "Customize the device name and supported display controls.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/SettingsDevicePage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsDevicePage.tsx#L1"
+                    "local_link": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx:1",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -11302,12 +11302,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "symbol": "SettingsDevicePage",
                     "line": 75,
-                    "local_link": "suite-app/app/src/pages/SettingsDevicePage.tsx:75",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L75",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsDevicePage.tsx#L75",
+                    "local_link": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx:75",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L75",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L75",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -11934,12 +11934,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "detail": "Inspect, update or replace device firmware.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/SettingsDevicePage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsDevicePage.tsx#L1"
+                    "local_link": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx:1",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -11981,12 +11981,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "symbol": "SettingsDevicePage",
                     "line": 75,
-                    "local_link": "suite-app/app/src/pages/SettingsDevicePage.tsx:75",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L75",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsDevicePage.tsx#L75",
+                    "local_link": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx:75",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L75",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L75",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -12805,12 +12805,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "detail": "Control trusted connections and forget device pairing.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/SettingsDevicePage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsDevicePage.tsx#L1"
+                    "local_link": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx:1",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -12834,12 +12834,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "symbol": "SettingsDevicePage",
                     "line": 75,
-                    "local_link": "suite-app/app/src/pages/SettingsDevicePage.tsx:75",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L75",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsDevicePage.tsx#L75",
+                    "local_link": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx:75",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L75",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L75",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -13277,12 +13277,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "detail": "Manage authenticity checks and destructive device actions.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/SettingsDevicePage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsDevicePage.tsx#L1"
+                    "local_link": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx:1",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -13306,12 +13306,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "symbol": "SettingsDevicePage",
                     "line": 75,
-                    "local_link": "suite-app/app/src/pages/SettingsDevicePage.tsx:75",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L75",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsDevicePage.tsx#L75",
+                    "local_link": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx:75",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L75",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L75",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -15307,24 +15307,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/PasswordManagerPage.tsx",
+                    "path": "suite-app/module-password-manager/src/pages/PasswordManagerPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/PasswordManagerPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/PasswordManagerPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/PasswordManagerPage.tsx#L1"
+                    "local_link": "suite-app/module-password-manager/src/pages/PasswordManagerPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-password-manager/src/pages/PasswordManagerPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-password-manager/src/pages/PasswordManagerPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/PasswordManagerPage.tsx",
+                    "path": "suite-app/module-password-manager/src/pages/PasswordManagerPage.tsx",
                     "symbol": "PasswordManagerPage",
                     "role": "screen-entry",
                     "line": 4,
-                    "local_link": "suite-app/app/src/pages/PasswordManagerPage.tsx:4",
-                    "repository_link": "../../../suite-app/app/src/pages/PasswordManagerPage.tsx#L4",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/PasswordManagerPage.tsx#L4",
+                    "local_link": "suite-app/module-password-manager/src/pages/PasswordManagerPage.tsx:4",
+                    "repository_link": "../../../suite-app/module-password-manager/src/pages/PasswordManagerPage.tsx#L4",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-password-manager/src/pages/PasswordManagerPage.tsx#L4",
                     "codeowners": null
                 },
                 {
@@ -16893,12 +16893,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/NotificationPage.tsx",
+                    "path": "suite-app/module-activity-center/src/pages/NotificationPage.tsx",
                     "detail": "Inspect transaction notifications, system activity, and release notes.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/NotificationPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/NotificationPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/NotificationPage.tsx#L1"
+                    "local_link": "suite-app/module-activity-center/src/pages/NotificationPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-activity-center/src/pages/NotificationPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-activity-center/src/pages/NotificationPage.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -16911,24 +16911,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/NotificationPage.tsx",
+                    "path": "suite-app/module-activity-center/src/pages/NotificationPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/NotificationPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/NotificationPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/NotificationPage.tsx#L1"
+                    "local_link": "suite-app/module-activity-center/src/pages/NotificationPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-activity-center/src/pages/NotificationPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-activity-center/src/pages/NotificationPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/NotificationPage.tsx",
+                    "path": "suite-app/module-activity-center/src/pages/NotificationPage.tsx",
                     "symbol": "NotificationPage",
                     "role": "screen-entry",
                     "line": 31,
-                    "local_link": "suite-app/app/src/pages/NotificationPage.tsx:31",
-                    "repository_link": "../../../suite-app/app/src/pages/NotificationPage.tsx#L31",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/NotificationPage.tsx#L31",
+                    "local_link": "suite-app/module-activity-center/src/pages/NotificationPage.tsx:31",
+                    "repository_link": "../../../suite-app/module-activity-center/src/pages/NotificationPage.tsx#L31",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-activity-center/src/pages/NotificationPage.tsx#L31",
                     "codeowners": null
                 },
                 {
@@ -16959,12 +16959,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/NotificationPage.tsx",
+                    "path": "suite-app/module-activity-center/src/pages/NotificationPage.tsx",
                     "detail": "Browse important transaction activity grouped into new and previously seen entries.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/NotificationPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/NotificationPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/NotificationPage.tsx#L1"
+                    "local_link": "suite-app/module-activity-center/src/pages/NotificationPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-activity-center/src/pages/NotificationPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-activity-center/src/pages/NotificationPage.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -16988,12 +16988,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/NotificationPage.tsx",
+                    "path": "suite-app/module-activity-center/src/pages/NotificationPage.tsx",
                     "symbol": "NotificationPage",
                     "line": 31,
-                    "local_link": "suite-app/app/src/pages/NotificationPage.tsx:31",
-                    "repository_link": "../../../suite-app/app/src/pages/NotificationPage.tsx#L31",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/NotificationPage.tsx#L31",
+                    "local_link": "suite-app/module-activity-center/src/pages/NotificationPage.tsx:31",
+                    "repository_link": "../../../suite-app/module-activity-center/src/pages/NotificationPage.tsx#L31",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-activity-center/src/pages/NotificationPage.tsx#L31",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -17028,12 +17028,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/NotificationPage.tsx",
+                    "path": "suite-app/module-activity-center/src/pages/NotificationPage.tsx",
                     "detail": "Browse non-transaction application activity and related actions.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/NotificationPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/NotificationPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/NotificationPage.tsx#L1"
+                    "local_link": "suite-app/module-activity-center/src/pages/NotificationPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-activity-center/src/pages/NotificationPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-activity-center/src/pages/NotificationPage.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -17066,12 +17066,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/NotificationPage.tsx",
+                    "path": "suite-app/module-activity-center/src/pages/NotificationPage.tsx",
                     "symbol": "NotificationPage",
                     "line": 31,
-                    "local_link": "suite-app/app/src/pages/NotificationPage.tsx:31",
-                    "repository_link": "../../../suite-app/app/src/pages/NotificationPage.tsx#L31",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/NotificationPage.tsx#L31",
+                    "local_link": "suite-app/module-activity-center/src/pages/NotificationPage.tsx:31",
+                    "repository_link": "../../../suite-app/module-activity-center/src/pages/NotificationPage.tsx#L31",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-activity-center/src/pages/NotificationPage.tsx#L31",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 }
@@ -17259,7 +17259,7 @@
             "parent_id": "help.referral",
             "path_ids": ["help", "help.referral", "help.referral.prototype"],
             "name": "Internal referral prototype",
-            "description": "Preview an in-app referral program with mocked enrollment, referral links, vouchers, and reward statistics.",
+            "description": "Preview an in-app referral program backed by the referral API: enrollment, referral links, vouchers, and reward statistics.",
             "platforms": {
                 "desktop": "conditional",
                 "web": "conditional",
@@ -17268,18 +17268,18 @@
             "conditions": [
                 "desktop-web: Debug mode AND refer-a-friend feature flag",
                 "desktop-web: Initialized connected device in standard wallet",
-                "desktop-web: Mock program data and local useState enrollment; no production referral backend verified",
+                "desktop-web: Program, account and enrollment come from the referral API via @suite-common/refer-a-friend thunks; production backend availability not verified",
                 "mobile: The audited native root navigator has no internal referral enrollment/rewards screen; native referral entry opens the external program URL only."
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/ReferAFriendPage.tsx",
-                    "detail": "Preview an in-app referral program with mocked enrollment, referral links, vouchers, and reward statistics.",
+                    "path": "suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx",
+                    "detail": "Preview an in-app referral program backed by the referral API: enrollment, referral links, vouchers, and reward statistics.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/ReferAFriendPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/ReferAFriendPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/ReferAFriendPage.tsx#L1"
+                    "local_link": "suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -17292,12 +17292,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/refer-a-friend/mockReferralProgram.ts",
-                    "detail": "Program values are placeholders pending the referral API.",
-                    "line": 1,
-                    "local_link": "packages/suite/src/views/refer-a-friend/mockReferralProgram.ts:1",
-                    "repository_link": "../../../packages/suite/src/views/refer-a-friend/mockReferralProgram.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/refer-a-friend/mockReferralProgram.ts#L1"
+                    "path": "suite-common/refer-a-friend/src/referAFriendThunks.ts",
+                    "detail": "Program, account, join, key derivation and leave go through the referral API (fetchReferralProgramThunk, fetchReferralAccountThunk, joinReferralProgramThunk).",
+                    "line": 248,
+                    "local_link": "suite-common/refer-a-friend/src/referAFriendThunks.ts:248",
+                    "repository_link": "../../../suite-common/refer-a-friend/src/referAFriendThunks.ts#L248",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/refer-a-friend/src/referAFriendThunks.ts#L248"
                 },
                 {
                     "kind": "implementation",
@@ -17319,24 +17319,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/ReferAFriendPage.tsx",
+                    "path": "suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/ReferAFriendPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/ReferAFriendPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/ReferAFriendPage.tsx#L1"
+                    "local_link": "suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/ReferAFriendPage.tsx",
+                    "path": "suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx",
                     "symbol": "ReferAFriendPage",
                     "role": "screen-entry",
                     "line": 55,
-                    "local_link": "suite-app/app/src/pages/ReferAFriendPage.tsx:55",
-                    "repository_link": "../../../suite-app/app/src/pages/ReferAFriendPage.tsx#L55",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/ReferAFriendPage.tsx#L55",
+                    "local_link": "suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx:55",
+                    "repository_link": "../../../suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx#L55",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx#L55",
                     "codeowners": null
                 }
             ]
@@ -17489,7 +17489,7 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/DashboardPage.tsx",
+                    "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
                     "line": 28,
                     "detail": "Dashboard context message."
                 },
@@ -17543,7 +17543,7 @@
             "evidence": [
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/SettingsDebugPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDebugPage.tsx",
                     "line": 150,
                     "detail": "Debug settings page renders the message-system debug section."
                 },
@@ -17596,7 +17596,7 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/suite/bridge-deprecated/index.tsx",
+                    "path": "packages/suite/src/views/suite/bridge-deprecated/BridgeDeprecated.tsx",
                     "line": 16,
                     "detail": "Warning modal 'Trezor Bridge has been deprecated' with a link to the uninstall guide (UNINSTALL_BRIDGE_URL) and a Take me back to wallet button; backdrop or cancel also returns to the wallet."
                 },
@@ -17639,7 +17639,7 @@
                 },
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/suite/bridge-deprecated/index.tsx",
+                    "path": "packages/suite/src/views/suite/bridge-deprecated/BridgeDeprecated.tsx",
                     "symbol": "BridgeDeprecated"
                 }
             ]

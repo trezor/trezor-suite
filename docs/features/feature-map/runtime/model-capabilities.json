@@ -73,7 +73,7 @@
             "packages/suite/src/views/onboarding/steps/PinStep.tsx": "da50dc8c251fd6d604a7dd0578f947de3773ae660d4d7b450aed9d97fe17b168",
             "packages/suite/src/views/onboarding/steps/SecurityStep.tsx": "d3049b504e4b68090e4fe1f2e534d953142ff608114c6209d9362fc639396017",
             "packages/suite/src/views/onboarding/steps/SelectBackupType/ShamirOptions.tsx": "c8bd2533a1bd96c80438c615b83e50e387f88243306c665a52279d1610f1892f",
-            "packages/suite/src/views/recovery/index.tsx": "6e58de78d390bb7b330aa450e606803770afb0333b55cd9f67f2837194aaf2ab",
+            "packages/suite/src/views/recovery/Recovery.tsx": "6e58de78d390bb7b330aa450e606803770afb0333b55cd9f67f2837194aaf2ab",
             "packages/suite/src/views/recovery/steps/InitialStep.tsx": "e1ac5a4965fb0edd4b70fabb41616e1eb3c4878236984f2d034b8b52bf69e889",
             "packages/suite/src/views/settings/SettingsDevice/AutoLock.tsx": "448fa20a20774be67fefd8f5e3bbd3a071365c8cf07e1348868cef4cc08a7a5b",
             "packages/suite/src/views/settings/SettingsDevice/Brightness.tsx": "875e393f97bd26e24fd8dc6787c0df8989ec22532d21ca3ca06db680588f7b88",
@@ -85,7 +85,7 @@
             "packages/suite/src/views/settings/SettingsDevice/ForgetDevice/OsAndTrezorCleanupModal.tsx": "5d8733d797d4e8164248ef7c1282da5d14877f53b7a153bbe7431cf13bb417e7",
             "packages/suite/src/views/settings/SettingsDevice/HapticFeedback.tsx": "e32ecb0826a9a9ecf0e1d6fabb0272ce0a8fdf34ef6123786a9c922b623cf7bd",
             "packages/suite/src/views/settings/SettingsDevice/ThpAutoconnect.tsx": "4aed480711baed26531c6000be8a1b4d24e0f5a510e43232cac568990fed15f1",
-            "suite-app/app/src/pages/SettingsDevicePage.tsx": "35babad2d52256ad0e5b2da515325f47af9dfa926952a8c78b0da1a6aaa69b0f",
+            "suite-app/module-settings/src/pages/SettingsDevicePage.tsx": "35babad2d52256ad0e5b2da515325f47af9dfa926952a8c78b0da1a6aaa69b0f",
             "suite-app/web-app/src/support/createWebDesktopApi.ts": "c0875a4dd59b605be2dc8fcdf154c9f6723cd62cb3d19dbc2086c8456e2fcf56",
             "suite-common/backup/src/shamir.test.ts": "fa13c1885871300d93ac1baad3584a3316efbec439deb0bd732b59220319ea5d",
             "suite-common/backup/src/shamir.ts": "51673511b2e537f36cbf441e3e16b73fde153e9add4edaf09e1f2b52d2e3276f",
@@ -97,7 +97,7 @@
             "suite-common/suite-utils/src/device.ts": "779aac006d860f32063c5a09ce9c2c6209ffd236980e46827b9f4fe7af4d1c7c",
             "suite-native-app/app/e2e/fixtures/btcDiscoveryFinishedStateT3T1.ts": "93d091e4613daab92ee1d1f9ede9b15e8ffd8a2f711445e5bfdf7a8689f975f6",
             "suite-native-app/module-device-onboarding/src/hooks/useNavigateToNextScreenAfterFirmwareInstallation.ts": "023c94af7af864b48cd2ffb7f13c1a50b05535cd3803484edfe858aa173452dc",
-            "suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx": "e7699b7308411bf0c24e0cb32088d50784f915ab44f0449a3124e025885c2eaf",
+            "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx": "e7699b7308411bf0c24e0cb32088d50784f915ab44f0449a3124e025885c2eaf",
             "suite-native-app/module-device-settings/src/hooks/useForgetDevice.ts": "f768f5865be03f6d744a6e7a2b1ecdc471982c3f1689598c587ea13fb2460975",
             "suite-native-app/module-device-settings/src/screens/ConfirmFirmwareUpdateScreen.tsx": "98ef1df2eeeda3d58efc0d63454825d431c42fa63f793de888fb926361084a73",
             "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx": "df67e6544b9ba22cc37dcdd5d46604c7bb9d3f16bd2c4aae14e562ab22e16758",
@@ -440,9 +440,9 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/recovery/index.tsx",
+                    "path": "packages/suite/src/views/recovery/Recovery.tsx",
                     "line": 209,
-                    "repository_link": "../../../../packages/suite/src/views/recovery/index.tsx#L209",
+                    "repository_link": "../../../../packages/suite/src/views/recovery/Recovery.tsx#L209",
                     "detail": "Backup check skips recovery-type selection for smaller Model One backups."
                 },
                 {
@@ -650,9 +650,9 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx",
                     "line": 27,
-                    "repository_link": "../../../../suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx#L27",
+                    "repository_link": "../../../../suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx#L27",
                     "detail": "Native packaging steps consume branded-wrap condition."
                 }
             ],
@@ -689,9 +689,9 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "line": 239,
-                    "repository_link": "../../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L239",
+                    "repository_link": "../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L239",
                     "detail": "Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards."
                 }
             ],
@@ -743,9 +743,9 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "line": 239,
-                    "repository_link": "../../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L239",
+                    "repository_link": "../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L239",
                     "detail": "Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards."
                 }
             ],
@@ -790,9 +790,9 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "line": 239,
-                    "repository_link": "../../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L239",
+                    "repository_link": "../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L239",
                     "detail": "Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards."
                 }
             ],
@@ -839,9 +839,9 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "line": 239,
-                    "repository_link": "../../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L239",
+                    "repository_link": "../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L239",
                     "detail": "Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards."
                 }
             ],
@@ -932,9 +932,9 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "line": 239,
-                    "repository_link": "../../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L239",
+                    "repository_link": "../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L239",
                     "detail": "Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards."
                 }
             ],
@@ -1304,16 +1304,16 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "line": 219,
-                    "repository_link": "../../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L219",
+                    "repository_link": "../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L219",
                     "detail": "Security section composition checks features fields."
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "line": 269,
-                    "repository_link": "../../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L269",
+                    "repository_link": "../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L269",
                     "detail": "Wipe code composed only in normal mode."
                 },
                 {

@@ -21,14 +21,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/onboarding/index.tsx",
+                    "path": "suite-app/module-onboarding/src/Onboarding.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/index.tsx",
+                    "path": "suite-app/module-onboarding/src/Onboarding.tsx",
                     "detail": "Connect a Trezor and create or recover a wallet before using it."
                 }
             ],
@@ -36,7 +36,7 @@
                 "team": "Firmware",
                 "confidence": "inferred",
                 "basis": "Product-team estimate based on manual/automated TestStream assignments and feature domain; test stream does not establish accountable product ownership.",
-                "source_paths": ["packages/suite/src/views/onboarding/index.tsx"]
+                "source_paths": ["suite-app/module-onboarding/src/Onboarding.tsx"]
             },
             "conditions": [],
             "screenshot": {
@@ -116,14 +116,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/onboarding/steps/FirmwareStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/FirmwareStep/FirmwareStep.tsx",
                     "symbol": "FirmwareStep"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/steps/FirmwareStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/FirmwareStep/FirmwareStep.tsx",
                     "detail": "Install firmware on an uninitialized device and follow device confirmation and reconnect instructions."
                 },
                 {
@@ -152,7 +152,7 @@
             "id": "onboarding.authenticity",
             "parent_id": "onboarding",
             "name": "Device authenticity check",
-            "description": "Verify supported Trezor hardware authenticity before continuing setup.",
+            "description": "Verify supported Trezor hardware authenticity before setup or before first use of a newly connected initialized device.",
             "level": "option",
             "platforms": {
                 "desktop": "conditional",
@@ -719,14 +719,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "detail": "Restore access to a wallet from an existing backup."
                 },
                 {
@@ -777,14 +777,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "detail": "Choose the backup word count before recovery on Model One."
                 }
             ],
@@ -792,7 +792,9 @@
                 "team": "Firmware",
                 "confidence": "inferred",
                 "basis": "Product-team estimate based on manual/automated TestStream assignments and feature domain; test stream does not establish accountable product ownership.",
-                "source_paths": ["packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx"]
+                "source_paths": [
+                    "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx"
+                ]
             },
             "conditions": [
                 "Model One only; other supported devices handle recovery input on the device."
@@ -824,14 +826,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "detail": "Restore a Model One wallet by entering requested backup words in Suite."
                 },
                 {
@@ -876,14 +878,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "detail": "Use the scrambled recovery matrix to recover a Model One wallet."
                 },
                 {
@@ -928,14 +930,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "detail": "Enter a supported word or share backup directly on the Trezor."
                 },
                 {
@@ -986,14 +988,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "detail": "Retry failed recovery and continue an interrupted recovery when the device permits it."
                 },
                 {
@@ -1591,14 +1593,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/suite/bridge/index.tsx",
+                    "path": "packages/suite/src/views/suite/bridge/BridgeUnavailable.tsx",
                     "symbol": "BridgeUnavailable"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/suite/bridge/index.tsx",
+                    "path": "packages/suite/src/views/suite/bridge/BridgeUnavailable.tsx",
                     "detail": "Open desktop Suite when browser transport is unavailable and inspect the current transport status."
                 },
                 {
@@ -1643,14 +1645,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/suite/udev/index.tsx",
+                    "path": "packages/suite/src/views/suite/udev/UdevRules.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/suite/udev/index.tsx",
+                    "path": "packages/suite/src/views/suite/udev/UdevRules.tsx",
                     "detail": "Find Linux USB permission rules and reconnect instructions."
                 }
             ],
@@ -1658,7 +1660,7 @@
                 "team": "Connect",
                 "confidence": "inferred",
                 "basis": "Product-team estimate based on manual/automated TestStream assignments and feature domain; test stream does not establish accountable product ownership.",
-                "source_paths": ["packages/suite/src/views/suite/udev/index.tsx"]
+                "source_paths": ["packages/suite/src/views/suite/udev/UdevRules.tsx"]
             },
             "conditions": ["Linux USB connection requiring udev setup."],
             "screenshot": {
@@ -4366,14 +4368,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "detail": "Choose supported networks and customize their blockchain connections."
                 },
                 {
@@ -4424,14 +4426,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "detail": "Choose which supported networks appear and participate in discovery."
                 },
                 {
@@ -4476,14 +4478,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "detail": "Find networks by name or symbol in the network settings list."
                 }
             ],
@@ -4491,7 +4493,7 @@
                 "team": "Network",
                 "confidence": "inferred",
                 "basis": "Product-team estimate based on manual/automated TestStream assignments and feature domain; test stream does not establish accountable product ownership.",
-                "source_paths": ["suite-app/app/src/pages/SettingsCoinsPage.tsx"]
+                "source_paths": ["suite-app/module-settings/src/pages/SettingsCoinsPage.tsx"]
             },
             "conditions": [],
             "screenshot": {
@@ -4521,14 +4523,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "detail": "Load accounts for networks enabled since the last discovery."
                 }
             ],
@@ -4536,7 +4538,7 @@
                 "team": "Network",
                 "confidence": "inferred",
                 "basis": "Product-team estimate based on manual/automated TestStream assignments and feature domain; test stream does not establish accountable product ownership.",
-                "source_paths": ["suite-app/app/src/pages/SettingsCoinsPage.tsx"]
+                "source_paths": ["suite-app/module-settings/src/pages/SettingsCoinsPage.tsx"]
             },
             "conditions": [
                 "Newly enabled network and connected unlocked device when discovery requires it."
@@ -4926,14 +4928,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "detail": "Maintain, secure and personalize a connected Trezor."
                 }
             ],
@@ -4941,7 +4943,7 @@
                 "team": "Firmware",
                 "confidence": "inferred",
                 "basis": "Product-team estimate based on manual/automated TestStream assignments and feature domain; test stream does not establish accountable product ownership.",
-                "source_paths": ["suite-app/app/src/pages/SettingsDevicePage.tsx"]
+                "source_paths": ["suite-app/module-settings/src/pages/SettingsDevicePage.tsx"]
             },
             "conditions": [
                 "Most controls require a connected unlocked device in the appropriate device mode."
@@ -4973,14 +4975,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "detail": "Create, check or extend a device wallet backup."
                 }
             ],
@@ -4988,7 +4990,7 @@
                 "team": "Firmware",
                 "confidence": "inferred",
                 "basis": "Product-team estimate based on manual/automated TestStream assignments and feature domain; test stream does not establish accountable product ownership.",
-                "source_paths": ["suite-app/app/src/pages/SettingsDevicePage.tsx"]
+                "source_paths": ["suite-app/module-settings/src/pages/SettingsDevicePage.tsx"]
             },
             "conditions": [],
             "screenshot": {
@@ -5018,14 +5020,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "detail": "Manage PIN, passphrase, wipe code and safety settings."
                 }
             ],
@@ -5033,7 +5035,7 @@
                 "team": "Firmware",
                 "confidence": "inferred",
                 "basis": "Product-team estimate based on manual/automated TestStream assignments and feature domain; test stream does not establish accountable product ownership.",
-                "source_paths": ["suite-app/app/src/pages/SettingsDevicePage.tsx"]
+                "source_paths": ["suite-app/module-settings/src/pages/SettingsDevicePage.tsx"]
             },
             "conditions": [],
             "screenshot": {
@@ -5063,14 +5065,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "detail": "Customize the device name and supported display controls."
                 }
             ],
@@ -5078,7 +5080,7 @@
                 "team": "Firmware",
                 "confidence": "inferred",
                 "basis": "Product-team estimate based on manual/automated TestStream assignments and feature domain; test stream does not establish accountable product ownership.",
-                "source_paths": ["suite-app/app/src/pages/SettingsDevicePage.tsx"]
+                "source_paths": ["suite-app/module-settings/src/pages/SettingsDevicePage.tsx"]
             },
             "conditions": [],
             "screenshot": {
@@ -5108,14 +5110,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "detail": "Inspect, update or replace device firmware."
                 }
             ],
@@ -5123,7 +5125,7 @@
                 "team": "Firmware",
                 "confidence": "inferred",
                 "basis": "Product-team estimate based on manual/automated TestStream assignments and feature domain; test stream does not establish accountable product ownership.",
-                "source_paths": ["suite-app/app/src/pages/SettingsDevicePage.tsx"]
+                "source_paths": ["suite-app/module-settings/src/pages/SettingsDevicePage.tsx"]
             },
             "conditions": [],
             "screenshot": {
@@ -5153,14 +5155,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "detail": "Control trusted connections and forget device pairing."
                 }
             ],
@@ -5168,7 +5170,7 @@
                 "team": "Firmware",
                 "confidence": "inferred",
                 "basis": "Product-team estimate based on manual/automated TestStream assignments and feature domain; test stream does not establish accountable product ownership.",
-                "source_paths": ["suite-app/app/src/pages/SettingsDevicePage.tsx"]
+                "source_paths": ["suite-app/module-settings/src/pages/SettingsDevicePage.tsx"]
             },
             "conditions": [],
             "screenshot": {
@@ -5198,14 +5200,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
                     "detail": "Manage authenticity checks and destructive device actions."
                 }
             ],
@@ -5213,7 +5215,7 @@
                 "team": "Firmware",
                 "confidence": "inferred",
                 "basis": "Product-team estimate based on manual/automated TestStream assignments and feature domain; test stream does not establish accountable product ownership.",
-                "source_paths": ["suite-app/app/src/pages/SettingsDevicePage.tsx"]
+                "source_paths": ["suite-app/module-settings/src/pages/SettingsDevicePage.tsx"]
             },
             "conditions": [],
             "screenshot": {
@@ -6899,7 +6901,7 @@
             "id": "connection.compromised",
             "parent_id": "connection",
             "name": "Device security failure guidance",
-            "description": "See the failed hardware or firmware authenticity check and the available recovery or support steps.",
+            "description": "See the failed hardware or firmware authenticity check, retry a failed hardware authenticity check while the device is connected (mobile), and use the available recovery or support steps.",
             "level": "option",
             "platforms": {
                 "desktop": "conditional",
@@ -8424,15 +8426,15 @@
         "packages/suite/src/views/dashboard/DashboardPromoBanner/DashboardPromoBanner.tsx",
         "packages/suite/src/views/dashboard/OnboardingFeedbackBanner/OnboardingFeedbackBanner.tsx",
         "packages/suite/src/views/firmware/FirmwareUpdate.tsx",
-        "packages/suite/src/views/onboarding/index.tsx",
+        "suite-app/module-onboarding/src/Onboarding.tsx",
         "packages/suite/src/views/onboarding/steps/BackupTypeStep.tsx",
         "packages/suite/src/views/onboarding/steps/CreateOrRecoverStep.tsx",
         "packages/suite/src/views/onboarding/steps/DeviceAuthenticityStep.tsx",
         "packages/suite/src/views/onboarding/steps/DeviceTutorialStep.tsx",
         "packages/suite/src/views/onboarding/steps/FinalStep.tsx",
-        "packages/suite/src/views/onboarding/steps/FirmwareStep/index.tsx",
+        "packages/suite/src/views/onboarding/steps/FirmwareStep/FirmwareStep.tsx",
         "packages/suite/src/views/onboarding/steps/PinStep.tsx",
-        "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+        "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
         "packages/suite/src/views/onboarding/steps/SecurityStep.tsx",
         "packages/suite/src/views/onboarding/steps/SelectBackupType/LegacyOptions.tsx",
         "packages/suite/src/views/onboarding/steps/SelectBackupType/ShamirOptions.tsx",
@@ -8488,14 +8490,14 @@
         "packages/suite/src/views/suite/SwitchDevice/DeviceItem/WalletInstance.tsx",
         "packages/suite/src/views/suite/SwitchDevice/SwitchDevice.tsx",
         "packages/suite/src/views/suite/SwitchDevice/SwitchDeviceModal.tsx",
-        "packages/suite/src/views/suite/bridge/index.tsx",
-        "packages/suite/src/views/suite/udev/index.tsx",
+        "packages/suite/src/views/suite/bridge/BridgeUnavailable.tsx",
+        "packages/suite/src/views/suite/udev/UdevRules.tsx",
         "suite-app/app/src/Preloader/AnalyticsConsentScreen.tsx",
         "suite-app/app/src/Preloader/DatabaseCorruptedModal.tsx",
         "suite-app/app/src/Preloader/DatabaseUpgradeModal.tsx",
         "suite-app/app/src/Preloader/DeviceCompromisedScreen.tsx",
-        "suite-app/app/src/pages/SettingsCoinsPage.tsx",
-        "suite-app/app/src/pages/SettingsDevicePage.tsx",
+        "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
+        "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
         "suite-app/desktop-app-main/src/libs/menu.ts",
         "suite-app/desktop-app-renderer/src/MainDesktop.tsx",
         "suite-native-app/module-settings/src/components/ContactSupportAlertAppendix.tsx",

@@ -1,6 +1,6 @@
 # Trezor Suite user feature map
 
-An English inventory of user capabilities across Suite desktop, web and native mobile, from device onboarding and wallet actions to individual form options and settings. The source snapshot is commit `8d6be9edbf990465176d57b4abc007bac17ca5e6`, audited on 15 November 2026.
+An English inventory of user capabilities across Suite desktop, web and native mobile, from device onboarding and wallet actions to individual form options and settings. The source snapshot was audited at commit `8d6be9edbf990465176d57b4abc007bac17ca5e6` on 15 November 2026 and moved to `develop` at `cc9f201eaa7d2e1212624d4f1e565dce3f727060` on 21 November 2026: renamed and deleted sources, changed tests and features added on `develop` since then were reviewed. Runtime captures keep the commits they were taken from.
 
 > Runtime supplement: the original counts and screenshot limitations below describe the first source-only audit. Current application captures and additive model findings are available in the [runtime audit](./runtime/README.md) and [offline explorer](./index.html). See `summary.json` for current totals.
 

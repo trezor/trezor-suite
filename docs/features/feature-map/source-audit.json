@@ -136,7 +136,9 @@
             "path": "suite/e2e/tests/bridge-tor/spawn-bridge-daemon.test.ts",
             "platform": "desktop-web",
             "kind": "automated-e2e",
-            "titles": ["App in daemon mode spawns node-bridge"],
+            "titles": [
+                "App in daemon mode spawns node-bridge and opens its UI for a second instance"
+            ],
             "streams": ["Connect"],
             "feature_ids": [],
             "status": "reviewed-excluded",
@@ -324,7 +326,7 @@
             "platform": "desktop-web",
             "kind": "manual",
             "titles": ["Account type, derivation path and xpub", "EVM account details - nonce"],
-            "streams": ["Wallet"],
+            "streams": ["Network", "Wallet"],
             "feature_ids": [
                 "wallet.accounts.details",
                 "wallet.accounts.details.nonce",
@@ -407,7 +409,7 @@
                 "Coin-specific send behavior - Solana timer, memo tags, Cardano minimum, Tron activation",
                 "Advanced send features - raw, broadcast, locktime, OP_RETURN, ETH data"
             ],
-            "streams": ["Wallet"],
+            "streams": ["Network", "Wallet"],
             "feature_ids": [
                 "wallet.send",
                 "wallet.send.advanced",
@@ -470,7 +472,7 @@
                 "Tokens tab - tokens, DeFi and inactive tokens",
                 "Stellar tokens - activation and deactivation"
             ],
-            "streams": ["Network", "Wallet"],
+            "streams": ["Network"],
             "feature_ids": [
                 "wallet.tokens",
                 "wallet.tokens.defi",
@@ -544,7 +546,7 @@
             "platform": "desktop-web",
             "kind": "manual",
             "titles": ["Open a bitcoin link"],
-            "streams": ["Wallet"],
+            "streams": ["Network"],
             "feature_ids": ["connection.payment-uri"],
             "status": "mapped",
             "reason": "Linked intended scenarios; not an execution result.",
@@ -604,21 +606,6 @@
             ],
             "streams": ["Connect"],
             "feature_ids": ["connect", "connection.bluetooth"],
-            "status": "mapped",
-            "reason": "Linked intended scenarios; not an execution result.",
-            "declares_skipped_container": true
-        },
-        {
-            "path": "suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts",
-            "platform": "desktop-web",
-            "kind": "manual",
-            "titles": ["Connect Trezor to Briskett and sign transactions"],
-            "streams": ["Connect"],
-            "feature_ids": [
-                "connect.permissions.account",
-                "connect.permissions.grant",
-                "connect.walletconnect.transaction"
-            ],
             "status": "mapped",
             "reason": "Linked intended scenarios; not an execution result.",
             "declares_skipped_container": true
@@ -1063,6 +1050,17 @@
             ],
             "status": "mapped",
             "reason": "Linked intended scenarios; not an execution result.",
+            "declares_skipped_container": true
+        },
+        {
+            "path": "suite/e2e/tests/manual/general/find-on-page.test.ts",
+            "platform": "desktop-web",
+            "kind": "manual",
+            "titles": ["Find text on page with the find bar", "Send flow with the find bar open"],
+            "streams": ["Growth"],
+            "feature_ids": ["app-controls.find"],
+            "status": "mapped",
+            "reason": "Manual procedure steps were inspected and reconciled with existing user capabilities; not an execution result.",
             "declares_skipped_container": true
         },
         {
@@ -2399,6 +2397,17 @@
             "declares_skipped_container": false
         },
         {
+            "path": "suite/e2e/tests/staking/trx/vote-allocation.test.ts",
+            "platform": "desktop-web",
+            "kind": "automated-e2e",
+            "titles": ["Split Tron votes between two representatives"],
+            "streams": ["Earn"],
+            "feature_ids": ["earn.staking.trx.vote"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "declares_skipped_container": false
+        },
+        {
             "path": "suite/e2e/tests/staking/trx/withdraw.test.ts",
             "platform": "desktop-web",
             "kind": "automated-e2e",
@@ -2567,6 +2576,17 @@
                 "trade.receive.activate-network",
                 "trade.receive.suite-account"
             ],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "declares_skipped_container": false
+        },
+        {
+            "path": "suite/e2e/tests/trading/buy-inputs.test.ts",
+            "platform": "desktop-web",
+            "kind": "automated-e2e",
+            "titles": ["Buy form requests new quotes when the asset or the fiat currency changes"],
+            "streams": ["Trade"],
+            "feature_ids": ["trade.buy.asset", "trade.buy.fiat-currency"],
             "status": "mapped",
             "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
             "declares_skipped_container": false
@@ -3356,7 +3376,7 @@
             "declares_skipped_container": false
         },
         {
-            "path": "suite/e2e/tests/wallet/sign-and-verify-ada.test.ts",
+            "path": "suite/e2e/tests/wallet/sign-verify-ada.test.ts",
             "platform": "desktop-web",
             "kind": "automated-e2e",
             "titles": ["Signs message and shows Cardano COSE public key"],
@@ -3367,7 +3387,7 @@
             "declares_skipped_container": false
         },
         {
-            "path": "suite/e2e/tests/wallet/sign-and-verify-eth.test.ts",
+            "path": "suite/e2e/tests/wallet/sign-verify-eth.test.ts",
             "platform": "desktop-web",
             "kind": "automated-e2e",
             "titles": ["Signs message with Ethereum", "Verify message signed with Ethereum"],
@@ -3378,7 +3398,7 @@
             "declares_skipped_container": false
         },
         {
-            "path": "suite/e2e/tests/wallet/sign-and-verify.test.ts",
+            "path": "suite/e2e/tests/wallet/sign-verify.test.ts",
             "platform": "desktop-web",
             "kind": "automated-e2e",
             "titles": [
@@ -3425,6 +3445,17 @@
             ],
             "status": "mapped",
             "reason": "Read the complete test source and linked its intended regression scenarios; no test was executed.",
+            "declares_skipped_container": false
+        },
+        {
+            "path": "suite/e2e/tests/yield/cancel.test.ts",
+            "platform": "desktop-web",
+            "kind": "automated-e2e",
+            "titles": ["User can back out of every yield modal"],
+            "streams": ["Earn"],
+            "feature_ids": ["earn.yield.claim", "earn.yield.deposit", "earn.yield.withdraw"],
+            "status": "mapped",
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
             "declares_skipped_container": false
         },
         {
@@ -4385,7 +4416,7 @@
             "platform": "mobile",
             "kind": "manual",
             "titles": ["Dust phishing protection and threshold"],
-            "streams": ["Wallet"],
+            "streams": ["Network"],
             "feature_ids": [
                 "app-settings.dust",
                 "app-settings.dust-threshold",
@@ -4393,6 +4424,21 @@
             ],
             "status": "mapped",
             "reason": "Linked to the user capabilities covered by this checklist; no execution result claimed.",
+            "declares_skipped_container": true
+        },
+        {
+            "path": "suite-native-app/app/e2e/tests/manual/wallet/earnEnableNetwork.test.ts",
+            "platform": "mobile",
+            "kind": "manual",
+            "titles": [
+                "Enable ADA and TRX from the Earn tab",
+                "ADA and TRX from the Earn tab without a stake",
+                "Enable ADA and TRX from the Earn tab with a disconnected device"
+            ],
+            "streams": ["Earn"],
+            "feature_ids": ["earn.opportunities.account"],
+            "status": "mapped",
+            "reason": "Manual procedure steps were inspected and reconciled with existing user capabilities; not an execution result.",
             "declares_skipped_container": true
         },
         {
@@ -4627,6 +4673,20 @@
             "declares_skipped_container": true
         },
         {
+            "path": "suite-native-app/app/e2e/tests/manual/wallet/stakingAda.test.ts",
+            "platform": "mobile",
+            "kind": "manual",
+            "titles": [
+                "ADA staking overview (read-only)",
+                "ADA staking with an outdated or external pool"
+            ],
+            "streams": ["Earn"],
+            "feature_ids": ["earn.staking.ada", "mobile.earn.staking.view-only"],
+            "status": "mapped",
+            "reason": "Manual procedure steps were inspected and reconciled with existing user capabilities; not an execution result.",
+            "declares_skipped_container": true
+        },
+        {
             "path": "suite-native-app/app/e2e/tests/manual/wallet/stakingEth.test.ts",
             "platform": "mobile",
             "kind": "manual",
@@ -4649,9 +4709,28 @@
             "kind": "manual",
             "titles": ["SOL staking full flow - claim, stake, unstake"],
             "streams": ["Earn"],
-            "feature_ids": ["earn.staking.sol.rewards", "mobile.earn.staking.claim"],
+            "feature_ids": [
+                "earn.staking.sol.refresh",
+                "earn.staking.sol.rewards",
+                "mobile.earn.staking.claim"
+            ],
             "status": "mapped",
             "reason": "Linked to the user capabilities covered by this checklist; no execution result claimed.",
+            "declares_skipped_container": true
+        },
+        {
+            "path": "suite-native-app/app/e2e/tests/manual/wallet/stakingTrx.test.ts",
+            "platform": "mobile",
+            "kind": "manual",
+            "titles": ["TRX staking overview (read-only)"],
+            "streams": ["Earn"],
+            "feature_ids": [
+                "earn.staking.trx",
+                "earn.staking.trx.resources",
+                "mobile.earn.staking.view-only"
+            ],
+            "status": "mapped",
+            "reason": "Manual procedure steps were inspected and reconciled with existing user capabilities; not an execution result.",
             "declares_skipped_container": true
         },
         {
@@ -4659,7 +4738,7 @@
             "platform": "mobile",
             "kind": "manual",
             "titles": ["Token management - hide and unhide a token"],
-            "streams": ["Wallet"],
+            "streams": ["Network"],
             "feature_ids": [
                 "mobile.accounts.tokens.visibility",
                 "wallet.portfolio.hidden-assets",
@@ -5604,11 +5683,28 @@
             "notes": "Compatibility/redirect routes are not separate user capabilities; area mapping is not a runtime assertion."
         },
         {
+            "name": "wallet-trading-exchange-allowance",
+            "pattern": "/accounts/coinmarket/exchange/allowance",
+            "app": "wallet",
+            "source": "suite/router-config/src/routeConfig.ts",
+            "line": 363,
+            "feature_ids": [
+                "wallet.accounts",
+                "wallet.send",
+                "wallet.receive",
+                "wallet.transactions",
+                "trade",
+                "earn"
+            ],
+            "status": "area-mapped",
+            "notes": "Compatibility/redirect routes are not separate user capabilities; area mapping is not a runtime assertion."
+        },
+        {
             "name": "wallet-trading-redirect",
             "pattern": "/coinmarket-redirect",
             "app": "wallet",
             "source": "suite/router-config/src/routeConfig.ts",
-            "line": 363,
+            "line": 368,
             "feature_ids": [
                 "wallet.accounts",
                 "wallet.send",
@@ -5625,7 +5721,7 @@
             "pattern": "/accounts/coinmarket/transactions",
             "app": "wallet",
             "source": "suite/router-config/src/routeConfig.ts",
-            "line": 369,
+            "line": 374,
             "feature_ids": [
                 "wallet.accounts",
                 "wallet.send",
@@ -5642,7 +5738,7 @@
             "pattern": "/accounts/details",
             "app": "wallet",
             "source": "suite/router-config/src/routeConfig.ts",
-            "line": 375,
+            "line": 380,
             "feature_ids": [
                 "wallet.accounts",
                 "wallet.send",
@@ -5659,7 +5755,7 @@
             "pattern": "/accounts/trade",
             "app": "wallet",
             "source": "suite/router-config/src/routeConfig.ts",
-            "line": 382,
+            "line": 387,
             "feature_ids": [
                 "wallet.accounts",
                 "wallet.send",
@@ -5676,7 +5772,7 @@
             "pattern": "/accounts/tokens",
             "app": "wallet",
             "source": "suite/router-config/src/routeConfig.ts",
-            "line": 388,
+            "line": 393,
             "feature_ids": [
                 "wallet.accounts",
                 "wallet.send",
@@ -5693,7 +5789,7 @@
             "pattern": "/accounts/tokens/hidden",
             "app": "wallet",
             "source": "suite/router-config/src/routeConfig.ts",
-            "line": 395,
+            "line": 400,
             "feature_ids": [
                 "wallet.accounts",
                 "wallet.send",
@@ -5710,7 +5806,7 @@
             "pattern": "/accounts/tokens/inactive",
             "app": "wallet",
             "source": "suite/router-config/src/routeConfig.ts",
-            "line": 402,
+            "line": 407,
             "feature_ids": [
                 "wallet.accounts",
                 "wallet.send",
@@ -5727,7 +5823,7 @@
             "pattern": "/accounts/tokens/defi",
             "app": "wallet",
             "source": "suite/router-config/src/routeConfig.ts",
-            "line": 409,
+            "line": 414,
             "feature_ids": [
                 "wallet.accounts",
                 "wallet.send",
@@ -5744,7 +5840,7 @@
             "pattern": "/accounts/nfts",
             "app": "wallet",
             "source": "suite/router-config/src/routeConfig.ts",
-            "line": 416,
+            "line": 421,
             "feature_ids": [
                 "wallet.accounts",
                 "wallet.send",
@@ -5761,7 +5857,7 @@
             "pattern": "/accounts/nfts/hidden",
             "app": "wallet",
             "source": "suite/router-config/src/routeConfig.ts",
-            "line": 423,
+            "line": 428,
             "feature_ids": [
                 "wallet.accounts",
                 "wallet.send",
@@ -5778,7 +5874,7 @@
             "pattern": "/accounts/coinjoin",
             "app": "wallet",
             "source": "suite/router-config/src/routeConfig.ts",
-            "line": 431,
+            "line": 436,
             "feature_ids": [
                 "wallet.accounts",
                 "wallet.send",
@@ -5795,7 +5891,7 @@
             "pattern": "/accounts/anonymize",
             "app": "wallet",
             "source": "suite/router-config/src/routeConfig.ts",
-            "line": 437,
+            "line": 442,
             "feature_ids": [
                 "wallet.accounts",
                 "wallet.send",
@@ -5812,283 +5908,13 @@
             "pattern": "/notifications",
             "app": "notifications",
             "source": "suite/router-config/src/routeConfig.ts",
-            "line": 443,
+            "line": 448,
             "feature_ids": ["help.activity"],
             "status": "area-mapped",
             "notes": "Compatibility/redirect routes are not separate user capabilities; area mapping is not a runtime assertion."
         }
     ],
     "screens_and_navigators": [
-        {
-            "path": "suite-app/app/src/pages/AppsEmbeddingPage.tsx",
-            "feature_ids": [],
-            "status": "enumerated-only"
-        },
-        {
-            "path": "suite-app/app/src/pages/AssetDetailPage.tsx",
-            "feature_ids": ["wallet.portfolio.assets.details"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/ConnectPopupPage.tsx",
-            "feature_ids": ["connect"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/DashboardPage.tsx",
-            "feature_ids": [
-                "app-settings.application.service-messages.context",
-                "mobile.portfolio.questionnaire",
-                "mobile.portfolio.refresh",
-                "wallet.portfolio",
-                "wallet.portfolio.asset-first"
-            ],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/DesktopSettingsGeneralPage.tsx",
-            "feature_ids": ["app-settings"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/EarnClaimPage.tsx",
-            "feature_ids": ["earn.yield.claim"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/EarnDepositPage.tsx",
-            "feature_ids": ["earn.yield.deposit"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/EarnPage.tsx",
-            "feature_ids": ["earn"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/EarnTronClaimPage.tsx",
-            "feature_ids": ["earn.staking.trx.claim"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/EarnTronRedirectPage.tsx",
-            "feature_ids": ["earn.staking.trx"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/EarnTronStakePage.tsx",
-            "feature_ids": ["earn.staking.trx.freeze"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/EarnTronUnstakePage.tsx",
-            "feature_ids": ["earn.staking.trx.unfreeze"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/EarnTronVotePage.tsx",
-            "feature_ids": ["earn.staking.trx.vote"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/EarnTronWithdrawPage.tsx",
-            "feature_ids": ["earn.staking.trx.withdraw"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/EarnUnwrapPage.tsx",
-            "feature_ids": ["earn.yield.standalone-unwrap"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/EarnWithdrawPage.tsx",
-            "feature_ids": ["earn.yield.withdraw"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/EarnWrapPage.tsx",
-            "feature_ids": ["earn.yield.standalone-wrap"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/HiddenTokensPage.tsx",
-            "feature_ids": ["wallet.portfolio.hidden-assets"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/NftsPage.tsx",
-            "feature_ids": ["wallet.nfts", "wallet.nfts.hidden"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/NotificationPage.tsx",
-            "feature_ids": ["help.activity", "help.activity.system", "help.activity.transactions"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/PasswordManagerPage.tsx",
-            "feature_ids": ["labeling.password-manager"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/ReceivePage.tsx",
-            "feature_ids": ["mobile.receive.reuse", "mobile.receive.tag", "wallet.receive"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/ReferAFriendPage.tsx",
-            "feature_ids": ["help.referral.prototype"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
-            "feature_ids": [
-                "network-settings",
-                "network-settings.backends.electrum-onion",
-                "network-settings.discover",
-                "network-settings.enable",
-                "network-settings.search"
-            ],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/SettingsConnectedAppsPage.tsx",
-            "feature_ids": ["connect"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/SettingsDebugPage.tsx",
-            "feature_ids": ["app-settings.application.service-messages.debug"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
-            "feature_ids": [
-                "device-settings",
-                "device-settings.advanced",
-                "device-settings.backup",
-                "device-settings.connection",
-                "device-settings.firmware",
-                "device-settings.personalization",
-                "device-settings.security"
-            ],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/SignVerifyPage.tsx",
-            "feature_ids": ["wallet.sign-verify"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/TokensPage.tsx",
-            "feature_ids": ["wallet.tokens"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/TradingBuyConfirmPage.tsx",
-            "feature_ids": ["trade.buy.provider-checkout"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/TradingBuyDetailPage.tsx",
-            "feature_ids": ["trade.buy.payment-status"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/TradingBuyFormPage.tsx",
-            "feature_ids": ["trade.buy"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/TradingConciergeDetailPage.tsx",
-            "feature_ids": ["trade.concierge"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/TradingExchangeApprovalPage.tsx",
-            "feature_ids": ["trade.swap.approval"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/TradingExchangeConfirmPage.tsx",
-            "feature_ids": ["trade.swap.clear-signing", "trade.swap.simulation"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/TradingExchangeDetailPage.tsx",
-            "feature_ids": ["trade.swap.status"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/TradingExchangeFormPage.tsx",
-            "feature_ids": ["trade.swap"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/TradingRedirectPage.tsx",
-            "feature_ids": ["trade"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/TradingSellConfirmPage.tsx",
-            "feature_ids": ["trade.sell.confirm-send"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/TradingSellDetailPage.tsx",
-            "feature_ids": ["trade.sell.status"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/TradingSellFormPage.tsx",
-            "feature_ids": ["trade.sell"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/TradingTransactionsPage.tsx",
-            "feature_ids": ["trade.history"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/TransactionsPage.tsx",
-            "feature_ids": ["wallet.accounts.overview", "wallet.transactions"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/WalletAnonymizePage.tsx",
-            "feature_ids": ["wallet.coinjoin", "wallet.coinjoin.confirmation"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/WalletCoinjoinPage.tsx",
-            "feature_ids": ["wallet.coinjoin"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/WalletDetailsPage.tsx",
-            "feature_ids": ["wallet.accounts.details", "wallet.accounts.details.type"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/WalletSendPage.tsx",
-            "feature_ids": ["wallet.send"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/WalletStakingPage.tsx",
-            "feature_ids": ["earn.staking", "earn.staking.trx.transactions"],
-            "status": "direct-evidence"
-        },
-        {
-            "path": "suite-app/app/src/pages/WalletTradePage.tsx",
-            "feature_ids": [],
-            "status": "enumerated-only"
-        },
-        {
-            "path": "suite-app/app/src/pages/WebSettingsGeneralPage.tsx",
-            "feature_ids": ["app-settings"],
-            "status": "direct-evidence"
-        },
         {
             "path": "suite-native/coin-enabling/src/screens/CoinEnablingInitScreen.tsx",
             "feature_ids": [],
@@ -6235,6 +6061,7 @@
                 "earn.staking.eth",
                 "earn.staking.eth.transactions",
                 "earn.staking.sol",
+                "earn.staking.sol.refresh",
                 "earn.staking.trx",
                 "earn.staking.trx.transactions"
             ],
@@ -7306,6 +7133,25 @@
             ]
         },
         {
+            "path": "suite-native-app/module-device-onboarding/src/screens/DeviceVisualCheckScreen.tsx",
+            "feature_ids": [
+                "device-settings.backup.additional-nfc",
+                "onboarding",
+                "onboarding.new-wallet.nfc"
+            ],
+            "status": "composition-referenced",
+            "composition_sources": [
+                {
+                    "source": "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx",
+                    "feature_ids": [
+                        "device-settings.backup.additional-nfc",
+                        "onboarding",
+                        "onboarding.new-wallet.nfc"
+                    ]
+                }
+            ]
+        },
+        {
             "path": "suite-native-app/module-device-onboarding/src/screens/FirmwareInfoScreen.tsx",
             "feature_ids": [
                 "device-settings.backup.additional-nfc",
@@ -7340,8 +7186,8 @@
             ]
         },
         {
-            "path": "suite-native-app/module-device-onboarding/src/screens/RecoveryInstructionsScreen.tsx",
-            "feature_ids": ["mobile.device-onboarding.recovery-instructions"],
+            "path": "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx",
+            "feature_ids": ["mobile.device-onboarding.security"],
             "status": "direct-evidence",
             "composition_sources": [
                 {
@@ -7355,8 +7201,8 @@
             ]
         },
         {
-            "path": "suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx",
-            "feature_ids": ["mobile.device-onboarding.security"],
+            "path": "suite-native-app/module-device-onboarding/src/screens/RecoveryInstructionsScreen.tsx",
+            "feature_ids": ["mobile.device-onboarding.recovery-instructions"],
             "status": "direct-evidence",
             "composition_sources": [
                 {
@@ -7443,25 +7289,6 @@
         },
         {
             "path": "suite-native-app/module-device-onboarding/src/screens/ThpPairingSuccessScreen.tsx",
-            "feature_ids": [
-                "device-settings.backup.additional-nfc",
-                "onboarding",
-                "onboarding.new-wallet.nfc"
-            ],
-            "status": "composition-referenced",
-            "composition_sources": [
-                {
-                    "source": "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx",
-                    "feature_ids": [
-                        "device-settings.backup.additional-nfc",
-                        "onboarding",
-                        "onboarding.new-wallet.nfc"
-                    ]
-                }
-            ]
-        },
-        {
-            "path": "suite-native-app/module-device-onboarding/src/screens/UninitializedDeviceLandingScreen.tsx",
             "feature_ids": [
                 "device-settings.backup.additional-nfc",
                 "onboarding",
@@ -8256,6 +8083,17 @@
             "path": "suite-native-app/module-home/src/screens/HomeScreen/components/FirmwareUpdateAlert.tsx",
             "feature_ids": [],
             "status": "enumerated-only"
+        },
+        {
+            "path": "suite-native-app/module-home/src/screens/HomeScreen/components/FirmwareUpdateRequiredDeviceState.tsx",
+            "feature_ids": ["connection.firmware-required"],
+            "status": "direct-evidence",
+            "composition_sources": [
+                {
+                    "source": "suite-native-app/module-home/src/screens/HomeScreen/HomeScreen.tsx",
+                    "feature_ids": ["wallet.portfolio", "wallet.portfolio.asset-first"]
+                }
+            ]
         },
         {
             "path": "suite-native-app/module-home/src/screens/HomeScreen/components/HomescreenAlerts.tsx",
@@ -9899,7 +9737,7 @@
             ]
         },
         {
-            "path": "suite-native-app/module-sign-verify/src/navigation/SignAndVerifyStackNavigator.tsx",
+            "path": "suite-native-app/module-sign-verify/src/navigation/SignVerifyStackNavigator.tsx",
             "feature_ids": [],
             "status": "enumerated-only"
         },
@@ -9909,7 +9747,7 @@
             "status": "enumerated-only"
         },
         {
-            "path": "suite-native-app/module-sign-verify/src/screens/SignAndVerifyScreen.tsx",
+            "path": "suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx",
             "feature_ids": ["wallet.sign-verify"],
             "status": "direct-evidence"
         },

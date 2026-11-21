@@ -1959,7 +1959,7 @@
             "source_sha256": "c95603125bfae51fb9cf0f953e2da87d20ead9eaed9443592964c442e6261682"
         },
         {
-            "path": "suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx",
+            "path": "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx",
             "symbol": "SecurityCheckScreen",
             "registered_in": [
                 "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx"
@@ -2132,7 +2132,7 @@
             "source_sha256": "e438a3cc6d70731c6a05a40cd99062b22642999a5431b5ddd41bd5c3f429630b"
         },
         {
-            "path": "suite-native-app/module-device-onboarding/src/screens/UninitializedDeviceLandingScreen.tsx",
+            "path": "suite-native-app/module-device-onboarding/src/screens/DeviceVisualCheckScreen.tsx",
             "symbol": "UninitializedDeviceLandingScreen",
             "registered_in": [
                 "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx"
@@ -4403,7 +4403,7 @@
             "path": "suite-native-app/module-sign-verify/src/screens/ContinueOnTrezorScreen.tsx",
             "symbol": "ContinueOnTrezorScreen",
             "registered_in": [
-                "suite-native-app/module-sign-verify/src/navigation/SignAndVerifyStackNavigator.tsx"
+                "suite-native-app/module-sign-verify/src/navigation/SignVerifyStackNavigator.tsx"
             ],
             "feature_ids": ["wallet.sign-verify"],
             "mapping_basis": "area-context-only",
@@ -4423,13 +4423,13 @@
             "source_sha256": "7be62932d43ad9fd39e057c44de50ae1896284c94a28e9e9e208bf8372e2e976"
         },
         {
-            "path": "suite-native-app/module-sign-verify/src/screens/SignAndVerifyScreen.tsx",
+            "path": "suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx",
             "symbol": "SignAndVerifyScreen",
             "registered_in": ["suite-native-app/app/src/navigation/RootStackNavigator.tsx"],
             "feature_ids": ["wallet.sign-verify"],
             "mapping_basis": "direct component/evidence or inspected user control",
             "inspected_components": [
-                "suite-native-app/module-sign-verify/src/components/SignAndVerifyForms.tsx",
+                "suite-native-app/module-sign-verify/src/components/SignVerifyForms.tsx",
                 "suite-native/accounts/src/components/AccountDetailScreenHeaderContent.tsx",
                 "suite-native/navigation/src/components/Screen.tsx",
                 "suite-native/navigation/src/components/ScreenHeader.tsx"
@@ -4950,10 +4950,10 @@
             "feature_ids": ["trade"],
             "mapping_basis": "direct component/evidence or inspected user control",
             "inspected_components": [
+                "suite-common/trading/src/components/TradingTokenMetadataProvider.tsx",
                 "suite-native-app/module-trading/src/components/general/Header/Header.tsx",
                 "suite-native-app/module-trading/src/components/general/HistoryButton.tsx",
                 "suite-native-app/module-trading/src/components/general/LegalGatewayContextMessage.tsx",
-                "suite-native-app/module-trading/src/components/general/TradingMetadataProvider.tsx",
                 "suite-native-app/module-trading/src/components/general/TradingTabContent.tsx",
                 "suite-native-app/module-trading/src/components/general/TradingTypeAwareContextMessage.tsx",
                 "suite-native/device-manager/src/components/DeviceManagerScreenHeader.tsx",
@@ -4970,16 +4970,16 @@
                 "NavigationProps",
                 "Screen",
                 "TradingEnvironmentWarning",
-                "TradingMetadataProvider",
                 "TradingScreenContent",
                 "TradingTabContent",
+                "TradingTokenMetadataProvider",
                 "TradingTypeAwareContextMessage",
                 "VStack"
             ],
             "translation_keys": [],
             "findings": [],
             "disposition": "composition-reviewed",
-            "source_sha256": "5bdcb71c936178bf9832e8a60e19b739cb81ef0607205b89d235cf5136d58eb3"
+            "source_sha256": "2e6097fe8fee8be105d0cd61c3c1e0e29e58859dbafaa7e04a42a9e580674f97"
         },
         {
             "path": "suite-native-app/module-trading/src/screens/TradingSellCompletionScreen.tsx",
@@ -5150,14 +5150,14 @@
             "source_sha256": "5e9c467976433af685b68f7aa105850d9557194c90d44fea31c17cf039bbbd7d"
         },
         {
-            "path": "suite-native/apps-embedding-demo/src/AppsEmbeddingScreen.tsx",
+            "path": "suite-native-app/apps-embedding-demo/src/AppsEmbeddingScreen.tsx",
             "symbol": "AppsEmbeddingScreen",
             "registered_in": ["suite-native-app/app/src/navigation/RootStackNavigator.tsx"],
             "feature_ids": [],
             "mapping_basis": "internal exclusion",
             "inspected_components": [
-                "suite-native/apps-embedding-demo/src/components/AppsEmbeddingCatalog/AppsEmbeddingCatalog.tsx",
-                "suite-native/apps-embedding-demo/src/components/EmbeddedAppRegion/EmbeddedAppRegion.tsx",
+                "suite-native-app/apps-embedding-demo/src/components/AppsEmbeddingCatalog/AppsEmbeddingCatalog.tsx",
+                "suite-native-app/apps-embedding-demo/src/components/EmbeddedAppRegion/EmbeddedAppRegion.tsx",
                 "suite-native/navigation/src/components/DynamicHeader/DynamicScreenHeader.tsx",
                 "suite-native/navigation/src/components/Screen.tsx"
             ],
@@ -5207,7 +5207,7 @@
             "symbol": "DeviceConnectionGuardScreen",
             "registered_in": [
                 "suite-native-app/module-receive/src/navigation/ReceiveAddressVerificationStackNavigator.tsx",
-                "suite-native-app/module-sign-verify/src/navigation/SignAndVerifyStackNavigator.tsx",
+                "suite-native-app/module-sign-verify/src/navigation/SignVerifyStackNavigator.tsx",
                 "suite-native-app/module-check-backup/src/navigation/DeviceCheckBackupStackNavigator.tsx",
                 "suite-native-app/module-device-settings/src/navigation/DeviceNameStackNavigator.tsx",
                 "suite-native-app/module-device-settings/src/navigation/DevicePinProtectionStackNavigator.tsx",
@@ -5775,7 +5775,7 @@
                 "suite-native/module-earn/src/components/earn/EarnFeeSection.tsx",
                 "suite-native/module-earn/src/components/yield/YieldClaimFlowFooter.tsx",
                 "suite-native/module-earn/src/components/yield/YieldClaimRewardsCard.tsx",
-                "suite-native/module-earn/src/components/yield/YieldDisabledAlert.tsx",
+                "suite-native/earn/src/components/YieldDisabledAlert.tsx",
                 "suite-native/module-earn/src/components/yield/YieldPendingTransactionModal.tsx",
                 "suite-native/module-earn/src/components/yield/YieldTxSimulationBottomSheet.tsx",
                 "suite-native/navigation/src/components/Screen.tsx",
@@ -5857,7 +5857,7 @@
                 "suite-native/module-earn/src/components/yield/YieldDepositApprovedAmountCard.tsx",
                 "suite-native/module-earn/src/components/yield/YieldDepositFlowFooter.tsx",
                 "suite-native/module-earn/src/components/yield/YieldDepositStepCard.tsx",
-                "suite-native/module-earn/src/components/yield/YieldDisabledAlert.tsx",
+                "suite-native/earn/src/components/YieldDisabledAlert.tsx",
                 "suite-native/module-earn/src/components/yield/YieldFeeReserveBanner.tsx",
                 "suite-native/module-earn/src/components/yield/YieldFlowScreenHeader.tsx",
                 "suite-native/module-earn/src/components/yield/YieldSessionPendingModal.tsx",
@@ -6049,7 +6049,7 @@
                 "suite-native/module-earn/src/components/yield/YieldDepositApprovedAmountCard.tsx",
                 "suite-native/module-earn/src/components/yield/YieldDepositFlowFooter.tsx",
                 "suite-native/module-earn/src/components/yield/YieldDepositStepCard.tsx",
-                "suite-native/module-earn/src/components/yield/YieldDisabledAlert.tsx",
+                "suite-native/earn/src/components/YieldDisabledAlert.tsx",
                 "suite-native/module-earn/src/components/yield/YieldFeeReserveBanner.tsx",
                 "suite-native/module-earn/src/components/yield/YieldFlowScreenHeader.tsx",
                 "suite-native/module-earn/src/components/yield/YieldSessionPendingModal.tsx",
@@ -6120,7 +6120,7 @@
                 "suite-native/module-earn/src/components/earn/WrappedNativeFeeReserveBanner.tsx",
                 "suite-native/module-earn/src/components/earn/WrappedNativeTokenAmountInputCard.tsx",
                 "suite-native/module-earn/src/components/yield/YieldDepositStepCard.tsx",
-                "suite-native/module-earn/src/components/yield/YieldDisabledAlert.tsx",
+                "suite-native/earn/src/components/YieldDisabledAlert.tsx",
                 "suite-native/module-earn/src/components/yield/YieldFlowScreenHeader.tsx",
                 "suite-native/module-earn/src/components/yield/YieldSessionPendingModal.tsx",
                 "suite-native/module-earn/src/components/yield/YieldSessionTxSimulationSheet.tsx",
@@ -6247,7 +6247,7 @@
                 "suite-native/module-earn/src/components/earn/EarnApproximateFiatAmount.tsx",
                 "suite-native/module-earn/src/components/earn/EarnFeeEstimationErrorAlert.tsx",
                 "suite-native/module-earn/src/components/earn/EarnMaxSwitch.tsx",
-                "suite-native/module-earn/src/components/yield/YieldDisabledAlert.tsx",
+                "suite-native/earn/src/components/YieldDisabledAlert.tsx",
                 "suite-native/module-earn/src/components/yield/YieldFlowScreenHeader.tsx",
                 "suite-native/module-earn/src/components/yield/YieldFormattedAmount.tsx",
                 "suite-native/module-earn/src/components/yield/YieldPendingTransactionModal.tsx",
@@ -6324,7 +6324,7 @@
             "inspected_components": [
                 "suite-native/module-earn/src/components/earn/EarnFeeSection.tsx",
                 "suite-native/module-earn/src/components/earn/WrappedNativeTokenAmountInputCard.tsx",
-                "suite-native/module-earn/src/components/yield/YieldDisabledAlert.tsx",
+                "suite-native/earn/src/components/YieldDisabledAlert.tsx",
                 "suite-native/module-earn/src/components/yield/YieldFlowScreenHeader.tsx",
                 "suite-native/module-earn/src/components/yield/YieldSessionPendingModal.tsx",
                 "suite-native/module-earn/src/components/yield/YieldSessionTxSimulationSheet.tsx",
@@ -6747,7 +6747,7 @@
         {
             "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
             "component": "AppsEmbeddingScreen",
-            "path": "suite-native/apps-embedding-demo/src/AppsEmbeddingScreen.tsx",
+            "path": "suite-native-app/apps-embedding-demo/src/AppsEmbeddingScreen.tsx",
             "symbol": "AppsEmbeddingScreen"
         },
         {
@@ -6801,7 +6801,7 @@
         {
             "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
             "component": "SignAndVerifyScreen",
-            "path": "suite-native-app/module-sign-verify/src/screens/SignAndVerifyScreen.tsx",
+            "path": "suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx",
             "symbol": "SignAndVerifyScreen"
         },
         {
@@ -7035,7 +7035,7 @@
         {
             "navigator": "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx",
             "component": "UninitializedDeviceLandingScreen",
-            "path": "suite-native-app/module-device-onboarding/src/screens/UninitializedDeviceLandingScreen.tsx",
+            "path": "suite-native-app/module-device-onboarding/src/screens/DeviceVisualCheckScreen.tsx",
             "symbol": "UninitializedDeviceLandingScreen"
         },
         {
@@ -7047,7 +7047,7 @@
         {
             "navigator": "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx",
             "component": "SecurityCheckScreen",
-            "path": "suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx",
+            "path": "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx",
             "symbol": "SecurityCheckScreen"
         },
         {
@@ -7177,13 +7177,13 @@
             "symbol": "CongratulationsScreen"
         },
         {
-            "navigator": "suite-native-app/module-sign-verify/src/navigation/SignAndVerifyStackNavigator.tsx",
+            "navigator": "suite-native-app/module-sign-verify/src/navigation/SignVerifyStackNavigator.tsx",
             "component": "DeviceConnectionGuardScreen",
             "path": "suite-native/device-authorization/src/screens/DeviceConnectionGuardScreen.tsx",
             "symbol": "DeviceConnectionGuardScreen"
         },
         {
-            "navigator": "suite-native-app/module-sign-verify/src/navigation/SignAndVerifyStackNavigator.tsx",
+            "navigator": "suite-native-app/module-sign-verify/src/navigation/SignVerifyStackNavigator.tsx",
             "component": "ContinueOnTrezorScreen",
             "path": "suite-native-app/module-sign-verify/src/screens/ContinueOnTrezorScreen.tsx",
             "symbol": "ContinueOnTrezorScreen"
@@ -8977,13 +8977,13 @@
         "suite-native-app/module-device-onboarding/src/screens/FirmwareInfoScreen.tsx",
         "suite-native-app/module-device-onboarding/src/screens/FirmwareInstallationScreen.tsx",
         "suite-native-app/module-device-onboarding/src/screens/RecoveryInstructionsScreen.tsx",
-        "suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx",
+        "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx",
         "suite-native-app/module-device-onboarding/src/screens/SuspiciousDeviceScreen.tsx",
         "suite-native-app/module-device-onboarding/src/screens/ThpCodeEntryScreen.tsx",
         "suite-native-app/module-device-onboarding/src/screens/ThpConfirmationScreen.tsx",
         "suite-native-app/module-device-onboarding/src/screens/ThpPairingInfoScreen.tsx",
         "suite-native-app/module-device-onboarding/src/screens/ThpPairingSuccessScreen.tsx",
-        "suite-native-app/module-device-onboarding/src/screens/UninitializedDeviceLandingScreen.tsx",
+        "suite-native-app/module-device-onboarding/src/screens/DeviceVisualCheckScreen.tsx",
         "suite-native-app/module-device-onboarding/src/screens/WalletBackupRecapScreen.tsx",
         "suite-native-app/module-device-onboarding/src/screens/WalletBackupTutorialScreen.tsx",
         "suite-native-app/module-device-onboarding/src/screens/WalletCreatedSuccessScreen.tsx",
@@ -9076,9 +9076,9 @@
         "suite-native-app/module-settings/src/screens/TurnOffFirmwareAuthenticityCheckScreen.tsx",
         "suite-native-app/module-sign-verify/src/components/SignMessageCard.tsx",
         "suite-native-app/module-sign-verify/src/components/VerifyMessageCard.tsx",
-        "suite-native-app/module-sign-verify/src/navigation/SignAndVerifyStackNavigator.tsx",
+        "suite-native-app/module-sign-verify/src/navigation/SignVerifyStackNavigator.tsx",
         "suite-native-app/module-sign-verify/src/screens/ContinueOnTrezorScreen.tsx",
-        "suite-native-app/module-sign-verify/src/screens/SignAndVerifyScreen.tsx",
+        "suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx",
         "suite-native-app/module-stellar-token-management/src/components/FeeOptionsSection.tsx",
         "suite-native-app/module-stellar-token-management/src/navigation/StellarManageTokenStackNavigator.tsx",
         "suite-native-app/module-stellar-token-management/src/screens/ActivationFeeScreen.tsx",
@@ -9108,7 +9108,7 @@
         "suite-native-app/module-transactions/src/components/TransactionDetailValuesSheet.tsx",
         "suite-native-app/module-transactions/src/navigation/TransactionDetailStackNavigator.tsx",
         "suite-native-app/module-transactions/src/screens/TransactionDetailScreen.tsx",
-        "suite-native/apps-embedding-demo/src/AppsEmbeddingScreen.tsx",
+        "suite-native-app/apps-embedding-demo/src/AppsEmbeddingScreen.tsx",
         "suite-native/coin-enabling/src/screens/CoinEnablingInitScreen.tsx",
         "suite-native/device-authorization/src/screens/DeviceConnectionGuardScreen.tsx",
         "suite-native/device-bootloader-mode/src/screens/BootloaderModeScreen.tsx",

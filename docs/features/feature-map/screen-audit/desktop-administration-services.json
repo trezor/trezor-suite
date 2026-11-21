@@ -3,7 +3,7 @@
     "scope": "All desktop/web administration, onboarding, connection, wallet access, settings, help, trade, earn and connected-app page wrappers; supporting controls and modal excerpts.",
     "screen_reviews": [
         {
-            "path": "suite-app/app/src/pages/AppsEmbeddingPage.tsx",
+            "path": "suite-app/module-apps-embedding/src/pages/AppsEmbeddingPage.tsx",
             "symbol": "AppsEmbeddingPage",
             "feature_ids": [],
             "inspected_components": [],
@@ -17,7 +17,7 @@
             "sha256": "1abe039f624d653831f70de056306e97874dc8beff8c8f53034f0fcb6496f338"
         },
         {
-            "path": "suite-app/app/src/pages/SettingsDebugPage.tsx",
+            "path": "suite-app/module-settings/src/pages/SettingsDebugPage.tsx",
             "symbol": "SettingsDebugPage",
             "feature_ids": [],
             "inspected_components": [],
@@ -120,7 +120,7 @@
             "sha256": "98817a20ae668cb547bd781dbc91468322cc2c9a32379a7d3e4886de21bb0a70"
         },
         {
-            "path": "suite-app/app/src/pages/WalletTradePage.tsx",
+            "path": "suite-app/module-trading/src/pages/WalletTradePage.tsx",
             "symbol": "WalletTradePage",
             "feature_ids": ["trade.contextual-entry"],
             "inspected_components": [],
@@ -143,7 +143,7 @@
             "sha256": "45db16afb3848a4393e47e0918c85bce4eed4730771f65cb58c60858ed348d7e"
         },
         {
-            "path": "suite-app/app/src/pages/ConnectPopupPage.tsx",
+            "path": "suite-app/module-connect-popup/src/pages/ConnectPopupPage.tsx",
             "symbol": "ConnectPopupPage",
             "feature_ids": ["connect"],
             "inspected_components": [],
@@ -157,7 +157,7 @@
             "sha256": "0fd4a5702226a556b0389bbfb00c6037ceec700298d109887eb31a00c4d7f09e"
         },
         {
-            "path": "suite-app/app/src/pages/DesktopSettingsGeneralPage.tsx",
+            "path": "suite-app/module-settings/src/pages/DesktopSettingsGeneralPage.tsx",
             "symbol": "DesktopSettingsGeneralPage",
             "feature_ids": ["app-settings", "app-settings.tor", "app-settings.tor-external"],
             "inspected_components": [],
@@ -174,7 +174,7 @@
             "sha256": "7674741707e27d45f2232a02e2b3b6da3504ce3cecaff2a4440f92b98e472bd3"
         },
         {
-            "path": "suite-app/app/src/pages/WebSettingsGeneralPage.tsx",
+            "path": "suite-app/module-settings/src/pages/WebSettingsGeneralPage.tsx",
             "symbol": "WebSettingsGeneralPage",
             "feature_ids": ["app-settings", "app-settings.tor"],
             "inspected_components": [],
@@ -191,7 +191,7 @@
             "sha256": "3b6cfd094379efed8b0f548625363298198db0ec4ded6c70fe3b126114aa047e"
         },
         {
-            "path": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+            "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
             "symbol": "SettingsDevicePage",
             "feature_ids": ["device-settings"],
             "inspected_components": [],
@@ -326,7 +326,7 @@
             "sha256": "35babad2d52256ad0e5b2da515325f47af9dfa926952a8c78b0da1a6aaa69b0f"
         },
         {
-            "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+            "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
             "symbol": "SettingsCoinsPage",
             "feature_ids": [
                 "network-settings",
@@ -395,7 +395,7 @@
             "sha256": "3bbd7a43a0492faab4acca80bc71fa5ed271e21bf1a6a56a014a3889885f8b3f"
         },
         {
-            "path": "suite-app/app/src/pages/SettingsConnectedAppsPage.tsx",
+            "path": "suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx",
             "symbol": "SettingsConnectedAppsPage",
             "feature_ids": ["connect", "connect.permissions", "connect.walletconnect"],
             "inspected_components": [],
@@ -424,7 +424,7 @@
             "sha256": "d819e35363ab3ff38bfeb050f04c6c16e7fe907c57221073778d4d52ce37a57b"
         },
         {
-            "path": "suite-app/app/src/pages/NotificationPage.tsx",
+            "path": "suite-app/module-activity-center/src/pages/NotificationPage.tsx",
             "symbol": "NotificationPage",
             "feature_ids": [
                 "help.activity",
@@ -454,7 +454,7 @@
             "sha256": "2e8e21108c7644613ab66aa9d799a0b80378784a2283864f427583a689c93d9d"
         },
         {
-            "path": "suite-app/app/src/pages/PasswordManagerPage.tsx",
+            "path": "suite-app/module-password-manager/src/pages/PasswordManagerPage.tsx",
             "symbol": "PasswordManagerPage",
             "feature_ids": ["labeling.password-manager"],
             "inspected_components": [],
@@ -471,7 +471,7 @@
             "sha256": "5533ae5a3f2e220df30cb9d25dfcc7570de462f3bb486df12760c774031155fc"
         },
         {
-            "path": "suite-app/app/src/pages/ReferAFriendPage.tsx",
+            "path": "suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx",
             "symbol": "ReferAFriendPage",
             "feature_ids": ["help.referral.prototype"],
             "inspected_components": [],
@@ -560,7 +560,7 @@
             "sha256": "4e0988da9debea1a6644e47ff0d11ad69a1da5fd9ac06822bc871f5821fa7f1c"
         },
         {
-            "path": "suite-app/app/src/pages/EarnPage.tsx",
+            "path": "suite-app/module-earn/src/pages/EarnPage.tsx",
             "symbol": "EarnPage",
             "feature_ids": [
                 "earn",
@@ -586,7 +586,7 @@
             "sha256": "196dcd1e265370161a8669d7421d11b85dcb00f29350240ce83ba063d4c7ffdb"
         },
         {
-            "path": "suite-app/app/src/pages/EarnClaimPage.tsx",
+            "path": "suite-app/module-earn/src/pages/EarnClaimPage.tsx",
             "symbol": "EarnClaimPage",
             "feature_ids": ["earn.yield.claim"],
             "inspected_components": [],
@@ -607,7 +607,7 @@
             "sha256": "c7d844b98dd643b7cb6d3c1bf2421ec6cffae530024edcdbefe043f87f0981a4"
         },
         {
-            "path": "suite-app/app/src/pages/EarnDepositPage.tsx",
+            "path": "suite-app/module-earn/src/pages/EarnDepositPage.tsx",
             "symbol": "EarnDepositPage",
             "feature_ids": ["earn.yield.deposit"],
             "inspected_components": [],
@@ -628,7 +628,7 @@
             "sha256": "ac7772037c70603779cdc43545e7ed494acfb196d21373ae8e634d19a56f0295"
         },
         {
-            "path": "suite-app/app/src/pages/EarnWithdrawPage.tsx",
+            "path": "suite-app/module-earn/src/pages/EarnWithdrawPage.tsx",
             "symbol": "EarnWithdrawPage",
             "feature_ids": ["earn.yield.withdraw"],
             "inspected_components": [],
@@ -649,7 +649,7 @@
             "sha256": "0999ca73e4787d5d190c732a748f82632c3c3f183951b6478aa1af4807d4433a"
         },
         {
-            "path": "suite-app/app/src/pages/EarnWrapPage.tsx",
+            "path": "suite-app/module-earn/src/pages/EarnWrapPage.tsx",
             "symbol": "EarnWrapPage",
             "feature_ids": ["earn.yield.standalone-wrap"],
             "inspected_components": [],
@@ -670,7 +670,7 @@
             "sha256": "85903d5852179464c729fc700fc9986a1440758aba7d3d127761f7ffbca713cd"
         },
         {
-            "path": "suite-app/app/src/pages/EarnUnwrapPage.tsx",
+            "path": "suite-app/module-earn/src/pages/EarnUnwrapPage.tsx",
             "symbol": "EarnUnwrapPage",
             "feature_ids": ["earn.yield.standalone-unwrap"],
             "inspected_components": [],
@@ -691,7 +691,7 @@
             "sha256": "9bf19f5928c6f53f4cc99b6b0d18fe48300852cdb581e9bdd339e931d4f3ce26"
         },
         {
-            "path": "suite-app/app/src/pages/EarnTronClaimPage.tsx",
+            "path": "suite-app/module-earn/src/pages/EarnTronClaimPage.tsx",
             "symbol": "EarnTronClaimPage",
             "feature_ids": ["earn.staking.trx.claim"],
             "inspected_components": [],
@@ -712,7 +712,7 @@
             "sha256": "e91635a027ef6ab122eed96ff61e2dbfa760e1941643f5a71d9ad0d78eec1569"
         },
         {
-            "path": "suite-app/app/src/pages/EarnTronStakePage.tsx",
+            "path": "suite-app/module-earn/src/pages/EarnTronStakePage.tsx",
             "symbol": "EarnTronStakePage",
             "feature_ids": ["earn.staking.trx.freeze"],
             "inspected_components": [],
@@ -733,7 +733,7 @@
             "sha256": "d5d6aff6e36e7655c69df8a1da15806aae61510a40b96bbfea65855cff4038b8"
         },
         {
-            "path": "suite-app/app/src/pages/EarnTronUnstakePage.tsx",
+            "path": "suite-app/module-earn/src/pages/EarnTronUnstakePage.tsx",
             "symbol": "EarnTronUnstakePage",
             "feature_ids": ["earn.staking.trx.unfreeze"],
             "inspected_components": [],
@@ -754,7 +754,7 @@
             "sha256": "c0b66521be3d3fbf67d79fc613bb2ad28d2c30ac7d578aee74c4fa24880aeb65"
         },
         {
-            "path": "suite-app/app/src/pages/EarnTronVotePage.tsx",
+            "path": "suite-app/module-earn/src/pages/EarnTronVotePage.tsx",
             "symbol": "EarnTronVotePage",
             "feature_ids": ["earn.staking.trx.vote"],
             "inspected_components": [],
@@ -775,7 +775,7 @@
             "sha256": "e1c9fe17a76bced0a15b490897633ffb3045fdd43cbcc706e59db397189e7024"
         },
         {
-            "path": "suite-app/app/src/pages/EarnTronWithdrawPage.tsx",
+            "path": "suite-app/module-earn/src/pages/EarnTronWithdrawPage.tsx",
             "symbol": "EarnTronWithdrawPage",
             "feature_ids": ["earn.staking.trx.withdraw"],
             "inspected_components": [],
@@ -796,7 +796,7 @@
             "sha256": "c344f4b585293a2e69bb29bacc3f7bbb92809d8f4cdfaff9bcfa0a56cdc82976"
         },
         {
-            "path": "suite-app/app/src/pages/EarnTronRedirectPage.tsx",
+            "path": "suite-app/module-earn/src/pages/EarnTronRedirectPage.tsx",
             "symbol": "EarnTronRedirectPage",
             "feature_ids": ["earn"],
             "inspected_components": [],
@@ -808,7 +808,7 @@
             "sha256": "5559bb66c49bd23539df91dbaaef6480b4123b5965dc55e926c284be9818c49b"
         },
         {
-            "path": "suite-app/app/src/pages/TradingBuyFormPage.tsx",
+            "path": "suite-app/module-trading/src/pages/TradingBuyFormPage.tsx",
             "symbol": "TradingBuyFormPage",
             "feature_ids": ["trade.buy"],
             "inspected_components": [],
@@ -818,26 +818,30 @@
             "inspection": "Page body and relevant controls reviewed",
             "control_evidence": [
                 {
-                    "line": 20,
+                    "line": 15,
                     "source": "<TradingLayout>"
                 },
                 {
-                    "line": 23,
-                    "source": "<TradingDisabled type={type} content={content} />"
+                    "line": 16,
+                    "source": "<ContextMessage context={Context.getTrading(type)} />"
                 },
                 {
-                    "line": 25,
+                    "line": 17,
+                    "source": "<TradingAvailabilityGuard type={type}>"
+                },
+                {
+                    "line": 18,
                     "source": "<TradingContainer>"
                 },
                 {
-                    "line": 26,
+                    "line": 19,
                     "source": "<TradingBuyFormWrapper />"
                 }
             ],
-            "sha256": "bf968d2ca876ede645312a98e62d0cab6883534f942f164bd15b0013263f3d2f"
+            "sha256": "3f1676caac8aa0ac9b232226ede9f164633a5d5ee015b0dc87951bc0df6b31bb"
         },
         {
-            "path": "suite-app/app/src/pages/TradingBuyConfirmPage.tsx",
+            "path": "suite-app/module-trading/src/pages/TradingBuyConfirmPage.tsx",
             "symbol": "TradingBuyConfirmPage",
             "feature_ids": ["trade.buy.provider-checkout", "trade.receive"],
             "inspected_components": [],
@@ -858,7 +862,7 @@
             "sha256": "e2a928b674375b78664544bf046d72a44fe61840b6fa5fa2e2425628e97d50c4"
         },
         {
-            "path": "suite-app/app/src/pages/TradingBuyDetailPage.tsx",
+            "path": "suite-app/module-trading/src/pages/TradingBuyDetailPage.tsx",
             "symbol": "TradingBuyDetailPage",
             "feature_ids": ["trade.buy.payment-status"],
             "inspected_components": [],
@@ -879,7 +883,7 @@
             "sha256": "36b68ec9663676ce9fab81f593e7948462a9b654e81979755c5f0e8878aea456"
         },
         {
-            "path": "suite-app/app/src/pages/TradingSellFormPage.tsx",
+            "path": "suite-app/module-trading/src/pages/TradingSellFormPage.tsx",
             "symbol": "TradingSellFormPage",
             "feature_ids": ["trade.sell"],
             "inspected_components": [],
@@ -889,26 +893,30 @@
             "inspection": "Page body and relevant controls reviewed",
             "control_evidence": [
                 {
-                    "line": 20,
+                    "line": 15,
                     "source": "<TradingLayout>"
                 },
                 {
-                    "line": 23,
-                    "source": "<TradingDisabled type={type} content={content} />"
+                    "line": 16,
+                    "source": "<ContextMessage context={Context.getTrading(type)} />"
                 },
                 {
-                    "line": 25,
+                    "line": 17,
+                    "source": "<TradingAvailabilityGuard type={type}>"
+                },
+                {
+                    "line": 18,
                     "source": "<TradingContainer>"
                 },
                 {
-                    "line": 26,
+                    "line": 19,
                     "source": "<TradingSellFormWrapper />"
                 }
             ],
-            "sha256": "d7a72368b97ba10803d9017d33f4ab0b17ab84fba10441bdbef72c5551383cd2"
+            "sha256": "25a0e4d48a376309bfb0e3285a6c53cbb23f3578273479903357879572880365"
         },
         {
-            "path": "suite-app/app/src/pages/TradingSellConfirmPage.tsx",
+            "path": "suite-app/module-trading/src/pages/TradingSellConfirmPage.tsx",
             "symbol": "TradingSellConfirmPage",
             "feature_ids": ["trade.sell.confirm-send", "trade.sell.bank-account", "trade.sell.fee"],
             "inspected_components": [],
@@ -929,7 +937,7 @@
             "sha256": "95947e78d96ca1f8ea5257a00c38d6eb1269e7f2b0d9edb601d8fb0c8e6736b1"
         },
         {
-            "path": "suite-app/app/src/pages/TradingSellDetailPage.tsx",
+            "path": "suite-app/module-trading/src/pages/TradingSellDetailPage.tsx",
             "symbol": "TradingSellDetailPage",
             "feature_ids": ["trade.sell.status"],
             "inspected_components": [],
@@ -950,7 +958,7 @@
             "sha256": "c252b9bd98eeba135111621069d67d7b0809acf4f8b26398b9afbc41aa96cc21"
         },
         {
-            "path": "suite-app/app/src/pages/TradingExchangeFormPage.tsx",
+            "path": "suite-app/module-trading/src/pages/TradingExchangeFormPage.tsx",
             "symbol": "TradingExchangeFormPage",
             "feature_ids": ["trade.swap"],
             "inspected_components": [],
@@ -960,26 +968,30 @@
             "inspection": "Page body and relevant controls reviewed",
             "control_evidence": [
                 {
-                    "line": 20,
+                    "line": 15,
                     "source": "<TradingLayout>"
                 },
                 {
-                    "line": 23,
-                    "source": "<TradingDisabled type={type} content={content} />"
+                    "line": 16,
+                    "source": "<ContextMessage context={Context.getTrading(type)} />"
                 },
                 {
-                    "line": 25,
+                    "line": 17,
+                    "source": "<TradingAvailabilityGuard type={type}>"
+                },
+                {
+                    "line": 18,
                     "source": "<TradingContainer>"
                 },
                 {
-                    "line": 26,
+                    "line": 19,
                     "source": "<TradingExchangeFormWrapper />"
                 }
             ],
-            "sha256": "4c82fd8a378971f852d56caf5f033e631cf990fe0ea66d553310de8395dec32f"
+            "sha256": "5ffbd4c74d68e99beb0a6859f307f6f9dc2411b45452fcce1dcf46ef5fda52fd"
         },
         {
-            "path": "suite-app/app/src/pages/TradingExchangeApprovalPage.tsx",
+            "path": "suite-app/module-trading/src/pages/TradingExchangeApprovalPage.tsx",
             "symbol": "TradingExchangeApprovalPage",
             "feature_ids": [
                 "trade.swap.approval",
@@ -1001,7 +1013,7 @@
             "sha256": "d977c60c0da3e87356359a6a7a18b63b7b8633f08b535b22814a99822b896a3d"
         },
         {
-            "path": "suite-app/app/src/pages/TradingExchangeConfirmPage.tsx",
+            "path": "suite-app/module-trading/src/pages/TradingExchangeConfirmPage.tsx",
             "symbol": "TradingExchangeConfirmPage",
             "feature_ids": ["trade.swap.clear-signing", "trade.swap.risk-review"],
             "inspected_components": [],
@@ -1028,7 +1040,7 @@
             "sha256": "b6168a0bec38e97b5f4a998d62e20855ce9b3140fd08354fa17af3b8a3ac18bd"
         },
         {
-            "path": "suite-app/app/src/pages/TradingExchangeDetailPage.tsx",
+            "path": "suite-app/module-trading/src/pages/TradingExchangeDetailPage.tsx",
             "symbol": "TradingExchangeDetailPage",
             "feature_ids": ["trade.swap.status"],
             "inspected_components": [],
@@ -1049,7 +1061,7 @@
             "sha256": "07c484a380fa38cd48570109cb0ec7c3425a8c6666b25e4e9b55c903264d0df3"
         },
         {
-            "path": "suite-app/app/src/pages/TradingConciergeDetailPage.tsx",
+            "path": "suite-app/module-trading/src/pages/TradingConciergeDetailPage.tsx",
             "symbol": "TradingConciergeDetailPage",
             "feature_ids": ["trade.concierge"],
             "inspected_components": [],
@@ -1059,42 +1071,42 @@
             "inspection": "Page body and relevant controls reviewed",
             "control_evidence": [
                 {
-                    "line": 46,
+                    "line": 39,
                     "source": "<TradingLayout>"
                 },
                 {
-                    "line": 48,
-                    "source": "<TradingDisabled type=\"concierge\" content={content} />"
+                    "line": 40,
+                    "source": "<TradingAvailabilityGuard type=\"concierge\">"
                 },
                 {
-                    "line": 60,
+                    "line": 44,
                     "source": "<Translation id=\"TR_TRADING_CONCIERGE_TITLE\" />"
                 },
                 {
-                    "line": 64,
+                    "line": 48,
                     "source": "<Translation id=\"TR_TRADING_CONCIERGE_DESCRIPTION\" />"
                 },
                 {
-                    "line": 74,
+                    "line": 58,
                     "source": "<Translation id={item.titleId} />"
                 },
                 {
-                    "line": 80,
+                    "line": 61,
                     "source": "<Translation id={item.descriptionId} />"
                 },
                 {
-                    "line": 87,
+                    "line": 68,
                     "source": "<TradingConciergeForm />"
                 },
                 {
-                    "line": 89,
+                    "line": 70,
                     "source": "<TradingFooter />"
                 }
             ],
-            "sha256": "e4f437e8815335081e031c6ed4aba8decc33d584c09b9c78de0b6032ae4ebd1a"
+            "sha256": "2a93d28e3b6370a09e6cd07155f747554882da5293248628b3bc17b34c8e3cd1"
         },
         {
-            "path": "suite-app/app/src/pages/TradingTransactionsPage.tsx",
+            "path": "suite-app/module-trading/src/pages/TradingTransactionsPage.tsx",
             "symbol": "TradingTransactionsPage",
             "feature_ids": [
                 "trade.history",
@@ -1120,7 +1132,7 @@
             "sha256": "b00b72567d29431aba1011858f3f1ae26f5634314e2aa88b249a39629b810d36"
         },
         {
-            "path": "suite-app/app/src/pages/TradingRedirectPage.tsx",
+            "path": "suite-app/module-trading/src/pages/TradingRedirectPage.tsx",
             "symbol": "TradingRedirectPage",
             "feature_ids": ["trade"],
             "inspected_components": [],
@@ -1137,7 +1149,7 @@
             "sha256": "0dd152cc8664c15d0065718ec2b64d830ae16d34ad8501712d50e4c880c66270"
         },
         {
-            "path": "suite-app/app/src/pages/WalletStakingPage.tsx",
+            "path": "suite-app/module-earn/src/pages/WalletStakingPage.tsx",
             "symbol": "WalletStakingPage",
             "feature_ids": ["earn.staking"],
             "inspected_components": [],
@@ -1512,7 +1524,7 @@
             "sha256": "b6adae70fe59d5de5e67d733ccb2b9281d78caa2f8e0de199739d85fdb2addd6"
         },
         {
-            "path": "packages/suite/src/views/onboarding/steps/FirmwareStep/index.tsx",
+            "path": "packages/suite/src/views/onboarding/steps/FirmwareStep/FirmwareStep.tsx",
             "symbol": "FirmwareStep",
             "feature_ids": ["onboarding.firmware"],
             "inspected_components": [],
@@ -1663,7 +1675,7 @@
             "sha256": "d01beaee537438a3b37167c4f79a98fbab01b50459c06bd5355348745caba9a4"
         },
         {
-            "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+            "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
             "symbol": "RecoveryStep",
             "feature_ids": [
                 "onboarding.recovery",
@@ -6969,8 +6981,8 @@
             "sha256": "081fc7cee6759ac8e095c06f90d9f744ec5ed68fa7790bcebab831a67118f837"
         },
         {
-            "path": "packages/suite/src/views/wallet/trading/common/TradingDisabled.tsx",
-            "symbol": "TradingDisabled",
+            "path": "packages/suite/src/views/wallet/trading/common/TradingAvailabilityGuard/TradingAvailabilityGuard.tsx",
+            "symbol": "TradingAvailabilityGuard",
             "feature_ids": ["trade"],
             "inspected_components": [],
             "local_composition_paths": [],
@@ -6979,11 +6991,23 @@
             "inspection": "User controls and local composition inspected; not a full runtime branch proof",
             "control_evidence": [
                 {
-                    "line": 8,
-                    "source": "const typeLabels: Record<TradingDisabledProps['type'], ExtendedMessageDescriptor['id']> = {"
+                    "line": 16,
+                    "source": "export const TradingAvailabilityGuard = ({ type, children }: TradingAvailabilityGuardProps) => {"
+                },
+                {
+                    "line": 21,
+                    "source": "return <TradingDeviceCompromised />;"
+                },
+                {
+                    "line": 23,
+                    "source": "return <TradingAllDisabled />;"
+                },
+                {
+                    "line": 25,
+                    "source": "return <TradingTypeDisabled type={type} />;"
                 }
             ],
-            "sha256": "7589138aae3585acd0a409fa0ce59bf93e1ec21e3353c9d1b2cc6af04380f08c"
+            "sha256": "38d03dae867718f73b70a0483ebfd83cdaa601ce33d5133126dadd8b56ed99b4"
         },
         {
             "path": "packages/suite/src/views/wallet/trading/common/TradingFooter/TradingFooter.tsx",
@@ -7276,63 +7300,43 @@
             "inspection": "User controls and local composition inspected; not a full runtime branch proof",
             "control_evidence": [
                 {
-                    "line": 169,
-                    "source": "<Translation id=\"TR_TRADING_SWAP\" />"
-                },
-                {
-                    "line": 172,
-                    "source": "title={<Translation id=\"TR_EXCHANGE_APPROVAL_FORM_REVOKING_APPROVAL\" />}"
-                },
-                {
-                    "line": 173,
-                    "source": "txidLabel={<Translation id=\"TR_EXCHANGE_APPROVAL_FORM_TRANSACTION_ID\" />}"
-                },
-                {
-                    "line": 185,
-                    "source": "<Translation id=\"TR_UNKNOWN\" />"
-                },
-                {
-                    "line": 211,
+                    "line": 124,
                     "source": "onClick={() => handleRefreshClick(onRefreshClick)}"
                 },
                 {
-                    "line": 216,
+                    "line": 129,
                     "source": "isDisabled={isRefreshButtonLoading || isDiscoveryRunning}"
                 },
                 {
-                    "line": 218,
+                    "line": 131,
                     "source": "<Translation id=\"TR_EXCHANGE_APPROVAL_FORM_REFRESH_BUTTON\" />"
                 },
                 {
-                    "line": 229,
+                    "line": 143,
                     "source": "onClick={isApprovalRequired ? onContinueClick : () => handleSwapClick(onSwapClick)}"
                 },
                 {
-                    "line": 234,
+                    "line": 148,
                     "source": "isDisabled={isButtonBusy}"
                 },
                 {
-                    "line": 236,
+                    "line": 150,
                     "source": "<Translation id={isApprovalRequired ? 'TR_CONTINUE' : 'TR_TRADING_SWAP'} />"
                 },
                 {
-                    "line": 241,
-                    "source": "onClick={() => handleRevokeClick(onRevokeClick)}"
+                    "line": 155,
+                    "source": "onClick={onManageApprovalClick}"
                 },
                 {
-                    "line": 242,
+                    "line": 156,
                     "source": "isDisabled={isButtonBusy}"
                 },
                 {
-                    "line": 245,
-                    "source": "<Translation id=\"TR_EXCHANGE_APPROVAL_FORM_REVOKE_BUTTON\" />"
-                },
-                {
-                    "line": 249,
-                    "source": "<TradingRevokeModal"
+                    "line": 159,
+                    "source": "<Translation id=\"TR_EXCHANGE_APPROVAL_FORM_MANAGE_BUTTON\" />"
                 }
             ],
-            "sha256": "e64edd3e3a5543ff58aa08232f4e69a6c366cb580705591bdfcbbffac0996727"
+            "sha256": "a040dcebdb8f3c7a375b3d4d4905415ab43672a13e6bfbae82bef562c041603b"
         },
         {
             "path": "packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputAssetPicker/AssetPickerInput/AssetPickerInput.tsx",
@@ -8195,27 +8199,27 @@
             "inspection": "User controls and local composition inspected; not a full runtime branch proof",
             "control_evidence": [
                 {
-                    "line": 25,
+                    "line": 23,
                     "source": "const formWrapperByType: Record<TradingType, ComponentType> = {"
                 },
                 {
-                    "line": 31,
+                    "line": 29,
                     "source": "const TradingFormEmbedForm = ({ type, account }: Omit<TradingFormEmbedProps, 'onTypeChange'>) => {"
                 },
                 {
-                    "line": 50,
+                    "line": 47,
                     "source": "<TradingTypeTabs activeType={type} size=\"large\" onTypeChange={onTypeChange} />"
                 },
                 {
-                    "line": 54,
-                    "source": "<TradingDisabled type={type} content={content} />"
+                    "line": 50,
+                    "source": "<TradingAvailabilityGuard type={type}>"
                 },
                 {
-                    "line": 56,
+                    "line": 51,
                     "source": "<TradingFormEmbedForm type={type} account={account} />"
                 }
             ],
-            "sha256": "a229b91cc807fb238711333689e98b7d64887cc7f67241581f1dee720ccbd48a"
+            "sha256": "0913d76482b48198ef985b3287227821c3a5714ec8821b51240615235e04a436"
         },
         {
             "path": "packages/suite/src/views/wallet/trading/common/TradingFormFeesDisclaimer/TradingFormFeesDisclaimer.tsx",
@@ -9452,7 +9456,7 @@
             "feature_ids": ["trade.receive"],
             "inspected_components": [],
             "local_composition_paths": [
-                "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls.tsx"
+                "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/ReceiveAddressModalControlsProvider.tsx"
             ],
             "findings": [],
             "disposition": "control-excerpt-reviewed",
@@ -9643,7 +9647,7 @@
             "sha256": "051943f1b59e2158aefe2258e8eba7efaac548511f36955d305618005abe28a5"
         },
         {
-            "path": "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls.tsx",
+            "path": "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/ReceiveAddressModalControlsProvider.tsx",
             "symbol": "ReceiveAddressModalControlsProvider",
             "feature_ids": ["trade"],
             "inspected_components": [],
@@ -16508,7 +16512,7 @@
             "sha256": "fdbecd7a97ebb3c14bc95c135b90c67ad7248f3db58733f88c5d1455bab63ab5"
         },
         {
-            "path": "packages/suite/src/views/recovery/index.tsx",
+            "path": "packages/suite/src/views/recovery/Recovery.tsx",
             "symbol": "Recovery",
             "feature_ids": ["device-settings.check-backup"],
             "inspected_components": [],
@@ -16542,7 +16546,7 @@
             "sha256": "6e58de78d390bb7b330aa450e606803770afb0333b55cd9f67f2837194aaf2ab"
         },
         {
-            "path": "packages/suite/src/views/suite/bridge-requested/index.tsx",
+            "path": "packages/suite/src/views/suite/bridge-requested/BridgeRequested.tsx",
             "symbol": "BridgeRequested",
             "feature_ids": ["app-settings.connect", "app-settings.auto-start"],
             "inspected_components": [],
@@ -16619,7 +16623,7 @@
             "sha256": "51d77d5eb651b37ff54311d9d22ef5c1de2a60d57f9aa09b9d560fb3d2be0b29"
         },
         {
-            "path": "packages/suite/src/views/suite/version/index.tsx",
+            "path": "packages/suite/src/views/suite/version/Version.tsx",
             "symbol": "Version",
             "feature_ids": ["help.support.versions"],
             "inspected_components": [],
@@ -17745,10 +17749,10 @@
         "packages/suite/src/views/onboarding/steps/FinalStep.tsx",
         "packages/suite/src/views/onboarding/steps/FirmwareStep/FirmwareInitialStep.tsx",
         "packages/suite/src/views/onboarding/steps/FirmwareStep/FirmwareInstallationStep.tsx",
-        "packages/suite/src/views/onboarding/steps/FirmwareStep/index.tsx",
+        "packages/suite/src/views/onboarding/steps/FirmwareStep/FirmwareStep.tsx",
         "packages/suite/src/views/onboarding/steps/PinStep.tsx",
         "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStepBox.tsx",
-        "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+        "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
         "packages/suite/src/views/onboarding/steps/SecurityStep.tsx",
         "packages/suite/src/views/onboarding/steps/SelectBackupType/DefaultTag.tsx",
         "packages/suite/src/views/onboarding/steps/SelectBackupType/FloatingSelections.tsx",
@@ -17858,7 +17862,7 @@
         "packages/suite/src/views/wallet/trading/common/TradingDetail/TradingDetailTradeInfo.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingDetail/TradingDetailTransactionIdRow.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingDetail/TradingDetailTxId.tsx",
-        "packages/suite/src/views/wallet/trading/common/TradingDisabled.tsx",
+        "packages/suite/src/views/wallet/trading/common/TradingAvailabilityGuard/TradingAvailabilityGuard.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingFooter/TradingFooter.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingForm/TradingBuyFormInputs.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingForm/TradingExchangeAssetsSwitchButton/TradingExchangeAssetsSwitchButton.tsx",
@@ -17939,7 +17943,7 @@
         "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingUtxoReceiveAddressModal/TradingUtxoReceiveAddressList.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingUtxoReceiveAddressModal/TradingUtxoReceiveAddressModal.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingUtxoReceiveAddressModal/TradingUtxoReceiveAddressOption.tsx",
-        "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls.tsx",
+        "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/ReceiveAddressModalControlsProvider.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferProvider.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferStepper.tsx",
@@ -17979,44 +17983,44 @@
         "packages/suite/src/views/wallet/trading/sell/TradingSellDetail/TradingSellDetailPaymentSuccessful.tsx",
         "packages/suite/src/views/wallet/trading/sell/TradingSellDetail/TradingSellDetailSidebar.tsx",
         "packages/suite/src/views/wallet/trading/sell/TradingSellFormWrapper.tsx",
-        "suite-app/app/src/pages/AppsEmbeddingPage.tsx",
-        "suite-app/app/src/pages/ConnectPopupPage.tsx",
-        "suite-app/app/src/pages/DesktopSettingsGeneralPage.tsx",
-        "suite-app/app/src/pages/EarnClaimPage.tsx",
-        "suite-app/app/src/pages/EarnDepositPage.tsx",
-        "suite-app/app/src/pages/EarnPage.tsx",
-        "suite-app/app/src/pages/EarnTronClaimPage.tsx",
-        "suite-app/app/src/pages/EarnTronRedirectPage.tsx",
-        "suite-app/app/src/pages/EarnTronStakePage.tsx",
-        "suite-app/app/src/pages/EarnTronUnstakePage.tsx",
-        "suite-app/app/src/pages/EarnTronVotePage.tsx",
-        "suite-app/app/src/pages/EarnTronWithdrawPage.tsx",
-        "suite-app/app/src/pages/EarnUnwrapPage.tsx",
-        "suite-app/app/src/pages/EarnWithdrawPage.tsx",
-        "suite-app/app/src/pages/EarnWrapPage.tsx",
-        "suite-app/app/src/pages/NotificationPage.tsx",
-        "suite-app/app/src/pages/PasswordManagerPage.tsx",
-        "suite-app/app/src/pages/ReferAFriendPage.tsx",
-        "suite-app/app/src/pages/SettingsCoinsPage.tsx",
-        "suite-app/app/src/pages/SettingsConnectedAppsPage.tsx",
-        "suite-app/app/src/pages/SettingsDebugPage.tsx",
-        "suite-app/app/src/pages/SettingsDevicePage.tsx",
-        "suite-app/app/src/pages/TradingBuyConfirmPage.tsx",
-        "suite-app/app/src/pages/TradingBuyDetailPage.tsx",
-        "suite-app/app/src/pages/TradingBuyFormPage.tsx",
-        "suite-app/app/src/pages/TradingConciergeDetailPage.tsx",
-        "suite-app/app/src/pages/TradingExchangeApprovalPage.tsx",
-        "suite-app/app/src/pages/TradingExchangeConfirmPage.tsx",
-        "suite-app/app/src/pages/TradingExchangeDetailPage.tsx",
-        "suite-app/app/src/pages/TradingExchangeFormPage.tsx",
-        "suite-app/app/src/pages/TradingRedirectPage.tsx",
-        "suite-app/app/src/pages/TradingSellConfirmPage.tsx",
-        "suite-app/app/src/pages/TradingSellDetailPage.tsx",
-        "suite-app/app/src/pages/TradingSellFormPage.tsx",
-        "suite-app/app/src/pages/TradingTransactionsPage.tsx",
-        "suite-app/app/src/pages/WalletStakingPage.tsx",
-        "suite-app/app/src/pages/WalletTradePage.tsx",
-        "suite-app/app/src/pages/WebSettingsGeneralPage.tsx",
+        "suite-app/module-apps-embedding/src/pages/AppsEmbeddingPage.tsx",
+        "suite-app/module-connect-popup/src/pages/ConnectPopupPage.tsx",
+        "suite-app/module-settings/src/pages/DesktopSettingsGeneralPage.tsx",
+        "suite-app/module-earn/src/pages/EarnClaimPage.tsx",
+        "suite-app/module-earn/src/pages/EarnDepositPage.tsx",
+        "suite-app/module-earn/src/pages/EarnPage.tsx",
+        "suite-app/module-earn/src/pages/EarnTronClaimPage.tsx",
+        "suite-app/module-earn/src/pages/EarnTronRedirectPage.tsx",
+        "suite-app/module-earn/src/pages/EarnTronStakePage.tsx",
+        "suite-app/module-earn/src/pages/EarnTronUnstakePage.tsx",
+        "suite-app/module-earn/src/pages/EarnTronVotePage.tsx",
+        "suite-app/module-earn/src/pages/EarnTronWithdrawPage.tsx",
+        "suite-app/module-earn/src/pages/EarnUnwrapPage.tsx",
+        "suite-app/module-earn/src/pages/EarnWithdrawPage.tsx",
+        "suite-app/module-earn/src/pages/EarnWrapPage.tsx",
+        "suite-app/module-activity-center/src/pages/NotificationPage.tsx",
+        "suite-app/module-password-manager/src/pages/PasswordManagerPage.tsx",
+        "suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx",
+        "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
+        "suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx",
+        "suite-app/module-settings/src/pages/SettingsDebugPage.tsx",
+        "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
+        "suite-app/module-trading/src/pages/TradingBuyConfirmPage.tsx",
+        "suite-app/module-trading/src/pages/TradingBuyDetailPage.tsx",
+        "suite-app/module-trading/src/pages/TradingBuyFormPage.tsx",
+        "suite-app/module-trading/src/pages/TradingConciergeDetailPage.tsx",
+        "suite-app/module-trading/src/pages/TradingExchangeApprovalPage.tsx",
+        "suite-app/module-trading/src/pages/TradingExchangeConfirmPage.tsx",
+        "suite-app/module-trading/src/pages/TradingExchangeDetailPage.tsx",
+        "suite-app/module-trading/src/pages/TradingExchangeFormPage.tsx",
+        "suite-app/module-trading/src/pages/TradingRedirectPage.tsx",
+        "suite-app/module-trading/src/pages/TradingSellConfirmPage.tsx",
+        "suite-app/module-trading/src/pages/TradingSellDetailPage.tsx",
+        "suite-app/module-trading/src/pages/TradingSellFormPage.tsx",
+        "suite-app/module-trading/src/pages/TradingTransactionsPage.tsx",
+        "suite-app/module-earn/src/pages/WalletStakingPage.tsx",
+        "suite-app/module-trading/src/pages/WalletTradePage.tsx",
+        "suite-app/module-settings/src/pages/WebSettingsGeneralPage.tsx",
         "suite-native-app/module-settings/src/components/ContactSupportAlertAppendix.tsx",
         "suite-native-app/module-trading/src/components/exchange/ExchangePreview/ExchangePreviewIssueBanner.tsx",
         "suite-native/module-earn/src/components/earn/EarnBalance.tsx",
@@ -18062,9 +18066,9 @@
         },
         {
             "topic": "Hidden /version diagnostic URL",
-            "detail": "The /version foreground app (packages/suite/src/views/suite/version/index.tsx) is linked to help.support.versions because it shows the same capability (running application version and build revision). parts/administration-automated-audit.json still records suite/e2e/tests/suite/version-page.test.ts as reviewed-excluded hidden diagnostic; that test-coverage judgment is unchanged and the ledger row does not add coverage credit.",
+            "detail": "The /version foreground app (packages/suite/src/views/suite/version/Version.tsx) is linked to help.support.versions because it shows the same capability (running application version and build revision). parts/administration-automated-audit.json still records suite/e2e/tests/suite/version-page.test.ts as reviewed-excluded hidden diagnostic; that test-coverage judgment is unchanged and the ledger row does not add coverage credit.",
             "paths": [
-                "packages/suite/src/views/suite/version/index.tsx",
+                "packages/suite/src/views/suite/version/Version.tsx",
                 "suite/e2e/tests/suite/version-page.test.ts"
             ]
         }

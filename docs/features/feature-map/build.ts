@@ -464,6 +464,14 @@ const navigationAlternatives = (f: Obj): Obj => {
     return result;
 };
 
+/** Desktop/web page components live in the suite-app feature modules (suite-app/<module>/src/pages). */
+const pagePath = (component: string): string => {
+    const matches = splitlines(git('ls-files', `suite-app/*/src/pages/${component}.tsx`));
+    pyAssert(matches.length === 1, ['Page component not found exactly once', component]);
+
+    return matches[0];
+};
+
 export const variant = (feature: Obj, platform: string): Obj => ({
     source_id: at(feature, 'id'),
     platform,
@@ -641,7 +649,7 @@ export const collectFeatures = (parts: Obj, reconciliation: Obj): Obj[] => {
         }
     }
     for (const [component, featureId] of Object.entries(PAGE_FEATURES)) {
-        const path = 'suite-app/app/src/pages/' + component + '.tsx';
+        const path = pagePath(component);
         const f = mapGet(byId, featureId);
         let root = atObjs(f, 'roots').find(r => at(r, 'path') === path) ?? null;
         if (root === null) {

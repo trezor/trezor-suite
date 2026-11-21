@@ -158,7 +158,7 @@
                     "line": 233
                 },
                 {
-                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/UserContextModal.tsx",
+                    "path": "suite-app/app-modal/src/UserContextModal.tsx",
                     "line": 189
                 },
                 {
@@ -178,7 +178,7 @@
             "line": 233
         },
         {
-            "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/UserContextModal.tsx",
+            "path": "suite-app/app-modal/src/UserContextModal.tsx",
             "line": 189
         },
         {

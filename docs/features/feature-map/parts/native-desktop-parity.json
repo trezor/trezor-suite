@@ -35,7 +35,7 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/index.tsx",
+                    "path": "suite-app/module-onboarding/src/Onboarding.tsx",
                     "detail": "Additional inspected desktop/web composition supporting the parity decision."
                 },
                 {
@@ -63,7 +63,7 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/index.tsx",
+                    "path": "suite-app/module-onboarding/src/Onboarding.tsx",
                     "detail": "Additional inspected desktop/web composition supporting the parity decision."
                 }
             ],
@@ -173,14 +173,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "symbol": null
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
                     "detail": "RecoveryStep presents backup/recovery guidance before starting the device-dependent restoration flow; it is the containing desktop/web recovery step rather than a separate native instruction screen."
                 }
             ],
@@ -221,7 +221,7 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "symbol": "SettingsCoinsPage"
                 },
                 {
@@ -233,7 +233,7 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "detail": "Desktop/web supports selecting enabled networks through Settings > Coins, but FinalStep completes setup directly without the native mandatory initial coin-selection step. Parity is at the network-selection goal level, with a different entry point."
                 },
                 {
@@ -369,7 +369,7 @@
                 },
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/DashboardPage.tsx",
+                    "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
                     "symbol": "DashboardPage"
                 }
             ],
@@ -381,7 +381,7 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/DashboardPage.tsx",
+                    "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
                     "detail": "Additional inspected desktop/web composition supporting the parity decision."
                 }
             ],
@@ -733,7 +733,7 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/ReceivePage.tsx",
+                    "path": "suite-app/module-receive/src/pages/ReceivePage.tsx",
                     "detail": "The containing ReceivePage composes ReceiveContent and ConfirmEvmExplanationModal, with no additional address-reuse or destination-tag information banner."
                 }
             ],
@@ -761,7 +761,7 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/ReceivePage.tsx",
+                    "path": "suite-app/module-receive/src/pages/ReceivePage.tsx",
                     "detail": "The containing ReceivePage composes ReceiveContent and ConfirmEvmExplanationModal, with no additional address-reuse or destination-tag information banner."
                 }
             ],
@@ -1645,7 +1645,7 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/DashboardPage.tsx",
+                    "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
                     "detail": "The complete DashboardPage empty/standard/asset-first composition has no equivalent of the native empty-portfolio demo-use questionnaire. Generic onboarding feedback is a distinct feature."
                 }
             ],

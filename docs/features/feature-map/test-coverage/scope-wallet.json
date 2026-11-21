@@ -228,7 +228,8 @@
         "wallet.sign-verify.copy-inputs",
         "wallet.send.form.recipient-warning",
         "wallet.send.network-safety.xrp-reserve",
-        "wallet.transactions.details.internal-transfers"
+        "wallet.transactions.details.internal-transfers",
+        "wallet.portfolio.assets.details.earn-offer"
     ],
     "features": [
         {
@@ -246,12 +247,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/DashboardPage.tsx",
+                    "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
                     "detail": "See the wallet total and explore assets across accounts.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/DashboardPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/DashboardPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/DashboardPage.tsx#L1"
+                    "local_link": "suite-app/module-home/src/pages/DashboardPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-home/src/pages/DashboardPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-home/src/pages/DashboardPage.tsx#L1"
                 },
                 {
                     "kind": "manual-test",
@@ -300,24 +301,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/DashboardPage.tsx",
+                    "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/DashboardPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/DashboardPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/DashboardPage.tsx#L1"
+                    "local_link": "suite-app/module-home/src/pages/DashboardPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-home/src/pages/DashboardPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-home/src/pages/DashboardPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/DashboardPage.tsx",
+                    "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
                     "symbol": "DashboardPage",
                     "role": "screen-entry",
                     "line": 44,
-                    "local_link": "suite-app/app/src/pages/DashboardPage.tsx:44",
-                    "repository_link": "../../../suite-app/app/src/pages/DashboardPage.tsx#L44",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/DashboardPage.tsx#L44",
+                    "local_link": "suite-app/module-home/src/pages/DashboardPage.tsx:44",
+                    "repository_link": "../../../suite-app/module-home/src/pages/DashboardPage.tsx#L44",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-home/src/pages/DashboardPage.tsx#L44",
                     "codeowners": null
                 },
                 {
@@ -1190,12 +1191,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/AssetDetailPage.tsx",
+                    "path": "suite-app/module-assets/src/pages/AssetDetailPage.tsx",
                     "detail": "Open one asset to see its market price, combined balance and history.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/AssetDetailPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/AssetDetailPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/AssetDetailPage.tsx#L1"
+                    "local_link": "suite-app/module-assets/src/pages/AssetDetailPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-assets/src/pages/AssetDetailPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-assets/src/pages/AssetDetailPage.tsx#L1"
                 },
                 {
                     "kind": "automated-test",
@@ -1228,12 +1229,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/AssetDetailPage.tsx",
+                    "path": "suite-app/module-assets/src/pages/AssetDetailPage.tsx",
                     "symbol": "AssetDetailPage",
                     "line": 27,
-                    "local_link": "suite-app/app/src/pages/AssetDetailPage.tsx:27",
-                    "repository_link": "../../../suite-app/app/src/pages/AssetDetailPage.tsx#L27",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/AssetDetailPage.tsx#L27",
+                    "local_link": "suite-app/module-assets/src/pages/AssetDetailPage.tsx:27",
+                    "repository_link": "../../../suite-app/module-assets/src/pages/AssetDetailPage.tsx#L27",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-assets/src/pages/AssetDetailPage.tsx#L27",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -1912,12 +1913,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/DashboardPage.tsx",
+                    "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
                     "detail": "ExperimentWrapper selects variant B for asset-first Home.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/DashboardPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/DashboardPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/DashboardPage.tsx#L1"
+                    "local_link": "suite-app/module-home/src/pages/DashboardPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-home/src/pages/DashboardPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-home/src/pages/DashboardPage.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -2263,12 +2264,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/HiddenTokensPage.tsx",
+                    "path": "suite-app/module-home/src/pages/HiddenTokensPage.tsx",
                     "detail": "Review wallet-wide hidden tokens and make selected assets visible again.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/HiddenTokensPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/HiddenTokensPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/HiddenTokensPage.tsx#L1"
+                    "local_link": "suite-app/module-home/src/pages/HiddenTokensPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-home/src/pages/HiddenTokensPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-home/src/pages/HiddenTokensPage.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -2308,24 +2309,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/HiddenTokensPage.tsx",
+                    "path": "suite-app/module-home/src/pages/HiddenTokensPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/HiddenTokensPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/HiddenTokensPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/HiddenTokensPage.tsx#L1"
+                    "local_link": "suite-app/module-home/src/pages/HiddenTokensPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-home/src/pages/HiddenTokensPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-home/src/pages/HiddenTokensPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/HiddenTokensPage.tsx",
+                    "path": "suite-app/module-home/src/pages/HiddenTokensPage.tsx",
                     "symbol": "HiddenTokensPage",
                     "role": "screen-entry",
                     "line": 6,
-                    "local_link": "suite-app/app/src/pages/HiddenTokensPage.tsx:6",
-                    "repository_link": "../../../suite-app/app/src/pages/HiddenTokensPage.tsx#L6",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/HiddenTokensPage.tsx#L6",
+                    "local_link": "suite-app/module-home/src/pages/HiddenTokensPage.tsx:6",
+                    "repository_link": "../../../suite-app/module-home/src/pages/HiddenTokensPage.tsx#L6",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-home/src/pages/HiddenTokensPage.tsx#L6",
                     "codeowners": null
                 },
                 {
@@ -2636,12 +2637,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/DashboardPage.tsx",
+                    "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
                     "detail": "Additional inspected desktop/web composition supporting the parity decision.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/DashboardPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/DashboardPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/DashboardPage.tsx#L1"
+                    "local_link": "suite-app/module-home/src/pages/DashboardPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-home/src/pages/DashboardPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-home/src/pages/DashboardPage.tsx#L1"
                 }
             ],
             "roots": [
@@ -2785,12 +2786,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/DashboardPage.tsx",
+                    "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
                     "detail": "The complete DashboardPage empty/standard/asset-first composition has no equivalent of the native empty-portfolio demo-use questionnaire. Generic onboarding feedback is a distinct feature.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/DashboardPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/DashboardPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/DashboardPage.tsx#L1"
+                    "local_link": "suite-app/module-home/src/pages/DashboardPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-home/src/pages/DashboardPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-home/src/pages/DashboardPage.tsx#L1"
                 }
             ],
             "roots": [
@@ -3959,12 +3960,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/TransactionsPage.tsx",
+                    "path": "suite-app/module-transactions/src/pages/TransactionsPage.tsx",
                     "detail": "See the selected account balance, balance history and transaction list.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/TransactionsPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/TransactionsPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TransactionsPage.tsx#L1"
+                    "local_link": "suite-app/module-transactions/src/pages/TransactionsPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-transactions/src/pages/TransactionsPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-transactions/src/pages/TransactionsPage.tsx#L1"
                 },
                 {
                     "kind": "manual-test",
@@ -3997,12 +3998,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/TransactionsPage.tsx",
+                    "path": "suite-app/module-transactions/src/pages/TransactionsPage.tsx",
                     "symbol": "TransactionsPage",
                     "line": 37,
-                    "local_link": "suite-app/app/src/pages/TransactionsPage.tsx:37",
-                    "repository_link": "../../../suite-app/app/src/pages/TransactionsPage.tsx#L37",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TransactionsPage.tsx#L37",
+                    "local_link": "suite-app/module-transactions/src/pages/TransactionsPage.tsx:37",
+                    "repository_link": "../../../suite-app/module-transactions/src/pages/TransactionsPage.tsx#L37",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-transactions/src/pages/TransactionsPage.tsx#L37",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -4423,12 +4424,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/WalletDetailsPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx",
                     "detail": "Inspect account type, derivation path and network-specific account information.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/WalletDetailsPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/WalletDetailsPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WalletDetailsPage.tsx#L1"
+                    "local_link": "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx#L1"
                 },
                 {
                     "kind": "manual-test",
@@ -4468,24 +4469,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/WalletDetailsPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/WalletDetailsPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/WalletDetailsPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WalletDetailsPage.tsx#L1"
+                    "local_link": "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/WalletDetailsPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx",
                     "symbol": "WalletDetailsPage",
                     "role": "screen-entry",
                     "line": 60,
-                    "local_link": "suite-app/app/src/pages/WalletDetailsPage.tsx:60",
-                    "repository_link": "../../../suite-app/app/src/pages/WalletDetailsPage.tsx#L60",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WalletDetailsPage.tsx#L60",
+                    "local_link": "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx:60",
+                    "repository_link": "../../../suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx#L60",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx#L60",
                     "codeowners": null
                 },
                 {
@@ -4523,12 +4524,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/WalletDetailsPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx",
                     "detail": "See the account address type and hierarchical derivation path.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/WalletDetailsPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/WalletDetailsPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WalletDetailsPage.tsx#L1"
+                    "local_link": "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx#L1"
                 },
                 {
                     "kind": "manual-test",
@@ -4561,12 +4562,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/WalletDetailsPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx",
                     "symbol": "WalletDetailsPage",
                     "line": 60,
-                    "local_link": "suite-app/app/src/pages/WalletDetailsPage.tsx:60",
-                    "repository_link": "../../../suite-app/app/src/pages/WalletDetailsPage.tsx#L60",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WalletDetailsPage.tsx#L60",
+                    "local_link": "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx:60",
+                    "repository_link": "../../../suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx#L60",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx#L60",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -5582,12 +5583,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/WalletSendPage.tsx",
+                    "path": "suite-app/module-send/src/pages/WalletSendPage.tsx",
                     "detail": "Prepare, review, sign and send cryptocurrency from an account.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/WalletSendPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/WalletSendPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WalletSendPage.tsx#L1"
+                    "local_link": "suite-app/module-send/src/pages/WalletSendPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-send/src/pages/WalletSendPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-send/src/pages/WalletSendPage.tsx#L1"
                 },
                 {
                     "kind": "manual-test",
@@ -5681,24 +5682,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/WalletSendPage.tsx",
+                    "path": "suite-app/module-send/src/pages/WalletSendPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/WalletSendPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/WalletSendPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WalletSendPage.tsx#L1"
+                    "local_link": "suite-app/module-send/src/pages/WalletSendPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-send/src/pages/WalletSendPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-send/src/pages/WalletSendPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/WalletSendPage.tsx",
+                    "path": "suite-app/module-send/src/pages/WalletSendPage.tsx",
                     "symbol": "WalletSendPage",
                     "role": "screen-entry",
                     "line": 5,
-                    "local_link": "suite-app/app/src/pages/WalletSendPage.tsx:5",
-                    "repository_link": "../../../suite-app/app/src/pages/WalletSendPage.tsx#L5",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WalletSendPage.tsx#L5",
+                    "local_link": "suite-app/module-send/src/pages/WalletSendPage.tsx:5",
+                    "repository_link": "../../../suite-app/module-send/src/pages/WalletSendPage.tsx#L5",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-send/src/pages/WalletSendPage.tsx#L5",
                     "codeowners": null
                 },
                 {
@@ -10556,12 +10557,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/ReceivePage.tsx",
+                    "path": "suite-app/module-receive/src/pages/ReceivePage.tsx",
                     "detail": "Obtain an account receive address and verify it on Trezor.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/ReceivePage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/ReceivePage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/ReceivePage.tsx#L1"
+                    "local_link": "suite-app/module-receive/src/pages/ReceivePage.tsx:1",
+                    "repository_link": "../../../suite-app/module-receive/src/pages/ReceivePage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-receive/src/pages/ReceivePage.tsx#L1"
                 },
                 {
                     "kind": "automated-test",
@@ -10610,24 +10611,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/ReceivePage.tsx",
+                    "path": "suite-app/module-receive/src/pages/ReceivePage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/ReceivePage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/ReceivePage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/ReceivePage.tsx#L1"
+                    "local_link": "suite-app/module-receive/src/pages/ReceivePage.tsx:1",
+                    "repository_link": "../../../suite-app/module-receive/src/pages/ReceivePage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-receive/src/pages/ReceivePage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/ReceivePage.tsx",
+                    "path": "suite-app/module-receive/src/pages/ReceivePage.tsx",
                     "symbol": "ReceivePage",
                     "role": "screen-entry",
                     "line": 13,
-                    "local_link": "suite-app/app/src/pages/ReceivePage.tsx:13",
-                    "repository_link": "../../../suite-app/app/src/pages/ReceivePage.tsx#L13",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/ReceivePage.tsx#L13",
+                    "local_link": "suite-app/module-receive/src/pages/ReceivePage.tsx:13",
+                    "repository_link": "../../../suite-app/module-receive/src/pages/ReceivePage.tsx#L13",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-receive/src/pages/ReceivePage.tsx#L13",
                     "codeowners": null
                 },
                 {
@@ -11883,12 +11884,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/ReceivePage.tsx",
+                    "path": "suite-app/module-receive/src/pages/ReceivePage.tsx",
                     "detail": "The containing ReceivePage composes ReceiveContent and ConfirmEvmExplanationModal, with no additional address-reuse or destination-tag information banner.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/ReceivePage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/ReceivePage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/ReceivePage.tsx#L1"
+                    "local_link": "suite-app/module-receive/src/pages/ReceivePage.tsx:1",
+                    "repository_link": "../../../suite-app/module-receive/src/pages/ReceivePage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-receive/src/pages/ReceivePage.tsx#L1"
                 }
             ],
             "roots": [
@@ -11960,12 +11961,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/ReceivePage.tsx",
+                    "path": "suite-app/module-receive/src/pages/ReceivePage.tsx",
                     "detail": "The containing ReceivePage composes ReceiveContent and ConfirmEvmExplanationModal, with no additional address-reuse or destination-tag information banner.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/ReceivePage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/ReceivePage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/ReceivePage.tsx#L1"
+                    "local_link": "suite-app/module-receive/src/pages/ReceivePage.tsx:1",
+                    "repository_link": "../../../suite-app/module-receive/src/pages/ReceivePage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-receive/src/pages/ReceivePage.tsx#L1"
                 }
             ],
             "roots": [
@@ -12033,24 +12034,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/TransactionsPage.tsx",
+                    "path": "suite-app/module-transactions/src/pages/TransactionsPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/TransactionsPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/TransactionsPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TransactionsPage.tsx#L1"
+                    "local_link": "suite-app/module-transactions/src/pages/TransactionsPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-transactions/src/pages/TransactionsPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-transactions/src/pages/TransactionsPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/TransactionsPage.tsx",
+                    "path": "suite-app/module-transactions/src/pages/TransactionsPage.tsx",
                     "symbol": "TransactionsPage",
                     "role": "screen-entry",
                     "line": 37,
-                    "local_link": "suite-app/app/src/pages/TransactionsPage.tsx:37",
-                    "repository_link": "../../../suite-app/app/src/pages/TransactionsPage.tsx#L37",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TransactionsPage.tsx#L37",
+                    "local_link": "suite-app/module-transactions/src/pages/TransactionsPage.tsx:37",
+                    "repository_link": "../../../suite-app/module-transactions/src/pages/TransactionsPage.tsx#L37",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-transactions/src/pages/TransactionsPage.tsx#L37",
                     "codeowners": null
                 },
                 {
@@ -13739,12 +13740,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/TokensPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/TokensPage.tsx",
                     "detail": "Inspect token holdings and control which supported tokens appear in the wallet.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/TokensPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/TokensPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TokensPage.tsx#L1"
+                    "local_link": "suite-app/module-account-detail/src/pages/TokensPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-account-detail/src/pages/TokensPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-account-detail/src/pages/TokensPage.tsx#L1"
                 },
                 {
                     "kind": "manual-test",
@@ -13775,24 +13776,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/TokensPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/TokensPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/TokensPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/TokensPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TokensPage.tsx#L1"
+                    "local_link": "suite-app/module-account-detail/src/pages/TokensPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-account-detail/src/pages/TokensPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-account-detail/src/pages/TokensPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/TokensPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/TokensPage.tsx",
                     "symbol": "TokensPage",
                     "role": "screen-entry",
                     "line": 24,
-                    "local_link": "suite-app/app/src/pages/TokensPage.tsx:24",
-                    "repository_link": "../../../suite-app/app/src/pages/TokensPage.tsx#L24",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TokensPage.tsx#L24",
+                    "local_link": "suite-app/module-account-detail/src/pages/TokensPage.tsx:24",
+                    "repository_link": "../../../suite-app/module-account-detail/src/pages/TokensPage.tsx#L24",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-account-detail/src/pages/TokensPage.tsx#L24",
                     "codeowners": null
                 },
                 {
@@ -14310,12 +14311,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx",
+                    "path": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx",
                     "detail": "Inspect a token contract, network and exact balance in token settings.",
                     "line": 1,
-                    "local_link": "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx:1",
-                    "repository_link": "../../../suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx#L1"
+                    "local_link": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx:1",
+                    "repository_link": "../../../suite-native/earn/src/components/TokenSettingsBottomSheet.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/earn/src/components/TokenSettingsBottomSheet.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -14341,12 +14342,12 @@
                 },
                 {
                     "platform": "mobile",
-                    "path": "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx",
+                    "path": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx",
                     "symbol": "TokenSettingsBottomSheet",
                     "line": 108,
-                    "local_link": "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx:108",
-                    "repository_link": "../../../suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx#L108",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx#L108",
+                    "local_link": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx:108",
+                    "repository_link": "../../../suite-native/earn/src/components/TokenSettingsBottomSheet.tsx#L108",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/earn/src/components/TokenSettingsBottomSheet.tsx#L108",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -14939,12 +14940,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx",
+                    "path": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx",
                     "detail": "Control whether a token appears in the normal account token list.",
                     "line": 1,
-                    "local_link": "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx:1",
-                    "repository_link": "../../../suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx#L1"
+                    "local_link": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx:1",
+                    "repository_link": "../../../suite-native/earn/src/components/TokenSettingsBottomSheet.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/earn/src/components/TokenSettingsBottomSheet.tsx#L1"
                 },
                 {
                     "kind": "manual-test",
@@ -14977,12 +14978,12 @@
             "roots": [
                 {
                     "platform": "mobile",
-                    "path": "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx",
+                    "path": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx",
                     "symbol": "TokenSettingsBottomSheet",
                     "line": 108,
-                    "local_link": "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx:108",
-                    "repository_link": "../../../suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx#L108",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx#L108",
+                    "local_link": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx:108",
+                    "repository_link": "../../../suite-native/earn/src/components/TokenSettingsBottomSheet.tsx#L108",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/earn/src/components/TokenSettingsBottomSheet.tsx#L108",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -15028,12 +15029,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/NftsPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/NftsPage.tsx",
                     "detail": "Browse NFT collections and choose which collections are shown.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/NftsPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/NftsPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/NftsPage.tsx#L1"
+                    "local_link": "suite-app/module-account-detail/src/pages/NftsPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-account-detail/src/pages/NftsPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-account-detail/src/pages/NftsPage.tsx#L1"
                 },
                 {
                     "kind": "manual-test",
@@ -15073,24 +15074,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/NftsPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/NftsPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/NftsPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/NftsPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/NftsPage.tsx#L1"
+                    "local_link": "suite-app/module-account-detail/src/pages/NftsPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-account-detail/src/pages/NftsPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-account-detail/src/pages/NftsPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/NftsPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/NftsPage.tsx",
                     "symbol": "NftsPage",
                     "role": "screen-entry",
                     "line": 16,
-                    "local_link": "suite-app/app/src/pages/NftsPage.tsx:16",
-                    "repository_link": "../../../suite-app/app/src/pages/NftsPage.tsx#L16",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/NftsPage.tsx#L16",
+                    "local_link": "suite-app/module-account-detail/src/pages/NftsPage.tsx:16",
+                    "repository_link": "../../../suite-app/module-account-detail/src/pages/NftsPage.tsx#L16",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-account-detail/src/pages/NftsPage.tsx#L16",
                     "codeowners": null
                 }
             ]
@@ -15265,12 +15266,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/NftsPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/NftsPage.tsx",
                     "detail": "Browse NFT collections hidden from the main collection list.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/NftsPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/NftsPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/NftsPage.tsx#L1"
+                    "local_link": "suite-app/module-account-detail/src/pages/NftsPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-account-detail/src/pages/NftsPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-account-detail/src/pages/NftsPage.tsx#L1"
                 },
                 {
                     "kind": "manual-test",
@@ -15312,12 +15313,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/NftsPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/NftsPage.tsx",
                     "symbol": "NftsPage",
                     "line": 16,
-                    "local_link": "suite-app/app/src/pages/NftsPage.tsx:16",
-                    "repository_link": "../../../suite-app/app/src/pages/NftsPage.tsx#L16",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/NftsPage.tsx#L16",
+                    "local_link": "suite-app/module-account-detail/src/pages/NftsPage.tsx:16",
+                    "repository_link": "../../../suite-app/module-account-detail/src/pages/NftsPage.tsx#L16",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-account-detail/src/pages/NftsPage.tsx#L16",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 }
@@ -15627,12 +15628,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SignVerifyPage.tsx",
+                    "path": "suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx",
                     "detail": "Prove control of an account address by signing messages and verify supported signatures.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/SignVerifyPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/SignVerifyPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SignVerifyPage.tsx#L1"
+                    "local_link": "suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx#L1"
                 },
                 {
                     "kind": "manual-test",
@@ -15645,43 +15646,43 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native-app/module-sign-verify/src/screens/SignAndVerifyScreen.tsx",
+                    "path": "suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx",
                     "detail": "Sign a message using a supported account or verify an existing signature.",
                     "line": 1,
-                    "local_link": "suite-native-app/module-sign-verify/src/screens/SignAndVerifyScreen.tsx:1",
-                    "repository_link": "../../../suite-native-app/module-sign-verify/src/screens/SignAndVerifyScreen.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native-app/module-sign-verify/src/screens/SignAndVerifyScreen.tsx#L1"
+                    "local_link": "suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx:1",
+                    "repository_link": "../../../suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx#L1"
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/SignVerifyPage.tsx",
+                    "path": "suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/SignVerifyPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/SignVerifyPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SignVerifyPage.tsx#L1"
+                    "local_link": "suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SignVerifyPage.tsx",
+                    "path": "suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx",
                     "symbol": "SignVerifyPage",
                     "role": "screen-entry",
                     "line": 10,
-                    "local_link": "suite-app/app/src/pages/SignVerifyPage.tsx:10",
-                    "repository_link": "../../../suite-app/app/src/pages/SignVerifyPage.tsx#L10",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SignVerifyPage.tsx#L10",
+                    "local_link": "suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx:10",
+                    "repository_link": "../../../suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx#L10",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx#L10",
                     "codeowners": null
                 },
                 {
                     "platform": "mobile",
-                    "path": "suite-native-app/module-sign-verify/src/screens/SignAndVerifyScreen.tsx",
+                    "path": "suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx",
                     "symbol": "SignAndVerifyScreen",
                     "line": 15,
-                    "local_link": "suite-native-app/module-sign-verify/src/screens/SignAndVerifyScreen.tsx:15",
-                    "repository_link": "../../../suite-native-app/module-sign-verify/src/screens/SignAndVerifyScreen.tsx#L15",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native-app/module-sign-verify/src/screens/SignAndVerifyScreen.tsx#L15",
+                    "local_link": "suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx:15",
+                    "repository_link": "../../../suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx#L15",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx#L15",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 }
@@ -15732,21 +15733,21 @@
                 },
                 {
                     "kind": "automated-test",
-                    "path": "suite/e2e/tests/wallet/sign-and-verify-eth.test.ts",
+                    "path": "suite/e2e/tests/wallet/sign-verify-eth.test.ts",
                     "detail": "Signs an Ethereum message and asserts generated signature plus success toast; separately verifies a supplied signature with address/message confirmations and a valid-signature device result.",
                     "line": 1,
-                    "local_link": "suite/e2e/tests/wallet/sign-and-verify-eth.test.ts:1",
-                    "repository_link": "../../../suite/e2e/tests/wallet/sign-and-verify-eth.test.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/wallet/sign-and-verify-eth.test.ts#L1"
+                    "local_link": "suite/e2e/tests/wallet/sign-verify-eth.test.ts:1",
+                    "repository_link": "../../../suite/e2e/tests/wallet/sign-verify-eth.test.ts#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/wallet/sign-verify-eth.test.ts#L1"
                 },
                 {
                     "kind": "automated-test",
-                    "path": "suite/e2e/tests/wallet/sign-and-verify.test.ts",
+                    "path": "suite/e2e/tests/wallet/sign-verify.test.ts",
                     "detail": "Selects a Bitcoin signing address; checks standard and Electrum-compatible signatures, signature/address/message clipboard copying and successful-form clearing. Verifies a correct signature and tests that altering the message yields failure without a success state.",
                     "line": 1,
-                    "local_link": "suite/e2e/tests/wallet/sign-and-verify.test.ts:1",
-                    "repository_link": "../../../suite/e2e/tests/wallet/sign-and-verify.test.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/wallet/sign-and-verify.test.ts#L1"
+                    "local_link": "suite/e2e/tests/wallet/sign-verify.test.ts:1",
+                    "repository_link": "../../../suite/e2e/tests/wallet/sign-verify.test.ts#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/wallet/sign-verify.test.ts#L1"
                 }
             ],
             "roots": [
@@ -15820,21 +15821,21 @@
                 },
                 {
                     "kind": "automated-test",
-                    "path": "suite/e2e/tests/wallet/sign-and-verify-eth.test.ts",
+                    "path": "suite/e2e/tests/wallet/sign-verify-eth.test.ts",
                     "detail": "Signs an Ethereum message and asserts generated signature plus success toast; separately verifies a supplied signature with address/message confirmations and a valid-signature device result.",
                     "line": 1,
-                    "local_link": "suite/e2e/tests/wallet/sign-and-verify-eth.test.ts:1",
-                    "repository_link": "../../../suite/e2e/tests/wallet/sign-and-verify-eth.test.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/wallet/sign-and-verify-eth.test.ts#L1"
+                    "local_link": "suite/e2e/tests/wallet/sign-verify-eth.test.ts:1",
+                    "repository_link": "../../../suite/e2e/tests/wallet/sign-verify-eth.test.ts#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/wallet/sign-verify-eth.test.ts#L1"
                 },
                 {
                     "kind": "automated-test",
-                    "path": "suite/e2e/tests/wallet/sign-and-verify.test.ts",
+                    "path": "suite/e2e/tests/wallet/sign-verify.test.ts",
                     "detail": "Selects a Bitcoin signing address; checks standard and Electrum-compatible signatures, signature/address/message clipboard copying and successful-form clearing. Verifies a correct signature and tests that altering the message yields failure without a success state.",
                     "line": 1,
-                    "local_link": "suite/e2e/tests/wallet/sign-and-verify.test.ts:1",
-                    "repository_link": "../../../suite/e2e/tests/wallet/sign-and-verify.test.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/wallet/sign-and-verify.test.ts#L1"
+                    "local_link": "suite/e2e/tests/wallet/sign-verify.test.ts:1",
+                    "repository_link": "../../../suite/e2e/tests/wallet/sign-verify.test.ts#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/wallet/sign-verify.test.ts#L1"
                 }
             ],
             "roots": [
@@ -15916,12 +15917,12 @@
                 },
                 {
                     "kind": "automated-test",
-                    "path": "suite/e2e/tests/wallet/sign-and-verify.test.ts",
+                    "path": "suite/e2e/tests/wallet/sign-verify.test.ts",
                     "detail": "Selects a Bitcoin signing address; checks standard and Electrum-compatible signatures, signature/address/message clipboard copying and successful-form clearing. Verifies a correct signature and tests that altering the message yields failure without a success state.",
                     "line": 1,
-                    "local_link": "suite/e2e/tests/wallet/sign-and-verify.test.ts:1",
-                    "repository_link": "../../../suite/e2e/tests/wallet/sign-and-verify.test.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/wallet/sign-and-verify.test.ts#L1"
+                    "local_link": "suite/e2e/tests/wallet/sign-verify.test.ts:1",
+                    "repository_link": "../../../suite/e2e/tests/wallet/sign-verify.test.ts#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/wallet/sign-verify.test.ts#L1"
                 }
             ],
             "roots": [
@@ -16090,12 +16091,12 @@
                 },
                 {
                     "kind": "automated-test",
-                    "path": "suite/e2e/tests/wallet/sign-and-verify.test.ts",
+                    "path": "suite/e2e/tests/wallet/sign-verify.test.ts",
                     "detail": "Selects a Bitcoin signing address; checks standard and Electrum-compatible signatures, signature/address/message clipboard copying and successful-form clearing. Verifies a correct signature and tests that altering the message yields failure without a success state.",
                     "line": 1,
-                    "local_link": "suite/e2e/tests/wallet/sign-and-verify.test.ts:1",
-                    "repository_link": "../../../suite/e2e/tests/wallet/sign-and-verify.test.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/wallet/sign-and-verify.test.ts#L1"
+                    "local_link": "suite/e2e/tests/wallet/sign-verify.test.ts:1",
+                    "repository_link": "../../../suite/e2e/tests/wallet/sign-verify.test.ts#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/wallet/sign-verify.test.ts#L1"
                 }
             ],
             "roots": [
@@ -16159,12 +16160,12 @@
                 },
                 {
                     "kind": "automated-test",
-                    "path": "suite/e2e/tests/wallet/sign-and-verify-ada.test.ts",
+                    "path": "suite/e2e/tests/wallet/sign-verify-ada.test.ts",
                     "detail": "Cardano signing scenario.",
                     "line": 1,
-                    "local_link": "suite/e2e/tests/wallet/sign-and-verify-ada.test.ts:1",
-                    "repository_link": "../../../suite/e2e/tests/wallet/sign-and-verify-ada.test.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/wallet/sign-and-verify-ada.test.ts#L1"
+                    "local_link": "suite/e2e/tests/wallet/sign-verify-ada.test.ts:1",
+                    "repository_link": "../../../suite/e2e/tests/wallet/sign-verify-ada.test.ts#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/wallet/sign-verify-ada.test.ts#L1"
                 },
                 {
                     "kind": "implementation",
@@ -16264,12 +16265,12 @@
                 },
                 {
                     "kind": "automated-test",
-                    "path": "suite/e2e/tests/wallet/sign-and-verify.test.ts",
+                    "path": "suite/e2e/tests/wallet/sign-verify.test.ts",
                     "detail": "Selects a Bitcoin signing address; checks standard and Electrum-compatible signatures, signature/address/message clipboard copying and successful-form clearing. Verifies a correct signature and tests that altering the message yields failure without a success state.",
                     "line": 1,
-                    "local_link": "suite/e2e/tests/wallet/sign-and-verify.test.ts:1",
-                    "repository_link": "../../../suite/e2e/tests/wallet/sign-and-verify.test.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/wallet/sign-and-verify.test.ts#L1"
+                    "local_link": "suite/e2e/tests/wallet/sign-verify.test.ts:1",
+                    "repository_link": "../../../suite/e2e/tests/wallet/sign-verify.test.ts#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/wallet/sign-verify.test.ts#L1"
                 }
             ],
             "roots": [
@@ -16314,12 +16315,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/WalletCoinjoinPage.tsx",
+                    "path": "suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx",
                     "detail": "Inspect and configure the retained Coinjoin privacy-account experience when enabled.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/WalletCoinjoinPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/WalletCoinjoinPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WalletCoinjoinPage.tsx#L1"
+                    "local_link": "suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx#L1"
                 },
                 {
                     "kind": "manual-test",
@@ -16341,44 +16342,44 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/WalletAnonymizePage.tsx",
+                    "path": "suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/WalletAnonymizePage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/WalletAnonymizePage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WalletAnonymizePage.tsx#L1"
+                    "local_link": "suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx:1",
+                    "repository_link": "../../../suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx#L1"
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/WalletCoinjoinPage.tsx",
+                    "path": "suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/WalletCoinjoinPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/WalletCoinjoinPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WalletCoinjoinPage.tsx#L1"
+                    "local_link": "suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/WalletAnonymizePage.tsx",
+                    "path": "suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx",
                     "symbol": "WalletAnonymizePage",
                     "role": "screen-entry",
                     "line": 10,
-                    "local_link": "suite-app/app/src/pages/WalletAnonymizePage.tsx:10",
-                    "repository_link": "../../../suite-app/app/src/pages/WalletAnonymizePage.tsx#L10",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WalletAnonymizePage.tsx#L10",
+                    "local_link": "suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx:10",
+                    "repository_link": "../../../suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx#L10",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx#L10",
                     "codeowners": null
                 },
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/WalletCoinjoinPage.tsx",
+                    "path": "suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx",
                     "symbol": "WalletCoinjoinPage",
                     "role": "screen-entry",
                     "line": 22,
-                    "local_link": "suite-app/app/src/pages/WalletCoinjoinPage.tsx:22",
-                    "repository_link": "../../../suite-app/app/src/pages/WalletCoinjoinPage.tsx#L22",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WalletCoinjoinPage.tsx#L22",
+                    "local_link": "suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx:22",
+                    "repository_link": "../../../suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx#L22",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx#L22",
                     "codeowners": null
                 }
             ]
@@ -16784,12 +16785,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/WalletAnonymizePage.tsx",
+                    "path": "suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx",
                     "detail": "Review the Coinjoin consent and device authorization before starting a session.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/WalletAnonymizePage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/WalletAnonymizePage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WalletAnonymizePage.tsx#L1"
+                    "local_link": "suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx:1",
+                    "repository_link": "../../../suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx#L1"
                 },
                 {
                     "kind": "implementation",
@@ -16804,12 +16805,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/WalletAnonymizePage.tsx",
+                    "path": "suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx",
                     "symbol": "WalletAnonymizePage",
                     "line": 10,
-                    "local_link": "suite-app/app/src/pages/WalletAnonymizePage.tsx:10",
-                    "repository_link": "../../../suite-app/app/src/pages/WalletAnonymizePage.tsx#L10",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WalletAnonymizePage.tsx#L10",
+                    "local_link": "suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx:10",
+                    "repository_link": "../../../suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx#L10",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx#L10",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 }

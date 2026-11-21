@@ -198,7 +198,7 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/DashboardPage.tsx",
+                    "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
                     "line": 28,
                     "detail": "Dashboard context message."
                 },
@@ -271,7 +271,7 @@
             "evidence": [
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/SettingsDebugPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsDebugPage.tsx",
                     "line": 150,
                     "detail": "Debug settings page renders the message-system debug section."
                 },
@@ -337,14 +337,14 @@
                 },
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/suite/bridge-deprecated/index.tsx",
+                    "path": "packages/suite/src/views/suite/bridge-deprecated/BridgeDeprecated.tsx",
                     "symbol": "BridgeDeprecated"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/suite/bridge-deprecated/index.tsx",
+                    "path": "packages/suite/src/views/suite/bridge-deprecated/BridgeDeprecated.tsx",
                     "line": 16,
                     "detail": "Warning modal 'Trezor Bridge has been deprecated' with a link to the uninstall guide (UNINSTALL_BRIDGE_URL) and a Take me back to wallet button; backdrop or cancel also returns to the wallet."
                 },
@@ -385,7 +385,7 @@
                 "basis": "Transport and Bridge guidance; matches the Connect ownership of sibling features connection.bridge and connection.local-network. Not a CODEOWNERS assignment.",
                 "source_paths": [
                     "packages/suite/src/components/suite/banners/SuiteBanners/BridgeDeprecatedBanner.tsx",
-                    "packages/suite/src/views/suite/bridge-deprecated/index.tsx"
+                    "packages/suite/src/views/suite/bridge-deprecated/BridgeDeprecated.tsx"
                 ]
             },
             "conditions": [
@@ -473,17 +473,22 @@
                 "web": "conditional",
                 "mobile": "conditional"
             },
-            "platform_notes": "Desktop and web react to Connect reporting the firmware as required and offer Install, which opens the firmware update. Mobile only blocks: when the firmware is below the app's minimum supported version it shows an alert that offers Eject and points to Trezor Suite for desktop or web; it has no in-app forced update (issue #20637).",
+            "platform_notes": "Desktop and web react to Connect reporting the firmware as required and offer Install, which opens the firmware update. Mobile shows a Firmware update required state on Home with Update firmware, which opens Device firmware, whenever Connect marks the firmware as required or it is below the app minimum. For models the app cannot update (old T1B1 firmware), it shows a blocking alert that offers Eject and points to Trezor Suite for desktop or web.",
             "navigation": {
                 "desktop": "Connect a device with required firmware > 'Firmware update required' guide > Install",
                 "web": "Connect a device with required firmware > 'Firmware update required' guide > Install",
-                "mobile": "Connect a device with unsupported firmware > blocking alert > Eject"
+                "mobile": "Connect a device with required firmware > Home: Firmware update required > Update firmware > Device firmware"
             },
             "roots": [
                 {
                     "platform": "desktop-web",
                     "path": "packages/suite/src/components/suite/PrerequisitesGuide/DeviceUpdateRequired.tsx",
                     "symbol": "DeviceUpdateRequired"
+                },
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/FirmwareUpdateRequiredDeviceState.tsx",
+                    "symbol": "FirmwareUpdateRequiredDeviceState"
                 },
                 {
                     "platform": "mobile",
@@ -512,15 +517,20 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/device/src/hooks/useDetectDeviceError.tsx",
-                    "line": 144,
-                    "detail": "Blocking unsupported-firmware alert with Eject when selectIsDeviceFirmwareSupported is false."
+                    "path": "suite-native/device/src/selectors.ts",
+                    "line": 90,
+                    "detail": "selectIsFirmwareUpdateRequiredInApp is true when Connect marks the firmware as required or it is below the app minimum."
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/device/src/selectors.ts",
-                    "line": 90,
-                    "detail": "selectIsDeviceFirmwareSupported compares the firmware with the app's minimum supported version."
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/FirmwareUpdateRequiredDeviceState.tsx",
+                    "detail": "Home state Firmware update required with an Update firmware button that opens Device settings > Firmware."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/hooks/useDetectDeviceError.tsx",
+                    "line": 150,
+                    "detail": "Blocking unsupported-firmware alert with Eject, kept for devices the app cannot update."
                 }
             ],
             "ownership": {
@@ -534,7 +544,7 @@
             },
             "conditions": [
                 "desktop-web: Connect reports the connected device firmware as 'required'.",
-                "mobile: The firmware is below the app's minimum supported version; Connect's 'required' flag is not used at the audited commit."
+                "mobile: The initialized device can be set up in the app and Connect marks its firmware as required or it is below the app minimum; devices the app cannot update get the blocking alert instead."
             ],
             "screenshot": {
                 "status": "not-captured",
@@ -1748,7 +1758,7 @@
                     "kind": "route",
                     "path": "packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/HeaderDropdown.tsx",
                     "line": 36,
-                    "detail": "Account header dropdown item wallet-sign-verify opens the Sign & verify page (suite-app/app/src/pages/SignVerifyPage.tsx)."
+                    "detail": "Account header dropdown item wallet-sign-verify opens the Sign & verify page (suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx)."
                 },
                 {
                     "kind": "implementation",
@@ -1776,7 +1786,7 @@
                 },
                 {
                     "kind": "automated-test",
-                    "path": "suite/e2e/tests/wallet/sign-and-verify.test.ts",
+                    "path": "suite/e2e/tests/wallet/sign-verify.test.ts",
                     "line": 82,
                     "detail": "BTC signing test clicks copy-address and copy-message, checks the exact clipboard text and the copy toast; after Clear it checks that both copy buttons are hidden (line 100)."
                 },
@@ -1891,7 +1901,7 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/TradingExchangeConfirmPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingExchangeConfirmPage.tsx",
                     "line": 52,
                     "detail": "The wallet-trading-exchange-confirm page renders TradingOfferExchange after the optional approval step."
                 },
@@ -2142,7 +2152,7 @@
             "evidence": [
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/WalletStakingPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/WalletStakingPage.tsx",
                     "line": 31,
                     "detail": "Account Staking page renders TronStakingDashboard for tron accounts that have the staking network feature."
                 },
@@ -2202,9 +2212,9 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "line": 12,
-                    "detail": "trx is 'view' on mobile: the detail screen is view-only, history is visible but staking actions are not."
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "line": 54,
+                    "detail": "The Tron product descriptor sets platforms.mobile.access to 'read-only': the detail screen is view-only, history is visible but staking actions are not."
                 },
                 {
                     "kind": "automated-test",
@@ -2345,9 +2355,9 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "line": 11,
-                    "detail": "ADA staking is 'view' on mobile. There is no voting preference or DRep input."
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "line": 41,
+                    "detail": "Cardano product descriptors set platforms.mobile.access to 'read-only'. There is no voting preference or DRep input."
                 }
             ],
             "ownership": {
@@ -2587,7 +2597,7 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/UserContextModal.tsx",
+                    "path": "suite-app/app-modal/src/UserContextModal.tsx",
                     "line": 125,
                     "detail": "The disable-tor modal resets onion-only backends by removing their onion URLs when the user disables Tor."
                 },
@@ -2599,7 +2609,7 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
                     "line": 149,
                     "detail": "The network settings action in Settings > Networks opens the advanced-coin-settings modal."
                 },
@@ -3097,6 +3107,623 @@
                 "trade.buy.network-filter",
                 "trade.sell.asset"
             ]
+        },
+        {
+            "id": "wallet.portfolio.assets.details.earn-offer",
+            "parent_id": "wallet.portfolio.assets.details",
+            "name": "Asset detail Earn offer",
+            "description": "On an eligible asset's detail, see a staking or yield-vault offer with the current APY, open Earn from it, or dismiss it; a dismissed token yield offer stays hidden for that token.",
+            "level": "intent",
+            "platforms": {
+                "desktop": "conditional",
+                "web": "conditional",
+                "mobile": "conditional"
+            },
+            "platform_notes": "Two banners sit below the balance/Earn section of the asset detail on both platforms. (1) Staking banner, for a stakeable native coin (no contract) with at least one account that is not staking. Desktop/web: AssetDetailStakingBanner > AssetDetailAccountsStakingBanner > useStakingBanner picks a variant. On ETH with an enabled wrapped-native yield vault it shows the 'earnEth' variant (EarnEthBannerView: 'Earn up to {apy}% APY on your ETH' with the higher of the staking rate and best vault APY, 'Explore' button). Otherwise it shows StakingBannerView with the staking APY (APR for Tron), potential yearly rewards and 'Explore staking'. Rendering waits until the vault query settles. Mobile: AssetDetailStakingBanner shows EthEarnPromoBanner (max of vault and staking APY) when the ETH account has a native yield vault, or else AssetDetailStakingRewardsBanner with the staking rate (APR wording for Tron) and potential rewards, which are redacted in discreet mode. (2) Token yield banner, for a token whose best enabled yield vault has an available APY. AssetDetailYieldBanner shows the APY with the token symbol, 'Deposit your {symbol} in a yield vault and earn rewards on it.' and 'Explore'. Explore opens Earn: on desktop/web the suite-earn route, on mobile a navigation reset to the Earn tab. Close dismisses the banner. A token yield banner is dismissed per network+contract key: desktop flags.closedTokenYieldBanners is saved by storageMiddleware; mobile bannerFlags.closedTokenYieldBannerKeys is persisted. The staking banner is dismissed per network. Desktop uses the stakeEth/Sol/Cardano/TronBannerClosed or earnEthBannerClosed flags, which it shares with the account-view staking banner. Mobile uses closedEarnBannerSymbols through EarnPromoBanner's default close. Explore and close report yield/navigate (from 'asset-detail-banner') or staking navigate analytics events. Mobile staking Explore reports navigateFlowEvent.",
+            "navigation": {
+                "desktop": "Home > Select a stakeable coin or a token with a yield vault > Earn banner > Explore (or Close)",
+                "web": "Home > Select a stakeable coin or a token with a yield vault > Earn banner > Explore (or Close)",
+                "mobile": "Home > Select a stakeable coin or a token with a yield vault > Earn banner > Explore (or Close)"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/home/AssetDetail/AssetDetailYieldBanner.tsx",
+                    "symbol": "AssetDetailYieldBanner"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/home/AssetDetail/AssetDetailStakingBanner.tsx",
+                    "symbol": "AssetDetailStakingBanner"
+                },
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-assets/src/components/AssetDetailYieldBanner.tsx",
+                    "symbol": "AssetDetailYieldBanner"
+                },
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-assets/src/components/AssetDetailStakingBanner.tsx",
+                    "symbol": "AssetDetailStakingBanner"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "route",
+                    "path": "suite-app/module-assets/src/pages/AssetDetailPage.tsx",
+                    "line": 54,
+                    "detail": "The desktop/web asset detail page renders AssetDetailStakingBanner and, on line 55, AssetDetailYieldBanner for the routed asset key."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/home/AssetDetail/AssetDetailStakingBanner.tsx",
+                    "line": 23,
+                    "detail": "canStake requires a native coin (no contract) on a supported staking network; the banner renders only for its non-staking (unstaked) accounts."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/home/AssetDetail/AssetDetailAccountsStakingBanner.tsx",
+                    "line": 31,
+                    "detail": "The earnEth variant renders EarnEthBannerView and reports yieldNavigateEvent from asset-detail-banner. Otherwise StakingBannerView renders (line 65) and reports stakingNavigateEvent. Both Explore buttons go to the suite-earn route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/wallet/StakingBanner/useStakingBanner.ts",
+                    "line": 57,
+                    "detail": "getKind waits for the vault query. It prefers earnEth when a wrapped-native vault exists (unless earnEthBannerClosed). Otherwise it hides the banner if the per-network closed flag is set, every account is staking or there are no staking limits. close (line 82) sets the matching flag."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/home/AssetDetail/AssetDetailYieldBanner.tsx",
+                    "line": 44,
+                    "detail": "The token yield banner hides for coins, for a dismissed bannerKey `${networkSymbol}-${contract}` and when no vault APY is available. Explore goes to suite-earn. close (line 73) dispatches closeTokenYieldBanner(bannerKey)."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-stablecoin/src/vaults/useYieldVaultApy.ts",
+                    "line": 33,
+                    "detail": "Vault APY is fetched only for Ethereum-type networks while message-system yield deposit is not disabled; the best enabled vault for the token (or wrapped native) supplies the APY."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite/flags/src/flagsSlice.ts",
+                    "line": 131,
+                    "detail": "Desktop closeTokenYieldBanner records the dismissed token key in closedTokenYieldBanners. storageMiddleware.ts line 593 saves it with the other suite settings."
+                },
+                {
+                    "kind": "route",
+                    "path": "suite-native-app/module-assets/src/components/AssetDetailHeader.tsx",
+                    "line": 16,
+                    "detail": "The mobile asset detail list header (AssetDetailScreen line 30) renders AssetDetailStakingBanner, then AssetDetailYieldBanner on line 17."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/components/AssetDetailStakingBanner.tsx",
+                    "line": 37,
+                    "detail": "Mobile renders EthEarnPromoBanner when the account has a native yield vault, else AssetDetailStakingRewardsBanner; Explore uses useNavigateToEarn (reset to the Earn tab)."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/assetDetailEarnSelectors.ts",
+                    "line": 48,
+                    "detail": "Mobile staking banner accounts are empty unless the asset is a staking-supported native coin with a stakeable product descriptor and the network banner has not been closed (closedEarnBannerSymbols)."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/components/AssetDetailStakingRewardsBanner.tsx",
+                    "line": 60,
+                    "detail": "Mobile staking offer shows the network staking rate (APR wording for Tron) and potential rewards, redacted in discreet mode."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/components/AssetDetailYieldBanner.tsx",
+                    "line": 57,
+                    "detail": "The mobile token yield banner hides for coins, a dismissed token key or an unavailable vault APY. Explore reports yield/navigate continue and resets to Earn. close (line 82) dispatches setIsTokenYieldBannerClosed(bannerKey)."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/banners/src/bannerFlagsSlice.ts",
+                    "line": 83,
+                    "detail": "setIsTokenYieldBannerClosed stores the token key in closedTokenYieldBannerKeys, which is in bannerFlagsPersistWhitelist (line 117) and persisted by suite-native-app/state/src/reducers.ts line 446."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "packages/suite/src/views/home/AssetDetail/AssetDetailYieldBanner.test.tsx",
+                    "line": 115,
+                    "detail": "Jest unit test (not E2E): the token banner shows the vault APY and symbol and is absent for a token without a vault, for a coin and once dismissed (line 138)."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite-native-app/module-assets/src/components/AssetDetailYieldBanner.test.tsx",
+                    "line": 150,
+                    "detail": "Jest unit test (not Detox): pressing close dispatches setIsTokenYieldBannerClosed for that token key only and reports yield/navigate cancel; Explore navigation is tested on line 124."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite-native-app/module-assets/src/components/AssetDetailStakingBanner.test.tsx",
+                    "line": 198,
+                    "detail": "Jest unit test (not Detox): mobile staking banner rewards, discreet redaction, Tron APR, ETH vault variant (line 269), Explore (line 284), hidden when every account stakes, after network dismissal (line 318) or for a non-stakeable asset."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite/flags/src/flagsSlice.test.ts",
+                    "line": 75,
+                    "detail": "Jest unit test: a closed token yield banner is remembered for that token only."
+                }
+            ],
+            "ownership": {
+                "team": "Wallet",
+                "confidence": "inferred",
+                "basis": "Inherits the team of the parent feature wallet.portfolio.assets.details.",
+                "source_paths": [
+                    "packages/suite/src/views/home/AssetDetail/AssetDetailYieldBanner.tsx",
+                    "packages/suite/src/views/home/AssetDetail/AssetDetailStakingBanner.tsx",
+                    "packages/suite/src/views/home/AssetDetail/AssetDetailAccountsStakingBanner.tsx",
+                    "suite-native-app/module-assets/src/components/AssetDetailYieldBanner.tsx",
+                    "suite-native-app/module-assets/src/components/AssetDetailStakingBanner.tsx",
+                    "suite-native-app/module-assets/src/assetDetailEarnSelectors.ts"
+                ]
+            },
+            "conditions": [
+                "Staking banner: the asset is a native coin on a supported staking network with at least one account that is not staking. Desktop/web also needs staking limits for the network and no per-network closed flag; the ETH earn variant needs an enabled wrapped-native yield vault and no earnEthBannerClosed. Mobile also needs a stakeable staking product descriptor and the network not in closedEarnBannerSymbols.",
+                "Token yield banner: the asset is a token on an Ethereum-type network with an enabled yield vault whose APY is available, message-system yield deposit is not disabled and the token key has not been dismissed.",
+                "Dismissal is remembered per token for the yield banner and per network for the staking banner. On desktop the staking dismissal flags are shared with the account-view staking banner."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "No capture of the asset detail Earn banners; existing asset detail captures are not known to show them."
+            },
+            "related_ids": [
+                "wallet.portfolio.assets.details",
+                "wallet.portfolio.assets.details.balance",
+                "wallet.portfolio.promotions.dismiss",
+                "earn.opportunities",
+                "earn.opportunities.apy",
+                "earn.staking",
+                "earn.yield"
+            ]
+        },
+        {
+            "id": "trade.swap.manage-approval",
+            "parent_id": "trade.swap",
+            "name": "Manage existing swap approval",
+            "description": "Review how much of the source token the DEX provider is already approved to spend compared with the amount the swap needs, see a warning for unlimited approvals, and either continue the swap or revoke the approval.",
+            "level": "intent",
+            "platforms": {
+                "desktop": "conditional",
+                "web": "conditional",
+                "mobile": "no"
+            },
+            "platform_notes": "Desktop/web only. When the selected DEX quote needs an ERC-20 approval and an allowance for the provider's spender is already on-chain (amount > 0), the Swap form shows a 'Manage approval' text button under Continue/Swap (TradingFormApproval). It replaces the former in-form 'Revoke' button and TradingRevokeModal, which were removed in the same change. It saves the form values and opens the 'wallet-trading-exchange-allowance' route (/accounts/coinmarket/exchange/allowance). The page shows a coverage heading: '{provider} has unlimited access to your {symbol}', 'Your approval covers this swap', 'Your approval is too low for this swap', 'No approval yet' or 'Approval revoked'. A next-step description says whether to swap, approve, or reset for tokens such as USDT that cannot raise an allowance in place. A meter compares the current limit with the swap amount. Unlimited allowances show a warning banner. 'Continue swap' starts the regular approval/swap step flow. 'Revoke approval', shown only when there is an allowance, composes and signs a zero-amount revoke transaction with an editable network fee. It then shows the pending txid, which opens the transaction detail, and switches the heading to 'Approval revoked' after confirmation. If the spender is unknown, the page borrows a revoke quote from the provider and hands the quote back on leave. If the quote is missing, errored or no longer needs approval, the page redirects to the Swap form. Mobile has no equivalent page; its DEX approval and revoke steps are part of the native exchange flow.",
+            "navigation": {
+                "desktop": "Trade → Swap → choose an EVM token source with an existing allowance → select a DEX offer → Manage approval",
+                "web": "Trade → Swap → choose an EVM token source with an existing allowance → select a DEX offer → Manage approval",
+                "mobile": null
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "suite-app/module-trading/src/pages/TradingExchangeAllowancePage.tsx",
+                    "symbol": "TradingExchangeAllowancePage"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowance.tsx",
+                    "symbol": "TradingExchangeAllowance"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormApproval.tsx",
+                    "symbol": "TradingFormApproval"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "route",
+                    "path": "suite/router-config/src/routeConfig.ts",
+                    "line": 364,
+                    "detail": "Route 'wallet-trading-exchange-allowance' with pattern /accounts/coinmarket/exchange/allowance (wallet app)."
+                },
+                {
+                    "kind": "route",
+                    "path": "suite-app/desktop-app-renderer/src/support/desktopComponents.ts",
+                    "line": 116,
+                    "detail": "Desktop maps wallet-trading-exchange-allowance to TradingExchangeAllowancePage."
+                },
+                {
+                    "kind": "route",
+                    "path": "suite-app/web-app/src/support/webComponents.ts",
+                    "line": 256,
+                    "detail": "Web lazily loads TradingExchangeAllowancePage in the trading chunk for the same route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormApproval.tsx",
+                    "line": 153,
+                    "detail": "The 'Manage approval' TextButton (@trading/form/manage-approval-button) renders only when the current allowance is > 0 and the quote status is APPROVAL_REQ/CONFIRM/SIGN_DATA. Clicking it reports the 'manage' analytics action (line 100)."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/exchange/TradingFormOfferExchangeActions.tsx",
+                    "line": 156,
+                    "detail": "onManageApproval saves form values and navigates to wallet-trading-exchange-allowance with preserved params. It is passed to TradingFormApproval when the quote requires token approval (line 204)."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowance.tsx",
+                    "line": 47,
+                    "detail": "Computes allowance coverage (none/too_low/enough/unlimited) from the current allowance and quote send amount. Renders the heading/description, the meter (line 98), the unlimited warning banner (line 106, @trading/allowance/unlimited-warning) and the revoke/continue actions (line 120)."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowanceMeter.tsx",
+                    "line": 50,
+                    "detail": "Meter (@trading/allowance/meter) shows the current approved limit, the swap amount and a covered-ratio progress bar with a warning color."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowanceRevoke.tsx",
+                    "line": 112,
+                    "detail": "'Revoke approval' button (@trading/allowance/revoke-button) sends a REVOKE_ALLOWANCE_AMOUNT allowance transaction (useAllowanceTransaction type 'revoke', line 71). It needs a connected device. 'Continue swap' (line 133), the editable network fee (line 166) and the pending revoke txid that opens transaction detail (line 190) are on the same component."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/useTradingExchangeAllowanceFlow.ts",
+                    "line": 82,
+                    "detail": "Redirects to the Swap form when the quote, token or provider is missing or the quote no longer requires approval. Borrows a provider revoke quote when the spender is unknown (line 93) and returns it on leave (line 126). Marks the allowance revoked after the revoke tx confirms (line 134). continueSwap starts the approval step flow (line 171)."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/exchangeAllowancePageUtils.ts",
+                    "line": 9,
+                    "detail": "Maps the coverage kind and revoked state to heading and next-step translation ids (swap/approve/reset)."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/trading/src/utils/exchange/exchangeAllowanceUtils.ts",
+                    "line": 86,
+                    "detail": "getExchangeAllowanceCoverage classifies the allowance as none/unlimited/enough/too_low. Too low requires a reset for tokens that cannot increase an allowance in place."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingLayout/tradingPageHeaderUtils.ts",
+                    "line": 33,
+                    "detail": "The exchange page header includes the allowance route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite/analytics/src/events/tradeApprovalEvent.ts",
+                    "line": 6,
+                    "detail": "Analytics: tradeApprovalEvent type 'manage-approval' (added 26.12.0) reports swap/continue/fee-change actions from the page."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/useTradingExchangeAllowanceFlow.test.tsx",
+                    "line": 128,
+                    "detail": "Unit tests (not E2E): borrowing the revoke quote to learn the spender, returning to the form when it is refused (line 137), the revoke fee level in analytics (line 150) and handing the quote back on leave (line 168)."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/exchangeAllowancePageUtils.test.ts",
+                    "line": 54,
+                    "detail": "Unit tests (not E2E) for heading/description selection, including the 'Approval revoked' confirmation."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/trading/src/utils/exchange/exchangeAllowanceUtils.test.ts",
+                    "line": 140,
+                    "detail": "Unit tests (not E2E) for getExchangeAllowanceCoverage none/too_low/reset/enough/unlimited cases."
+                }
+            ],
+            "ownership": {
+                "team": "Trade",
+                "confidence": "inferred",
+                "basis": "Inherits the team of the parent feature trade.swap.",
+                "source_paths": [
+                    "suite-app/module-trading/src/pages/TradingExchangeAllowancePage.tsx",
+                    "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowance.tsx",
+                    "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowanceRevoke.tsx",
+                    "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/useTradingExchangeAllowanceFlow.ts",
+                    "packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormApproval.tsx"
+                ]
+            },
+            "conditions": [
+                "desktop-web: Swap must be available with a selected DEX quote whose source is an ERC-20 token that requires approval (requiresTokenApproval: isDex, ERC-20 send, not a transfer-kind or EIP-712 sign-data quote). The quote status must be APPROVAL_REQ, CONFIRM or SIGN_DATA.",
+                "desktop-web: The 'Manage approval' entry shows only when the current allowance for the provider spender is > 0. Opening the route without a valid quote, token or provider redirects to the Swap form.",
+                "desktop-web: Revoking needs a connected Trezor, a composable revoke transaction and native coin for the network fee. 'Revoke approval' is hidden while the allowance is first read and when the allowance is already none."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "New page added after the audit commit (a93f67c642). Capturing it needs a funded EVM token account with an existing DEX spender allowance and a DEX quote, so no runtime capture exists."
+            },
+            "related_ids": [
+                "trade.swap",
+                "trade.swap.dex",
+                "trade.swap.approval",
+                "trade.swap.approval-limit",
+                "trade.swap.approval-fee",
+                "trade.swap.revoke",
+                "earn.yield.approval-edit"
+            ]
+        },
+        {
+            "id": "trade.unavailable",
+            "parent_id": "trade",
+            "name": "Trading temporarily unavailable notice",
+            "description": "See a full-page notice instead of the Buy, Sell, Swap or Concierge form when that trade type, or all trading, is remotely paused or the device failed an authenticity check.",
+            "level": "intent",
+            "platforms": {
+                "desktop": "conditional",
+                "web": "conditional",
+                "mobile": "no"
+            },
+            "platform_notes": "Desktop/web: TradingAvailabilityGuard wraps the Buy, Sell, Swap and Concierge pages and the account-embedded TradingFormEmbed. It replaces the form with a centered warning card (TradingUnavailableCard). There are three variants, in priority order. (1) Device compromised (@trading/device-compromised): firmware authenticity hard-failed or the discovery entropy check failed. It shows 'Your device may have been compromised' and asks the user to contact Trezor Support. (2) All trading disabled (@trading/all-disabled): the message-system flags for buy, sell and exchange are all off. It shows 'Trading is temporarily unavailable' with the shared message-system text, but only when one message disables all three types. Otherwise it shows the default 'We've paused buying, selling, and swapping for now. Your funds are safe...'. In this state the Buy/Sell/Swap/Concierge tab navigation in TradingLayout and the embed's type tabs are hidden. Concierge is exempt from this state and stays available. (3) Type disabled (@trading/type-disabled): the type's own flag is off, or a device check failed only inconclusively. It shows '<Type> is temporarily unavailable' with the message-system content or the default \"We've paused <type> for now\". This replaces the earlier inline warning Banner (TradingDisabled, removed in 92a2c1d819), which showed for a disabled type or any compromised device. Contextual service messages (ContextMessage) still render above the card. The account-embedded form (WalletTradePage, route wallet-trade) is debug-mode only. Mobile: no equivalent notice. Native reads the same Feature.trading flags through selectIsTradingBuyEnabled/Exchange/Sell to gate trading entry points rather than showing this card.",
+            "navigation": {
+                "desktop": "Trade > Buy, Sell, Swap or Concierge (or, in debug mode, an account's Trade tab with the embedded trade form) while the message-system trading feature flag is off or a device authenticity check failed > warning card replaces the form",
+                "web": "Trade > Buy, Sell, Swap or Concierge (or, in debug mode, an account's Trade tab with the embedded trade form) while the message-system trading feature flag is off or a device authenticity check failed > warning card replaces the form",
+                "mobile": null
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingAvailabilityGuard/TradingAvailabilityGuard.tsx",
+                    "symbol": "TradingAvailabilityGuard"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingAvailabilityGuard/getTradingAvailability.ts",
+                    "symbol": "getTradingAvailability"
+                },
+                {
+                    "platform": "shared",
+                    "path": "suite-common/message-system/src/messageSystemSelectors.ts",
+                    "symbol": "selectIsAllTradingDisabled"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "route",
+                    "path": "suite-app/module-trading/src/pages/TradingBuyFormPage.tsx",
+                    "line": 17,
+                    "detail": "Buy page wraps TradingContainer/TradingBuyFormWrapper in TradingAvailabilityGuard type='buy' below the trading ContextMessage; Sell (TradingSellFormPage.tsx:17) and Swap (TradingExchangeFormPage.tsx:17) pages do the same."
+                },
+                {
+                    "kind": "route",
+                    "path": "suite-app/module-trading/src/pages/TradingConciergeDetailPage.tsx",
+                    "line": 40,
+                    "detail": "Concierge detail page content (benefits card, TradingConciergeForm, footer) is wrapped in TradingAvailabilityGuard type='concierge'."
+                },
+                {
+                    "kind": "route",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingFormEmbed/TradingFormEmbed.tsx",
+                    "line": 50,
+                    "detail": "Account-embedded trade form is wrapped in TradingAvailabilityGuard; the type tabs are hidden when all trading is disabled (line 46). The only host, WalletTradePage, is debug-mode only."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingAvailabilityGuard/TradingAvailabilityGuard.tsx",
+                    "line": 16,
+                    "detail": "Switches on useTradingAvailability: deviceCompromised -> TradingDeviceCompromised, allTradingDisabled -> TradingAllDisabled, typeDisabled -> TradingTypeDisabled, available -> children."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingAvailabilityGuard/useTradingAvailability.ts",
+                    "line": 18,
+                    "detail": "Reads selectIsDeviceCompromised, firmware-authenticity hard failure, discovery entropy failure, selectIsFeatureDisabled(Feature.trading[type]) and selectIsAllTradingDisabled. Only a hard firmware or entropy failure counts as compromised (line 31); any other failed check is inconclusive (line 36)."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingAvailabilityGuard/getTradingAvailability.ts",
+                    "line": 14,
+                    "detail": "Priority: compromised device, then all-trading-disabled for non-Concierge tabs only (line 27), then type disabled or inconclusive device check (line 31), else available."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/message-system/src/messageSystemSelectors.ts",
+                    "line": 222,
+                    "detail": "selectIsAllTradingDisabled is true when the buy, sell and exchange feature flags are all disabled; selectAllTradingDisabledMessageContent (line 225) returns text only when the same message disables all three."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingAvailabilityGuard/TradingAllDisabled.tsx",
+                    "line": 12,
+                    "detail": "@trading/all-disabled card: TR_TRADING_ALL_DISABLED_TITLE with the shared message content or the TR_TRADING_ALL_DISABLED_DESCRIPTION fallback."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingAvailabilityGuard/TradingTypeDisabled.tsx",
+                    "line": 26,
+                    "detail": "@trading/type-disabled card: per-type TR_TRADING_DISABLED_TITLE_* title with the useMessageSystemTrading content or the per-type TR_TRADING_DISABLED_DESCRIPTION_* fallback."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingAvailabilityGuard/TradingDeviceCompromised.tsx",
+                    "line": 5,
+                    "detail": "@trading/device-compromised card with TR_DEVICE_COMPROMISED_HEADING and TR_DEVICE_COMPROMISED_TEXT."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingAvailabilityGuard/TradingUnavailableCard.tsx",
+                    "line": 12,
+                    "detail": "Shared 400px centered Card with a 96px warning IconCircle, strong title and secondary description."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingLayout/TradingLayout.tsx",
+                    "line": 25,
+                    "detail": "Trading tab navigation (Buy/Sell/Swap/Concierge) is hidden while all trading is disabled."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite/intl/src/messages.ts",
+                    "line": 363,
+                    "detail": "TR_TRADING_ALL_DISABLED_TITLE 'Trading is temporarily unavailable'; per-type titles and descriptions start at TR_TRADING_DISABLED_TITLE_BUY (line 331)."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingAvailabilityGuard/getTradingAvailability.test.ts",
+                    "line": 11,
+                    "detail": "Unit tests: availability priority, Concierge exempt from all-trading-disabled, compromised device above disabled states, inconclusive device check maps to typeDisabled. Unit level only."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite-common/message-system/src/messageSystemSelectors.test.ts",
+                    "line": 89,
+                    "detail": "Unit tests for selectIsAllTradingDisabled and selectAllTradingDisabledMessageContent (partial disable, shared vs different messages, enabledDomains, priority)."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingFormEmbed/TradingFormEmbed.test.tsx",
+                    "line": 185,
+                    "detail": "Component test: with sell disabled the embed shows @trading/type-disabled instead of the sell form, keeps the type tabs, and leaves trading state untouched."
+                }
+            ],
+            "ownership": {
+                "team": "Trade",
+                "confidence": "inferred",
+                "basis": "Inherits the team of the parent feature trade.",
+                "source_paths": [
+                    "packages/suite/src/views/wallet/trading/common/TradingAvailabilityGuard/TradingAvailabilityGuard.tsx",
+                    "packages/suite/src/views/wallet/trading/common/TradingAvailabilityGuard/getTradingAvailability.ts",
+                    "packages/suite/src/views/wallet/trading/common/TradingAvailabilityGuard/useTradingAvailability.ts",
+                    "suite-common/message-system/src/messageSystemSelectors.ts"
+                ]
+            },
+            "conditions": [
+                "desktop-web: shown only when the message-system config marks the trading type's feature (Feature.trading.buy/sell/exchange/concierge) as disabled, all of buy/sell/exchange are disabled (not for Concierge), or an authenticity check failed for the device (hard firmware-authenticity or discovery-entropy failure shows the compromised variant; other failures show the type-disabled variant).",
+                "desktop-web: the trade page must otherwise be reachable (region restrictions handled separately; TradingFormEmbed renders nothing when region restricted). The account-embedded form is shown only in debug mode.",
+                "mobile: not supported; no equivalent notice."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "Not captured; needs a message-system config disabling trading features or a device failing an authenticity check."
+            },
+            "related_ids": [
+                "trade",
+                "trade.buy",
+                "trade.sell",
+                "trade.swap",
+                "trade.concierge",
+                "app-settings.application.service-messages",
+                "app-settings.application.service-messages.context",
+                "connection.compromised",
+                "device-settings.firmware-authenticity"
+            ]
+        },
+        {
+            "id": "earn.staking.sol.refresh",
+            "parent_id": "earn.staking.sol",
+            "name": "Refresh Solana staking",
+            "description": "Pull to refresh the Solana staking management screen to update the stake position, staking info and reward history.",
+            "level": "intent",
+            "platforms": {
+                "desktop": "no",
+                "web": "no",
+                "mobile": "conditional"
+            },
+            "platform_notes": "Mobile only. StakingManagementScreen renders SolanaStakingRewardsList for Solana-type networks (sol, dsol) instead of the transaction list, so before 5aecb0d2e4 a Solana screen had no pull-to-refresh. A pull now runs three requests in parallel (Promise.allSettled): fetchAndUpdateAccountThunk for the account, which re-syncs its balance and stake position; refreshStakingProductInfoThunk({ force: true }) through the screen's onRefresh, which ignores the product-info maximum age; and a refetch of the Everstake rewards-history query. The rewards refetch runs only when the query is enabled, which means only for mainnet 'sol'. A devnet (dsol) pull refreshes the account and product info but leaves the rewards alone (follow-up 693ac50380). The spinner uses the brand colour and stays visible until all three settle. A failed request does not block the others. ETH and TRX management screens already had pull-to-refresh through TransactionList (onRefresh) and are not part of this intent. Desktop/web: the Solana staking dashboard has no equivalent pull-to-refresh control.",
+            "navigation": {
+                "desktop": null,
+                "web": null,
+                "mobile": "Earn tab (or Solana account) > Solana staking > staking management screen > pull down on the rewards list"
+            },
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/components/staking/SolanaStakingRewardsList.tsx",
+                    "symbol": "SolanaStakingRewardsList"
+                },
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
+                    "symbol": "StakingManagementScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "route",
+                    "path": "suite-native/module-earn/src/components/staking/StakingPositionCard.tsx",
+                    "line": 85,
+                    "detail": "Tapping a staking position card on the Earn screen navigates to the StakingManagement route for the account (useStakingDetailNavigation)."
+                },
+                {
+                    "kind": "route",
+                    "path": "suite-native/earn/src/utils/navigateByAccountState.ts",
+                    "line": 27,
+                    "detail": "Account/promo entry points open StakingManagement only when staking is active for the account; otherwise they open HowStakeWorksScreen."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
+                    "line": 73,
+                    "detail": "Solana-type networks render SolanaStakingRewardsList with onRefresh={refreshProductInfoNow} (line 76). refreshProductInfoNow (line 46) dispatches refreshStakingProductInfoThunk({ force: true }). Other networks keep TransactionList with the same onRefresh (line 79)."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/SolanaStakingRewardsList.tsx",
+                    "line": 60,
+                    "detail": "handleRefresh sets isRefreshing and awaits Promise.allSettled of fetchAndUpdateAccountThunk({ accountKey }), onRefresh() and, only when rewardsQuery.isEnabled, rewardsQuery.refetch(). Then it clears isRefreshing."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/SolanaStakingRewardsList.tsx",
+                    "line": 116,
+                    "detail": "FlashList refreshControl is a RefreshControl bound to isRefreshing/handleRefresh and coloured elementFillBrandBold."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking/src/state/stakingThunks.ts",
+                    "line": 131,
+                    "detail": "refreshStakingProductInfoThunk refetches the staking product info; force sets staleTime 0 instead of PRODUCT_INFO_MAX_AGE_MS (line 153)."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking-api/src/staking/hooks/useSolanaRewardsHistory.ts",
+                    "line": 57,
+                    "detail": "Rewards-history query enabled only for account.symbol === 'sol', so a devnet pull skips the rewards refetch."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite-native/module-earn/src/components/staking/SolanaStakingRewardsList.test.tsx",
+                    "line": 80,
+                    "detail": "Co-located Jest unit test: simulated pull on a mainnet account calls onRefresh once and issues a second rewards request. Line 90: a devnet pull calls onRefresh but makes no rewards request. Component level, not Detox E2E; not executed in this review."
+                },
+                {
+                    "kind": "manual-test",
+                    "path": "suite-native-app/app/e2e/tests/manual/wallet/stakingSol.test.ts",
+                    "line": 6,
+                    "detail": "Native SOL staking manual procedure covers claim/stake/unstake and the staking management screen, but has no pull-to-refresh step."
+                }
+            ],
+            "ownership": {
+                "team": "Earn",
+                "confidence": "inferred",
+                "basis": "Inherits the team of the parent feature earn.staking.sol.",
+                "source_paths": [
+                    "suite-native/module-earn/src/components/staking/SolanaStakingRewardsList.tsx",
+                    "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx"
+                ]
+            },
+            "conditions": [
+                "mobile: Solana-type account (sol or dsol) with active staking, since only active staking routes to StakingManagement; position card on the Earn tab or staking entry from the account/promo.",
+                "mobile: Rewards-history refetch only on mainnet 'sol'; on devnet a pull refreshes the account and product info only.",
+                "mobile: The screen is wrapped in EarnPortfolioTrackerGuard; the refresh requires network access to the blockchain backend and the Everstake API, and failures are swallowed (allSettled) without an error message."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "No capture; a pull-to-refresh spinner on the SOL staking management screen needs a device wallet with an active Solana stake."
+            },
+            "related_ids": [
+                "earn.staking.sol",
+                "earn.staking.sol.rewards",
+                "earn.staking.trx.transactions",
+                "earn.staking.eth.transactions",
+                "mobile.portfolio.refresh"
+            ]
         }
     ],
     "notes": [
@@ -3106,7 +3733,8 @@
         "Legacy Bridge deprecation notice (connection.legacy-bridge-deprecated) was added when the desktop/web route completeness check found /bridge-deprecated without a feature; no existing feature covered detection of a legacy standalone trezord-go. Ownership is inferred (Connect, like its connection siblings).",
         "Mobile x Desktop parity table review (2026-11-21): wallet.send.fees.adjusted-rate-notice (issue #33721) and connection.firmware-required (issue #20637) were the only items without a feature; the other items map to existing features.",
         "Parity table follow-up (2026-11-21): wallet.accounts.add.evm-after-empty (issue #24374), wallet.transactions.cancel-btc (issue #17410; wallet.transactions.cancel stays the EVM cancel) and labeling.remove (issue #28534) were added at the user's request.",
-        "2026 release-note review (2026-11-21): 305 items from 41 GitHub releases were matched to the map; 17 user-facing capabilities without a feature were added (verified at 27c79c8c67). New features inherit the frontend and backend team of their parent."
+        "2026 release-note review (2026-11-21): 305 items from 41 GitHub releases were matched to the map; 17 user-facing capabilities without a feature were added (verified at 27c79c8c67). New features inherit the frontend and backend team of their parent.",
+        "Develop sync (2026-11-21): features added on develop after the audit base 27c79c8c67 (asset detail Earn offer, manage swap approval, trading unavailable notice, Solana staking refresh)."
     ],
     "reviewed_sources": [
         "packages/suite/src/components/earn/modals/shared/VotingDelegations/VotingPreferenceCard.tsx",
@@ -3128,23 +3756,30 @@
         "packages/suite/src/hooks/wallet/trading/form/exchange/useTradingExchangeForm.ts",
         "packages/suite/src/hooks/wallet/trading/form/sell/useTradingSellForm.ts",
         "packages/suite/src/utils/suite/validation.ts",
-        "packages/suite/src/views/suite/bridge-deprecated/index.tsx",
+        "packages/suite/src/views/home/AssetDetail/AssetDetailStakingBanner.tsx",
+        "packages/suite/src/views/home/AssetDetail/AssetDetailYieldBanner.tsx",
+        "packages/suite/src/views/suite/bridge-deprecated/BridgeDeprecated.tsx",
         "packages/suite/src/views/wallet/send/Outputs/Address.tsx",
         "packages/suite/src/views/wallet/send/Outputs/Amount/Amount.tsx",
         "packages/suite/src/views/wallet/staking/components/StakingDashboard/components/Transactions.tsx",
         "packages/suite/src/views/wallet/staking/components/TronStakingDashboard/TronStakingDashboard.tsx",
+        "packages/suite/src/views/wallet/trading/common/TradingAvailabilityGuard/TradingAvailabilityGuard.tsx",
+        "packages/suite/src/views/wallet/trading/common/TradingAvailabilityGuard/getTradingAvailability.ts",
         "packages/suite/src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingDetail/TradingDetailFeedback.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingDetail/TradingDetailSurvey.tsx",
+        "packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormApproval.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputAssetPicker/AssetPickerSearchHeader/AssetPickerSearchHeader.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputSellAsset/AssetPickerModal/AssetPickerModal.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputSellAsset/AssetPickerModal/hooks/useBuildTradingAssetOptions.ts",
         "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoItem.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchange.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchangeSimulationSubtitle.tsx",
+        "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowance.tsx",
         "suite-app/app/src/ModalSwitcher/ForegroundAppModal.tsx",
-        "suite-app/app/src/pages/DashboardPage.tsx",
-        "suite-app/app/src/pages/SettingsDebugPage.tsx",
+        "suite-app/module-home/src/pages/DashboardPage.tsx",
+        "suite-app/module-settings/src/pages/SettingsDebugPage.tsx",
+        "suite-app/module-trading/src/pages/TradingExchangeAllowancePage.tsx",
         "suite-common/message-system/src/ExperimentWrapper.tsx",
         "suite-common/message-system/src/messageSystemSelectors.ts",
         "suite-common/message-system/src/messageSystemThunks.ts",
@@ -3163,6 +3798,8 @@
         "suite-common/wallet-utils/src/transactionUtils.ts",
         "suite-native-app/app/src/BannersRenderer.tsx",
         "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
+        "suite-native-app/module-assets/src/components/AssetDetailStakingBanner.tsx",
+        "suite-native-app/module-assets/src/components/AssetDetailYieldBanner.tsx",
         "suite-native-app/module-connect-popup/src/components/TxSimulationInner.tsx",
         "suite-native-app/module-dev-utils/src/screens/MessageSystemExperimentsScreen.tsx",
         "suite-native-app/module-dev-utils/src/screens/MessageSystemManagerScreen.tsx",
@@ -3195,6 +3832,7 @@
         "suite-native/message-system/src/components/MessageBanner.tsx",
         "suite-native/message-system/src/components/MessageSystemBannerRenderer.tsx",
         "suite-native/message-system/src/index.ts",
+        "suite-native/module-earn/src/components/staking/SolanaStakingRewardsList.tsx",
         "suite-native/module-earn/src/screens/earn/EarnScreen.tsx",
         "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
         "suite-native/trading-history/src/components/TradeHistoryListItem/TradingDetailFeedback.tsx",

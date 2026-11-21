@@ -557,15 +557,15 @@
                 {
                     "kind": "implementation",
                     "path": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
-                    "detail": "Native Ethereum staking supports managing positions with a compatible account/device and provider; mobileStakingSupport marks this network manage."
+                    "detail": "Native Ethereum staking supports managing positions with a compatible account/device and provider; its Everstake product descriptor sets platforms.mobile.access to 'manage'."
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "ETH/SOL are explicitly manage; ADA/TRX are explicitly view."
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "selectIsStakingManageableSymbol reads the stakeable product's mobile access: the Everstake ETH/SOL descriptors are 'manage'; Cardano and Tron descriptors are 'read-only'."
                 }
             ],
-            "reason": "Native Ethereum staking supports managing positions with a compatible account/device and provider; mobileStakingSupport marks this network manage."
+            "reason": "Native Ethereum staking supports managing positions with a compatible account/device and provider; its Everstake product descriptor sets platforms.mobile.access to 'manage'."
         },
         {
             "id": "earn.staking.eth.deposit",
@@ -586,8 +586,8 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Explicit mobile manage support for ETH/SOL."
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "Mobile manage access for ETH/SOL comes from the Everstake product descriptors (platforms.mobile.access 'manage'), read by selectIsStakingManageableSymbol."
                 }
             ],
             "reason": "Native stake amount and review flow supports Ethereum; sufficient funds, fee balance, provider consent and device authorization are required."
@@ -651,8 +651,8 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Explicit mobile manage support for ETH/SOL."
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "Mobile manage access for ETH/SOL comes from the Everstake product descriptors (platforms.mobile.access 'manage'), read by selectIsStakingManageableSymbol."
                 }
             ],
             "reason": "Native unstake flow supports eligible Ethereum staking balances and proceeds through network-specific device signing."
@@ -717,15 +717,15 @@
                 {
                     "kind": "implementation",
                     "path": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
-                    "detail": "Native Solana staking supports managing positions with a compatible account/device and provider; mobileStakingSupport marks this network manage."
+                    "detail": "Native Solana staking supports managing positions with a compatible account/device and provider; its Everstake product descriptor sets platforms.mobile.access to 'manage'."
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "ETH/SOL are explicitly manage; ADA/TRX are explicitly view."
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "selectIsStakingManageableSymbol reads the stakeable product's mobile access: the Everstake ETH/SOL descriptors are 'manage'; Cardano and Tron descriptors are 'read-only'."
                 }
             ],
-            "reason": "Native Solana staking supports managing positions with a compatible account/device and provider; mobileStakingSupport marks this network manage."
+            "reason": "Native Solana staking supports managing positions with a compatible account/device and provider; its Everstake product descriptor sets platforms.mobile.access to 'manage'."
         },
         {
             "id": "earn.staking.sol.stake",
@@ -746,8 +746,8 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Explicit mobile manage support for ETH/SOL."
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "Mobile manage access for ETH/SOL comes from the Everstake product descriptors (platforms.mobile.access 'manage'), read by selectIsStakingManageableSymbol."
                 }
             ],
             "reason": "Native stake amount and review flow supports Solana; sufficient funds, fee balance, provider consent and device authorization are required."
@@ -771,8 +771,8 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Explicit mobile manage support for ETH/SOL."
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "Mobile manage access for ETH/SOL comes from the Everstake product descriptors (platforms.mobile.access 'manage'), read by selectIsStakingManageableSymbol."
                 }
             ],
             "reason": "Native unstake flow supports eligible Solana staking balances and proceeds through network-specific device signing."
@@ -841,13 +841,13 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Explicit mobile support map marks ada as view."
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "detail": "Cardano staking product descriptors set platforms.mobile.access to 'read-only'."
                 },
                 {
                     "kind": "implementation",
                     "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
-                    "detail": "Stake/unstake buttons render only when getMobileStakingSupport returns manage."
+                    "detail": "Stake/unstake buttons render only when the staking product's resolved mobile access is 'manage' (areStakeActionsShown)."
                 }
             ],
             "reason": "Mobile Cardano staking is view-only: existing balances, rewards/status and history can be inspected, while mutations are not supported."
@@ -860,8 +860,8 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Cardano is explicitly view-only on mobile; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "detail": "Every Cardano staking product descriptor sets platforms.mobile.access to 'read-only'; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
                 },
                 {
                     "kind": "implementation",
@@ -884,8 +884,8 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Cardano is explicitly view-only on mobile; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "detail": "Every Cardano staking product descriptor sets platforms.mobile.access to 'read-only'; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
                 },
                 {
                     "kind": "implementation",
@@ -908,8 +908,8 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Cardano is explicitly view-only on mobile; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "detail": "Every Cardano staking product descriptor sets platforms.mobile.access to 'read-only'; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
                 },
                 {
                     "kind": "implementation",
@@ -932,8 +932,8 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Cardano is explicitly view-only on mobile; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "detail": "Every Cardano staking product descriptor sets platforms.mobile.access to 'read-only'; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
                 },
                 {
                     "kind": "implementation",
@@ -956,8 +956,8 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Cardano is explicitly view-only on mobile; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "detail": "Every Cardano staking product descriptor sets platforms.mobile.access to 'read-only'; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
                 },
                 {
                     "kind": "implementation",
@@ -991,13 +991,13 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Explicit mobile support map marks trx as view."
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'."
                 },
                 {
                     "kind": "implementation",
                     "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
-                    "detail": "Stake/unstake buttons render only when getMobileStakingSupport returns manage."
+                    "detail": "Stake/unstake buttons render only when the staking product's resolved mobile access is 'manage' (areStakeActionsShown)."
                 }
             ],
             "reason": "Mobile Tron staking is view-only: existing balances, rewards/status and history can be inspected, while mutations are not supported."
@@ -1010,8 +1010,8 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
                 },
                 {
                     "kind": "implementation",
@@ -1034,8 +1034,8 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
                 },
                 {
                     "kind": "implementation",
@@ -1058,8 +1058,8 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
                 },
                 {
                     "kind": "implementation",
@@ -1082,8 +1082,8 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
                 },
                 {
                     "kind": "implementation",
@@ -1106,8 +1106,8 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
                 },
                 {
                     "kind": "implementation",
@@ -1130,8 +1130,8 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
                 },
                 {
                     "kind": "implementation",
@@ -1154,8 +1154,8 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
                 },
                 {
                     "kind": "implementation",
@@ -1178,8 +1178,8 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
                 },
                 {
                     "kind": "implementation",
@@ -1303,7 +1303,7 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx",
+                    "path": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx",
                     "detail": "Exposes gated Wrap/Unwrap buttons and navigates to the registered standalone wrapped-native form."
                 }
             ],
@@ -1333,7 +1333,7 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx",
+                    "path": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx",
                     "detail": "Exposes gated Wrap/Unwrap buttons and navigates to the registered standalone wrapped-native form."
                 }
             ],
@@ -2289,8 +2289,8 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
                 },
                 {
                     "kind": "implementation",
@@ -2615,8 +2615,8 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "ETH and SOL are explicitly manage; ADA and TRX are view-only."
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "Everstake ETH and SOL products have mobile access 'manage'; ADA and TRX products are 'read-only' (selectIsStakingManageableSymbol)."
                 }
             ],
             "reason": "Native ETH/SOL stake forms provide editable crypto and fiat amounts and a Max switch. The audited native inputs do not expose desktop 10%, 25%, or 50% shortcuts, so this is partial parity; device authorization, sufficient available balance and network/provider limits apply."
@@ -2699,7 +2699,7 @@
         "suite-native/module-earn/src/components/earn/EarnOutputFields.tsx",
         "suite-native/module-earn/src/components/earn/EarnPromoList.tsx",
         "suite-native/module-earn/src/components/earn/EarnSelectAccountBottomSheet.tsx",
-        "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx",
+        "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx",
         "suite-native/module-earn/src/components/staking/InstantUnstakeConfirmationBanner.tsx",
         "suite-native/module-earn/src/components/staking/SolExternalStakingBanner.tsx",
         "suite-native/module-earn/src/components/staking/StakingManagementListHeader.tsx",
@@ -2725,7 +2725,9 @@
         "suite-native/module-earn/src/screens/yield/YieldDepositScreen.tsx",
         "suite-native/module-earn/src/screens/yield/YieldWithdrawScreen.tsx",
         "suite-native/module-earn/src/thunks/staking/stakingThunks.ts",
-        "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
+        "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+        "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+        "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
         "suite-native/navigation/src/navigators.ts",
         "suite-native/trading-history/src/components/TradingHistory.tsx",
         "suite-native/trading-history/src/components/TradingHistoryDetail/TradingHistoryDetail.tsx",

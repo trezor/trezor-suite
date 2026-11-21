@@ -195,7 +195,9 @@
                 "onboarding.recovery.on-device"
             ],
             "expectation": "T1B1 has host-side word-count/method flow; standard is selectable for 24 words, while 12/18 words route to advanced recovery. Other supported models use on-device recovery input. Capture choosers before secret entry.",
-            "source_paths": ["packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx"]
+            "source_paths": [
+                "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx"
+            ]
         },
         {
             "id": "backup-format-fw",
@@ -10401,7 +10403,7 @@
         "suite/e2e/support/testExtends/suiteBaseFixture.ts",
         "suite-common/device/src/deviceSelectors.ts",
         "packages/suite/src/views/onboarding/steps/BackupTypeStep.tsx",
-        "packages/suite/src/views/onboarding/steps/RecoveryStep/index.tsx",
+        "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
         "packages/suite/src/views/onboarding/steps/SelectBackupType/ShamirOptions.tsx",
         "packages/suite/src/views/settings/SettingsDevice/Brightness.tsx",
         "packages/suite/src/views/settings/SettingsDevice/HapticFeedback.tsx",

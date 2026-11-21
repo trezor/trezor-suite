@@ -242,6 +242,13 @@
             "status": "reviewed-excluded",
             "reason": "Hidden /version diagnostic URL and commit hash are developer/support reference, not ordinary settings navigation; user-visible version/release notes are mapped separately.",
             "detail": "Hidden /version diagnostic URL and commit hash are developer/support reference, not ordinary settings navigation; user-visible version/release notes are mapped separately."
+        },
+        {
+            "status": "mapped",
+            "path": "suite/e2e/tests/manual/general/find-on-page.test.ts",
+            "feature_ids": ["app-controls.find"],
+            "reason": "Manual procedure steps were inspected and reconciled with existing user capabilities; not an execution result.",
+            "detail": "Desktop find bar: open with Cmd/Ctrl+F, highlighted matches and counter, next/previous navigation, Not found, updates after navigation, and closing. Web uses the native browser find."
         }
     ],
     "notes": [

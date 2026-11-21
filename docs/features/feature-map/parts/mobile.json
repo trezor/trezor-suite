@@ -1016,7 +1016,7 @@
             "id": "mobile.device-onboarding.security",
             "parent_id": "mobile.device-onboarding",
             "name": "Packaging and security check",
-            "description": "Inspect the device and packaging using the onboarding security guidance.",
+            "description": "Inspect the device and packaging with the security guidance before first use of a newly connected Trezor, whether it is new or already initialized.",
             "level": "option",
             "platforms": {
                 "desktop": "unknown",
@@ -1027,19 +1027,34 @@
             "navigation": {
                 "desktop": null,
                 "web": null,
-                "mobile": "Connect new Trezor > Device setup > Packaging and security check"
+                "mobile": "Connect a Trezor that has not passed the device checks > Device Visual Check (or Home > Check your Trezor > Check my Trezor)"
             },
             "roots": [
                 {
                     "platform": "mobile",
-                    "path": "suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx",
-                    "symbol": "SecurityCheckScreen"
+                    "path": "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx",
+                    "symbol": "PackagingVisualCheckScreen"
+                },
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/DeviceVisualCheckScreen.tsx",
+                    "symbol": "DeviceVisualCheckScreen"
+                },
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-onboarding/src/hooks/useNavigateAfterDeviceVisualCheck.ts",
+                    "symbol": "useNavigateAfterDeviceVisualCheck"
+                },
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/UninitializedConnectedDeviceState.tsx",
+                    "symbol": "UninitializedConnectedDeviceState"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx",
                     "detail": "Inspect the device and packaging using the onboarding security guidance."
                 },
                 {
@@ -1148,7 +1163,7 @@
             "navigation": {
                 "desktop": null,
                 "web": null,
-                "mobile": "Connect new Trezor > Device setup > Device authenticity verification"
+                "mobile": "Connect a Trezor (new or initialized) > Device Visual Check > Device authenticity verification"
             },
             "roots": [
                 {
@@ -7087,14 +7102,14 @@
             "roots": [
                 {
                     "platform": "mobile",
-                    "path": "suite-native-app/module-sign-verify/src/screens/SignAndVerifyScreen.tsx",
-                    "symbol": "SignAndVerifyScreen"
+                    "path": "suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx",
+                    "symbol": "SignVerifyScreen"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native-app/module-sign-verify/src/screens/SignAndVerifyScreen.tsx",
+                    "path": "suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx",
                     "detail": "Sign a message using a supported account or verify an existing signature."
                 }
             ],
@@ -12619,19 +12634,19 @@
             "roots": [
                 {
                     "platform": "mobile",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "symbol": "getMobileStakingSupport"
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "symbol": "selectIsStakingManageableSymbol"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "MOBILE_STAKING_SUPPORT explicitly maps ada and trx to view; eth/thod/sol/dsol map to manage."
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "selectIsStakingManageableSymbol is true only when the network's stakeable product has mobile access 'manage'; the Everstake ETH/tHOD/SOL/dSOL descriptors set platforms.mobile.access to 'manage', every Cardano, Tron and external Solana descriptor sets 'read-only'."
                 },
                 {
                     "kind": "automated-test",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.test.ts",
+                    "path": "suite-common/earn-staking-products/src/createStakingProductsCompositionRoot.test.ts",
                     "detail": "Automated workflow scenario source; contextual evidence for this flow, not proof of execution or an assertion for every leaf option."
                 }
             ],
@@ -14175,14 +14190,14 @@
             "roots": [
                 {
                     "platform": "mobile",
-                    "path": "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx",
+                    "path": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx",
                     "symbol": "TokenSettingsBottomSheet"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx",
+                    "path": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx",
                     "detail": "Control whether a token appears in the normal account token list."
                 },
                 {
@@ -14227,14 +14242,14 @@
             "roots": [
                 {
                     "platform": "mobile",
-                    "path": "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx",
+                    "path": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx",
                     "symbol": "TokenSettingsBottomSheet"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx",
+                    "path": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx",
                     "detail": "Inspect a token contract, network and exact balance in token settings."
                 }
             ],
@@ -14815,7 +14830,7 @@
         "Several older manual scenarios still use Suite Lite labels, Customization/Localization or My Assets navigation; current screen composition uses Settings > Preferences and the current Accounts/Home surfaces.",
         "No screen-brightness, homescreen-image, haptics, screen-rotation or wipe-code configuration control was found in the current native DeviceSettingsScreen subtree; do not copy desktop device-settings parity to mobile.",
         "USB transport is phone/platform dependent; Bluetooth requires a compatible device and permissions. Device onboarding and firmware actions are model/feature-gated; T1B1 no-firmware manual scenario explicitly directs the user to desktop.",
-        "MobileStakingSupport explicitly gives ETH/Hoodi and SOL/devnet manage support and ADA/TRX view-only support. Do not claim native ADA/TRX staking creation, unstake or claim parity.",
+        "The staking product descriptors give the Everstake ETH/Hoodi and SOL/devnet products mobile access 'manage' and every Cardano, Tron and external Solana product 'read-only'. Do not claim native ADA/TRX staking creation, unstake or claim parity.",
         "SendOutputFields has an explicit TODO for adding outputs; the data structure supports an array but current mobile UI does not provide an Add recipient control.",
         "The native swap provider sheet exposes all/CEX/DEX filtering and groups floating/fixed offers, automatically sorted by best rate. Manual trading-offers-selection describes optional KYC and fee sorting controls which were not confirmed in the implementation.",
         "Suite Sync availability is selected through feature state and device capability, not the generic experimental toggle list; current user-facing experimentalFeatures.ts lists slip24.",
@@ -14994,7 +15009,7 @@
         "suite-native-app/module-device-onboarding/src/screens/DeviceTutorialScreen.tsx",
         "suite-native-app/module-device-onboarding/src/screens/FirmwareInstallationScreen.tsx",
         "suite-native-app/module-device-onboarding/src/screens/RecoveryInstructionsScreen.tsx",
-        "suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx",
+        "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx",
         "suite-native-app/module-device-onboarding/src/screens/ThpPairingInfoScreen.tsx",
         "suite-native-app/module-device-onboarding/src/screens/WalletBackupRecapScreen.tsx",
         "suite-native-app/module-device-onboarding/src/screens/WalletBackupTutorialScreen.tsx",
@@ -15120,10 +15135,10 @@
         "suite-native-app/module-settings/src/screens/SettingsSuiteSyncScreen.tsx",
         "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
         "suite-native-app/module-sign-verify/package.json",
-        "suite-native-app/module-sign-verify/src/components/SignAndVerifyForms.tsx",
+        "suite-native-app/module-sign-verify/src/components/SignVerifyForms.tsx",
         "suite-native-app/module-sign-verify/src/components/SignMessageCard.tsx",
         "suite-native-app/module-sign-verify/src/components/VerifyMessageCard.tsx",
-        "suite-native-app/module-sign-verify/src/screens/SignAndVerifyScreen.tsx",
+        "suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx",
         "suite-native-app/module-stellar-token-management/package.json",
         "suite-native-app/module-stellar-token-management/src/components/FeeOptionsSection.tsx",
         "suite-native-app/module-stellar-token-management/src/navigation/StellarManageTokenStackNavigator.tsx",
@@ -15232,7 +15247,7 @@
         "suite-native/message-system/src/components/KillswitchMessageScreen.tsx",
         "suite-native/module-earn/package.json",
         "suite-native/module-earn/src/components/earn/EarnPromoList.tsx",
-        "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx",
+        "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx",
         "suite-native/module-earn/src/components/staking/SolanaStakingRewardsList.tsx",
         "suite-native/module-earn/src/navigation/WrappedNativeTokenStackNavigator.tsx",
         "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
@@ -15263,9 +15278,11 @@
         "suite-native/module-earn/src/screens/yield/YieldWithdrawReviewScreen.tsx",
         "suite-native/module-earn/src/screens/yield/YieldWithdrawScreen.tsx",
         "suite-native/module-earn/src/screens/yield/YieldWithdrawUnwrapScreen.tsx",
-        "suite-native/module-earn/src/utils/earn/wrappedNativeTokenEntryUtils.ts",
-        "suite-native/module-earn/src/utils/staking/mobileStakingSupport.test.ts",
-        "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
+        "suite-native/earn/src/utils/wrappedNativeTokenEntryUtils.ts",
+        "suite-common/earn-staking-products/src/createStakingProductsCompositionRoot.test.ts",
+        "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+        "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+        "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
         "suite-native/transaction-management/package.json",
         "suite-native/transaction-management/src/components/fees/CustomFee/CustomFee.test.tsx",
         "suite-native/transaction-management/src/components/fees/CustomFee/CustomFee.tsx",
@@ -15305,14 +15322,14 @@
         {
             "desktop_feature_hint": "Staking > Cardano stake, unstake or claim actions",
             "mobile_status": "no",
-            "evidence_path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-            "reason": "MOBILE_STAKING_SUPPORT.ada is explicitly view, so mobile can inspect the position but does not provide management parity."
+            "evidence_path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+            "reason": "Every Cardano staking product descriptor sets platforms.mobile.access to 'read-only', so mobile can inspect the position but does not provide management parity."
         },
         {
             "desktop_feature_hint": "Staking > Tron stake, unstake or claim actions",
             "mobile_status": "no",
-            "evidence_path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-            "reason": "MOBILE_STAKING_SUPPORT.trx is explicitly view, so mobile can inspect the position but does not provide management parity."
+            "evidence_path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+            "reason": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only', so mobile can inspect the position but does not provide management parity."
         },
         {
             "desktop_feature_hint": "Connected apps > edit simulated request transaction fee",
@@ -15323,7 +15340,7 @@
         {
             "desktop_feature_hint": "Earn > standalone native-token wrapping",
             "mobile_status": "conditional",
-            "evidence_path": "suite-native/module-earn/src/utils/earn/wrappedNativeTokenEntryUtils.ts",
+            "evidence_path": "suite-native/earn/src/utils/wrappedNativeTokenEntryUtils.ts",
             "reason": "Wrap entry requires isDevUtilsEnabled plus eligible EVM account, supported wrapped-native token and feature availability; Unwrap has no dev-utils gate."
         },
         {

@@ -163,7 +163,10 @@
         "earn.staking.trx.transactions",
         "earn.staking.ada.voting.convert-drep",
         "trade.preview-fiat-value",
-        "trade.swap.source-asset-filter"
+        "trade.swap.source-asset-filter",
+        "trade.swap.manage-approval",
+        "trade.unavailable",
+        "earn.staking.sol.refresh"
     ],
     "features": [
         {
@@ -248,24 +251,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/TradingRedirectPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingRedirectPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/TradingRedirectPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingRedirectPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingRedirectPage.tsx#L1"
+                    "local_link": "suite-app/module-trading/src/pages/TradingRedirectPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingRedirectPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingRedirectPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/TradingRedirectPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingRedirectPage.tsx",
                     "symbol": "TradingRedirectPage",
                     "role": "screen-entry",
                     "line": 29,
-                    "local_link": "suite-app/app/src/pages/TradingRedirectPage.tsx:29",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingRedirectPage.tsx#L29",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingRedirectPage.tsx#L29",
+                    "local_link": "suite-app/module-trading/src/pages/TradingRedirectPage.tsx:29",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingRedirectPage.tsx#L29",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingRedirectPage.tsx#L29",
                     "codeowners": null
                 },
                 {
@@ -400,24 +403,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/TradingBuyFormPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingBuyFormPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/TradingBuyFormPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingBuyFormPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingBuyFormPage.tsx#L1"
+                    "local_link": "suite-app/module-trading/src/pages/TradingBuyFormPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingBuyFormPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingBuyFormPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/TradingBuyFormPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingBuyFormPage.tsx",
                     "symbol": "TradingBuyFormPage",
                     "role": "screen-entry",
                     "line": 14,
-                    "local_link": "suite-app/app/src/pages/TradingBuyFormPage.tsx:14",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingBuyFormPage.tsx#L14",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingBuyFormPage.tsx#L14",
+                    "local_link": "suite-app/module-trading/src/pages/TradingBuyFormPage.tsx:14",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingBuyFormPage.tsx#L14",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingBuyFormPage.tsx#L14",
                     "codeowners": null
                 },
                 {
@@ -1354,24 +1357,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/TradingBuyConfirmPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingBuyConfirmPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/TradingBuyConfirmPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingBuyConfirmPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingBuyConfirmPage.tsx#L1"
+                    "local_link": "suite-app/module-trading/src/pages/TradingBuyConfirmPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingBuyConfirmPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingBuyConfirmPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/TradingBuyConfirmPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingBuyConfirmPage.tsx",
                     "symbol": "TradingBuyConfirmPage",
                     "role": "screen-entry",
                     "line": 16,
-                    "local_link": "suite-app/app/src/pages/TradingBuyConfirmPage.tsx:16",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingBuyConfirmPage.tsx#L16",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingBuyConfirmPage.tsx#L16",
+                    "local_link": "suite-app/module-trading/src/pages/TradingBuyConfirmPage.tsx:16",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingBuyConfirmPage.tsx#L16",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingBuyConfirmPage.tsx#L16",
                     "codeowners": null
                 },
                 {
@@ -1470,24 +1473,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/TradingBuyDetailPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingBuyDetailPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/TradingBuyDetailPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingBuyDetailPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingBuyDetailPage.tsx#L1"
+                    "local_link": "suite-app/module-trading/src/pages/TradingBuyDetailPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingBuyDetailPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingBuyDetailPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/TradingBuyDetailPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingBuyDetailPage.tsx",
                     "symbol": "TradingBuyDetailPage",
                     "role": "screen-entry",
                     "line": 3,
-                    "local_link": "suite-app/app/src/pages/TradingBuyDetailPage.tsx:3",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingBuyDetailPage.tsx#L3",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingBuyDetailPage.tsx#L3",
+                    "local_link": "suite-app/module-trading/src/pages/TradingBuyDetailPage.tsx:3",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingBuyDetailPage.tsx#L3",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingBuyDetailPage.tsx#L3",
                     "codeowners": null
                 },
                 {
@@ -2596,24 +2599,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/TradingSellFormPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingSellFormPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/TradingSellFormPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingSellFormPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingSellFormPage.tsx#L1"
+                    "local_link": "suite-app/module-trading/src/pages/TradingSellFormPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingSellFormPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingSellFormPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/TradingSellFormPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingSellFormPage.tsx",
                     "symbol": "TradingSellFormPage",
                     "role": "screen-entry",
                     "line": 14,
-                    "local_link": "suite-app/app/src/pages/TradingSellFormPage.tsx:14",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingSellFormPage.tsx#L14",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingSellFormPage.tsx#L14",
+                    "local_link": "suite-app/module-trading/src/pages/TradingSellFormPage.tsx:14",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingSellFormPage.tsx#L14",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingSellFormPage.tsx#L14",
                     "codeowners": null
                 },
                 {
@@ -3511,24 +3514,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/TradingSellConfirmPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingSellConfirmPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/TradingSellConfirmPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingSellConfirmPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingSellConfirmPage.tsx#L1"
+                    "local_link": "suite-app/module-trading/src/pages/TradingSellConfirmPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingSellConfirmPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingSellConfirmPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/TradingSellConfirmPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingSellConfirmPage.tsx",
                     "symbol": "TradingSellConfirmPage",
                     "role": "screen-entry",
                     "line": 18,
-                    "local_link": "suite-app/app/src/pages/TradingSellConfirmPage.tsx:18",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingSellConfirmPage.tsx#L18",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingSellConfirmPage.tsx#L18",
+                    "local_link": "suite-app/module-trading/src/pages/TradingSellConfirmPage.tsx:18",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingSellConfirmPage.tsx#L18",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingSellConfirmPage.tsx#L18",
                     "codeowners": null
                 },
                 {
@@ -3627,24 +3630,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/TradingSellDetailPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingSellDetailPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/TradingSellDetailPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingSellDetailPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingSellDetailPage.tsx#L1"
+                    "local_link": "suite-app/module-trading/src/pages/TradingSellDetailPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingSellDetailPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingSellDetailPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/TradingSellDetailPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingSellDetailPage.tsx",
                     "symbol": "TradingSellDetailPage",
                     "role": "screen-entry",
                     "line": 3,
-                    "local_link": "suite-app/app/src/pages/TradingSellDetailPage.tsx:3",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingSellDetailPage.tsx#L3",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingSellDetailPage.tsx#L3",
+                    "local_link": "suite-app/module-trading/src/pages/TradingSellDetailPage.tsx:3",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingSellDetailPage.tsx#L3",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingSellDetailPage.tsx#L3",
                     "codeowners": null
                 },
                 {
@@ -3877,24 +3880,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/TradingExchangeFormPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingExchangeFormPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/TradingExchangeFormPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingExchangeFormPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingExchangeFormPage.tsx#L1"
+                    "local_link": "suite-app/module-trading/src/pages/TradingExchangeFormPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingExchangeFormPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingExchangeFormPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/TradingExchangeFormPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingExchangeFormPage.tsx",
                     "symbol": "TradingExchangeFormPage",
                     "role": "screen-entry",
                     "line": 14,
-                    "local_link": "suite-app/app/src/pages/TradingExchangeFormPage.tsx:14",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingExchangeFormPage.tsx#L14",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingExchangeFormPage.tsx#L14",
+                    "local_link": "suite-app/module-trading/src/pages/TradingExchangeFormPage.tsx:14",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingExchangeFormPage.tsx#L14",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingExchangeFormPage.tsx#L14",
                     "codeowners": null
                 },
                 {
@@ -4993,24 +4996,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/TradingExchangeApprovalPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingExchangeApprovalPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/TradingExchangeApprovalPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingExchangeApprovalPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingExchangeApprovalPage.tsx#L1"
+                    "local_link": "suite-app/module-trading/src/pages/TradingExchangeApprovalPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingExchangeApprovalPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingExchangeApprovalPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/TradingExchangeApprovalPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingExchangeApprovalPage.tsx",
                     "symbol": "TradingExchangeApprovalPage",
                     "role": "screen-entry",
                     "line": 20,
-                    "local_link": "suite-app/app/src/pages/TradingExchangeApprovalPage.tsx:20",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingExchangeApprovalPage.tsx#L20",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingExchangeApprovalPage.tsx#L20",
+                    "local_link": "suite-app/module-trading/src/pages/TradingExchangeApprovalPage.tsx:20",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingExchangeApprovalPage.tsx#L20",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingExchangeApprovalPage.tsx#L20",
                     "codeowners": null
                 },
                 {
@@ -5258,12 +5261,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/wallet/trading/common/TradingForm/TradingRevokeModal.tsx",
-                    "detail": "Revoke an existing allowance before issuing a replacement approval when required.",
-                    "line": 1,
-                    "local_link": "packages/suite/src/views/wallet/trading/common/TradingForm/TradingRevokeModal.tsx:1",
-                    "repository_link": "../../../packages/suite/src/views/wallet/trading/common/TradingForm/TradingRevokeModal.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/wallet/trading/common/TradingForm/TradingRevokeModal.tsx#L1"
+                    "path": "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowanceRevoke.tsx",
+                    "detail": "Manage approval page (route wallet-trading-exchange-allowance, opened from the swap form's Manage approval button when an allowance exists) revokes the current allowance to zero and then offers to continue the swap.",
+                    "line": 43,
+                    "local_link": "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowanceRevoke.tsx:43",
+                    "repository_link": "../../../packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowanceRevoke.tsx#L43",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowanceRevoke.tsx#L43"
                 },
                 {
                     "kind": "manual-test",
@@ -5323,12 +5326,12 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/wallet/trading/common/TradingForm/TradingRevokeModal.tsx",
-                    "symbol": "TradingRevokeModal",
-                    "line": 12,
-                    "local_link": "packages/suite/src/views/wallet/trading/common/TradingForm/TradingRevokeModal.tsx:12",
-                    "repository_link": "../../../packages/suite/src/views/wallet/trading/common/TradingForm/TradingRevokeModal.tsx#L12",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/packages/suite/src/views/wallet/trading/common/TradingForm/TradingRevokeModal.tsx#L12",
+                    "path": "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowanceRevoke.tsx",
+                    "symbol": "TradingExchangeAllowanceRevoke",
+                    "line": 43,
+                    "local_link": "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowanceRevoke.tsx:43",
+                    "repository_link": "../../../packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowanceRevoke.tsx#L43",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowanceRevoke.tsx#L43",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -5417,24 +5420,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/TradingExchangeConfirmPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingExchangeConfirmPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/TradingExchangeConfirmPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingExchangeConfirmPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingExchangeConfirmPage.tsx#L1"
+                    "local_link": "suite-app/module-trading/src/pages/TradingExchangeConfirmPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingExchangeConfirmPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingExchangeConfirmPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/TradingExchangeConfirmPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingExchangeConfirmPage.tsx",
                     "symbol": "TradingExchangeConfirmPage",
                     "role": "screen-entry",
                     "line": 19,
-                    "local_link": "suite-app/app/src/pages/TradingExchangeConfirmPage.tsx:19",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingExchangeConfirmPage.tsx#L19",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingExchangeConfirmPage.tsx#L19",
+                    "local_link": "suite-app/module-trading/src/pages/TradingExchangeConfirmPage.tsx:19",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingExchangeConfirmPage.tsx#L19",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingExchangeConfirmPage.tsx#L19",
                     "codeowners": null
                 },
                 {
@@ -5578,24 +5581,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/TradingExchangeDetailPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingExchangeDetailPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/TradingExchangeDetailPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingExchangeDetailPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingExchangeDetailPage.tsx#L1"
+                    "local_link": "suite-app/module-trading/src/pages/TradingExchangeDetailPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingExchangeDetailPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingExchangeDetailPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/TradingExchangeDetailPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingExchangeDetailPage.tsx",
                     "symbol": "TradingExchangeDetailPage",
                     "role": "screen-entry",
                     "line": 3,
-                    "local_link": "suite-app/app/src/pages/TradingExchangeDetailPage.tsx:3",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingExchangeDetailPage.tsx#L3",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingExchangeDetailPage.tsx#L3",
+                    "local_link": "suite-app/module-trading/src/pages/TradingExchangeDetailPage.tsx:3",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingExchangeDetailPage.tsx#L3",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingExchangeDetailPage.tsx#L3",
                     "codeowners": null
                 },
                 {
@@ -6072,24 +6075,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/TradingTransactionsPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingTransactionsPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/TradingTransactionsPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingTransactionsPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingTransactionsPage.tsx#L1"
+                    "local_link": "suite-app/module-trading/src/pages/TradingTransactionsPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingTransactionsPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingTransactionsPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/TradingTransactionsPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingTransactionsPage.tsx",
                     "symbol": "TradingTransactionsPage",
                     "role": "screen-entry",
                     "line": 10,
-                    "local_link": "suite-app/app/src/pages/TradingTransactionsPage.tsx:10",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingTransactionsPage.tsx#L10",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingTransactionsPage.tsx#L10",
+                    "local_link": "suite-app/module-trading/src/pages/TradingTransactionsPage.tsx:10",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingTransactionsPage.tsx#L10",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-trading/src/pages/TradingTransactionsPage.tsx#L10",
                     "codeowners": null
                 },
                 {
@@ -6438,24 +6441,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/TradingConciergeDetailPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingConciergeDetailPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/TradingConciergeDetailPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingConciergeDetailPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingConciergeDetailPage.tsx#L1"
+                    "local_link": "suite-app/module-trading/src/pages/TradingConciergeDetailPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingConciergeDetailPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-app/module-trading/src/pages/TradingConciergeDetailPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/TradingConciergeDetailPage.tsx",
+                    "path": "suite-app/module-trading/src/pages/TradingConciergeDetailPage.tsx",
                     "symbol": "TradingConciergeDetailPage",
                     "role": "screen-entry",
-                    "line": 41,
-                    "local_link": "suite-app/app/src/pages/TradingConciergeDetailPage.tsx:41",
-                    "repository_link": "../../../suite-app/app/src/pages/TradingConciergeDetailPage.tsx#L41",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/TradingConciergeDetailPage.tsx#L41",
+                    "line": 38,
+                    "local_link": "suite-app/module-trading/src/pages/TradingConciergeDetailPage.tsx:38",
+                    "repository_link": "../../../suite-app/module-trading/src/pages/TradingConciergeDetailPage.tsx#L38",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-app/module-trading/src/pages/TradingConciergeDetailPage.tsx#L38",
                     "codeowners": null
                 },
                 {
@@ -6722,24 +6725,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/EarnPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/EarnPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnPage.tsx#L1"
+                    "local_link": "suite-app/module-earn/src/pages/EarnPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/EarnPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnPage.tsx",
                     "symbol": "EarnPage",
                     "role": "screen-entry",
                     "line": 3,
-                    "local_link": "suite-app/app/src/pages/EarnPage.tsx:3",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnPage.tsx#L3",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnPage.tsx#L3",
+                    "local_link": "suite-app/module-earn/src/pages/EarnPage.tsx:3",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnPage.tsx#L3",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnPage.tsx#L3",
                     "codeowners": null
                 },
                 {
@@ -7058,24 +7061,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/WalletStakingPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/WalletStakingPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/WalletStakingPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/WalletStakingPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WalletStakingPage.tsx#L1"
+                    "local_link": "suite-app/module-earn/src/pages/WalletStakingPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/WalletStakingPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/WalletStakingPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/WalletStakingPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/WalletStakingPage.tsx",
                     "symbol": "WalletStakingPage",
                     "role": "screen-entry",
                     "line": 15,
-                    "local_link": "suite-app/app/src/pages/WalletStakingPage.tsx:15",
-                    "repository_link": "../../../suite-app/app/src/pages/WalletStakingPage.tsx#L15",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/WalletStakingPage.tsx#L15",
+                    "local_link": "suite-app/module-earn/src/pages/WalletStakingPage.tsx:15",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/WalletStakingPage.tsx#L15",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/WalletStakingPage.tsx#L15",
                     "codeowners": null
                 },
                 {
@@ -7332,12 +7335,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "ETH and SOL are explicitly manage; ADA and TRX are view-only.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "Everstake ETH and SOL products have mobile access 'manage'; ADA and TRX products are 'read-only' (selectIsStakingManageableSymbol).",
+                    "line": 225,
+                    "local_link": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts:225",
+                    "repository_link": "../../../suite-common/earn-staking/src/state/stakingAccessSelectors.ts#L225",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking/src/state/stakingAccessSelectors.ts#L225"
                 }
             ],
             "roots": [
@@ -7446,7 +7449,7 @@
             },
             "conditions": [
                 "desktop-web: Funded Ethereum account and staking provider availability",
-                "mobile: Native Ethereum staking supports managing positions with a compatible account/device and provider; mobileStakingSupport marks this network manage."
+                "mobile: Native Ethereum staking supports managing positions with a compatible account/device and provider; its Everstake product descriptor sets platforms.mobile.access to 'manage'."
             ],
             "evidence": [
                 {
@@ -7479,7 +7482,7 @@
                 {
                     "kind": "implementation",
                     "path": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
-                    "detail": "Native Ethereum staking supports managing positions with a compatible account/device and provider; mobileStakingSupport marks this network manage.",
+                    "detail": "Native Ethereum staking supports managing positions with a compatible account/device and provider; its Everstake product descriptor sets platforms.mobile.access to 'manage'.",
                     "line": 1,
                     "local_link": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx:1",
                     "repository_link": "../../../suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx#L1",
@@ -7487,12 +7490,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "ETH/SOL are explicitly manage; ADA/TRX are explicitly view.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "selectIsStakingManageableSymbol reads the stakeable product's mobile access: the Everstake ETH/SOL descriptors are 'manage'; Cardano and Tron descriptors are 'read-only'.",
+                    "line": 225,
+                    "local_link": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts:225",
+                    "repository_link": "../../../suite-common/earn-staking/src/state/stakingAccessSelectors.ts#L225",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking/src/state/stakingAccessSelectors.ts#L225"
                 }
             ],
             "roots": [
@@ -7565,12 +7568,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Explicit mobile manage support for ETH/SOL.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "Mobile manage access for ETH/SOL comes from the Everstake product descriptors (platforms.mobile.access 'manage'), read by selectIsStakingManageableSymbol.",
+                    "line": 225,
+                    "local_link": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts:225",
+                    "repository_link": "../../../suite-common/earn-staking/src/state/stakingAccessSelectors.ts#L225",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking/src/state/stakingAccessSelectors.ts#L225"
                 }
             ],
             "roots": [
@@ -7781,12 +7784,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Explicit mobile manage support for ETH/SOL.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "Mobile manage access for ETH/SOL comes from the Everstake product descriptors (platforms.mobile.access 'manage'), read by selectIsStakingManageableSymbol.",
+                    "line": 225,
+                    "local_link": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts:225",
+                    "repository_link": "../../../suite-common/earn-staking/src/state/stakingAccessSelectors.ts#L225",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking/src/state/stakingAccessSelectors.ts#L225"
                 }
             ],
             "roots": [
@@ -7979,7 +7982,7 @@
             },
             "conditions": [
                 "desktop-web: Funded Solana account",
-                "mobile: Native Solana staking supports managing positions with a compatible account/device and provider; mobileStakingSupport marks this network manage."
+                "mobile: Native Solana staking supports managing positions with a compatible account/device and provider; its Everstake product descriptor sets platforms.mobile.access to 'manage'."
             ],
             "evidence": [
                 {
@@ -8012,7 +8015,7 @@
                 {
                     "kind": "implementation",
                     "path": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
-                    "detail": "Native Solana staking supports managing positions with a compatible account/device and provider; mobileStakingSupport marks this network manage.",
+                    "detail": "Native Solana staking supports managing positions with a compatible account/device and provider; its Everstake product descriptor sets platforms.mobile.access to 'manage'.",
                     "line": 1,
                     "local_link": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx:1",
                     "repository_link": "../../../suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx#L1",
@@ -8020,12 +8023,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "ETH/SOL are explicitly manage; ADA/TRX are explicitly view.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "selectIsStakingManageableSymbol reads the stakeable product's mobile access: the Everstake ETH/SOL descriptors are 'manage'; Cardano and Tron descriptors are 'read-only'.",
+                    "line": 225,
+                    "local_link": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts:225",
+                    "repository_link": "../../../suite-common/earn-staking/src/state/stakingAccessSelectors.ts#L225",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking/src/state/stakingAccessSelectors.ts#L225"
                 }
             ],
             "roots": [
@@ -8098,12 +8101,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Explicit mobile manage support for ETH/SOL.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "Mobile manage access for ETH/SOL comes from the Everstake product descriptors (platforms.mobile.access 'manage'), read by selectIsStakingManageableSymbol.",
+                    "line": 225,
+                    "local_link": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts:225",
+                    "repository_link": "../../../suite-common/earn-staking/src/state/stakingAccessSelectors.ts#L225",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking/src/state/stakingAccessSelectors.ts#L225"
                 }
             ],
             "roots": [
@@ -8176,12 +8179,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Explicit mobile manage support for ETH/SOL.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "Mobile manage access for ETH/SOL comes from the Everstake product descriptors (platforms.mobile.access 'manage'), read by selectIsStakingManageableSymbol.",
+                    "line": 225,
+                    "local_link": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts:225",
+                    "repository_link": "../../../suite-common/earn-staking/src/state/stakingAccessSelectors.ts#L225",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking/src/state/stakingAccessSelectors.ts#L225"
                 }
             ],
             "roots": [
@@ -8489,17 +8492,17 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Explicit mobile support map marks ada as view.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "detail": "Cardano staking product descriptors set platforms.mobile.access to 'read-only'.",
+                    "line": 41,
+                    "local_link": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts:41",
+                    "repository_link": "../../../suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts#L41",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts#L41"
                 },
                 {
                     "kind": "implementation",
                     "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
-                    "detail": "Stake/unstake buttons render only when getMobileStakingSupport returns manage.",
+                    "detail": "Stake/unstake buttons render only when the staking product's resolved mobile access is 'manage' (areStakeActionsShown).",
                     "line": 1,
                     "local_link": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx:1",
                     "repository_link": "../../../suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx#L1",
@@ -8567,12 +8570,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Cardano is explicitly view-only on mobile; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "detail": "Every Cardano staking product descriptor sets platforms.mobile.access to 'read-only'; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation.",
+                    "line": 41,
+                    "local_link": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts:41",
+                    "repository_link": "../../../suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts#L41",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts#L41"
                 },
                 {
                     "kind": "implementation",
@@ -8643,12 +8646,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Cardano is explicitly view-only on mobile; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "detail": "Every Cardano staking product descriptor sets platforms.mobile.access to 'read-only'; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation.",
+                    "line": 41,
+                    "local_link": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts:41",
+                    "repository_link": "../../../suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts#L41",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts#L41"
                 },
                 {
                     "kind": "implementation",
@@ -8719,12 +8722,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Cardano is explicitly view-only on mobile; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "detail": "Every Cardano staking product descriptor sets platforms.mobile.access to 'read-only'; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation.",
+                    "line": 41,
+                    "local_link": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts:41",
+                    "repository_link": "../../../suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts#L41",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts#L41"
                 },
                 {
                     "kind": "implementation",
@@ -8795,12 +8798,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Cardano is explicitly view-only on mobile; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "detail": "Every Cardano staking product descriptor sets platforms.mobile.access to 'read-only'; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation.",
+                    "line": 41,
+                    "local_link": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts:41",
+                    "repository_link": "../../../suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts#L41",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts#L41"
                 },
                 {
                     "kind": "implementation",
@@ -8871,12 +8874,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Cardano is explicitly view-only on mobile; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "detail": "Every Cardano staking product descriptor sets platforms.mobile.access to 'read-only'; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation.",
+                    "line": 41,
+                    "local_link": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts:41",
+                    "repository_link": "../../../suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts#L41",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts#L41"
                 },
                 {
                     "kind": "implementation",
@@ -8957,17 +8960,17 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Explicit mobile support map marks trx as view.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'.",
+                    "line": 54,
+                    "local_link": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts:54",
+                    "repository_link": "../../../suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54"
                 },
                 {
                     "kind": "implementation",
                     "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
-                    "detail": "Stake/unstake buttons render only when getMobileStakingSupport returns manage.",
+                    "detail": "Stake/unstake buttons render only when the staking product's resolved mobile access is 'manage' (areStakeActionsShown).",
                     "line": 1,
                     "local_link": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx:1",
                     "repository_link": "../../../suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx#L1",
@@ -8975,24 +8978,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/EarnTronRedirectPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnTronRedirectPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/EarnTronRedirectPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnTronRedirectPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnTronRedirectPage.tsx#L1"
+                    "local_link": "suite-app/module-earn/src/pages/EarnTronRedirectPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnTronRedirectPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnTronRedirectPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/EarnTronRedirectPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnTronRedirectPage.tsx",
                     "symbol": "EarnTronRedirectPage",
                     "role": "screen-entry",
                     "line": 7,
-                    "local_link": "suite-app/app/src/pages/EarnTronRedirectPage.tsx:7",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnTronRedirectPage.tsx#L7",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnTronRedirectPage.tsx#L7",
+                    "local_link": "suite-app/module-earn/src/pages/EarnTronRedirectPage.tsx:7",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnTronRedirectPage.tsx#L7",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnTronRedirectPage.tsx#L7",
                     "codeowners": null
                 },
                 {
@@ -9055,12 +9058,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed.",
+                    "line": 54,
+                    "local_link": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts:54",
+                    "repository_link": "../../../suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54"
                 },
                 {
                     "kind": "implementation",
@@ -9082,24 +9085,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/EarnTronStakePage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnTronStakePage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/EarnTronStakePage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnTronStakePage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnTronStakePage.tsx#L1"
+                    "local_link": "suite-app/module-earn/src/pages/EarnTronStakePage.tsx:1",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnTronStakePage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnTronStakePage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/EarnTronStakePage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnTronStakePage.tsx",
                     "symbol": "EarnTronStakePage",
                     "role": "screen-entry",
                     "line": 9,
-                    "local_link": "suite-app/app/src/pages/EarnTronStakePage.tsx:9",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnTronStakePage.tsx#L9",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnTronStakePage.tsx#L9",
+                    "local_link": "suite-app/module-earn/src/pages/EarnTronStakePage.tsx:9",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnTronStakePage.tsx#L9",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnTronStakePage.tsx#L9",
                     "codeowners": null
                 },
                 {
@@ -9151,12 +9154,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed.",
+                    "line": 54,
+                    "local_link": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts:54",
+                    "repository_link": "../../../suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54"
                 },
                 {
                     "kind": "implementation",
@@ -9227,12 +9230,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed.",
+                    "line": 54,
+                    "local_link": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts:54",
+                    "repository_link": "../../../suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54"
                 },
                 {
                     "kind": "implementation",
@@ -9254,24 +9257,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/EarnTronVotePage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnTronVotePage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/EarnTronVotePage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnTronVotePage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnTronVotePage.tsx#L1"
+                    "local_link": "suite-app/module-earn/src/pages/EarnTronVotePage.tsx:1",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnTronVotePage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnTronVotePage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/EarnTronVotePage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnTronVotePage.tsx",
                     "symbol": "EarnTronVotePage",
                     "role": "screen-entry",
                     "line": 9,
-                    "local_link": "suite-app/app/src/pages/EarnTronVotePage.tsx:9",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnTronVotePage.tsx#L9",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnTronVotePage.tsx#L9",
+                    "local_link": "suite-app/module-earn/src/pages/EarnTronVotePage.tsx:9",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnTronVotePage.tsx#L9",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnTronVotePage.tsx#L9",
                     "codeowners": null
                 },
                 {
@@ -9328,12 +9331,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed.",
+                    "line": 54,
+                    "local_link": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts:54",
+                    "repository_link": "../../../suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54"
                 },
                 {
                     "kind": "implementation",
@@ -9404,12 +9407,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed.",
+                    "line": 54,
+                    "local_link": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts:54",
+                    "repository_link": "../../../suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54"
                 },
                 {
                     "kind": "implementation",
@@ -9480,12 +9483,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed.",
+                    "line": 54,
+                    "local_link": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts:54",
+                    "repository_link": "../../../suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54"
                 },
                 {
                     "kind": "implementation",
@@ -9507,24 +9510,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/EarnTronClaimPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnTronClaimPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/EarnTronClaimPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnTronClaimPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnTronClaimPage.tsx#L1"
+                    "local_link": "suite-app/module-earn/src/pages/EarnTronClaimPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnTronClaimPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnTronClaimPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/EarnTronClaimPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnTronClaimPage.tsx",
                     "symbol": "EarnTronClaimPage",
                     "role": "screen-entry",
                     "line": 9,
-                    "local_link": "suite-app/app/src/pages/EarnTronClaimPage.tsx:9",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnTronClaimPage.tsx#L9",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnTronClaimPage.tsx#L9",
+                    "local_link": "suite-app/module-earn/src/pages/EarnTronClaimPage.tsx:9",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnTronClaimPage.tsx#L9",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnTronClaimPage.tsx#L9",
                     "codeowners": null
                 },
                 {
@@ -9576,12 +9579,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed.",
+                    "line": 54,
+                    "local_link": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts:54",
+                    "repository_link": "../../../suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54"
                 },
                 {
                     "kind": "implementation",
@@ -9603,24 +9606,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/EarnTronUnstakePage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnTronUnstakePage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/EarnTronUnstakePage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnTronUnstakePage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnTronUnstakePage.tsx#L1"
+                    "local_link": "suite-app/module-earn/src/pages/EarnTronUnstakePage.tsx:1",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnTronUnstakePage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnTronUnstakePage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/EarnTronUnstakePage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnTronUnstakePage.tsx",
                     "symbol": "EarnTronUnstakePage",
                     "role": "screen-entry",
                     "line": 9,
-                    "local_link": "suite-app/app/src/pages/EarnTronUnstakePage.tsx:9",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnTronUnstakePage.tsx#L9",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnTronUnstakePage.tsx#L9",
+                    "local_link": "suite-app/module-earn/src/pages/EarnTronUnstakePage.tsx:9",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnTronUnstakePage.tsx#L9",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnTronUnstakePage.tsx#L9",
                     "codeowners": null
                 },
                 {
@@ -9672,12 +9675,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed.",
+                    "line": 54,
+                    "local_link": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts:54",
+                    "repository_link": "../../../suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54"
                 },
                 {
                     "kind": "implementation",
@@ -9699,24 +9702,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/EarnTronWithdrawPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnTronWithdrawPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/EarnTronWithdrawPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnTronWithdrawPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnTronWithdrawPage.tsx#L1"
+                    "local_link": "suite-app/module-earn/src/pages/EarnTronWithdrawPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnTronWithdrawPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnTronWithdrawPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/EarnTronWithdrawPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnTronWithdrawPage.tsx",
                     "symbol": "EarnTronWithdrawPage",
                     "role": "screen-entry",
                     "line": 9,
-                    "local_link": "suite-app/app/src/pages/EarnTronWithdrawPage.tsx:9",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnTronWithdrawPage.tsx#L9",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnTronWithdrawPage.tsx#L9",
+                    "local_link": "suite-app/module-earn/src/pages/EarnTronWithdrawPage.tsx:9",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnTronWithdrawPage.tsx#L9",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnTronWithdrawPage.tsx#L9",
                     "codeowners": null
                 },
                 {
@@ -9837,12 +9840,12 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed.",
+                    "line": 54,
+                    "local_link": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts:54",
+                    "repository_link": "../../../suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking-products/src/products/tron/native/descriptor.ts#L54"
                 },
                 {
                     "kind": "implementation",
@@ -10227,21 +10230,21 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "detail": "MOBILE_STAKING_SUPPORT explicitly maps ada and trx to view; eth/thod/sol/dsol map to manage.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L1"
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "selectIsStakingManageableSymbol is true only when the network's stakeable product has mobile access 'manage'; the Everstake ETH/tHOD/SOL/dSOL descriptors set platforms.mobile.access to 'manage', every Cardano, Tron and external Solana descriptor sets 'read-only'.",
+                    "line": 225,
+                    "local_link": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts:225",
+                    "repository_link": "../../../suite-common/earn-staking/src/state/stakingAccessSelectors.ts#L225",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking/src/state/stakingAccessSelectors.ts#L225"
                 },
                 {
                     "kind": "automated-test",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.test.ts",
+                    "path": "suite-common/earn-staking-products/src/createStakingProductsCompositionRoot.test.ts",
                     "detail": "Automated workflow scenario source; contextual evidence for this flow, not proof of execution or an assertion for every leaf option.",
-                    "line": 1,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.test.ts:1",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.test.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.test.ts#L1"
+                    "line": 171,
+                    "local_link": "suite-common/earn-staking-products/src/createStakingProductsCompositionRoot.test.ts:171",
+                    "repository_link": "../../../suite-common/earn-staking-products/src/createStakingProductsCompositionRoot.test.ts#L171",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking-products/src/createStakingProductsCompositionRoot.test.ts#L171"
                 },
                 {
                     "kind": "implementation",
@@ -10265,12 +10268,12 @@
             "roots": [
                 {
                     "platform": "mobile",
-                    "path": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts",
-                    "symbol": "getMobileStakingSupport",
-                    "line": 18,
-                    "local_link": "suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts:18",
-                    "repository_link": "../../../suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L18",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/utils/staking/mobileStakingSupport.ts#L18",
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "symbol": "selectIsStakingManageableSymbol",
+                    "line": 225,
+                    "local_link": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts:225",
+                    "repository_link": "../../../suite-common/earn-staking/src/state/stakingAccessSelectors.ts#L225",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/92eaa159b2d8b7ccc4560ee05f73283442cbda37/suite-common/earn-staking/src/state/stakingAccessSelectors.ts#L225",
                     "codeowners": null,
                     "role": "entry-or-containing-component"
                 },
@@ -10663,24 +10666,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/EarnDepositPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnDepositPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/EarnDepositPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnDepositPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnDepositPage.tsx#L1"
+                    "local_link": "suite-app/module-earn/src/pages/EarnDepositPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnDepositPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnDepositPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/EarnDepositPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnDepositPage.tsx",
                     "symbol": "EarnDepositPage",
                     "role": "screen-entry",
                     "line": 3,
-                    "local_link": "suite-app/app/src/pages/EarnDepositPage.tsx:3",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnDepositPage.tsx#L3",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnDepositPage.tsx#L3",
+                    "local_link": "suite-app/module-earn/src/pages/EarnDepositPage.tsx:3",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnDepositPage.tsx#L3",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnDepositPage.tsx#L3",
                     "codeowners": null
                 },
                 {
@@ -11081,24 +11084,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/EarnWithdrawPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnWithdrawPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/EarnWithdrawPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnWithdrawPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnWithdrawPage.tsx#L1"
+                    "local_link": "suite-app/module-earn/src/pages/EarnWithdrawPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnWithdrawPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnWithdrawPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/EarnWithdrawPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnWithdrawPage.tsx",
                     "symbol": "EarnWithdrawPage",
                     "role": "screen-entry",
                     "line": 3,
-                    "local_link": "suite-app/app/src/pages/EarnWithdrawPage.tsx:3",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnWithdrawPage.tsx#L3",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnWithdrawPage.tsx#L3",
+                    "local_link": "suite-app/module-earn/src/pages/EarnWithdrawPage.tsx:3",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnWithdrawPage.tsx#L3",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnWithdrawPage.tsx#L3",
                     "codeowners": null
                 },
                 {
@@ -11414,33 +11417,33 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx",
+                    "path": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx",
                     "detail": "Exposes gated Wrap/Unwrap buttons and navigates to the registered standalone wrapped-native form.",
                     "line": 1,
-                    "local_link": "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx:1",
-                    "repository_link": "../../../suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx#L1"
+                    "local_link": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx:1",
+                    "repository_link": "../../../suite-native/earn/src/components/TokenSettingsBottomSheet.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/earn/src/components/TokenSettingsBottomSheet.tsx#L1"
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/EarnWrapPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnWrapPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/EarnWrapPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnWrapPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnWrapPage.tsx#L1"
+                    "local_link": "suite-app/module-earn/src/pages/EarnWrapPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnWrapPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnWrapPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/EarnWrapPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnWrapPage.tsx",
                     "symbol": "EarnWrapPage",
                     "role": "screen-entry",
                     "line": 15,
-                    "local_link": "suite-app/app/src/pages/EarnWrapPage.tsx:15",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnWrapPage.tsx#L15",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnWrapPage.tsx#L15",
+                    "local_link": "suite-app/module-earn/src/pages/EarnWrapPage.tsx:15",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnWrapPage.tsx#L15",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnWrapPage.tsx#L15",
                     "codeowners": null
                 },
                 {
@@ -11533,33 +11536,33 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx",
+                    "path": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx",
                     "detail": "Exposes gated Wrap/Unwrap buttons and navigates to the registered standalone wrapped-native form.",
                     "line": 1,
-                    "local_link": "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx:1",
-                    "repository_link": "../../../suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx#L1"
+                    "local_link": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx:1",
+                    "repository_link": "../../../suite-native/earn/src/components/TokenSettingsBottomSheet.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-native/earn/src/components/TokenSettingsBottomSheet.tsx#L1"
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/EarnUnwrapPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnUnwrapPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/EarnUnwrapPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnUnwrapPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnUnwrapPage.tsx#L1"
+                    "local_link": "suite-app/module-earn/src/pages/EarnUnwrapPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnUnwrapPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnUnwrapPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/EarnUnwrapPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnUnwrapPage.tsx",
                     "symbol": "EarnUnwrapPage",
                     "role": "screen-entry",
                     "line": 15,
-                    "local_link": "suite-app/app/src/pages/EarnUnwrapPage.tsx:15",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnUnwrapPage.tsx#L15",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnUnwrapPage.tsx#L15",
+                    "local_link": "suite-app/module-earn/src/pages/EarnUnwrapPage.tsx:15",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnUnwrapPage.tsx#L15",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnUnwrapPage.tsx#L15",
                     "codeowners": null
                 },
                 {
@@ -11718,24 +11721,24 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/EarnClaimPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnClaimPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/EarnClaimPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnClaimPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnClaimPage.tsx#L1"
+                    "local_link": "suite-app/module-earn/src/pages/EarnClaimPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnClaimPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnClaimPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/EarnClaimPage.tsx",
+                    "path": "suite-app/module-earn/src/pages/EarnClaimPage.tsx",
                     "symbol": "EarnClaimPage",
                     "role": "screen-entry",
                     "line": 9,
-                    "local_link": "suite-app/app/src/pages/EarnClaimPage.tsx:9",
-                    "repository_link": "../../../suite-app/app/src/pages/EarnClaimPage.tsx#L9",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/EarnClaimPage.tsx#L9",
+                    "local_link": "suite-app/module-earn/src/pages/EarnClaimPage.tsx:9",
+                    "repository_link": "../../../suite-app/module-earn/src/pages/EarnClaimPage.tsx#L9",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-earn/src/pages/EarnClaimPage.tsx#L9",
                     "codeowners": null
                 },
                 {
@@ -12197,12 +12200,12 @@
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsConnectedAppsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx",
                     "detail": "Use external wallets and dApps through Trezor Connect or WalletConnect and manage their access.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/SettingsConnectedAppsPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsConnectedAppsPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsConnectedAppsPage.tsx#L1"
+                    "local_link": "suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx#L1"
                 },
                 {
                     "kind": "manual-test",
@@ -12260,44 +12263,44 @@
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/ConnectPopupPage.tsx",
+                    "path": "suite-app/module-connect-popup/src/pages/ConnectPopupPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/ConnectPopupPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/ConnectPopupPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/ConnectPopupPage.tsx#L1"
+                    "local_link": "suite-app/module-connect-popup/src/pages/ConnectPopupPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-connect-popup/src/pages/ConnectPopupPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-connect-popup/src/pages/ConnectPopupPage.tsx#L1"
                 },
                 {
                     "kind": "route",
-                    "path": "suite-app/app/src/pages/SettingsConnectedAppsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx",
                     "detail": "Application page wrapper selected by desktopComponents/webComponents; child controls remain linked separately.",
                     "line": 1,
-                    "local_link": "suite-app/app/src/pages/SettingsConnectedAppsPage.tsx:1",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsConnectedAppsPage.tsx#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsConnectedAppsPage.tsx#L1"
+                    "local_link": "suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx:1",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx#L1",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx#L1"
                 }
             ],
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/ConnectPopupPage.tsx",
+                    "path": "suite-app/module-connect-popup/src/pages/ConnectPopupPage.tsx",
                     "symbol": "ConnectPopupPage",
                     "role": "screen-entry",
                     "line": 4,
-                    "local_link": "suite-app/app/src/pages/ConnectPopupPage.tsx:4",
-                    "repository_link": "../../../suite-app/app/src/pages/ConnectPopupPage.tsx#L4",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/ConnectPopupPage.tsx#L4",
+                    "local_link": "suite-app/module-connect-popup/src/pages/ConnectPopupPage.tsx:4",
+                    "repository_link": "../../../suite-app/module-connect-popup/src/pages/ConnectPopupPage.tsx#L4",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-connect-popup/src/pages/ConnectPopupPage.tsx#L4",
                     "codeowners": null
                 },
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsConnectedAppsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx",
                     "symbol": "SettingsConnectedAppsPage",
                     "role": "screen-entry",
                     "line": 16,
-                    "local_link": "suite-app/app/src/pages/SettingsConnectedAppsPage.tsx:16",
-                    "repository_link": "../../../suite-app/app/src/pages/SettingsConnectedAppsPage.tsx#L16",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/app/src/pages/SettingsConnectedAppsPage.tsx#L16",
+                    "local_link": "suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx:16",
+                    "repository_link": "../../../suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx#L16",
+                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx#L16",
                     "codeowners": null
                 },
                 {
@@ -12412,15 +12415,6 @@
                     "local_link": "suite/e2e/tests/trezor-connect/connectPopupWeb.test.ts:1",
                     "repository_link": "../../../suite/e2e/tests/trezor-connect/connectPopupWeb.test.ts#L1",
                     "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/trezor-connect/connectPopupWeb.test.ts#L1"
-                },
-                {
-                    "kind": "manual-test",
-                    "path": "suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts",
-                    "detail": "Briskett Tezos wallet compatibility scenario via Trezor Connect / Suite popup; platform scope: desktop-browser. Named Tezos wallet scenario; does not establish native Suite Tezos account support.",
-                    "line": 1,
-                    "local_link": "suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts:1",
-                    "repository_link": "../../../suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts#L1"
                 },
                 {
                     "kind": "manual-test",
@@ -12959,15 +12953,6 @@
                     "local_link": "suite/e2e/tests/manual/connect/connect-metamask-desktop.test.ts:1",
                     "repository_link": "../../../suite/e2e/tests/manual/connect/connect-metamask-desktop.test.ts#L1",
                     "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/manual/connect/connect-metamask-desktop.test.ts#L1"
-                },
-                {
-                    "kind": "manual-test",
-                    "path": "suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts",
-                    "detail": "Briskett Tezos wallet compatibility scenario via Trezor Connect / Suite popup; platform scope: desktop-browser. Named Tezos wallet scenario; does not establish native Suite Tezos account support.",
-                    "line": 1,
-                    "local_link": "suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts:1",
-                    "repository_link": "../../../suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts#L1"
                 },
                 {
                     "kind": "manual-test",
@@ -13851,15 +13836,6 @@
                     "local_link": "suite/e2e/tests/manual/connect/wallet-connect-jupiter.test.ts:1",
                     "repository_link": "../../../suite/e2e/tests/manual/connect/wallet-connect-jupiter.test.ts#L1",
                     "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/manual/connect/wallet-connect-jupiter.test.ts#L1"
-                },
-                {
-                    "kind": "manual-test",
-                    "path": "suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts",
-                    "detail": "Briskett Tezos wallet compatibility scenario via Trezor Connect / Suite popup; platform scope: desktop-browser. Named Tezos wallet scenario; does not establish native Suite Tezos account support.",
-                    "line": 1,
-                    "local_link": "suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts:1",
-                    "repository_link": "../../../suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts#L1",
-                    "github_url": "https://github.com/trezor/trezor-suite/blob/27c79c8c675dc216d185cb00f2714ffe7f136402/suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts#L1"
                 },
                 {
                     "kind": "manual-test",

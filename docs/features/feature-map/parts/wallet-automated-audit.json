@@ -108,14 +108,14 @@
             "detail": "With a mocked Litecoin Blockbook dataset containing a Mimblewimble peg-out-origin UTXO, disables broadcast, fills a recipient, selects Send Max and confirms device signing. It does not expose or verify a standalone MWEB wallet/mixing UI or broadcast a live payment."
         },
         {
-            "path": "suite/e2e/tests/wallet/sign-and-verify-eth.test.ts",
+            "path": "suite/e2e/tests/wallet/sign-verify-eth.test.ts",
             "feature_ids": ["wallet.sign-verify.sign", "wallet.sign-verify.verify"],
             "status": "mapped",
             "reason": "Read the complete test source and linked its intended regression scenarios; no test was executed.",
             "detail": "Signs an Ethereum message and asserts generated signature plus success toast; separately verifies a supplied signature with address/message confirmations and a valid-signature device result."
         },
         {
-            "path": "suite/e2e/tests/wallet/sign-and-verify.test.ts",
+            "path": "suite/e2e/tests/wallet/sign-verify.test.ts",
             "feature_ids": [
                 "wallet.sign-verify.sign",
                 "wallet.sign-verify.verify",

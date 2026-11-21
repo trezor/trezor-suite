@@ -21,14 +21,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/DashboardPage.tsx",
+                    "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
                     "symbol": "DashboardPage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/DashboardPage.tsx",
+                    "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
                     "detail": "See the wallet total and explore assets across accounts."
                 },
                 {
@@ -384,14 +384,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/AssetDetailPage.tsx",
+                    "path": "suite-app/module-assets/src/pages/AssetDetailPage.tsx",
                     "symbol": "AssetDetailPage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/AssetDetailPage.tsx",
+                    "path": "suite-app/module-assets/src/pages/AssetDetailPage.tsx",
                     "detail": "Open one asset to see its market price, combined balance and history."
                 },
                 {
@@ -827,7 +827,7 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/DashboardPage.tsx",
+                    "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
                     "detail": "ExperimentWrapper selects variant B for asset-first Home."
                 }
             ],
@@ -1048,14 +1048,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/HiddenTokensPage.tsx",
+                    "path": "suite-app/module-home/src/pages/HiddenTokensPage.tsx",
                     "symbol": "HiddenTokensPage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/HiddenTokensPage.tsx",
+                    "path": "suite-app/module-home/src/pages/HiddenTokensPage.tsx",
                     "detail": "Review wallet-wide hidden tokens and make selected assets visible again."
                 }
             ],
@@ -1322,7 +1322,7 @@
             "id": "wallet.accounts.select",
             "parent_id": "wallet.accounts",
             "name": "Switch account",
-            "description": "Open a selected account from the accounts sidebar.",
+            "description": "Open a selected account from the accounts sidebar, where each account row shows its total fiat value and badges for account type, staking status and token count.",
             "level": "option",
             "platforms": {
                 "desktop": "yes",
@@ -1841,14 +1841,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/TransactionsPage.tsx",
+                    "path": "suite-app/module-transactions/src/pages/TransactionsPage.tsx",
                     "symbol": "TransactionsPage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/TransactionsPage.tsx",
+                    "path": "suite-app/module-transactions/src/pages/TransactionsPage.tsx",
                     "detail": "See the selected account balance, balance history and transaction list."
                 },
                 {
@@ -2106,14 +2106,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/WalletDetailsPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx",
                     "symbol": "WalletDetailsPage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/WalletDetailsPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx",
                     "detail": "Inspect account type, derivation path and network-specific account information."
                 },
                 {
@@ -2159,14 +2159,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/WalletDetailsPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx",
                     "symbol": "WalletDetailsPage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/WalletDetailsPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx",
                     "detail": "See the account address type and hierarchical derivation path."
                 },
                 {
@@ -2462,14 +2462,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/WalletSendPage.tsx",
+                    "path": "suite-app/module-send/src/pages/WalletSendPage.tsx",
                     "symbol": "WalletSendPage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/WalletSendPage.tsx",
+                    "path": "suite-app/module-send/src/pages/WalletSendPage.tsx",
                     "detail": "Prepare, review, sign and send cryptocurrency from an account."
                 },
                 {
@@ -5149,14 +5149,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/ReceivePage.tsx",
+                    "path": "suite-app/module-receive/src/pages/ReceivePage.tsx",
                     "symbol": "ReceivePage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/ReceivePage.tsx",
+                    "path": "suite-app/module-receive/src/pages/ReceivePage.tsx",
                     "detail": "Obtain an account receive address and verify it on Trezor."
                 },
                 {
@@ -7053,14 +7053,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/TokensPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/TokensPage.tsx",
                     "symbol": "TokensPage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/TokensPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/TokensPage.tsx",
                     "detail": "Inspect token holdings and control which supported tokens appear in the wallet."
                 },
                 {
@@ -7803,14 +7803,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/NftsPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/NftsPage.tsx",
                     "symbol": "NftsPage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/NftsPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/NftsPage.tsx",
                     "detail": "Browse NFT collections and choose which collections are shown."
                 },
                 {
@@ -7953,14 +7953,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/NftsPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/NftsPage.tsx",
                     "symbol": "NftsPage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/NftsPage.tsx",
+                    "path": "suite-app/module-account-detail/src/pages/NftsPage.tsx",
                     "detail": "Browse NFT collections hidden from the main collection list."
                 },
                 {
@@ -8103,14 +8103,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SignVerifyPage.tsx",
+                    "path": "suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx",
                     "symbol": "SignVerifyPage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SignVerifyPage.tsx",
+                    "path": "suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx",
                     "detail": "Prove control of an account address by signing messages and verify supported signatures."
                 },
                 {
@@ -8424,7 +8424,7 @@
                 },
                 {
                     "kind": "automated-test",
-                    "path": "suite/e2e/tests/wallet/sign-and-verify-ada.test.ts",
+                    "path": "suite/e2e/tests/wallet/sign-verify-ada.test.ts",
                     "detail": "Cardano signing scenario."
                 }
             ],
@@ -8512,14 +8512,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/WalletCoinjoinPage.tsx",
+                    "path": "suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx",
                     "symbol": "WalletCoinjoinPage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/WalletCoinjoinPage.tsx",
+                    "path": "suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx",
                     "detail": "Inspect and configure the retained Coinjoin privacy-account experience when enabled."
                 },
                 {
@@ -9167,14 +9167,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/WalletAnonymizePage.tsx",
+                    "path": "suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx",
                     "symbol": "WalletAnonymizePage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/WalletAnonymizePage.tsx",
+                    "path": "suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx",
                     "detail": "Review the Coinjoin consent and device authorization before starting a session."
                 },
                 {
@@ -9682,19 +9682,19 @@
         "packages/suite/src/views/wallet/transactions/components/SummaryCards.tsx",
         "packages/suite/src/views/wallet/transactions/components/TransactionSummary.tsx",
         "packages/suite/src/views/wallet/transactions/components/TronResources/TronResources.tsx",
-        "suite-app/app/src/AppRouter.tsx",
-        "suite-app/app/src/pages/AssetDetailPage.tsx",
-        "suite-app/app/src/pages/DashboardPage.tsx",
-        "suite-app/app/src/pages/HiddenTokensPage.tsx",
-        "suite-app/app/src/pages/NftsPage.tsx",
-        "suite-app/app/src/pages/ReceivePage.tsx",
-        "suite-app/app/src/pages/SignVerifyPage.tsx",
-        "suite-app/app/src/pages/TokensPage.tsx",
-        "suite-app/app/src/pages/TransactionsPage.tsx",
-        "suite-app/app/src/pages/WalletAnonymizePage.tsx",
-        "suite-app/app/src/pages/WalletCoinjoinPage.tsx",
-        "suite-app/app/src/pages/WalletDetailsPage.tsx",
-        "suite-app/app/src/pages/WalletSendPage.tsx",
+        "suite-app/app/src/AppRouter/AppRouter.tsx",
+        "suite-app/module-assets/src/pages/AssetDetailPage.tsx",
+        "suite-app/module-home/src/pages/DashboardPage.tsx",
+        "suite-app/module-home/src/pages/HiddenTokensPage.tsx",
+        "suite-app/module-account-detail/src/pages/NftsPage.tsx",
+        "suite-app/module-receive/src/pages/ReceivePage.tsx",
+        "suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx",
+        "suite-app/module-account-detail/src/pages/TokensPage.tsx",
+        "suite-app/module-transactions/src/pages/TransactionsPage.tsx",
+        "suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx",
+        "suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx",
+        "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx",
+        "suite-app/module-send/src/pages/WalletSendPage.tsx",
         "suite-native-app/module-send/src/hooks/useSendForm.tsx",
         "suite-native-app/module-sign-verify/src/components/SignMessageCard.tsx",
         "suite-native-app/module-sign-verify/src/components/VerifyMessageCard.tsx",
@@ -9731,7 +9731,7 @@
         "suite/e2e/tests/wallet/send-eth.test.ts",
         "suite/e2e/tests/wallet/send-form-regtest.test.ts",
         "suite/e2e/tests/wallet/send-sol.test.ts",
-        "suite/e2e/tests/wallet/sign-and-verify-ada.test.ts",
+        "suite/e2e/tests/wallet/sign-verify-ada.test.ts",
         "suite/nfts/src/components/Nfts.tsx",
         "suite/price-chart/src/AssetPriceChart.tsx",
         "suite/price-chart/src/AssetPriceChartRangeSelector.tsx",

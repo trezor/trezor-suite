@@ -2510,7 +2510,7 @@
             "id": "trade.swap.revoke",
             "parent_id": "trade.swap",
             "name": "Revoke prior token allowance",
-            "description": "Revoke an existing allowance before issuing a replacement approval when required.",
+            "description": "Revoke an existing token allowance, either from the swap Manage approval page or before a replacement approval when the token requires it.",
             "level": "option",
             "platforms": {
                 "desktop": "conditional",
@@ -2519,22 +2519,22 @@
             },
             "platform_notes": "Desktop/web implementation is present; availability depends on the listed prerequisites. Mobile parity requires separate native evidence.",
             "navigation": {
-                "desktop": "Trade → Swap → Approval → Revoke token spending",
-                "web": "Trade → Swap → Approval → Revoke token spending",
+                "desktop": "Trade > Swap > select DEX offer > Manage approval > Revoke approval",
+                "web": "Trade > Swap > select DEX offer > Manage approval > Revoke approval",
                 "mobile": null
             },
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "packages/suite/src/views/wallet/trading/common/TradingForm/TradingRevokeModal.tsx",
-                    "symbol": "TradingRevokeModal"
+                    "path": "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowanceRevoke.tsx",
+                    "symbol": "TradingExchangeAllowanceRevoke"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/wallet/trading/common/TradingForm/TradingRevokeModal.tsx",
-                    "detail": "Revoke an existing allowance before issuing a replacement approval when required."
+                    "path": "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowanceRevoke.tsx",
+                    "detail": "Manage approval page (route wallet-trading-exchange-allowance, opened from the swap form's Manage approval button when an allowance exists) revokes the current allowance to zero and then offers to continue the swap."
                 },
                 {
                     "kind": "manual-test",
@@ -5864,14 +5864,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/SettingsConnectedAppsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx",
                     "symbol": "SettingsConnectedAppsPage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/SettingsConnectedAppsPage.tsx",
+                    "path": "suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx",
                     "detail": "Use external wallets and dApps through Trezor Connect or WalletConnect and manage their access."
                 },
                 {
@@ -5999,11 +5999,6 @@
                     "kind": "automated-test",
                     "path": "suite/e2e/tests/trezor-connect/connectPopupWeb.test.ts",
                     "detail": "Approve or reject app permissions scenario; source inspection only, not an executed test result."
-                },
-                {
-                    "kind": "manual-test",
-                    "path": "suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts",
-                    "detail": "Briskett Tezos wallet compatibility scenario via Trezor Connect / Suite popup; platform scope: desktop-browser. Named Tezos wallet scenario; does not establish native Suite Tezos account support."
                 },
                 {
                     "kind": "manual-test",
@@ -6276,11 +6271,6 @@
                     "kind": "manual-test",
                     "path": "suite/e2e/tests/manual/connect/connect-metamask-desktop.test.ts",
                     "detail": "Account export selection scenario; source inspection only, not an executed test result."
-                },
-                {
-                    "kind": "manual-test",
-                    "path": "suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts",
-                    "detail": "Briskett Tezos wallet compatibility scenario via Trezor Connect / Suite popup; platform scope: desktop-browser. Named Tezos wallet scenario; does not establish native Suite Tezos account support."
                 },
                 {
                     "kind": "manual-test",
@@ -6843,11 +6833,6 @@
                     "kind": "manual-test",
                     "path": "suite/e2e/tests/manual/connect/wallet-connect-jupiter.test.ts",
                     "detail": "Review and sign dApp transactions scenario; source inspection only, not an executed test result."
-                },
-                {
-                    "kind": "manual-test",
-                    "path": "suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts",
-                    "detail": "Briskett Tezos wallet compatibility scenario via Trezor Connect / Suite popup; platform scope: desktop-browser. Named Tezos wallet scenario; does not establish native Suite Tezos account support."
                 },
                 {
                     "kind": "manual-test",
@@ -8096,14 +8081,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/NotificationPage.tsx",
+                    "path": "suite-app/module-activity-center/src/pages/NotificationPage.tsx",
                     "symbol": "NotificationPage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/NotificationPage.tsx",
+                    "path": "suite-app/module-activity-center/src/pages/NotificationPage.tsx",
                     "detail": "Inspect transaction notifications, system activity, and release notes."
                 }
             ],
@@ -8141,14 +8126,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/NotificationPage.tsx",
+                    "path": "suite-app/module-activity-center/src/pages/NotificationPage.tsx",
                     "symbol": "NotificationPage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/NotificationPage.tsx",
+                    "path": "suite-app/module-activity-center/src/pages/NotificationPage.tsx",
                     "detail": "Browse important transaction activity grouped into new and previously seen entries."
                 }
             ],
@@ -8186,14 +8171,14 @@
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/NotificationPage.tsx",
+                    "path": "suite-app/module-activity-center/src/pages/NotificationPage.tsx",
                     "symbol": "NotificationPage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/NotificationPage.tsx",
+                    "path": "suite-app/module-activity-center/src/pages/NotificationPage.tsx",
                     "detail": "Browse non-transaction application activity and related actions."
                 }
             ],
@@ -8352,7 +8337,7 @@
             "id": "help.referral.prototype",
             "parent_id": "help.referral",
             "name": "Internal referral prototype",
-            "description": "Preview an in-app referral program with mocked enrollment, referral links, vouchers, and reward statistics.",
+            "description": "Join or leave the referral program, copy your referral link and view API-backed reward vouchers and limits (debug-gated).",
             "level": "option",
             "platforms": {
                 "desktop": "conditional",
@@ -8361,22 +8346,22 @@
             },
             "platform_notes": "Prototype only. Do not render this node as a generally available user feature.",
             "navigation": {
-                "desktop": "Debug-enabled Suite → Refer a friend page",
-                "web": "Debug-enabled Suite → Refer a friend page",
+                "desktop": "Debug-enabled Suite > sidebar Refer a friend > Refer a friend page",
+                "web": "Debug-enabled Suite > sidebar Refer a friend > Refer a friend page",
                 "mobile": null
             },
             "roots": [
                 {
                     "platform": "desktop-web",
-                    "path": "suite-app/app/src/pages/ReferAFriendPage.tsx",
+                    "path": "suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx",
                     "symbol": "ReferAFriendPage"
                 }
             ],
             "evidence": [
                 {
                     "kind": "implementation",
-                    "path": "suite-app/app/src/pages/ReferAFriendPage.tsx",
-                    "detail": "Preview an in-app referral program with mocked enrollment, referral links, vouchers, and reward statistics."
+                    "path": "suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx",
+                    "detail": "Preview an in-app referral program backed by the referral API: enrollment, referral links, vouchers, and reward statistics."
                 },
                 {
                     "kind": "implementation",
@@ -8385,8 +8370,13 @@
                 },
                 {
                     "kind": "implementation",
-                    "path": "packages/suite/src/views/refer-a-friend/mockReferralProgram.ts",
-                    "detail": "Program values are placeholders pending the referral API."
+                    "path": "suite-common/refer-a-friend/src/referAFriendThunks.ts",
+                    "detail": "Program, account, join, key derivation and leave go through the referral API (fetchReferralProgramThunk, fetchReferralAccountThunk, joinReferralProgramThunk)."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/refer-a-friend/ReferralJoinedContent.tsx",
+                    "detail": "Joined state: referral link card with copy, annual limit and reset date, and API reward vouchers."
                 }
             ],
             "ownership": {
@@ -8398,7 +8388,7 @@
             "conditions": [
                 "Debug mode AND refer-a-friend feature flag",
                 "Initialized connected device in standard wallet",
-                "Mock program data and local useState enrollment; no production referral backend verified"
+                "Program, account and enrollment come from the referral API via @suite-common/refer-a-friend thunks; production backend availability not verified"
             ],
             "screenshot": {
                 "status": "not-captured",
@@ -10035,7 +10025,7 @@
         "packages/suite/src/support/suite/useConnectPopupModals.tsx",
         "packages/suite/src/views/dashboard/ReferralButton.tsx",
         "packages/suite/src/views/password-manager/PasswordManager.tsx",
-        "packages/suite/src/views/refer-a-friend/mockReferralProgram.ts",
+        "suite-common/refer-a-friend/src/referAFriendThunks.ts",
         "packages/suite/src/views/refer-a-friend/referralSelectors.ts",
         "packages/suite/src/views/settings/SettingsConnectedApps/ConnectPermissions.tsx",
         "packages/suite/src/views/settings/SettingsConnectedApps/WalletConnectButton.tsx",
@@ -10068,7 +10058,7 @@
         "packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputSellAsset/TradingFormInputSellAsset.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingForm/TradingFractionButtons.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingForm/TradingNetworkReserveBanner.tsx",
-        "packages/suite/src/views/wallet/trading/common/TradingForm/TradingRevokeModal.tsx",
+        "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowanceRevoke.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingForm/TradingSellFormInputs.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingOffers/TradingOffersModalBuy.tsx",
         "packages/suite/src/views/wallet/trading/common/TradingOffers/TradingOffersModalExchange.tsx",
@@ -10103,10 +10093,10 @@
         "packages/suite/src/views/wallet/trading/sell/TradingSellDetail/TradingSellDetailContent.tsx",
         "packages/suite/src/views/wallet/trading/sell/TradingSellFormWrapper.tsx",
         "packages/suite/src/views/wallet/transactions/TradeBox/TradeBoxActionButton.tsx",
-        "suite-app/app/src/pages/NotificationPage.tsx",
-        "suite-app/app/src/pages/ReferAFriendPage.tsx",
-        "suite-app/app/src/pages/SettingsConnectedAppsPage.tsx",
-        "suite-app/app/src/pages/WalletTradePage.tsx",
+        "suite-app/module-activity-center/src/pages/NotificationPage.tsx",
+        "suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx",
+        "suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx",
+        "suite-app/module-trading/src/pages/WalletTradePage.tsx",
         "suite-common/walletconnect/src/adapters/bitcoin.ts",
         "suite-common/walletconnect/src/adapters/ethereum.ts",
         "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
@@ -10120,7 +10110,6 @@
         "suite/e2e/tests/analytics/wallet-connect-events.test.ts",
         "suite/e2e/tests/general/suite-guide.test.ts",
         "suite/e2e/tests/manual/connect/bluetooth-pairing.test.ts",
-        "suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts",
         "suite/e2e/tests/manual/connect/connect-cakewallet-android.test.ts",
         "suite/e2e/tests/manual/connect/connect-cakewallet-ios.test.ts",
         "suite/e2e/tests/manual/connect/connect-explorer-suite.test.ts",
@@ -10214,21 +10203,6 @@
         "suite/trading/package.json"
     ],
     "integration_examples": [
-        {
-            "id": "connect-briskett-desktop",
-            "name": "Briskett Tezos wallet",
-            "source": "suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts",
-            "platforms": ["desktop-browser"],
-            "mechanism": "Trezor Connect / Suite popup",
-            "related_feature_ids": [
-                "connect.permissions.grant",
-                "connect.permissions.account",
-                "connect.walletconnect.transaction"
-            ],
-            "conditions": ["Seeded funded Trezor", "External Briskett wallet"],
-            "evidence_status": "manual-scenario-only",
-            "notes": "Named Tezos wallet scenario; does not establish native Suite Tezos account support."
-        },
         {
             "id": "connect-cakewallet-android",
             "name": "Cake Wallet",

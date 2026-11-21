@@ -164,7 +164,10 @@
         "earn.staking.trx.transactions",
         "earn.staking.ada.voting.convert-drep",
         "trade.preview-fiat-value",
-        "trade.swap.source-asset-filter"
+        "trade.swap.source-asset-filter",
+        "trade.swap.manage-approval",
+        "trade.unavailable",
+        "earn.staking.sol.refresh"
     ],
     "files_reviewed": [
         "docs/features/feature-map/features.json",
@@ -214,7 +217,6 @@
         "suite/e2e/support/pageObjects/trading/transactionsSection.ts",
         "suite/e2e/tests/analytics/wallet-connect-events.test.ts",
         "suite/e2e/tests/manual/connect/bluetooth-pairing.test.ts",
-        "suite/e2e/tests/manual/connect/connect-briskett-desktop.test.ts",
         "suite/e2e/tests/manual/connect/connect-cakewallet-android.test.ts",
         "suite/e2e/tests/manual/connect/connect-cakewallet-ios.test.ts",
         "suite/e2e/tests/manual/connect/connect-explorer-suite.test.ts",
@@ -1888,7 +1890,7 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingSellFlow.test.ts",
-                        "line": 97,
+                        "line": 100,
                         "scenario": "Prepare connected sale and provider return",
                         "verification": "Selected asset/currency/country, valid form, preview/provider browser and progress state checked; disconnected/tracker restrictions separate.",
                         "execution": "active"
@@ -1939,15 +1941,27 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Sell asset and account: BTC/SOL fraction/Max inputs and source symbols checked; EVM/token sale reviews add assets. Coverage is limited by the named gaps.",
-                "covered_intents": ["Choose funded asset source"],
-                "gaps": ["All empty/unsupported account and contract collision variants absent."],
+                "rationale": "Sell asset and account: the Solana account opens Sell with SOL as the You pay symbol and fraction/Max inputs are computed from that source balance; navigation opens Sell from the account trade section (BTC) and from a USDC token row with the token prefilled; BTC/ETH/ETH-token/SOL sale flows fill the form for their source. The in-form sell asset picker is never used and empty/unsupported sources are not exercised.",
+                "covered_intents": [
+                    "Choose funded asset source",
+                    "Open Sell with account or token source prefilled"
+                ],
+                "gaps": [
+                    "In-form sell asset picker selection, empty/unsupported account and contract collision variants absent."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/trading/sell-inputs.test.ts",
                         "line": 177,
-                        "scenario": "Choose funded asset source",
-                        "verification": "BTC/SOL fraction/Max inputs and source symbols checked; EVM/token sale reviews add assets.",
+                        "scenario": "Try all % inputs on Solana",
+                        "verification": "Sell opened from the Solana account shows SOL as the You pay symbol; 25%/50%/Max amounts are asserted against the SOL source balance.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/navigation.test.ts",
+                        "line": 79,
+                        "scenario": "Sell from token",
+                        "verification": "Sell from the Ethereum #3 USDC token row opens the Sell form with USDC as You pay symbol.",
                         "execution": "active"
                     }
                 ]
@@ -1963,7 +1977,7 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingSellFlow.test.ts",
-                        "line": 99,
+                        "line": 103,
                         "scenario": "Select USDC source",
                         "verification": "Helper asserts source symbol and valid sale reaches preview.",
                         "execution": "active"
@@ -1971,37 +1985,51 @@
                 ]
             },
             "desktop_manual": {
-                "score": 6,
+                "score": 5,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Sell asset and account: Funded native/token source selection updates form. Coverage is limited by the named gaps.",
-                "covered_intents": ["Select sale source"],
-                "gaps": ["Empty/unsupported source and contract ambiguity incomplete."],
+                "rationale": "Sell asset and account: the full Sell procedure selects the asset to sell before the sale, and entry procedures require Sell from the account header and from a token row to open with that account/token as You sell, including network/contract context. Empty/unsupported sources are not covered.",
+                "covered_intents": [
+                    "Select sale source",
+                    "Open Sell with account or token prefilled"
+                ],
+                "gaps": [
+                    "Empty/unsupported source and an explicit in-form asset picker check absent."
+                ],
                 "evidence": [
                     {
-                        "path": "suite/e2e/tests/manual/trading/trading-buy-sell-swap-forms.test.ts",
-                        "line": 53,
-                        "scenario": "Select sale source",
-                        "verification": "Funded native/token source selection updates form.",
+                        "path": "suite/e2e/tests/manual/trading/trading-flow.test.ts",
+                        "line": 49,
+                        "scenario": "Sell crypto full flow",
+                        "verification": "Procedure selects the asset to sell and fills the amount before completing the sale.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite/e2e/tests/manual/trading/trading-entries.test.ts",
+                        "line": 94,
+                        "scenario": "Tokens tab Buy Sell Swap",
+                        "verification": "Sell on a token row must open Trade Sell with that token as You sell and matching network/contract context.",
                         "execution": "manual-procedure"
                     }
                 ]
             },
             "android_manual": {
-                "score": 5,
+                "score": 4,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Sell asset and account: Source selection and valid form checked. Coverage is limited by the named gaps.",
+                "rationale": "Sell asset and account: the procedure selects the wallet/account and, optionally, the asset to sell, then only checks form validity and transition to the next step. Partial; no asset-specific outcome is verified.",
                 "covered_intents": ["Select valid source"],
-                "gaps": ["Native/token/network eligibility variants not enumerated."],
+                "gaps": [
+                    "Native/token/network eligibility variants not enumerated; selected source not explicitly verified."
+                ],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/manual/trading/btc-transactions-sell.test.ts",
                         "line": 11,
-                        "scenario": "Select valid source",
-                        "verification": "Source selection and valid form checked.",
+                        "scenario": "Sell BTC",
+                        "verification": "Selects account and asset to sell (if not default); Continue disabled/enabled by form validity.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -2040,9 +2068,9 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingSellFlow.test.ts",
-                        "line": 100,
-                        "scenario": "Enter sale amount",
-                        "verification": "Amount entry leads valid form/preview.",
+                        "line": 104,
+                        "scenario": "Basic sell USDC for EUR",
+                        "verification": "Sets a 55 USDC send amount and asserts the sell form is valid (expectValidSellForm) before continuing to the preview; the amount itself is not asserted later.",
                         "execution": "active"
                     }
                 ]
@@ -2091,17 +2119,24 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Payout currency: Invoked fill form helper asserts selected currency exactly; preview/detail checks corresponding fiat amount. Coverage is limited by the named gaps.",
+                "rationale": "Payout currency: the sale flow fills the form with EUR (picker asserts the selected code) and the confirmation fiat amount is asserted in euros; sell inputs switch to EUR before fiat-entry quote requests. Coverage is limited by the named gaps.",
                 "covered_intents": ["Choose fiat currency"],
                 "gaps": [
-                    "Currency search/persistence and changing existing quote/payout account compatibility absent."
+                    "Currency search/persistence, changing currency on an existing quote and payout-account compatibility absent."
                 ],
                 "evidence": [
                     {
-                        "path": "suite/e2e/support/pageObjects/trading/formInputs.ts",
-                        "line": 91,
-                        "scenario": "Choose fiat currency",
-                        "verification": "Invoked fill form helper asserts selected currency exactly; preview/detail checks corresponding fiat amount.",
+                        "path": "suite/e2e/tests/trading/sell-bitcoin.test.ts",
+                        "line": 69,
+                        "scenario": "Fill in a sell request",
+                        "verification": "fillSellForm selects EUR via the currency picker, which asserts the selected code.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/sell-bitcoin.test.ts",
+                        "line": 99,
+                        "scenario": "Verify all confirmation values",
+                        "verification": "Confirmation fiat amount equals the trade's fiat amount formatted in euros.",
                         "execution": "active"
                     }
                 ]
@@ -2117,7 +2152,7 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingSellFlow.test.ts",
-                        "line": 101,
+                        "line": 102,
                         "scenario": "Choose EUR",
                         "verification": "Helper asserts currency and provider continuation follows.",
                         "execution": "active"
@@ -2125,37 +2160,41 @@
                 ]
             },
             "desktop_manual": {
-                "score": 6,
+                "score": 5,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Payout currency: Selected fiat and updated quotes/conversion checked. Coverage is limited by the named gaps.",
+                "rationale": "Payout currency: a single procedure step changes the You get fiat currency and requires the amount and offers to update. Basic happy path only.",
                 "covered_intents": ["Change proceeds currency"],
-                "gaps": ["Payout-account compatibility and unsupported errors absent."],
+                "gaps": [
+                    "Payout-account compatibility, persistence and unsupported-currency errors absent."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/trading/trading-buy-sell-swap-forms.test.ts",
                         "line": 53,
-                        "scenario": "Change proceeds currency",
-                        "verification": "Selected fiat and updated quotes/conversion checked.",
+                        "scenario": "Sell form inputs validation",
+                        "verification": "Change the fiat currency in You get; amount and offers update to the new currency.",
                         "execution": "manual-procedure"
                     }
                 ]
             },
             "android_manual": {
-                "score": 5,
+                "score": 4,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Payout currency: Currency change and resulting form checked. Coverage is limited by the named gaps.",
+                "rationale": "Payout currency: one step switches currency and expects the form to update correctly; no specific converted value or offer check. Partial.",
                 "covered_intents": ["Choose payout fiat"],
-                "gaps": ["Currency-dependent payout/account behavior absent."],
+                "gaps": [
+                    "Currency-dependent payout/account behavior and concrete conversion checks absent."
+                ],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/manual/trading/trading-form-inputs.test.ts",
                         "line": 38,
-                        "scenario": "Choose payout fiat",
-                        "verification": "Currency change and resulting form checked.",
+                        "scenario": "Sell form inputs validation",
+                        "verification": "Switch currency and verify form updates correctly.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -2168,17 +2207,24 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Residence selection: Selector asserts chosen country; worldwide default excluded before full sale. Coverage is limited by the named gaps.",
+                "rationale": "Residence selection: sale flows fill the form with country CZ through a helper that asserts the selected country (skipped when CZ is already set), and sell inputs assert the default is not Worldwide. No country change affects offers in a test. Partial.",
                 "covered_intents": ["Set sale residence"],
                 "gaps": [
                     "Required subdivisions and country-dependent offer changes/blocking absent."
                 ],
                 "evidence": [
                     {
+                        "path": "suite/e2e/tests/trading/sell-bitcoin.test.ts",
+                        "line": 69,
+                        "scenario": "Fill in a sell request",
+                        "verification": "fillSellForm calls selectCountryOfResidence('CZ'), which asserts the country value contains CZ.",
+                        "execution": "active"
+                    },
+                    {
                         "path": "suite/e2e/tests/trading/sell-inputs.test.ts",
-                        "line": 58,
-                        "scenario": "Set sale residence",
-                        "verification": "Selector asserts chosen country; worldwide default excluded before full sale.",
+                        "line": 59,
+                        "scenario": "Find out btc and sol balances",
+                        "verification": "Sell form country value is not the Worldwide option.",
                         "execution": "active"
                     }
                 ]
@@ -2194,7 +2240,7 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingSellFlow.test.ts",
-                        "line": 102,
+                        "line": 101,
                         "scenario": "Choose Czech residence",
                         "verification": "Helper asserts country selection before valid sale preview.",
                         "execution": "active"
@@ -2202,37 +2248,39 @@
                 ]
             },
             "desktop_manual": {
-                "score": 6,
+                "score": 5,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Residence selection: Procedure requires refreshed eligible offers. Coverage is limited by the named gaps.",
+                "rationale": "Residence selection: one step changes country of residence and requires the form to stay usable with offers refreshing for a valid amount. Basic happy path.",
                 "covered_intents": ["Change sale country"],
                 "gaps": ["Required subdivisions and ineligible residence errors incomplete."],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/trading/trading-buy-sell-swap-forms.test.ts",
                         "line": 53,
-                        "scenario": "Change sale country",
-                        "verification": "Procedure requires refreshed eligible offers.",
+                        "scenario": "Sell form inputs validation",
+                        "verification": "Change Country of residence; form remains usable and offers refresh when amount is valid.",
                         "execution": "manual-procedure"
                     }
                 ]
             },
             "android_manual": {
-                "score": 5,
+                "score": 4,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Residence selection: Required country/valid form checked. Coverage is limited by the named gaps.",
+                "rationale": "Residence selection: the procedure selects a country and relies on form validity and transition to the next step; no country-specific outcome. Partial.",
                 "covered_intents": ["Choose sale residence"],
-                "gaps": ["Subdivision/changed-country eligibility absent."],
+                "gaps": [
+                    "Subdivision/changed-country eligibility and selected-country check absent."
+                ],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/manual/trading/btc-transactions-sell.test.ts",
                         "line": 11,
-                        "scenario": "Choose sale residence",
-                        "verification": "Required country/valid form checked.",
+                        "scenario": "Sell BTC",
+                        "verification": "Select country; Continue enabled only when form valid.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -2241,19 +2289,21 @@
         {
             "feature_id": "trade.sell.payout-method",
             "desktop_automated": {
-                "score": 5,
+                "score": 4,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Payout method: Confirmation method matches selected form in several sale network scenarios. Coverage is limited by the named gaps.",
-                "covered_intents": ["Review chosen fiat payout method"],
-                "gaps": ["Bank-specific methods, changing methods and eligibility missing."],
+                "rationale": "Payout method: confirmation asserts the default credit-card method across BTC/ETH/token/SOL sales, but no test opens the payout method picker or changes the method. Partial.",
+                "covered_intents": ["Review default fiat payout method on confirmation"],
+                "gaps": [
+                    "Choosing/changing payout method, bank-specific methods and eligibility missing."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/trading/sell-bitcoin.test.ts",
                         "line": 90,
-                        "scenario": "Review chosen fiat payout method",
-                        "verification": "Confirmation method matches selected form in several sale network scenarios.",
+                        "scenario": "Verify all confirmation values",
+                        "verification": "Confirmation payment method shows TR_PAYMENT_METHOD_CREDITCARD.",
                         "execution": "active"
                     }
                 ]
@@ -2269,7 +2319,7 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingSellFlow.test.ts",
-                        "line": 105,
+                        "line": 108,
                         "scenario": "Open receive method sheet",
                         "verification": "Sheet header checked then closed without changing selection.",
                         "execution": "active"
@@ -2295,19 +2345,21 @@
                 ]
             },
             "android_manual": {
-                "score": 5,
+                "score": 4,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Payout method: Required method and next quote step checked. Coverage is limited by the named gaps.",
+                "rationale": "Payout method: the procedure selects a receive method and relies on form validity and transition to the next step; the selected method is not otherwise verified. Partial.",
                 "covered_intents": ["Choose receive method"],
-                "gaps": ["Multiple payout channels/actual payout result absent."],
+                "gaps": [
+                    "Selected method not verified; multiple payout channels/actual payout result absent."
+                ],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/manual/trading/btc-transactions-sell.test.ts",
                         "line": 11,
-                        "scenario": "Choose receive method",
-                        "verification": "Required method and next quote step checked.",
+                        "scenario": "Sell BTC",
+                        "verification": "Select receive method; Continue enabled only when form valid; transition to next step.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -2316,19 +2368,31 @@
         {
             "feature_id": "trade.sell.provider",
             "desktop_automated": {
-                "score": 6,
+                "score": 7,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Compare sell offers: Called offer picker asserts chosen provider; confirmation checks provider and subsequent status. Coverage is limited by the named gaps.",
-                "covered_intents": ["Choose and review sale provider"],
-                "gaps": ["Provider-specific payout conditions and outage recovery absent."],
+                "rationale": "Compare sell offers: best-offer flows assert the provider on confirmation and status, and a dedicated test picks an offer other than the best one and asserts the created trade and confirmation use the picked provider. Provider-specific conditions and outages remain untested.",
+                "covered_intents": [
+                    "Choose and review sale provider",
+                    "Pick a non-best compared offer"
+                ],
+                "gaps": [
+                    "Provider-specific payout conditions, comparison field values and outage recovery absent."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/trading/sell-bitcoin.test.ts",
                         "line": 89,
-                        "scenario": "Choose and review sale provider",
-                        "verification": "Called offer picker asserts chosen provider; confirmation checks provider and subsequent status.",
+                        "scenario": "Verify all confirmation values",
+                        "verification": "Confirmation provider equals the company name of the trade's exchange.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/sell-solana.test.ts",
+                        "line": 225,
+                        "scenario": "Pick an offer other than the best one",
+                        "verification": "Different offer chosen in the offer list; created trade's company and confirmation provider equal the picked provider.",
                         "execution": "active"
                     }
                 ]
@@ -2344,7 +2408,7 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingSellFlow.test.ts",
-                        "line": 106,
+                        "line": 109,
                         "scenario": "Open sale provider sheet",
                         "verification": "Provider header checked then closed.",
                         "execution": "active"
@@ -2580,15 +2644,34 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Sale status and payout details: Mock broadcast transaction link and subsequent detail statuses checked. Coverage is limited by the named gaps.",
-                "covered_intents": ["Observe sale order watch phases"],
-                "gaps": ["All payout instruction/bank failure/support fields absent."],
+                "rationale": "Sale status and payout details: after the mocked broadcast the detail shows the sending status and txid, mocked PENDING and SUCCESS phases are asserted, and the Solana sale asserts the sidebar summary (amounts, provider) and the provider support link. Failure states are untested.",
+                "covered_intents": [
+                    "Observe sale order watch phases",
+                    "Inspect sale summary and provider support link"
+                ],
+                "gaps": [
+                    "Failed/refunded/blocked sale statuses and payout instruction/bank failure details absent."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/trading/sell-bitcoin.test.ts",
                         "line": 169,
-                        "scenario": "Observe sale order watch phases",
-                        "verification": "Mock broadcast transaction link and subsequent detail statuses checked.",
+                        "scenario": "Send crypto to provider (broadcast blocked by mock)",
+                        "verification": "Detail header/status show sending, toast and txid attribute match; subsequent PENDING/SUCCESS statuses asserted.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/sell-solana.test.ts",
+                        "line": 185,
+                        "scenario": "Verify the trade summary in the sidebar",
+                        "verification": "Sidebar send amount, fiat amount and provider equal the trade response.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/sell-solana.test.ts",
+                        "line": 202,
+                        "scenario": "Verify the support banner links to the winning provider",
+                        "verification": "A link to the winning provider's support URL is visible.",
                         "execution": "active"
                     }
                 ]
@@ -2604,7 +2687,7 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingSellFlow.test.ts",
-                        "line": 113,
+                        "line": 116,
                         "scenario": "Display confirmation progress",
                         "verification": "Progress surface visible after provider browser return.",
                         "execution": "active"
@@ -2649,7 +2732,7 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Sell quote review: Account/provider/method/crypto/fiat values checked after provider continuation. Coverage is limited by the named gaps.",
+                "rationale": "Sell quote review: account, provider, method, crypto and fiat values are checked after the provider continuation. Coverage is limited by the named gaps.",
                 "covered_intents": ["Review sale after provider return"],
                 "gaps": ["Edit after return and rejected provider confirmation absent."],
                 "evidence": [
@@ -2667,15 +2750,15 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Sell quote review: Provider browser authorization and confirmation progress visible. Coverage is limited by the named gaps.",
+                "rationale": "Sell quote review: provider browser authorization and confirmation progress are visible after continuing from the preview. Coverage is limited by the named gaps.",
                 "covered_intents": ["Continue sale preview"],
                 "gaps": ["Account/proceeds/provider fields, cancellation and final result absent."],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingSellFlow.test.ts",
-                        "line": 111,
-                        "scenario": "Continue sale preview",
-                        "verification": "Provider browser authorization and confirmation progress visible.",
+                        "line": 113,
+                        "scenario": "Trade Sell (device connected): Basic sell USDC for EUR",
+                        "verification": "After confirming the form, sellPreviewActions.continueToProvider taps the preview continue button; provider browser authorization and confirmation-in-progress are then asserted.",
                         "execution": "active"
                     }
                 ]
@@ -2685,15 +2768,32 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Sell quote review: Provider/amount/fee and confirmation return checked. Coverage is limited by the named gaps.",
-                "covered_intents": ["Review selected sale offer"],
-                "gaps": ["Back/edit/cancel/rejected provider confirmation incomplete."],
+                "rationale": "Several procedures cover the sale review. The full Sell flow checks that the custom fee on the device matches Suite and that the trade appears in history. The backends procedure covers offer selection and the return redirect showing the trade as submitted. The clear-signing procedure checks the review summary and that Suite follows device approval or rejection. Back, edit and cancel are not prescribed.",
+                "covered_intents": [
+                    "Review selected sale offer",
+                    "Provider return redirect shows submitted trade; device approve/reject outcome followed by Suite."
+                ],
+                "gaps": ["Back/edit/cancel and rejected provider confirmation incomplete."],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/trading/trading-flow.test.ts",
-                        "line": 49,
-                        "scenario": "Review selected sale offer",
-                        "verification": "Provider/amount/fee and confirmation return checked.",
+                        "line": 39,
+                        "scenario": "Sell crypto full flow",
+                        "verification": "Select custom fee, proceed with Sell, confirm the device fee matches the Suite Maximum fee, approve and send, complete payout and confirm the sell in Trade history.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite/e2e/tests/manual/trading/trading-backends.test.ts",
+                        "line": 66,
+                        "scenario": "Sell quotes, offer selection and provider redirect",
+                        "verification": "Select a different offer, confirm the form reflects it, continue to provider and confirm Suite shows the trade as submitted after redirect.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite/e2e/tests/manual/trading/trading-clear-signing.test.ts",
+                        "line": 8,
+                        "scenario": "SLIP24 clear signing on Sell or Swap",
+                        "verification": "Confirm Suite review summary matches SLIP24 behaviour and that Suite follows device approve or reject.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -2703,15 +2803,15 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Sell quote review: Procedure reaches next flow and fee options. Coverage is limited by the named gaps.",
+                "rationale": "Sell quote review: the procedure reaches the next step and checks the fee options. Coverage is limited by the named gaps.",
                 "covered_intents": ["Continue selected sale"],
                 "gaps": ["Preview values/provider result unspecified."],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/manual/trading/btc-transactions-sell.test.ts",
-                        "line": 11,
-                        "scenario": "Continue selected sale",
-                        "verification": "Procedure reaches next flow and fee options.",
+                        "line": 24,
+                        "scenario": "Sell BTC",
+                        "verification": "Tap Continue and verify transition to next step; on the next step verify fee level options are available.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -2724,15 +2824,27 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Swap crypto: DEX simulation/account/amount/slippage/fee/device and completion asserted; cross-chain CEX and token approval add variants. Coverage is limited by the named gaps.",
-                "covered_intents": ["Complete CEX/DEX review and mocked result"],
-                "gaps": ["Live settlement, revoke and expired compose recovery incomplete."],
+                "rationale": "Swap crypto: DEX simulation/account/amount/slippage/fee/device and completion asserted; cross-chain CEX and token approval add variants. The SOL to BTC swap also exercises retry after the transaction validity expires (clock fast-forward, Try again, then recipient/amount/fee re-confirmed on device). Coverage is limited by the named gaps.",
+                "covered_intents": [
+                    "Complete CEX/DEX review and mocked result",
+                    "Recover from an expired transaction validity during swap signing and retry (Solana CEX swap)"
+                ],
+                "gaps": [
+                    "Live settlement and revoke incomplete; expiry retry is only covered for the Solana CEX swap, not for expired EVM/DEX quotes or compose."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/trading/swap-dex-lifi.test.ts",
                         "line": 127,
                         "scenario": "Complete CEX/DEX review and mocked result",
                         "verification": "DEX simulation/account/amount/slippage/fee/device and completion asserted; cross-chain CEX and token approval add variants.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/swap-sol-to-btc.test.ts",
+                        "line": 100,
+                        "scenario": "Swap SOL to BTC: Retry signing after the transaction validity expires",
+                        "verification": "With the device prompt shown, fast-forwards the page clock by one minute, clicks the tx-expired Try again button, then the following steps re-verify recipient, amount and fee on prompt and device and send to the mocked provider.",
                         "execution": "active"
                     }
                 ]
@@ -2748,7 +2860,7 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingExchangeFlow.test.ts",
-                        "line": 97,
+                        "line": 100,
                         "scenario": "Review/sign CEX swap then cancel",
                         "verification": "Pair/account and form, preview, fee loading/review labels and Send availability checked; explicit cancellation before broadcast.",
                         "execution": "active"
@@ -2799,15 +2911,28 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Source and destination asset selection: Search excludes nonmatching native asset; multiple target symbols/amount/provider plus signed cross-chain flows checked. Coverage is limited by the named gaps.",
-                "covered_intents": ["Choose source/target assets and networks"],
-                "gaps": ["Reverse-pair and incompatible/unavailable choices missing."],
+                "rationale": "Source and destination asset selection: a token search hides the non-matching native source asset, and several target assets are selected with a symbol, amount and provider check. The signed same-chain and cross-chain flows select their pairs through the pickers. Picking a target on a disabled network (XLM) shows the provider and leads to enabling the network from the receive account picker. Coverage is limited by the named gaps.",
+                "covered_intents": [
+                    "Choose source/target assets and networks",
+                    "Choose a target asset on a disabled network and enable it from the receive account picker"
+                ],
+                "gaps": [
+                    "Incompatible or unsupported pair choices are not checked.",
+                    "Source asset search (the token search check) is web-only and tagged @optional."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/trading/swap-inputs.test.ts",
                         "line": 111,
-                        "scenario": "Choose source/target assets and networks",
-                        "verification": "Search excludes nonmatching native asset; multiple target symbols/amount/provider plus signed cross-chain flows checked.",
+                        "scenario": "Swap form inputs validation: Select sell asset USDC@ETH and loop over buy assets",
+                        "verification": "Search excludes the non-matching native asset; for each buy asset the You pay symbol, amount, non-zero You get and provider are asserted.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/swap-token-to-disabled-network.test.ts",
+                        "line": 55,
+                        "scenario": "Show provider info for disabled network asset XLM and enable it",
+                        "verification": "After picking XLM on a disabled network, the provider is visible; activating the network from the receive account picker selects 'Stellar #1'.",
                         "execution": "active"
                     }
                 ]
@@ -2823,7 +2948,7 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingExchangeFlow.test.ts",
-                        "line": 99,
+                        "line": 102,
                         "scenario": "Select USDC/USDT pair",
                         "verification": "Helpers assert selected asset symbols and receive account label before review.",
                         "execution": "active"
@@ -2835,15 +2960,25 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Source and destination asset selection: Both search/network lists, quote/account updates and broad signed route variants written. Coverage is limited by the named gaps.",
-                "covered_intents": ["Choose both swap assets/networks"],
+                "rationale": "Source and destination asset selection: the Swap form procedure covers the From/To pickers, the network filter and quote updates. The full flow procedures add signed CEX and DEX pairs: BTC to ETH, ADA to XRP, LTC to XLM, ETH to BNB, EVM token to non-EVM, and an SPL token. Coverage is limited by the named gaps.",
+                "covered_intents": [
+                    "Choose both swap assets/networks",
+                    "Swap same-chain and cross-chain (EVM and non-EVM) pairs"
+                ],
                 "gaps": ["Reverse button and unavailable reversed pairs absent."],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/trading/trading-buy-sell-swap-forms.test.ts",
                         "line": 83,
-                        "scenario": "Choose both swap assets/networks",
-                        "verification": "Both search/network lists, quote/account updates and broad signed route variants written.",
+                        "scenario": "Swap form inputs and network filter",
+                        "verification": "From/To pickers with search placeholder and All networks filter, network filtering, Provider and You get update after selecting both assets.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite/e2e/tests/manual/trading/trading-flow.test.ts",
+                        "line": 113,
+                        "scenario": "Cross-chain CEX swap between non-EVM networks",
+                        "verification": "ADA to XRP and LTC to XLM pairs selected, receive account confirmed, signed and checked in Trade history; confirms no unsupported-pair blocker.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -2921,19 +3056,24 @@
         {
             "feature_id": "trade.swap.amount",
             "desktop_automated": {
-                "score": 8,
+                "score": 7,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Swap amount and balance fractions: Request amount, exact fractions/Max and overbalance/reset asserted with remembered wallet. Coverage is limited by the named gaps.",
-                "covered_intents": ["Enter crypto/base amount and fractions/Max"],
-                "gaps": ["Locale/precision and live requote races absent."],
+                "rationale": "Swap amount and balance fractions: on a remembered wallet (web, no device) the USDC source amount is filled and kept, a base-currency amount converts to the crypto sent in the quote request, 25%/50% and Max are asserted against the token balance, and an over-balance amount shows AMOUNT_IS_NOT_ENOUGH and clears You get. Limited to one token source.",
+                "covered_intents": [
+                    "Enter crypto/base amount and fractions/Max",
+                    "Reject over-balance amount"
+                ],
+                "gaps": [
+                    "Provider min/max limit errors, decimals precision, 10% fraction, native-coin Max with fee reserve, locale and live requote races absent."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/trading/swap-inputs.test.ts",
                         "line": 181,
-                        "scenario": "Enter crypto/base amount and fractions/Max",
-                        "verification": "Request amount, exact fractions/Max and overbalance/reset asserted with remembered wallet.",
+                        "scenario": "Base currency amount converts to the crypto the swap sends",
+                        "verification": "Quote request sendStringAmount equals the converted crypto input; following steps assert 25%/50%, Max and over-balance error with You get reset.",
                         "execution": "active"
                     }
                 ]
@@ -2951,7 +3091,7 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingExchangeFlow.test.ts",
-                        "line": 102,
+                        "line": 104,
                         "scenario": "Enter swap amount",
                         "verification": "Entry yields valid quote/review.",
                         "execution": "active"
@@ -2959,19 +3099,21 @@
                 ]
             },
             "desktop_manual": {
-                "score": 7,
+                "score": 6,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Swap amount and balance fractions: Fractions/Max, overbalance in both modes and updated quotes explicit. Coverage is limited by the named gaps.",
+                "rationale": "Swap amount and balance fractions: the procedure fills the amount and requires quotes to update, an over-balance error and fraction buttons in both crypto and fiat modes. Over-balance is only checked once, not per mode.",
                 "covered_intents": ["Use crypto/fiat/fraction swap amounts"],
-                "gaps": ["Locale/precision and rate race/reset cases absent."],
+                "gaps": [
+                    "Provider limit errors, locale/precision and rate race/reset cases absent."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/trading/trading-buy-sell-swap-forms.test.ts",
                         "line": 83,
-                        "scenario": "Use crypto/fiat/fraction swap amounts",
-                        "verification": "Fractions/Max, overbalance in both modes and updated quotes explicit.",
+                        "scenario": "Swap form inputs and network filter",
+                        "verification": "Fill amount and quotes update; over-balance error; fraction buttons in crypto and after toggling to fiat.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -3002,15 +3144,22 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Compare swap offers: Invoked picker asserts resulting provider name; complete swap checks quote/created provider match. Coverage is limited by the named gaps.",
+                "rationale": "Compare swap offers: the DEX swap picks LI.FI by name from the offers modal and asserts the selected provider. The confirmation screen shows the same provider. The inputs test switches to a different random offer and asserts the selected name. The CEX swap tests pick the first CEX offer. Coverage is limited by the named gaps.",
                 "covered_intents": ["Compare and choose provider"],
                 "gaps": ["Comparison sorting/rate metadata and provider failures incomplete."],
                 "evidence": [
                     {
-                        "path": "suite/e2e/support/pageObjects/trading/quotesSection.ts",
-                        "line": 35,
-                        "scenario": "Compare and choose provider",
-                        "verification": "Invoked picker asserts resulting provider name; complete swap checks quote/created provider match.",
+                        "path": "suite/e2e/tests/trading/swap-dex-lifi.test.ts",
+                        "line": 101,
+                        "scenario": "User can swap ETH to USDC via LI.FI DEX: Select the LI.FI DEX offer",
+                        "verification": "chooseDifferentOfferIfAvailable(dexProvider) selects LI.FI in the offers list; selectedProviderName toHaveText(dexProvider); confirmation.provider later asserted to match.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/swap-inputs.test.ts",
+                        "line": 164,
+                        "scenario": "Swap form inputs validation: Change provider",
+                        "verification": "Opens offers, picks a provider different from the current one and asserts selectedProviderName shows it.",
                         "execution": "active"
                     }
                 ]
@@ -3020,15 +3169,22 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Compare swap offers: CEX filter/first provider selection leads valid quote/review. Coverage is limited by the named gaps.",
-                "covered_intents": ["Choose CEX provider"],
+                "rationale": "Compare swap offers: the CEX flow selects the first CEX provider and the DEX flow selects LI.FI by name from the provider sheet. Both reach a valid quote and review. Neither asserts the selected provider name, rate or fee.",
+                "covered_intents": ["Choose CEX provider", "Choose named DEX provider"],
                 "gaps": ["Selected provider name/rate/fee not asserted."],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingExchangeFlow.test.ts",
-                        "line": 105,
-                        "scenario": "Choose CEX provider",
-                        "verification": "CEX filter/first provider selection leads valid quote/review.",
+                        "line": 107,
+                        "scenario": "Basic exchange USDC to USDT",
+                        "verification": "select1stCEXProvider picks the first CEX provider; expectValidExchangeForm and review follow.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite-native-app/app/e2e/tests/tradingDexExchangeFlow.test.ts",
+                        "line": 31,
+                        "scenario": "prepareDexExchangeForm (approval and revoke tests)",
+                        "verification": "selectProvider('LI.FI','dex') taps LI.FI in the provider sheet; expectValidExchangeForm follows.",
                         "execution": "active"
                     }
                 ]
@@ -3083,7 +3239,7 @@
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/trading/swap-btc-to-eth-token.test.ts",
-                        "line": 78,
+                        "line": 77,
                         "scenario": "Review/sign cross-chain CEX swap",
                         "verification": "Provider recipient, Suite/device amount/fee and resulting order checked across major UTXO/EVM/SOL/token routes.",
                         "execution": "active"
@@ -3101,7 +3257,7 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingExchangeFlow.test.ts",
-                        "line": 105,
+                        "line": 107,
                         "scenario": "Review/sign CEX order",
                         "verification": "Signing reaches Send; transaction cancelled.",
                         "execution": "active"
@@ -3113,33 +3269,42 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Centralized provider swap: UTXO/EVM/SOL/token routes check recipient/amount/device fee/history. Coverage is limited by the named gaps.",
+                "rationale": "Centralized provider swap: the BTC to ETH CEX procedure covers offer selection, custom fee compared on device, send and history; a second procedure repeats CEX swaps for non-EVM pairs ADA to XRP and LTC to XLM through device confirm and history.",
                 "covered_intents": ["Complete cross-chain CEX swaps"],
-                "gaps": ["KYC/refund/provider failure missing."],
+                "gaps": ["KYC/refund/provider failure and Solana/token-source CEX routes missing."],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/trading/trading-flow.test.ts",
                         "line": 80,
-                        "scenario": "Complete cross-chain CEX swaps",
-                        "verification": "UTXO/EVM/SOL/token routes check recipient/amount/device fee/history.",
+                        "scenario": "Swap CEX full flow",
+                        "verification": "Cross-chain CEX pair, CEX offer, custom fee matched on device, send and Trade history status/provider.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite/e2e/tests/manual/trading/trading-flow.test.ts",
+                        "line": 112,
+                        "scenario": "Cross-chain CEX swap between non-EVM networks",
+                        "verification": "ADA to XRP and LTC to XLM CEX offers, Suite receive account, device confirm/send and history status.",
                         "execution": "manual-procedure"
                     }
                 ]
             },
             "android_manual": {
-                "score": 5,
+                "score": 4,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Centralized provider swap: Two cross-chain pairs reach next step/fee options; ETH procedure completes signed swap. Coverage is limited by the named gaps.",
+                "rationale": "Centralized provider swap: two cross-chain pairs (BTC to ETH, LTC to XLM) select a CEX offer, check provider list/KYC/terms and reach the next step with fee options; no device signing, send or status is required. Partial.",
                 "covered_intents": ["Select CEX and review fee options"],
-                "gaps": ["Dedicated cross-chain settlement/provider error/refund missing."],
+                "gaps": [
+                    "CEX device signing/send, settlement status, provider error and refund missing."
+                ],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/manual/trading/swap-cross-chain-all-cex.test.ts",
                         "line": 11,
-                        "scenario": "Select CEX and review fee options",
-                        "verification": "Two cross-chain pairs reach next step/fee options; ETH procedure completes signed swap.",
+                        "scenario": "Swap BTC -> ETH (Non-EVM <-> EVM)",
+                        "verification": "Select a CEX offer, terms link matches provider, Continue to next step and fee level options available; repeated for LTC to XLM.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -3176,7 +3341,7 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingDexExchangeFlow.test.ts",
-                        "line": 72,
+                        "line": 74,
                         "scenario": "Open DEX approval/revoke reviews",
                         "verification": "DEX quote reaches approval/revoke screen, device signing and Send then cancellation.",
                         "execution": "active"
@@ -3359,15 +3524,18 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Swap network fee selection: Waits fee load and checks Maximum fee/Total including fee labels. Coverage is limited by the named gaps.",
+                "rationale": "Swap network fee selection: the preview waits until the fee crypto amount matches a numeric amount-with-symbol format, and the device review step checks the Maximum fee and Total including fee labels. No fee value is compared and no fee level is changed, so this is a partial happy path.",
                 "covered_intents": ["Review loaded network fee"],
-                "gaps": ["No numeric fee or fee-level/custom edit assertions."],
+                "gaps": [
+                    "No fee value comparison between app and device.",
+                    "No fee-level selection or custom fee edit."
+                ],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingExchangeFlow.test.ts",
-                        "line": 111,
-                        "scenario": "Review loaded network fee",
-                        "verification": "Waits fee load and checks Maximum fee/Total including fee labels.",
+                        "line": 114,
+                        "scenario": "Basic exchange USDC to USDT: wait for fees on the exchange preview",
+                        "verification": "waitForFeesToLoad requires @transactionManagement/fee-crypto-amount to match a numeric amount with symbol; expectAndConfirmTotalFee then checks the Total including fee, Amount and Maximum fee labels.",
                         "execution": "active"
                     }
                 ]
@@ -3391,19 +3559,32 @@
                 ]
             },
             "android_manual": {
-                "score": 5,
+                "score": 2,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Swap network fee selection: Fee options/device review before send and confirmed history. Coverage is limited by the named gaps.",
-                "covered_intents": ["Review fee and sign swap"],
-                "gaps": ["Exact custom fee matching/invalid inputs unspecified."],
+                "rationale": "Only the cross-chain swap procedures have the tester confirm that fee level options are available on the next step. The cited token swap procedure (eth-transactions-swap-ETH) has no fee step at all. Nothing selects a fee level or compares the fee with the device, so this is a narrow presence check.",
+                "covered_intents": [
+                    "Confirm fee level options are available on the swap next step"
+                ],
+                "gaps": [
+                    "No fee level selection or custom fee step.",
+                    "No fee comparison between the app and the device.",
+                    "No invalid or insufficient fee handling."
+                ],
                 "evidence": [
                     {
-                        "path": "suite-native-app/app/e2e/tests/manual/trading/eth-transactions-swap-ETH.test.ts",
-                        "line": 14,
-                        "scenario": "Review fee and sign swap",
-                        "verification": "Fee options/device review before send and confirmed history.",
+                        "path": "suite-native-app/app/e2e/tests/manual/trading/swap-cross-chain-evm-dex.test.ts",
+                        "line": 24,
+                        "scenario": "Swap ETH (Ethereum) -> BNB (BSC)",
+                        "verification": "'On the next step verify fee level options are available'.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite-native-app/app/e2e/tests/manual/trading/swap-cross-chain-all-cex.test.ts",
+                        "line": 24,
+                        "scenario": "Swap BTC -> ETH (Non-EVM <-> EVM)",
+                        "verification": "'On the next step verify fee level options are available'.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -3412,21 +3593,46 @@
         {
             "feature_id": "trade.swap.approval",
             "desktop_automated": {
-                "score": 6,
+                "score": 7,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Token spending approval: Device token/spender/amount/fee, pending disabled CTA and resulting transaction id/modal asserted. Coverage is limited by the named gaps.",
-                "covered_intents": ["Review/sign/submit token approval"],
+                "rationale": "Token spending approval: the approval-steps layout (approval required badge, approve step 1/2, swap step 2/2, no revoke/increase step), device spender/allowance/fee review and signing, pending disabled CTA with the broadcast txid and detail modal, and resumption of the pending approval after returning to the form are asserted. Mined allowance followed by the swap and rejection paths remain untested.",
+                "covered_intents": [
+                    "Review approval steps layout",
+                    "Review/sign/submit token approval",
+                    "Resume pending approval after returning to the form"
+                ],
                 "gaps": [
-                    "Mined allowance followed by completed swap, rejection/revoke variants absent."
+                    "Mined allowance followed by completed swap, device rejection/retry and revoke/increase variants absent."
                 ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/trading/swap-dex-lifi-approval.test.ts",
-                        "line": 78,
-                        "scenario": "Review/sign/submit token approval",
-                        "verification": "Device token/spender/amount/fee, pending disabled CTA and resulting transaction id/modal asserted.",
+                        "line": 76,
+                        "scenario": "Continue to the approval steps with approve first and swap locked",
+                        "verification": "Continue CTA, TR_APPROVAL_REQUIRED badge, approve step 1 of 2 and swap step 2 of 2 labels asserted; revoke and increase steps absent.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/swap-dex-lifi-approval.test.ts",
+                        "line": 117,
+                        "scenario": "Review the token approval details on device",
+                        "verification": "Device shows token approval intro, spender (provider name or address from approve calldata) and 60 USDC allowance on Ethereum.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/swap-dex-lifi-approval.test.ts",
+                        "line": 201,
+                        "scenario": "Submit the USDC approval with broadcast blocked by mock",
+                        "verification": "After send the CTA shows confirming-approval and is disabled; pending txid attribute/text equal the broadcast txid and the detail modal shows it.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/swap-dex-lifi-approval.test.ts",
+                        "line": 226,
+                        "scenario": "Returning to the form resumes the pending approval instead of a new one",
+                        "verification": "After going back and re-selecting the LI.FI offer the approval step shows the confirming-approval disabled CTA with the same broadcast txid.",
                         "execution": "active"
                     }
                 ]
@@ -3444,7 +3650,7 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingDexExchangeFlow.test.ts",
-                        "line": 72,
+                        "line": 74,
                         "scenario": "Review/sign token approval",
                         "verification": "Approval labels/fee labels and device signature reach Send then cancel.",
                         "execution": "active"
@@ -3485,19 +3691,39 @@
         {
             "feature_id": "trade.swap.approval-limit",
             "desktop_automated": {
-                "score": 3,
+                "score": 5,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Exact or unlimited approval limit: Device token allowance amount asserted for requested approval. Coverage is limited by the named gaps.",
-                "covered_intents": ["Review composed allowance"],
-                "gaps": ["Exact/unlimited choice and reusable allowance behavior untested."],
+                "rationale": "Exact or unlimited approval limit: the limit defaults to the exact swap amount (60 USDC), the limit modal switches to unlimited (TR_APPROVAL_VALUE_INFINITE) and back to the exact amount, and the device shows the exact 60 USDC allowance when signing. The unlimited allowance is never signed or verified on device, and allowance reuse is untested.",
+                "covered_intents": [
+                    "Default exact limit equals swap amount",
+                    "Switch limit to unlimited and back",
+                    "Review composed exact allowance on device"
+                ],
+                "gaps": [
+                    "Unlimited allowance not signed/verified on device; reuse of an existing allowance for a later swap and changed-spender variants untested."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/trading/swap-dex-lifi-approval.test.ts",
-                        "line": 106,
-                        "scenario": "Review composed allowance",
-                        "verification": "Device token allowance amount asserted for requested approval.",
+                        "line": 93,
+                        "scenario": "Continue to the approval steps with approve first and swap locked",
+                        "verification": "Approval limit button shows 60 USDC (the swap amount) by default.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/swap-dex-lifi-approval.test.ts",
+                        "line": 98,
+                        "scenario": "Switch the approval limit to unlimited and back to the swap amount",
+                        "verification": "Limit button shows TR_APPROVAL_VALUE_INFINITE after selecting unlimited and 60 USDC after selecting minimal.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/swap-dex-lifi-approval.test.ts",
+                        "line": 159,
+                        "scenario": "Review the token approval details on device",
+                        "verification": "T3W1 device screen shows Amount allowance 60 USDC on Ethereum for the exact limit.",
                         "execution": "active"
                     }
                 ]
@@ -3510,7 +3736,7 @@
                 "rationale": "No feature-specific active E2E verification found for Exact or unlimited approval limit.",
                 "covered_intents": [],
                 "gaps": [
-                    "No verified procedure for: Choose exact spending approval or unlimited allowance for the swap contract."
+                    "No active test for: Choose exact spending approval or unlimited allowance for the swap contract."
                 ],
                 "evidence": []
             },
@@ -3519,17 +3745,27 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Exact or unlimited approval limit: Unlimited warning/device then second trade skips approval; exact comparison optional. Coverage is limited by the named gaps.",
-                "covered_intents": ["Use unlimited allowance again"],
+                "rationale": "Exact or unlimited approval limit: the unlimited procedure requires the unlimited warning, device approval and a second swap that skips approval; the cross-chain DEX procedure requires choosing the exact (minimal) approval for the swap amount. The exact-vs-unlimited reuse comparison is only optional.",
+                "covered_intents": [
+                    "Use unlimited allowance again",
+                    "Choose exact approval for the swap amount"
+                ],
                 "gaps": [
-                    "Mandatory exact/unlimited comparison and changed-spender variants missing."
+                    "Mandatory exact-allowance exhaustion check (new approval required after spending) and changed-spender variants missing."
                 ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/trading/trading-network-edge-cases.test.ts",
                         "line": 100,
-                        "scenario": "Use unlimited allowance again",
+                        "scenario": "Unlimited DEX token approval",
                         "verification": "Unlimited warning/device then second trade skips approval; exact comparison optional.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite/e2e/tests/manual/trading/trading-flow.test.ts",
+                        "line": 172,
+                        "scenario": "Cross-chain DEX swap with token approval",
+                        "verification": "Choose exact (minimal) approval for the swap amount and confirm it on Suite and device.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -3550,37 +3786,58 @@
         {
             "feature_id": "trade.swap.approval-fee",
             "desktop_automated": {
-                "score": 4,
+                "score": 5,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Approval transaction fee: Suite/device approval fee asserted before signing. Coverage is limited by the named gaps.",
-                "covered_intents": ["Review approval fee"],
-                "gaps": ["Custom approval/revoke fee editing and invalid inputs absent."],
+                "rationale": "Approval transaction fee: custom gas limit, max fee and priority fee are entered through the approval step fee button in the network fee modal, and the computed maximum fee is asserted exactly on the Suite prompt and the T3W1 device before signing. Default fee levels, invalid inputs and revoke fees are not covered.",
+                "covered_intents": [
+                    "Set custom approval fee",
+                    "Review custom approval fee on Suite prompt and device"
+                ],
+                "gaps": [
+                    "Default/preset fee levels, invalid custom fee inputs and revoke/increase allowance fees untested."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/trading/swap-dex-lifi-approval.test.ts",
-                        "line": 138,
-                        "scenario": "Review approval fee",
-                        "verification": "Suite/device approval fee asserted before signing.",
+                        "line": 109,
+                        "scenario": "Set custom approval fees in the network fee modal",
+                        "verification": "Opens the network fee modal from the approval step fee button, switches to custom and fills gas limit, max fee per gas and priority fee.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/swap-dex-lifi-approval.test.ts",
+                        "line": 177,
+                        "scenario": "Review the custom approval fee on device and sign",
+                        "verification": "Suite prompt fee equals the maximum fee calculated from the custom inputs and the T3W1 device shows the same Maximum fee before hold-to-sign.",
                         "execution": "active"
                     }
                 ]
             },
             "android_automated": {
-                "score": 2,
+                "score": 3,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Approval transaction fee: Called review helper checks fee labels. Coverage is limited by the named gaps.",
+                "rationale": "Approval transaction fee: the approval screen waits for a formatted crypto fee amount, and the review helper checks the Total including fee / Maximum fee labels for both approval and revoke before signing. No exact fee value or fee edit is asserted.",
                 "covered_intents": ["Display approval/revoke fee"],
-                "gaps": ["No numeric value, custom fee edit or submitted transaction."],
+                "gaps": [
+                    "No exact fee value comparison, custom fee edit or submitted transaction."
+                ],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingDexExchangeFlow.test.ts",
-                        "line": 35,
+                        "line": 80,
+                        "scenario": "signs approval transaction for DEX quote requiring allowance and stops before sending",
+                        "verification": "Approval screen fee-crypto-amount matches a number-with-symbol pattern before continuing.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite-native-app/app/e2e/tests/tradingDexExchangeFlow.test.ts",
+                        "line": 38,
                         "scenario": "Display approval/revoke fee",
-                        "verification": "Called review helper checks fee labels.",
+                        "verification": "Called review helper checks Total including fee and Maximum fee labels.",
                         "execution": "active"
                     }
                 ]
@@ -3623,7 +3880,7 @@
                 "confidence": "medium",
                 "applicability": "conditional",
                 "basis": "none",
-                "rationale": "No feature-specific active E2E verification found for Revoke prior token allowance.",
+                "rationale": "No feature-specific active E2E verification found for Revoke prior token allowance. The LI.FI approval test only asserts that no revoke step is shown for a fresh allowance.",
                 "covered_intents": [],
                 "gaps": [
                     "No verified procedure for: Revoke an existing allowance before issuing a replacement approval when required."
@@ -3641,7 +3898,7 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingDexExchangeFlow.test.ts",
-                        "line": 84,
+                        "line": 86,
                         "scenario": "Review/sign existing allowance revoke",
                         "verification": "Revoke review/sign reaches Send then cancellation.",
                         "execution": "active"
@@ -3816,67 +4073,101 @@
         {
             "feature_id": "trade.swap.provider-filter",
             "desktop_automated": {
-                "score": 0,
-                "confidence": "medium",
+                "score": 3,
+                "confidence": "high",
                 "applicability": "conditional",
-                "basis": "none",
-                "rationale": "No feature-specific active E2E verification found for Centralized or decentralized provider filter.",
-                "covered_intents": [],
-                "gaps": [
-                    "No verified procedure for: Filter compared swap offers to all, centralized, or decentralized providers."
+                "basis": "direct",
+                "rationale": "Several active device swap tests call quotes.chooseCexOffer. It opens the offers modal, clicks the CEX filter (@trading/offers/filter/cex), picks the first listed provider and asserts the selected provider name. The swaps then continue with that offer. No test checks which offers the filter excludes or exercises the All or DEX filters, so this is a partial happy path.",
+                "covered_intents": [
+                    "Apply the CEX filter and select a centralized offer before swapping"
                 ],
-                "evidence": []
+                "gaps": [
+                    "No check that the CEX filter hides DEX offers.",
+                    "All and DEX filter tabs are never exercised."
+                ],
+                "evidence": [
+                    {
+                        "path": "suite/e2e/tests/trading/swap-fees-ethereum.test.ts",
+                        "line": 69,
+                        "scenario": "Swap custom fees for Ethereum: Set custom fees on the review step",
+                        "verification": "chooseCexOffer clicks the CEX filter, selects the first provider in the list and asserts selectedProviderName equals it.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/swap-eth-to-sol.test.ts",
+                        "line": 66,
+                        "scenario": "Swap ETH to SOL: Confirm the Swap trade",
+                        "verification": "chooseCexOffer applies the CEX filter and selects the first offer; the flow continues to device confirmation.",
+                        "execution": "active"
+                    }
+                ]
             },
             "android_automated": {
                 "score": 3,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Centralized or decentralized provider filter: Helper picks CEX tab/first result then valid review. Coverage is limited by the named gaps.",
-                "covered_intents": ["Choose CEX filter"],
-                "gaps": ["All/DEX transitions and exclusion/result values not asserted."],
+                "rationale": "The CEX swap helper taps the CEX filter tab and picks the first 'Centralized exchange' entry. The DEX tests tap the DEX filter tab and select LI.FI by name. Both flows then reach a valid form and review. Neither checks which offers the filter excludes, so this is a partial happy path.",
+                "covered_intents": ["Choose CEX filter", "Choose DEX filter and select LI.FI"],
+                "gaps": [
+                    "No assertion that a filter excludes the other provider type.",
+                    "All tab and switching back between filters not checked."
+                ],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingExchangeFlow.test.ts",
-                        "line": 105,
-                        "scenario": "Choose CEX filter",
-                        "verification": "Helper picks CEX tab/first result then valid review.",
+                        "line": 107,
+                        "scenario": "Basic exchange USDC to USDT",
+                        "verification": "select1stCEXProvider taps @trading/provider-sheet/filter-tab/cex, then the first 'Centralized exchange' entry; expectValidExchangeForm follows.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite-native-app/app/e2e/tests/tradingDexExchangeFlow.test.ts",
+                        "line": 31,
+                        "scenario": "prepareDexExchangeForm (approval and revoke tests)",
+                        "verification": "selectProvider('LI.FI','dex') taps the DEX filter tab and selects LI.FI in the provider sheet; expectValidExchangeForm follows.",
                         "execution": "active"
                     }
                 ]
             },
             "desktop_manual": {
-                "score": 6,
+                "score": 4,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Centralized or decentralized provider filter: List updates checked where filters shown. Coverage is limited by the named gaps.",
+                "rationale": "The backend procedure asks the tester to exercise each All / CEX / DEX / KYC filter where shown and confirm that the offer list updates. It does not say which offers each filter should keep or hide, so the consequential outcome is underspecified.",
                 "covered_intents": ["Filter All/CEX/DEX/KYC"],
-                "gaps": ["Precise exclusion matrix and absent-filter states underspecified."],
+                "gaps": [
+                    "No expected inclusion/exclusion per filter.",
+                    "Absent-filter states underspecified."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/trading/trading-backends.test.ts",
-                        "line": 18,
-                        "scenario": "Filter All/CEX/DEX/KYC",
-                        "verification": "List updates checked where filters shown.",
+                        "line": 23,
+                        "scenario": "Swap quotes, offer filters and offer selection",
+                        "verification": "'If offer filters are shown (All / CEX / DEX / KYC), exercise each filter and confirm the offer list updates'.",
                         "execution": "manual-procedure"
                     }
                 ]
             },
             "android_manual": {
-                "score": 6,
+                "score": 3,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Centralized or decentralized provider filter: Loading, rate/fee sort where present, CEX/DEX/KYC filters/details/selection checked. Coverage is limited by the named gaps.",
-                "covered_intents": ["Compare/filter exchange offers"],
-                "gaps": ["Exact inclusion/exclusion and numerical expectations unspecified."],
+                "rationale": "The offers selection procedure has a 'Filter by provider type (CEX and DEX where available)' step with no expected result. The swap procedures only verify that the filters are available. The filter is exercised but its outcome is never verified.",
+                "covered_intents": ["Exercise CEX/DEX provider type filters"],
+                "gaps": [
+                    "No expected result after filtering (which offers are kept or hidden).",
+                    "No All reset step."
+                ],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/manual/trading/trading-offers-selection.test.ts",
-                        "line": 15,
-                        "scenario": "Compare/filter exchange offers",
-                        "verification": "Loading, rate/fee sort where present, CEX/DEX/KYC filters/details/selection checked.",
+                        "line": 21,
+                        "scenario": "Compare all offers functionality",
+                        "verification": "'Filter by provider type (CEX and DEX where available)' with no expected result.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -4042,7 +4333,7 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Swap transaction preview: Provider/account/amount/minimum/simulation/fee match quote/device. Coverage is limited by the named gaps.",
+                "rationale": "Swap transaction preview: provider, account, amount, minimum, simulation and fee are checked against the quote and the device. Coverage is limited by the named gaps.",
                 "covered_intents": ["Review quoted exchange and destination"],
                 "gaps": ["Back/edit/requote and stale-compose recovery absent."],
                 "evidence": [
@@ -4060,15 +4351,15 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Swap transaction preview: Preview/loaded fee, recipient/total labels and signing/Send checked. Coverage is limited by the named gaps.",
+                "rationale": "Swap transaction preview: the test checks that the preview loads with fees, confirms the recipient and total fee labels, and reaches signing and the Send button. Coverage is limited by the named gaps.",
                 "covered_intents": ["Review quoted exchange"],
                 "gaps": ["Actual address/provider/amount values and edit/failure variants absent."],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingExchangeFlow.test.ts",
-                        "line": 108,
-                        "scenario": "Review quoted exchange",
-                        "verification": "Preview/loaded fee, recipient/total labels and signing/Send checked.",
+                        "line": 112,
+                        "scenario": "Trade Exchange (device connected): Basic exchange USDC to USDT",
+                        "verification": "Preview screen visible, fees loaded, then transaction review recipient address and total fee labels confirmed, signing and Send button checked before cancel.",
                         "execution": "active"
                     }
                 ]
@@ -4078,15 +4369,29 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Swap transaction preview: Provider/quote/recipient/fee match Suite/device across chain variants. Coverage is limited by the named gaps.",
+                "rationale": "DEX, CEX and cross-chain non-EVM swap procedures prescribe the provider/offer, receive account and fee review, and the device fee matching the Suite Maximum fee before sending. Back, edit, requote and stale offer recovery are not prescribed.",
                 "covered_intents": ["Review selected exchange"],
                 "gaps": ["Back/edit/requote stale offer recovery absent."],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/trading/trading-flow.test.ts",
-                        "line": 141,
-                        "scenario": "Review selected exchange",
-                        "verification": "Provider/quote/recipient/fee match Suite/device across chain variants.",
+                        "line": 130,
+                        "scenario": "Swap DEX full flow",
+                        "verification": "Select DEX offer, confirm receive account and fee options, set custom fee, handle approval, confirm the device swap fee matches the Suite Maximum fee, send and check history.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite/e2e/tests/manual/trading/trading-flow.test.ts",
+                        "line": 69,
+                        "scenario": "Swap CEX full flow",
+                        "verification": "Select CEX offer, confirm receive account and fee options, confirm the device fee matches the custom Maximum fee, send and check status/provider in history.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite/e2e/tests/manual/trading/trading-flow.test.ts",
+                        "line": 100,
+                        "scenario": "Cross-chain CEX swap between non-EVM networks",
+                        "verification": "ADA to XRP and LTC to XLM: offers load, receive account is the Suite account, device confirm and send succeed.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -4096,15 +4401,22 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Swap transaction preview: Quote terms/next fee options/device review followed by confirmed history. Coverage is limited by the named gaps.",
+                "rationale": "Swap procedures continue from the selected offer to confirmation. The cross-chain procedure checks fee level options on the next step, and the ETH procedure confirms on Trezor, sends, and checks the confirmed transaction in history. Field-level preview values and back/edit are not specified.",
                 "covered_intents": ["Review selected swap"],
                 "gaps": ["Field-level amount/address/rate expectations and back/edit unspecified."],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/manual/trading/eth-transactions-swap-ETH.test.ts",
-                        "line": 14,
-                        "scenario": "Review selected swap",
-                        "verification": "Quote terms/next fee options/device review followed by confirmed history.",
+                        "line": 25,
+                        "scenario": "Perform token swap",
+                        "verification": "Tap Continue and proceed to confirmation, confirm on Trezor and send, verify the transaction is confirmed and appears in history.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite-native-app/app/e2e/tests/manual/trading/swap-cross-chain-all-cex.test.ts",
+                        "line": 24,
+                        "scenario": "Cross-chain CEX swap procedure",
+                        "verification": "On the next step after Continue, verify fee level options are available.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -4978,15 +5290,31 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Staking process explanation: Deposit/fee/nutshell checked; TRX enters how-it-works. Coverage is limited by the named gaps.",
+                "rationale": "Staking process explanation. The ADA, ETH, SOL and TRX staking tests assert the staking-in-a-nutshell modal heading before continuing. The ADA test also checks the funds-stay-accessible copy. Waiting periods and withdrawal conditions are not asserted.",
                 "covered_intents": ["Inspect staking nutshell"],
-                "gaps": ["All networks waiting/withdrawal copy/links incomplete."],
+                "gaps": [
+                    "Waiting-period and withdrawal copy and links are not asserted for any network."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/staking/ada/stake.test.ts",
-                        "line": 99,
-                        "scenario": "Inspect staking nutshell",
-                        "verification": "Deposit/fee/nutshell checked; TRX enters how-it-works.",
+                        "line": 98,
+                        "scenario": "Inspect staking nutshell (ADA)",
+                        "verification": "Staking-in-a-nutshell header and TR_EARN_YOUR_FUNDS_STAY_ACCESSIBLE copy are checked, then deposit and fee are reviewed.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/staking/eth/initial-stake.test.ts",
+                        "line": 79,
+                        "scenario": "Inspect staking nutshell (ETH)",
+                        "verification": "TR_EARN_STAKING_IN_A_NUTSHELL modal header is checked before staking.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/staking/trx/initial-stake.test.ts",
+                        "line": 100,
+                        "scenario": "Inspect staking nutshell (TRX)",
+                        "verification": "TR_EARN_TRON_STAKING_IN_A_NUTSHELL heading is checked; continuing closes the modal.",
                         "execution": "active"
                     }
                 ]
@@ -5004,37 +5332,39 @@
                 "evidence": []
             },
             "desktop_manual": {
-                "score": 5,
+                "score": 3,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Staking process explanation: Earn page opens How staking works and action checks waiting information. Coverage is limited by the named gaps.",
-                "covered_intents": ["Read staking mechanics"],
-                "gaps": ["All withdrawal/queue/risk copy and links incomplete."],
+                "rationale": "Staking process explanation. For first-time staking, the ETH and SOL procedures only confirm the Staking in a nutshell window, check the acknowledgement and continue. They later acknowledge the entry period. No step checks the explanatory content.",
+                "covered_intents": ["Acknowledge staking nutshell and entry period"],
+                "gaps": [
+                    "No step verifies the staking mechanics, waiting periods, withdrawal conditions or links."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/earn/staking-eth.test.ts",
-                        "line": 18,
-                        "scenario": "Read staking mechanics",
-                        "verification": "Earn page opens How staking works and action checks waiting information.",
+                        "line": 21,
+                        "scenario": "Acknowledge staking nutshell",
+                        "verification": "Staking in a nutshell window confirmed, acknowledgement checked and continued; the entry period is acknowledged later.",
                         "execution": "manual-procedure"
                     }
                 ]
             },
             "android_manual": {
-                "score": 5,
+                "score": 3,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Staking process explanation: Earn page opens How staking works and action checks waiting information. Coverage is limited by the named gaps.",
-                "covered_intents": ["Read staking mechanics"],
-                "gaps": ["All withdrawal/queue/risk copy and links incomplete."],
+                "rationale": "Staking process explanation. A single Earn-page step opens How staking works and checks that it is displayed correctly. No specific mechanics, waiting-period or withdrawal content is prescribed.",
+                "covered_intents": ["Open How staking works"],
+                "gaps": ["No specific withdrawal, queue or risk copy or links are prescribed."],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/manual/wallet/earnPage.test.ts",
                         "line": 15,
                         "scenario": "Open How staking works",
-                        "verification": "Earn procedure opens How staking works and requires correct explanatory display.",
+                        "verification": "The Earn procedure opens How staking works and checks that it is displayed correctly.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -5463,19 +5793,21 @@
         {
             "feature_id": "earn.staking.eth.unstake",
             "desktop_automated": {
-                "score": 7,
+                "score": 6,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Unstake ETH: Prefilled amount/Suite-device fee/pending/confirmed buttons and mature claimable balance checked. Coverage is limited by the named gaps.",
+                "rationale": "Unstake ETH. The test checks the prefilled full amount, the Suite and device data, amount and fee, and the unstaked toast. It checks the pending transaction with speed-up and the confirmed state in which Unstake is disabled, then follows maturity to a claimable balance. These lifecycle states are verified, but only a full unstake is tested.",
                 "covered_intents": ["Unstake through claim maturity"],
-                "gaps": ["Partial/rewards-only combinations/rejected signing incomplete."],
+                "gaps": [
+                    "Partial unstake, rewards-only unstake and rejected signing are not covered."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/staking/eth/unstake.test.ts",
                         "line": 61,
                         "scenario": "Unstake through claim maturity",
-                        "verification": "Prefilled amount/Suite-device fee/pending/confirmed buttons and mature claimable balance checked.",
+                        "verification": "Prefilled amount, fee in Suite and on the device, pending state with speed-up, confirmed state with Unstake disabled, and the mature claimable balance are checked.",
                         "execution": "active"
                     }
                 ]
@@ -5497,37 +5829,48 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Unstake ETH: Procedure requires action amount/fee review, device confirmation and resulting pending/history/balance state. Coverage is limited by the named gaps.",
-                "covered_intents": ["Complete ETH unstake"],
+                "rationale": "Unstake ETH. The procedure checks the unstake modal formatting, switches through the Normal, Low, High and Custom fee levels, confirms on the device and checks the pending unstake transaction. A separate procedure checks the instant unstake banner and badge.",
+                "covered_intents": [
+                    "Complete ETH unstake",
+                    "Fee level variants",
+                    "Instant unstake banner"
+                ],
                 "gaps": [
-                    "All partial/full/rejection/retry/insufficient fee combinations incomplete."
+                    "Partial and full unstakes, rejection, retry and insufficient fee are not covered."
                 ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/earn/staking-eth.test.ts",
-                        "line": 18,
+                        "line": 29,
                         "scenario": "Complete ETH unstake",
-                        "verification": "Procedure requires action amount/fee review, device confirmation and resulting pending/history/balance state.",
+                        "verification": "Unstake modal formatting, fee level switching, device confirmation, new pending unstake transaction.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite/e2e/tests/manual/earn/staking-eth.test.ts",
+                        "line": 44,
+                        "scenario": "ETH instant stake/unstake banner",
+                        "verification": "Instant banner, Instant badge in history, banner disappears after processing.",
                         "execution": "manual-procedure"
                     }
                 ]
             },
             "android_manual": {
-                "score": 6,
+                "score": 5,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Unstake ETH: Procedure requires action amount/fee review, device confirmation and resulting pending/history/balance state. Coverage is limited by the named gaps.",
+                "rationale": "Unstake ETH. The procedure opens staking management, enters the amount, reviews and signs the unstake on the device, and checks that the pending unstake is displayed. This is a basic happy path.",
                 "covered_intents": ["Complete ETH unstake"],
                 "gaps": [
-                    "All partial/full/rejection/retry/insufficient fee combinations incomplete."
+                    "Partial and full unstakes, rejection, retry and insufficient fee are not covered."
                 ],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/manual/wallet/stakingEth.test.ts",
-                        "line": 15,
+                        "line": 24,
                         "scenario": "Complete ETH unstake",
-                        "verification": "Procedure requires action amount/fee review, device confirmation and resulting pending/history/balance state.",
+                        "verification": "Unstake flow: amount entered, review, device signature, pending unstake shown in the overview.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -5536,19 +5879,21 @@
         {
             "feature_id": "earn.staking.eth.claim",
             "desktop_automated": {
-                "score": 7,
+                "score": 5,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Claim withdrawable ETH: Amount/fee/device/broadcast then claim card removed and balance updated. Coverage is limited by the named gaps.",
+                "rationale": "Claim withdrawable ETH. The test checks the matured claim amount, the device data, amount and fee, and the broadcast. It then checks the claimed toast, removal of the claim card and the updated balance in the top panel. This is a complete happy path with no variants.",
                 "covered_intents": ["Claim matured ETH"],
-                "gaps": ["Multiple queues/insufficient fee/retry absent."],
+                "gaps": [
+                    "Multiple withdrawal queues, insufficient fee, rejection on the device and retry are absent."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/staking/eth/unstake.test.ts",
                         "line": 191,
                         "scenario": "Claim matured ETH",
-                        "verification": "Amount/fee/device/broadcast then claim card removed and balance updated.",
+                        "verification": "Amount, fee, device confirmation and broadcast, then the claimed toast, removal of the claim card and the updated balance in the top panel.",
                         "execution": "active"
                     }
                 ]
@@ -5566,41 +5911,41 @@
                 "evidence": []
             },
             "desktop_manual": {
-                "score": 6,
+                "score": 5,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Claim withdrawable ETH: Procedure requires action amount/fee review, device confirmation and resulting pending/history/balance state. Coverage is limited by the named gaps.",
+                "rationale": "Claim withdrawable ETH. Once funds are claimable, the procedure clicks Claim, adjusts the fee, approves on the device and checks the history entry and the updated balance. This is a basic happy path.",
                 "covered_intents": ["Complete ETH claim"],
                 "gaps": [
-                    "All partial/full/rejection/retry/insufficient fee combinations incomplete."
+                    "Partial and full claims, rejection, retry and insufficient fee are not covered."
                 ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/earn/staking-eth.test.ts",
-                        "line": 18,
+                        "line": 32,
                         "scenario": "Complete ETH claim",
-                        "verification": "Procedure requires action amount/fee review, device confirmation and resulting pending/history/balance state.",
+                        "verification": "Claim modal with fee adjustment, device approval, claim in history, account balance updated.",
                         "execution": "manual-procedure"
                     }
                 ]
             },
             "android_manual": {
-                "score": 6,
+                "score": 5,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Claim withdrawable ETH: Procedure requires action amount/fee review, device confirmation and resulting pending/history/balance state. Coverage is limited by the named gaps.",
+                "rationale": "Claim withdrawable ETH. The procedure starts the claim flow, reviews the transaction data, signs it on the device, and checks that the claim transaction appears and the funds return to the available balance. This is a basic happy path.",
                 "covered_intents": ["Complete ETH claim"],
                 "gaps": [
-                    "All partial/full/rejection/retry/insufficient fee combinations incomplete."
+                    "Partial and full claims, rejection, retry and insufficient fee are not covered."
                 ],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/manual/wallet/stakingEth.test.ts",
-                        "line": 15,
+                        "line": 17,
                         "scenario": "Complete ETH claim",
-                        "verification": "Procedure requires action amount/fee review, device confirmation and resulting pending/history/balance state.",
+                        "verification": "Claim reviewed and signed on the device, claim transaction shown, claimed funds returned to the available balance.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -5974,15 +6319,17 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Reward history: Latest epoch/cached total/expected numbers/warning/new epoch/hidden warning checked. Coverage is limited by the named gaps.",
+                "rationale": "Reward history. The test checks the staked, rewards and unstaking amounts and the cached and then refreshed reward total. It checks the reward list entries, the warning that the latest reward is missing, and that the warning disappears once the previous epoch's reward is published. The sidebar check is now a staking badge visibility check rather than a balance assertion.",
                 "covered_intents": ["Inspect epoch reward totals/update"],
-                "gaps": ["Long-history pagination/missing or backfilled epochs absent."],
+                "gaps": [
+                    "Pagination of a long history and missing or backfilled epochs are absent."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/staking/sol/rewards.test.ts",
-                        "line": 80,
+                        "line": 69,
                         "scenario": "Inspect epoch reward totals/update",
-                        "verification": "Latest epoch/cached total/expected numbers/warning/new epoch/hidden warning checked.",
+                        "verification": "Staked, rewards and unstaking amounts, sidebar staking badge, cached then refreshed total rewards, rewards list, missing-reward warning, new epoch badge and hidden warning are checked.",
                         "execution": "active"
                     }
                 ]
@@ -6000,19 +6347,28 @@
                 "evidence": []
             },
             "desktop_manual": {
-                "score": 7,
+                "score": 6,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Reward history: Epoch/date/amount and accumulated total checked. Coverage is limited by the named gaps.",
-                "covered_intents": ["Inspect epoch history and total"],
-                "gaps": ["Pagination boundaries/missing epochs/refresh recovery incomplete."],
+                "rationale": "Reward history. The procedure checks the epoch or date and amount of past payouts and that the total matches their sum. A separate procedure checks the rewards warning text and link.",
+                "covered_intents": ["Inspect epoch history and total", "Rewards warning"],
+                "gaps": [
+                    "Pagination boundaries, missing epochs and refresh recovery are not covered."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/earn/staking-sol.test.ts",
-                        "line": 76,
-                        "scenario": "Inspect epoch history and total",
-                        "verification": "Epoch/date/amount and accumulated total checked.",
+                        "line": 66,
+                        "scenario": "SOL rewards history",
+                        "verification": "Payouts listed with epoch/date and amount; total rewards match the sum.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite/e2e/tests/manual/earn/staking-sol.test.ts",
+                        "line": 90,
+                        "scenario": "SOL staking rewards warning",
+                        "verification": "Rewards warning banner, explanatory text and link destination.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -6100,15 +6456,44 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Cardano staking: Nutshell/consent/deposit/stake key/provider/device fee and delegated result checked. Coverage is limited by the named gaps.",
-                "covered_intents": ["Delegate ADA and review registration"],
-                "gaps": ["All types/custom DRep/rejected delegation recovery absent."],
+                "rationale": "Cardano staking. Active tests complete delegation with the default abstain vote, reward withdrawal including the too-small reward warning, and undelegation, each checking device screens and the resulting state. They also review migration from an outdated provider and fee composition for a changed delegation. The main intents and some variants are covered, with material gaps.",
+                "covered_intents": [
+                    "Delegate ADA and review registration",
+                    "Claim rewards including too-small reward warning",
+                    "Undelegate to default state",
+                    "Review outdated provider migration",
+                    "Change delegation fee composition"
+                ],
+                "gaps": [
+                    "Other account types, custom DRep, a signed provider migration or delegation change, and recovery after a rejected signing are absent."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/staking/ada/stake.test.ts",
-                        "line": 99,
+                        "line": 98,
                         "scenario": "Delegate ADA and review registration",
-                        "verification": "Nutshell/consent/deposit/stake key/provider/device fee and delegated result checked.",
+                        "verification": "Checks the nutshell and consent screens, deposit, stake key, provider, device fee and the delegated result.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/staking/ada/claim.test.ts",
+                        "line": 117,
+                        "scenario": "Handle tiny reward then claim",
+                        "verification": "Too-small warning, then the claim is confirmed on the device and the resulting balance and reward are checked.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/staking/ada/unstake.test.ts",
+                        "line": 101,
+                        "scenario": "Undelegate to default state",
+                        "verification": "Device deregistration, toast, final balance and default buttons.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/staking/ada/outdated-provider.test.ts",
+                        "line": 88,
+                        "scenario": "Review outdated provider migration",
+                        "verification": "Outdated banners, card and update provider modal reviewed without signing.",
                         "execution": "active"
                     }
                 ]
@@ -6118,7 +6503,7 @@
                 "confidence": "medium",
                 "applicability": "conditional",
                 "basis": "none",
-                "rationale": "Native only displays these staking positions; no feature-specific display/unsupported-management verification found.",
+                "rationale": "Native only displays Cardano staking positions; no Detox E2E test covers ADA staking display or the unsupported-management state.",
                 "covered_intents": [],
                 "gaps": [
                     "No verified procedure for: Delegate an ADA account, manage voting delegation, claim rewards, and undelegate."
@@ -6130,48 +6515,107 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Cardano staking: Delegate/claim/undelegate and changed DRep/provider procedures check device/history/state. Coverage is limited by the named gaps.",
-                "covered_intents": ["Manage Cardano staking"],
-                "gaps": ["All DRep/preferences/voting prerequisites/fee failures incomplete."],
+                "rationale": "Cardano staking. Written procedures cover delegation, reward withdrawal and undelegation, changing the DRep, updating the provider, and the FiveBinaries warning, with checks on the device, history and state.",
+                "covered_intents": [
+                    "Manage Cardano staking",
+                    "Change DRep and update provider",
+                    "FiveBinaries warning"
+                ],
+                "gaps": [
+                    "Not every DRep or voting preference is covered; voting prerequisites and fee failures are incomplete."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/earn/staking-ada.test.ts",
-                        "line": 18,
-                        "scenario": "Manage Cardano staking",
-                        "verification": "Delegate/claim/undelegate and changed DRep/provider procedures check device/history/state.",
+                        "line": 7,
+                        "scenario": "ADA staking full flow - stake, unstake, claim rewards",
+                        "verification": "Delegate, claim and undelegate, with device confirmation, history and state checks.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite/e2e/tests/manual/earn/staking-ada.test.ts",
+                        "line": 36,
+                        "scenario": "ADA change delegate and update provider",
+                        "verification": "DRep change and provider redelegation, with device confirmation, history and new pool checks.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite/e2e/tests/manual/earn/staking-ada.test.ts",
+                        "line": 64,
+                        "scenario": "ADA FiveBinaries warning",
+                        "verification": "FiveBinaries warning text and link checked.",
                         "execution": "manual-procedure"
                     }
                 ]
             },
             "android_manual": {
-                "score": 0,
+                "score": 4,
                 "confidence": "medium",
                 "applicability": "conditional",
-                "basis": "none",
-                "rationale": "Native only displays these staking positions; no feature-specific display/unsupported-management verification found.",
-                "covered_intents": [],
-                "gaps": [
-                    "No verified procedure for: Delegate an ADA account, manage voting delegation, claim rewards, and undelegate."
+                "basis": "direct",
+                "rationale": "Cardano staking on mobile is read-only. The manual procedures cover the Earn list entry with APY, the staking management screen, the desktop-only management banner, the staked amount with the Auto-staked badge, rewards compared with desktop, absence of Stake/Unstake actions, the Learn more sheet and article, and staking transactions. They also cover the outdated FiveBinaries and externally delegated pool warnings, enabling Cardano from the Earn tab, and the desktop-only sheet for an account with no stake. Expected reward and amount values are compared with desktop rather than fixed data; delegation, voting, claim and undelegation are desktop-only.",
+                "covered_intents": [
+                    "Read-only ADA staking overview on mobile",
+                    "Desktop-only management state (no Stake/Unstake actions)",
+                    "Outdated and external pool warnings",
+                    "Enable Cardano from Earn tab",
+                    "Point unstaked ADA account to desktop app"
                 ],
-                "evidence": []
+                "gaps": [
+                    "No fixed expected amounts/rewards (compared against desktop only).",
+                    "Delegate, voting, claim and undelegate are desktop-only and not exercised on mobile.",
+                    "No reward-claim availability or pending staking state on mobile."
+                ],
+                "evidence": [
+                    {
+                        "path": "suite-native-app/app/e2e/tests/manual/wallet/stakingAda.test.ts",
+                        "line": 7,
+                        "scenario": "ADA staking overview (read-only)",
+                        "verification": "Earn list position with APY, management screen, desktop-only banner, full balance staked with the Auto-staked badge, rewards compared with desktop, no Stake/Unstake buttons, Learn more sheet and article, staking transactions.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite-native-app/app/e2e/tests/manual/wallet/stakingAda.test.ts",
+                        "line": 34,
+                        "scenario": "ADA staking with an outdated or external pool",
+                        "verification": "FiveBinaries no-rewards banner and badge on the Earn and management screens, provider update article, Delegated outside Trezor Suite banner.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite-native-app/app/e2e/tests/manual/wallet/earnEnableNetwork.test.ts",
+                        "line": 7,
+                        "scenario": "Enable ADA and TRX from the Earn tab",
+                        "verification": "Enable Cardano sheet; dismissing keeps it disabled; enabling runs discovery and opens the ADA staking management screen.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite-native-app/app/e2e/tests/manual/wallet/earnEnableNetwork.test.ts",
+                        "line": 33,
+                        "scenario": "ADA and TRX from the Earn tab without a stake",
+                        "verification": "Tapping ADA without a stake shows the Manage Staking in the Trezor Suite desktop app sheet; holding the link copies it.",
+                        "execution": "manual-procedure"
+                    }
+                ]
             }
         },
         {
             "feature_id": "earn.staking.ada.delegate",
             "desktop_automated": {
-                "score": 7,
+                "score": 5,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Delegate ADA: Nutshell/consent/deposit/stake key/provider/device fee and delegated result checked. Coverage is limited by the named gaps.",
+                "rationale": "Delegate ADA. The test checks the nutshell and consent screens, deposit, fee, and device screens for stake key registration, delegation, pool and Always Abstain vote delegation. It then checks the staked result: toast, balance, rewards, buttons and the sidebar badge. This is a complete happy path, but there are no variants or recovery paths.",
                 "covered_intents": ["Delegate ADA and review registration"],
-                "gaps": ["All types/custom DRep/rejected delegation recovery absent."],
+                "gaps": [
+                    "Other account types, custom DRep, rejection on the device and recovery after a rejected delegation are absent."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/staking/ada/stake.test.ts",
-                        "line": 99,
+                        "line": 98,
                         "scenario": "Delegate ADA and review registration",
-                        "verification": "Nutshell/consent/deposit/stake key/provider/device fee and delegated result checked.",
+                        "verification": "Checks the nutshell and consent screens, deposit and fee, the device screens (registration, delegation, pool, vote delegation), the staked toast and the final balance and state.",
                         "execution": "active"
                     }
                 ]
@@ -6189,19 +6633,19 @@
                 "evidence": []
             },
             "desktop_manual": {
-                "score": 6,
+                "score": 5,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Delegate ADA: Deposit/fee/device and successful history/state checked. Coverage is limited by the named gaps.",
+                "rationale": "Delegate ADA. The procedure checks fees and estimated gains, confirms on the device, and checks the success notification and the history entry. This is a basic happy path without variants.",
                 "covered_intents": ["Delegate ADA"],
-                "gaps": ["All types/DRep choices/cancel retry absent."],
+                "gaps": ["Other account types, DRep choices and cancel/retry are absent."],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/earn/staking-ada.test.ts",
-                        "line": 18,
+                        "line": 20,
                         "scenario": "Delegate ADA",
-                        "verification": "Deposit/fee/device and successful history/state checked.",
+                        "verification": "Fees and estimated gains checked, device confirmation, success notification and history entry.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -6222,19 +6666,39 @@
         {
             "feature_id": "earn.staking.ada.voting",
             "desktop_automated": {
-                "score": 2,
+                "score": 4,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Voting preference and DRep: Voting heading/options present in update form; no selected option submitted. Coverage is limited by the named gaps.",
-                "covered_intents": ["Display voting options"],
-                "gaps": ["All voting choices/custom validation/device certificate/outcome absent."],
+                "rationale": "Voting preference and DRep. Initial delegation signs the default Always Abstain vote delegation, and the test checks it on the device screen. The provider-update form lists the Abstain, Everstake and own-DRep options. The change-delegation flow selects Abstain and checks that a fee is composed and Continue is enabled (regression guard for issue 31983) without signing. Only the default abstain choice is signed, and the resulting voting state is not asserted in Suite.",
+                "covered_intents": [
+                    "Sign default Always Abstain vote delegation during staking",
+                    "Display voting options",
+                    "Select Abstain in change delegation and compose fee"
+                ],
+                "gaps": [
+                    "Everstake, existing-delegate and custom DRep choices, custom DRep validation, a signed change of delegation and the resulting voting state in Suite are absent."
+                ],
                 "evidence": [
                     {
+                        "path": "suite/e2e/tests/staking/ada/stake.test.ts",
+                        "line": 168,
+                        "scenario": "Sign Always Abstain vote delegation",
+                        "verification": "The device shows the Vote delegation screen 'Delegating to Always Abstain', which is confirmed as part of the signed staking transaction.",
+                        "execution": "active"
+                    },
+                    {
                         "path": "suite/e2e/tests/staking/ada/outdated-provider.test.ts",
-                        "line": 164,
+                        "line": 162,
                         "scenario": "Display voting options",
-                        "verification": "Voting heading/options present in update form; no selected option submitted.",
+                        "verification": "The voting heading and the Abstain, Everstake and own-DRep options are shown in the update form; no option is submitted.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/staking/ada/claim.test.ts",
+                        "line": 109,
+                        "scenario": "Change delegation composes a fee for the new vote",
+                        "verification": "Opens change-delegation from the staked dashboard, selects Abstain, checks that a max fee is composed and Continue is enabled, then closes the modal without signing.",
                         "execution": "active"
                     }
                 ]
@@ -6256,15 +6720,17 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Voting preference and DRep: Different delegate choice and device/history checked. Coverage is limited by the named gaps.",
+                "rationale": "Voting preference and DRep. The procedure selects a different DRep, confirms on the device and checks the history entry.",
                 "covered_intents": ["Change DRep"],
-                "gaps": ["Abstain/custom invalid/Everstake/existing variants absent."],
+                "gaps": [
+                    "Abstain, invalid custom DRep, Everstake and existing-delegate variants are absent."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/earn/staking-ada.test.ts",
-                        "line": 47,
+                        "line": 49,
                         "scenario": "Change DRep",
-                        "verification": "Different delegate choice and device/history checked.",
+                        "verification": "Different DRep selected, confirmed on the device, delegate change transaction in history.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -6289,15 +6755,15 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Update staking provider: Banner/sidebar/new provider/funds/consent/options/fee checked then modal closed. Coverage is limited by the named gaps.",
+                "rationale": "Update staking provider. The test checks the global banner, the sidebar staking badge warning, the outdated provider card, the nutshell and consent screens, and the new provider, funds, voting options and fee. It then closes the modal and checks navigation from the banner and from Earn. Nothing is signed, so this is a partial path.",
                 "covered_intents": ["Review outdated provider migration"],
                 "gaps": ["No signed/sent migration or resulting provider state."],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/staking/ada/outdated-provider.test.ts",
-                        "line": 87,
+                        "line": 88,
                         "scenario": "Review outdated provider migration",
-                        "verification": "Banner/sidebar/new provider/funds/consent/options/fee checked then modal closed.",
+                        "verification": "Global outdated banner, accessible name of the sidebar staking badge (rewards reduced), outdated provider card, nutshell and consent, then new provider, funds, voting options and fee are checked before the modal is closed.",
                         "execution": "active"
                     }
                 ]
@@ -6319,15 +6785,17 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Update staking provider: Conditional update prompt followed and new pool checked. Coverage is limited by the named gaps.",
+                "rationale": "Update staking provider. If the update prompt is shown, the procedure starts it, confirms the redelegation on the device and checks that the new pool is displayed.",
                 "covered_intents": ["Migrate obsolete pool"],
-                "gaps": ["Cancel/multiple obsolete providers incomplete."],
+                "gaps": [
+                    "Cancellation and multiple obsolete providers are incomplete; the step only applies when the prompt is shown."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/earn/staking-ada.test.ts",
-                        "line": 47,
+                        "line": 52,
                         "scenario": "Migrate obsolete pool",
-                        "verification": "Conditional update prompt followed and new pool checked.",
+                        "verification": "Update provider prompt started, redelegation confirmed on the device, new pool displayed.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -6348,19 +6816,21 @@
         {
             "feature_id": "earn.staking.ada.claim",
             "desktop_automated": {
-                "score": 7,
+                "score": 6,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Withdraw ADA rewards: Too-small warning/fee, raised reward clears warning, device withdrawal and resulting balance/reward/buttons checked. Coverage is limited by the named gaps.",
+                "rationale": "Withdraw ADA rewards. A too-small reward shows the network-fee warning and its fee. After the reward is raised the warning clears, the withdrawal is confirmed on the device, and the resulting toast, balance, zero reward and button states are checked. This is the happy path plus one important variant.",
                 "covered_intents": ["Handle tiny reward then claim"],
-                "gaps": ["Voting prerequisite failures/all account types absent."],
+                "gaps": [
+                    "Voting-delegation prerequisite failures, rejection on the device and other account types are absent."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/staking/ada/claim.test.ts",
-                        "line": 109,
+                        "line": 117,
                         "scenario": "Handle tiny reward then claim",
-                        "verification": "Too-small warning/fee, raised reward clears warning, device withdrawal and resulting balance/reward/buttons checked.",
+                        "verification": "Too-small warning and fee are shown; after the reward is raised the warning clears; the device withdrawal screens are checked; the claimed toast, final balance, 0 ADA reward and button states are checked.",
                         "execution": "active"
                     }
                 ]
@@ -6382,15 +6852,15 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Withdraw ADA rewards: Device and resulting rewards/balance/history checked. Coverage is limited by the named gaps.",
+                "rationale": "Withdraw ADA rewards. The procedure confirms the withdrawal on the device and checks that the rewards are added to the balance. This is a basic happy path.",
                 "covered_intents": ["Claim ADA reward"],
-                "gaps": ["Tiny rewards/voting prerequisites/fee sufficiency absent."],
+                "gaps": ["Tiny rewards, voting prerequisites and fee sufficiency are absent."],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/earn/staking-ada.test.ts",
-                        "line": 18,
+                        "line": 23,
                         "scenario": "Claim ADA reward",
-                        "verification": "Device and resulting rewards/balance/history checked.",
+                        "verification": "Claim rewards / Withdraw, confirm on the device, rewards added to the balance.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -6411,19 +6881,21 @@
         {
             "feature_id": "earn.staking.ada.undelegate",
             "desktop_automated": {
-                "score": 7,
+                "score": 5,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Undelegate ADA: Device/fee/toast/final balance/default buttons checked. Coverage is limited by the named gaps.",
+                "rationale": "Undelegate ADA. The test checks the fee and the device deregistration and fee screens. It then checks the unstaked toast, the final balance with the deposit returned, and the default buttons and hidden staking elements. This is a complete happy path with no variants.",
                 "covered_intents": ["Undelegate to default state"],
-                "gaps": ["Outstanding reward combinations/rejection retry absent."],
+                "gaps": [
+                    "Combinations with outstanding rewards and retry after rejection are absent."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/staking/ada/unstake.test.ts",
-                        "line": 102,
+                        "line": 101,
                         "scenario": "Undelegate to default state",
-                        "verification": "Device/fee/toast/final balance/default buttons checked.",
+                        "verification": "Checks the fee, the device stake key deregistration and fee screens, the unstaked toast, the final balance with the deposit returned, and the default buttons.",
                         "execution": "active"
                     }
                 ]
@@ -6445,15 +6917,15 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Undelegate ADA: Signed undelegation/history/default state checked. Coverage is limited by the named gaps.",
+                "rationale": "Undelegate ADA. The procedure confirms the undelegation on the device and checks that the unstake transaction is created and the staking state updates.",
                 "covered_intents": ["Undelegate ADA"],
-                "gaps": ["Reward/deposit combinations/rejected retry absent."],
+                "gaps": ["Reward and deposit combinations and retry after rejection are absent."],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/earn/staking-ada.test.ts",
-                        "line": 18,
+                        "line": 25,
                         "scenario": "Undelegate ADA",
-                        "verification": "Signed undelegation/history/default state checked.",
+                        "verification": "Undelegation confirmed on the device, unstake transaction created, staking state updated.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -7295,19 +7767,45 @@
         {
             "feature_id": "mobile.earn.staking.unstake",
             "desktop_automated": {
-                "score": 7,
+                "score": 8,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Unstake funds: Suite/device amount/fee and pending/mature state asserted. Coverage is limited by the named gaps.",
-                "covered_intents": ["Review/sign equivalent desktop unstake"],
-                "gaps": ["Partial positions/rejection retry incomplete."],
+                "rationale": "Active desktop tests cover unstake on four networks. ETH full unstake asserts Suite/device amount and fee and the pending state. SOL asserts Suite/device fee and total and the unstaking amount after the epoch. ADA asserts stake-key deregistration on device and the unstaked account state. TRX partial unstake asserts the bandwidth change, device summary, pending and confirmed toasts and the remaining stake. Rejection and retry are not verified.",
+                "covered_intents": [
+                    "Review/sign equivalent desktop unstake",
+                    "Unstake on SOL, ADA and TRX (including a partial TRX unstake) with device confirmation and resulting staking state."
+                ],
+                "gaps": [
+                    "Device rejection/retry and interrupted unstake flows are not verified; partial ETH/SOL unstake is not verified."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/staking/eth/unstake.test.ts",
                         "line": 67,
-                        "scenario": "Review/sign equivalent desktop unstake",
+                        "scenario": "unstake and claim on ETH account: Initiate unstaking and confirm on device",
                         "verification": "Suite/device amount/fee and pending/mature state asserted.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/staking/sol/unstake.test.ts",
+                        "line": 82,
+                        "scenario": "unstake and claim on SOL account: Initiate unstaking and confirm on device",
+                        "verification": "Modal header, device unstake prompt, total and fee on Suite and device asserted; after sending, toast and staking amounts show the unstaking amount.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/staking/ada/unstake.test.ts",
+                        "line": 101,
+                        "scenario": "Unstake Cardano: Initiate unstaking",
+                        "verification": "Max fee shown, device shows stake key deregistration and fee; after confirmation the unstaked toast, balance and hidden staking controls are asserted.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/staking/trx/unstake.test.ts",
+                        "line": 107,
+                        "scenario": "Unstake Tron: Confirm the unstake on device and broadcast",
+                        "verification": "Partial unstake: device unstake/summary screens, Suite amount/resource, pending unstake title and toast; then confirmed summary and remaining stake asserted.",
                         "execution": "active"
                     }
                 ]
@@ -7329,15 +7827,29 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Unstake funds: Pending/deactivation after device confirmation checked. Coverage is limited by the named gaps.",
+                "rationale": "ETH, SOL and ADA staking procedures prescribe the unstake, fee selection (ETH), device confirmation and a pending or deactivated state. Partial positions and interrupted or rejected flows are not prescribed.",
                 "covered_intents": ["Request unstake/deactivation"],
                 "gaps": ["Partial positions/interrupted/rejected flows incomplete."],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/earn/staking-eth.test.ts",
-                        "line": 18,
-                        "scenario": "Request unstake/deactivation",
-                        "verification": "Pending/deactivation after device confirmation checked.",
+                        "line": 29,
+                        "scenario": "ETH staking full flow - stake, unstake, claim",
+                        "verification": "Click Unstake, check modal formatting, change fee, confirm on device and confirm a new pending unstake transaction appears.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite/e2e/tests/manual/earn/staking-sol.test.ts",
+                        "line": 27,
+                        "scenario": "SOL staking full flow - stake, unstake, claim",
+                        "verification": "Click Unstake, fill amount, confirm on device; confirm the unstake is pending and the stake enters the deactivation period.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite/e2e/tests/manual/earn/staking-ada.test.ts",
+                        "line": 25,
+                        "scenario": "ADA staking full flow - stake, unstake, claim rewards",
+                        "verification": "Unstake (undelegate), confirm on device, confirm the unstake transaction is created and the staking state updates.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -7347,15 +7859,39 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Unstake funds: Pending/deactivation after device confirmation checked. Coverage is limited by the named gaps.",
-                "covered_intents": ["Request unstake/deactivation"],
+                "rationale": "ETH and SOL procedures prescribe the unstake flow, device signing and the pending or deactivating result. TRX and ADA read-only procedures verify that mobile offers no Unstake action, and TRX also shows pending unstakes and withdrawable amounts. Partial positions and interrupted or rejected flows are not prescribed, so the score stays at 6.",
+                "covered_intents": [
+                    "Request unstake/deactivation",
+                    "No Unstake action is offered for TRX/ADA positions on mobile; pending TRX unstakes are shown."
+                ],
                 "gaps": ["Partial positions/interrupted/rejected flows incomplete."],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/manual/wallet/stakingEth.test.ts",
-                        "line": 15,
-                        "scenario": "Request unstake/deactivation",
-                        "verification": "Pending/deactivation after device confirmation checked.",
+                        "line": 24,
+                        "scenario": "ETH staking full flow - claim, stake, unstake",
+                        "verification": "Open staking management, start unstake, fill amount, review and sign on device, verify the pending unstake in the staking overview.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite-native-app/app/e2e/tests/manual/wallet/stakingSol.test.ts",
+                        "line": 24,
+                        "scenario": "SOL staking full flow - claim, stake, unstake",
+                        "verification": "Open staking management, start unstake, fill amount, review and sign on device, verify the stake enters the deactivation period.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite-native-app/app/e2e/tests/manual/wallet/stakingTrx.test.ts",
+                        "line": 20,
+                        "scenario": "TRX staking overview (read-only)",
+                        "verification": "Verify no Stake or Unstake button is offered, the ready-to-withdraw banner shows the unstaked amount and the Unstaking card lists each pending unstake with amount and remaining time.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite-native-app/app/e2e/tests/manual/wallet/stakingAda.test.ts",
+                        "line": 21,
+                        "scenario": "ADA staking overview (read-only)",
+                        "verification": "Verify no Stake or Unstake button is offered for the ADA position on mobile.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -8932,15 +9468,31 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "parent-synthesis",
-                "rationale": "Connected applications: SDK permission remember/forget and account/address review have substantive checks; WC pairing shallow. Coverage is limited by the named gaps.",
+                "rationale": "Connected applications: Connect permission remember, forget, upfront and silent mode, plus account and address review and web popup request, cancel and reopen flows, have substantive checks. WalletConnect is covered only by a proposal approval or rejection that asserts analytics events. Coverage is limited by the named gaps.",
                 "covered_intents": ["Use external wallets/dApps"],
-                "gaps": ["WC requests/risk/lifecycle and per-network revoke absent."],
+                "gaps": [
+                    "WalletConnect requests, risk handling, session lifecycle and per-network revoke are not covered."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/trezor-connect/permissions.test.ts",
                         "line": 27,
-                        "scenario": "Use external wallets/dApps",
-                        "verification": "SDK permission remember/forget and account/address review have substantive checks; WC pairing shallow.",
+                        "scenario": "Permissions - add and forget",
+                        "verification": "Grant, reuse, forget and re-prompt for Connect permissions.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trezor-connect/connectPopupWeb.test.ts",
+                        "line": 150,
+                        "scenario": "call cancellation (TrezorConnect popup web)",
+                        "verification": "A cancelled popup call returns an error and later calls still work.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/analytics/wallet-connect-events.test.ts",
+                        "line": 55,
+                        "scenario": "Should log WalletConnectProposalApproved when approving connection",
+                        "verification": "Add a WalletConnect URI, approve the proposal and assert the expected analytics events (a shallow pairing check).",
                         "execution": "active"
                     }
                 ]
@@ -8950,15 +9502,17 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "parent-synthesis",
-                "rationale": "Connected applications: Android SDK address deeplinks check permission/device/response. Coverage is limited by the named gaps.",
+                "rationale": "Connected applications: Android SDK address deeplinks (BTC and Cardano) check permission, device confirmation and the response. Coverage is limited by the named gaps.",
                 "covered_intents": ["Use external wallets/dApps"],
-                "gaps": ["Broader SDK signing/permission maintenance and WC absent."],
+                "gaps": [
+                    "Broader SDK signing, permission maintenance and WalletConnect are not covered."
+                ],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/deeplinkPopup.test.ts",
-                        "line": 70,
-                        "scenario": "Use external wallets/dApps",
-                        "verification": "Android SDK address deeplinks check permission/device/response.",
+                        "line": 72,
+                        "scenario": "Handle deeplink",
+                        "verification": "Permission and device confirmation return a successful getAddress response.",
                         "execution": "active"
                     }
                 ]
@@ -8968,17 +9522,24 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "parent-synthesis",
-                "rationale": "Connected applications: SDK request/external wallet and WC transaction procedures check device/result. Coverage is limited by the named gaps.",
+                "rationale": "Connected applications: procedures for Connect requests, external wallets and WalletConnect transactions check device confirmation and the result. Coverage is limited by the named gaps.",
                 "covered_intents": ["Use external wallets/dApps"],
                 "gaps": [
-                    "Permission maintenance/WC lifecycle/risk/typed-data/message procedures missing."
+                    "Procedures for permission maintenance, WalletConnect lifecycle and risk, typed data and messages are missing."
                 ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/connect/connect-explorer-suite.test.ts",
                         "line": 17,
-                        "scenario": "Use external wallets/dApps",
-                        "verification": "SDK request/external wallet and WC transaction procedures check device/result.",
+                        "scenario": "Test Trezor Connect Explorer methods",
+                        "verification": "Multi-network Connect method requests: grant permission, confirm on the device and check for a successful response.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite/e2e/tests/manual/connect/wallet-connect-evm-uniswap.test.ts",
+                        "line": 19,
+                        "scenario": "WalletConnect Uniswap procedure",
+                        "verification": "Connect through WalletConnect, then review and confirm the transaction on the device.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -8988,15 +9549,17 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "parent-synthesis",
-                "rationale": "Connected applications: Android wallet integration checks exported wallet and device sends. Coverage is limited by the named gaps.",
+                "rationale": "Connected applications: Android wallet integration checks the exported wallet and sends signed on the device. Coverage is limited by the named gaps.",
                 "covered_intents": ["Use external wallets/dApps"],
-                "gaps": ["Permission maintenance and operational native WC procedures missing."],
+                "gaps": [
+                    "Permission maintenance and procedures for the native WalletConnect flow are missing."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/connect/connect-cakewallet-android.test.ts",
                         "line": 20,
-                        "scenario": "Use external wallets/dApps",
-                        "verification": "Android wallet integration checks exported wallet and device sends.",
+                        "scenario": "Connect Trezor to Cake Wallet on Android and sign transactions",
+                        "verification": "Export the wallet, check the balance, and sign sends on the device.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -9009,17 +9572,35 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Trezor Connect permissions: Desktop-only grant/reuse/forget/re-consent plus upfront permissions/account/address variants checked. Coverage is limited by the named gaps.",
-                "covered_intents": ["Manage remembered SDK access"],
+                "rationale": "Trezor Connect permissions (desktop only): tests cover granting, reusing a remembered grant, forgetting it and being asked again; approving permissions declared at init for several coins in one consent; and silent mode stored on the remembered permission. Material gaps remain.",
+                "covered_intents": [
+                    "Manage remembered SDK access",
+                    "Approve permissions declared upfront",
+                    "Toggle silent mode on a remembered app"
+                ],
                 "gaps": [
-                    "Individual permission revocation/all origin/network combinations absent."
+                    "Revoking a single permission, combinations of several origins and networks, and denying permission are not tested."
                 ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/trezor-connect/permissions.test.ts",
                         "line": 27,
-                        "scenario": "Manage remembered SDK access",
-                        "verification": "Desktop-only grant/reuse/forget/re-consent plus upfront permissions/account/address variants checked.",
+                        "scenario": "Permissions - add and forget",
+                        "verification": "A remembered grant is reused without a prompt; Forget empties the app list and the next call asks for permission again.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trezor-connect/upfrontPermissions.test.ts",
+                        "line": 37,
+                        "scenario": "Permissions - a declared set is approved in a single consent",
+                        "verification": "The consent lists both declared coins (btc, ltc); after a remembered approval, an ltc call goes straight to address confirmation with no consent.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trezor-connect/silentMode.test.ts",
+                        "line": 79,
+                        "scenario": "Silent mode suppresses Suite focus on subsequent calls (@optional)",
+                        "verification": "The silent-mode checkbox appears only after Remember is ticked; turning silent mode on from the app dropdown sets permissions[0].silentMode and stops Suite taking focus.",
                         "execution": "active"
                     }
                 ]
@@ -9029,15 +9610,17 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Trezor Connect permissions: Permission/device confirmation yields successful BTC path/address response; Cardano request adds network variant. Coverage is limited by the named gaps.",
+                "rationale": "Trezor Connect permissions: permission and device confirmation return a successful BTC path and address; a Cardano request adds a network variant. Coverage is limited by the named gaps.",
                 "covered_intents": ["Grant Android SDK deeplink address request"],
-                "gaps": ["Reject/origin/remember/revoke and other capability scopes absent."],
+                "gaps": [
+                    "Rejecting a request, origin handling, remember and revoke, and other capability scopes are not tested."
+                ],
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/deeplinkPopup.test.ts",
-                        "line": 70,
-                        "scenario": "Grant Android SDK deeplink address request",
-                        "verification": "Permission/device confirmation yields successful BTC path/address response; Cardano request adds network variant.",
+                        "line": 72,
+                        "scenario": "Handle deeplink (plus Cardano deeplink permission-grant test)",
+                        "verification": "Permission and device confirmation return a successful BTC path and address; the Cardano request adds a network variant.",
                         "execution": "active"
                     }
                 ]
@@ -9047,15 +9630,17 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Trezor Connect permissions: Written address/key/message/transaction requests across networks require confirmation and success; external wallet procedures add export. Coverage is limited by the named gaps.",
+                "rationale": "Trezor Connect permissions: written address, public key, message and transaction requests across several networks each require granting permission in Suite, confirming on the device and checking for success. Coverage is limited by the named gaps.",
                 "covered_intents": ["Grant SDK request and inspect response"],
-                "gaps": ["Detailed origin/network scopes and remember/revoke absent."],
+                "gaps": [
+                    "Detailed origin and network scopes, remember, revoke and denial are not covered."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/connect/connect-explorer-suite.test.ts",
                         "line": 17,
-                        "scenario": "Grant SDK request and inspect response",
-                        "verification": "Written address/key/message/transaction requests across networks require confirmation and success; external wallet procedures add export.",
+                        "scenario": "Test Trezor Connect Explorer methods",
+                        "verification": "Written getAddress, getPublicKey, signMessage and signTransaction requests across BTC, ETH, SOL, ADA, TRX and XRP require granting permission in the Suite popup, confirming on the device and a successful response.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -9065,15 +9650,24 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Trezor Connect permissions: Cake Wallet/Jupiter Android require permission/export/correct wallet balance and device send/result. Coverage is limited by the named gaps.",
+                "rationale": "Trezor Connect permissions: Cake Wallet and Jupiter Android procedures require granting permission, exporting accounts, checking that the correct wallet and balance appear, and sending from the device with a correct result. Coverage is limited by the named gaps.",
                 "covered_intents": ["Grant/export Android accounts to external wallet"],
-                "gaps": ["Origin/type/remember/revoke/denial variants absent."],
+                "gaps": [
+                    "Origin and request-type variants, remember, revoke and denial are not covered."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/manual/connect/connect-cakewallet-android.test.ts",
                         "line": 20,
-                        "scenario": "Grant/export Android accounts to external wallet",
-                        "verification": "Cake Wallet/Jupiter Android require permission/export/correct wallet balance and device send/result.",
+                        "scenario": "Connect Trezor to Cake Wallet on Android and sign transactions",
+                        "verification": "Grant permissions, export accounts, check that the account balance is correct in Cake Wallet, then sign ETH, BTC and TRX transactions and check the result.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite/e2e/tests/manual/connect/connect-jupiter-android.test.ts",
+                        "line": 18,
+                        "scenario": "Connect Trezor to Jupiter Android app and sign transactions",
+                        "verification": "Grant permissions in the Suite popup, export accounts, check that the correct wallet is connected, then sign a transaction and check details in Suite.",
                         "execution": "manual-procedure"
                     }
                 ]
@@ -9086,15 +9680,35 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Approve or reject app permissions: Multiple-coin list and subsequent permission-free requests checked; popup tests reject/retry. Coverage is limited by the named gaps.",
-                "covered_intents": ["Grant declared network permissions"],
-                "gaps": ["Origin risk and all capabilities incomplete."],
+                "rationale": "Desktop tests check that a permission set declared at init is shown as BTC and LTC groups in one consent and covers a later LTC call without a prompt. They check that a granted request shows the requesting process name. Web popup tests check that cancelling on the Grant Permissions modal returns success:false, as does closing after granting. Material gaps remain.",
+                "covered_intents": [
+                    "Grant declared network permissions",
+                    "Approve a single request and see the requesting app/process",
+                    "Reject on the permission modal returns a failed response"
+                ],
+                "gaps": [
+                    "Origin risk presentation, all capability scopes and reject followed by a successful retry in the same session are incomplete."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/trezor-connect/upfrontPermissions.test.ts",
                         "line": 37,
-                        "scenario": "Grant declared network permissions",
-                        "verification": "Multiple-coin list and subsequent permission-free requests checked; popup tests reject/retry.",
+                        "scenario": "Permissions - a declared set is approved in a single consent",
+                        "verification": "The consent lists the btc and ltc read_address groups; after approval, an LTC getAddress reaches address confirmation with no permissions confirm button.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trezor-connect/permissions.test.ts",
+                        "line": 27,
+                        "scenario": "Permissions - add and forget",
+                        "verification": "The permission modal shows the process name and remember checkbox; confirming leads to address confirmation.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trezor-connect/connectPopupWeb.test.ts",
+                        "line": 150,
+                        "scenario": "call cancellation",
+                        "verification": "Cancel on the Grant Permissions modal returns success:false; confirming and then closing on address confirmation also returns success:false.",
                         "execution": "active"
                     }
                 ]
@@ -9110,7 +9724,7 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/deeplinkPopup.test.ts",
-                        "line": 70,
+                        "line": 72,
                         "scenario": "Grant Android SDK deeplink address request",
                         "verification": "Permission/device confirmation yields successful BTC path/address response; Cardano request adds network variant.",
                         "execution": "active"
@@ -9161,15 +9775,35 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Remember app permissions: Checkbox/repeated request without prompt/forget then re-prompt checked. Coverage is limited by the named gaps.",
-                "covered_intents": ["Remember/reuse permission"],
-                "gaps": ["One-time lifetime/restart/changed origin or expansion incomplete."],
+                "rationale": "With the remember checkbox ticked, a repeated request skips the prompt. The app appears in connected apps, and Forget returns to the no-apps state and prompts again. Remembering a declared upfront set also covers a coin that was never called. The silent-mode option appears only after Remember is ticked. Material gaps remain.",
+                "covered_intents": [
+                    "Remember/reuse permission",
+                    "Forget a remembered permission and get prompted again",
+                    "Remembering a declared upfront permission set covers later calls"
+                ],
+                "gaps": [
+                    "Not remembering (one-time grant) lifetime, persistence across app restart, changed origin and permission expansion are incomplete."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/trezor-connect/permissions.test.ts",
-                        "line": 50,
-                        "scenario": "Remember/reuse permission",
+                        "line": 27,
+                        "scenario": "Permissions - add and forget",
                         "verification": "Checkbox/repeated request without prompt/forget then re-prompt checked.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trezor-connect/upfrontPermissions.test.ts",
+                        "line": 37,
+                        "scenario": "Permissions - a declared set is approved in a single consent",
+                        "verification": "Remember is ticked on the first consent; a later LTC call reaches address confirmation without a permissions prompt.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trezor-connect/silentMode.test.ts",
+                        "line": 79,
+                        "scenario": "Silent mode suppresses Suite focus on subsequent calls",
+                        "verification": "The silent mode checkbox is hidden until Remember is ticked; the remembered permission is reused for subsequent signMessage calls and its silentMode flag is updated.",
                         "execution": "active"
                     }
                 ]
@@ -9265,19 +9899,21 @@
         {
             "feature_id": "connect.permissions.revoke-all",
             "desktop_automated": {
-                "score": 6,
+                "score": 5,
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Forget all app permissions: Forget yields empty app list and next request prompts again. Coverage is limited by the named gaps.",
+                "rationale": "Forget all app permissions: after a remembered grant is reused without a prompt, Forget in the Connect apps dropdown empties the app list and the next request prompts for permissions again. That is one complete happy path with meaningful outcome checks and no variants, so it scores 5.",
                 "covered_intents": ["Forget application permission"],
-                "gaps": ["Multiple apps/network sets and cancel/retained app variants absent."],
+                "gaps": [
+                    "Several apps or network sets, cancelling Forget, and keeping other apps' permissions are not tested."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/trezor-connect/permissions.test.ts",
-                        "line": 67,
-                        "scenario": "Forget application permission",
-                        "verification": "Forget yields empty app list and next request prompts again.",
+                        "line": 69,
+                        "scenario": "Permissions - add and forget: click Forget on the remembered app",
+                        "verification": "Forget yields the empty app list (@settings/connect-apps/no-apps) and the next getAddress shows the permissions modal again.",
                         "execution": "active"
                     }
                 ]
@@ -9326,15 +9962,20 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Account export selection: ETH/Tron path/address and verified badge checked; unsupported BTC/cancel variants. Coverage is limited by the named gaps.",
-                "covered_intents": ["Export selected external account"],
-                "gaps": ["Multiple export/type/disconnected discovery incomplete."],
+                "rationale": "Account export selection: ETH multi selection after permission grant: on-device verify of account #0 (exact address shown), verified badge, success payload with 0x address and m/44'/60'/0'/0/0 path and no xpub/publicKey; single selection; unsupported coin (grs) rejected before permissions with Method_UnsupportedCoinForHost; cancel returns Method_Cancel. Coverage is limited by the named gaps.",
+                "covered_intents": [
+                    "Export selected external account",
+                    "Reject unsupported coin and cancellation"
+                ],
+                "gaps": [
+                    "Multiple-account export, account type choice, non-ETH networks and disconnected-device discovery incomplete."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/trezor-connect/selectAccount.test.ts",
-                        "line": 26,
-                        "scenario": "Export selected external account",
-                        "verification": "ETH/Tron path/address and verified badge checked; unsupported BTC/cancel variants.",
+                        "line": 29,
+                        "scenario": "selects and verifies an account (multi); also single, unsupported-coin and cancel tests",
+                        "verification": "ETH multi selection after permission grant: on-device verify of account #0 (exact address shown), verified badge, success payload with 0x address and m/44'/60'/0'/0/0 path and no xpub/publicKey; single selection; unsupported coin (grs) rejected before permissions with Method_UnsupportedCoinForHost; cancel returns Method_Cancel.",
                         "execution": "active"
                     }
                 ]
@@ -9395,15 +10036,22 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Address export confirmation: Single/multiple, verified index, force confirmation, disconnect have Suite/device/response checks. Coverage is limited by the named gaps.",
-                "covered_intents": ["Verify exported address"],
-                "gaps": ["All networks/formats/cancel-restart incomplete."],
+                "rationale": "Address export confirmation is tested for a single BTC address, a bundle of two addresses (verifying the second), forced on-device confirmation, and an on-device rejection (pressNo) that shows the error badge. The device must show the exact expected address, Suite shows the verified badge and the response reports success. Only BTC is exercised.",
+                "covered_intents": [
+                    "Verify a single exported address on the device",
+                    "Verify one address from a multiple-address export",
+                    "Forced on-device confirmation",
+                    "Device rejection shows the error badge"
+                ],
+                "gaps": [
+                    "Other networks/address formats, cancellation then restart, and comparing the response address with the displayed one are not covered."
+                ],
                 "evidence": [
                     {
                         "path": "suite/e2e/tests/trezor-connect/getAddress.test.ts",
-                        "line": 33,
-                        "scenario": "Verify exported address",
-                        "verification": "Single/multiple, verified index, force confirmation, disconnect have Suite/device/response checks.",
+                        "line": 32,
+                        "scenario": "TrezorConnect.getAddress: single, multiple and forced-confirmation address export",
+                        "verification": "Steps 'export single address', 'export multiple addresses' and 'export address with forced on device confirmation': the device shows the exact FIRST/SECOND address, the verify button is disabled while verifying, the verified badge appears and the response is success:true; pressing No on the device during re-verification shows the error badge.",
                         "execution": "active"
                     }
                 ]
@@ -9413,7 +10061,7 @@
                 "confidence": "high",
                 "applicability": "conditional",
                 "basis": "direct",
-                "rationale": "Address export confirmation: Device Yes and confirmation lead success/path/address response. Coverage is limited by the named gaps.",
+                "rationale": "Address export confirmation: Device Yes and confirmation lead to a success response with path and address; the Cardano request adds a network variant. Coverage is limited by the named gaps.",
                 "covered_intents": ["Confirm exported BTC address"],
                 "gaps": [
                     "Exact display-vs-response/multiple address/cancel comparisons incomplete."
@@ -9421,7 +10069,7 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/deeplinkPopup.test.ts",
-                        "line": 87,
+                        "line": 89,
                         "scenario": "Confirm exported BTC address",
                         "verification": "Device Yes and confirmation lead success/path/address response.",
                         "execution": "active"
@@ -10518,17 +11166,27 @@
         {
             "feature_id": "trade.form-resume",
             "desktop_automated": {
-                "score": 0,
-                "confidence": "high",
+                "score": 2,
+                "confidence": "medium",
                 "applicability": "conditional",
-                "basis": "none",
-                "rationale": "No Playwright trading test goes back from the confirm or approval page to the form and checks the earlier values. The only tradingPage.backButton use (swap-history.test.ts:189) returns from an order detail to the transaction list.",
-                "covered_intents": [],
+                "basis": "incidental",
+                "rationale": "The LI.FI approval test clicks the header Back button from the approval page and is returned to the Swap form. There it reopens the offers for the same USDC-to-ETH request, picks the LI.FI offer and resumes the pending approval. This shows the saved form drives the reopened quotes, but no amount, asset or account value is asserted after returning. The other tradingPage.backButton use (swap-history.test.ts:189) returns from an order detail, not a form.",
+                "covered_intents": [
+                    "Back from the Swap approval page reopens the form and offers (no value assertion)"
+                ],
                 "gaps": [
-                    "Back from the Buy/Sell/Swap confirm page restoring the amount, assets and country",
+                    "Back from the Buy/Sell/Swap confirm page restoring the amount, assets and country is not asserted",
                     "Saved values cleared after a tab switch or on re-entering Trade"
                 ],
-                "evidence": []
+                "evidence": [
+                    {
+                        "path": "suite/e2e/tests/trading/swap-dex-lifi-approval.test.ts",
+                        "line": 226,
+                        "scenario": "Returning to the form resumes the pending approval instead of a new one",
+                        "verification": "backButton click, then chooseDifferentOfferIfAvailable(LI.FI) and swapBestOfferButton; asserts the pending approval state and txid, not the restored form values.",
+                        "execution": "active"
+                    }
+                ]
             },
             "android_automated": {
                 "score": 1,
@@ -10547,14 +11205,14 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingSellFlow.test.ts",
-                        "line": 62,
+                        "line": 64,
                         "scenario": "should request trezor connect before preview",
                         "verification": "After Continue, cancelConnectTrezorInfo taps the close button and waitForTradeDataToLoad waits for the form testID; no value assertion.",
                         "execution": "active"
                     },
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingExchangeFlow.test.ts",
-                        "line": 61,
+                        "line": 63,
                         "scenario": "should request trezor connect before preview",
                         "verification": "Same pattern for Swap: closes the Connect Trezor sheet and waits for the form to be visible; values not checked.",
                         "execution": "active"
@@ -10884,15 +11542,15 @@
                     },
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingSellFlow.test.ts",
-                        "line": 110,
+                        "line": 113,
                         "scenario": "Basic sell USDC for EUR",
                         "verification": "Passes through the sell preview and taps continue to the provider; preview card amounts and fiat values are not asserted.",
                         "execution": "active"
                     },
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingExchangeFlow.test.ts",
-                        "line": 109,
-                        "scenario": "Swap flow to transaction signing",
+                        "line": 112,
+                        "scenario": "Basic exchange USDC to USDT",
                         "verification": "Checks only that the exchange preview is visible, waits for fees and scrolls; preview card amounts and fiat values are not asserted.",
                         "execution": "active"
                     }
@@ -10964,7 +11622,7 @@
                     },
                     {
                         "path": "suite/e2e/tests/trading/swap-dex-lifi-approval.test.ts",
-                        "line": 53,
+                        "line": 57,
                         "scenario": "DEX swap approval (LI.FI): Select USDC to ETH LI.FI DEX offer",
                         "verification": "selectSellAsset applies network filter 'eth' and search 'USDC' together, then clicks the ETH #3 USDC token row; no filtered-out assertion.",
                         "execution": "active"
@@ -10994,14 +11652,14 @@
                 "evidence": [
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingDexExchangeFlow.test.ts",
-                        "line": 26,
+                        "line": 27,
                         "scenario": "prepareDexExchangeForm (approval and revoke tests)",
                         "verification": "selectSendAsset('USDC','Ethereum','USD Coin',0): replaceText search, taps the send-asset-screen network picker and the 'Ethereum' option, taps USDC; asserts asset-send-button/symbol is USDC.",
                         "execution": "active"
                     },
                     {
                         "path": "suite-native-app/app/e2e/tests/tradingExchangeFlow.test.ts",
-                        "line": 98,
+                        "line": 101,
                         "scenario": "Basic exchange USDC to USDT",
                         "verification": "selectSendAsset searches 'USD Coin' without a network and taps the USDC match; asserts only the selected symbol.",
                         "execution": "active"
@@ -11048,6 +11706,158 @@
                 "covered_intents": [],
                 "gaps": [
                     "No verification of narrowing the Swap Your assets screen by search text or network"
+                ],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "trade.swap.manage-approval",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No Playwright test clicks @trading/form/manage-approval-button or uses any @trading/allowance/* test id, and no e2e page object references the allowance route. swap-dex-lifi-approval.test.ts covers only the approval step flow. The page logic has unit tests only (useTradingExchangeAllowanceFlow.test.tsx, exchangeAllowancePageUtils.test.ts, exchangeAllowanceUtils.test.ts), and those do not count as E2E evidence.",
+                "covered_intents": [],
+                "gaps": [
+                    "No E2E opening Manage approval from the Swap form with an existing allowance",
+                    "No E2E check of the coverage heading, meter or unlimited-allowance warning",
+                    "No E2E for revoking from the page (device signing, pending txid, 'Approval revoked' state)",
+                    "No E2E for 'Continue swap' entering the approval/swap step flow or for the redirect when the quote is no longer valid"
+                ],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "Mobile has no Manage approval page. The native DEX approval and revoke steps are separate features.",
+                "covered_intents": [],
+                "gaps": ["Not available on mobile."],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No written procedure opens Manage approval. 'USDT DEX revoke then approve higher allowance' (suite/e2e/tests/manual/trading/trading-network-edge-cases.test.ts:61) predates this page (last changed 2026-08-03). It expects 'Revoke approval' directly on the Swap form, which this change removed, so it is stale. It never mentions the Manage approval entry, the coverage meter or the unlimited warning. 'Unlimited DEX token approval' (line 90) checks only that a later swap skips approval.",
+                "covered_intents": [],
+                "gaps": [
+                    "No manual step opens 'Manage approval' from the Swap form",
+                    "No manual check of the headings (unlimited/enough/too low/none/revoked), meter values or the unlimited-allowance warning",
+                    "No manual revoke from the page with fee edit, device confirmation, txid link and the 'Approval revoked' result",
+                    "No manual check that 'Continue swap' resumes the swap"
+                ],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "Mobile has no Manage approval page.",
+                "covered_intents": [],
+                "gaps": ["Not available on mobile."],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "trade.unavailable",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No desktop/web E2E scenario disables a trading feature flag or simulates a failed authenticity check and then asserts the unavailable card. A search of suite/e2e/tests for the @trading/type-disabled, @trading/all-disabled and @trading/device-compromised test ids or message-system trading flags found nothing. Unit and component tests cover the decision logic but do not establish the production journey: getTradingAvailability.test.ts, messageSystemSelectors.test.ts:89, and TradingFormEmbed.test.tsx:185, which checks the type-disabled card in the embed.",
+                "covered_intents": [],
+                "gaps": [
+                    "No E2E for a single disabled type (Buy/Sell/Swap/Concierge) showing the type-disabled card with message-system or default text",
+                    "No E2E for all trading disabled (card, hidden tab navigation, Concierge still available)",
+                    "No E2E for the compromised-device variant on trade pages"
+                ],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "Mobile has no trading unavailable notice; no Android test verifies an unsupported-state intent.",
+                "covered_intents": [],
+                "gaps": ["Not available on mobile"],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No written manual procedure under suite/e2e/tests/manual covers disabling trading through the message system or opening trade pages with a compromised device.",
+                "covered_intents": [],
+                "gaps": [
+                    "No manual procedure for remotely paused trade types, all trading paused, or the compromised-device card"
+                ],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "Mobile has no trading unavailable notice; no native manual procedure applies.",
+                "covered_intents": [],
+                "gaps": ["Not available on mobile"],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "earn.staking.sol.refresh",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "Refresh Solana staking is mobile-only. The desktop/web Solana staking dashboard has no pull-to-refresh.",
+                "covered_intents": [],
+                "gaps": ["Not available on desktop/web."],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No Detox E2E test opens the Solana staking management screen or pulls to refresh. The Jest unit test suite-native/module-earn/src/components/staking/SolanaStakingRewardsList.test.tsx:80 (mainnet pull: onRefresh plus a rewards refetch) and :90 (devnet pull skips rewards) checks the component logic. It is outside the Android E2E scope, so it does not count toward the score.",
+                "covered_intents": [],
+                "gaps": [
+                    "No Android E2E test for pulling the SOL staking management screen and checking the position, staking info and reward list update.",
+                    "Account re-sync (fetchAndUpdateAccountThunk) and forced product-info refresh are not checked end to end.",
+                    "Behaviour on partial failure (one request rejected) is not checked."
+                ],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "Refresh Solana staking is mobile-only, so no desktop manual procedure applies.",
+                "covered_intents": [],
+                "gaps": ["Not available on desktop/web."],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "suite-native-app/app/e2e/tests/manual/wallet/stakingSol.test.ts:6 opens the SOL staking management screen for unstake, but no native manual procedure pulls to refresh it or checks that position, staking info or rewards update.",
+                "covered_intents": [],
+                "gaps": [
+                    "No manual step to pull down on the SOL staking management screen and check that the staked balance, staking info and new epoch rewards update.",
+                    "No devnet variant (rewards not refetched) or offline/failure variant."
                 ],
                 "evidence": []
             }

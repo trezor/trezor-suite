@@ -3,7 +3,7 @@
     "scope": "Desktop/web dashboard, asset detail, wallet account, send, receive, transaction, token, NFT, message signing and Coinjoin page wrappers plus principal composed dialogs. Source inspection only; no runtime or tests executed.",
     "screen_reviews": [
         {
-            "path": "suite-app/app/src/pages/DashboardPage.tsx",
+            "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
             "symbol": "DashboardPage",
             "feature_ids": [
                 "wallet.portfolio",
@@ -45,7 +45,7 @@
             "disposition": "mapped"
         },
         {
-            "path": "suite-app/app/src/pages/AssetDetailPage.tsx",
+            "path": "suite-app/module-assets/src/pages/AssetDetailPage.tsx",
             "symbol": "AssetDetailPage",
             "feature_ids": [
                 "wallet.portfolio.assets.details",
@@ -70,7 +70,7 @@
             "disposition": "mapped"
         },
         {
-            "path": "suite-app/app/src/pages/HiddenTokensPage.tsx",
+            "path": "suite-app/module-home/src/pages/HiddenTokensPage.tsx",
             "symbol": "HiddenTokensPage",
             "feature_ids": [
                 "wallet.portfolio.hidden-assets",
@@ -85,7 +85,7 @@
             "disposition": "mapped"
         },
         {
-            "path": "suite-app/app/src/pages/TransactionsPage.tsx",
+            "path": "suite-app/module-transactions/src/pages/TransactionsPage.tsx",
             "symbol": "TransactionsPage",
             "feature_ids": [
                 "wallet.accounts.overview",
@@ -129,7 +129,7 @@
             "disposition": "additions-proposed"
         },
         {
-            "path": "suite-app/app/src/pages/WalletDetailsPage.tsx",
+            "path": "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx",
             "symbol": "WalletDetailsPage",
             "feature_ids": [
                 "wallet.accounts.details",
@@ -153,7 +153,7 @@
             "disposition": "mapped"
         },
         {
-            "path": "suite-app/app/src/pages/WalletSendPage.tsx",
+            "path": "suite-app/module-send/src/pages/WalletSendPage.tsx",
             "symbol": "WalletSendPage",
             "feature_ids": [
                 "wallet.send",
@@ -228,7 +228,7 @@
             "disposition": "additions-proposed"
         },
         {
-            "path": "suite-app/app/src/pages/ReceivePage.tsx",
+            "path": "suite-app/module-receive/src/pages/ReceivePage.tsx",
             "symbol": "ReceivePage",
             "feature_ids": [
                 "wallet.receive",
@@ -261,7 +261,7 @@
             "disposition": "mapped"
         },
         {
-            "path": "suite-app/app/src/pages/SignVerifyPage.tsx",
+            "path": "suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx",
             "symbol": "SignVerifyPage",
             "feature_ids": [
                 "wallet.sign-verify",
@@ -281,7 +281,7 @@
             "disposition": "additions-proposed"
         },
         {
-            "path": "suite-app/app/src/pages/TokensPage.tsx",
+            "path": "suite-app/module-account-detail/src/pages/TokensPage.tsx",
             "symbol": "TokensPage",
             "feature_ids": [
                 "wallet.tokens",
@@ -312,7 +312,7 @@
             "disposition": "additions-proposed"
         },
         {
-            "path": "suite-app/app/src/pages/NftsPage.tsx",
+            "path": "suite-app/module-account-detail/src/pages/NftsPage.tsx",
             "symbol": "NftsPage",
             "feature_ids": [
                 "wallet.nfts",
@@ -334,7 +334,7 @@
             "disposition": "mapped"
         },
         {
-            "path": "suite-app/app/src/pages/WalletCoinjoinPage.tsx",
+            "path": "suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx",
             "symbol": "WalletCoinjoinPage",
             "feature_ids": [
                 "wallet.coinjoin",
@@ -361,7 +361,7 @@
             "disposition": "mapped"
         },
         {
-            "path": "suite-app/app/src/pages/WalletAnonymizePage.tsx",
+            "path": "suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx",
             "symbol": "WalletAnonymizePage",
             "feature_ids": ["wallet.coinjoin.confirmation"],
             "inspected_components": [
@@ -1014,7 +1014,7 @@
                 ],
                 "evidence": [
                     {
-                        "path": "suite/e2e/tests/wallet/sign-and-verify.test.ts",
+                        "path": "suite/e2e/tests/wallet/sign-verify.test.ts",
                         "line": 92,
                         "scenario": "Signs message with standard Bitcoin signature format",
                         "verification": "Clicks Clear and asserts empty message/signature, hidden signed outcome/copy buttons and restored submit/address input (92\u2013104).",
@@ -1109,18 +1109,18 @@
         "packages/suite/src/views/wallet/transactions/TransactionList/TransactionList.tsx",
         "packages/suite/src/views/wallet/transactions/TransactionList/TransactionListActions/ExportAction.tsx",
         "packages/suite/src/views/wallet/transactions/TransactionList/TransactionListActions/FilterAction.tsx",
-        "suite-app/app/src/pages/AssetDetailPage.tsx",
-        "suite-app/app/src/pages/DashboardPage.tsx",
-        "suite-app/app/src/pages/HiddenTokensPage.tsx",
-        "suite-app/app/src/pages/NftsPage.tsx",
-        "suite-app/app/src/pages/ReceivePage.tsx",
-        "suite-app/app/src/pages/SignVerifyPage.tsx",
-        "suite-app/app/src/pages/TokensPage.tsx",
-        "suite-app/app/src/pages/TransactionsPage.tsx",
-        "suite-app/app/src/pages/WalletAnonymizePage.tsx",
-        "suite-app/app/src/pages/WalletCoinjoinPage.tsx",
-        "suite-app/app/src/pages/WalletDetailsPage.tsx",
-        "suite-app/app/src/pages/WalletSendPage.tsx",
+        "suite-app/module-assets/src/pages/AssetDetailPage.tsx",
+        "suite-app/module-home/src/pages/DashboardPage.tsx",
+        "suite-app/module-home/src/pages/HiddenTokensPage.tsx",
+        "suite-app/module-account-detail/src/pages/NftsPage.tsx",
+        "suite-app/module-receive/src/pages/ReceivePage.tsx",
+        "suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx",
+        "suite-app/module-account-detail/src/pages/TokensPage.tsx",
+        "suite-app/module-transactions/src/pages/TransactionsPage.tsx",
+        "suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx",
+        "suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx",
+        "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx",
+        "suite-app/module-send/src/pages/WalletSendPage.tsx",
         "suite-native-app/app/e2e/tests/manual/wallet/transactionDetail.test.ts",
         "suite-native-app/module-send/src/hooks/useSendForm.tsx",
         "suite-native-app/module-sign-verify/src/components/SignMessageCard.tsx",
@@ -1132,9 +1132,9 @@
         "suite/e2e/tests/manual/account/transactions.test.ts",
         "suite/e2e/tests/wallet/export-transactions.test.ts",
         "suite/e2e/tests/wallet/send-form-regtest.test.ts",
-        "suite/e2e/tests/wallet/sign-and-verify-ada.test.ts",
-        "suite/e2e/tests/wallet/sign-and-verify-eth.test.ts",
-        "suite/e2e/tests/wallet/sign-and-verify.test.ts",
+        "suite/e2e/tests/wallet/sign-verify-ada.test.ts",
+        "suite/e2e/tests/wallet/sign-verify-eth.test.ts",
+        "suite/e2e/tests/wallet/sign-verify.test.ts",
         "suite/e2e/tests/wallet/transactions.test.ts",
         "suite/receive/src/AddressCardDetail.tsx",
         "suite/receive/src/AddressHistory.tsx",

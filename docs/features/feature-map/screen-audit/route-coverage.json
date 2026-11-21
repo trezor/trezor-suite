@@ -8,7 +8,7 @@
         "desktop_components": "suite-app/desktop-app-renderer/src/support/desktopComponents.ts",
         "web_components": "suite-app/web-app/src/support/webComponents.ts",
         "renderers": [
-            "suite-app/app/src/AppRouter.tsx",
+            "suite-app/app/src/AppRouter/AppRouter.tsx",
             "suite-app/app/src/ModalSwitcher/ForegroundAppModal.tsx",
             "suite-app/app/src/Preloader/Preloader.tsx"
         ],
@@ -41,10 +41,10 @@
             "unregistered": 1
         },
         "desktop-web": {
-            "routes": 68,
+            "routes": 69,
             "covered": 34,
             "features-only": 29,
-            "unmapped": 0,
+            "unmapped": 1,
             "internal": 4,
             "alias": 1,
             "navigator": 0,
@@ -62,15 +62,22 @@
         "parsed_screen_component_registrations": 222,
         "parsed_conditional_registrations": 20,
         "parsed_not_in_ledger": [
+            "suite-native-app/app/src/navigation/RootStackNavigator.tsx:250 RootStackRoutes.SignVerify -> SignVerifyScreen (component)",
+            "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx:57 DeviceOnboardingStackRoutes.DeviceVisualCheck -> DeviceVisualCheckScreen (component)",
+            "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx:65 DeviceOnboardingStackRoutes.PackagingVisualCheck -> PackagingVisualCheckScreen (component)",
             "suite-native-app/module-passphrase/src/PassphraseStackNavigator.tsx:103 PassphraseStackRoutes.PassphraseDuplicateAlert -> PassphraseMismatchAlertScreen (inline)",
             "suite-native-app/module-passphrase/src/PassphraseStackNavigator.tsx:90 PassphraseStackRoutes.PassphraseMismatchAlert -> PassphraseMismatchAlertScreen (inline)"
         ],
-        "ledger_not_parsed": [],
+        "ledger_not_parsed": [
+            "suite-native-app/app/src/navigation/RootStackNavigator.tsx#SignAndVerifyScreen",
+            "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx#SecurityCheckScreen",
+            "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx#UninitializedDeviceLandingScreen"
+        ],
         "enum_members": 258,
         "enum_count": 36,
         "registered_enum_members": 257,
-        "edge_occurrences": 574,
-        "indirect_reference_files": 388
+        "edge_occurrences": 589,
+        "indirect_reference_files": 392
     },
     "flow_join": [
         {
@@ -441,7 +448,7 @@
             "platform": "mobile",
             "route": "AccountDetail",
             "source": "AccountDetailStackRoutes.AccountDetail",
-            "source_line": 52,
+            "source_line": 54,
             "component": "AccountDetailScreen",
             "file": "suite-native-app/module-account-detail/src/screens/AccountDetailScreen.tsx",
             "registered_in": [
@@ -489,7 +496,7 @@
             "platform": "mobile",
             "route": "AccountSettings",
             "source": "AccountDetailStackRoutes.AccountSettings",
-            "source_line": 53,
+            "source_line": 55,
             "component": "AccountSettingsScreen",
             "file": "suite-native-app/module-account-detail/src/screens/AccountSettingsScreen.tsx",
             "registered_in": [
@@ -535,7 +542,7 @@
             "platform": "mobile",
             "route": "AccountImportLoading",
             "source": "AccountsImportStackRoutes.AccountImportLoading",
-            "source_line": 111,
+            "source_line": 113,
             "component": "AccountImportLoadingScreen",
             "file": "suite-native-app/module-accounts-import/src/screens/AccountImportLoadingScreen.tsx",
             "registered_in": [
@@ -571,7 +578,7 @@
             "platform": "mobile",
             "route": "AccountImportSummary",
             "source": "AccountsImportStackRoutes.AccountImportSummary",
-            "source_line": 112,
+            "source_line": 114,
             "component": "AccountImportSummaryScreen",
             "file": "suite-native-app/module-accounts-import/src/screens/AccountImportSummaryScreen.tsx",
             "registered_in": [
@@ -608,7 +615,7 @@
             "platform": "mobile",
             "route": "SelectNetwork",
             "source": "AccountsImportStackRoutes.SelectNetwork",
-            "source_line": 109,
+            "source_line": 111,
             "component": "SelectNetworkScreen",
             "file": "suite-native-app/module-accounts-import/src/screens/SelectNetworkScreen.tsx",
             "registered_in": [
@@ -646,7 +653,7 @@
             "platform": "mobile",
             "route": "XpubScan",
             "source": "AccountsImportStackRoutes.XpubScan",
-            "source_line": 110,
+            "source_line": 112,
             "component": "XpubScanScreen",
             "file": "suite-native-app/module-accounts-import/src/screens/XpubScanScreen.tsx",
             "registered_in": [
@@ -708,7 +715,7 @@
             "platform": "mobile",
             "route": "Accounts",
             "source": "AccountsStackRoutes.Accounts",
-            "source_line": 245,
+            "source_line": 247,
             "component": "AccountsScreen",
             "file": "suite-native-app/module-accounts/src/screens/AccountsScreen.tsx",
             "registered_in": [
@@ -751,7 +758,7 @@
             "platform": "mobile",
             "route": "ActivityCenter",
             "source": "ActivityCenterStackRoutes.ActivityCenter",
-            "source_line": 62,
+            "source_line": 64,
             "component": "ActivityCenterScreen",
             "file": "suite-native-app/module-activity-center/src/screens/ActivityCenterScreen.tsx",
             "registered_in": [
@@ -788,7 +795,7 @@
             "platform": "mobile",
             "route": "AddCoinAccount",
             "source": "AddCoinAccountStackRoutes.AddCoinAccount",
-            "source_line": 320,
+            "source_line": 322,
             "component": "AddCoinAccountScreen",
             "file": "suite-native-app/module-add-accounts/src/screens/AddCoinAccountScreen.tsx",
             "registered_in": [
@@ -828,7 +835,7 @@
             "platform": "mobile",
             "route": "AddCoinDiscoveryFinished",
             "source": "AddCoinAccountStackRoutes.AddCoinDiscoveryFinished",
-            "source_line": 322,
+            "source_line": 324,
             "component": "AddCoinDiscoveryFinishedScreen",
             "file": "suite-native-app/module-add-accounts/src/screens/AddCoinDiscoveryFinishedScreen.tsx",
             "registered_in": [
@@ -870,7 +877,7 @@
             "platform": "mobile",
             "route": "AddCoinDiscoveryRunning",
             "source": "AddCoinAccountStackRoutes.AddCoinDiscoveryRunning",
-            "source_line": 323,
+            "source_line": 325,
             "component": "AddCoinDiscoveryRunningScreen",
             "file": "suite-native-app/module-add-accounts/src/screens/AddCoinDiscoveryRunningScreen.tsx",
             "registered_in": [
@@ -909,7 +916,7 @@
             "platform": "mobile",
             "route": "SelectAccountType",
             "source": "AddCoinAccountStackRoutes.SelectAccountType",
-            "source_line": 321,
+            "source_line": 323,
             "component": "SelectAccountTypeScreen",
             "file": "suite-native-app/module-add-accounts/src/screens/SelectAccountTypeScreen.tsx",
             "registered_in": [
@@ -950,7 +957,7 @@
             "platform": "mobile",
             "route": "AccountsStack",
             "source": "AppTabsRoutes.AccountsStack",
-            "source_line": 67,
+            "source_line": 69,
             "component": "AccountsStackNavigator",
             "file": "suite-native-app/module-accounts/src/navigation/AccountsStackNavigator.tsx",
             "registered_in": [
@@ -988,7 +995,7 @@
             "platform": "mobile",
             "route": "EarnStack",
             "source": "AppTabsRoutes.EarnStack",
-            "source_line": 69,
+            "source_line": 71,
             "component": "EarnStackNavigator",
             "file": "suite-native/module-earn/src/navigation/EarnStackNavigator.tsx",
             "registered_in": [
@@ -1011,12 +1018,12 @@
                 "file_count": 9,
                 "files": [
                     "suite-native-app/app/src/navigation/routes.ts",
-                    "suite-native-app/module-assets/src/components/useNavigateToEarn.ts",
+                    "suite-native-app/module-assets/src/components/useResetToEarn.ts",
                     "suite-native/add-coin-account/src/hooks/useAddCoinAccount.ts",
                     "suite-native/banners/src/components/DefiYieldPromoBanner.tsx",
                     "suite-native/banners/src/components/EarnPromoBanner.tsx",
                     "suite-native/banners/src/components/EthVaultPromoBanner.tsx",
-                    "suite-native/module-earn/src/components/yield/YieldBadge.tsx",
+                    "suite-native/earn/src/components/YieldBadge.tsx",
                     "suite-native/module-earn/src/hooks/earn/useEarnReviewBackNavigation.ts",
                     "suite-native/module-earn/src/hooks/staking/useStakingPendingTransaction.ts"
                 ],
@@ -1030,7 +1037,7 @@
             "platform": "mobile",
             "route": "HomeStack",
             "source": "AppTabsRoutes.HomeStack",
-            "source_line": 66,
+            "source_line": 68,
             "component": "HomeStackNavigator",
             "file": "suite-native-app/module-home/src/navigation/HomeStackNavigator.tsx",
             "registered_in": [
@@ -1079,7 +1086,7 @@
             "platform": "mobile",
             "route": "Settings",
             "source": "AppTabsRoutes.Settings",
-            "source_line": 70,
+            "source_line": 72,
             "component": "SettingsScreen",
             "file": "suite-native-app/module-settings/src/screens/SettingsScreen.tsx",
             "registered_in": [
@@ -1119,7 +1126,7 @@
             "platform": "mobile",
             "route": "Trading",
             "source": "AppTabsRoutes.Trading",
-            "source_line": 68,
+            "source_line": 70,
             "component": "TradingScreen",
             "file": "suite-native-app/module-trading/src/screens/TradingScreen.tsx",
             "registered_in": [
@@ -1170,7 +1177,7 @@
             "platform": "mobile",
             "route": "AssetDetail",
             "source": "AssetsStackRoutes.AssetDetail",
-            "source_line": 57,
+            "source_line": 59,
             "component": "AssetDetailScreen",
             "file": "suite-native-app/module-assets/src/screens/AssetDetailScreen.tsx",
             "registered_in": [
@@ -1211,7 +1218,7 @@
                     "suite-native-app/module-send/src/utils.ts",
                     "suite-native/assets/src/components/WalletAssetListItem.tsx"
                 ],
-                "indirect_reference_file_count": 17,
+                "indirect_reference_file_count": 18,
                 "indirect_reference_files": [
                     "suite-native-app/module-assets/src/components/AssetDetailAccountsBottomSheet.tsx",
                     "suite-native-app/module-assets/src/components/AssetDetailActions.tsx",
@@ -1222,7 +1229,7 @@
                     "suite-native-app/module-assets/src/components/AssetDetailHiddenBanner.tsx",
                     "suite-native-app/module-assets/src/components/AssetDetailPriceSection.tsx",
                     "suite-native-app/module-assets/src/components/AssetDetailScreenHeaderContent.tsx",
-                    "suite-native-app/module-assets/src/components/AssetDetailSignAndVerifyBottomSheet.tsx"
+                    "suite-native-app/module-assets/src/components/AssetDetailSignVerifyBottomSheet.tsx"
                 ]
             },
             "status": "features-only",
@@ -1232,7 +1239,7 @@
             "platform": "mobile",
             "route": "HiddenTokens",
             "source": "AssetsStackRoutes.HiddenTokens",
-            "source_line": 58,
+            "source_line": 60,
             "component": "HiddenTokensScreen",
             "file": "suite-native-app/module-assets/src/screens/HiddenTokensScreen.tsx",
             "registered_in": [
@@ -1269,7 +1276,7 @@
             "platform": "mobile",
             "route": "CoinEnablingInit",
             "source": "AuthorizeDeviceStackRoutes.CoinEnablingInit",
-            "source_line": 217,
+            "source_line": 219,
             "component": "CoinEnablingInitScreen",
             "file": "suite-native/coin-enabling/src/screens/CoinEnablingInitScreen.tsx",
             "registered_in": [
@@ -1309,7 +1316,7 @@
             "platform": "mobile",
             "route": "ConnectAndUnlockDevice",
             "source": "AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice",
-            "source_line": 206,
+            "source_line": 208,
             "component": "ConnectAndUnlockDeviceScreen",
             "file": "suite-native-app/module-authorize-device/src/screens/connect/ConnectAndUnlockDeviceScreen.tsx",
             "registered_in": [
@@ -1346,7 +1353,7 @@
             "platform": "mobile",
             "route": "ConnectBluetoothDevice",
             "source": "AuthorizeDeviceStackRoutes.ConnectBluetoothDevice",
-            "source_line": 208,
+            "source_line": 210,
             "component": "ConnectBluetoothDeviceScreen",
             "file": "suite-native-app/module-authorize-device/src/screens/connect/ConnectBluetoothDeviceScreen.tsx",
             "registered_in": [
@@ -1382,7 +1389,7 @@
             "platform": "mobile",
             "route": "ConnectDeviceCrossroads",
             "source": "AuthorizeDeviceStackRoutes.ConnectDeviceCrossroads",
-            "source_line": 205,
+            "source_line": 207,
             "component": "ConnectDeviceCrossroadsScreen",
             "file": "suite-native-app/module-authorize-device/src/screens/connect/ConnectDeviceCrossroadsScreen.tsx",
             "registered_in": [
@@ -1416,7 +1423,7 @@
             "platform": "mobile",
             "route": "ConnectingDevice",
             "source": "AuthorizeDeviceStackRoutes.ConnectingDevice",
-            "source_line": 213,
+            "source_line": 215,
             "component": "ConnectingDeviceScreen",
             "file": "suite-native-app/module-authorize-device/src/screens/connect/ConnectingDeviceScreen.tsx",
             "registered_in": [
@@ -1435,7 +1442,7 @@
             "screenshot_ids": [],
             "flow_ids": [],
             "incoming_from": {
-                "count": 4,
+                "count": 5,
                 "file_count": 3,
                 "files": [
                     "suite-native/coin-enabling/src/screens/CoinEnablingInitScreen.tsx",
@@ -1454,7 +1461,7 @@
             "platform": "mobile",
             "route": "ContinueOnTrezor",
             "source": "AuthorizeDeviceStackRoutes.ContinueOnTrezor",
-            "source_line": 218,
+            "source_line": 220,
             "component": "ContinueOnTrezorScreen",
             "file": "suite-native-app/module-authorize-device/src/screens/ContinueOnTrezorScreen.tsx",
             "registered_in": [
@@ -1489,7 +1496,7 @@
             "platform": "mobile",
             "route": "DeviceConnectionGuard",
             "source": "AuthorizeDeviceStackRoutes.DeviceConnectionGuard",
-            "source_line": 204,
+            "source_line": 206,
             "component": "DeviceConnectionGuardScreen",
             "file": "suite-native-app/module-authorize-device/src/screens/connect/DeviceConnectionGuardScreen.tsx",
             "registered_in": [
@@ -1531,7 +1538,7 @@
             "platform": "mobile",
             "route": "PassphraseConfirmOnTrezor",
             "source": "AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor",
-            "source_line": 216,
+            "source_line": 218,
             "component": "PassphraseConfirmOnTrezorScreen",
             "file": "suite-native-app/module-authorize-device/src/screens/passphrase/PassphraseConfirmOnTrezorScreen.tsx",
             "registered_in": [
@@ -1566,7 +1573,7 @@
             "platform": "mobile",
             "route": "PassphraseEnterOnTrezor",
             "source": "AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor",
-            "source_line": 215,
+            "source_line": 217,
             "component": "PassphraseEnterOnTrezorScreen",
             "file": "suite-native-app/module-authorize-device/src/screens/passphrase/PassphraseEnterOnTrezorScreen.tsx",
             "registered_in": [
@@ -1601,7 +1608,7 @@
             "platform": "mobile",
             "route": "PassphraseForm",
             "source": "AuthorizeDeviceStackRoutes.PassphraseForm",
-            "source_line": 214,
+            "source_line": 216,
             "component": "PassphraseFormScreen",
             "file": "suite-native-app/module-authorize-device/src/screens/passphrase/PassphraseFormScreen.tsx",
             "registered_in": [
@@ -1639,7 +1646,7 @@
             "platform": "mobile",
             "route": "PinMatrix",
             "source": "AuthorizeDeviceStackRoutes.PinMatrix",
-            "source_line": 210,
+            "source_line": 212,
             "component": "PinScreen",
             "file": "suite-native-app/module-authorize-device/src/screens/connect/PinScreen.tsx",
             "registered_in": [
@@ -1675,7 +1682,7 @@
             "platform": "mobile",
             "route": "RemoveBluetoothDevice",
             "source": "AuthorizeDeviceStackRoutes.RemoveBluetoothDevice",
-            "source_line": 209,
+            "source_line": 211,
             "component": "RemoveBluetoothDeviceScreen",
             "file": "suite-native-app/module-authorize-device/src/screens/connect/RemoveBluetoothDeviceScreen.tsx",
             "registered_in": [
@@ -1711,7 +1718,7 @@
             "platform": "mobile",
             "route": "ThpCodeEntry",
             "source": "AuthorizeDeviceStackRoutes.ThpCodeEntry",
-            "source_line": 212,
+            "source_line": 214,
             "component": "ThpCodeEntryScreen",
             "file": "suite-native-app/module-authorize-device/src/screens/thp/ThpCodeEntryScreen.tsx",
             "registered_in": [
@@ -1745,7 +1752,7 @@
             "platform": "mobile",
             "route": "ThpConfirmation",
             "source": "AuthorizeDeviceStackRoutes.ThpConfirmation",
-            "source_line": 211,
+            "source_line": 213,
             "component": "ThpConfirmationScreen",
             "file": "suite-native-app/module-authorize-device/src/screens/thp/ThpConfirmationScreen.tsx",
             "registered_in": [
@@ -1781,7 +1788,7 @@
             "platform": "mobile",
             "route": "TurnOnAndUnlockDevice",
             "source": "AuthorizeDeviceStackRoutes.TurnOnAndUnlockDevice",
-            "source_line": 207,
+            "source_line": 209,
             "component": "TurnOnAndUnlockDeviceScreen",
             "file": "suite-native-app/module-authorize-device/src/screens/connect/TurnOnAndUnlockDeviceScreen.tsx",
             "registered_in": [
@@ -1819,7 +1826,7 @@
             "platform": "mobile",
             "route": "Intro",
             "source": "DemoAccountQuestionnaireStackRoutes.Intro",
-            "source_line": 238,
+            "source_line": 240,
             "component": "DemoAccountQuestionnaireIntroScreen",
             "file": "suite-native-app/module-demo-account-questionnaire/src/screens/DemoAccountQuestionnaireIntroScreen.tsx",
             "registered_in": [
@@ -1856,7 +1863,7 @@
             "platform": "mobile",
             "route": "Reason",
             "source": "DemoAccountQuestionnaireStackRoutes.Reason",
-            "source_line": 239,
+            "source_line": 241,
             "component": "DemoAccountQuestionnaireReasonScreen",
             "file": "suite-native-app/module-demo-account-questionnaire/src/screens/DemoAccountQuestionnaireReasonScreen.tsx",
             "registered_in": [
@@ -1892,7 +1899,7 @@
             "platform": "mobile",
             "route": "Success",
             "source": "DemoAccountQuestionnaireStackRoutes.Success",
-            "source_line": 241,
+            "source_line": 243,
             "component": "DemoAccountQuestionnaireSuccessScreen",
             "file": "suite-native-app/module-demo-account-questionnaire/src/screens/DemoAccountQuestionnaireSuccessScreen.tsx",
             "registered_in": [
@@ -1928,7 +1935,7 @@
             "platform": "mobile",
             "route": "SuiteAction",
             "source": "DemoAccountQuestionnaireStackRoutes.SuiteAction",
-            "source_line": 240,
+            "source_line": 242,
             "component": "DemoAccountQuestionnaireSuiteActionScreen",
             "file": "suite-native-app/module-demo-account-questionnaire/src/screens/DemoAccountQuestionnaireSuiteActionScreen.tsx",
             "registered_in": [
@@ -1963,7 +1970,7 @@
             "platform": "mobile",
             "route": "AuthenticityCheck",
             "source": "DeviceAuthenticityStackRoutes.AuthenticityCheck",
-            "source_line": 192,
+            "source_line": 194,
             "component": "ContinueOnTrezorScreen",
             "file": "suite-native-app/module-device-settings/src/screens/ContinueOnTrezorScreen.tsx",
             "registered_in": [
@@ -1995,7 +2002,7 @@
             "platform": "mobile",
             "route": "AuthenticitySuccess",
             "source": "DeviceAuthenticityStackRoutes.AuthenticitySuccess",
-            "source_line": 193,
+            "source_line": 195,
             "component": "DeviceAuthenticitySuccessScreen",
             "file": "suite-native-app/module-device-settings/src/screens/DeviceAuthenticitySuccessScreen.tsx",
             "registered_in": [
@@ -2029,7 +2036,7 @@
             "platform": "mobile",
             "route": "DeviceConnectionGuard",
             "source": "DeviceAuthenticityStackRoutes.DeviceConnectionGuard",
-            "source_line": 191,
+            "source_line": 193,
             "component": "DeviceConnectionGuardScreen",
             "file": "suite-native/device-authorization/src/screens/DeviceConnectionGuardScreen.tsx",
             "registered_in": [
@@ -2061,7 +2068,7 @@
             "platform": "mobile",
             "route": "ConfirmAutoConnect",
             "source": "DeviceAutoConnectStackRoutes.ConfirmAutoConnect",
-            "source_line": 157,
+            "source_line": 159,
             "component": "ContinueOnTrezorScreen",
             "file": "suite-native-app/module-device-settings/src/screens/ContinueOnTrezorScreen.tsx",
             "registered_in": [
@@ -2093,7 +2100,7 @@
             "platform": "mobile",
             "route": "DeviceConnectionGuard",
             "source": "DeviceAutoConnectStackRoutes.DeviceConnectionGuard",
-            "source_line": 156,
+            "source_line": 158,
             "component": "DeviceConnectionGuardScreen",
             "file": "suite-native/device-authorization/src/screens/DeviceConnectionGuardScreen.tsx",
             "registered_in": [
@@ -2125,7 +2132,7 @@
             "platform": "mobile",
             "route": "CheckBackup",
             "source": "DeviceCheckBackupStackRoutes.CheckBackup",
-            "source_line": 178,
+            "source_line": 180,
             "component": "DeviceCheckBackupScreen",
             "file": "suite-native-app/module-check-backup/src/screens/DeviceCheckBackupScreen.tsx",
             "registered_in": [
@@ -2162,7 +2169,7 @@
             "platform": "mobile",
             "route": "CheckBackupFail",
             "source": "DeviceCheckBackupStackRoutes.CheckBackupFail",
-            "source_line": 181,
+            "source_line": 183,
             "component": "DeviceCheckBackupFailScreen",
             "file": "suite-native-app/module-check-backup/src/screens/DeviceCheckBackupFailScreen.tsx",
             "registered_in": [
@@ -2198,7 +2205,7 @@
             "platform": "mobile",
             "route": "CheckBackupRecap",
             "source": "DeviceCheckBackupStackRoutes.CheckBackupRecap",
-            "source_line": 180,
+            "source_line": 182,
             "component": "DeviceCheckBackupRecapScreen",
             "file": "suite-native-app/module-check-backup/src/screens/DeviceCheckBackupRecapScreen.tsx",
             "registered_in": [
@@ -2234,7 +2241,7 @@
             "platform": "mobile",
             "route": "CheckBackupSuccess",
             "source": "DeviceCheckBackupStackRoutes.CheckBackupSuccess",
-            "source_line": 179,
+            "source_line": 181,
             "component": "DeviceCheckBackupSuccessScreen",
             "file": "suite-native-app/module-check-backup/src/screens/DeviceCheckBackupSuccessScreen.tsx",
             "registered_in": [
@@ -2270,7 +2277,7 @@
             "platform": "mobile",
             "route": "CheckBackupSupport",
             "source": "DeviceCheckBackupStackRoutes.CheckBackupSupport",
-            "source_line": 182,
+            "source_line": 184,
             "component": "DeviceCheckBackupSupportScreen",
             "file": "suite-native-app/module-check-backup/src/screens/DeviceCheckBackupSupportScreen.tsx",
             "registered_in": [
@@ -2305,7 +2312,7 @@
             "platform": "mobile",
             "route": "CheckBackupTutorial",
             "source": "DeviceCheckBackupStackRoutes.CheckBackupTutorial",
-            "source_line": 177,
+            "source_line": 179,
             "component": "DeviceCheckBackupTutorialScreen",
             "file": "suite-native-app/module-check-backup/src/screens/DeviceCheckBackupTutorialScreen.tsx",
             "registered_in": [
@@ -2339,7 +2346,7 @@
             "platform": "mobile",
             "route": "DeviceConnectionGuard",
             "source": "DeviceCheckBackupStackRoutes.DeviceConnectionGuard",
-            "source_line": 176,
+            "source_line": 178,
             "component": "DeviceConnectionGuardScreen",
             "file": "suite-native/device-authorization/src/screens/DeviceConnectionGuardScreen.tsx",
             "registered_in": [
@@ -2371,7 +2378,7 @@
             "platform": "mobile",
             "route": "UnsupportedModel",
             "source": "DeviceCheckBackupStackRoutes.UnsupportedModel",
-            "source_line": 175,
+            "source_line": 177,
             "component": "DeviceCheckBackupUnsupportedModelScreen",
             "file": "suite-native-app/module-check-backup/src/screens/DeviceCheckBackupUnsupportedModelScreen.tsx",
             "registered_in": [
@@ -2405,7 +2412,7 @@
             "platform": "mobile",
             "route": "ContinueOnTrezor",
             "source": "DeviceNameStackRoutes.ContinueOnTrezor",
-            "source_line": 139,
+            "source_line": 141,
             "component": "ContinueOnTrezorScreen",
             "file": "suite-native-app/module-device-settings/src/screens/ContinueOnTrezorScreen.tsx",
             "registered_in": [
@@ -2439,7 +2446,7 @@
             "platform": "mobile",
             "route": "DeviceConnectionGuard",
             "source": "DeviceNameStackRoutes.DeviceConnectionGuard",
-            "source_line": 137,
+            "source_line": 139,
             "component": "DeviceConnectionGuardScreen",
             "file": "suite-native/device-authorization/src/screens/DeviceConnectionGuardScreen.tsx",
             "registered_in": [
@@ -2471,7 +2478,7 @@
             "platform": "mobile",
             "route": "DeviceName",
             "source": "DeviceNameStackRoutes.DeviceName",
-            "source_line": 138,
+            "source_line": 140,
             "component": "DeviceNameScreen",
             "file": "suite-native-app/module-device-settings/src/screens/DeviceNameScreen.tsx",
             "registered_in": [
@@ -2505,7 +2512,7 @@
             "platform": "mobile",
             "route": "DeviceNameLoadingScreen",
             "source": "DeviceNameStackRoutes.DeviceNameLoadingScreen",
-            "source_line": 140,
+            "source_line": 142,
             "component": "DeviceNameLoadingScreen",
             "file": "suite-native-app/module-device-settings/src/screens/DeviceNameLoadingScreen.tsx",
             "registered_in": [
@@ -2539,7 +2546,7 @@
             "platform": "mobile",
             "route": "ConfirmFirmwareUpdate",
             "source": "DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate",
-            "source_line": 86,
+            "source_line": 88,
             "component": "ConfirmFirmwareUpdateScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/ConfirmFirmwareUpdateScreen.tsx",
             "registered_in": [
@@ -2561,7 +2568,7 @@
                 "count": 1,
                 "file_count": 1,
                 "files": [
-                    "suite-native-app/module-device-onboarding/src/screens/UninitializedDeviceLandingScreen.tsx"
+                    "suite-native-app/module-device-onboarding/src/hooks/useNavigateAfterDeviceVisualCheck.ts"
                 ],
                 "indirect_reference_file_count": 1,
                 "indirect_reference_files": [
@@ -2575,7 +2582,7 @@
             "platform": "mobile",
             "route": "Congratulations",
             "source": "DeviceOnboardingStackRoutes.Congratulations",
-            "source_line": 105,
+            "source_line": 107,
             "component": "CongratulationsScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/CongratulationsScreen.tsx",
             "registered_in": [
@@ -2611,7 +2618,7 @@
             "platform": "mobile",
             "route": "CreateOrRecoverCrossroads",
             "source": "DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads",
-            "source_line": 95,
+            "source_line": 97,
             "component": "CreateOrRecoverCrossroadsScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/CreateOrRecoverCrossroadsScreen.tsx",
             "registered_in": [
@@ -2649,7 +2656,7 @@
             "platform": "mobile",
             "route": "CreatePin",
             "source": "DeviceOnboardingStackRoutes.CreatePin",
-            "source_line": 104,
+            "source_line": 106,
             "component": "CreatePinScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/CreatePinScreen.tsx",
             "registered_in": [
@@ -2683,7 +2690,7 @@
             "platform": "mobile",
             "route": "CreateWalletLoading",
             "source": "DeviceOnboardingStackRoutes.CreateWalletLoading",
-            "source_line": 96,
+            "source_line": 98,
             "component": "CreateWalletLoadingScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/CreateWalletLoadingScreen.tsx",
             "registered_in": [
@@ -2716,9 +2723,9 @@
         },
         {
             "platform": "mobile",
-            "route": "DeviceAuthenticity ",
+            "route": "DeviceAuthenticity",
             "source": "DeviceOnboardingStackRoutes.DeviceAuthenticity",
-            "source_line": 92,
+            "source_line": 94,
             "component": "DeviceAuthenticityScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/DeviceAuthenticityScreen.tsx",
             "registered_in": [
@@ -2737,9 +2744,12 @@
             "screenshot_ids": [],
             "flow_ids": [],
             "incoming_from": {
-                "count": 0,
-                "file_count": 0,
-                "files": [],
+                "count": 2,
+                "file_count": 2,
+                "files": [
+                    "suite-native-app/module-authenticity-checks/src/components/DeviceAuthenticityCheckFailModalContent.tsx",
+                    "suite-native-app/module-device-onboarding/src/hooks/useNavigateAfterDeviceVisualCheck.ts"
+                ],
                 "indirect_reference_file_count": 2,
                 "indirect_reference_files": [
                     "suite-native-app/module-device-onboarding/src/hooks/useNavigateToNextScreenAfterFirmwareInstallation.ts",
@@ -2753,7 +2763,7 @@
             "platform": "mobile",
             "route": "DeviceAuthenticitySuccess",
             "source": "DeviceOnboardingStackRoutes.DeviceAuthenticitySuccess",
-            "source_line": 93,
+            "source_line": 95,
             "component": "DeviceAuthenticitySuccessScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/DeviceAuthenticitySuccessScreen.tsx",
             "registered_in": [
@@ -2789,7 +2799,7 @@
             "platform": "mobile",
             "route": "DeviceDisconnected",
             "source": "DeviceOnboardingStackRoutes.DeviceDisconnected",
-            "source_line": 81,
+            "source_line": 83,
             "component": "DeviceDisconnectedScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/DeviceDisconnectedScreen.tsx",
             "registered_in": [
@@ -2826,7 +2836,7 @@
             "platform": "mobile",
             "route": "DeviceTutorial",
             "source": "DeviceOnboardingStackRoutes.DeviceTutorial",
-            "source_line": 94,
+            "source_line": 96,
             "component": "DeviceTutorialScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/DeviceTutorialScreen.tsx",
             "registered_in": [
@@ -2861,9 +2871,50 @@
         },
         {
             "platform": "mobile",
+            "route": "DeviceVisualCheck",
+            "source": "DeviceOnboardingStackRoutes.DeviceVisualCheck",
+            "source_line": 84,
+            "component": "DeviceVisualCheckScreen",
+            "file": "suite-native-app/module-device-onboarding/src/screens/DeviceVisualCheckScreen.tsx",
+            "registered_in": [
+                {
+                    "navigator": "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx",
+                    "line": 57,
+                    "component": "DeviceVisualCheckScreen",
+                    "component_kind": "component",
+                    "file": "suite-native-app/module-device-onboarding/src/screens/DeviceVisualCheckScreen.tsx",
+                    "conditional": false,
+                    "parent_routes": ["RootStackRoutes.DeviceOnboardingStack"]
+                }
+            ],
+            "feature_ids": ["onboarding.firmware"],
+            "ledger_dispositions": ["composition-reviewed"],
+            "screenshot_ids": [],
+            "flow_ids": [],
+            "incoming_from": {
+                "count": 5,
+                "file_count": 4,
+                "files": [
+                    "suite-native-app/module-authenticity-checks/src/components/useCloseDeviceCompromisedScreen.tsx",
+                    "suite-native-app/module-home/src/screens/HomeScreen/components/UninitializedConnectedDeviceState.tsx",
+                    "suite-native/device/src/__fixtures__/deviceConnectionFixtures.ts",
+                    "suite-native/device/src/middlewares/deviceConnectionMiddleware.ts"
+                ],
+                "indirect_reference_file_count": 3,
+                "indirect_reference_files": [
+                    "suite-native-app/module-device-onboarding/src/hooks/useNavigateAfterDeviceVisualCheck.ts",
+                    "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx",
+                    "suite-native-app/module-device-onboarding/src/screens/DeviceVisualCheckScreen.tsx"
+                ]
+            },
+            "status": "features-only",
+            "status_basis": "ledger mobile"
+        },
+        {
+            "platform": "mobile",
             "route": "FirmwareInfo",
             "source": "DeviceOnboardingStackRoutes.FirmwareInfo",
-            "source_line": 85,
+            "source_line": 87,
             "component": "FirmwareInfoScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/FirmwareInfoScreen.tsx",
             "registered_in": [
@@ -2886,7 +2937,7 @@
                 "file_count": 2,
                 "files": [
                     "suite-native-app/module-device-onboarding/src/screens/ConfirmFirmwareUpdateScreen.tsx",
-                    "suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx"
+                    "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx"
                 ],
                 "indirect_reference_file_count": 1,
                 "indirect_reference_files": [
@@ -2900,7 +2951,7 @@
             "platform": "mobile",
             "route": "FirmwareInstallation",
             "source": "DeviceOnboardingStackRoutes.FirmwareInstallation",
-            "source_line": 87,
+            "source_line": 89,
             "component": "FirmwareInstallationScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/FirmwareInstallationScreen.tsx",
             "registered_in": [
@@ -2932,9 +2983,45 @@
         },
         {
             "platform": "mobile",
+            "route": "PackagingVisualCheck",
+            "source": "DeviceOnboardingStackRoutes.PackagingVisualCheck",
+            "source_line": 86,
+            "component": "PackagingVisualCheckScreen",
+            "file": "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx",
+            "registered_in": [
+                {
+                    "navigator": "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx",
+                    "line": 65,
+                    "component": "PackagingVisualCheckScreen",
+                    "component_kind": "component",
+                    "file": "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx",
+                    "conditional": false,
+                    "parent_routes": ["RootStackRoutes.DeviceOnboardingStack"]
+                }
+            ],
+            "feature_ids": ["mobile.device-onboarding.security"],
+            "ledger_dispositions": ["composition-reviewed"],
+            "screenshot_ids": [],
+            "flow_ids": [],
+            "incoming_from": {
+                "count": 1,
+                "file_count": 1,
+                "files": [
+                    "suite-native-app/module-device-onboarding/src/hooks/useNavigateAfterDeviceVisualCheck.ts"
+                ],
+                "indirect_reference_file_count": 1,
+                "indirect_reference_files": [
+                    "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx"
+                ]
+            },
+            "status": "features-only",
+            "status_basis": "ledger mobile"
+        },
+        {
+            "platform": "mobile",
             "route": "RecoveryInstructions",
             "source": "DeviceOnboardingStackRoutes.RecoveryInstructions",
-            "source_line": 101,
+            "source_line": 103,
             "component": "RecoveryInstructionsScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/RecoveryInstructionsScreen.tsx",
             "registered_in": [
@@ -2968,45 +3055,9 @@
         },
         {
             "platform": "mobile",
-            "route": "SecurityCheck",
-            "source": "DeviceOnboardingStackRoutes.SecurityCheck",
-            "source_line": 84,
-            "component": "SecurityCheckScreen",
-            "file": "suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx",
-            "registered_in": [
-                {
-                    "navigator": "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx",
-                    "line": 65,
-                    "component": "SecurityCheckScreen",
-                    "component_kind": "component",
-                    "file": "suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx",
-                    "conditional": false,
-                    "parent_routes": ["RootStackRoutes.DeviceOnboardingStack"]
-                }
-            ],
-            "feature_ids": ["mobile.device-onboarding.security"],
-            "ledger_dispositions": ["composition-reviewed"],
-            "screenshot_ids": [],
-            "flow_ids": [],
-            "incoming_from": {
-                "count": 1,
-                "file_count": 1,
-                "files": [
-                    "suite-native-app/module-device-onboarding/src/screens/UninitializedDeviceLandingScreen.tsx"
-                ],
-                "indirect_reference_file_count": 1,
-                "indirect_reference_files": [
-                    "suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx"
-                ]
-            },
-            "status": "features-only",
-            "status_basis": "ledger mobile"
-        },
-        {
-            "platform": "mobile",
             "route": "SuspiciousDevice",
             "source": "DeviceOnboardingStackRoutes.SuspiciousDevice",
-            "source_line": 83,
+            "source_line": 85,
             "component": "SuspiciousDeviceScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/SuspiciousDeviceScreen.tsx",
             "registered_in": [
@@ -3028,8 +3079,8 @@
                 "count": 3,
                 "file_count": 2,
                 "files": [
-                    "suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx",
-                    "suite-native-app/module-device-onboarding/src/screens/UninitializedDeviceLandingScreen.tsx"
+                    "suite-native-app/module-device-onboarding/src/screens/DeviceVisualCheckScreen.tsx",
+                    "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx"
                 ],
                 "indirect_reference_file_count": 2,
                 "indirect_reference_files": [
@@ -3044,7 +3095,7 @@
             "platform": "mobile",
             "route": "ThpCodeEntry",
             "source": "DeviceOnboardingStackRoutes.ThpCodeEntry",
-            "source_line": 90,
+            "source_line": 92,
             "component": "ThpCodeEntryScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/ThpCodeEntryScreen.tsx",
             "registered_in": [
@@ -3080,7 +3131,7 @@
             "platform": "mobile",
             "route": "ThpConfirmation",
             "source": "DeviceOnboardingStackRoutes.ThpConfirmation",
-            "source_line": 89,
+            "source_line": 91,
             "component": "ThpConfirmationScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/ThpConfirmationScreen.tsx",
             "registered_in": [
@@ -3116,7 +3167,7 @@
             "platform": "mobile",
             "route": "ThpPairingInfo",
             "source": "DeviceOnboardingStackRoutes.ThpPairingInfo",
-            "source_line": 88,
+            "source_line": 90,
             "component": "ThpPairingInfoScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/ThpPairingInfoScreen.tsx",
             "registered_in": [
@@ -3154,7 +3205,7 @@
             "platform": "mobile",
             "route": "ThpPairingSuccess",
             "source": "DeviceOnboardingStackRoutes.ThpPairingSuccess",
-            "source_line": 91,
+            "source_line": 93,
             "component": "ThpPairingSuccessScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/ThpPairingSuccessScreen.tsx",
             "registered_in": [
@@ -3187,49 +3238,9 @@
         },
         {
             "platform": "mobile",
-            "route": "UninitializedDeviceLanding",
-            "source": "DeviceOnboardingStackRoutes.UninitializedDeviceLanding",
-            "source_line": 82,
-            "component": "UninitializedDeviceLandingScreen",
-            "file": "suite-native-app/module-device-onboarding/src/screens/UninitializedDeviceLandingScreen.tsx",
-            "registered_in": [
-                {
-                    "navigator": "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx",
-                    "line": 57,
-                    "component": "UninitializedDeviceLandingScreen",
-                    "component_kind": "component",
-                    "file": "suite-native-app/module-device-onboarding/src/screens/UninitializedDeviceLandingScreen.tsx",
-                    "conditional": false,
-                    "parent_routes": ["RootStackRoutes.DeviceOnboardingStack"]
-                }
-            ],
-            "feature_ids": ["onboarding.firmware"],
-            "ledger_dispositions": ["composition-reviewed"],
-            "screenshot_ids": [],
-            "flow_ids": [],
-            "incoming_from": {
-                "count": 4,
-                "file_count": 4,
-                "files": [
-                    "suite-native-app/module-authenticity-checks/src/components/useCloseDeviceCompromisedScreen.tsx",
-                    "suite-native-app/module-home/src/screens/HomeScreen/components/UninitializedConnectedDeviceState.tsx",
-                    "suite-native/device/src/__fixtures__/deviceConnectionFixtures.ts",
-                    "suite-native/device/src/middlewares/deviceConnectionMiddleware.ts"
-                ],
-                "indirect_reference_file_count": 2,
-                "indirect_reference_files": [
-                    "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx",
-                    "suite-native-app/module-device-onboarding/src/screens/UninitializedDeviceLandingScreen.tsx"
-                ]
-            },
-            "status": "features-only",
-            "status_basis": "ledger mobile"
-        },
-        {
-            "platform": "mobile",
             "route": "WalletBackupRecap",
             "source": "DeviceOnboardingStackRoutes.WalletBackupRecap",
-            "source_line": 98,
+            "source_line": 100,
             "component": "WalletBackupRecapScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/WalletBackupRecapScreen.tsx",
             "registered_in": [
@@ -3263,7 +3274,7 @@
             "platform": "mobile",
             "route": "WalletBackupTutorial",
             "source": "DeviceOnboardingStackRoutes.WalletBackupTutorial",
-            "source_line": 97,
+            "source_line": 99,
             "component": "WalletBackupTutorialScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/WalletBackupTutorialScreen.tsx",
             "registered_in": [
@@ -3313,7 +3324,7 @@
             "platform": "mobile",
             "route": "WalletCreatedSuccess",
             "source": "DeviceOnboardingStackRoutes.WalletCreatedSuccess",
-            "source_line": 100,
+            "source_line": 102,
             "component": "WalletCreatedSuccessScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/WalletCreatedSuccessScreen.tsx",
             "registered_in": [
@@ -3350,7 +3361,7 @@
             "platform": "mobile",
             "route": "WalletCreation",
             "source": "DeviceOnboardingStackRoutes.WalletCreation",
-            "source_line": 99,
+            "source_line": 101,
             "component": "WalletCreationScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/WalletCreationScreen.tsx",
             "registered_in": [
@@ -3386,7 +3397,7 @@
             "platform": "mobile",
             "route": "WalletRecovery",
             "source": "DeviceOnboardingStackRoutes.WalletRecovery",
-            "source_line": 102,
+            "source_line": 104,
             "component": "WalletRecoveryScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/WalletRecoveryScreen.tsx",
             "registered_in": [
@@ -3429,7 +3440,7 @@
             "platform": "mobile",
             "route": "WalletRecoveryRecap",
             "source": "DeviceOnboardingStackRoutes.WalletRecoveryRecap",
-            "source_line": 103,
+            "source_line": 105,
             "component": "WalletRecoveryRecapScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/WalletRecoveryRecapScreen.tsx",
             "registered_in": [
@@ -3463,7 +3474,7 @@
             "platform": "mobile",
             "route": "ContinueOnTrezor",
             "source": "DevicePassphraseStackRoutes.ContinueOnTrezor",
-            "source_line": 187,
+            "source_line": 189,
             "component": "ContinueOnTrezorScreen",
             "file": "suite-native-app/module-device-settings/src/screens/ContinueOnTrezorScreen.tsx",
             "registered_in": [
@@ -3495,7 +3506,7 @@
             "platform": "mobile",
             "route": "DeviceConnectionGuard",
             "source": "DevicePassphraseStackRoutes.DeviceConnectionGuard",
-            "source_line": 186,
+            "source_line": 188,
             "component": "DeviceConnectionGuardScreen",
             "file": "suite-native/device-authorization/src/screens/DeviceConnectionGuardScreen.tsx",
             "registered_in": [
@@ -3527,7 +3538,7 @@
             "platform": "mobile",
             "route": "ConfirmNewPin",
             "source": "DevicePinProtectionStackRoutes.ConfirmNewPin",
-            "source_line": 171,
+            "source_line": 173,
             "component": "ConfirmNewPinScreen",
             "file": "suite-native-app/module-device-settings/src/screens/EnterPinScreen.tsx",
             "registered_in": [
@@ -3559,7 +3570,7 @@
             "platform": "mobile",
             "route": "ContinueOnTrezor",
             "source": "DevicePinProtectionStackRoutes.ContinueOnTrezor",
-            "source_line": 168,
+            "source_line": 170,
             "component": "ContinueOnTrezorScreen",
             "file": "suite-native-app/module-device-settings/src/screens/ContinueOnTrezorScreen.tsx",
             "registered_in": [
@@ -3591,7 +3602,7 @@
             "platform": "mobile",
             "route": "DeviceConnectionGuard",
             "source": "DevicePinProtectionStackRoutes.DeviceConnectionGuard",
-            "source_line": 167,
+            "source_line": 169,
             "component": "DeviceConnectionGuardScreen",
             "file": "suite-native/device-authorization/src/screens/DeviceConnectionGuardScreen.tsx",
             "registered_in": [
@@ -3623,7 +3634,7 @@
             "platform": "mobile",
             "route": "EnterCurrentPin",
             "source": "DevicePinProtectionStackRoutes.EnterCurrentPin",
-            "source_line": 169,
+            "source_line": 171,
             "component": "EnterCurrentPinScreen",
             "file": "suite-native-app/module-device-settings/src/screens/EnterPinScreen.tsx",
             "registered_in": [
@@ -3655,7 +3666,7 @@
             "platform": "mobile",
             "route": "EnterNewPin",
             "source": "DevicePinProtectionStackRoutes.EnterNewPin",
-            "source_line": 170,
+            "source_line": 172,
             "component": "EnterNewPinScreen",
             "file": "suite-native-app/module-device-settings/src/screens/EnterPinScreen.tsx",
             "registered_in": [
@@ -3687,7 +3698,7 @@
             "platform": "mobile",
             "route": "DeviceAuthenticity",
             "source": "DeviceSettingsStackRoutes.DeviceAuthenticity",
-            "source_line": 130,
+            "source_line": 132,
             "component": "DeviceAuthenticityScreen",
             "file": "suite-native-app/module-device-settings/src/screens/DeviceAuthenticityScreen.tsx",
             "registered_in": [
@@ -3721,7 +3732,7 @@
             "platform": "mobile",
             "route": "DeviceAuthenticityStack",
             "source": "DeviceSettingsStackRoutes.DeviceAuthenticityStack",
-            "source_line": 131,
+            "source_line": 133,
             "component": "DeviceAuthenticityStackNavigator",
             "file": "suite-native-app/module-device-settings/src/navigation/DeviceAuthenticityStackNavigator.tsx",
             "registered_in": [
@@ -3758,7 +3769,7 @@
             "platform": "mobile",
             "route": "DeviceAutoConnectStack",
             "source": "DeviceSettingsStackRoutes.DeviceAutoConnectStack",
-            "source_line": 122,
+            "source_line": 124,
             "component": "DeviceAutoConnectStackNavigator",
             "file": "suite-native-app/module-device-settings/src/navigation/DeviceAutoConnectStackNavigator.tsx",
             "registered_in": [
@@ -3792,7 +3803,7 @@
             "platform": "mobile",
             "route": "DeviceBackupAndPassphrase",
             "source": "DeviceSettingsStackRoutes.DeviceBackupAndPassphrase",
-            "source_line": 127,
+            "source_line": 129,
             "component": "BackupAndPassphraseScreen",
             "file": "suite-native-app/module-device-settings/src/screens/BackupAndPassphraseScreen.tsx",
             "registered_in": [
@@ -3831,7 +3842,7 @@
             "platform": "mobile",
             "route": "DeviceCheckBackupStack",
             "source": "DeviceSettingsStackRoutes.DeviceCheckBackupStack",
-            "source_line": 128,
+            "source_line": 130,
             "component": "DeviceCheckBackupStackNavigator",
             "file": "suite-native-app/module-check-backup/src/navigation/DeviceCheckBackupStackNavigator.tsx",
             "registered_in": [
@@ -3867,7 +3878,7 @@
             "platform": "mobile",
             "route": "DeviceConnection",
             "source": "DeviceSettingsStackRoutes.DeviceConnection",
-            "source_line": 121,
+            "source_line": 123,
             "component": "DeviceConnectionScreen",
             "file": "suite-native-app/module-device-settings/src/screens/DeviceConnectionScreen.tsx",
             "registered_in": [
@@ -3901,7 +3912,7 @@
             "platform": "mobile",
             "route": "DeviceFirmware",
             "source": "DeviceSettingsStackRoutes.DeviceFirmware",
-            "source_line": 118,
+            "source_line": 120,
             "component": "DeviceFirmwareScreen",
             "file": "suite-native-app/module-device-settings/src/screens/DeviceFirmwareScreen.tsx",
             "registered_in": [
@@ -3927,13 +3938,14 @@
             "screenshot_ids": [],
             "flow_ids": [],
             "incoming_from": {
-                "count": 5,
-                "file_count": 5,
+                "count": 6,
+                "file_count": 6,
                 "files": [
                     "suite-native-app/module-device-settings/src/components/DeviceFirmwareCard.tsx",
                     "suite-native-app/module-home/src/screens/HomeScreen/components/FirmwareUpdateAlert.tsx",
+                    "suite-native-app/module-home/src/screens/HomeScreen/components/FirmwareUpdateRequiredDeviceState.tsx",
                     "suite-native-app/module-home/src/screens/HomeScreen/components/SuiteSyncFirmwareUpdateAlert.tsx",
-                    "suite-native/module-earn/src/hooks/earn/useFirmwareUpdateAlert.tsx",
+                    "suite-native/earn/src/hooks/useFirmwareUpdateAlert.tsx",
                     "suite-native/suite-sync/src/useTurnOnSuiteSyncGuard.tsx"
                 ],
                 "indirect_reference_file_count": 1,
@@ -3948,7 +3960,7 @@
             "platform": "mobile",
             "route": "DeviceNameStack",
             "source": "DeviceSettingsStackRoutes.DeviceNameStack",
-            "source_line": 117,
+            "source_line": 119,
             "component": "DeviceNameStackNavigator",
             "file": "suite-native-app/module-device-settings/src/navigation/DeviceNameStackNavigator.tsx",
             "registered_in": [
@@ -3982,7 +3994,7 @@
             "platform": "mobile",
             "route": "DevicePassphraseStack",
             "source": "DeviceSettingsStackRoutes.DevicePassphraseStack",
-            "source_line": 129,
+            "source_line": 131,
             "component": "DevicePassphraseStackNavigator",
             "file": "suite-native-app/module-device-settings/src/navigation/DevicePassphraseStackNavigator.tsx",
             "registered_in": [
@@ -4018,7 +4030,7 @@
             "platform": "mobile",
             "route": "DevicePinProtection",
             "source": "DeviceSettingsStackRoutes.DevicePinProtection",
-            "source_line": 125,
+            "source_line": 127,
             "component": "PinProtectionScreen",
             "file": "suite-native-app/module-device-settings/src/screens/PinProtectionScreen.tsx",
             "registered_in": [
@@ -4052,7 +4064,7 @@
             "platform": "mobile",
             "route": "DevicePinProtectionStack",
             "source": "DeviceSettingsStackRoutes.DevicePinProtectionStack",
-            "source_line": 126,
+            "source_line": 128,
             "component": "DevicePinProtectionStackNavigator",
             "file": "suite-native-app/module-device-settings/src/navigation/DevicePinProtectionStackNavigator.tsx",
             "registered_in": [
@@ -4090,7 +4102,7 @@
             "platform": "mobile",
             "route": "DeviceSettings",
             "source": "DeviceSettingsStackRoutes.DeviceSettings",
-            "source_line": 116,
+            "source_line": 118,
             "component": "DeviceSettingsScreen",
             "file": "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx",
             "registered_in": [
@@ -4152,7 +4164,7 @@
             "platform": "mobile",
             "route": "FirmwareLanguageStack",
             "source": "DeviceSettingsStackRoutes.FirmwareLanguageStack",
-            "source_line": 120,
+            "source_line": 122,
             "component": "FirmwareLanguageStackNavigator",
             "file": "suite-native-app/module-device-settings/src/navigation/FirmwareLanguageStackNavigator.tsx",
             "registered_in": [
@@ -4188,7 +4200,7 @@
             "platform": "mobile",
             "route": "FirmwareUpdateStack",
             "source": "DeviceSettingsStackRoutes.FirmwareUpdateStack",
-            "source_line": 119,
+            "source_line": 121,
             "component": "FirmwareUpdateStackNavigator",
             "file": "suite-native-app/module-device-settings/src/navigation/FirmwareUpdateStackNavigator.tsx",
             "registered_in": [
@@ -4229,7 +4241,7 @@
             "platform": "mobile",
             "route": "ForgetDevice",
             "source": "DeviceSettingsStackRoutes.ForgetDevice",
-            "source_line": 123,
+            "source_line": 125,
             "component": "ForgetDeviceScreen",
             "file": "suite-native-app/module-device-settings/src/screens/ForgetDeviceScreen.tsx",
             "registered_in": [
@@ -4265,7 +4277,7 @@
             "platform": "mobile",
             "route": "ForgetDeviceStack",
             "source": "DeviceSettingsStackRoutes.ForgetDeviceStack",
-            "source_line": 124,
+            "source_line": 126,
             "component": "ForgetDeviceStackNavigator",
             "file": "suite-native-app/module-device-settings/src/navigation/ForgetDeviceStackNavigator.tsx",
             "registered_in": [
@@ -4297,7 +4309,7 @@
             "platform": "mobile",
             "route": "WipeDevice",
             "source": "DeviceSettingsStackRoutes.WipeDevice",
-            "source_line": 132,
+            "source_line": 134,
             "component": "WipeDeviceScreen",
             "file": "suite-native-app/module-device-settings/src/screens/WipeDeviceScreen.tsx",
             "registered_in": [
@@ -4331,7 +4343,7 @@
             "platform": "mobile",
             "route": "WipeDeviceStack",
             "source": "DeviceSettingsStackRoutes.WipeDeviceStack",
-            "source_line": 133,
+            "source_line": 135,
             "component": "WipeDeviceStackNavigator",
             "file": "suite-native-app/module-device-settings/src/navigation/WipeDeviceStackNavigator.tsx",
             "registered_in": [
@@ -4368,7 +4380,7 @@
             "platform": "mobile",
             "route": "Earn",
             "source": "EarnStackRoutes.Earn",
-            "source_line": 254,
+            "source_line": 256,
             "component": "EarnScreen",
             "file": "suite-native/module-earn/src/screens/earn/EarnScreen.tsx",
             "registered_in": [
@@ -4400,11 +4412,11 @@
                 "count": 5,
                 "file_count": 5,
                 "files": [
-                    "suite-native-app/module-assets/src/components/useNavigateToEarn.ts",
+                    "suite-native-app/module-assets/src/components/useResetToEarn.ts",
                     "suite-native/banners/src/components/DefiYieldPromoBanner.tsx",
                     "suite-native/banners/src/components/EarnPromoBanner.tsx",
                     "suite-native/banners/src/components/EthVaultPromoBanner.tsx",
-                    "suite-native/module-earn/src/components/yield/YieldBadge.tsx"
+                    "suite-native/earn/src/components/YieldBadge.tsx"
                 ],
                 "indirect_reference_file_count": 2,
                 "indirect_reference_files": [
@@ -4419,7 +4431,7 @@
             "platform": "mobile",
             "route": "ConfirmLanguageChange",
             "source": "FirmwareLanguageStackRoutes.ConfirmLanguageChange",
-            "source_line": 152,
+            "source_line": 154,
             "component": "ContinueOnTrezorScreen",
             "file": "suite-native-app/module-device-settings/src/screens/ContinueOnTrezorScreen.tsx",
             "registered_in": [
@@ -4451,7 +4463,7 @@
             "platform": "mobile",
             "route": "DeviceConnectionGuard",
             "source": "FirmwareLanguageStackRoutes.DeviceConnectionGuard",
-            "source_line": 151,
+            "source_line": 153,
             "component": "DeviceConnectionGuardScreen",
             "file": "suite-native/device-authorization/src/screens/DeviceConnectionGuardScreen.tsx",
             "registered_in": [
@@ -4483,7 +4495,7 @@
             "platform": "mobile",
             "route": "ConfirmFirmwareUpdate",
             "source": "FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate",
-            "source_line": 145,
+            "source_line": 147,
             "component": "ConfirmFirmwareUpdateScreen",
             "file": "suite-native-app/module-device-settings/src/screens/ConfirmFirmwareUpdateScreen.tsx",
             "registered_in": [
@@ -4517,7 +4529,7 @@
             "platform": "mobile",
             "route": "DeviceConnectionGuard",
             "source": "FirmwareUpdateStackRoutes.DeviceConnectionGuard",
-            "source_line": 144,
+            "source_line": 146,
             "component": "DeviceConnectionGuardScreen",
             "file": "suite-native/device-authorization/src/screens/DeviceConnectionGuardScreen.tsx",
             "registered_in": [
@@ -4549,7 +4561,7 @@
             "platform": "mobile",
             "route": "FirmwareInstallation",
             "source": "FirmwareUpdateStackRoutes.FirmwareInstallation",
-            "source_line": 146,
+            "source_line": 148,
             "component": "FirmwareInstallationScreen",
             "file": "suite-native-app/module-device-settings/src/screens/FirmwareInstallationScreen.tsx",
             "registered_in": [
@@ -4585,7 +4597,7 @@
             "platform": "mobile",
             "route": "ThpConfirmation",
             "source": "FirmwareUpdateStackRoutes.ThpConfirmation",
-            "source_line": 147,
+            "source_line": 149,
             "component": "ThpConfirmationScreen",
             "file": "suite-native-app/module-device-settings/src/screens/ThpConfirmationScreen.tsx",
             "registered_in": [
@@ -4621,7 +4633,7 @@
             "platform": "mobile",
             "route": "ForgetDeviceConfirmation",
             "source": "ForgetDeviceStackRoutes.ForgetDeviceConfirmation",
-            "source_line": 161,
+            "source_line": 163,
             "component": "ContinueOnTrezorScreen",
             "file": "suite-native-app/module-device-settings/src/screens/ContinueOnTrezorScreen.tsx",
             "registered_in": [
@@ -4653,7 +4665,7 @@
             "platform": "mobile",
             "route": "ForgetDeviceFinish",
             "source": "ForgetDeviceStackRoutes.ForgetDeviceFinish",
-            "source_line": 163,
+            "source_line": 165,
             "component": "ForgetDeviceFinishScreen",
             "file": "suite-native-app/module-device-settings/src/screens/ForgetDeviceFinishScreen.tsx",
             "registered_in": [
@@ -4685,7 +4697,7 @@
             "platform": "mobile",
             "route": "ForgetDeviceGuide",
             "source": "ForgetDeviceStackRoutes.ForgetDeviceGuide",
-            "source_line": 162,
+            "source_line": 164,
             "component": "ForgetDeviceGuideScreen",
             "file": "suite-native-app/module-device-settings/src/screens/ForgetDeviceGuideScreen.tsx",
             "registered_in": [
@@ -4720,7 +4732,7 @@
             "platform": "mobile",
             "route": "Home",
             "source": "HomeStackRoutes.Home",
-            "source_line": 234,
+            "source_line": 236,
             "component": "HomeScreen",
             "file": "suite-native-app/module-home/src/screens/HomeScreen/HomeScreen.tsx",
             "registered_in": [
@@ -4747,7 +4759,7 @@
                 "mobile-home-tracker-entry"
             ],
             "incoming_from": {
-                "count": 26,
+                "count": 28,
                 "file_count": 19,
                 "files": [
                     "suite-native-app/module-authorize-device/src/hooks/useOnDeviceReadyNavigation.ts",
@@ -4779,7 +4791,7 @@
             "platform": "mobile",
             "route": "AnalyticsConsent",
             "source": "OnboardingStackRoutes.AnalyticsConsent",
-            "source_line": 75,
+            "source_line": 77,
             "component": "AnalyticsConsentScreen",
             "file": "suite-native-app/module-onboarding/src/screens/AnalyticsConsentScreen.tsx",
             "registered_in": [
@@ -4816,7 +4828,7 @@
             "platform": "mobile",
             "route": "Biometrics",
             "source": "OnboardingStackRoutes.Biometrics",
-            "source_line": 76,
+            "source_line": 78,
             "component": "BiometricsScreen",
             "file": "suite-native-app/module-onboarding/src/screens/BiometricsScreen.tsx",
             "registered_in": [
@@ -4852,7 +4864,7 @@
             "platform": "mobile",
             "route": "TradingLocation",
             "source": "OnboardingStackRoutes.TradingLocation",
-            "source_line": 77,
+            "source_line": 79,
             "component": "TradingLocationScreen",
             "file": "suite-native-app/module-onboarding/src/screens/TradingLocationScreen.tsx",
             "registered_in": [
@@ -4884,7 +4896,7 @@
             "platform": "mobile",
             "route": "Welcome",
             "source": "OnboardingStackRoutes.Welcome",
-            "source_line": 74,
+            "source_line": 76,
             "component": "WelcomeScreen",
             "file": "suite-native-app/module-onboarding/src/screens/WelcomeScreen.tsx",
             "registered_in": [
@@ -4919,7 +4931,7 @@
             "platform": "mobile",
             "route": "PassphraseConfirmOnTrezor",
             "source": "PassphraseStackRoutes.PassphraseConfirmOnTrezor",
-            "source_line": 225,
+            "source_line": 227,
             "component": "PassphraseConfirmOnTrezorScreen",
             "file": "suite-native-app/module-passphrase/src/screens/PassphraseConfirmOnTrezorScreen.tsx",
             "registered_in": [
@@ -4963,7 +4975,7 @@
             "platform": "mobile",
             "route": "PassphraseDuplicateAlert",
             "source": "PassphraseStackRoutes.PassphraseDuplicateAlert",
-            "source_line": 227,
+            "source_line": 229,
             "component": "PassphraseMismatchAlertScreen",
             "file": "suite-native/passphrase/src/components/PassphraseDuplicateAlert.tsx",
             "registered_in": [
@@ -4996,7 +5008,7 @@
             "platform": "mobile",
             "route": "PassphraseEmptyWallet",
             "source": "PassphraseStackRoutes.PassphraseEmptyWallet",
-            "source_line": 229,
+            "source_line": 231,
             "component": "PassphraseEmptyWalletScreen",
             "file": "suite-native-app/module-passphrase/src/screens/PassphraseEmptyWalletScreen.tsx",
             "registered_in": [
@@ -5034,7 +5046,7 @@
             "platform": "mobile",
             "route": "PassphraseEnterOnTrezor",
             "source": "PassphraseStackRoutes.PassphraseEnterOnTrezor",
-            "source_line": 224,
+            "source_line": 226,
             "component": "PassphraseEnterOnTrezorScreen",
             "file": "suite-native-app/module-passphrase/src/screens/PassphraseEnterOnTrezorScreen.tsx",
             "registered_in": [
@@ -5078,7 +5090,7 @@
             "platform": "mobile",
             "route": "PassphraseForm",
             "source": "PassphraseStackRoutes.PassphraseForm",
-            "source_line": 222,
+            "source_line": 224,
             "component": "PassphraseFormScreen",
             "file": "suite-native-app/module-passphrase/src/screens/PassphraseFormScreen.tsx",
             "registered_in": [
@@ -5116,7 +5128,7 @@
             "platform": "mobile",
             "route": "PassphraseLoading",
             "source": "PassphraseStackRoutes.PassphraseLoading",
-            "source_line": 223,
+            "source_line": 225,
             "component": "PassphraseLoadingScreen",
             "file": "suite-native-app/module-passphrase/src/screens/PassphraseLoadingScreen.tsx",
             "registered_in": [
@@ -5148,7 +5160,7 @@
             "platform": "mobile",
             "route": "PassphraseMismatchAlert",
             "source": "PassphraseStackRoutes.PassphraseMismatchAlert",
-            "source_line": 228,
+            "source_line": 230,
             "component": "PassphraseMismatchAlertScreen",
             "file": "suite-native/passphrase/src/components/PassphraseMismatchAlert.tsx",
             "registered_in": [
@@ -5181,7 +5193,7 @@
             "platform": "mobile",
             "route": "PassphraseRedirecting",
             "source": "PassphraseStackRoutes.PassphraseRedirecting",
-            "source_line": 226,
+            "source_line": 228,
             "component": "PassphraseFlowDoneRedirect",
             "file": "suite-native/passphrase/src/components/PassphraseFlowDoneRedirect.tsx",
             "registered_in": [
@@ -5213,7 +5225,7 @@
             "platform": "mobile",
             "route": "PassphraseVerifyEmptyWallet",
             "source": "PassphraseStackRoutes.PassphraseVerifyEmptyWallet",
-            "source_line": 230,
+            "source_line": 232,
             "component": "PassphraseVerifyEmptyWalletScreen",
             "file": "suite-native-app/module-passphrase/src/screens/PassphraseVerifyEmptyWalletScreen.tsx",
             "registered_in": [
@@ -5249,7 +5261,7 @@
             "platform": "mobile",
             "route": "ContinueOnTrezor",
             "source": "ReceiveAddressVerificationStackRoutes.ContinueOnTrezor",
-            "source_line": 307,
+            "source_line": 309,
             "component": "ReceiveAddressVerificationScreen",
             "file": "suite-native-app/module-receive/src/screens/ReceiveAddressVerificationScreen.tsx",
             "registered_in": [
@@ -5284,7 +5296,7 @@
             "platform": "mobile",
             "route": "DeviceConnectionGuard",
             "source": "ReceiveAddressVerificationStackRoutes.DeviceConnectionGuard",
-            "source_line": 306,
+            "source_line": 308,
             "component": "DeviceConnectionGuardScreen",
             "file": "suite-native/device-authorization/src/screens/DeviceConnectionGuardScreen.tsx",
             "registered_in": [
@@ -5316,13 +5328,13 @@
             "platform": "mobile",
             "route": "ReceiveAccounts",
             "source": "ReceiveStackRoutes.ReceiveAccounts",
-            "source_line": 292,
+            "source_line": 294,
             "component": "ReceiveAccountsScreen",
             "file": "suite-native-app/module-receive/src/screens/ReceiveAccountsScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/module-receive/src/navigation/ReceiveStackNavigator.tsx",
-                    "line": 32,
+                    "line": 33,
                     "component": "ReceiveAccountsScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-receive/src/screens/ReceiveAccountsScreen.tsx",
@@ -5353,13 +5365,13 @@
             "platform": "mobile",
             "route": "ReceiveAddress",
             "source": "ReceiveStackRoutes.ReceiveAddress",
-            "source_line": 293,
+            "source_line": 295,
             "component": "ReceiveFreshAddressScreen",
             "file": "suite-native-app/module-receive/src/screens/ReceiveFreshAddressScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/module-receive/src/navigation/ReceiveStackNavigator.tsx",
-                    "line": 36,
+                    "line": 37,
                     "component": "ReceiveFreshAddressScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-receive/src/screens/ReceiveFreshAddressScreen.tsx",
@@ -5395,13 +5407,13 @@
             "platform": "mobile",
             "route": "ReceiveAddressDetail",
             "source": "ReceiveStackRoutes.ReceiveAddressDetail",
-            "source_line": 296,
+            "source_line": 298,
             "component": "ReceiveAddressDetailScreen",
             "file": "suite-native-app/module-receive/src/screens/ReceiveAddressDetailScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/module-receive/src/navigation/ReceiveStackNavigator.tsx",
-                    "line": 48,
+                    "line": 49,
                     "component": "ReceiveAddressDetailScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-receive/src/screens/ReceiveAddressDetailScreen.tsx",
@@ -5431,13 +5443,13 @@
             "platform": "mobile",
             "route": "ReceiveAddressList",
             "source": "ReceiveStackRoutes.ReceiveAddressList",
-            "source_line": 295,
+            "source_line": 297,
             "component": "ReceiveAddressListScreen",
             "file": "suite-native-app/module-receive/src/screens/ReceiveAddressListScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/module-receive/src/navigation/ReceiveStackNavigator.tsx",
-                    "line": 44,
+                    "line": 45,
                     "component": "ReceiveAddressListScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-receive/src/screens/ReceiveAddressListScreen.tsx",
@@ -5467,13 +5479,13 @@
             "platform": "mobile",
             "route": "ReceiveAddressVerification",
             "source": "ReceiveStackRoutes.ReceiveAddressVerification",
-            "source_line": 294,
+            "source_line": 296,
             "component": "ReceiveAddressVerificationStackNavigator",
             "file": "suite-native-app/module-receive/src/navigation/ReceiveAddressVerificationStackNavigator.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/module-receive/src/navigation/ReceiveStackNavigator.tsx",
-                    "line": 40,
+                    "line": 41,
                     "component": "ReceiveAddressVerificationStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/module-receive/src/navigation/ReceiveAddressVerificationStackNavigator.tsx",
@@ -5503,13 +5515,13 @@
             "platform": "mobile",
             "route": "ReceiveCrossroads",
             "source": "ReceiveStackRoutes.ReceiveCrossroads",
-            "source_line": 290,
+            "source_line": 292,
             "component": "ReceiveCrossroadsScreen",
             "file": "suite-native-app/module-receive/src/screens/ReceiveCrossroadsScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/module-receive/src/navigation/ReceiveStackNavigator.tsx",
-                    "line": 24,
+                    "line": 25,
                     "component": "ReceiveCrossroadsScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-receive/src/screens/ReceiveCrossroadsScreen.tsx",
@@ -5541,13 +5553,13 @@
             "platform": "mobile",
             "route": "ReceiveDiscovery",
             "source": "ReceiveStackRoutes.ReceiveDiscovery",
-            "source_line": 291,
+            "source_line": 293,
             "component": "ReceiveDiscoveryScreen",
             "file": "suite-native-app/module-receive/src/screens/ReceiveDiscoveryScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/module-receive/src/navigation/ReceiveStackNavigator.tsx",
-                    "line": 28,
+                    "line": 29,
                     "component": "ReceiveDiscoveryScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-receive/src/screens/ReceiveDiscoveryScreen.tsx",
@@ -5581,7 +5593,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 105,
+                    "line": 102,
                     "component": "AccountDetailStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/module-account-detail/src/navigation/AccountDetailStackNavigator.tsx",
@@ -5622,7 +5634,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 110,
+                    "line": 107,
                     "component": "AccountOverviewScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-accounts/src/screens/AccountOverviewScreen.tsx",
@@ -5671,7 +5683,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 245,
+                    "line": 242,
                     "component": "AccountsImportStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/module-accounts-import/src/navigation/AccountsImportStackNavigator.tsx",
@@ -5702,13 +5714,13 @@
             "platform": "mobile",
             "route": "ActivityCenterStack",
             "source": "RootStackRoutes.ActivityCenterStack",
-            "source_line": 48,
+            "source_line": 50,
             "component": "ActivityCenterStackNavigator",
             "file": "suite-native-app/module-activity-center/src/navigation/ActivityCenterStackNavigator.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 234,
+                    "line": 231,
                     "component": "ActivityCenterStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/module-activity-center/src/navigation/ActivityCenterStackNavigator.tsx",
@@ -5734,13 +5746,13 @@
             "platform": "mobile",
             "route": "AddCoinAccountStack",
             "source": "RootStackRoutes.AddCoinAccountStack",
-            "source_line": 30,
+            "source_line": 32,
             "component": "AddCoinAccountStackNavigator",
             "file": "suite-native-app/module-add-accounts/src/navigation/AddCoinAccountStackNavigator.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 249,
+                    "line": 246,
                     "component": "AddCoinAccountStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/module-add-accounts/src/navigation/AddCoinAccountStackNavigator.tsx",
@@ -5777,7 +5789,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 104,
+                    "line": 101,
                     "component": "AppTabNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/app/src/navigation/AppTabNavigator.tsx",
@@ -5790,11 +5802,11 @@
             "screenshot_ids": [],
             "flow_ids": [],
             "incoming_from": {
-                "count": 40,
+                "count": 42,
                 "file_count": 31,
                 "files": [
                     "suite-native-app/module-account-detail/src/components/AccountSettingsRemoveCoinButton.tsx",
-                    "suite-native-app/module-assets/src/components/useNavigateToEarn.ts",
+                    "suite-native-app/module-assets/src/components/useResetToEarn.ts",
                     "suite-native-app/module-authorize-device/src/hooks/useOnDeviceReadyNavigation.ts",
                     "suite-native-app/module-device-onboarding/src/hooks/useExitAlert.ts",
                     "suite-native-app/module-device-onboarding/src/screens/CongratulationsScreen.tsx",
@@ -5804,10 +5816,11 @@
                     "suite-native-app/module-device-settings/src/hooks/useForgetDevice.ts",
                     "suite-native-app/module-device-settings/src/screens/WipeDeviceLoadingScreen.tsx"
                 ],
-                "indirect_reference_file_count": 8,
+                "indirect_reference_file_count": 9,
                 "indirect_reference_files": [
                     "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
                     "suite-native-app/module-home/src/screens/HomeScreen/components/FirmwareUpdateAlert.tsx",
+                    "suite-native-app/module-home/src/screens/HomeScreen/components/FirmwareUpdateRequiredDeviceState.tsx",
                     "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioAssets/PortfolioAssetsHiddenTokensOption.tsx",
                     "suite-native-app/module-home/src/screens/HomeScreen/components/SuiteSyncFirmwareUpdateAlert.tsx",
                     "suite-native-app/module-home/src/screens/HomeScreen/components/UninitializedConnectedDeviceState.tsx",
@@ -5825,14 +5838,14 @@
             "source": "RootStackRoutes.AppsEmbedding",
             "source_line": 23,
             "component": "AppsEmbeddingScreen",
-            "file": "suite-native/apps-embedding-demo/src/AppsEmbeddingScreen.tsx",
+            "file": "suite-native-app/apps-embedding-demo/src/AppsEmbeddingScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 193,
+                    "line": 190,
                     "component": "AppsEmbeddingScreen",
                     "component_kind": "component",
-                    "file": "suite-native/apps-embedding-demo/src/AppsEmbeddingScreen.tsx",
+                    "file": "suite-native-app/apps-embedding-demo/src/AppsEmbeddingScreen.tsx",
                     "conditional": false,
                     "parent_routes": []
                 }
@@ -5861,7 +5874,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 109,
+                    "line": 106,
                     "component": "AssetsStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/module-assets/src/navigation/AssetsStackNavigator.tsx",
@@ -5900,7 +5913,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 270,
+                    "line": 264,
                     "component": "AuthorizeDeviceStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/module-authorize-device/src/navigation/AuthorizeDeviceStackNavigator.tsx",
@@ -5939,13 +5952,13 @@
             "platform": "mobile",
             "route": "BackupFailedModal",
             "source": "RootStackRoutes.BackupFailedModal",
-            "source_line": 38,
+            "source_line": 40,
             "component": "BackupFailedModalScreen",
             "file": "suite-native-app/module-device-onboarding/src/screens/BackupFailedModalScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 226,
+                    "line": 223,
                     "component": "BackupFailedModalScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-device-onboarding/src/screens/BackupFailedModalScreen.tsx",
@@ -5974,13 +5987,13 @@
             "platform": "mobile",
             "route": "BootloaderMode",
             "source": "RootStackRoutes.BootloaderMode",
-            "source_line": 39,
+            "source_line": 41,
             "component": "BootloaderModeScreen",
             "file": "suite-native/device-bootloader-mode/src/screens/BootloaderModeScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 230,
+                    "line": 227,
                     "component": "BootloaderModeScreen",
                     "component_kind": "component",
                     "file": "suite-native/device-bootloader-mode/src/screens/BootloaderModeScreen.tsx",
@@ -6010,13 +6023,13 @@
             "platform": "mobile",
             "route": "ConnectPermissions",
             "source": "RootStackRoutes.ConnectPermissions",
-            "source_line": 32,
+            "source_line": 34,
             "component": "ConnectPermissionsScreen",
             "file": "suite-native-app/module-connect-popup/src/screens/ConnectPermissionsScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 210,
+                    "line": 207,
                     "component": "ConnectPermissionsScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-connect-popup/src/screens/ConnectPermissionsScreen.tsx",
@@ -6048,13 +6061,13 @@
             "platform": "mobile",
             "route": "ConnectPopup",
             "source": "RootStackRoutes.ConnectPopup",
-            "source_line": 31,
+            "source_line": 33,
             "component": "ConnectPopupScreen",
             "file": "suite-native-app/module-connect-popup/src/screens/ConnectPopupScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 197,
+                    "line": 194,
                     "component": "ConnectPopupScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-connect-popup/src/screens/ConnectPopupScreen.tsx",
@@ -6092,13 +6105,13 @@
             "platform": "mobile",
             "route": "DemoAccountQuestionnaireStack",
             "source": "RootStackRoutes.DemoAccountQuestionnaireStack",
-            "source_line": 41,
+            "source_line": 43,
             "component": "DemoAccountQuestionnaireStackNavigator",
             "file": "suite-native-app/module-demo-account-questionnaire/src/navigation/DemoAccountQuestionnaireStackNavigator.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 218,
+                    "line": 215,
                     "component": "DemoAccountQuestionnaireStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/module-demo-account-questionnaire/src/navigation/DemoAccountQuestionnaireStackNavigator.tsx",
@@ -6132,7 +6145,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 184,
+                    "line": 181,
                     "component": "DevUtilsScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-dev-utils/src/screens/DevUtilsScreen.tsx",
@@ -6163,13 +6176,13 @@
             "platform": "mobile",
             "route": "DeviceCompromisedModal",
             "source": "RootStackRoutes.DeviceCompromisedModal",
-            "source_line": 37,
+            "source_line": 39,
             "component": "DeviceCompromisedModalScreen",
             "file": "suite-native-app/module-authenticity-checks/src/screens/DeviceCompromisedModalScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 222,
+                    "line": 219,
                     "component": "DeviceCompromisedModalScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-authenticity-checks/src/screens/DeviceCompromisedModalScreen.tsx",
@@ -6190,8 +6203,9 @@
                     "suite-native-app/module-device-settings/src/navigation/DeviceAuthenticityStackNavigator.tsx",
                     "suite-native/device/src/middlewares/deviceConnectionMiddleware.ts"
                 ],
-                "indirect_reference_file_count": 6,
+                "indirect_reference_file_count": 7,
                 "indirect_reference_files": [
+                    "suite-native-app/module-authenticity-checks/src/components/DeviceAuthenticityCheckFailModalContent.tsx",
                     "suite-native-app/module-authenticity-checks/src/components/useCloseDeviceCompromisedScreen.tsx",
                     "suite-native-app/module-authenticity-checks/src/screens/DeviceCompromisedModalScreen.tsx",
                     "suite-native/device/src/__fixtures__/deviceConnectionFixtures.ts",
@@ -6213,7 +6227,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 241,
+                    "line": 238,
                     "component": "DeviceOnboardingStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx",
@@ -6230,9 +6244,10 @@
             "screenshot_ids": [],
             "flow_ids": [],
             "incoming_from": {
-                "count": 8,
-                "file_count": 7,
+                "count": 10,
+                "file_count": 8,
                 "files": [
+                    "suite-native-app/module-authenticity-checks/src/components/DeviceAuthenticityCheckFailModalContent.tsx",
                     "suite-native-app/module-authenticity-checks/src/components/useCloseDeviceCompromisedScreen.tsx",
                     "suite-native-app/module-device-onboarding/src/components/WalletBackupNotSetWarningBottomSheet.tsx",
                     "suite-native-app/module-device-settings/src/screens/DeviceFirmwareScreen.tsx",
@@ -6255,13 +6270,13 @@
             "platform": "mobile",
             "route": "DeviceSettingsStack",
             "source": "RootStackRoutes.DeviceSettingsStack",
-            "source_line": 29,
+            "source_line": 31,
             "component": "DeviceSettingsStackNavigator",
             "file": "suite-native-app/module-device-settings/src/navigation/DeviceSettingsStackNavigator.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 266,
+                    "line": 260,
                     "component": "DeviceSettingsStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/module-device-settings/src/navigation/DeviceSettingsStackNavigator.tsx",
@@ -6285,14 +6300,15 @@
             "screenshot_ids": [],
             "flow_ids": [],
             "incoming_from": {
-                "count": 6,
-                "file_count": 6,
+                "count": 7,
+                "file_count": 7,
                 "files": [
                     "suite-native-app/module-home/src/screens/HomeScreen/components/FirmwareUpdateAlert.tsx",
+                    "suite-native-app/module-home/src/screens/HomeScreen/components/FirmwareUpdateRequiredDeviceState.tsx",
                     "suite-native-app/module-home/src/screens/HomeScreen/components/SuiteSyncFirmwareUpdateAlert.tsx",
                     "suite-native/device-bootloader-mode/src/screens/BootloaderModeScreen.tsx",
                     "suite-native/device-manager/src/components/DeviceSettingsButton.tsx",
-                    "suite-native/module-earn/src/hooks/earn/useFirmwareUpdateAlert.tsx",
+                    "suite-native/earn/src/hooks/useFirmwareUpdateAlert.tsx",
                     "suite-native/suite-sync/src/useTurnOnSuiteSyncGuard.tsx"
                 ],
                 "indirect_reference_file_count": 1,
@@ -6313,7 +6329,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 154,
+                    "line": 151,
                     "component": "EarnConsentsScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/earn/EarnConsentsScreen.tsx",
@@ -6342,13 +6358,13 @@
             "platform": "mobile",
             "route": "FeatureFeedbackModal",
             "source": "RootStackRoutes.FeatureFeedbackModal",
-            "source_line": 45,
+            "source_line": 47,
             "component": "FeatureFeedbackModalScreen",
             "file": "suite-native-app/module-home/src/screens/FeatureFeedbackModalScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 292,
+                    "line": 286,
                     "component": "FeatureFeedbackModalScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-home/src/screens/FeatureFeedbackModalScreen.tsx",
@@ -6383,7 +6399,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 134,
+                    "line": 131,
                     "component": "HowStakeWorksScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/staking/HowStakeWorksScreen.tsx",
@@ -6399,9 +6415,9 @@
                 "count": 4,
                 "file_count": 4,
                 "files": [
+                    "suite-native/earn/src/utils/navigateByAccountState.ts",
                     "suite-native/module-earn/src/components/staking/StakingManagementScreenHeader.tsx",
                     "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
-                    "suite-native/module-earn/src/utils/staking/navigateByAccountState.ts",
                     "suite-native/module-earn/src/utils/staking/resolveStakingHomeRoute.ts"
                 ],
                 "indirect_reference_file_count": 2,
@@ -6423,7 +6439,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 189,
+                    "line": 186,
                     "component": "MessageSystemExperimentsScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-dev-utils/src/screens/MessageSystemExperimentsScreen.tsx",
@@ -6455,7 +6471,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 185,
+                    "line": 182,
                     "component": "MessageSystemManagerScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-dev-utils/src/screens/MessageSystemManagerScreen.tsx",
@@ -6487,7 +6503,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 100,
+                    "line": 97,
                     "component": "OnboardingStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/module-onboarding/src/navigation/OnboardingStackNavigator.tsx",
@@ -6515,13 +6531,13 @@
             "platform": "mobile",
             "route": "PassphraseStack",
             "source": "RootStackRoutes.PassphraseStack",
-            "source_line": 43,
+            "source_line": 45,
             "component": "PassphraseStackNavigator",
             "file": "suite-native-app/module-passphrase/src/PassphraseStackNavigator.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 277,
+                    "line": 271,
                     "component": "PassphraseStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/module-passphrase/src/PassphraseStackNavigator.tsx",
@@ -6547,13 +6563,13 @@
             "platform": "mobile",
             "route": "ReceiveStack",
             "source": "RootStackRoutes.ReceiveStack",
-            "source_line": 27,
+            "source_line": 29,
             "component": "ReceiveStackNavigator",
             "file": "suite-native-app/module-receive/src/navigation/ReceiveStackNavigator.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 261,
+                    "line": 255,
                     "component": "ReceiveStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/module-receive/src/navigation/ReceiveStackNavigator.tsx",
@@ -6585,13 +6601,13 @@
             "platform": "mobile",
             "route": "SendStack",
             "source": "RootStackRoutes.SendStack",
-            "source_line": 28,
+            "source_line": 30,
             "component": "SendStackNavigator",
             "file": "suite-native-app/module-send/src/navigation/SendStackNavigator.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 265,
+                    "line": 259,
                     "component": "SendStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/module-send/src/navigation/SendStackNavigator.tsx",
@@ -6637,13 +6653,13 @@
             "platform": "mobile",
             "route": "SettingsScreenStack",
             "source": "RootStackRoutes.SettingsScreenStack",
-            "source_line": 36,
+            "source_line": 38,
             "component": "SettingsStackNavigator",
             "file": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 214,
+                    "line": 211,
                     "component": "SettingsStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
@@ -6696,17 +6712,17 @@
         {
             "platform": "mobile",
             "route": "SignAndVerify",
-            "source": "RootStackRoutes.SignAndVerify",
-            "source_line": 24,
-            "component": "SignAndVerifyScreen",
-            "file": "suite-native-app/module-sign-verify/src/screens/SignAndVerifyScreen.tsx",
+            "source": "RootStackRoutes.SignVerify",
+            "source_line": 26,
+            "component": "SignVerifyScreen",
+            "file": "suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 253,
-                    "component": "SignAndVerifyScreen",
+                    "line": 250,
+                    "component": "SignVerifyScreen",
                     "component_kind": "component",
-                    "file": "suite-native-app/module-sign-verify/src/screens/SignAndVerifyScreen.tsx",
+                    "file": "suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx",
                     "conditional": false,
                     "parent_routes": []
                 }
@@ -6720,12 +6736,12 @@
                 "file_count": 3,
                 "files": [
                     "suite-native-app/module-account-detail/src/screens/AccountSettingsScreen.tsx",
-                    "suite-native-app/module-assets/src/components/AssetDetailSignAndVerifyBottomSheet.tsx",
-                    "suite-native-app/module-assets/src/components/AssetSettingsSignAndVerifyAction.tsx"
+                    "suite-native-app/module-assets/src/components/AssetDetailSignVerifyBottomSheet.tsx",
+                    "suite-native-app/module-assets/src/components/AssetSettingsSignVerifyAction.tsx"
                 ],
                 "indirect_reference_file_count": 1,
                 "indirect_reference_files": [
-                    "suite-native-app/module-sign-verify/src/screens/SignAndVerifyScreen.tsx"
+                    "suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx"
                 ]
             },
             "status": "features-only",
@@ -6734,17 +6750,17 @@
         {
             "platform": "mobile",
             "route": "SignAndVerifyStack",
-            "source": "RootStackRoutes.SignAndVerifyStack",
-            "source_line": 25,
-            "component": "SignAndVerifyStackNavigator",
-            "file": "suite-native-app/module-sign-verify/src/navigation/SignAndVerifyStackNavigator.tsx",
+            "source": "RootStackRoutes.SignVerifyStack",
+            "source_line": 27,
+            "component": "SignVerifyStackNavigator",
+            "file": "suite-native-app/module-sign-verify/src/navigation/SignVerifyStackNavigator.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 257,
-                    "component": "SignAndVerifyStackNavigator",
+                    "line": 251,
+                    "component": "SignVerifyStackNavigator",
                     "component_kind": "component",
-                    "file": "suite-native-app/module-sign-verify/src/navigation/SignAndVerifyStackNavigator.tsx",
+                    "file": "suite-native-app/module-sign-verify/src/navigation/SignVerifyStackNavigator.tsx",
                     "conditional": false,
                     "parent_routes": []
                 }
@@ -6778,7 +6794,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 175,
+                    "line": 172,
                     "component": "StakingClaimReviewScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/staking/StakingClaimReviewScreen.tsx",
@@ -6820,7 +6836,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 149,
+                    "line": 146,
                     "component": "StakingFormScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/staking/StakingFormScreen.tsx",
@@ -6863,7 +6879,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 119,
+                    "line": 116,
                     "component": "StakingManagementScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
@@ -6886,9 +6902,9 @@
                 "count": 4,
                 "file_count": 4,
                 "files": [
-                    "suite-native/module-earn/src/hooks/staking/useStakingDetailNavigation.ts",
+                    "suite-native/earn/src/hooks/useStakingDetailNavigation.ts",
+                    "suite-native/earn/src/utils/navigateByAccountState.ts",
                     "suite-native/module-earn/src/hooks/staking/useStakingPendingTransaction.ts",
-                    "suite-native/module-earn/src/utils/staking/navigateByAccountState.ts",
                     "suite-native/module-earn/src/utils/staking/resolveStakingHomeRoute.ts"
                 ],
                 "indirect_reference_file_count": 6,
@@ -6914,7 +6930,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 170,
+                    "line": 167,
                     "component": "StakingTransactionCompleteScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/staking/StakingTransactionCompleteScreen.tsx",
@@ -6951,7 +6967,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 164,
+                    "line": 161,
                     "component": "StakingTransactionDataReviewScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/staking/StakingTransactionDataReviewScreen.tsx",
@@ -6985,13 +7001,13 @@
             "platform": "mobile",
             "route": "StellarManageTokenStack",
             "source": "RootStackRoutes.StellarManageTokenStack",
-            "source_line": 44,
+            "source_line": 46,
             "component": "StellarManageTokenStackNavigator",
             "file": "suite-native-app/module-stellar-token-management/src/navigation/StellarManageTokenStackNavigator.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 288,
+                    "line": 282,
                     "component": "StellarManageTokenStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/module-stellar-token-management/src/navigation/StellarManageTokenStackNavigator.tsx",
@@ -7022,13 +7038,13 @@
             "platform": "mobile",
             "route": "Storybook",
             "source": "RootStackRoutes.Storybook",
-            "source_line": 42,
+            "source_line": 44,
             "component": "StorybookUI",
             "file": "suite-native-app/storybook/.rnstorybook/index.ts",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 298,
+                    "line": 292,
                     "component": "StorybookUI",
                     "component_kind": "component",
                     "file": "suite-native-app/storybook/.rnstorybook/index.ts",
@@ -7054,13 +7070,13 @@
             "platform": "mobile",
             "route": "TradingLocationModal",
             "source": "RootStackRoutes.TradingLocationModal",
-            "source_line": 40,
+            "source_line": 42,
             "component": "TradingLocationModalScreen",
             "file": "suite-native/trading-residence/src/screens/TradingLocationModalScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 284,
+                    "line": 278,
                     "component": "TradingLocationModalScreen",
                     "component_kind": "component",
                     "file": "suite-native/trading-residence/src/screens/TradingLocationModalScreen.tsx",
@@ -7090,13 +7106,13 @@
             "platform": "mobile",
             "route": "TradingStack",
             "source": "RootStackRoutes.TradingStack",
-            "source_line": 47,
+            "source_line": 49,
             "component": "TradingStackNavigator",
             "file": "suite-native-app/module-trading/src/navigation/TradingStackNavigator.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 180,
+                    "line": 177,
                     "component": "TradingStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/module-trading/src/navigation/TradingStackNavigator.tsx",
@@ -7131,13 +7147,13 @@
             "platform": "mobile",
             "route": "TransactionDetailStack",
             "source": "RootStackRoutes.TransactionDetailStack",
-            "source_line": 26,
+            "source_line": 28,
             "component": "TransactionDetailStackNavigator",
             "file": "suite-native-app/module-transactions/src/navigation/TransactionDetailStackNavigator.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 115,
+                    "line": 112,
                     "component": "TransactionDetailStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native-app/module-transactions/src/navigation/TransactionDetailStackNavigator.tsx",
@@ -7169,13 +7185,13 @@
             "platform": "mobile",
             "route": "UnstakeFlow",
             "source": "RootStackRoutes.UnstakeFlow",
-            "source_line": 46,
+            "source_line": 48,
             "component": "UnstakeFlowScreen",
             "file": "suite-native/module-earn/src/screens/staking/UnstakeFlowScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 129,
+                    "line": 126,
                     "component": "UnstakeFlowScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/staking/UnstakeFlowScreen.tsx",
@@ -7212,13 +7228,13 @@
             "platform": "mobile",
             "route": "WalletConnectPair",
             "source": "RootStackRoutes.WalletConnectPair",
-            "source_line": 35,
+            "source_line": 37,
             "component": "WalletConnectPairScreen",
             "file": "suite-native-app/module-connect-popup/src/screens/WalletConnectPairScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 206,
+                    "line": 203,
                     "component": "WalletConnectPairScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-connect-popup/src/screens/WalletConnectPairScreen.tsx",
@@ -7250,13 +7266,13 @@
             "platform": "mobile",
             "route": "WalletConnectSessionPopup",
             "source": "RootStackRoutes.WalletConnectSessionPopup",
-            "source_line": 33,
+            "source_line": 35,
             "component": "WalletConnectSessionPopupScreen",
             "file": "suite-native-app/module-connect-popup/src/screens/WalletConnectSessionPopupScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 198,
+                    "line": 195,
                     "component": "WalletConnectSessionPopupScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-connect-popup/src/screens/WalletConnectSessionPopupScreen.tsx",
@@ -7290,13 +7306,13 @@
             "platform": "mobile",
             "route": "WalletConnectSwitchAccount",
             "source": "RootStackRoutes.WalletConnectSwitchAccount",
-            "source_line": 34,
+            "source_line": 36,
             "component": "WalletConnectSwitchAccountScreen",
             "file": "suite-native-app/module-connect-popup/src/screens/WalletConnectSwitchAccountScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 202,
+                    "line": 199,
                     "component": "WalletConnectSwitchAccountScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-connect-popup/src/screens/WalletConnectSwitchAccountScreen.tsx",
@@ -7333,7 +7349,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 144,
+                    "line": 141,
                     "component": "WrappedNativeTokenStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/navigation/WrappedNativeTokenStackNavigator.tsx",
@@ -7348,9 +7364,7 @@
             "incoming_from": {
                 "count": 2,
                 "file_count": 1,
-                "files": [
-                    "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx"
-                ],
+                "files": ["suite-native/earn/src/components/TokenSettingsBottomSheet.tsx"],
                 "indirect_reference_file_count": 1,
                 "indirect_reference_files": [
                     "suite-native-app/app/src/navigation/RootStackNavigator.tsx"
@@ -7369,7 +7383,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 139,
+                    "line": 136,
                     "component": "YieldStackNavigator",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
@@ -7385,10 +7399,10 @@
                 "count": 5,
                 "file_count": 4,
                 "files": [
+                    "suite-native/earn/src/utils/navigateByYieldAccountState.ts",
                     "suite-native/module-earn/src/components/yield/YieldClaimRewardsAccountCard.tsx",
                     "suite-native/module-earn/src/components/yield/YieldVaultDetailScreenHeader.tsx",
-                    "suite-native/module-earn/src/screens/yield/YieldVaultDetailScreenContent.tsx",
-                    "suite-native/module-earn/src/utils/yield/navigateByYieldAccountState.ts"
+                    "suite-native/module-earn/src/screens/yield/YieldVaultDetailScreenContent.tsx"
                 ],
                 "indirect_reference_file_count": 2,
                 "indirect_reference_files": [
@@ -7409,7 +7423,7 @@
             "registered_in": [
                 {
                     "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-                    "line": 124,
+                    "line": 121,
                     "component": "YieldVaultDetailScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldVaultDetailScreen.tsx",
@@ -7425,8 +7439,8 @@
                 "count": 2,
                 "file_count": 2,
                 "files": [
-                    "suite-native/module-earn/src/hooks/yield/useYieldDetailNavigation.ts",
-                    "suite-native/module-earn/src/utils/yield/navigateByYieldAccountState.ts"
+                    "suite-native/earn/src/hooks/useYieldDetailNavigation.ts",
+                    "suite-native/earn/src/utils/navigateByYieldAccountState.ts"
                 ],
                 "indirect_reference_file_count": 4,
                 "indirect_reference_files": [
@@ -7443,7 +7457,7 @@
             "platform": "mobile",
             "route": "SendAccounts",
             "source": "SendStackRoutes.SendAccounts",
-            "source_line": 311,
+            "source_line": 313,
             "component": "SendAccountsScreen",
             "file": "suite-native-app/module-send/src/screens/SendAccountsScreen.tsx",
             "registered_in": [
@@ -7482,7 +7496,7 @@
             "platform": "mobile",
             "route": "SendAddressReview",
             "source": "SendStackRoutes.SendAddressReview",
-            "source_line": 315,
+            "source_line": 317,
             "component": "SendAddressReviewScreen",
             "file": "suite-native-app/module-send/src/screens/SendAddressReviewScreen.tsx",
             "registered_in": [
@@ -7520,7 +7534,7 @@
             "platform": "mobile",
             "route": "SendDestinationTagReview",
             "source": "SendStackRoutes.SendDestinationTagReview",
-            "source_line": 314,
+            "source_line": 316,
             "component": "SendDestinationTagReviewScreen",
             "file": "suite-native-app/module-send/src/screens/SendDestinationTagReviewScreen.tsx",
             "registered_in": [
@@ -7554,7 +7568,7 @@
             "platform": "mobile",
             "route": "SendOutputs",
             "source": "SendStackRoutes.SendOutputs",
-            "source_line": 312,
+            "source_line": 314,
             "component": "SendOutputsScreen",
             "file": "suite-native-app/module-send/src/screens/SendOutputsScreen.tsx",
             "registered_in": [
@@ -7617,7 +7631,7 @@
             "platform": "mobile",
             "route": "SendOutputsReview",
             "source": "SendStackRoutes.SendOutputsReview",
-            "source_line": 316,
+            "source_line": 318,
             "component": "SendOutputsReviewScreen",
             "file": "suite-native-app/module-send/src/screens/SendOutputsReviewScreen.tsx",
             "registered_in": [
@@ -7666,7 +7680,7 @@
             "platform": "mobile",
             "route": "SendUtxo",
             "source": "SendStackRoutes.SendUtxo",
-            "source_line": 313,
+            "source_line": 315,
             "component": "SendUtxoScreen",
             "file": "suite-native-app/module-send/src/screens/SendUtxoScreen.tsx",
             "registered_in": [
@@ -7708,7 +7722,7 @@
             "platform": "mobile",
             "route": "SettingsAdvanced",
             "source": "SettingsStackRoutes.SettingsAdvanced",
-            "source_line": 336,
+            "source_line": 338,
             "component": "SettingsAdvancedScreen",
             "file": "suite-native-app/module-settings/src/screens/SettingsAdvancedScreen.tsx",
             "registered_in": [
@@ -7748,7 +7762,7 @@
             "platform": "mobile",
             "route": "SettingsAppLog",
             "source": "SettingsStackRoutes.SettingsAppLog",
-            "source_line": 331,
+            "source_line": 333,
             "component": "SettingsAppLogScreen",
             "file": "suite-native-app/module-settings/src/screens/SettingsAppLogScreen.tsx",
             "registered_in": [
@@ -7786,7 +7800,7 @@
             "platform": "mobile",
             "route": "SettingsDustPhishing",
             "source": "SettingsStackRoutes.SettingsDustPhishing",
-            "source_line": 337,
+            "source_line": 339,
             "component": "SettingsDustPhishingScreen",
             "file": "suite-native-app/module-settings/src/screens/SettingsDustPhishingScreen.tsx",
             "registered_in": [
@@ -7820,7 +7834,7 @@
             "platform": "mobile",
             "route": "SettingsExperimental",
             "source": "SettingsStackRoutes.SettingsExperimental",
-            "source_line": 338,
+            "source_line": 340,
             "component": "SettingsExperimentalScreen",
             "file": "suite-native-app/module-settings/src/screens/SettingsExperimentalScreen.tsx",
             "registered_in": [
@@ -7861,7 +7875,7 @@
             "platform": "mobile",
             "route": "SettingsNetworkBackends",
             "source": "SettingsStackRoutes.SettingsNetworkBackends",
-            "source_line": 333,
+            "source_line": 335,
             "component": "NetworkBackendsScreen",
             "file": "suite-native-app/module-settings/src/screens/NetworkBackendsScreen.tsx",
             "registered_in": [
@@ -7906,7 +7920,7 @@
             "platform": "mobile",
             "route": "SettingsNetworks",
             "source": "SettingsStackRoutes.SettingsNetworks",
-            "source_line": 332,
+            "source_line": 334,
             "component": "SettingsNetworksScreen",
             "file": "suite-native-app/module-settings/src/screens/SettingsNetworksScreen.tsx",
             "registered_in": [
@@ -7953,7 +7967,7 @@
             "platform": "mobile",
             "route": "SettingsPreferences",
             "source": "SettingsStackRoutes.SettingsPreferences",
-            "source_line": 327,
+            "source_line": 329,
             "component": "SettingsPreferencesScreen",
             "file": "suite-native-app/module-settings/src/screens/SettingsPreferencesScreen.tsx",
             "registered_in": [
@@ -8001,7 +8015,7 @@
             "platform": "mobile",
             "route": "SettingsPrivacy",
             "source": "SettingsStackRoutes.SettingsPrivacy",
-            "source_line": 328,
+            "source_line": 330,
             "component": "SettingsPrivacyScreen",
             "file": "suite-native-app/module-settings/src/screens/SettingsPrivacyScreen.tsx",
             "registered_in": [
@@ -8046,7 +8060,7 @@
             "platform": "mobile",
             "route": "SettingsSecurity",
             "source": "SettingsStackRoutes.SettingsSecurity",
-            "source_line": 335,
+            "source_line": 337,
             "component": "SettingsSecurityScreen",
             "file": "suite-native-app/module-settings/src/screens/SettingsSecurityScreen.tsx",
             "registered_in": [
@@ -8078,7 +8092,7 @@
             "platform": "mobile",
             "route": "SettingsSuiteSync",
             "source": "SettingsStackRoutes.SettingsSuiteSync",
-            "source_line": 334,
+            "source_line": 336,
             "component": "SettingsSuiteSyncScreen",
             "file": "suite-native-app/module-settings/src/screens/SettingsSuiteSyncScreen.tsx",
             "registered_in": [
@@ -8123,7 +8137,7 @@
             "platform": "mobile",
             "route": "SettingsSupport",
             "source": "SettingsStackRoutes.SettingsSupport",
-            "source_line": 330,
+            "source_line": 332,
             "component": "SettingsSupportScreen",
             "file": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
             "registered_in": [
@@ -8187,7 +8201,7 @@
             "platform": "mobile",
             "route": "SettingsTradingLocation",
             "source": "SettingsStackRoutes.SettingsTradingLocation",
-            "source_line": 341,
+            "source_line": 343,
             "component": "SettingsTradingLocationScreen",
             "file": "suite-native/trading-residence/src/screens/SettingsTradingLocationScreen.tsx",
             "registered_in": [
@@ -8221,7 +8235,7 @@
             "platform": "mobile",
             "route": "SettingsViewOnly",
             "source": "SettingsStackRoutes.SettingsViewOnly",
-            "source_line": 329,
+            "source_line": 331,
             "component": "SettingsAutoEjectScreen",
             "file": "suite-native-app/module-settings/src/screens/SettingsAutoEjectScreen.tsx",
             "registered_in": [
@@ -8255,7 +8269,7 @@
             "platform": "mobile",
             "route": "TurnOffDeviceAuthenticityCheck",
             "source": "SettingsStackRoutes.TurnOffDeviceAuthenticityCheck",
-            "source_line": 339,
+            "source_line": 341,
             "component": "TurnOffDeviceAuthenticityCheckScreen",
             "file": "suite-native-app/module-settings/src/screens/TurnOffDeviceAuthenticityCheckScreen.tsx",
             "registered_in": [
@@ -8289,7 +8303,7 @@
             "platform": "mobile",
             "route": "TurnOffFirmwareAuthenticityCheck",
             "source": "SettingsStackRoutes.TurnOffFirmwareAuthenticityCheck",
-            "source_line": 340,
+            "source_line": 342,
             "component": "TurnOffFirmwareAuthenticityCheckScreen",
             "file": "suite-native-app/module-settings/src/screens/TurnOffFirmwareAuthenticityCheckScreen.tsx",
             "registered_in": [
@@ -8322,19 +8336,19 @@
         {
             "platform": "mobile",
             "route": "ContinueOnTrezor",
-            "source": "SignAndVerifyStackRoutes.ContinueOnTrezor",
-            "source_line": 250,
+            "source": "SignVerifyStackRoutes.ContinueOnTrezor",
+            "source_line": 252,
             "component": "ContinueOnTrezorScreen",
             "file": "suite-native-app/module-sign-verify/src/screens/ContinueOnTrezorScreen.tsx",
             "registered_in": [
                 {
-                    "navigator": "suite-native-app/module-sign-verify/src/navigation/SignAndVerifyStackNavigator.tsx",
+                    "navigator": "suite-native-app/module-sign-verify/src/navigation/SignVerifyStackNavigator.tsx",
                     "line": 28,
                     "component": "ContinueOnTrezorScreen",
                     "component_kind": "component",
                     "file": "suite-native-app/module-sign-verify/src/screens/ContinueOnTrezorScreen.tsx",
                     "conditional": false,
-                    "parent_routes": ["RootStackRoutes.SignAndVerifyStack"]
+                    "parent_routes": ["RootStackRoutes.SignVerifyStack"]
                 }
             ],
             "feature_ids": ["wallet.sign-verify"],
@@ -8354,19 +8368,19 @@
         {
             "platform": "mobile",
             "route": "DeviceConnectionGuard",
-            "source": "SignAndVerifyStackRoutes.DeviceConnectionGuard",
-            "source_line": 249,
+            "source": "SignVerifyStackRoutes.DeviceConnectionGuard",
+            "source_line": 251,
             "component": "DeviceConnectionGuardScreen",
             "file": "suite-native/device-authorization/src/screens/DeviceConnectionGuardScreen.tsx",
             "registered_in": [
                 {
-                    "navigator": "suite-native-app/module-sign-verify/src/navigation/SignAndVerifyStackNavigator.tsx",
+                    "navigator": "suite-native-app/module-sign-verify/src/navigation/SignVerifyStackNavigator.tsx",
                     "line": 23,
                     "component": "DeviceConnectionGuardScreen",
                     "component_kind": "component",
                     "file": "suite-native/device-authorization/src/screens/DeviceConnectionGuardScreen.tsx",
                     "conditional": true,
-                    "parent_routes": ["RootStackRoutes.SignAndVerifyStack"]
+                    "parent_routes": ["RootStackRoutes.SignVerifyStack"]
                 }
             ],
             "feature_ids": ["connection"],
@@ -8387,7 +8401,7 @@
             "platform": "mobile",
             "route": "ActivationFee",
             "source": "StellarManageTokenStackRoutes.ActivationFee",
-            "source_line": 369,
+            "source_line": 371,
             "component": "ActivationFeeScreen",
             "file": "suite-native-app/module-stellar-token-management/src/screens/ActivationFeeScreen.tsx",
             "registered_in": [
@@ -8426,7 +8440,7 @@
             "platform": "mobile",
             "route": "DeactivationFee",
             "source": "StellarManageTokenStackRoutes.DeactivationFee",
-            "source_line": 370,
+            "source_line": 372,
             "component": "DeactivationFeeScreen",
             "file": "suite-native-app/module-stellar-token-management/src/screens/DeactivationFeeScreen.tsx",
             "registered_in": [
@@ -8463,7 +8477,7 @@
             "platform": "mobile",
             "route": "ManualTokenInput",
             "source": "StellarManageTokenStackRoutes.ManualTokenInput",
-            "source_line": 368,
+            "source_line": 370,
             "component": "ManualTokenInputScreen",
             "file": "suite-native-app/module-stellar-token-management/src/screens/ManualTokenInputScreen.tsx",
             "registered_in": [
@@ -8503,7 +8517,7 @@
             "platform": "mobile",
             "route": "ReceiveAccounts",
             "source": "TradingStackRoutes.ReceiveAccounts",
-            "source_line": 355,
+            "source_line": 357,
             "component": "TradingReceiveAccountsPickerScreen",
             "file": "suite-native-app/module-trading/src/screens/TradingReceiveAccountsPickerScreen.tsx",
             "registered_in": [
@@ -8550,7 +8564,7 @@
             "platform": "mobile",
             "route": "TradingBuyPreview",
             "source": "TradingStackRoutes.TradingBuyPreview",
-            "source_line": 359,
+            "source_line": 361,
             "component": "TradingBuyPreviewScreen",
             "file": "suite-native-app/module-trading/src/screens/TradingBuyPreviewScreen.tsx",
             "registered_in": [
@@ -8584,7 +8598,7 @@
             "platform": "mobile",
             "route": "TradingConfirming",
             "source": "TradingStackRoutes.TradingConfirming",
-            "source_line": 350,
+            "source_line": 352,
             "component": "TradingConfirmingScreen",
             "file": "suite-native-app/module-trading/src/screens/TradingConfirmingScreen.tsx",
             "registered_in": [
@@ -8619,7 +8633,7 @@
             "platform": "mobile",
             "route": "TradingExchangeApproval",
             "source": "TradingStackRoutes.TradingExchangeApproval",
-            "source_line": 346,
+            "source_line": 348,
             "component": "TradingExchangeApprovalScreen",
             "file": "suite-native-app/module-trading/src/screens/TradingExchangeApprovalScreen.tsx",
             "registered_in": [
@@ -8638,10 +8652,11 @@
             "screenshot_ids": [],
             "flow_ids": [],
             "incoming_from": {
-                "count": 4,
-                "file_count": 3,
+                "count": 5,
+                "file_count": 4,
                 "files": [
                     "suite-native-app/module-trading/src/hooks/exchange/useExchangeSelectQuote.ts",
+                    "suite-native-app/module-trading/src/hooks/reviewOutputs/useTradingOutputsReviewScreenControls.ts",
                     "suite-native-app/module-trading/src/screens/TradingConfirmingScreen.tsx",
                     "suite-native-app/module-trading/src/screens/TradingExchangePreviewScreen.tsx"
                 ],
@@ -8659,7 +8674,7 @@
             "platform": "mobile",
             "route": "TradingExchangePreview",
             "source": "TradingStackRoutes.TradingExchangePreview",
-            "source_line": 345,
+            "source_line": 347,
             "component": "TradingExchangePreviewScreen",
             "file": "suite-native-app/module-trading/src/screens/TradingExchangePreviewScreen.tsx",
             "registered_in": [
@@ -8705,7 +8720,7 @@
             "platform": "mobile",
             "route": "TradingExchangeRevoke",
             "source": "TradingStackRoutes.TradingExchangeRevoke",
-            "source_line": 347,
+            "source_line": 349,
             "component": "TradingExchangeRevokeScreen",
             "file": "suite-native-app/module-trading/src/screens/TradingExchangeRevokeScreen.tsx",
             "registered_in": [
@@ -8724,10 +8739,11 @@
             "screenshot_ids": [],
             "flow_ids": [],
             "incoming_from": {
-                "count": 2,
-                "file_count": 1,
+                "count": 3,
+                "file_count": 2,
                 "files": [
-                    "suite-native-app/module-trading/src/hooks/exchange/useExchangeSelectQuote.ts"
+                    "suite-native-app/module-trading/src/hooks/exchange/useExchangeSelectQuote.ts",
+                    "suite-native-app/module-trading/src/hooks/reviewOutputs/useTradingOutputsReviewScreenControls.ts"
                 ],
                 "indirect_reference_file_count": 2,
                 "indirect_reference_files": [
@@ -8742,7 +8758,7 @@
             "platform": "mobile",
             "route": "TradingExchangeTransactionReview",
             "source": "TradingStackRoutes.TradingExchangeTransactionReview",
-            "source_line": 352,
+            "source_line": 354,
             "component": "TradingExchangeTransactionReviewScreen",
             "file": "suite-native-app/module-trading/src/screens/TradingExchangeTransactionReviewScreen.tsx",
             "registered_in": [
@@ -8782,7 +8798,7 @@
             "platform": "mobile",
             "route": "TradingHistory",
             "source": "TradingStackRoutes.TradingHistory",
-            "source_line": 357,
+            "source_line": 359,
             "component": "TradingHistoryScreen",
             "file": "suite-native-app/module-trading/src/screens/TradingHistoryScreen.tsx",
             "registered_in": [
@@ -8820,7 +8836,7 @@
             "platform": "mobile",
             "route": "TradingHistoryDetail",
             "source": "TradingStackRoutes.TradingHistoryDetail",
-            "source_line": 358,
+            "source_line": 360,
             "component": "TradingHistoryDetailScreen",
             "file": "suite-native-app/module-trading/src/screens/TradingHistoryDetailScreen.tsx",
             "registered_in": [
@@ -8861,7 +8877,7 @@
             "platform": "mobile",
             "route": "TradingMyAsset",
             "source": "TradingStackRoutes.TradingMyAsset",
-            "source_line": 353,
+            "source_line": 355,
             "component": "TradingMyAssetScreen",
             "file": "suite-native-app/module-trading/src/screens/TradingMyAssetScreen.tsx",
             "registered_in": [
@@ -8898,7 +8914,7 @@
             "platform": "mobile",
             "route": "TradingReceiveAddress",
             "source": "TradingStackRoutes.TradingReceiveAddress",
-            "source_line": 356,
+            "source_line": 358,
             "component": "TradingReceiveAddressPickerScreen",
             "file": "suite-native-app/module-trading/src/screens/TradingReceiveAddressPickerScreen.tsx",
             "registered_in": [
@@ -8941,7 +8957,7 @@
             "platform": "mobile",
             "route": "TradingSellCompletion",
             "source": "TradingStackRoutes.TradingSellCompletion",
-            "source_line": 349,
+            "source_line": 351,
             "component": "TradingSellCompletionScreen",
             "file": "suite-native-app/module-trading/src/screens/TradingSellCompletionScreen.tsx",
             "registered_in": [
@@ -8960,9 +8976,12 @@
             "screenshot_ids": [],
             "flow_ids": [],
             "incoming_from": {
-                "count": 1,
-                "file_count": 1,
-                "files": ["suite-native-app/module-trading/src/hooks/sell/useSellPreviewFlow.ts"],
+                "count": 2,
+                "file_count": 2,
+                "files": [
+                    "suite-native-app/module-trading/src/hooks/reviewOutputs/useTradingOutputsReviewScreenControls.ts",
+                    "suite-native-app/module-trading/src/hooks/sell/useSellPreviewFlow.ts"
+                ],
                 "indirect_reference_file_count": 2,
                 "indirect_reference_files": [
                     "suite-native-app/module-trading/src/components/sell/SellCompletion/SellCompletionConfirmButton.tsx",
@@ -8976,7 +8995,7 @@
             "platform": "mobile",
             "route": "TradingSellPreview",
             "source": "TradingStackRoutes.TradingSellPreview",
-            "source_line": 348,
+            "source_line": 350,
             "component": "TradingSellPreviewScreen",
             "file": "suite-native-app/module-trading/src/screens/TradingSellPreviewScreen.tsx",
             "registered_in": [
@@ -9011,7 +9030,7 @@
             "platform": "mobile",
             "route": "TradingSellTransactionReview",
             "source": "TradingStackRoutes.TradingSellTransactionReview",
-            "source_line": 351,
+            "source_line": 353,
             "component": "TradingSellTransactionReviewScreen",
             "file": "suite-native-app/module-trading/src/screens/TradingSellTransactionReviewScreen.tsx",
             "registered_in": [
@@ -9049,7 +9068,7 @@
             "platform": "mobile",
             "route": "TradingTradeableAsset",
             "source": "TradingStackRoutes.TradingTradeableAsset",
-            "source_line": 354,
+            "source_line": 356,
             "component": "TradingTradeableAssetScreen",
             "file": "suite-native-app/module-trading/src/screens/TradingTradeableAssetScreen.tsx",
             "registered_in": [
@@ -9086,7 +9105,7 @@
             "platform": "mobile",
             "route": "TransactionDetail",
             "source": "TransactionDetailStackRoutes.TransactionDetail",
-            "source_line": 363,
+            "source_line": 365,
             "component": "TransactionDetailScreen",
             "file": "suite-native-app/module-transactions/src/screens/TransactionDetailScreen.tsx",
             "registered_in": [
@@ -9132,7 +9151,7 @@
             "platform": "mobile",
             "route": "TransactionDetailOverview",
             "source": "TransactionDetailStackRoutes.TransactionDetailOverview",
-            "source_line": 364,
+            "source_line": 366,
             "component": null,
             "file": null,
             "registered_in": [],
@@ -9154,7 +9173,7 @@
             "platform": "mobile",
             "route": "ContinueOnTrezor",
             "source": "WipeDeviceStackRoutes.ContinueOnTrezor",
-            "source_line": 198,
+            "source_line": 200,
             "component": "WipeDeviceContinueOnTrezorScreen",
             "file": "suite-native-app/module-device-settings/src/screens/WipeDeviceContinueOnTrezorScreen.tsx",
             "registered_in": [
@@ -9186,7 +9205,7 @@
             "platform": "mobile",
             "route": "DeviceConnectionGuard",
             "source": "WipeDeviceStackRoutes.DeviceConnectionGuard",
-            "source_line": 197,
+            "source_line": 199,
             "component": "DeviceConnectionGuardScreen",
             "file": "suite-native/device-authorization/src/screens/DeviceConnectionGuardScreen.tsx",
             "registered_in": [
@@ -9218,7 +9237,7 @@
             "platform": "mobile",
             "route": "FactoryReset",
             "source": "WipeDeviceStackRoutes.FactoryReset",
-            "source_line": 200,
+            "source_line": 202,
             "component": "FactoryResetScreen",
             "file": "suite-native-app/module-device-settings/src/screens/FactoryResetScreen.tsx",
             "registered_in": [
@@ -9252,7 +9271,7 @@
             "platform": "mobile",
             "route": "WipeDeviceLoadingScreen",
             "source": "WipeDeviceStackRoutes.WipeDeviceLoadingScreen",
-            "source_line": 199,
+            "source_line": 201,
             "component": "WipeDeviceLoadingScreen",
             "file": "suite-native-app/module-device-settings/src/screens/WipeDeviceLoadingScreen.tsx",
             "registered_in": [
@@ -9284,7 +9303,7 @@
             "platform": "mobile",
             "route": "UnwrapNativeToken",
             "source": "WrappedNativeTokenStackRoutes.UnwrapNativeToken",
-            "source_line": 284,
+            "source_line": 286,
             "component": "UnwrapNativeTokenScreen",
             "file": "suite-native/module-earn/src/screens/earn/UnwrapNativeTokenScreen.tsx",
             "registered_in": [
@@ -9305,9 +9324,7 @@
             "incoming_from": {
                 "count": 1,
                 "file_count": 1,
-                "files": [
-                    "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx"
-                ],
+                "files": ["suite-native/earn/src/components/TokenSettingsBottomSheet.tsx"],
                 "indirect_reference_file_count": 4,
                 "indirect_reference_files": [
                     "suite-native/module-earn/src/hooks/earn/useStandaloneWrappedNativeController.ts",
@@ -9323,7 +9340,7 @@
             "platform": "mobile",
             "route": "UnwrapNativeTokenComplete",
             "source": "WrappedNativeTokenStackRoutes.UnwrapNativeTokenComplete",
-            "source_line": 286,
+            "source_line": 288,
             "component": "UnwrapNativeTokenCompleteScreen",
             "file": "suite-native/module-earn/src/screens/earn/UnwrapNativeTokenCompleteScreen.tsx",
             "registered_in": [
@@ -9359,7 +9376,7 @@
             "platform": "mobile",
             "route": "UnwrapNativeTokenReview",
             "source": "WrappedNativeTokenStackRoutes.UnwrapNativeTokenReview",
-            "source_line": 285,
+            "source_line": 287,
             "component": "UnwrapNativeTokenReviewScreen",
             "file": "suite-native/module-earn/src/screens/earn/UnwrapNativeTokenReviewScreen.tsx",
             "registered_in": [
@@ -9396,7 +9413,7 @@
             "platform": "mobile",
             "route": "WrapNativeToken",
             "source": "WrappedNativeTokenStackRoutes.WrapNativeToken",
-            "source_line": 281,
+            "source_line": 283,
             "component": "WrapNativeTokenScreen",
             "file": "suite-native/module-earn/src/screens/earn/WrapNativeTokenScreen.tsx",
             "registered_in": [
@@ -9417,9 +9434,7 @@
             "incoming_from": {
                 "count": 1,
                 "file_count": 1,
-                "files": [
-                    "suite-native/module-earn/src/components/earn/TokenSettingsBottomSheet.tsx"
-                ],
+                "files": ["suite-native/earn/src/components/TokenSettingsBottomSheet.tsx"],
                 "indirect_reference_file_count": 4,
                 "indirect_reference_files": [
                     "suite-native/module-earn/src/hooks/earn/useStandaloneWrappedNativeController.ts",
@@ -9435,7 +9450,7 @@
             "platform": "mobile",
             "route": "WrapNativeTokenComplete",
             "source": "WrappedNativeTokenStackRoutes.WrapNativeTokenComplete",
-            "source_line": 283,
+            "source_line": 285,
             "component": "WrapNativeTokenCompleteScreen",
             "file": "suite-native/module-earn/src/screens/earn/WrapNativeTokenCompleteScreen.tsx",
             "registered_in": [
@@ -9471,7 +9486,7 @@
             "platform": "mobile",
             "route": "WrapNativeTokenReview",
             "source": "WrappedNativeTokenStackRoutes.WrapNativeTokenReview",
-            "source_line": 282,
+            "source_line": 284,
             "component": "WrapNativeTokenReviewScreen",
             "file": "suite-native/module-earn/src/screens/earn/WrapNativeTokenReviewScreen.tsx",
             "registered_in": [
@@ -9508,13 +9523,13 @@
             "platform": "mobile",
             "route": "HowYieldWorks",
             "source": "YieldStackRoutes.HowYieldWorks",
-            "source_line": 258,
+            "source_line": 260,
             "component": "HowYieldWorksScreen",
             "file": "suite-native/module-earn/src/screens/yield/HowYieldWorksScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 41,
+                    "line": 43,
                     "component": "HowYieldWorksScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/HowYieldWorksScreen.tsx",
@@ -9530,9 +9545,9 @@
                 "count": 3,
                 "file_count": 3,
                 "files": [
+                    "suite-native/earn/src/utils/navigateByYieldAccountState.ts",
                     "suite-native/module-earn/src/components/yield/YieldVaultDetailScreenHeader.tsx",
-                    "suite-native/module-earn/src/screens/yield/YieldVaultDetailScreenContent.tsx",
-                    "suite-native/module-earn/src/utils/yield/navigateByYieldAccountState.ts"
+                    "suite-native/module-earn/src/screens/yield/YieldVaultDetailScreenContent.tsx"
                 ],
                 "indirect_reference_file_count": 4,
                 "indirect_reference_files": [
@@ -9549,13 +9564,13 @@
             "platform": "mobile",
             "route": "YieldClaim",
             "source": "YieldStackRoutes.YieldClaim",
-            "source_line": 260,
+            "source_line": 262,
             "component": "YieldClaimScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldClaimScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 51,
+                    "line": 53,
                     "component": "YieldClaimScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldClaimScreen.tsx",
@@ -9588,13 +9603,13 @@
             "platform": "mobile",
             "route": "YieldClaimComplete",
             "source": "YieldStackRoutes.YieldClaimComplete",
-            "source_line": 262,
+            "source_line": 264,
             "component": "YieldClaimCompleteScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldClaimCompleteScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 56,
+                    "line": 58,
                     "component": "YieldClaimCompleteScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldClaimCompleteScreen.tsx",
@@ -9623,13 +9638,13 @@
             "platform": "mobile",
             "route": "YieldClaimReview",
             "source": "YieldStackRoutes.YieldClaimReview",
-            "source_line": 261,
+            "source_line": 263,
             "component": "YieldClaimReviewScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldClaimReviewScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 111,
+                    "line": 113,
                     "component": "YieldClaimReviewScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldClaimReviewScreen.tsx",
@@ -9659,13 +9674,13 @@
             "platform": "mobile",
             "route": "YieldConsents",
             "source": "YieldStackRoutes.YieldConsents",
-            "source_line": 259,
+            "source_line": 261,
             "component": "YieldConsentsScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldConsentsScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 46,
+                    "line": 48,
                     "component": "YieldConsentsScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldConsentsScreen.tsx",
@@ -9697,13 +9712,13 @@
             "platform": "mobile",
             "route": "YieldDeposit",
             "source": "YieldStackRoutes.YieldDeposit",
-            "source_line": 266,
+            "source_line": 268,
             "component": "YieldDepositScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldDepositScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 71,
+                    "line": 73,
                     "component": "YieldDepositScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldDepositScreen.tsx",
@@ -9740,13 +9755,13 @@
             "platform": "mobile",
             "route": "YieldDepositApproval",
             "source": "YieldStackRoutes.YieldDepositApproval",
-            "source_line": 265,
+            "source_line": 267,
             "component": "YieldDepositApprovalScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldDepositApprovalScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 66,
+                    "line": 68,
                     "component": "YieldDepositApprovalScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldDepositApprovalScreen.tsx",
@@ -9782,13 +9797,13 @@
             "platform": "mobile",
             "route": "YieldDepositApprovalReview",
             "source": "YieldStackRoutes.YieldDepositApprovalReview",
-            "source_line": 270,
+            "source_line": 272,
             "component": "YieldDepositApprovalTransactionDataReviewScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldDepositApprovalTransactionDataReviewScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 121,
+                    "line": 123,
                     "component": "YieldDepositApprovalTransactionDataReviewScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldDepositApprovalTransactionDataReviewScreen.tsx",
@@ -9820,13 +9835,13 @@
             "platform": "mobile",
             "route": "YieldDepositComplete",
             "source": "YieldStackRoutes.YieldDepositComplete",
-            "source_line": 276,
+            "source_line": 278,
             "component": "YieldDepositCompleteScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldDepositCompleteScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 91,
+                    "line": 93,
                     "component": "YieldDepositCompleteScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldDepositCompleteScreen.tsx",
@@ -9859,13 +9874,13 @@
             "platform": "mobile",
             "route": "YieldDepositNoBalance",
             "source": "YieldStackRoutes.YieldDepositNoBalance",
-            "source_line": 267,
+            "source_line": 269,
             "component": "YieldDepositNoBalanceScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldDepositNoBalanceScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 76,
+                    "line": 78,
                     "component": "YieldDepositNoBalanceScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldDepositNoBalanceScreen.tsx",
@@ -9894,13 +9909,13 @@
             "platform": "mobile",
             "route": "YieldDepositReview",
             "source": "YieldStackRoutes.YieldDepositReview",
-            "source_line": 272,
+            "source_line": 274,
             "component": "YieldDepositReviewScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldDepositReviewScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 131,
+                    "line": 133,
                     "component": "YieldDepositReviewScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldDepositReviewScreen.tsx",
@@ -9932,13 +9947,13 @@
             "platform": "mobile",
             "route": "YieldDepositRevoke",
             "source": "YieldStackRoutes.YieldDepositRevoke",
-            "source_line": 268,
+            "source_line": 270,
             "component": "YieldDepositRevokeScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldDepositRevokeScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 81,
+                    "line": 83,
                     "component": "YieldDepositRevokeScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldDepositRevokeScreen.tsx",
@@ -9970,13 +9985,13 @@
             "platform": "mobile",
             "route": "YieldDepositRevokeReview",
             "source": "YieldStackRoutes.YieldDepositRevokeReview",
-            "source_line": 271,
+            "source_line": 273,
             "component": "YieldDepositApprovalTransactionDataReviewScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldDepositApprovalTransactionDataReviewScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 126,
+                    "line": 128,
                     "component": "YieldDepositApprovalTransactionDataReviewScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldDepositApprovalTransactionDataReviewScreen.tsx",
@@ -10008,13 +10023,13 @@
             "platform": "mobile",
             "route": "YieldDepositWrap",
             "source": "YieldStackRoutes.YieldDepositWrap",
-            "source_line": 263,
+            "source_line": 265,
             "component": "YieldDepositWrapScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldDepositWrapScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 61,
+                    "line": 63,
                     "component": "YieldDepositWrapScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldDepositWrapScreen.tsx",
@@ -10047,13 +10062,13 @@
             "platform": "mobile",
             "route": "YieldDepositWrapReview",
             "source": "YieldStackRoutes.YieldDepositWrapReview",
-            "source_line": 264,
+            "source_line": 266,
             "component": "YieldDepositWrapReviewScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldDepositWrapReviewScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 116,
+                    "line": 118,
                     "component": "YieldDepositWrapReviewScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldDepositWrapReviewScreen.tsx",
@@ -10084,13 +10099,13 @@
             "platform": "mobile",
             "route": "YieldWithdraw",
             "source": "YieldStackRoutes.YieldWithdraw",
-            "source_line": 269,
+            "source_line": 271,
             "component": "YieldWithdrawScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldWithdrawScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 86,
+                    "line": 88,
                     "component": "YieldWithdrawScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldWithdrawScreen.tsx",
@@ -10128,13 +10143,13 @@
             "platform": "mobile",
             "route": "YieldWithdrawComplete",
             "source": "YieldStackRoutes.YieldWithdrawComplete",
-            "source_line": 277,
+            "source_line": 279,
             "component": "YieldWithdrawCompleteScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldWithdrawCompleteScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 101,
+                    "line": 103,
                     "component": "YieldWithdrawCompleteScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldWithdrawCompleteScreen.tsx",
@@ -10167,13 +10182,13 @@
             "platform": "mobile",
             "route": "YieldWithdrawReview",
             "source": "YieldStackRoutes.YieldWithdrawReview",
-            "source_line": 275,
+            "source_line": 277,
             "component": "YieldWithdrawReviewScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldWithdrawReviewScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 136,
+                    "line": 138,
                     "component": "YieldWithdrawReviewScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldWithdrawReviewScreen.tsx",
@@ -10205,13 +10220,13 @@
             "platform": "mobile",
             "route": "YieldWithdrawUnwrap",
             "source": "YieldStackRoutes.YieldWithdrawUnwrap",
-            "source_line": 273,
+            "source_line": 275,
             "component": "YieldWithdrawUnwrapScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldWithdrawUnwrapScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 96,
+                    "line": 98,
                     "component": "YieldWithdrawUnwrapScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldWithdrawUnwrapScreen.tsx",
@@ -10243,13 +10258,13 @@
             "platform": "mobile",
             "route": "YieldWithdrawUnwrapReview",
             "source": "YieldStackRoutes.YieldWithdrawUnwrapReview",
-            "source_line": 274,
+            "source_line": 276,
             "component": "YieldWithdrawUnwrapReviewScreen",
             "file": "suite-native/module-earn/src/screens/yield/YieldWithdrawUnwrapReviewScreen.tsx",
             "registered_in": [
                 {
                     "navigator": "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
-                    "line": 141,
+                    "line": 143,
                     "component": "YieldWithdrawUnwrapReviewScreen",
                     "component_kind": "component",
                     "file": "suite-native/module-earn/src/screens/yield/YieldWithdrawUnwrapReviewScreen.tsx",
@@ -10285,7 +10300,7 @@
             "params": null,
             "flags": [],
             "component": "AppsEmbeddingPage",
-            "file": "suite-app/app/src/pages/AppsEmbeddingPage.tsx",
+            "file": "suite-app/module-apps-embedding/src/pages/AppsEmbeddingPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10372,7 +10387,7 @@
             "params": null,
             "flags": [],
             "component": "EarnTronRedirectPage",
-            "file": "suite-app/app/src/pages/EarnTronRedirectPage.tsx",
+            "file": "suite-app/module-earn/src/pages/EarnTronRedirectPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10396,7 +10411,7 @@
             "params": "earnParams",
             "flags": [],
             "component": "EarnTronClaimPage",
-            "file": "suite-app/app/src/pages/EarnTronClaimPage.tsx",
+            "file": "suite-app/module-earn/src/pages/EarnTronClaimPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10420,7 +10435,7 @@
             "params": "earnParams",
             "flags": [],
             "component": "EarnTronStakePage",
-            "file": "suite-app/app/src/pages/EarnTronStakePage.tsx",
+            "file": "suite-app/module-earn/src/pages/EarnTronStakePage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10444,7 +10459,7 @@
             "params": "earnParams",
             "flags": [],
             "component": "EarnTronUnstakePage",
-            "file": "suite-app/app/src/pages/EarnTronUnstakePage.tsx",
+            "file": "suite-app/module-earn/src/pages/EarnTronUnstakePage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10468,7 +10483,7 @@
             "params": "earnParams",
             "flags": [],
             "component": "EarnTronVotePage",
-            "file": "suite-app/app/src/pages/EarnTronVotePage.tsx",
+            "file": "suite-app/module-earn/src/pages/EarnTronVotePage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10492,7 +10507,7 @@
             "params": "earnParams",
             "flags": [],
             "component": "EarnTronWithdrawPage",
-            "file": "suite-app/app/src/pages/EarnTronWithdrawPage.tsx",
+            "file": "suite-app/module-earn/src/pages/EarnTronWithdrawPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10516,7 +10531,7 @@
             "params": "earnParams",
             "flags": [],
             "component": "EarnClaimPage",
-            "file": "suite-app/app/src/pages/EarnClaimPage.tsx",
+            "file": "suite-app/module-earn/src/pages/EarnClaimPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10540,7 +10555,7 @@
             "params": "earnParams",
             "flags": [],
             "component": "EarnDepositPage",
-            "file": "suite-app/app/src/pages/EarnDepositPage.tsx",
+            "file": "suite-app/module-earn/src/pages/EarnDepositPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10564,7 +10579,7 @@
             "params": "earnParams",
             "flags": [],
             "component": "EarnUnwrapPage",
-            "file": "suite-app/app/src/pages/EarnUnwrapPage.tsx",
+            "file": "suite-app/module-earn/src/pages/EarnUnwrapPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10588,7 +10603,7 @@
             "params": "earnParams",
             "flags": [],
             "component": "EarnWithdrawPage",
-            "file": "suite-app/app/src/pages/EarnWithdrawPage.tsx",
+            "file": "suite-app/module-earn/src/pages/EarnWithdrawPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10612,7 +10627,7 @@
             "params": "earnParams",
             "flags": [],
             "component": "EarnWrapPage",
-            "file": "suite-app/app/src/pages/EarnWrapPage.tsx",
+            "file": "suite-app/module-earn/src/pages/EarnWrapPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10701,12 +10716,12 @@
             "platform": "desktop-web",
             "route": "notifications-index",
             "source": "/notifications",
-            "source_line": 443,
+            "source_line": 448,
             "app": "notifications",
             "params": null,
             "flags": [],
             "component": "NotificationPage",
-            "file": "suite-app/app/src/pages/NotificationPage.tsx",
+            "file": "suite-app/module-activity-center/src/pages/NotificationPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10739,55 +10754,21 @@
             "params": null,
             "flags": ["isForegroundApp", "isFullscreenApp"],
             "component": "Onboarding",
-            "file": "packages/suite/src/views/onboarding/index.tsx",
+            "file": "suite-app/module-onboarding/src/Onboarding.tsx",
             "rendered_by": {
                 "mechanism": "fullscreen-app",
                 "evidence": ["suite-app/app/src/Preloader/Preloader.tsx"]
             },
             "platform_difference": null,
             "feature_ids": [
-                "mobile.device-onboarding.create-or-recover",
-                "mobile.device-onboarding.recovery-instructions",
-                "onboarding",
-                "onboarding.complete",
-                "onboarding.firmware",
-                "onboarding.new-wallet",
-                "onboarding.new-wallet.12-words",
-                "onboarding.new-wallet.24-words",
-                "onboarding.new-wallet.backup-guide",
-                "onboarding.new-wallet.backup-type",
-                "onboarding.new-wallet.defer-backup",
-                "onboarding.new-wallet.multi-share",
-                "onboarding.new-wallet.nfc",
-                "onboarding.new-wallet.single-share",
-                "onboarding.pin",
-                "onboarding.pin.skip",
-                "onboarding.recovery",
-                "onboarding.recovery.advanced",
-                "onboarding.recovery.on-device",
-                "onboarding.recovery.retry",
-                "onboarding.recovery.standard",
-                "onboarding.recovery.word-count",
-                "onboarding.tutorial"
+                "mobile.onboarding.biometrics",
+                "mobile.onboarding.residence",
+                "onboarding"
             ],
-            "ledger_dispositions": ["control-excerpt-reviewed"],
-            "screenshot_ids": [
-                "web-t3t1-backup-safety-guide",
-                "web-t3t1-backup-type",
-                "web-t3t1-controls-tutorial",
-                "web-t3t1-create-or-recover",
-                "web-t3t1-defer-backup-confirmation",
-                "web-t3t1-device-detection",
-                "web-t3t1-device-doubts",
-                "web-t3t1-legacy-backup-types",
-                "web-t3t1-onboarding-complete",
-                "web-t3t1-onboarding-firmware",
-                "web-t3t1-pin-setup",
-                "web-t3t1-receive-device-verification",
-                "web-t3t1-skip-pin-confirmation"
-            ],
+            "ledger_dispositions": [],
+            "screenshot_ids": ["web-t3t1-device-detection", "web-t3t1-device-doubts"],
             "status": "covered",
-            "status_basis": "ledger desktop-administration-services (directory-of-index)"
+            "status_basis": "feature implementation evidence (no ledger row)"
         },
         {
             "platform": "desktop-web",
@@ -10798,7 +10779,7 @@
             "params": null,
             "flags": [],
             "component": "PasswordManagerPage",
-            "file": "suite-app/app/src/pages/PasswordManagerPage.tsx",
+            "file": "suite-app/module-password-manager/src/pages/PasswordManagerPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10822,7 +10803,7 @@
             "params": "modalAppParams",
             "flags": ["isForegroundApp"],
             "component": "Recovery",
-            "file": "packages/suite/src/views/recovery/index.tsx",
+            "file": "packages/suite/src/views/recovery/Recovery.tsx",
             "rendered_by": {
                 "mechanism": "foreground-app-modal",
                 "evidence": ["suite-app/app/src/ModalSwitcher/ForegroundAppModal.tsx"]
@@ -10854,7 +10835,7 @@
             "params": null,
             "flags": [],
             "component": "SettingsCoinsPage",
-            "file": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
+            "file": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10891,7 +10872,7 @@
             "params": null,
             "flags": [],
             "component": "SettingsConnectedAppsPage",
-            "file": "suite-app/app/src/pages/SettingsConnectedAppsPage.tsx",
+            "file": "suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10915,7 +10896,7 @@
             "params": null,
             "flags": [],
             "component": "SettingsDebugPage",
-            "file": "suite-app/app/src/pages/SettingsDebugPage.tsx",
+            "file": "suite-app/module-settings/src/pages/SettingsDebugPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10939,7 +10920,7 @@
             "params": null,
             "flags": [],
             "component": "SettingsDevicePage",
-            "file": "suite-app/app/src/pages/SettingsDevicePage.tsx",
+            "file": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10963,7 +10944,7 @@
             "params": "undefined",
             "flags": [],
             "component": "DesktopSettingsGeneralPage",
-            "file": "suite-app/app/src/pages/DesktopSettingsGeneralPage.tsx",
+            "file": "suite-app/module-settings/src/pages/DesktopSettingsGeneralPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -10974,11 +10955,11 @@
             "platform_difference": {
                 "desktop": {
                     "component": "DesktopSettingsGeneralPage",
-                    "file": "suite-app/app/src/pages/DesktopSettingsGeneralPage.tsx"
+                    "file": "suite-app/module-settings/src/pages/DesktopSettingsGeneralPage.tsx"
                 },
                 "web": {
                     "component": "WebSettingsGeneralPage",
-                    "file": "suite-app/app/src/pages/WebSettingsGeneralPage.tsx"
+                    "file": "suite-app/module-settings/src/pages/WebSettingsGeneralPage.tsx"
                 }
             },
             "feature_ids": ["app-settings", "app-settings.tor", "app-settings.tor-external"],
@@ -10996,7 +10977,7 @@
             "params": "assetParams",
             "flags": [],
             "component": "AssetDetailPage",
-            "file": "suite-app/app/src/pages/AssetDetailPage.tsx",
+            "file": "suite-app/module-assets/src/pages/AssetDetailPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -11030,7 +11011,7 @@
             "params": "modalAppParams",
             "flags": ["isForegroundApp"],
             "component": "BridgeUnavailable",
-            "file": "packages/suite/src/views/suite/bridge/index.tsx",
+            "file": "packages/suite/src/views/suite/bridge/BridgeUnavailable.tsx",
             "rendered_by": {
                 "mechanism": "foreground-app-modal",
                 "evidence": ["suite-app/app/src/ModalSwitcher/ForegroundAppModal.tsx"]
@@ -11051,7 +11032,7 @@
             "params": "modalAppParams",
             "flags": ["isForegroundApp"],
             "component": "BridgeDeprecated",
-            "file": "packages/suite/src/views/suite/bridge-deprecated/index.tsx",
+            "file": "packages/suite/src/views/suite/bridge-deprecated/BridgeDeprecated.tsx",
             "rendered_by": {
                 "mechanism": "foreground-app-modal",
                 "evidence": ["suite-app/app/src/ModalSwitcher/ForegroundAppModal.tsx"]
@@ -11072,7 +11053,7 @@
             "params": "modalAppParams",
             "flags": ["isForegroundApp"],
             "component": "BridgeRequested",
-            "file": "packages/suite/src/views/suite/bridge-requested/index.tsx",
+            "file": "packages/suite/src/views/suite/bridge-requested/BridgeRequested.tsx",
             "rendered_by": {
                 "mechanism": "foreground-app-modal",
                 "evidence": ["suite-app/app/src/ModalSwitcher/ForegroundAppModal.tsx"]
@@ -11093,7 +11074,7 @@
             "params": "modalAppParams",
             "flags": [],
             "component": "ConnectPopupPage",
-            "file": "suite-app/app/src/pages/ConnectPopupPage.tsx",
+            "file": "suite-app/module-connect-popup/src/pages/ConnectPopupPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -11117,7 +11098,7 @@
             "params": null,
             "flags": [],
             "component": "EarnPage",
-            "file": "suite-app/app/src/pages/EarnPage.tsx",
+            "file": "suite-app/module-earn/src/pages/EarnPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -11148,7 +11129,7 @@
             "params": null,
             "flags": [],
             "component": "HiddenTokensPage",
-            "file": "suite-app/app/src/pages/HiddenTokensPage.tsx",
+            "file": "suite-app/module-home/src/pages/HiddenTokensPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -11175,7 +11156,7 @@
             "params": "dashboardParams",
             "flags": [],
             "component": "DashboardPage",
-            "file": "suite-app/app/src/pages/DashboardPage.tsx",
+            "file": "suite-app/module-home/src/pages/DashboardPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -11233,7 +11214,7 @@
             "params": null,
             "flags": [],
             "component": "ReferAFriendPage",
-            "file": "suite-app/app/src/pages/ReferAFriendPage.tsx",
+            "file": "suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -11257,7 +11238,7 @@
             "params": null,
             "flags": ["clearUrl"],
             "component": "DashboardPage",
-            "file": "suite-app/app/src/pages/DashboardPage.tsx",
+            "file": "suite-app/module-home/src/pages/DashboardPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -11340,7 +11321,7 @@
             "params": "modalAppParams",
             "flags": ["isForegroundApp"],
             "component": "UdevRules",
-            "file": "packages/suite/src/views/suite/udev/index.tsx",
+            "file": "packages/suite/src/views/suite/udev/UdevRules.tsx",
             "rendered_by": {
                 "mechanism": "foreground-app-modal",
                 "evidence": ["suite-app/app/src/ModalSwitcher/ForegroundAppModal.tsx"]
@@ -11361,7 +11342,7 @@
             "params": "modalAppParams",
             "flags": ["isForegroundApp"],
             "component": "Version",
-            "file": "packages/suite/src/views/suite/version/index.tsx",
+            "file": "packages/suite/src/views/suite/version/Version.tsx",
             "rendered_by": {
                 "mechanism": "foreground-app-modal",
                 "evidence": ["suite-app/app/src/ModalSwitcher/ForegroundAppModal.tsx"]
@@ -11377,12 +11358,12 @@
             "platform": "desktop-web",
             "route": "wallet-anonymize",
             "source": "/accounts/anonymize",
-            "source_line": 437,
+            "source_line": 442,
             "app": "wallet",
             "params": "walletParams",
             "flags": [],
             "component": "WalletAnonymizePage",
-            "file": "suite-app/app/src/pages/WalletAnonymizePage.tsx",
+            "file": "suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -11401,12 +11382,12 @@
             "platform": "desktop-web",
             "route": "wallet-coinjoin",
             "source": "/accounts/coinjoin",
-            "source_line": 431,
+            "source_line": 436,
             "app": "wallet",
             "params": "walletParams",
             "flags": [],
             "component": "WalletCoinjoinPage",
-            "file": "suite-app/app/src/pages/WalletCoinjoinPage.tsx",
+            "file": "suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -11436,12 +11417,12 @@
             "platform": "desktop-web",
             "route": "wallet-details",
             "source": "/accounts/details",
-            "source_line": 375,
+            "source_line": 380,
             "app": "wallet",
             "params": "walletParams",
             "flags": [],
             "component": "WalletDetailsPage",
-            "file": "suite-app/app/src/pages/WalletDetailsPage.tsx",
+            "file": "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -11474,7 +11455,7 @@
             "params": "walletParams",
             "flags": [],
             "component": "TransactionsPage",
-            "file": "suite-app/app/src/pages/TransactionsPage.tsx",
+            "file": "suite-app/module-transactions/src/pages/TransactionsPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -11530,12 +11511,12 @@
             "platform": "desktop-web",
             "route": "wallet-nfts",
             "source": "/accounts/nfts",
-            "source_line": 416,
+            "source_line": 421,
             "app": "wallet",
             "params": "walletParams",
             "flags": ["hasNestedRoutes"],
             "component": "NftsPage",
-            "file": "suite-app/app/src/pages/NftsPage.tsx",
+            "file": "suite-app/module-account-detail/src/pages/NftsPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -11563,16 +11544,16 @@
             "platform": "desktop-web",
             "route": "wallet-nfts-hidden",
             "source": "/accounts/nfts/hidden",
-            "source_line": 423,
+            "source_line": 428,
             "app": "wallet",
             "params": "walletParams",
             "flags": ["isNestedRoute"],
             "component": "NftsPage",
-            "file": "suite-app/app/src/pages/NftsPage.tsx",
+            "file": "suite-app/module-account-detail/src/pages/NftsPage.tsx",
             "rendered_by": {
                 "mechanism": "nested-route-parent-page",
                 "parent_route": "wallet-nfts",
-                "evidence": ["suite-app/app/src/AppRouter.tsx"]
+                "evidence": ["suite-app/app/src/AppRouter/AppRouter.tsx"]
             },
             "platform_difference": null,
             "feature_ids": [
@@ -11599,7 +11580,7 @@
             "params": "walletParams",
             "flags": [],
             "component": "ReceivePage",
-            "file": "suite-app/app/src/pages/ReceivePage.tsx",
+            "file": "suite-app/module-receive/src/pages/ReceivePage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -11646,7 +11627,7 @@
             "params": "walletParams",
             "flags": [],
             "component": "WalletSendPage",
-            "file": "suite-app/app/src/pages/WalletSendPage.tsx",
+            "file": "suite-app/module-send/src/pages/WalletSendPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -11743,7 +11724,7 @@
             "params": "walletParams",
             "flags": [],
             "component": "SignVerifyPage",
-            "file": "suite-app/app/src/pages/SignVerifyPage.tsx",
+            "file": "suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -11781,7 +11762,7 @@
             "params": "walletParams",
             "flags": [],
             "component": "WalletStakingPage",
-            "file": "suite-app/app/src/pages/WalletStakingPage.tsx",
+            "file": "suite-app/module-earn/src/pages/WalletStakingPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -11800,12 +11781,12 @@
             "platform": "desktop-web",
             "route": "wallet-tokens",
             "source": "/accounts/tokens",
-            "source_line": 388,
+            "source_line": 393,
             "app": "wallet",
             "params": "walletParams",
             "flags": ["hasNestedRoutes"],
             "component": "TokensPage",
-            "file": "suite-app/app/src/pages/TokensPage.tsx",
+            "file": "suite-app/module-account-detail/src/pages/TokensPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -11845,16 +11826,16 @@
             "platform": "desktop-web",
             "route": "wallet-tokens-defi",
             "source": "/accounts/tokens/defi",
-            "source_line": 409,
+            "source_line": 414,
             "app": "wallet",
             "params": "walletParams",
             "flags": ["isNestedRoute"],
             "component": "TokensPage",
-            "file": "suite-app/app/src/pages/TokensPage.tsx",
+            "file": "suite-app/module-account-detail/src/pages/TokensPage.tsx",
             "rendered_by": {
                 "mechanism": "nested-route-parent-page",
                 "parent_route": "wallet-tokens",
-                "evidence": ["suite-app/app/src/AppRouter.tsx"]
+                "evidence": ["suite-app/app/src/AppRouter/AppRouter.tsx"]
             },
             "platform_difference": null,
             "feature_ids": [
@@ -11888,16 +11869,16 @@
             "platform": "desktop-web",
             "route": "wallet-tokens-hidden",
             "source": "/accounts/tokens/hidden",
-            "source_line": 395,
+            "source_line": 400,
             "app": "wallet",
             "params": "walletParams",
             "flags": ["isNestedRoute"],
             "component": "TokensPage",
-            "file": "suite-app/app/src/pages/TokensPage.tsx",
+            "file": "suite-app/module-account-detail/src/pages/TokensPage.tsx",
             "rendered_by": {
                 "mechanism": "nested-route-parent-page",
                 "parent_route": "wallet-tokens",
-                "evidence": ["suite-app/app/src/AppRouter.tsx"]
+                "evidence": ["suite-app/app/src/AppRouter/AppRouter.tsx"]
             },
             "platform_difference": null,
             "feature_ids": [
@@ -11931,16 +11912,16 @@
             "platform": "desktop-web",
             "route": "wallet-tokens-inactive",
             "source": "/accounts/tokens/inactive",
-            "source_line": 402,
+            "source_line": 407,
             "app": "wallet",
             "params": "walletParams",
             "flags": ["isNestedRoute"],
             "component": "TokensPage",
-            "file": "suite-app/app/src/pages/TokensPage.tsx",
+            "file": "suite-app/module-account-detail/src/pages/TokensPage.tsx",
             "rendered_by": {
                 "mechanism": "nested-route-parent-page",
                 "parent_route": "wallet-tokens",
-                "evidence": ["suite-app/app/src/AppRouter.tsx"]
+                "evidence": ["suite-app/app/src/AppRouter/AppRouter.tsx"]
             },
             "platform_difference": null,
             "feature_ids": [
@@ -11974,12 +11955,12 @@
             "platform": "desktop-web",
             "route": "wallet-trade",
             "source": "/accounts/trade",
-            "source_line": 382,
+            "source_line": 387,
             "app": "wallet",
             "params": "walletParams",
             "flags": [],
             "component": "WalletTradePage",
-            "file": "suite-app/app/src/pages/WalletTradePage.tsx",
+            "file": "suite-app/module-trading/src/pages/WalletTradePage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -12003,7 +11984,7 @@
             "params": null,
             "flags": [],
             "component": "TradingBuyFormPage",
-            "file": "suite-app/app/src/pages/TradingBuyFormPage.tsx",
+            "file": "suite-app/module-trading/src/pages/TradingBuyFormPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -12027,7 +12008,7 @@
             "params": null,
             "flags": [],
             "component": "TradingBuyConfirmPage",
-            "file": "suite-app/app/src/pages/TradingBuyConfirmPage.tsx",
+            "file": "suite-app/module-trading/src/pages/TradingBuyConfirmPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -12051,7 +12032,7 @@
             "params": null,
             "flags": [],
             "component": "TradingBuyDetailPage",
-            "file": "suite-app/app/src/pages/TradingBuyDetailPage.tsx",
+            "file": "suite-app/module-trading/src/pages/TradingBuyDetailPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -12075,7 +12056,7 @@
             "params": "walletParams",
             "flags": [],
             "component": "TradingConciergeDetailPage",
-            "file": "suite-app/app/src/pages/TradingConciergeDetailPage.tsx",
+            "file": "suite-app/module-trading/src/pages/TradingConciergeDetailPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -12099,7 +12080,7 @@
             "params": null,
             "flags": [],
             "component": "TradingExchangeFormPage",
-            "file": "suite-app/app/src/pages/TradingExchangeFormPage.tsx",
+            "file": "suite-app/module-trading/src/pages/TradingExchangeFormPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -12116,6 +12097,30 @@
         },
         {
             "platform": "desktop-web",
+            "route": "wallet-trading-exchange-allowance",
+            "source": "/accounts/coinmarket/exchange/allowance",
+            "source_line": 363,
+            "app": "wallet",
+            "params": null,
+            "flags": [],
+            "component": "TradingExchangeAllowancePage",
+            "file": "suite-app/module-trading/src/pages/TradingExchangeAllowancePage.tsx",
+            "rendered_by": {
+                "mechanism": "page-component",
+                "evidence": [
+                    "suite-app/desktop-app-renderer/src/support/desktopComponents.ts",
+                    "suite-app/web-app/src/support/webComponents.ts"
+                ]
+            },
+            "platform_difference": null,
+            "feature_ids": [],
+            "ledger_dispositions": [],
+            "screenshot_ids": [],
+            "status": "unmapped",
+            "status_basis": "no ledger row for the rendering component"
+        },
+        {
+            "platform": "desktop-web",
             "route": "wallet-trading-exchange-approval",
             "source": "/accounts/coinmarket/exchange/approval",
             "source_line": 358,
@@ -12123,7 +12128,7 @@
             "params": null,
             "flags": [],
             "component": "TradingExchangeApprovalPage",
-            "file": "suite-app/app/src/pages/TradingExchangeApprovalPage.tsx",
+            "file": "suite-app/module-trading/src/pages/TradingExchangeApprovalPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -12152,7 +12157,7 @@
             "params": null,
             "flags": [],
             "component": "TradingExchangeConfirmPage",
-            "file": "suite-app/app/src/pages/TradingExchangeConfirmPage.tsx",
+            "file": "suite-app/module-trading/src/pages/TradingExchangeConfirmPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -12176,7 +12181,7 @@
             "params": null,
             "flags": [],
             "component": "TradingExchangeDetailPage",
-            "file": "suite-app/app/src/pages/TradingExchangeDetailPage.tsx",
+            "file": "suite-app/module-trading/src/pages/TradingExchangeDetailPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -12195,12 +12200,12 @@
             "platform": "desktop-web",
             "route": "wallet-trading-redirect",
             "source": "/coinmarket-redirect",
-            "source_line": 363,
+            "source_line": 368,
             "app": "wallet",
             "params": "walletParams",
             "flags": [],
             "component": "TradingRedirectPage",
-            "file": "suite-app/app/src/pages/TradingRedirectPage.tsx",
+            "file": "suite-app/module-trading/src/pages/TradingRedirectPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -12224,7 +12229,7 @@
             "params": null,
             "flags": [],
             "component": "TradingSellFormPage",
-            "file": "suite-app/app/src/pages/TradingSellFormPage.tsx",
+            "file": "suite-app/module-trading/src/pages/TradingSellFormPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -12248,7 +12253,7 @@
             "params": null,
             "flags": [],
             "component": "TradingSellConfirmPage",
-            "file": "suite-app/app/src/pages/TradingSellConfirmPage.tsx",
+            "file": "suite-app/module-trading/src/pages/TradingSellConfirmPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -12272,7 +12277,7 @@
             "params": null,
             "flags": [],
             "component": "TradingSellDetailPage",
-            "file": "suite-app/app/src/pages/TradingSellDetailPage.tsx",
+            "file": "suite-app/module-trading/src/pages/TradingSellDetailPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [
@@ -12291,12 +12296,12 @@
             "platform": "desktop-web",
             "route": "wallet-trading-transactions",
             "source": "/accounts/coinmarket/transactions",
-            "source_line": 369,
+            "source_line": 374,
             "app": "wallet",
             "params": "walletParams",
             "flags": [],
             "component": "TradingTransactionsPage",
-            "file": "suite-app/app/src/pages/TradingTransactionsPage.tsx",
+            "file": "suite-app/module-trading/src/pages/TradingTransactionsPage.tsx",
             "rendered_by": {
                 "mechanism": "page-component",
                 "evidence": [

@@ -366,6 +366,52 @@
             "status": "mapped",
             "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
             "detail": "Declares BTC and LTC read-address permissions at Connect initialization, verifies both groups appear in the initial consent, remembers the declared set, and confirms the later LTC call requires no new grant. The API declaration itself is not a standalone user feature."
+        },
+        {
+            "status": "mapped",
+            "path": "suite/e2e/tests/staking/trx/vote-allocation.test.ts",
+            "feature_ids": ["earn.staking.trx.vote"],
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Splits Tron votes between two representatives, checks the remaining-votes counter, rejects assigning more votes than the staked amount and confirms the pending vote."
+        },
+        {
+            "status": "mapped",
+            "path": "suite/e2e/tests/trading/buy-inputs.test.ts",
+            "feature_ids": ["trade.buy.asset", "trade.buy.fiat-currency"],
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "The Buy form requests new quotes when the asset or the fiat currency changes."
+        },
+        {
+            "status": "mapped",
+            "path": "suite/e2e/tests/yield/cancel.test.ts",
+            "feature_ids": ["earn.yield.deposit", "earn.yield.withdraw", "earn.yield.claim"],
+            "reason": "Executable test actions and assertions were inspected and reconciled with existing user capabilities.",
+            "detail": "Backs out of each yield modal (deposit with its explanation, withdraw and claim) without sending a transaction."
+        },
+        {
+            "status": "mapped",
+            "path": "suite-native-app/app/e2e/tests/manual/wallet/earnEnableNetwork.test.ts",
+            "feature_ids": ["earn.opportunities.account"],
+            "reason": "Manual procedure steps were inspected and reconciled with existing user capabilities; not an execution result.",
+            "detail": "Enable disabled Cardano and Tron from the Earn staking list (enable sheet, discovery, management screen), with and without a stake."
+        },
+        {
+            "status": "mapped",
+            "path": "suite-native-app/app/e2e/tests/manual/wallet/stakingAda.test.ts",
+            "feature_ids": ["mobile.earn.staking.view-only", "earn.staking.ada"],
+            "reason": "Manual procedure steps were inspected and reconciled with existing user capabilities; not an execution result.",
+            "detail": "Read-only ADA staking overview on mobile: position with APY, desktop-only management banner, auto-staked balance, rewards, Learn more sheets and staking transactions; no Stake or Unstake."
+        },
+        {
+            "status": "mapped",
+            "path": "suite-native-app/app/e2e/tests/manual/wallet/stakingTrx.test.ts",
+            "feature_ids": [
+                "mobile.earn.staking.view-only",
+                "earn.staking.trx",
+                "earn.staking.trx.resources"
+            ],
+            "reason": "Manual procedure steps were inspected and reconciled with existing user capabilities; not an execution result.",
+            "detail": "Read-only TRX staking overview on mobile: APR, unassigned votes alert, staked amount and rewards, ready-to-withdraw banner, unstaking list and Resources card; no Stake or Unstake."
         }
     ],
     "notes": [
