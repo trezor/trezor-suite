@@ -1,27 +1,49 @@
-name: "[Release] connect v9 rollback"
+name: "[Release] connect rollback"
 
 permissions:
-  id-token: write # for fetching the OIDC token
-  contents: read # for actions/checkout
+  contents: read
 
 on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}
+  group: ${{ github.workflow }}-${{ github.ref_name }}
   cancel-in-progress: true
 
 env:
   CONNECT_CLOUDFRONT_DISTRIBUTION_ID: E3LVNAOGT94E37
 
 jobs:
+  extract-version:
+    runs-on: ubuntu-latest
+    outputs:
+      major: ${{ steps.set-version.outputs.major }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+
+      - name: Setup node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Extract connect major version
+        id: set-version
+        run: |
+          VERSION="$(node ./scripts/ci/get-connect-version.js)"
+          echo "major=${VERSION%%.*}" >> "$GITHUB_OUTPUT"
+
   rollback-connect-production:
+    permissions:
+      id-token: write
+      contents: read
+    needs: [extract-version]
     if: startsWith(github.ref, 'refs/heads/release/connect/')
     environment: production-connect
-    name: "Create rollback copy of connect.trezor.io"
+    name: "Create rollback copy of connect.trezor.io/${{ needs.extract-version.outputs.major }}"
     runs-on: ubuntu-latest
     env:
-      LATEST_VERSION: 9
+      LATEST_VERSION: ${{ needs.extract-version.outputs.major }}
     steps:
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
