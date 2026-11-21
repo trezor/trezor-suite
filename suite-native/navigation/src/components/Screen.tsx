@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from 'react';
+import { type ComponentProps, type ReactNode, useState } from 'react';
 import { type ScrollViewProps, View, type ViewProps } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
@@ -9,7 +9,7 @@ import { useRoute } from '@react-navigation/native';
 import { type RequireOneOrNone } from 'type-fest';
 
 import { selectIsAnyBannerMessageActive } from '@suite-common/message-system';
-import { Box, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
+import { AnimatedView, Box, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { KeyboardToolbar, KeyboardToolbarHost } from '@suite-native/keyboard';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color, type NativeSpacing } from '@trezor/theme';
@@ -39,6 +39,11 @@ export type ScreenProps = {
     hasBottomInset?: boolean;
     refreshControl?: ScrollViewProps['refreshControl'];
     containerStyle?: ViewProps['style'];
+    /**
+     * Animates the content area when its frame changes, e.g. when the header mounts or unmounts.
+     * Without it, the content jumps to its new position.
+     */
+    contentLayoutTransition?: ComponentProps<typeof AnimatedView>['layout'];
 } & RequireOneOrNone<{
     keyboardToolbarComponent?: ReactNode;
     keyboardToolbarHostName?: string;
@@ -62,6 +67,10 @@ const screenContainerStyle = prepareNativeStyle<{
             },
         },
     ],
+}));
+
+const animatedContentStyle = prepareNativeStyle(() => ({
+    flex: 1,
 }));
 
 const screenContentStyle = prepareNativeStyle<{
@@ -108,6 +117,7 @@ export const Screen = ({
     focusedInputBottomOffset,
     isFooterKeyboardAware = true,
     hasBottomInset = true,
+    contentLayoutTransition,
 }: ScreenProps) => {
     const [keyboardToolbarHeight, setKeyboardToolbarHeight] = useState(0);
     const {
@@ -140,6 +150,31 @@ export const Screen = ({
     const shouldRenderDynamicScrollableHeader =
         isScreenHeaderPropDynamic(header) && !dynamicHeaderProps?.isCompactOnly;
 
+    const content = (
+        <ScreenContentWrapper
+            isScrollable={isScrollable}
+            hasHeader={!!header}
+            scrollIndicatorBottomInset={applyBottomInset && !footer ? insets.bottom : 0}
+            focusedInputBottomOffset={focusedInputBottomOffset}
+            refreshControl={refreshControl}
+            isDynamicHeader={isScreenHeaderPropDynamic(header)}
+        >
+            {shouldRenderDynamicScrollableHeader && (
+                <DynamicScrollableScreenContentHeader {...dynamicHeaderProps} />
+            )}
+            <Box
+                style={applyStyle(screenContentStyle, {
+                    insets,
+                    applyBottomInset: applyBottomInset && !footer,
+                    horizontalPadding,
+                    bottomPadding,
+                })}
+            >
+                {children}
+            </Box>
+        </ScreenContentWrapper>
+    );
+
     return (
         <DynamicHeaderProvider scrollThreshold={dynamicHeaderProps?.scrollThreshold}>
             <View
@@ -156,28 +191,16 @@ export const Screen = ({
             >
                 <SystemBars style={systemThemeStyle ?? systemBarsStyle} />
                 {header}
-                <ScreenContentWrapper
-                    isScrollable={isScrollable}
-                    hasHeader={!!header}
-                    scrollIndicatorBottomInset={applyBottomInset && !footer ? insets.bottom : 0}
-                    focusedInputBottomOffset={focusedInputBottomOffset}
-                    refreshControl={refreshControl}
-                    isDynamicHeader={isScreenHeaderPropDynamic(header)}
-                >
-                    {shouldRenderDynamicScrollableHeader && (
-                        <DynamicScrollableScreenContentHeader {...dynamicHeaderProps} />
-                    )}
-                    <Box
-                        style={applyStyle(screenContentStyle, {
-                            insets,
-                            applyBottomInset: applyBottomInset && !footer,
-                            horizontalPadding,
-                            bottomPadding,
-                        })}
+                {contentLayoutTransition ? (
+                    <AnimatedView
+                        layout={contentLayoutTransition}
+                        style={applyStyle(animatedContentStyle)}
                     >
-                        {children}
-                    </Box>
-                </ScreenContentWrapper>
+                        {content}
+                    </AnimatedView>
+                ) : (
+                    content
+                )}
                 {footer && (
                     <KeyboardStickyView
                         enabled={isFooterKeyboardAware}

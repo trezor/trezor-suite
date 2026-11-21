@@ -6,11 +6,18 @@ import { createDeferred } from '@trezor/utils';
 type AsyncFunction = (...args: any) => Promise<any>;
 type SyncFunction = (...args: any) => any;
 
+export const DEFAULT_DEBOUNCE_DELAY = 300;
+
+export type DebounceOptions = {
+    delay?: number;
+};
+
 // composeTransaction should be debounced from both sides
 // `timeout` prevents from calling '@trezor/connect' method to many times (inputs mad-clicking)
 // TODO: maybe it should be converted to regular module, could be useful elsewhere
-export const useDebounce = () => {
+export const useDebounce = (options?: DebounceOptions) => {
     const timeout = useRef<TimerId | null>(null);
+    const delay = options?.delay ?? DEFAULT_DEBOUNCE_DELAY;
 
     const debounce = useCallback(
         async <F extends AsyncFunction | SyncFunction>(fn: F): Promise<ReturnType<F>> => {
@@ -18,7 +25,7 @@ export const useDebounce = () => {
             if (timeout.current) clearTimeout(timeout.current);
             // set new timeout
             const timeoutDfd = createDeferred();
-            const newTimeout = setTimeout(timeoutDfd.resolve, 300);
+            const newTimeout = setTimeout(timeoutDfd.resolve, delay);
             timeout.current = newTimeout;
             await timeoutDfd.promise;
 
@@ -28,7 +35,7 @@ export const useDebounce = () => {
 
             return result;
         },
-        [timeout],
+        [timeout, delay],
     );
 
     useEffect(
