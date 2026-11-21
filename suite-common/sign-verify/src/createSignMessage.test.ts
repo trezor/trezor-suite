@@ -14,6 +14,7 @@ import {
 } from '@trezor/network-module-suite-common-types';
 
 import { type SignMessageDeps, createSignMessage } from './createSignMessage';
+import { createSignVerifyReporter } from './createSignVerifyReporter';
 
 const PATH = 'PATH';
 const ADDRESS = 'ADDRESS';
@@ -40,8 +41,9 @@ describe('signVerify.sign', () => {
     beforeEach(() => {
         dispatch = jest.fn();
         signMessage = mock<NetworkSignVerify<NetworkSymbol>['signMessage']>();
+        const analytics = mockAnalytics();
         deps = {
-            analytics: mockAnalytics(),
+            analytics,
             networkModuleRepository: mockNetworkModuleRepository({
                 get: () =>
                     mockNetworkModule({
@@ -56,7 +58,7 @@ describe('signVerify.sign', () => {
                     }),
                 isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
             }),
-            dispatch,
+            signVerifyReporter: createSignVerifyReporter({ analytics, dispatch }),
         };
     });
 

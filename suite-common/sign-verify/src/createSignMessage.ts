@@ -1,12 +1,6 @@
-import { type Dispatch } from 'redux';
-
-import { type AnalyticsDep, events } from '@suite-common/analytics';
-import { isTrezorDeviceWithState } from '@suite-common/device';
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Account } from '@suite-common/wallet-types';
-import { DeviceNotConnectedError } from '@trezor/device';
 import {
     type SignError,
     SignVerifyNotSupportedError,
@@ -15,13 +9,10 @@ import {
 } from '@trezor/network-module-suite-common-types';
 import { type Result, err } from '@trezor/type-utils';
 
+import { type SignVerifyReporterDep } from './createSignVerifyReporter';
 import { getNetworkSignVerify } from './getNetworkSignVerify';
-import { getErrorMessage, getFailureAttributes } from './signVerifyFailure';
 
-export type SignMessageDeps = NetworkModuleRepositoryDep &
-    AnalyticsDep & {
-        dispatch: Dispatch;
-    };
+export type SignMessageDeps = NetworkModuleRepositoryDep & SignVerifyReporterDep;
 
 export type SignParams = {
     device: TrezorDevice | undefined;
@@ -51,75 +42,36 @@ export const createSignMessage = (deps: SignMessageDeps): SignMessage => {
         return networkSignVerify?.getDefaultFormat?.(account.symbol, account.accountType);
     };
 
-    const signOnDevice = async ({
-        device,
-        account,
-        path,
-        message,
-        hex,
-        format,
-    }: SignParams): Promise<Result<SignedMessage, SignError>> => {
-        if (!isTrezorDeviceWithState(device) || !device.connected || !device.available) {
-            return err(DeviceNotConnectedError('Device not connected: signMessage'));
-        }
-
-        const networkSignVerify = getNetworkSignVerify(deps, account);
-
-        if (!networkSignVerify) {
-            return err(SignVerifyNotSupportedError());
-        }
-
-        return await networkSignVerify.signMessage({
-            device,
-            symbol: account.symbol,
-            accountIndex: account.index,
-            accountType: account.accountType,
-            path,
-            message,
-            hex,
-            format,
-        });
-    };
-
-    const sign: SignMessage['sign'] = async params => {
-        const { account, hex } = params;
+    const sign: SignMessage['sign'] = ({ device, account, path, message, hex, ...params }) => {
         const format = params.format ?? getDefaultFormat(account);
         // Networks signing in a single format never offered the choice, so reporting one of its
         // values would invent an answer the user never gave. The event has Bitcoin's formats only.
-        const formatAttributes =
+        const signatureFormat =
             getFormats(account).length > 1 && (format === 'trezor' || format === 'electrum')
-                ? { signatureFormat: format }
-                : {};
+                ? format
+                : undefined;
 
-        const result = await signOnDevice({ ...params, format });
+        return deps.signVerifyReporter.signAndReport(
+            { device, symbol: account.symbol, hex, signatureFormat },
+            async readyDevice => {
+                const networkSignVerify = getNetworkSignVerify(deps, account);
 
-        if (!result.success) {
-            deps.analytics.report({
-                type: events.coinSignMessageEvent.name,
-                payload: {
-                    ...getFailureAttributes(result.error),
+                if (!networkSignVerify) {
+                    return err(SignVerifyNotSupportedError());
+                }
+
+                return await networkSignVerify.signMessage({
+                    device: readyDevice,
                     symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                    path,
+                    message,
                     hex,
-                    ...formatAttributes,
-                },
-            });
-            deps.dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-message-error',
-                    error: getErrorMessage(result.error),
-                }),
-            );
-
-            return result;
-        }
-
-        deps.analytics.report({
-            type: events.coinSignMessageEvent.name,
-            payload: { status: 'success', symbol: account.symbol, hex, ...formatAttributes },
-        });
-        deps.dispatch(notificationsActions.addToast({ type: 'sign-message-success' }));
-
-        return result;
+                    format,
+                });
+            },
+        );
     };
 
     return { sign, getFormats, getDefaultFormat };

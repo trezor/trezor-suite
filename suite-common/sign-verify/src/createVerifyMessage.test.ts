@@ -12,6 +12,7 @@ import {
     connectErrorToSignVerifyError,
 } from '@trezor/network-module-suite-common-types';
 
+import { createSignVerifyReporter } from './createSignVerifyReporter';
 import { type VerifyMessageDeps, createVerifyMessage } from './createVerifyMessage';
 
 const ADDRESS = 'ADDRESS';
@@ -35,8 +36,9 @@ describe('signVerify.verify', () => {
     beforeEach(() => {
         dispatch = jest.fn();
         verifyMessage = mock<VerifyMessage>();
+        const analytics = mockAnalytics();
         deps = {
-            analytics: mockAnalytics(),
+            analytics,
             networkModuleRepository: mockNetworkModuleRepository({
                 get: () =>
                     mockNetworkModule({
@@ -44,7 +46,7 @@ describe('signVerify.verify', () => {
                     }),
                 isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
             }),
-            dispatch,
+            signVerifyReporter: createSignVerifyReporter({ analytics, dispatch }),
         };
     });
 
