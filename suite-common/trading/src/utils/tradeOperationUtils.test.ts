@@ -89,4 +89,22 @@ describe('getTradeOperationData', () => {
             isToCrypto: undefined,
         });
     });
+
+    it('should return undefined values for a trade without amounts', () => {
+        const errorResponse: ExchangeTrade = {
+            error: 'Internal Server Error',
+            exchange: 'changelly',
+        };
+
+        const result = getTradeOperationData(errorResponse);
+
+        expect(result).toEqual({
+            fromValue: undefined,
+            fromCurrency: undefined,
+            toValue: undefined,
+            toCurrency: undefined,
+            isFromCrypto: undefined,
+            isToCrypto: undefined,
+        });
+    });
 });
