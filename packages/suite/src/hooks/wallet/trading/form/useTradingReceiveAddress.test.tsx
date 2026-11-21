@@ -46,6 +46,8 @@ type RenderReceiveAddressOptions = {
     isAddressValid?: boolean;
 };
 
+type ReceiveAddressHookProps = { cryptoId: CryptoId };
+
 const renderReceiveAddress = async ({
     accounts = [XRP_ACCOUNT],
     persistedReceiveAddress,
@@ -86,7 +88,7 @@ const renderReceiveAddress = async ({
     });
 
     const rendered = renderHookWithStoreProvider(
-        ({ cryptoId }: { cryptoId: CryptoId }) =>
+        ({ cryptoId }: ReceiveAddressHookProps) =>
             useTradingReceiveAddress({ type: 'buy', cryptoId, nonSuiteAccount: true }),
         { services, initialProps: { cryptoId: XRP_CRYPTO_ID } },
     );

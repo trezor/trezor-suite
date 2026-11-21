@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { getAllowanceTransactionStatus } from './getAllowanceTransactionStatus';
-import { type AccountsRootState } from '../accounts/accountsReducer';
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 import {
     selectAccountTransactionByNonce,
@@ -15,7 +14,7 @@ export type UseAllowanceTxTrackingParams = {
     accountKey: AccountKey | null;
 };
 
-type TrackingRootState = TransactionsRootState & AccountsRootState;
+type TrackingRootState = TransactionsRootState;
 
 export const useAllowanceTxTracking = ({ accountKey }: UseAllowanceTxTrackingParams) => {
     const [approvalTxid, setTrackedTxid] = useState<string | null>(null);

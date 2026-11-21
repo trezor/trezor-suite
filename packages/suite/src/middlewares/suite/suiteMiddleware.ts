@@ -24,7 +24,6 @@ import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type AccountsRootState,
-    type EndUnfinishedDiscoveryThunkState,
     type WalletSettingsRootState,
     endUnfinishedDiscoveryThunk,
     forgetDisconnectedDevicesThunk,
@@ -41,7 +40,6 @@ import { desktopHandshake, setRecentlyDisconnectedDevice } from '#src/actions/su
 
 type SuiteMiddlewareState = AccountsRootState &
     DeviceRootState &
-    EndUnfinishedDiscoveryThunkState &
     RouterRootState &
     WalletSettingsRootState & {
         flags: Pick<FlagsRootState['flags'], 'hasSeenDisconnectTooltip'>;

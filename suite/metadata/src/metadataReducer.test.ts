@@ -48,15 +48,13 @@ const mockLabelableAccount = (deviceState: StaticSessionId, fileName?: string): 
         },
     });
 
-const mockState = ({
-    accounts,
-    devices,
-    isEnabled = true,
-}: {
+type MockStateParams = {
     accounts: Account[];
     devices?: TrezorDevice[];
     isEnabled?: boolean;
-}): MetadataRootState => {
+};
+
+const mockState = ({ accounts, devices, isEnabled = true }: MockStateParams): MetadataRootState => {
     const wallet = mockWallet(WALLET);
 
     return {

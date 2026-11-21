@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
 
-// Hack: direct import to prevent some nasty import cascade resulting in error while importing icons
+// eslint-disable-next-line local-rules/no-package-deep-imports -- the package entry point causes an import cascade that fails while importing icons
 import { encrypt } from '@suite/metadata/src/metadataUtils';
 import { DropboxMock, GoogleMock } from '@trezor/e2e-utils';
 

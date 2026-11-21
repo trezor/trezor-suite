@@ -4,6 +4,7 @@ import { act, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ThemeProvider } from 'styled-components';
 
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: move Locale out of @suite-common
 import { type Locale } from '@suite-common/locale';
 import { intermediaryTheme } from '@trezor/components';
 

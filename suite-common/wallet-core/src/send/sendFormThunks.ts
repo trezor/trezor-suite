@@ -722,6 +722,7 @@ type SignTransactionThunkParams = {
     paymentRequests?: PROTO.PaymentRequest[];
 };
 
+// eslint-disable-next-line local-rules/no-unused-intersection-members -- TODO: dependents (e.g. native send) read accounts through this exported contract; declare it there first
 export type SignTransactionThunkState = AccountsRootState &
     BlockchainRootState &
     DeviceRootState &

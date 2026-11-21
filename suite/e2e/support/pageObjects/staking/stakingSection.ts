@@ -21,6 +21,11 @@ type ExpectStakingAmountsParams = {
     options?: { fastForward?: string; timeout?: number };
 };
 
+type ExpectExternalStakingCardParams = {
+    amount: string;
+    displaySymbol: string;
+};
+
 export class StakingSection {
     readonly rewardList: RewardsList;
     // Timers
@@ -240,13 +245,7 @@ export class StakingSection {
     }
 
     @step()
-    async expectExternalStakingCard({
-        amount,
-        displaySymbol,
-    }: {
-        amount: string;
-        displaySymbol: string;
-    }) {
+    async expectExternalStakingCard({ amount, displaySymbol }: ExpectExternalStakingCardParams) {
         const fiatAmountRegex = /\$\d{1,3}(,\d{3})*\.\d{2}/;
 
         await expect(this.externalStakingCard).toContainTranslation(

@@ -43,14 +43,13 @@ const createErrorResult = (code: ErrorCode, message: string): ResetDeviceResult 
     error: { code, message },
 });
 
-// Connect reports the event during the call, i.e. before the result is resolved.
-const mockResetDevice = ({
-    result,
-    eventDevice = device,
-}: {
+type MockResetDeviceParams = {
     result: ResetDeviceResult;
     eventDevice?: AcquiredDevice | null;
-}) => {
+};
+
+// Connect reports the event during the call, i.e. before the result is resolved.
+const mockResetDevice = ({ result, eventDevice = device }: MockResetDeviceParams) => {
     jest.mocked(TrezorConnect.resetDevice).mockImplementation(() => {
         if (eventDevice) {
             const [, listener] = jest
@@ -63,13 +62,15 @@ const mockResetDevice = ({
     });
 };
 
+type ResetDeviceParams = {
+    isEntropyCheckEnabled?: boolean;
+    simulatedEntropyCheckFail?: DeviceRootState['device']['simulatedEntropyCheckFail'];
+};
+
 const resetDevice = async ({
     isEntropyCheckEnabled = true,
     simulatedEntropyCheckFail,
-}: {
-    isEntropyCheckEnabled?: boolean;
-    simulatedEntropyCheckFail?: DeviceRootState['device']['simulatedEntropyCheckFail'];
-} = {}) => {
+}: ResetDeviceParams = {}) => {
     const extra: ResetDeviceWithEntropyCheckThunkDeps = {
         services: { reportSecurityCheck: jest.fn() },
     };

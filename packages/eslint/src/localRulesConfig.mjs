@@ -1,7 +1,7 @@
 import pluginLocalRules from 'eslint-plugin-local-rules';
 
 import { areTypeAwareRulesConfigured } from './ruleSets.mjs';
-import { allRoots } from './workspaceRoots.mjs';
+import { allRoots, repoRoot } from './workspaceRoots.mjs';
 /**
  * @typedef {import('eslint').Linter.Config} Config
  */
@@ -62,6 +62,7 @@ export const localRulesConfig = [
         },
     },
     {
+        basePath: repoRoot,
         files: [
             allRoots.suite,
             allRoots.suiteApp,
@@ -96,9 +97,9 @@ export const localRulesConfig = [
                         /^@suite-common\/icons\/scripts$/,
                         // Suite test setup imports global polyfills through this side-effect-only entry point.
                         /^@suite-common\/test-utils\/globalOverrides$/,
-                        // `@suite/intl` ships the translation catalogs as files next to its sources;
-                        // e2e tests import a catalog by path to assert translated text.
-                        /^@suite\/intl\/translations\/[\w-]+\.json$/,
+                        // `@suite/intl` and `@suite-native/intl` ship the translation catalogs as files
+                        // next to their sources; e2e tests import a catalog by path to assert translated text.
+                        /^@suite(?:-native)?\/intl\/translations\/[\w-]+\.json$/,
                     ],
                 },
             ],
@@ -106,12 +107,14 @@ export const localRulesConfig = [
         },
     },
     {
+        basePath: repoRoot,
         files: [`${allRoots.suiteCommon}/**/*.{js,mjs,cjs,ts,jsx,tsx}`],
         rules: {
             'local-rules/no-suite-imports-in-suite-common': 'error',
         },
     },
     {
+        basePath: repoRoot,
         files: [
             allRoots.networks,
             `${allRoots.packages}/suite`,
@@ -136,6 +139,7 @@ export const localRulesConfig = [
     ...(areTypeAwareRulesConfigured
         ? [
               {
+                  basePath: repoRoot,
                   files: Object.values(allRoots).map(root => `${root}/**/src/**/*.{ts,tsx}`),
                   rules: {
                       'local-rules/no-unused-intersection-members': 'error',

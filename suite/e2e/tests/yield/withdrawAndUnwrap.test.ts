@@ -30,15 +30,17 @@ const BALANCE_AFTER_UNWRAP = '1238999783194399380000';
 const WITHDRAW_TXID = '0x5b8e3d2a70c1f6b49e27d05a8c31f7e604b92d5c1a8f4e7b3062c9d1e5a48f07';
 const UNWRAP_TXID = '0x7d2f9b4c1a6e8305f4d2c7b9e1a35608bf6d2c40a9e8b7f5013c4e6d2a5b7f93';
 
+type BuildEthAccountTokensParams = {
+    wethBalance?: string;
+    shareBalance: string;
+    shareTransfers?: number;
+};
+
 const buildEthAccountTokens = ({
     wethBalance,
     shareBalance,
     shareTransfers = 1,
-}: {
-    wethBalance?: string;
-    shareBalance: string;
-    shareTransfers?: number;
-}) => [
+}: BuildEthAccountTokensParams) => [
     ...ETH_MOCKED_ACCOUNT.tokens,
     ...(wethBalance !== undefined
         ? [{ ...YIELD_WETH_TOKEN, balance: wethBalance, transfers: 2 }]

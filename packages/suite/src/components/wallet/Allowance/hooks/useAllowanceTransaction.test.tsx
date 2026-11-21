@@ -91,7 +91,9 @@ type State = { wallet: { fees: Record<string, never> } };
 
 const WALLET_STATE: State['wallet'] = { fees: {} };
 
-const QueryClientWrapper = ({ children }: { children: ReactNode }) => (
+type QueryClientWrapperProps = { children: ReactNode };
+
+const QueryClientWrapper = ({ children }: QueryClientWrapperProps) => (
     <QueryClientProvider client={new QueryClient()}>{children}</QueryClientProvider>
 );
 

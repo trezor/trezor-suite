@@ -1,6 +1,7 @@
 import { isDevEnv } from '@suite-common/suite-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { CoinjoinBackendSettings, CoinjoinClientSettings } from '@trezor/coinjoin';
+// eslint-disable-next-line local-rules/no-package-deep-imports -- the package entry point would bundle the whole coinjoin library
 import {
     COORDINATOR_FEE_RATE_FALLBACK,
     MAX_ALLOWED_AMOUNT_FALLBACK,

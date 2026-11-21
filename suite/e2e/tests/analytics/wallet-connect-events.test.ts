@@ -1,3 +1,4 @@
+// eslint-disable-next-line local-rules/no-package-deep-imports -- e2e tests load only this module, not the whole package, in the Playwright runtime
 import { EventType } from '@suite-common/analytics/src/constants';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
