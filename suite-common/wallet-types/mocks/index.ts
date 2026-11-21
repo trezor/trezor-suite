@@ -33,3 +33,4 @@ export {
     networkSpecificDefaultStellar,
     networkSpecificDefaultTron,
 } from './mockWalletAccount';
+export { mockCustomEvmNetworkDefinition } from './mockCustomEvmNetworkDefinition';

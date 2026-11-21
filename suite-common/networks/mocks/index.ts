@@ -10,3 +10,4 @@ export { mockNetworkModule } from './mockNetworkModule';
 export { mockNetworkModuleRepository } from './mockNetworkModuleRepository';
 export { mockNetworkIcon } from './mockNetworkIcon';
 export { mockNetworksServices } from './mockNetworksServices';
+export { mockCustomEvmNetworkConfigParams } from '@trezor/network-ethereum-suite-common/mocks';

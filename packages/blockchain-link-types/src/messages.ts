@@ -144,6 +144,13 @@ export interface GetEvmChainId {
     };
 }
 
+export interface GetEvmBlockTime {
+    type: typeof MESSAGES.GET_EVM_BLOCK_TIME;
+    payload: {
+        url: string;
+    };
+}
+
 export interface GetContractInfo {
     type: typeof MESSAGES.GET_CONTRACT_INFO;
     payload: ContractInfoParams;
@@ -171,4 +178,5 @@ export type Message =
     | ChannelMessage<Unsubscribe>
     | ChannelMessage<PushTransaction>
     | ChannelMessage<GetEvmChainId>
+    | ChannelMessage<GetEvmBlockTime>
     | ChannelMessage<GetContractInfo>;

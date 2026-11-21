@@ -12,6 +12,8 @@ it('gets SVG paths from the module registered for the symbol', () => {
             get: () => networkModule,
             getSupportedNetworks: null,
             isSupportedNetwork: null,
+            register: null,
+            unregister: null,
         },
     });
 

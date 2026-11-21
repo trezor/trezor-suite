@@ -9,6 +9,9 @@ export type NetworkModuleRepository = {
     get: (symbol: NetworkSymbol) => SuiteCommonNetworkModule;
     getSupportedNetworks: () => readonly NetworkSymbol[];
     isSupportedNetwork: (symbol: string) => symbol is NetworkSymbol;
+    /** Adds (or replaces) a module for a network registered at runtime; predefined symbols are kept. */
+    register: (symbol: NetworkSymbol, networkModule: SuiteCommonNetworkModule) => void;
+    unregister: (symbol: NetworkSymbol) => void;
 };
 
 export type NetworkModuleRepositoryDep = {
@@ -26,7 +29,17 @@ export const createNetworkModuleRepository = (
         });
     });
 
+    const predefinedNetworks: ReadonlySet<NetworkSymbol> = new Set(
+        networkModuleByNetworkSymbol.keys(),
+    );
+    // Mutated in place on (un)registration, so references handed out by getSupportedNetworks stay current.
     const supportedNetworks = Array.from(networkModuleByNetworkSymbol.keys());
+
+    const assertNotPredefined = (symbol: NetworkSymbol) => {
+        if (predefinedNetworks.has(symbol)) {
+            throw new Error(`Network ${symbol} is predefined and cannot be changed at runtime.`);
+        }
+    };
 
     return {
         get: (symbol: NetworkSymbol): SuiteCommonNetworkModule => {
@@ -41,6 +54,24 @@ export const createNetworkModuleRepository = (
         getSupportedNetworks: (): readonly NetworkSymbol[] => supportedNetworks,
         isSupportedNetwork: (symbol: string): symbol is NetworkSymbol =>
             isArrayMember(symbol, supportedNetworks),
+        register: (symbol: NetworkSymbol, networkModule: SuiteCommonNetworkModule) => {
+            assertNotPredefined(symbol);
+
+            if (!networkModuleByNetworkSymbol.has(symbol)) {
+                supportedNetworks.push(symbol);
+            }
+            networkModuleByNetworkSymbol.set(symbol, networkModule);
+        },
+        unregister: (symbol: NetworkSymbol) => {
+            assertNotPredefined(symbol);
+
+            const index = supportedNetworks.indexOf(symbol);
+
+            if (index !== -1) {
+                supportedNetworks.splice(index, 1);
+            }
+            networkModuleByNetworkSymbol.delete(symbol);
+        },
     };
 };
 

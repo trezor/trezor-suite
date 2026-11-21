@@ -3,6 +3,7 @@ import type { applySettings } from './applySettings';
 import type { authenticateDevice } from './authenticateDevice';
 import type { backupDevice } from './backupDevice';
 import type { bleUnpair } from './bleUnpair';
+import type { blockchainRegisterEvmNetwork } from './blockchainRegisterEvmNetwork';
 import type { changeLanguage } from './changeLanguage';
 import type { changePin } from './changePin';
 import type { changeWipeCode } from './changeWipeCode';
@@ -44,6 +45,7 @@ type TrezorConnectManagementBase = {
     pingDevice: typeof pingDevice;
     getNonce: typeof getNonce;
     getSettings: typeof getSettings;
+    blockchainRegisterEvmNetwork: typeof blockchainRegisterEvmNetwork;
 };
 
 // Evolu identity operations export secret key material, so they belong to the privileged tier and

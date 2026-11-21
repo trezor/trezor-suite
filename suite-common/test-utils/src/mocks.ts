@@ -9,6 +9,7 @@ import {
     type WalletAccountTransaction,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
+import { mockCustomEvmNetworkDefinition } from '@suite-common/wallet-types/mocks';
 import type { AccountUtxo, Device, Features, TrezorConnectPrivilegedAPI } from '@trezor/connect';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
@@ -515,4 +516,5 @@ export const testMocks = {
     mockedBlockchainNetworks,
     getTrezorConnectMock,
     setTrezorConnectFixtures,
+    getCustomEvmNetworkDefinition: mockCustomEvmNetworkDefinition,
 };

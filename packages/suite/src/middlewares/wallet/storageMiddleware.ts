@@ -56,6 +56,7 @@ import {
     changeNetworks,
     closeHomeAssetTableFeedback,
     closeHomeAssetTableNewBanner,
+    customEvmNetworksActions,
     earnOnboardingActions,
     explorerActions,
     phishingActions,
@@ -583,6 +584,8 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
             closeHomeAssetTableNewBanner,
             closeHomeAssetTableFeedback,
             setSuspiciousTransactionsFilter,
+            customEvmNetworksActions.registered,
+            customEvmNetworksActions.unregistered,
         )(action)
     ) {
         api.dispatch(storageActions.saveWalletSettingsThunk());
