@@ -2,6 +2,9 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { useForm, useWatch } from 'react-hook-form';
 import { useDebounce } from 'react-use';
 
+import { useTranslation } from '@suite/intl';
+import { MODAL_CONTEXT_USER, closeModal, openModal, selectModal } from '@suite/modal';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     getStakeFormsDefaultValues,
@@ -10,7 +13,9 @@ import {
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectRawNetworkFeeInfo,
+    selectStake,
     simulateUnstake,
+    stakeActions,
     useFormDraft,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -21,7 +26,7 @@ import {
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
+import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 import { BigNumber, isChanged, throwError } from '@trezor/utils';
 
 import { signTransactionThunk } from '#src/actions/wallet/stakeActions';
@@ -38,6 +43,8 @@ import { useFees } from '../wallet/form/useFees';
 import { useStakeCompose } from '../wallet/form/useStakeCompose';
 
 type WithdrawalContextValues = WithdrawalContextValuesBase & {
+    hasComposeError: boolean;
+    retryCompose: () => Promise<void>;
     amountLimits: AmountLimitProps;
     approximatedInstantEthAmount?: string | null;
     setRatioAmount: (divisor: number) => void;
@@ -53,7 +60,8 @@ type UseWithdrawalFormProps = {
 };
 
 export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): WithdrawalContextValues => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getState } = useServices(injectDispatch, injectGetState);
+    const { translationString } = useTranslation();
     const [approximatedInstantEthAmount, setApproximatedInstantEthAmount] = useState<string | null>(
         null,
     );
@@ -166,6 +174,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
 
     const {
         isLoading: isComposing,
+        hasComposeError,
         composeRequest,
         composedLevels,
         onFeeLevelChange,
@@ -285,27 +294,66 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
 
         if (composedTx?.type === 'final') {
+            const signingModal = selectModal(getState());
+            const signing = dispatch(
+                signTransactionThunk({
+                    accountKey: account.key,
+                    formValues: values,
+                    transactionInfo: composedTx,
+                }),
+            );
+            const signRequest = selectStake(getState()).precomposedTx;
             try {
-                const result = await dispatch(
-                    signTransactionThunk({
-                        accountKey: account.key,
-                        formValues: values,
-                        transactionInfo: composedTx,
-                    }),
-                );
-
+                const result = await signing;
                 if (result?.success) {
                     clearForm();
                 }
             } catch (error) {
-                // The sign thunk reaches TrezorConnect, whose rejection messages may embed the
-                // composed account payload, and `signTx` is submitted fire-and-forget. Handling the
-                // rejection here keeps it from being reported verbatim by Sentry's global
-                // unhandled-rejection handler. Only the error name, never its message, is safe to log.
-                console.warn('Stake signing failed', error instanceof Error ? error.name : error);
+                const currentStake = selectStake(getState());
+                if (
+                    !signRequest ||
+                    currentStake.precomposedTx !== signRequest ||
+                    currentStake.accountKey !== account.key
+                )
+                    return undefined;
+
+                const modal = selectModal(getState());
+                dispatch(stakeActions.dispose());
+                // Device and review modals may belong to a newer flow.
+                if (
+                    signingModal.context !== MODAL_CONTEXT_USER ||
+                    signingModal.payload.type !== 'unstake' ||
+                    signingModal.payload.accountKey !== account.key ||
+                    modal.context !== MODAL_CONTEXT_USER ||
+                    modal.payload !== signingModal.payload
+                )
+                    return undefined;
+
+                dispatch(closeModal());
+                dispatch(openModal({ type: 'unstake', accountKey: account.key }));
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'sign-tx-error',
+                        error: translationString('TR_STAKING_ERROR_GENERIC'),
+                    }),
+                );
+                // Connect rejection messages may include confidential account data.
+                console.warn(
+                    'Stake signing failed',
+                    error instanceof Error ? error.name : 'UnknownError',
+                );
             }
         }
-    }, [getValues, composedLevels, dispatch, account.key, clearForm, selectedFee]);
+    }, [
+        getValues,
+        composedLevels,
+        dispatch,
+        getState,
+        account.key,
+        clearForm,
+        selectedFee,
+        translationString,
+    ]);
 
     return {
         ...methods,
@@ -319,6 +367,8 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         onFiatAmountChange,
         baseCurrencyCode,
         composedLevels,
+        hasComposeError,
+        retryCompose: composeRequest,
         isComposing,
         selectedFee,
         clearForm,

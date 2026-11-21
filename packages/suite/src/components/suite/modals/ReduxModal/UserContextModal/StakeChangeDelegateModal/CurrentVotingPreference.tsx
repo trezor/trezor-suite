@@ -1,6 +1,5 @@
 import { Translation } from '@suite/intl';
-import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
-import { CARDANO_ALWAYS_ABSTAIN_DREP_ID, getCardanoAccountDrepId } from '@suite-common/wallet-core';
+import { getCardanoAccountDrepId, getCardanoCurrentVotingOption } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, IconCircle, Row, Text } from '@trezor/components';
 import { CheckCircleIcon } from '@trezor/icons';
@@ -13,14 +12,17 @@ export const CurrentVotingPreference = ({ account }: CurrentVotingPreferenceProp
     if (account.networkType !== 'cardano') return null;
 
     const currentDrepId = getCardanoAccountDrepId(account);
+    const currentVotingOption = getCardanoCurrentVotingOption(account);
 
     const getCurrentPreferenceLabel = () => {
-        switch (currentDrepId) {
-            case null:
+        switch (currentVotingOption?.type) {
+            case undefined:
                 return <Translation id="TR_STAKE_NONE" />;
-            case CARDANO_ALWAYS_ABSTAIN_DREP_ID:
+            case 'abstain':
                 return <Translation id="TR_STAKING_VOTE_ABSTAIN" />;
-            case CARDANO_EVERSTAKE_DREP.bech32:
+            case 'no_confidence':
+                return <Translation id="TR_STAKING_VOTE_NO_CONFIDENCE" />;
+            case 'everstake':
                 return 'Everstake';
             default:
                 return <Translation id="TR_STAKE_PROVIDER_UNKNOWN" />;

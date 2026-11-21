@@ -1,12 +1,14 @@
 import { type AdaPools } from '@suite-common/earn-staking-api';
 import { CARDANO_EVERSTAKE_STAKING_POOL } from '@suite-common/wallet-constants';
 import { type Account } from '@suite-common/wallet-types';
+import { mockCardanoStakingAccount } from '@suite-common/wallet-types/mocks';
 
 import * as fixtures from './__fixtures__/cardanoStakingUtils';
 import {
     areCardanoDrepIdsEqual,
     decodeCardanoDrepId,
     getCardanoAccountDrepId,
+    getCardanoCurrentVotingOption,
     hasCardanoLiveVoteDelegation,
     isCardanoDrepIdCip129,
     isCardanoStakedOutsideEverstake,
@@ -20,6 +22,26 @@ import {
 } from './cardanoStakingUtils';
 
 describe('cardano staking utils', () => {
+    it('recognizes a no-confidence delegation as its own voting option', () => {
+        const account = mockCardanoStakingAccount('everstake');
+        account.misc = {
+            ...account.misc,
+            staking: {
+                ...account.misc.staking,
+                drep: {
+                    drep_id: 'drep_always_no_confidence',
+                    hex: '',
+                    amount: '0',
+                    active: true,
+                    active_epoch: null,
+                    has_script: false,
+                },
+            },
+        };
+
+        expect(getCardanoCurrentVotingOption(account)).toEqual({ type: 'no_confidence' });
+    });
+
     fixtures.selectBestCardanoPool.forEach(f => {
         it(`selectBestCardanoPool: ${f.description}`, () => {
             expect(selectBestCardanoPool(f.pools).bech32).toEqual(f.result);

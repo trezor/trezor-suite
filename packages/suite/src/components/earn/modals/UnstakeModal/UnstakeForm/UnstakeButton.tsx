@@ -26,8 +26,18 @@ export const UnstakeButton = () => {
 
     const deviceStatus = useEarnDeviceStatus();
     const { device, isLocked } = useDevice();
-    const { account, network, isComposing, formState, handleSubmit, watch, signTx, currency } =
-        useWithdrawalFormContext();
+    const {
+        account,
+        network,
+        isComposing,
+        formState,
+        handleSubmit,
+        watch,
+        signTx,
+        currency,
+        composedLevels,
+        selectedFee,
+    } = useWithdrawalFormContext();
     const { isUnstakingDisabled, unstakingMessageContent } = useMessageSystemStaking(
         network.symbol,
     );
@@ -42,11 +52,13 @@ export const UnstakeButton = () => {
     const { autocompoundBalance = '0' } = getStakingDataForNetwork(account) ?? {};
     const isCardanoBalanceEmpty =
         account.networkType === 'cardano' && new BigNumber(autocompoundBalance).lte(0);
+    const isTransactionMissing = composedLevels?.[selectedFee]?.type !== 'final';
 
     const isDisabled =
         !(formIsValid && hasValues) ||
         isSubmitting ||
         isCardanoBalanceEmpty ||
+        isTransactionMissing ||
         (isDeviceConnected && isLocked());
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, network.symbol));
