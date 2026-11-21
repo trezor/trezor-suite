@@ -46,6 +46,7 @@ __pycache__/
 screenshots
 test-results
 playwright-report
+suite/e2e/pwc-discovery.txt
 packages/e2e-utils/src/llmTestFixer/reports/
 packages/e2e-utils/src/llmExploratoryTester/reports/
 suite-native-app/app/.metadata/
