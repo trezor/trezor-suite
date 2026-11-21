@@ -13,8 +13,11 @@ import {
     createRetrieveReferralKeyFromDevice,
 } from './key/createRetrieveReferralKeyFromDevice';
 import { type SaveReferralKey, createSaveReferralKey } from './key/createSaveReferralKey';
-import { type ReferAFriendRootState, selectEncryptedReferralKey } from './referAFriendSlice';
-import { selectReferAFriendApiUrl } from './referAFriendUrl';
+import {
+    selectEncryptedReferralKeyByWalletDescriptor,
+    selectReferAFriendApiUrl,
+} from './referAFriendSelectors';
+import { type ReferAFriendRootState } from './referAFriendSlice';
 
 export type ReferAFriend = {
     referralApiFetch: ReferralApiFetch;
@@ -53,7 +56,7 @@ export const createReferAFriendCompositionRoot = (
         loadReferralKey: createLoadReferralKey({
             dispatch: deps.dispatch,
             getEncryptedReferralKey: walletDescriptor =>
-                selectEncryptedReferralKey(deps.getState(), walletDescriptor),
+                selectEncryptedReferralKeyByWalletDescriptor(deps.getState(), walletDescriptor),
             platformEncryption: deps.platformEncryption,
             referralKeySessionCache,
         }),

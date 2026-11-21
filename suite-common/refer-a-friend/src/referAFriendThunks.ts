@@ -13,11 +13,8 @@ import { type Result, err, ok } from '@trezor/type-utils';
 import { hasProp, isWhitelistedHost } from '@trezor/utils';
 
 import { type ReferAFriendDep } from './createReferAFriendCompositionRoot';
-import {
-    type ReferAFriendRootState,
-    referAFriendActions,
-    selectReferralWalletRecord,
-} from './referAFriendSlice';
+import { selectDoesReferralRecordExistForWalletDescriptor } from './referAFriendSelectors';
+import { type ReferAFriendRootState, referAFriendActions } from './referAFriendSlice';
 import {
     type ReferralAccount,
     type ReferralError,
@@ -300,7 +297,7 @@ export const fetchReferralAccountThunk = createThunk<
         // Without a standard wallet the page is blocked, without a link it offers joining.
         if (
             walletDescriptor === null ||
-            !selectReferralWalletRecord(getState(), walletDescriptor)?.shareUrl
+            !selectDoesReferralRecordExistForWalletDescriptor(getState(), walletDescriptor)
         ) {
             return;
         }

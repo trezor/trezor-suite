@@ -165,7 +165,7 @@ export { ReferralLoading } from './src/views/refer-a-friend/ReferralLoading';
 export { ReferralUnavailable } from './src/views/refer-a-friend/ReferralUnavailable';
 export { ANNUAL_REWARD_LIMIT } from './src/views/refer-a-friend/referralConstants';
 export { useReferralActions } from './src/views/refer-a-friend/useReferralActions';
-export { selectIsReferralAvailable } from './src/views/refer-a-friend/referralSelectors';
+export { selectIsReferAFriendAvailableInApp } from '#src/views/refer-a-friend/selectIsReferAFriendAvailableInApp';
 export { SettingsLayout } from './src/components/settings/SettingsLayout';
 export { NetworkList } from './src/components/suite/NetworkList/NetworkList';
 export { NetworkSettingsSearchInput } from './src/components/suite/NetworkList/NetworkSettingsSearchInput';

@@ -11,11 +11,11 @@ import { useServices } from '@trezor/dependency-injection';
 import { UsersFilledIcon } from '@trezor/icons';
 import { SUITE_REFERRAL } from '@trezor/urls';
 
-import { selectIsReferralAvailable } from '../refer-a-friend/referralSelectors';
+import { selectIsReferAFriendAvailableInApp } from '../refer-a-friend/selectIsReferAFriendAvailableInApp';
 
 export const ReferralButton = () => {
     const { analytics } = useServices(injectDesktopAnalytics);
-    const isReferralAvailable = useSelector(selectIsReferralAvailable);
+    const isReferralAvailable = useSelector(selectIsReferAFriendAvailableInApp);
     const rememberedStandardWalletsCount = useSelector(selectRememberedStandardWalletsCount);
     const rememberedHiddenWalletsCount = useSelector(selectRememberedHiddenWalletsCount);
     const hasAtLeastOneRememberedWallet =

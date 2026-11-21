@@ -307,28 +307,6 @@ export const selectDeviceById = createMemoizedSelector(
     (devices, deviceId) => devices.find(device => device.id === deviceId),
 );
 
-/**
- * Selects a discovered standard wallet session, or null if it doesn't exist / exists without `staticSessionId`.
- */
-export const selectStandardWalletByDeviceId = createMemoizedSelector(
-    [selectDevices, (_state, deviceId: string | undefined) => deviceId],
-    (devices, deviceId): TrezorDeviceWithState | null =>
-        devices.find(
-            (instance): instance is TrezorDeviceWithState =>
-                instance.id === deviceId &&
-                instance.useEmptyPassphrase === true &&
-                isTrezorDeviceWithState(instance),
-        ) ?? null,
-);
-
-export const selectStandardWalletDescriptorByDeviceId = createMemoizedSelector(
-    [selectStandardWalletByDeviceId],
-    (standardWallet): WalletDescriptor | null =>
-        standardWallet === null
-            ? null
-            : parseStaticSessionId(standardWallet.state.staticSessionId).walletDescriptor,
-);
-
 export const selectIsFirmwareAuthenticityCheckDismissed = createMemoizedSelector(
     [
         (_state, deviceId: TrezorDevice['id']) => deviceId,
@@ -387,6 +365,47 @@ export const selectSelectedDeviceLabelOrName = createMemoizedSelector(
 export const selectDeviceId = createMemoizedSelector(
     [selectSelectedDevice],
     selectedDevice => selectedDevice?.id ?? null,
+);
+
+const findStandardWallet = (
+    devices: TrezorDevice[],
+    deviceId: TrezorDevice['id'],
+): TrezorDeviceWithState | null =>
+    devices.find(
+        (instance): instance is TrezorDeviceWithState =>
+            instance.id === deviceId &&
+            instance.useEmptyPassphrase === true &&
+            isTrezorDeviceWithState(instance),
+    ) ?? null;
+
+const getStandardWalletDescriptor = (
+    standardWallet: TrezorDeviceWithState | null,
+): WalletDescriptor | null =>
+    standardWallet === null
+        ? null
+        : parseStaticSessionId(standardWallet.state.staticSessionId).walletDescriptor;
+
+/**
+ * Selects a discovered standard wallet session, or null if it doesn't exist / exists without `staticSessionId`.
+ */
+export const selectStandardWalletByDeviceId = createMemoizedSelector(
+    [selectDevices, (_state, deviceId: string | undefined) => deviceId],
+    findStandardWallet,
+);
+
+export const selectStandardWallet = createMemoizedSelector(
+    [selectDevices, selectDeviceId],
+    findStandardWallet,
+);
+
+export const selectStandardWalletDescriptorByDeviceId = createMemoizedSelector(
+    [selectStandardWalletByDeviceId],
+    getStandardWalletDescriptor,
+);
+
+export const selectStandardWalletDescriptor = createMemoizedSelector(
+    [selectStandardWallet],
+    getStandardWalletDescriptor,
 );
 
 export const selectDeviceModelById = createMemoizedSelector(
