@@ -3,7 +3,7 @@ import { useSelector, useStore } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectIsDeviceInViewOnlyMode } from '@suite-common/device';
+import { selectIsDeviceInViewOnlyMode, selectSelectedDevice } from '@suite-common/device';
 import {
     type StakingAccessRootState,
     selectIsStakingAccountActive,
@@ -11,7 +11,11 @@ import {
     selectStakingProductAccess,
 } from '@suite-common/earn-staking';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { type AccountsRootState, selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    selectSupportedNetworkByDevice,
+    selectVisibleDeviceAccounts,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
@@ -192,19 +196,31 @@ export const useStakingPromoNavigation = () => {
 
     const onPromoItemPress = useCallback(
         (symbol: NetworkSymbol) => {
-            const descriptor = selectStakeableStakingProductDescriptorBySymbol(
-                store.getState(),
+            const state = store.getState();
+            const device = selectSelectedDevice(state);
+            const isNetworkSupported = selectSupportedNetworkByDevice(device, [symbol]).includes(
                 symbol,
             );
+
+            if (!isPortfolioTrackerDevice && !isNetworkSupported) {
+                showAlert({
+                    title: translate('moduleSettings.notSupported'),
+                    primaryButtonTitle: translate('generic.buttons.gotIt'),
+                    onPressPrimaryButton: hideAlert,
+                });
+
+                return;
+            }
+
+            const descriptor = selectStakeableStakingProductDescriptorBySymbol(state, symbol);
             const resolution = resolveStakingPromoAccounts({
                 symbol,
                 access:
                     descriptor === null
                         ? null
-                        : selectStakingProductAccess(store.getState(), descriptor.id).access,
-                accounts: selectVisibleDeviceAccounts(store.getState()),
-                isAccountStakingActive: account =>
-                    selectIsStakingAccountActive(store.getState(), account.key),
+                        : selectStakingProductAccess(state, descriptor.id).access,
+                accounts: selectVisibleDeviceAccounts(state),
+                isAccountStakingActive: account => selectIsStakingAccountActive(state, account.key),
                 isDeviceInViewOnlyMode,
             });
 
@@ -267,6 +283,9 @@ export const useStakingPromoNavigation = () => {
             openEnableNetworkSheet,
             reportStakingNavigate,
             showViewOnlyStakingAlert,
+            showAlert,
+            hideAlert,
+            translate,
         ],
     );
 
