@@ -1,6 +1,6 @@
 import type { MessageTypes } from '@trezor/blockchain-link-types';
 import { RESPONSES } from '@trezor/blockchain-link-types';
-import { SOLANA_DECIMALS } from '@trezor/network-solana/constants';
+import { RPC_COMMITMENT, SOLANA_DECIMALS } from '@trezor/network-solana/constants';
 
 import type { Request } from '../types';
 
@@ -9,7 +9,7 @@ export const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet:
 
     const {
         value: { blockhash: blockHash, lastValidBlockHeight: blockHeight },
-    } = await api.rpc.getLatestBlockhash({ commitment: 'confirmed' }).send();
+    } = await api.rpc.getLatestBlockhash({ commitment: RPC_COMMITMENT }).send();
 
     const serverInfo = {
         testnet: isTestnet,

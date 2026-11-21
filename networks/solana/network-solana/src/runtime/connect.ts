@@ -38,6 +38,7 @@ import { BigNumber } from '@trezor/utils';
 
 import {
     MEMO_V3_PROGRAM_PUBLIC_KEY,
+    RPC_COMMITMENT,
     SOLANA_BLOCKHASH_VALIDITY_MS,
     SOLANA_MEMO_MAX_BYTES,
     SYSTEM_PROGRAM_PUBLIC_KEY,
@@ -373,7 +374,7 @@ const preparePushTransaction = async (rawTx: string, api: SolanaAPI) => {
     const lifetimeConstraint =
         message.lifetimeConstraint ??
         (await api.rpc
-            .getLatestBlockhash({ commitment: 'confirmed' })
+            .getLatestBlockhash({ commitment: RPC_COMMITMENT })
             .send()
             .then(({ value: { blockhash, lastValidBlockHeight } }) => ({
                 blockhash,
@@ -414,7 +415,7 @@ export const sendAndConfirmTransaction = async (rawTx: string, api: SolanaAPI) =
     try {
         const signature = getSignatureFromTransaction(transaction);
         const send = sendAndConfirmTransactionFactory(api);
-        await send(transaction, { commitment: 'confirmed', skipPreflight: false });
+        await send(transaction, { commitment: RPC_COMMITMENT, skipPreflight: false });
 
         return signature;
     } catch (error) {

@@ -1,5 +1,8 @@
 import type { MessageTypes } from '@trezor/blockchain-link-types';
-import { RPC_MAX_SUPPORTED_TRANSACTION_VERSION } from '@trezor/network-solana/constants';
+import {
+    RPC_COMMITMENT,
+    RPC_MAX_SUPPORTED_TRANSACTION_VERSION,
+} from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
 import type {
     ParsedTransactionWithMeta,
@@ -26,6 +29,7 @@ export const getAllSignatures = async (
         const signaturesInfos = await api.rpc
             .getSignaturesForAddress(address(descriptor), {
                 before: lastSignature?.signature,
+                commitment: RPC_COMMITMENT,
                 limit: defaultValueLimit,
             })
             .send();
@@ -123,7 +127,7 @@ export const fetchTransactionPage = async (
                 .getTransaction(signature, {
                     encoding: 'jsonParsed',
                     maxSupportedTransactionVersion: RPC_MAX_SUPPORTED_TRANSACTION_VERSION,
-                    commitment: 'confirmed',
+                    commitment: RPC_COMMITMENT,
                 })
                 .send(),
         ),

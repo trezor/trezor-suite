@@ -1,4 +1,5 @@
 import { RESPONSES } from '@trezor/blockchain-link-types';
+import { RPC_COMMITMENT } from '@trezor/network-solana/constants';
 import { type IntervalId } from '@trezor/type-utils';
 
 import type { Context } from '../types';
@@ -14,7 +15,7 @@ export const subscribeBlock = async ({ state, connect, post }: Context) => {
         try {
             const {
                 value: { blockhash: blockHash, lastValidBlockHeight: blockHeight },
-            } = await api.rpc.getLatestBlockhash({ commitment: 'confirmed' }).send();
+            } = await api.rpc.getLatestBlockhash({ commitment: RPC_COMMITMENT }).send();
             if (blockHeight) {
                 post({
                     id: -1,

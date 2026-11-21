@@ -42,6 +42,9 @@ export const SOLANA_MAINNET_GENESIS_HASH = '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc1
 // kit's rpc-types accepts it as a `maxSupportedTransactionVersion`.
 export const RPC_MAX_SUPPORTED_TRANSACTION_VERSION = 1;
 
+// `confirmed` is deprecated by Alpenglow: https://solana.com/upgrades/alpenglow
+export const RPC_COMMITMENT = 'finalized';
+
 export const MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT = 16;
 export const MAX_CLAIM_ACCOUNTS = 16;
 
