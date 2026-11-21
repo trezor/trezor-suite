@@ -6,7 +6,7 @@ import {
     getInclusionFromInstanceId,
     messageSystemActions,
 } from '@suite-common/message-system';
-import { Button, Column, Icon, InfoItem, Range } from '@trezor/components';
+import { Button, Column, Icon, InfoItem, Range, SelectBar } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import {
     ArrowCounterClockwiseIcon,
@@ -24,6 +24,7 @@ type MessageSystemExperimentInfoProps = {
     instanceId?: string;
     isActive: boolean;
     inclusionOverride?: number;
+    variantOverride?: string;
 };
 
 export const MessageSystemExperimentInfo = ({
@@ -32,6 +33,7 @@ export const MessageSystemExperimentInfo = ({
     isActive,
     instanceId,
     inclusionOverride,
+    variantOverride,
 }: MessageSystemExperimentInfoProps) => {
     const { dispatch } = useServices(injectDispatch);
     const debounce = useDebounce();
@@ -40,6 +42,8 @@ export const MessageSystemExperimentInfo = ({
     const inclusion = instanceId ? getInclusionFromInstanceId(instanceId, experiment.id) : 0;
 
     const ranges = buildExperimentGroupRanges(experiment.groups);
+    const isVariantForced =
+        variantOverride !== undefined && assignedGroup?.variant === variantOverride;
 
     useEffect(() => {
         setLocalInclusion(inclusionOverride != null ? inclusionOverride : inclusion);
@@ -58,9 +62,14 @@ export const MessageSystemExperimentInfo = ({
         });
     };
 
-    const onResetInclusion = () => {
+    const onVariantChange = (variant: string) => {
+        dispatch(messageSystemActions.setExperimentVariantOverride({ id: experiment.id, variant }));
+    };
+
+    const onResetOverride = () => {
         setLocalInclusion(inclusion);
         dispatch(messageSystemActions.clearExperimentInclusionOverride(experiment.id));
+        dispatch(messageSystemActions.clearExperimentVariantOverride(experiment.id));
     };
 
     return (
@@ -71,7 +80,19 @@ export const MessageSystemExperimentInfo = ({
 
             <InfoItem label="Assigned group" icon={UsersIcon} direction="row">
                 {assignedGroup ? assignedGroup.variant : 'N/A'}
+                {isVariantForced && ' (forced)'}
             </InfoItem>
+
+            <SelectBar
+                size="small"
+                isFullWidth
+                options={experiment.groups.map(({ variant }) => ({
+                    label: variant,
+                    value: variant,
+                }))}
+                selectedOption={assignedGroup?.variant}
+                onChange={onVariantChange}
+            />
 
             <InfoItem label="Inclusion" icon={CrosshairIcon} direction="row">
                 {localInclusion !== null ? localInclusion : 'N/A'}
@@ -94,10 +115,10 @@ export const MessageSystemExperimentInfo = ({
                     size="small"
                     intent="warning"
                     iconLeft={ArrowCounterClockwiseIcon}
-                    isDisabled={localInclusion === inclusion}
-                    onClick={onResetInclusion}
+                    isDisabled={localInclusion === inclusion && variantOverride === undefined}
+                    onClick={onResetOverride}
                 >
-                    Reset inclusion
+                    Reset override
                 </Button>
             </Column>
         </Column>

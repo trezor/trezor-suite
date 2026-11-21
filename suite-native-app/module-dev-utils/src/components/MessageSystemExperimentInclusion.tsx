@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import {
-    type ExperimentId,
-    buildExperimentGroupRanges,
-    messageSystemActions,
-} from '@suite-common/message-system';
+import { type ExperimentId, messageSystemActions } from '@suite-common/message-system';
 import { type ExperimentsItem } from '@suite-common/suite-types';
 import { Button, Input, SegmentedControl, Text, VStack } from '@suite-native/atoms';
 import { useServices } from '@trezor/dependency-injection';
@@ -30,6 +26,7 @@ type MessageSystemExperimentInclusionProps = {
     assignedVariant?: string;
     inclusion?: number;
     isOverridden: boolean;
+    isVariantForced: boolean;
 };
 
 export const MessageSystemExperimentInclusion = ({
@@ -38,6 +35,7 @@ export const MessageSystemExperimentInclusion = ({
     assignedVariant,
     inclusion,
     isOverridden,
+    isVariantForced,
 }: MessageSystemExperimentInclusionProps) => {
     const { dispatch } = useServices(injectDispatch);
 
@@ -46,10 +44,6 @@ export const MessageSystemExperimentInclusion = ({
     useEffect(() => {
         setInclusionText(String(inclusion ?? ''));
     }, [inclusion]);
-
-    const selectableRanges = buildExperimentGroupRanges(groups).filter(
-        ({ range }) => range.end > range.start,
-    );
 
     const setInclusionOverride = (value: number) => {
         dispatch(
@@ -63,11 +57,7 @@ export const MessageSystemExperimentInclusion = ({
     const handleVariantChange = (variant: string) => {
         if (variant === assignedVariant) return;
 
-        const selectedRange = selectableRanges.find(({ group }) => group.variant === variant);
-
-        if (selectedRange) {
-            setInclusionOverride(selectedRange.range.start);
-        }
+        dispatch(messageSystemActions.setExperimentVariantOverride({ id: experimentId, variant }));
     };
 
     const handleInclusionTextChange = (text: string) => {
@@ -80,19 +70,20 @@ export const MessageSystemExperimentInclusion = ({
         }
     };
 
-    const handleResetInclusion = () => {
+    const handleResetOverride = () => {
         dispatch(messageSystemActions.clearExperimentInclusionOverride(experimentId));
+        dispatch(messageSystemActions.clearExperimentVariantOverride(experimentId));
     };
 
     return (
         <VStack spacing="sp8">
-            <Text variant="body-xs">Assigned group: {assignedVariant ?? 'N/A'}</Text>
+            <Text variant="body-xs">
+                Assigned group: {assignedVariant ?? 'N/A'}
+                {isVariantForced && ' (forced)'}
+            </Text>
             {assignedVariant && (
                 <SegmentedControl
-                    options={selectableRanges.map(({ group }) => ({
-                        label: group.variant,
-                        value: group.variant,
-                    }))}
+                    options={groups.map(({ variant }) => ({ label: variant, value: variant }))}
                     selectedValue={assignedVariant}
                     onValueChange={handleVariantChange}
                 />
@@ -109,9 +100,9 @@ export const MessageSystemExperimentInclusion = ({
                 priority="secondary"
                 size="medium"
                 isDisabled={!isOverridden}
-                onPress={handleResetInclusion}
+                onPress={handleResetOverride}
             >
-                Reset inclusion
+                Reset override
             </Button>
         </VStack>
     );

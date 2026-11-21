@@ -15,6 +15,11 @@ type ExperimentGetGroupByInclusion = {
     inclusion: number;
 };
 
+type ResolveExperimentGroupParams = ExperimentCategoriesProps & {
+    variantOverride?: string;
+    inclusionOverride?: number;
+};
+
 /**
  * @returns number between 0 and 99 generated from instanceId and experimentId
  */
@@ -64,6 +69,31 @@ export const getActiveExperimentGroup = ({
     });
 
     return experimentRange;
+};
+
+export const resolveExperimentGroup = ({
+    experiment,
+    instanceId,
+    variantOverride,
+    inclusionOverride,
+}: ResolveExperimentGroupParams): ExperimentsGroupType | undefined => {
+    if (!experiment) return undefined;
+
+    const forcedGroup =
+        variantOverride !== undefined
+            ? experiment.groups.find(group => group.variant === variantOverride)
+            : undefined;
+
+    if (forcedGroup) return forcedGroup;
+
+    if (inclusionOverride !== undefined) {
+        return getExperimentGroupByInclusion({
+            groups: experiment.groups,
+            inclusion: inclusionOverride,
+        });
+    }
+
+    return getActiveExperimentGroup({ experiment, instanceId });
 };
 
 export const formatExperimentVariantsForAnalytics = (
