@@ -1,5 +1,6 @@
 import { BlockchainLink } from '@trezor/blockchain-link';
 import type { CoinInfo, CoreEventMessage } from '@trezor/connect-common';
+import { type Deferred, createDeferred } from '@trezor/utils';
 
 import { BackendManager } from './BackendManager';
 import type { Blockchain } from './Blockchain';
@@ -194,5 +195,141 @@ describe('backend/BackendManager', () => {
         }
 
         expect(connects).toBeLessThanOrEqual(6);
+    });
+
+    describe('connect queue', () => {
+        let connected: string[];
+        let connectCalls: Deferred<boolean>[];
+
+        const connect = (shortcut: string, identity?: string) =>
+            manager.getOrConnect({ coinInfo: { ...coinInfo, shortcut }, postMessage, identity });
+
+        const resolveConnect = async (index: number) => {
+            connectCalls[index]?.resolve(true);
+            await delay(0);
+        };
+
+        beforeEach(() => {
+            // Earlier tests leave reconnect timers of their managers running.
+            jest.clearAllTimers();
+            manager = new BackendManager({ connectLimit: 1 });
+            connected = [];
+            connectCalls = [];
+            postMessage = jest.fn((message: CoreEventMessage) => {
+                if (message.type === 'blockchain-connect') {
+                    const { coin, identity = 'default' } = message.payload;
+                    connected.push(`${coin.shortcut}/${identity}`);
+                }
+            });
+            jest.spyOn(BlockchainLink.prototype, 'connect').mockImplementation(() => {
+                const connectCall = createDeferred<boolean>();
+                connectCalls.push(connectCall);
+
+                return connectCall.promise;
+            });
+        });
+
+        it('opens at most the limit of connections at once', async () => {
+            manager = new BackendManager({ connectLimit: 2 });
+            const backends = ['BTC', 'LTC', 'DOGE', 'BCH'].map(shortcut => connect(shortcut));
+            await delay(0);
+            expect(connectCalls).toHaveLength(2);
+
+            await resolveConnect(0);
+            expect(connectCalls).toHaveLength(3);
+
+            await resolveConnect(1);
+            await resolveConnect(2);
+            expect(connectCalls).toHaveLength(4);
+
+            await resolveConnect(3);
+            await Promise.all(backends);
+            expect(connected).toEqual([
+                'BTC/default',
+                'LTC/default',
+                'DOGE/default',
+                'BCH/default',
+            ]);
+        });
+
+        it('frees the slot of a connection that fails', async () => {
+            const btc = connect('BTC');
+            const ltc = connect('LTC');
+            await delay(0);
+            expect(connectCalls).toHaveLength(1);
+
+            connectCalls[0]?.reject(new Error('foo'));
+            await expect(btc).rejects.toThrow('foo');
+            await delay(0);
+            expect(connectCalls).toHaveLength(2);
+
+            await resolveConnect(1);
+            await ltc;
+            expect(connected).toEqual(['LTC/default']);
+        });
+
+        it('connects identity backends only once no default backend waits', async () => {
+            const backends = [connect('BTC'), connect('LTC', 'identity'), connect('DOGE')];
+            await delay(0);
+
+            await resolveConnect(0);
+            await resolveConnect(1);
+            await resolveConnect(2);
+            await Promise.all(backends);
+            expect(connected).toEqual(['BTC/default', 'DOGE/default', 'LTC/identity']);
+        });
+
+        it('does not queue a connected or connecting backend', async () => {
+            const btc = connect('BTC');
+            await delay(0);
+            await resolveConnect(0);
+            await btc;
+
+            const ltc = connect('LTC');
+            await delay(0);
+            // LTC holds the only slot, the connected BTC must not wait for it.
+            await expect(connect('BTC')).resolves.toBe(await btc);
+
+            const ltcAgain = connect('LTC');
+            await delay(0);
+            expect(connectCalls).toHaveLength(2);
+
+            await resolveConnect(1);
+            expect(await ltcAgain).toBe(await ltc);
+        });
+
+        it('never opens a backend disposed while it waited', async () => {
+            const btc = connect('BTC');
+            const ltc = connect('LTC');
+            await delay(0);
+
+            manager.dispose();
+            connectCalls[0]?.reject(new Error('foo'));
+            await expect(btc).rejects.toThrow('foo');
+            await expect(ltc).rejects.toThrow();
+            await delay(5000);
+
+            expect(connectCalls).toHaveLength(1);
+            expect(postMessage).not.toHaveBeenCalledWith(
+                expect.objectContaining({ type: 'blockchain-reconnecting' }),
+            );
+        });
+
+        it('reconnects all backends through the queue', async () => {
+            const backends = [connect('BTC'), connect('LTC')];
+            await delay(0);
+            await resolveConnect(0);
+            await resolveConnect(1);
+            await Promise.all(backends);
+
+            const reconnected = manager.reconnectAll();
+            await delay(0);
+            expect(connectCalls).toHaveLength(3);
+
+            await resolveConnect(2);
+            await resolveConnect(3);
+            await reconnected;
+            expect(connected).toEqual(['BTC/default', 'LTC/default', 'BTC/default', 'LTC/default']);
+        });
     });
 });
