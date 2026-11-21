@@ -23,10 +23,6 @@ export { EmptyAmountText } from './components/EmptyAmountText';
 export { useFiatFromCryptoValue } from './hooks/useFiatFromCryptoValue';
 export { useCryptoFiatConverters } from './hooks/useCryptoFiatConverters';
 export { useFormattedGraphHeaderValues } from './hooks/useFormattedGraphHeaderValues';
-export {
-    convertTokenValueToDecimal,
-    asDecimalTokenAmount,
-    getFormattedCurrencySymbol,
-} from './utils';
+export { convertTokenValueToDecimal, asDecimalTokenAmount } from './utils';
 export type { DecimalTokenAmount } from './utils';
 export type { DiscreetMode } from './types';

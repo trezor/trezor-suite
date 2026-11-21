@@ -26,12 +26,12 @@ import { useSelectedTradingAsset } from '#src/hooks/wallet/trading/form/common/u
 import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
-import { TradingBalance } from '#src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputBaseCurrencyAmount } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputBaseCurrencyAmount';
 import { TradingFormInputCryptoAmount } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
 import { useTradingQuoteAmounts } from '#src/views/wallet/trading/common/hooks/useTradingQuoteAmounts';
 import { useTradingSelectedQuote } from '#src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
+import { TradingBaseCurrencyAmountText } from './TradingBaseCurrencyAmountText';
 import { TradingExchangeAllowanceDebug } from './TradingExchangeAllowanceDebug';
 import { TradingExchangeAssetsSwitchButton } from './TradingExchangeAssetsSwitchButton/TradingExchangeAssetsSwitchButton';
 import { TradingFormCard } from './TradingFormCard';
@@ -236,14 +236,13 @@ export const TradingExchangeFormInputs = () => {
                                             />
                                         )}
                                         {!state.isFormLoading && !!receiveCryptoSelect && (
-                                            <TradingBalance
-                                                balance={receiveAmount}
+                                            <TradingBaseCurrencyAmountText
+                                                amount={receiveAmount}
                                                 symbol={receiveCryptoSelect.networkSymbol}
                                                 tokenAddress={
                                                     (receiveCryptoSelect.contractAddress as TokenAddress) ??
                                                     undefined
                                                 }
-                                                showOnlyAmount
                                             />
                                         )}
                                     </Box>

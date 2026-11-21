@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import { getFormattedCurrencySymbol } from '@suite-common/formatters';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
-import { getFormattedCurrencySymbol } from '@suite-native/formatters';
 import { selectLocale } from '@suite-native/intl';
 
 export const useBaseCurrencyAmountPlaceholder = () => {
