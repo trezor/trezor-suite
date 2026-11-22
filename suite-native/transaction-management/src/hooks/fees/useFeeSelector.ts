@@ -52,7 +52,7 @@ export const useFeeSelector = ({
         form,
         feeLevels,
         selectedFeeLevel,
-        areFeesLoading,
+        areFeesLoading: areNetworkFeesLoading,
         isSubmittable,
         symbol,
         account,
@@ -78,6 +78,10 @@ export const useFeeSelector = ({
     const isTrc20 = networkType === 'tron' && !!tokenContract;
     const confirmedSelection = selectedFee ?? selectedFeeLevel;
     const confirmedFeeLevel = feeLevels[confirmedSelection];
+    // A composed Solana fee comes from transaction simulation, independently of the network table.
+    const areFeesLoading =
+        areNetworkFeesLoading &&
+        !(networkType === 'solana' && isFinalPrecomposedTransaction(confirmedFeeLevel));
     const referenceFeeLevel = getReferenceFeeLevel(feeLevels);
     const networkFeeLevel = useSelector((state: FeesRootState) =>
         selectNetworkFeeLevel(state, symbol, confirmedSelection),

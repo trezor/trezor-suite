@@ -719,6 +719,25 @@ describe(getDirectRpcHistoryState.name, () => {
 });
 
 describe(isAccountOutdated.name, () => {
+    it('detects a changed external stake balance in the same epoch', () => {
+        const account = mockSolanaStakingAccount('everstakeAndExternal');
+        const externalStakes = account.misc?.solExternalStakingAccounts ?? [];
+        expect(externalStakes).toHaveLength(2);
+
+        expect(
+            isAccountOutdated(account, {
+                ...account,
+                misc: {
+                    ...account.misc,
+                    solExternalStakingAccounts: externalStakes.map(stake => ({
+                        ...stake,
+                        stake: '1',
+                    })),
+                },
+            }),
+        ).toBe(true);
+    });
+
     it('ignores reordered Solana stake accounts while still detecting changed balances', () => {
         const account = mockSolanaStakingAccount('mixed');
         const stakes = account.misc?.solStakingAccounts ?? [];
@@ -748,9 +767,9 @@ describe(isAccountOutdated.name, () => {
 
         expect(isAccountOutdated(account, account)).toBe(false);
         expect(isAccountOutdated(account, freshInfo)).toBe(true);
-        expect(
-            isAccountOutdated(account, { ...account, misc: { solEpoch: account.misc?.solEpoch } }),
-        ).toBe(false);
+        const withoutStakeSnapshot = { ...account, misc: { solEpoch: account.misc?.solEpoch } };
+        expect(isAccountOutdated(account, withoutStakeSnapshot)).toBe(false);
+        expect(isAccountOutdated(withoutStakeSnapshot, freshInfo)).toBe(false);
     });
 
     fixtures.isAccountOutdated.forEach(f => {

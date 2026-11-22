@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 
 import { useIsFocused } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
@@ -23,6 +23,7 @@ import {
     type FormState,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
+import { haveSolanaStakingAccountsChanged } from '@suite-common/wallet-utils';
 import {
     type NativeSendRootState,
     type UpdateSelectedFeeLevelThunkParams,
@@ -35,6 +36,7 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
 import { createThunk, injectDispatch, injectGetState } from '@trezor/redux-utils';
+import { deepEqual } from '@trezor/utils';
 
 import { useEarnFeeAnalytics } from './useEarnFeeAnalytics';
 import { useEarnFeeEstimationError } from './useEarnFeeEstimationError';
@@ -77,6 +79,51 @@ type UseComposeEarnFeesParams = {
     formDraftPrefix: EarnFormDraftPrefix;
 };
 
+const selectCompositionInputs = (
+    state: AccountsRootState & FeesRootState,
+    accountKey: AccountKey,
+    formDraftPrefix: EarnFormDraftPrefix,
+) => {
+    const account = selectAccountByKey(state, accountKey);
+    const feeInfo = selectConvertedNetworkFeeInfo(state, account?.symbol);
+    if (!account || !feeInfo) return null;
+
+    const { symbol, key, networkType, availableBalance, misc } = account;
+    if (networkType === 'solana' && formDraftPrefix === 'claim') {
+        return {
+            kind: 'solana-claim' as const,
+            symbol,
+            key,
+            availableBalance,
+            stakeAccounts: misc?.solStakingAccounts,
+            externalStakeAccounts: misc?.solExternalStakingAccounts,
+            feeLevels: feeInfo.levels,
+        };
+    }
+
+    return { kind: 'other' as const, symbol, account, feeInfo };
+};
+
+type CompositionInputs = ReturnType<typeof selectCompositionInputs>;
+
+const areCompositionInputsEqual = (previous: CompositionInputs, current: CompositionInputs) => {
+    if (previous?.kind !== 'solana-claim' || current?.kind !== 'solana-claim') {
+        return shallowEqual(previous, current);
+    }
+
+    return (
+        previous.key === current.key &&
+        previous.symbol === current.symbol &&
+        previous.availableBalance === current.availableBalance &&
+        !haveSolanaStakingAccountsChanged(previous.stakeAccounts, current.stakeAccounts ?? []) &&
+        !haveSolanaStakingAccountsChanged(
+            previous.externalStakeAccounts,
+            current.externalStakeAccounts ?? [],
+        ) &&
+        deepEqual(previous.feeLevels, current.feeLevels)
+    );
+};
+
 // Triggers fee level composition for earn flows and stores the draft so `<FeeSelector>` can read it.
 export const useComposeEarnFees = ({
     accountKey,
@@ -101,11 +148,10 @@ export const useComposeEarnFees = ({
         retryFeeEstimation,
         setHasFeeEstimationError,
     } = useEarnFeeEstimationError(formDraftKey);
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
-    );
-    const feeInfo = useSelector((state: FeesRootState) =>
-        selectConvertedNetworkFeeInfo(state, account?.symbol),
+    const compositionInputs = useSelector(
+        (state: AccountsRootState & FeesRootState) =>
+            selectCompositionInputs(state, accountKey, formDraftPrefix),
+        areCompositionInputsEqual,
     );
     const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
     const isCurrentComposition =
@@ -124,6 +170,8 @@ export const useComposeEarnFees = ({
         async (requestId: number) => {
             if (requestId !== requestIdRef.current) return;
 
+            const account = selectAccountByKey(getState(), accountKey);
+            const feeInfo = selectConvertedNetworkFeeInfo(getState(), account?.symbol);
             if (!formState || !account || !feeInfo) return;
 
             const draftAtStart = selectDeepCopyOfFormDraft(getState(), formDraftKey) as
@@ -234,8 +282,6 @@ export const useComposeEarnFees = ({
             getState,
             formDraftKey,
             formState,
-            account,
-            feeInfo,
             saveDraft,
             accountKey,
             formDraftPrefix,
@@ -257,17 +303,16 @@ export const useComposeEarnFees = ({
         }
         dispatch(transactionManagementActions.clearFeeLevels());
         setHasFeeEstimationError(false);
-        setIsComposingFeeLevels(!!formState && !!account && !!feeInfo);
+        setIsComposingFeeLevels(!!formState && !!compositionInputs);
         debounce(() => composeFeeLevels(requestId));
     }, [
         isFocused,
         dispatch,
         accountKey,
         formDraftKey,
-        account,
+        compositionInputs,
         debounce,
         composeFeeLevels,
-        feeInfo,
         formState,
         feeEstimationRetryKey,
         customFeePerUnit,
@@ -300,7 +345,7 @@ export const useComposeEarnFees = ({
     const retryWithAnalytics = useEarnFeeAnalytics({
         contextKey: formDraftKey,
         flow: formDraftPrefix,
-        networkSymbol: account?.symbol,
+        networkSymbol: compositionInputs?.symbol,
         isEnabled: isFocused && !!formState,
         hasEstimationError: hasFeeEstimationError,
         isFeeUnavailable,

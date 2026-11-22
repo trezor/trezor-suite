@@ -188,8 +188,8 @@ describe('Blockchain Actions', () => {
             fetchAndUpdateAccountThunk({ accountKey: account.key, forceFullRefresh: true }),
         );
 
-        expect(TrezorConnect.getAccountInfo).toHaveBeenCalledTimes(1);
-        expect(TrezorConnect.getAccountInfo).toHaveBeenCalledWith(
+        expect(TrezorBlockchain.getAccountInfo).toHaveBeenCalledTimes(1);
+        expect(TrezorBlockchain.getAccountInfo).toHaveBeenCalledWith(
             expect.objectContaining({ details: 'txs' }),
         );
         expect(store.getState().wallet.accounts[0]).toMatchObject({

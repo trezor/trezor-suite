@@ -105,7 +105,7 @@ describe('EarnClaimModal', () => {
         ).toHaveTextContent('1.5 SOL');
         expect(screen.getByTestId('@staking/claim-modal/continue-button')).toBeEnabled();
 
-        await act(async () => {
+        act(() => {
             store.dispatch(
                 stakingActions.positionsSynced({ accountKey: solAccount.key, positions: [] }),
             );
@@ -116,7 +116,7 @@ describe('EarnClaimModal', () => {
         );
         expect(screen.getByTestId('@staking/claim-modal/continue-button')).toBeDisabled();
         expect(
-            screen.getByText(messages.TR_STAKE_SOL_NOTHING_TO_CLAIM.defaultMessage),
+            await screen.findByText(messages.TR_STAKE_SOL_NOTHING_TO_CLAIM.defaultMessage),
         ).toBeVisible();
     });
 

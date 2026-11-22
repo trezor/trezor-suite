@@ -67,27 +67,27 @@ export const StakingClaimReviewScreen = () => {
         amount: totals.withdrawable,
         networkSymbol: symbol,
     });
+    const networkType = account?.networkType;
+    const contractAddress = account ? getStakingContractAddress(account, 'claim') : undefined;
     const hasNoClaimableSolanaStake =
-        account?.networkType === 'solana' && !isPositiveBalance(claimableAmount);
+        networkType === 'solana' && !isPositiveBalance(claimableAmount);
 
     const claimFormState = useMemo(() => {
-        if (!account) return undefined;
-
-        const contractAddress = getStakingContractAddress(account, 'claim');
+        if (contractAddress === undefined) return undefined;
 
         // Ethereum claims via calldata, Solana via the claimable amount.
-        if (account.networkType === 'ethereum') {
+        if (networkType === 'ethereum') {
             return buildEarnComposeFormState(contractAddress, '0', buildClaimWithdrawRequestData());
         }
 
-        if (account.networkType === 'solana') {
+        if (networkType === 'solana') {
             if (!isPositiveBalance(claimableAmount)) return undefined;
 
             return buildEarnComposeFormState(contractAddress, claimableAmount, '');
         }
 
         return buildEarnComposeFormState(contractAddress, '0', '');
-    }, [account, claimableAmount]);
+    }, [networkType, contractAddress, claimableAmount]);
 
     const {
         formDraft,

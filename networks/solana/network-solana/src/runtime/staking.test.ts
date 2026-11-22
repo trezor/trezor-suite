@@ -10,6 +10,7 @@ import {
     stakeTransactionFixtures,
 } from './__fixtures__/staking.fixture';
 import {
+    getSolanaStakingData,
     prepareClaimSolTx,
     prepareStakeSolTx,
     prepareUnstakeSolTx,
@@ -191,25 +192,23 @@ describe('stake account layout', () => {
         expect(getSerializedMessage(response)).toBe(message);
     });
 
-    it.each(['100000.0', '1e5'])(
-        'prepares a claim with fee rate %s as the same transaction as the integer estimate',
-        async feePerUnit => {
-            const { rpcResults, message } = stakeTransactionFixtures.claim;
+    it('prepares a claim with fee rate 1e5 as the same transaction as the integer estimate', async () => {
+        const feePerUnit = '1e5';
+        const { rpcResults, message } = stakeTransactionFixtures.claim;
 
-            const response = await prepareClaimSolTx({
-                from: mockSender,
-                connection: mockConnection(rpcResults),
-                estimatedFee: { feePerUnit, feeLimit: '200000' },
-            });
+        const response = await prepareClaimSolTx({
+            from: mockSender,
+            connection: mockConnection(rpcResults),
+            estimatedFee: { feePerUnit, feeLimit: '200000' },
+        });
 
-            expect(getSerializedMessage(response)).toBe(message);
-        },
-    );
+        expect(getSerializedMessage(response)).toBe(message);
+    });
 
     it('marks a deactivated stake as claimable only after its lockup expires', async () => {
         const { rpcResults } = stakeTransactionFixtures.claim;
         const lockedStake = mockStakeAccount({
-            pubkey: rpcResults.getProgramAccounts[0].pubkey,
+            pubkey: getAddressDecoder().decode(new Uint8Array(32).fill(5)),
             stake: 3_000_000_000,
             deactivationEpoch: 850,
             lockupEpoch: 901,

@@ -774,16 +774,17 @@ const getSolanaStakeSnapshotKey = (account: NonNullable<SolanaStakingAccounts>[n
         account.isClaimable,
     ]);
 
-const haveSolanaStakingAccountsChanged = (
+export const haveSolanaStakingAccountsChanged = (
     storedAccounts: SolanaStakingAccounts,
     freshAccounts: SolanaStakingAccounts,
 ) => {
-    if (!freshAccounts) return false;
-    if (storedAccounts?.length !== freshAccounts.length) return true;
+    if (!freshAccounts || freshAccounts === storedAccounts) return false;
+    const previousAccounts = storedAccounts ?? [];
+    if (previousAccounts.length !== freshAccounts.length) return true;
 
     // RPC responses can contain the same accounts in a different order.
     const counts = new Map<string, number>();
-    for (const account of storedAccounts) {
+    for (const account of previousAccounts) {
         const key = getSolanaStakeSnapshotKey(account);
         counts.set(key, (counts.get(key) ?? 0) + 1);
     }
@@ -877,6 +878,10 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
                 haveSolanaStakingAccountsChanged(
                     account.misc?.solStakingAccounts,
                     freshInfo.misc?.solStakingAccounts,
+                ) ||
+                haveSolanaStakingAccountsChanged(
+                    account.misc?.solExternalStakingAccounts,
+                    freshInfo.misc?.solExternalStakingAccounts,
                 ) ||
                 // compare token count (detect added/removed tokens)
                 freshInfo.tokens?.length !== account.tokens?.length
