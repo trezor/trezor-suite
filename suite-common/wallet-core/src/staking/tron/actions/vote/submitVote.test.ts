@@ -388,6 +388,46 @@ describe('submitTronVoteThunk', () => {
     });
 });
 
+it('finishes a Tron unstake after transaction preparation rejects and permits a retry', async () => {
+    const actualSignTronContract = jest.requireActual<{
+        signTronContract: typeof signTronContract;
+    }>('../../shared/signTronContract').signTronContract;
+    const getBlockchainInfo = jest.spyOn(TrezorConnect, 'blockchainGetInfo');
+    getBlockchainInfo.mockRejectedValueOnce(new Error('Backend account data'));
+    signTronContractMock.mockImplementationOnce(actualSignTronContract);
+    const store = initStore();
+    const requestPushApproval = jest.fn().mockResolvedValue(false);
+    const onSettled = jest.fn();
+    const unstake = () =>
+        submitTronUnstakeThunk({
+            account: buildAccount(),
+            device,
+            amount: '1',
+            resourceType: 'bandwidth',
+            requestPushApproval,
+            onSettled,
+        });
+
+    try {
+        await expect(store.dispatch(unstake()).unwrap()).resolves.toBeUndefined();
+        expect(getSubmitFinishedActions(store)).toEqual([
+            tronStakeActions.submitFinished({
+                accountKey: ACCOUNT_KEY,
+                flow: 'unstake',
+                error: { kind: 'sign-failed' },
+            }),
+        ]);
+        expect(onSettled).toHaveBeenCalledTimes(1);
+        expect(requestPushApproval).not.toHaveBeenCalled();
+        expect(pushTransactionMock).not.toHaveBeenCalled();
+
+        await expect(store.dispatch(unstake()).unwrap()).resolves.toBeUndefined();
+        expect(requestPushApproval).toHaveBeenCalledTimes(1);
+    } finally {
+        getBlockchainInfo.mockRestore();
+    }
+});
+
 describe('Tron signing cancellation analytics', () => {
     const submissions = [
         [
