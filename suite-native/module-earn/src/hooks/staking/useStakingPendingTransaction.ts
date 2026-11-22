@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/native';
-import { useAtomValue } from 'jotai';
 
 import {
     type AccountsRootState,
@@ -18,8 +17,6 @@ import {
     getPollIntervalMs,
     isPending as isTransactionDataPending,
 } from '@suite-common/wallet-utils';
-import { alertAtom, useAlert } from '@suite-native/alerts';
-import { useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
     type RootStackParamList,
@@ -32,11 +29,10 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { type EarnFormDraftPrefix, type StakingPendingModal } from '../../types';
+import { useEarnMissingTransaction } from '../earn/useEarnMissingTransaction';
 import { useEarnPendingTransactionSheet } from '../earn/useEarnPendingTransactionSheet';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>;
-
-const MISSING_TRANSACTION_GRACE_MS = 2 * 60 * 1000;
 
 type NavigateToPushedTransactionActionParams = {
     accountKey: AccountKey;
@@ -102,19 +98,8 @@ export const useStakingPendingTransaction = ({
     const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
     const isFocused = useIsFocused();
-    const { showAlert, hideAlert } = useAlert();
-    const alert = useAtomValue(alertAtom);
-    const hasOtherAlert = !!alert && alert.type !== 'stakingTransactionNotConfirmed';
-    const { translate } = useTranslate();
     const txid = pendingTransaction?.txid;
     const amountInBaseUnits = pendingTransaction?.amountInBaseUnits;
-    const submittedAt = pendingTransaction?.submittedAt;
-    const notifiedTxidRef = useRef<string | undefined>(undefined);
-    const [overdueTxid, setOverdueTxid] = useState(() =>
-        submittedAt !== undefined && submittedAt + MISSING_TRANSACTION_GRACE_MS <= Date.now()
-            ? txid
-            : undefined,
-    );
 
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -129,8 +114,13 @@ export const useStakingPendingTransaction = ({
     const isTransactionConfirmed = !!transaction && !isTransactionDataPending(transaction);
     const isTransactionFailed = transaction?.type === 'failed';
     const isAwaitingConfirmation = !!txid && !isTransactionConfirmed;
-    const isDropped = isAwaitingConfirmation && !transaction && overdueTxid === txid;
-    const isPending = isAwaitingConfirmation && !isDropped;
+    const isMissing = useEarnMissingTransaction({
+        txid,
+        submittedAt: pendingTransaction?.submittedAt,
+        hasTrackedTransaction: !!transaction,
+        isFocused,
+    });
+    const isPending = isAwaitingConfirmation && !isMissing;
     const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);
 
     useEffect(() => {
@@ -142,35 +132,6 @@ export const useStakingPendingTransaction = ({
 
         return () => clearInterval(interval);
     }, [accountKey, dispatch, isAwaitingConfirmation, pollIntervalMs]);
-
-    useEffect(() => {
-        if (!txid || submittedAt === undefined) return undefined;
-
-        const timeout = setTimeout(
-            () => setOverdueTxid(txid),
-            Math.max(submittedAt + MISSING_TRANSACTION_GRACE_MS - Date.now(), 0),
-        );
-
-        return () => clearTimeout(timeout);
-    }, [submittedAt, txid]);
-
-    useEffect(() => {
-        if (!isDropped || !isFocused || hasOtherAlert || notifiedTxidRef.current === txid)
-            return undefined;
-
-        notifiedTxidRef.current = txid;
-
-        showAlert({
-            type: 'stakingTransactionNotConfirmed',
-            title: translate('earn.transactionNotConfirmedAlert.title'),
-            description: translate('earn.transactionNotConfirmedAlert.description'),
-            pictogramVariant: 'warning',
-            primaryButtonTitle: translate('generic.buttons.gotIt'),
-            onPressPrimaryButton: () => hideAlert('stakingTransactionNotConfirmed'),
-        });
-
-        return () => hideAlert('stakingTransactionNotConfirmed');
-    }, [hasOtherAlert, hideAlert, isDropped, isFocused, showAlert, translate, txid]);
 
     useEffect(() => {
         if (!txid || amountInBaseUnits === undefined || !isTransactionConfirmed || !isFocused)

@@ -15,7 +15,6 @@ import {
     yieldActions,
 } from '@suite-common/wallet-core';
 import { asAmountSubunit, getApyBreakdown, subunitsToUnits } from '@suite-common/wallet-utils';
-import { useBottomSheetModal } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { decimalTransformer } from '@suite-native/helpers';
 import {
@@ -57,11 +56,6 @@ export const useYieldWithdrawController = () => {
     );
     const isSharesInput = flowType === 'redeem';
     const amount = isSharesInput ? sharesAmount : assetAmount;
-    const {
-        bottomSheetRef: pendingBottomSheetRef,
-        closeModal: closePendingBottomSheet,
-        openModal: openPendingBottomSheet,
-    } = useBottomSheetModal();
 
     const { isFocused, messageSystem, session, yieldFlowData } = useYieldFlowScreenBase({
         flowType,
@@ -182,8 +176,18 @@ export const useYieldWithdrawController = () => {
     const pendingTransaction = session?.action.pendingTransaction ?? null;
     const { actionPendingTransaction } = splitYieldPendingTransaction(pendingTransaction, flowType);
     const isWithdrawPending = !!actionPendingTransaction;
-    const { displayedPendingTransaction, isSheetPresented, handleSheetDismissed } =
-        useYieldPendingSheet(actionPendingTransaction);
+    const {
+        displayedPendingTransaction,
+        isPendingSheetVisible,
+        pendingBottomSheetRef,
+        openPendingBottomSheet,
+        isSheetPresented,
+        handleSheetDismissed,
+    } = useYieldPendingSheet({
+        pendingTransaction: actionPendingTransaction,
+        accountKey: account?.key,
+        isFocused,
+    });
     const { explorerUrl, openInBlockchain } = useYieldPendingTransactionDetails({
         accountKey: account?.key ?? null,
         txid: displayedPendingTransaction?.txid ?? null,
@@ -205,16 +209,6 @@ export const useYieldWithdrawController = () => {
         pendingTransaction: actionPendingTransaction,
         vault,
     });
-
-    useEffect(() => {
-        if (!isFocused || !isWithdrawPending) {
-            closePendingBottomSheet();
-
-            return;
-        }
-
-        openPendingBottomSheet();
-    }, [closePendingBottomSheet, isFocused, isWithdrawPending, openPendingBottomSheet]);
 
     useEffect(() => {
         // Wait for sheet dismissal to avoid a Fabric crash (see useYieldPendingSheet).
@@ -362,14 +356,14 @@ export const useYieldWithdrawController = () => {
     );
 
     const handleClose = useCallback(() => {
-        if (isWithdrawPending) {
+        if (isPendingSheetVisible) {
             openPendingBottomSheet();
 
             return;
         }
 
         navigation.goBack();
-    }, [isWithdrawPending, navigation, openPendingBottomSheet]);
+    }, [isPendingSheetVisible, navigation, openPendingBottomSheet]);
 
     const handleInputSwitch = useCallback(
         (activeView: 'primary' | 'secondary') => {

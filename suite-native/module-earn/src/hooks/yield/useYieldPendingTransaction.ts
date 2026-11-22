@@ -1,8 +1,5 @@
-import { useEffect } from 'react';
-
 import { type YieldPendingTransactionState } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { useBottomSheetModal } from '@suite-native/atoms';
 
 import { useYieldPendingSheet } from './useYieldPendingSheet';
 import { useYieldPendingTransactionDetails } from './useYieldPendingTransactionDetails';
@@ -35,17 +32,20 @@ export const useYieldPendingTransaction = ({
     transactionType,
     vaultId,
 }: UseYieldPendingTransactionParams) => {
-    const {
-        bottomSheetRef: pendingBottomSheetRef,
-        closeModal: closePendingBottomSheet,
-        openModal: openPendingBottomSheet,
-    } = useBottomSheetModal();
     const matchingPendingTransaction = getPendingTransactionByType(
         pendingTransaction,
         transactionType,
     );
-    const { displayedPendingTransaction, isSheetPresented, handleSheetDismissed } =
-        useYieldPendingSheet(matchingPendingTransaction);
+    const {
+        displayedPendingTransaction,
+        pendingBottomSheetRef,
+        isSheetPresented,
+        handleSheetDismissed,
+    } = useYieldPendingSheet({
+        pendingTransaction: matchingPendingTransaction,
+        accountKey,
+        isFocused,
+    });
     const { explorerUrl, openInBlockchain } = useYieldPendingTransactionDetails({
         accountKey: accountKey ?? null,
         txid: displayedPendingTransaction?.txid ?? null,
@@ -64,16 +64,6 @@ export const useYieldPendingTransaction = ({
                   txid: displayedPendingTransaction.txid,
               }
             : null;
-
-    useEffect(() => {
-        if (!isFocused || matchingPendingTransaction === undefined) {
-            closePendingBottomSheet();
-
-            return;
-        }
-
-        openPendingBottomSheet();
-    }, [closePendingBottomSheet, isFocused, matchingPendingTransaction, openPendingBottomSheet]);
 
     return {
         displayedPendingTransaction,

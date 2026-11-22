@@ -12,7 +12,7 @@ export type AlertType =
     | 'bluetoothPairing'
     | 'connectDevice'
     | 'deviceError'
-    | 'stakingTransactionNotConfirmed';
+    | 'earnTransactionNotConfirmed';
 
 export type Alert = {
     title?: ReactNode;

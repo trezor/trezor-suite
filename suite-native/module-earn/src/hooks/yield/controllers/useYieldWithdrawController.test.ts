@@ -29,11 +29,12 @@ import { useYieldWithdrawFees } from '../useYieldWithdrawFees';
 
 const mockNavigate = jest.fn();
 const mockReplace = jest.fn();
+const mockGoBack = jest.fn();
 let mockRouteParams: YieldFlowParams & { withdrawFlowType?: 'withdraw' | 'redeem' };
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
-    useNavigation: () => ({ navigate: mockNavigate, replace: mockReplace, goBack: jest.fn() }),
+    useNavigation: () => ({ navigate: mockNavigate, replace: mockReplace, goBack: mockGoBack }),
     useRoute: () => ({ params: mockRouteParams }),
 }));
 jest.mock('./useYieldWithdrawController', () => {
@@ -85,6 +86,9 @@ const withdrawFees = {
 
 const pendingSheet: ReturnType<typeof useYieldPendingSheet> = {
     displayedPendingTransaction: undefined,
+    isPendingSheetVisible: false,
+    pendingBottomSheetRef: { current: null },
+    openPendingBottomSheet: jest.fn(),
     isSheetPresented: false,
     handleSheetDismissed: jest.fn(),
 };
@@ -367,6 +371,27 @@ describe('useYieldWithdrawController', () => {
             ...mockRouteParams,
             withdrawFlowType: 'withdraw',
         });
+    });
+
+    it('lets the user leave when the pending withdrawal cannot be found', async () => {
+        useYieldFlowScreenBaseMock.mockReturnValue(
+            mockYieldFlowScreenBaseResult({
+                session: mockYieldSessionState({
+                    action: {
+                        pendingTransaction: { type: 'withdraw', txid: '0xmissing', amount: '5' },
+                    },
+                }),
+                yieldFlowData,
+            }),
+        );
+        const { result } = await renderWithdrawController();
+        if (result.current.status !== 'ready') throw new Error('not ready');
+
+        expect(result.current.isInteractionBlocked).toBe(true);
+        await act(() => result.current.status === 'ready' && result.current.header.onClose());
+
+        expect(mockGoBack).toHaveBeenCalled();
+        expect(pendingSheet.openPendingBottomSheet).not.toHaveBeenCalled();
     });
 
     it('defers the step navigation while the pending sheet is dismissing', async () => {
