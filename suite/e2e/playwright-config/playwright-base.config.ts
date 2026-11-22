@@ -29,6 +29,7 @@ export const baseConfig: PlaywrightTestConfig = defineConfig<
     testDir: '../tests',
     workers: 1, // to disable parallelism between test files
     retries: isDefaultGithubAction ? 2 : 0,
+    repeatEach: 10,
     forbidOnly: isDefaultGithubAction,
     use: {
         viewport: { width: 1280, height: 720 },
