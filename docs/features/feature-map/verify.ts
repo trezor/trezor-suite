@@ -1,6 +1,7 @@
 // Check feature-map references and cross-format integrity using Node built-ins only.
 
 import { stripTypeScriptTypes } from 'node:module';
+import * as nodePath from 'node:path';
 
 import {
     checkAdditiveBaseline,
@@ -10,6 +11,7 @@ import {
 } from './build.ts';
 import { verifyCaptureFlows } from './capture-flows.ts';
 import { AXES, preserveBaseline } from './coverage.ts';
+import { buildExplorerPayload } from './explorer.ts';
 import {
     FEATURE_MAP_DIR,
     PyFloat,
@@ -255,7 +257,7 @@ const verifyOwnership = (features: readonly Json[]): void => {
 
 export const verify = (): void => {
     const data = readJson(pyJoin(HERE, 'features.json'));
-    const features = arr(at(data, 'features'));
+    const features = arr(at(data, 'features')).map(obj);
     const byId = indexBy(features, 'id');
     pyAssert(byId.size === features.length, 'Duplicate canonical IDs');
     verifyOwnership(features);
@@ -290,7 +292,7 @@ export const verify = (): void => {
     const parentIds = pySet(
         features.filter(f => truthy(at(f, 'parent_id'))).map(f => at(f, 'parent_id')),
     );
-    const baselineResult = json(checkAdditiveBaseline(features as never));
+    const baselineResult = json(checkAdditiveBaseline(features));
     const sources = new Set<Json>();
     let roots = 0;
     for (const f of features) {
@@ -391,7 +393,7 @@ export const verify = (): void => {
             ),
             pyStr(at(capture, 'id')),
         );
-        const path = screenshotFile(capture as never);
+        const path = screenshotFile(obj(capture));
         pyAssert(pyEquals(sha256File(path), at(capture, 'sha256')));
         pyAssert(pyEquals(at(capture, 'repository_path'), pyRelativeTo(path, REPO)));
         pyAssert(pyEquals(at(capture, 'explorer_path'), pyRelativeTo(path, HERE)));
@@ -532,7 +534,7 @@ export const verify = (): void => {
             pyAssert(pyEquals(toInt(at(row, axis + '_score')), at(value, 'score')));
         }
     }
-    const qualityBaseline = json(preserveBaseline(features as never));
+    const qualityBaseline = json(preserveBaseline(features));
     const axes: readonly string[] = AXES;
     const quality = at(data, 'test_coverage_audit');
     pyAssert(pyEquals(at(quality, 'features_assessed'), features.length));
@@ -704,22 +706,44 @@ export const verify = (): void => {
         pyAssert(pyIsFile(pyJoin(REPO, str(at(example, 'source')))));
         pyAssert(arr(at(example, 'related_feature_ids')).every(i => byId.has(i)));
     }
-    for (const script of [
-        pyJoin(HERE, 'build.ts'),
-        pyJoin(HERE, 'capture-flows.ts'),
-        pyJoin(HERE, 'verify.ts'),
-        pyJoin(HERE, 'coverage.ts'),
-        pyJoin(HERE, 'explorer.ts'),
-        pyJoin(HERE, 'pylib.ts'),
-    ]) {
+    const scripts = pySorted(pyRglob(HERE, '*.ts')).filter(
+        script => !pyPathParts(script).includes('node_modules'),
+    );
+    pyAssert(scripts.length >= 9, ['Unexpectedly few TypeScript scripts', scripts.length]);
+    for (const script of scripts) {
         compileScript(script);
     }
-    pyAssert(!readText(pyJoin(HERE, 'explorer.html')).includes('__FEATURE_DATA__'));
-    const readme = pyJoin(HERE, 'README.md');
-    if (pyExists(readme)) {
-        for (const target of pyFindall(pyRe('\\]\\(([^)]+)\\)'), readText(readme)) as string[]) {
+    const explorerTemplate = readText(pyJoin(HERE, 'explorer.template.html'));
+    const placeholder = '__FEATURE_DATA__';
+    const placeholderIdx = explorerTemplate.indexOf(placeholder);
+    pyAssert(placeholderIdx >= 0, 'explorer.template.html is missing __FEATURE_DATA__');
+    const templateHead = explorerTemplate.slice(0, placeholderIdx).trimEnd();
+    const templateTail = explorerTemplate.slice(placeholderIdx + placeholder.length).trimStart();
+    const explorerHtml = readText(pyJoin(HERE, 'explorer.html'));
+    pyAssert(!explorerHtml.includes(placeholder), 'explorer.html has unreplaced placeholder');
+    pyAssert(
+        explorerHtml.startsWith(templateHead) && explorerHtml.endsWith(templateTail),
+        'explorer.html template drift; rerun node docs/features/feature-map/explorer.ts',
+    );
+    const embeddedJson = explorerHtml
+        .slice(templateHead.length, explorerHtml.length - templateTail.length)
+        .trim();
+    pyAssert(
+        pyEquals(pyJsonLoads(embeddedJson), buildExplorerPayload()),
+        'explorer.html payload is stale; rerun node docs/features/feature-map/explorer.ts',
+    );
+    for (const mdFile of pySorted(pyRglob(HERE, '*.md'))) {
+        if (pyPathParts(mdFile).includes('node_modules')) continue;
+        const mdDir = nodePath.dirname(mdFile);
+        for (const target of pyFindall(pyRe('\\]\\(([^)]+)\\)'), readText(mdFile)) as string[]) {
             if (!pyMatch(pyRe('^[a-z]+:'), target)) {
-                pyAssert(pyExists(pyJoin(HERE, target.split('#')[0])), target);
+                const filePart = target.split('#')[0];
+                if (filePart) {
+                    pyAssert(pyExists(pyJoin(mdDir, filePart)), [
+                        pyRelativeTo(mdFile, HERE),
+                        target,
+                    ]);
+                }
             }
         }
     }

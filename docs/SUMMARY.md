@@ -52,6 +52,8 @@
 - [Features](./features/index.md)
     - [User feature map](./features/feature-map/README.md)
         - [Test coverage quality](./features/feature-map/test-coverage/README.md)
+        - [Screen-by-screen source audit](./features/feature-map/screen-audit/README.md)
+            - [Route coverage](./features/feature-map/screen-audit/route-coverage.md)
         - [Runtime audit](./features/feature-map/runtime/README.md)
             - [Runtime audit outcome](./features/feature-map/runtime/report.md)
             - [Model capabilities](./features/feature-map/runtime/model-capabilities.md)

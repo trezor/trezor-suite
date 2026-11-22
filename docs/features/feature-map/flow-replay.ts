@@ -194,7 +194,7 @@ const locate = (options: ReplayOptions, phrase: string, nth: number, tag: string
                 .map(word => word.text)
                 .join(' ');
         boxes = findPhrase(words, phrase, options.pixelDensity);
-        if (boxes.length) break;
+        if (boxes.length >= nth) break;
     }
 
     return {
@@ -213,8 +213,49 @@ const tapPoint = (step: ReplayStep, box: Box, screen: Screen): [number, number] 
     Math.round(box.y + (step.dy ?? 0)),
 ];
 
+type NodeRect = { x: number; y: number; width: number; height: number };
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+    value !== null && typeof value === 'object' && !Array.isArray(value);
+
+const isFiniteNumber = (value: unknown): value is number =>
+    typeof value === 'number' && Number.isFinite(value);
+
+const parseNodeRect = (raw: string): NodeRect => {
+    const parsed: unknown = JSON.parse(raw);
+    const data = isRecord(parsed) ? parsed.data : null;
+    const node = isRecord(data) ? data.node : null;
+    const rect = isRecord(node) ? node.rect : null;
+    if (
+        !isRecord(rect) ||
+        !isFiniteNumber(rect.x) ||
+        !isFiniteNumber(rect.y) ||
+        !isFiniteNumber(rect.width) ||
+        !isFiniteNumber(rect.height)
+    ) {
+        throw new Error('agent-device get attrs returned unexpected node.rect shape');
+    }
+
+    return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
+};
+
+const requireString = (value: string | undefined, field: string, stepDo: string): string => {
+    if (typeof value !== 'string') throw new Error(`${stepDo} step is missing ${field}`);
+
+    return value;
+};
+
+const formatReplayError = (error: unknown): string => {
+    if (isRecord(error) && typeof error.stderr === 'string' && error.stderr.trim()) {
+        return error.stderr.split('\n')[0].trim();
+    }
+    if (error instanceof Error) return error.message.split('\n')[0].trim();
+
+    return String(error).split('\n')[0].trim();
+};
+
 const tapText = (options: ReplayOptions, step: ReplayStep, tag: string): void => {
-    const phrase = step.text as string;
+    const phrase = requireString(step.text, 'text', step.do);
     const deadline = Date.now() + WAIT_MS;
     for (;;) {
         const screen = locate(options, phrase, step.nth ?? 1, tag);
@@ -231,6 +272,7 @@ const tapText = (options: ReplayOptions, step: ReplayStep, tag: string): void =>
 };
 
 const scrollTo = (options: ReplayOptions, step: ReplayStep, tag: string): void => {
+    const phrase = requireString(step.text, 'text', step.do);
     // Short passes so a target is not skipped; search back the other way if the edge is reached.
     const forward = step.direction ?? 'down';
     const directions = [forward, forward === 'down' ? 'up' : 'down'];
@@ -239,12 +281,7 @@ const scrollTo = (options: ReplayOptions, step: ReplayStep, tag: string): void =
         let stalled = 0;
         let previous = '';
         for (let attempt = 0; attempt <= SCROLL_LIMIT && stalled < 2; attempt++) {
-            const screen = locate(
-                options,
-                step.text as string,
-                step.nth ?? 1,
-                `${tag}-${direction}${attempt}`,
-            );
+            const screen = locate(options, phrase, step.nth ?? 1, `${tag}-${direction}${attempt}`);
             stalled = attempt && screen.signature === previous ? stalled + 1 : 0;
             previous = screen.signature;
             // At the content edge a target may sit lower, e.g. the last row of a screen without
@@ -257,7 +294,7 @@ const scrollTo = (options: ReplayOptions, step: ReplayStep, tag: string): void =
             run(options, ['wait', 'stable', '400', '5000']);
         }
     }
-    throw new Error(`text "${step.text}" not reached by scrolling`);
+    throw new Error(`text "${phrase}" not reached by scrolling`);
 };
 
 const runStep = (options: ReplayOptions, step: ReplayStep, tag: string): void => {
@@ -269,10 +306,9 @@ const runStep = (options: ReplayOptions, step: ReplayStep, tag: string): void =>
         case 'tap':
             if (step.id && step.right_of !== undefined) {
                 run(options, ['wait', `id="${step.id}"`, String(WAIT_MS)]);
-                const attrs = JSON.parse(
+                const rect = parseNodeRect(
                     run(options, ['get', 'attrs', `id="${step.id}"`, '--json']),
                 );
-                const { rect } = attrs.data.node;
                 run(options, [
                     'press',
                     String(Math.round(rect.x + rect.width + step.right_of)),
@@ -295,22 +331,31 @@ const runStep = (options: ReplayOptions, step: ReplayStep, tag: string): void =>
         case 'type':
             // Without `text` the step types into the field that already has focus.
             if (step.text) tapText(options, step, tag);
-            run(options, ['type', step.value as string]);
+            run(options, ['type', requireString(step.value, 'value', step.do)]);
 
             return;
         case 'wait_text':
-            run(options, ['wait', 'text', step.text as string, String(WAIT_MS)]);
+            run(options, [
+                'wait',
+                'text',
+                requireString(step.text, 'text', step.do),
+                String(WAIT_MS),
+            ]);
 
             return;
         case 'alert':
             run(options, ['alert', 'wait', String(WAIT_MS)]);
-            run(options, ['alert', step.value as string]);
+            run(options, ['alert', requireString(step.value, 'value', step.do)]);
 
             return;
         case 'back':
             run(options, ['back']);
 
             return;
+        default: {
+            const unknown: never = step.do;
+            throw new Error(`unsupported replay step action: ${String(unknown)}`);
+        }
     }
 };
 
@@ -330,17 +375,23 @@ export const replayFlow = (
             runStep(options, step, `${id}-${index + 1}`);
             run(options, ['wait', 'stable', '500', '8000']);
         } catch (error) {
-            const message = String(
-                (error as { stderr?: string }).stderr || (error as Error).message,
-            )
-                .split('\n')[0]
-                .trim();
-
-            return { result: 'diverged', failedStep: index + 1, note: `step ${label}: ${message}` };
+            return {
+                result: 'diverged',
+                failedStep: index + 1,
+                note: `step ${label}: ${formatReplayError(error)}`,
+            };
         }
     }
-    fs.mkdirSync(nodePath.dirname(arrivalImage), { recursive: true });
-    screenshot(options, arrivalImage);
+    try {
+        fs.mkdirSync(nodePath.dirname(arrivalImage), { recursive: true });
+        screenshot(options, arrivalImage);
+    } catch (error) {
+        return {
+            result: 'diverged',
+            failedStep: null,
+            note: `arrival screenshot: ${formatReplayError(error)}`,
+        };
+    }
 
     return { result: 'pass', failedStep: null, note: '' };
 };

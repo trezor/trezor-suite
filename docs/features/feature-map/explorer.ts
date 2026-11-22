@@ -523,7 +523,7 @@ export const loadCaptureFlows = (screens: JsonObject): JsonObject | null => {
     };
 };
 
-export const buildExplorer = (): JsonObject => {
+export const buildExplorerPayload = (): JsonObject => {
     const dataset = readJson(pyJoin(HERE, 'features.json')) as JsonObject;
     const features = req(dataset, 'features') as JsonObject[];
     const byId: ById = new Map();
@@ -563,6 +563,9 @@ export const buildExplorer = (): JsonObject => {
             ids.push(shotId);
         }
     }
+    // Derive shared-screen links from canonical base screenshot IDs before splicing device variants,
+    // so each mobile screen only consumes one slot in `via` (max 6) and the viewer picks the active device.
+    const links = deriveLinks(features, byId, screensByFeature);
     const preferredDevices = applyDeviceVariants(screens, screensByFeature);
     const superseded = new Set<Json>(
         orList(get(runtime, 'errata')).map(e => get(e as JsonObject, 'observation_id')),
@@ -579,17 +582,22 @@ export const buildExplorer = (): JsonObject => {
     ]) {
         meta[key] = req(metadata, key);
     }
-    const payload: JsonObject = {
+
+    return {
         meta,
         statistics: req(dataset, 'statistics'),
         rubric: req(reqObj(dataset, 'test_coverage_audit'), 'rubric'),
         features: features.map(f => projectFeature(f, byId, screensByFeature, superseded)),
         screens,
         preferred_devices: preferredDevices,
-        links: deriveLinks(features, byId, screensByFeature),
+        links,
         max_shared_group: MAX_SHARED_GROUP,
         capture_flows: loadCaptureFlows(screens),
     };
+};
+
+export const buildExplorer = (): JsonObject => {
+    const payload = buildExplorerPayload();
     const packed = pyJsonDumps(payload, { ensureAscii: false, separators: [',', ':'] })
         .split('</')
         .join('<\\/');

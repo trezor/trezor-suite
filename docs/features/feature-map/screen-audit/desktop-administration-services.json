@@ -1132,6 +1132,28 @@
             "sha256": "b00b72567d29431aba1011858f3f1ae26f5634314e2aa88b249a39629b810d36"
         },
         {
+            "path": "suite-app/module-trading/src/pages/TradingExchangeAllowancePage.tsx",
+            "symbol": "TradingExchangeAllowancePage",
+            "feature_ids": ["trade.swap.revoke", "trade.swap.approval-fee"],
+            "inspected_components": [
+                "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowance.tsx",
+                "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowanceRevoke.tsx"
+            ],
+            "local_composition_paths": [],
+            "findings": [
+                "Displays current token allowance vs swap amount, revoke approval action and network fee selector; covered by existing swap revoke and approval-fee features."
+            ],
+            "disposition": "covered",
+            "inspection": "Page body and relevant controls reviewed",
+            "control_evidence": [
+                {
+                    "line": 3,
+                    "source": "export const TradingExchangeAllowancePage = () => <TradingExchangeAllowance />;"
+                }
+            ],
+            "sha256": "e45ae6137d1ae248a5c8e91c10a0535aeb53ac59ac5c320d40d60a397bea49b9"
+        },
+        {
             "path": "suite-app/module-trading/src/pages/TradingRedirectPage.tsx",
             "symbol": "TradingRedirectPage",
             "feature_ids": ["trade"],
@@ -18009,6 +18031,7 @@
         "suite-app/module-trading/src/pages/TradingBuyDetailPage.tsx",
         "suite-app/module-trading/src/pages/TradingBuyFormPage.tsx",
         "suite-app/module-trading/src/pages/TradingConciergeDetailPage.tsx",
+        "suite-app/module-trading/src/pages/TradingExchangeAllowancePage.tsx",
         "suite-app/module-trading/src/pages/TradingExchangeApprovalPage.tsx",
         "suite-app/module-trading/src/pages/TradingExchangeConfirmPage.tsx",
         "suite-app/module-trading/src/pages/TradingExchangeDetailPage.tsx",

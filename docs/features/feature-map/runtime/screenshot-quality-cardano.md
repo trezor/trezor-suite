@@ -32,7 +32,7 @@ No sensitive image was identified. No seed/PIN/passphrase or entered signing mes
 ## Source chain
 
 - [packages/suite/src/views/wallet/staking/components/StakingDashboard/components/StakingCard.tsx](../../../../packages/suite/src/views/wallet/staking/components/StakingDashboard/components/StakingCard.tsx#L233).
-- [packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/UserContextModal.tsx](../../../../packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/UserContextModal.tsx#L189).
+- [suite-app/app-modal/src/UserContextModal.tsx](../../../../suite-app/app-modal/src/UserContextModal.tsx#L187).
 - [packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/StakeChangeDelegateModal/StakeChangeDelegateModal.tsx](../../../../packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/StakeChangeDelegateModal/StakeChangeDelegateModal.tsx#L197).
 - [packages/suite/src/components/earn/modals/shared/VotingDelegations/VotingPreferenceCard.tsx](../../../../packages/suite/src/components/earn/modals/shared/VotingDelegations/VotingPreferenceCard.tsx#L221).
 - [packages/suite/src/views/wallet/staking/components/StakingDashboard/components/NewProviderCard.tsx](../../../../packages/suite/src/views/wallet/staking/components/StakingDashboard/components/NewProviderCard.tsx#L38).

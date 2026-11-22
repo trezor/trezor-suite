@@ -43,8 +43,8 @@
         "desktop-web": {
             "routes": 69,
             "covered": 34,
-            "features-only": 29,
-            "unmapped": 1,
+            "features-only": 30,
+            "unmapped": 0,
             "internal": 4,
             "alias": 1,
             "navigator": 0,
@@ -61,18 +61,8 @@
         "parsed_inline_component_registrations": 2,
         "parsed_screen_component_registrations": 222,
         "parsed_conditional_registrations": 20,
-        "parsed_not_in_ledger": [
-            "suite-native-app/app/src/navigation/RootStackNavigator.tsx:250 RootStackRoutes.SignVerify -> SignVerifyScreen (component)",
-            "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx:57 DeviceOnboardingStackRoutes.DeviceVisualCheck -> DeviceVisualCheckScreen (component)",
-            "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx:65 DeviceOnboardingStackRoutes.PackagingVisualCheck -> PackagingVisualCheckScreen (component)",
-            "suite-native-app/module-passphrase/src/PassphraseStackNavigator.tsx:103 PassphraseStackRoutes.PassphraseDuplicateAlert -> PassphraseMismatchAlertScreen (inline)",
-            "suite-native-app/module-passphrase/src/PassphraseStackNavigator.tsx:90 PassphraseStackRoutes.PassphraseMismatchAlert -> PassphraseMismatchAlertScreen (inline)"
-        ],
-        "ledger_not_parsed": [
-            "suite-native-app/app/src/navigation/RootStackNavigator.tsx#SignAndVerifyScreen",
-            "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx#SecurityCheckScreen",
-            "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx#UninitializedDeviceLandingScreen"
-        ],
+        "parsed_not_in_ledger": [],
+        "ledger_not_parsed": [],
         "enum_members": 258,
         "enum_count": 36,
         "registered_enum_members": 257,
@@ -348,7 +338,7 @@
             "screenshot_id": "mobile-storage-recovery",
             "arrival_route": "system-alert",
             "matched_routes": [],
-            "result": "no-match"
+            "result": "system-alert"
         },
         {
             "screenshot_id": "mobile-support-about",
@@ -414,7 +404,7 @@
             "screenshot_id": "mobile-tracker-qr-scanner",
             "arrival_route": "system-alert",
             "matched_routes": [],
-            "result": "no-match"
+            "result": "system-alert"
         },
         {
             "screenshot_id": "mobile-tracker-xpub-help",
@@ -429,20 +419,7 @@
             "result": "unique"
         }
     ],
-    "unresolved": [
-        {
-            "platform": "mobile",
-            "kind": "flow-arrival-route-unmatched",
-            "detail": "mobile-storage-recovery: system-alert",
-            "file": "docs/features/feature-map/parts/capture-flows.json"
-        },
-        {
-            "platform": "mobile",
-            "kind": "flow-arrival-route-unmatched",
-            "detail": "mobile-tracker-qr-scanner: system-alert",
-            "file": "docs/features/feature-map/parts/capture-flows.json"
-        }
-    ],
+    "unresolved": [],
     "routes": [
         {
             "platform": "mobile",
@@ -4991,7 +4968,7 @@
                 }
             ],
             "feature_ids": ["wallet-access.hidden.duplicate"],
-            "ledger_dispositions": [],
+            "ledger_dispositions": ["composition-reviewed"],
             "screenshot_ids": [],
             "flow_ids": [],
             "incoming_from": {
@@ -5002,7 +4979,7 @@
                 "indirect_reference_files": []
             },
             "status": "features-only",
-            "status_basis": "feature implementation evidence (no ledger row)"
+            "status_basis": "ledger mobile"
         },
         {
             "platform": "mobile",
@@ -12113,11 +12090,11 @@
                 ]
             },
             "platform_difference": null,
-            "feature_ids": [],
-            "ledger_dispositions": [],
+            "feature_ids": ["trade.swap.approval-fee", "trade.swap.revoke"],
+            "ledger_dispositions": ["covered"],
             "screenshot_ids": [],
-            "status": "unmapped",
-            "status_basis": "no ledger row for the rendering component"
+            "status": "features-only",
+            "status_basis": "ledger desktop-administration-services (exact-path)"
         },
         {
             "platform": "desktop-web",

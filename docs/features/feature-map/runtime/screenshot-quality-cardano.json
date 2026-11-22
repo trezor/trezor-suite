@@ -159,7 +159,7 @@
                 },
                 {
                     "path": "suite-app/app-modal/src/UserContextModal.tsx",
-                    "line": 189
+                    "line": 187
                 },
                 {
                     "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/StakeChangeDelegateModal/StakeChangeDelegateModal.tsx",
@@ -179,7 +179,7 @@
         },
         {
             "path": "suite-app/app-modal/src/UserContextModal.tsx",
-            "line": 189
+            "line": 187
         },
         {
             "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/StakeChangeDelegateModal/StakeChangeDelegateModal.tsx",

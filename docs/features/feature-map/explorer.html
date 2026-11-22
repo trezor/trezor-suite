@@ -261,7 +261,7 @@
             .tabs button:hover {
                 color: var(--ink);
             }
-            .tabs button[aria-selected='true'] {
+            .tabs button[aria-pressed='true'] {
                 background: var(--panel);
                 color: var(--ink);
                 box-shadow: 0 1px 2px rgb(0 0 0 / 12%);
@@ -857,7 +857,7 @@
                 height: 14px;
                 transition: transform 0.15s ease-out;
             }
-            .twisty[aria-expanded='true'] svg.i {
+            .trow[aria-expanded='true'] .twisty svg.i {
                 transform: rotate(90deg);
             }
             .twisty.leaf {
@@ -2863,7 +2863,7 @@
                     "automated_e2e_files": 201,
                     "automated_source_dispositions": { "mapped": 190, "reviewed-excluded": 11 },
                     "desktop_routes": 69,
-                    "enumerated_screens_and_navigators": 292,
+                    "enumerated_screens_and_navigators": 343,
                     "runtime_observations": 251,
                     "runtime_observed_features": 284,
                     "runtime_captured_screenshots": 251,
@@ -143527,10 +143527,7 @@
                         "a": "app-onboarding",
                         "b": "app-settings.analytics",
                         "type": "screen",
-                        "via": [
-                            "mobile-onboarding-analytics",
-                            "mobile-onboarding-analytics-iphone-18-pro"
-                        ]
+                        "via": ["mobile-onboarding-analytics"]
                     },
                     {
                         "a": "app-onboarding",
@@ -143556,11 +143553,7 @@
                         "a": "app-settings.address-display",
                         "b": "app-settings.network-reserve",
                         "type": "screen",
-                        "via": [
-                            "web-t3t1-advanced-preferences",
-                            "mobile-settings-advanced-lower",
-                            "mobile-settings-advanced-lower-iphone-18-pro"
-                        ]
+                        "via": ["web-t3t1-advanced-preferences", "mobile-settings-advanced-lower"]
                     },
                     {
                         "a": "app-settings.address-display",
@@ -143572,59 +143565,43 @@
                         "a": "app-settings.address-display",
                         "b": "app-settings.testnets",
                         "type": "screen",
-                        "via": [
-                            "web-t3t1-advanced-preferences",
-                            "mobile-settings-advanced-lower",
-                            "mobile-settings-advanced-lower-iphone-18-pro"
-                        ]
+                        "via": ["web-t3t1-advanced-preferences", "mobile-settings-advanced-lower"]
                     },
                     {
                         "a": "app-settings.address-display",
                         "b": "device-settings.authenticity-opt-out",
                         "type": "screen",
-                        "via": [
-                            "mobile-settings-advanced",
-                            "mobile-settings-advanced-iphone-18-pro"
-                        ]
+                        "via": ["mobile-settings-advanced"]
                     },
                     {
                         "a": "app-settings.address-display",
                         "b": "device-settings.firmware-authenticity",
                         "type": "screen",
-                        "via": [
-                            "mobile-settings-advanced",
-                            "mobile-settings-advanced-iphone-18-pro"
-                        ]
+                        "via": ["mobile-settings-advanced"]
                     },
                     {
                         "a": "app-settings.advanced",
                         "b": "device-settings.authenticity-opt-out",
                         "type": "screen",
-                        "via": [
-                            "mobile-settings-advanced",
-                            "mobile-settings-advanced-iphone-18-pro"
-                        ]
+                        "via": ["mobile-settings-advanced"]
                     },
                     {
                         "a": "app-settings.advanced",
                         "b": "device-settings.firmware-authenticity",
                         "type": "screen",
-                        "via": [
-                            "mobile-settings-advanced",
-                            "mobile-settings-advanced-iphone-18-pro"
-                        ]
+                        "via": ["mobile-settings-advanced"]
                     },
                     {
                         "a": "app-settings.analytics",
                         "b": "app-settings.biometrics",
                         "type": "screen",
-                        "via": ["mobile-settings-privacy", "mobile-settings-privacy-iphone-18-pro"]
+                        "via": ["mobile-settings-privacy"]
                     },
                     {
                         "a": "app-settings.analytics",
                         "b": "app-settings.privacy",
                         "type": "screen",
-                        "via": ["mobile-settings-privacy", "mobile-settings-privacy-iphone-18-pro"]
+                        "via": ["mobile-settings-privacy"]
                     },
                     {
                         "a": "app-settings.analytics",
@@ -143642,7 +143619,7 @@
                         "a": "app-settings.analytics",
                         "b": "wallet.portfolio.discreet",
                         "type": "screen",
-                        "via": ["mobile-settings-privacy", "mobile-settings-privacy-iphone-18-pro"]
+                        "via": ["mobile-settings-privacy"]
                     },
                     {
                         "a": "app-settings.appearance",
@@ -143654,10 +143631,7 @@
                         "a": "app-settings.appearance",
                         "b": "app-settings.localization",
                         "type": "screen",
-                        "via": [
-                            "mobile-settings-preferences",
-                            "mobile-settings-preferences-iphone-18-pro"
-                        ]
+                        "via": ["mobile-settings-preferences"]
                     },
                     {
                         "a": "app-settings.application",
@@ -143777,7 +143751,7 @@
                         "a": "app-settings.biometrics",
                         "b": "wallet.portfolio.discreet",
                         "type": "screen",
-                        "via": ["mobile-settings-privacy", "mobile-settings-privacy-iphone-18-pro"]
+                        "via": ["mobile-settings-privacy"]
                     },
                     {
                         "a": "app-settings.bitcoin-unit",
@@ -143817,10 +143791,7 @@
                         "a": "app-settings.changelog",
                         "b": "help.activity.release-notes",
                         "type": "screen",
-                        "via": [
-                            "mobile-activity-release-notes",
-                            "mobile-activity-release-notes-iphone-18-pro"
-                        ]
+                        "via": ["mobile-activity-release-notes"]
                     },
                     {
                         "a": "app-settings.database-recovery",
@@ -143835,8 +143806,7 @@
                         "via": [
                             "web-t3t1-security-preferences",
                             "desktop-security-controls",
-                            "mobile-settings-dust",
-                            "mobile-settings-dust-iphone-18-pro"
+                            "mobile-settings-dust"
                         ]
                     },
                     {
@@ -143845,7 +143815,6 @@
                         "type": "screen",
                         "via": [
                             "mobile-settings-security",
-                            "mobile-settings-security-iphone-18-pro",
                             "web-t3t1-security-preferences",
                             "desktop-security-controls"
                         ]
@@ -143926,13 +143895,13 @@
                         "a": "app-settings.log",
                         "b": "help.support.contact",
                         "type": "screen",
-                        "via": ["mobile-support-about", "mobile-support-about-iphone-18-pro"]
+                        "via": ["mobile-support-about"]
                     },
                     {
                         "a": "app-settings.log",
                         "b": "mobile.settings.support.about",
                         "type": "screen",
-                        "via": ["mobile-support-about", "mobile-support-about-iphone-18-pro"]
+                        "via": ["mobile-support-about"]
                     },
                     {
                         "a": "app-settings.network-reserve",
@@ -143944,11 +143913,7 @@
                         "a": "app-settings.network-reserve",
                         "b": "app-settings.testnets",
                         "type": "screen",
-                        "via": [
-                            "web-t3t1-advanced-preferences",
-                            "mobile-settings-advanced-lower",
-                            "mobile-settings-advanced-lower-iphone-18-pro"
-                        ]
+                        "via": ["web-t3t1-advanced-preferences", "mobile-settings-advanced-lower"]
                     },
                     {
                         "a": "app-settings.network-reserve",
@@ -143986,7 +143951,7 @@
                         "a": "app-settings.privacy",
                         "b": "wallet.portfolio.discreet",
                         "type": "screen",
-                        "via": ["mobile-settings-privacy", "mobile-settings-privacy-iphone-18-pro"]
+                        "via": ["mobile-settings-privacy"]
                     },
                     {
                         "a": "app-settings.privacy",
@@ -144396,10 +144361,7 @@
                         "a": "device-settings.authenticity-opt-out",
                         "b": "device-settings.firmware-authenticity",
                         "type": "screen",
-                        "via": [
-                            "mobile-settings-advanced",
-                            "mobile-settings-advanced-iphone-18-pro"
-                        ]
+                        "via": ["mobile-settings-advanced"]
                     },
                     {
                         "a": "device-settings.auto-connect",
@@ -144878,11 +144840,7 @@
                         "a": "earn.opportunities",
                         "b": "earn.yield",
                         "type": "screen",
-                        "via": [
-                            "web-t3t1-earn-opportunities",
-                            "mobile-empty-yield",
-                            "mobile-empty-yield-iphone-18-pro"
-                        ]
+                        "via": ["web-t3t1-earn-opportunities", "mobile-empty-yield"]
                     },
                     {
                         "a": "earn.opportunities",
@@ -145631,7 +145589,7 @@
                         "a": "help.support.contact",
                         "b": "mobile.settings.support.about",
                         "type": "screen",
-                        "via": ["mobile-support-about", "mobile-support-about-iphone-18-pro"]
+                        "via": ["mobile-support-about"]
                     },
                     {
                         "a": "help.support.forum",
@@ -145813,10 +145771,7 @@
                         "a": "mobile.accounts.import.address",
                         "b": "mobile.accounts.import.qr",
                         "type": "screen",
-                        "via": [
-                            "mobile-tracker-address-import",
-                            "mobile-tracker-address-import-iphone-18-pro"
-                        ]
+                        "via": ["mobile-tracker-address-import"]
                     },
                     {
                         "a": "mobile.accounts.import.duplicate",
@@ -145854,10 +145809,7 @@
                         "a": "mobile.accounts.import.qr.gallery",
                         "b": "mobile.accounts.import.qr.permission",
                         "type": "screen",
-                        "via": [
-                            "mobile-tracker-qr-permission-fallback",
-                            "mobile-tracker-qr-permission-fallback-iphone-18-pro"
-                        ]
+                        "via": ["mobile-tracker-qr-permission-fallback"]
                     },
                     {
                         "a": "mobile.accounts.overview.remove",
@@ -146155,10 +146107,7 @@
                         "a": "mobile.settings.support.about",
                         "b": "mobile.settings.support.legal",
                         "type": "screen",
-                        "via": [
-                            "mobile-support-about-legal",
-                            "mobile-support-about-legal-iphone-18-pro"
-                        ]
+                        "via": ["mobile-support-about-legal"]
                     },
                     {
                         "a": "mobile.settings.trading-residence",
@@ -146248,8 +146197,7 @@
                         "type": "screen",
                         "via": [
                             "web-t3t1-bitcoin-backend-settings",
-                            "mobile-settings-bitcoin-backend",
-                            "mobile-settings-bitcoin-backend-iphone-18-pro"
+                            "mobile-settings-bitcoin-backend"
                         ]
                     },
                     {
@@ -146276,8 +146224,7 @@
                         "type": "screen",
                         "via": [
                             "web-t3t1-bitcoin-backend-settings",
-                            "mobile-settings-bitcoin-backend",
-                            "mobile-settings-bitcoin-backend-iphone-18-pro"
+                            "mobile-settings-bitcoin-backend"
                         ]
                     },
                     {
@@ -146290,21 +146237,13 @@
                         "a": "network-settings.backends.electrum",
                         "b": "network-settings.backends.type",
                         "type": "screen",
-                        "via": [
-                            "mobile-settings-backend-type",
-                            "mobile-settings-backend-type-iphone-18-pro",
-                            "desktop-bitcoin-backend-types"
-                        ]
+                        "via": ["mobile-settings-backend-type", "desktop-bitcoin-backend-types"]
                     },
                     {
                         "a": "network-settings.backends.electrum",
                         "b": "network-settings.backends.urls",
                         "type": "screen",
-                        "via": [
-                            "mobile-settings-electrum-form",
-                            "mobile-settings-electrum-form-iphone-18-pro",
-                            "desktop-electrum-url-form"
-                        ]
+                        "via": ["mobile-settings-electrum-form", "desktop-electrum-url-form"]
                     },
                     {
                         "a": "network-settings.backends.electrum-onion",
@@ -150397,7 +150336,7 @@
                                 ]
                             },
                             "status": "replayed",
-                            "note": null,
+                            "note": "Rendered copy is identical to mobile-onboarding-analytics (only the consent toggle visual state changes), so text-only OCR landmarks cannot independently distinguish enabled vs disabled; confirm the toggle state visually before using --update-captures.",
                             "replay_count": 1,
                             "latest_replay": {
                                 "device": "iPhone 18 Pro",
@@ -153751,7 +153690,9 @@
                     if (!types.includes(l.type)) continue;
                     let via = l.via;
                     if (l.type === 'screen') {
-                        via = via.filter(screenShown);
+                        via = [...new Set(via.map(id => pickVariant(variantsOf(id))))].filter(
+                            screenShown,
+                        );
                         if (!via.length) continue;
                     }
                     if (!m.has(l.id)) m.set(l.id, { id: l.id, types: [], via: {} });
@@ -153935,7 +153876,7 @@
                     `<div class="seg" role="group">${options
                         .map(
                             ([v, l, dis]) =>
-                                `<button data-set="${name}" data-value="${v}" aria-pressed="${value === v}"${dis ? ' disabled' : ''}>${l}</button>`,
+                                `<button data-set="${esc(name)}" data-value="${esc(v)}" aria-pressed="${value === v}"${dis ? ' disabled' : ''}>${l}</button>`,
                         )
                         .join('')}</div>`;
                 const html = [];
@@ -154282,7 +154223,7 @@
                 <div class="ov">
                     <div class="card"><header><h2>Coverage at a glance</h2><p>${fmt(matched.length)} features in view · ${fmt(shotN)} with screenshots · means exclude features that do not exist on the platform</p></header><div class="kpis">${kpis || '<div class="kpi"><div class="t">Show a platform to see its coverage.</div></div>'}</div></div>
                     ${areasCard}
-                    <div class="card"><header><h2>Coverage landscape · ${esc(AXIS[state.axis].label)}</h2><p>One tile per feature in tree order: round = feature, square = option. Faded tiles are outside the filter. Select a tile to inspect it.</p></header>${land ? `<div class="land">${land}</div>` : '<p class="hint" style="padding:0 14px 14px">No features match.</p>'}</div>
+                    <div class="card"><header><h2>Coverage landscape · ${esc(AXIS[state.axis].label)}</h2><p>One tile per feature in tree order: round = feature, square = intent. Faded tiles are outside the filter. Select a tile to inspect it.</p></header>${land ? `<div class="land">${land}</div>` : '<p class="hint" style="padding:0 14px 14px">No features match.</p>'}</div>
                 </div>`;
             }
 
@@ -154438,7 +154379,7 @@
                 <div class="tablev"><table><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>`;
             }
             function exportCsv() {
-                const csvAxes = state.cov ? AXES : [];
+                const csvAxes = visibleAxes();
                 const cols = [
                     'id',
                     'name',
@@ -154446,7 +154387,7 @@
                     'level',
                     'frontend_team',
                     'backend_team',
-                    ...PLATFORMS,
+                    ...state.plat,
                     ...csvAxes.map(a => a + '_score'),
                     'screenshots',
                     'connections',
@@ -154462,7 +154403,7 @@
                             f.level,
                             f.team,
                             f.backend_team,
-                            ...PLATFORMS.map(p => f.platforms?.[p]),
+                            ...state.plat.map(p => f.platforms?.[p]),
                             ...csvAxes.map(a => (isNA(f.coverage[a]) ? '' : f.coverage[a].score)),
                             screensFor(f).length,
                             linkGroups(f).size,
@@ -154757,7 +154698,8 @@
                     .join('');
                 const own = f.ownership || {};
                 const erratumHtml = e => {
-                    const shot = e.screenshot_id && DATA.screens[e.screenshot_id];
+                    const rawShot = e.screenshot_id && DATA.screens[e.screenshot_id];
+                    const shot = rawShot && state.plat.includes(rawShot.platform) ? rawShot : null;
                     return `<div class="erratum">${shot ? `<button data-shot="${esc(e.screenshot_id)}" aria-label="Open corrected screenshot: ${esc(shot.caption)}"><img loading="lazy" src="${esc(shot.src)}" alt=""></button>` : ''}<span>${e.removes_this_feature ? '<span class="tag">capture does not show this feature</span> ' : ''}${esc(e.description)} <span class="muted">${esc(e.reason || '')}</span></span></div>`;
                 };
                 const obs = (f.observations || [])
@@ -155589,8 +155531,7 @@
                 const W = v.clientWidth,
                     H = v.clientHeight - 56;
                 const m = 24;
-                const fit = (lo, hi, nlo, nhi, size) => {
-                    const a = mapT[size === W ? 'x' : 'y'];
+                const fit = (a, lo, hi, nlo, nhi, size) => {
                     let d = 0;
                     if (a + hi * k > size - m) d = size - m - (a + hi * k);
                     if (a + lo * k + d < m) d = m - (a + lo * k);
@@ -155599,8 +155540,8 @@
                     if (a + nhi * k + d > size - m) d = size - m - (a + nhi * k);
                     return d;
                 };
-                const dx = fit(box.x0, box.x1, n.x, n.x + n.w, W);
-                const dy = fit(box.y0, box.y1, n.y, n.y + n.h, H);
+                const dx = fit(mapT.x, box.x0, box.x1, n.x, n.x + n.w, W);
+                const dy = fit(mapT.y, box.y0, box.y1, n.y, n.y + n.h, H);
                 if (dx || dy) mapGo({ k, x: mapT.x + dx, y: mapT.y + dy });
             }
             function mapToggle(id, open) {
@@ -155986,6 +155927,8 @@
                         thumbs: state.thumbs,
                         gsize: state.gsize,
                         ltypes: state.ltypes,
+                        mlinks: state.mlinks,
+                        device: state.device,
                         sort: state.sort,
                         dir: state.dir,
                         cov: state.cov,

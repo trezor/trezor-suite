@@ -528,6 +528,7 @@
                 ]
             },
             "status": "replayed",
+            "note": "Rendered copy is identical to mobile-onboarding-analytics (only the consent toggle visual state changes), so text-only OCR landmarks cannot independently distinguish enabled vs disabled; confirm the toggle state visually before using --update-captures.",
             "replays": [
                 {
                     "device": "iPhone 18 Pro",

@@ -174,7 +174,10 @@ export const pyJsonLoads = (text: string): Json => {
         if (simple) return raw;
         // Python rejects invalid escapes and short \u escapes like JSON.parse does.
         try {
-            return JSON.parse('"' + raw + '"') as string;
+            const parsed: unknown = JSON.parse('"' + raw + '"');
+            if (typeof parsed !== 'string') return fail('Invalid string', start);
+
+            return parsed;
         } catch {
             return fail('Invalid \\escape', start);
         }
@@ -1472,7 +1475,7 @@ const tokenizeGlob = (pattern: string): GlobToken[] => {
                     .map(s => s.replaceAll('\\', '\\\\').replaceAll('-', '\\-'))
                     .join('-');
             }
-            stuff = stuff.replace(/[&~|]/g, '\\$&');
+            // CPython escapes [&~|] here for its regex engine, but parseClassContent treats them literally.
             i = j + 1;
             if (!stuff)
                 tokens.push({ kind: 'set', negate: false, ranges: [], never: true, always: false });

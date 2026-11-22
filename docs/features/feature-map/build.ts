@@ -729,7 +729,8 @@ type CodeownersEntry = [string, string[], number];
 export const enrich = (features: Obj[], snapshot: string): [Obj[], string] => {
     void snapshot;
     const base = git('merge-base', 'HEAD', 'origin/develop');
-    const changed = new Set(splitlines(git('diff', '--name-only', base, 'HEAD')));
+    const changed = new Set(splitlines(git('diff', '--name-only', base, '--')));
+    const tracked = new Set(splitlines(git('ls-files')));
     const codeowners: CodeownersEntry[] = [];
     splitlines(readText(pyJoin(REPO, 'CODEOWNERS'))).forEach((line, index) => {
         if (truthy(pyStrip(line)) && !line.startsWith('#')) {
@@ -788,14 +789,15 @@ export const enrich = (features: Obj[], snapshot: string): [Obj[], string] => {
         ref.local_link = path + ':' + String(lineNumber);
         ref.repository_link = '../../../' + path + '#L' + String(lineNumber);
         // Only link a published ancestor when its file is identical to the audited file.
-        ref.github_url = !changed.has(path)
-            ? 'https://github.com/trezor/trezor-suite/blob/' +
-              base +
-              '/' +
-              path +
-              '#L' +
-              String(lineNumber)
-            : null;
+        ref.github_url =
+            tracked.has(path) && !changed.has(path)
+                ? 'https://github.com/trezor/trezor-suite/blob/' +
+                  base +
+                  '/' +
+                  path +
+                  '#L' +
+                  String(lineNumber)
+                : null;
         if (root) {
             let ownerMatch: Obj | null = null;
             for (const [pattern, owners, ownerLine] of codeowners) {
@@ -1244,7 +1246,11 @@ export const sourceAudit = (features: Obj[], parts: Obj): Obj => {
             notes: 'Compatibility/redirect routes are not separate user capabilities; area mapping is not a runtime assertion.',
         });
     }
-    const screenPaths = new Set<string>(pyGlob(pyJoin(REPO, 'suite-app/app/src/pages'), '*.tsx'));
+    const screenPaths = new Set<string>(
+        pyGlob(pyJoin(REPO, 'suite-app'), '*/src/pages/*.tsx').filter(
+            p => !pyPathName(p).includes('.test.'),
+        ),
+    );
     for (const root of ['suite-native-app', 'suite-native']) {
         for (const p of pyGlob(pyJoin(REPO, root), '*/src/**/screens/**/*.tsx')) {
             if (!pyPathName(p).includes('.test.')) screenPaths.add(p);

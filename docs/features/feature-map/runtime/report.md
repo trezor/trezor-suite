@@ -1,14 +1,14 @@
 # Runtime audit outcome
 
-The current inventory contains **578 feature nodes**. All **569 original feature records** and their historical screenshot references remain preserved. Runtime/source inspection added **9 capabilities**. The [offline explorer](../explorer.html) combines the hierarchy, navigation, platforms, ownership, source roots, conditions, observations and images.
+The current inventory contains **627 feature nodes**. All **569 original feature records** and their historical screenshot references remain preserved; runtime/source inspection added **9 capabilities**, the [screen-by-screen source audit](../screen-audit/README.md) added **18**, and later source additions in [source-additions.json](../parts/source-additions.json) added **31**. The [offline explorer](../explorer.html) combines the hierarchy, navigation, platforms, ownership, source roots, conditions, observations and images.
 
-There are **238 current application screenshots**, with **306 feature nodes currently associated with captures**. Active observation records cover **271 feature nodes**. These are different measures: one image may show several controls; a visited entry does not verify its descendants or execution. Screenshot corrections remain visible and original evidence is retained.
+There are **251 current base application screenshots** (238 from the pinned initial pass plus 13 web captures in [runtime-supplement.json](../parts/runtime-supplement.json); 309 PNGs including the 58 iPhone 18 Pro device variants), with **319 feature nodes currently associated with captures** (326 including historical images). Active observation records (219 non-superseded observations) cover **284 feature nodes**. These are different measures: one image may show several controls; a visited entry does not verify its descendants or execution. Screenshot corrections remain visible and original evidence is retained.
 
 ## Platform evidence
 
 | Platform | Active observed records | Screenshots | Feature nodes in active observations |
 | -------- | ----------------------: | ----------: | -----------------------------------: |
-| Web      |                     139 |         167 |                                  223 |
+| Web      |                     152 |         180 |                                  236 |
 | Desktop  |                      13 |          13 |                                   22 |
 | Mobile   |                      54 |          58 |                                   64 |
 

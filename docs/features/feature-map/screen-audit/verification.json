@@ -2,12 +2,12 @@
     "checks": "pass",
     "review_entries": {
         "desktop-wallet": 20,
-        "desktop-administration-services": 478,
-        "mobile": 223
+        "desktop-administration-services": 479,
+        "mobile": 224
     },
-    "unique_reviewed_entries": 718,
+    "unique_reviewed_entries": 720,
     "integrated_additions": 18,
-    "desktop_page_files": 0,
+    "desktop_page_files": 51,
     "mobile_screen_files": 217,
     "desktop_pages_without_ledger_entry": [],
     "mobile_screens_without_ledger_entry": [],
@@ -484,6 +484,8 @@
         "packages/suite/src/views/wallet/trading/concierge/TradingConciergeCountryInput.tsx": "e8d34b54573a2ec19887f4b2c76c094d4e572da9b62fe6d6307979db97e395ce",
         "packages/suite/src/views/wallet/trading/concierge/TradingConciergeForm.tsx": "fc40e7148782e69cdb901ccce7a77d9112ece7096bd6db7443a627cf035ac255",
         "packages/suite/src/views/wallet/trading/concierge/TradingConciergeProviderInput.tsx": "7feaf5d19a2cd103d9b8eab6fb9a77d23242114cd5940a1d6c1c9ab10a5fca4e",
+        "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowance.tsx": "48fdbd2f1acb06c7abcc3d43cb254fc531e299d24e79058f008042f28ba89ecf",
+        "packages/suite/src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowanceRevoke.tsx": "d1c182fd3da5131905db24a26bea8b505598474425c355760d1dbacda57ab430",
         "packages/suite/src/views/wallet/trading/exchange/TradingExchangeApproval/TradingExchangeApprovalFeeModal.tsx": "aa6e740a8abd84d4a8e99dd4b1b838f737dfd3fc9882b38049604218a2dfd537",
         "packages/suite/src/views/wallet/trading/exchange/TradingExchangeApproval/TradingExchangeApprovalStepCard.tsx": "432833b2cc5214b660a728102db47c3440e85762705051b22928282c174f32e2",
         "packages/suite/src/views/wallet/trading/exchange/TradingExchangeDetail/TradingExchangeDetailContent.tsx": "c8e8ef7667ddf479ace1c7f8831a04e8ef52903a3c49dd20140372e94b665420",
@@ -548,6 +550,7 @@
         "suite-app/module-trading/src/pages/TradingBuyDetailPage.tsx": "36b68ec9663676ce9fab81f593e7948462a9b654e81979755c5f0e8878aea456",
         "suite-app/module-trading/src/pages/TradingBuyFormPage.tsx": "3f1676caac8aa0ac9b232226ede9f164633a5d5ee015b0dc87951bc0df6b31bb",
         "suite-app/module-trading/src/pages/TradingConciergeDetailPage.tsx": "2a93d28e3b6370a09e6cd07155f747554882da5293248628b3bc17b34c8e3cd1",
+        "suite-app/module-trading/src/pages/TradingExchangeAllowancePage.tsx": "e45ae6137d1ae248a5c8e91c10a0535aeb53ac59ac5c320d40d60a397bea49b9",
         "suite-app/module-trading/src/pages/TradingExchangeApprovalPage.tsx": "c50af58cc54b9a548d015b93512224a28ef36ef2f15df463d30d5e647289c385",
         "suite-app/module-trading/src/pages/TradingExchangeConfirmPage.tsx": "b6168a0bec38e97b5f4a998d62e20855ce9b3140fd08354fa17af3b8a3ac18bd",
         "suite-app/module-trading/src/pages/TradingExchangeDetailPage.tsx": "07c484a380fa38cd48570109cb0ec7c3425a8c6666b25e4e9b55c903264d0df3",

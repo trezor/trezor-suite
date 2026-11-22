@@ -261,7 +261,7 @@
             .tabs button:hover {
                 color: var(--ink);
             }
-            .tabs button[aria-selected='true'] {
+            .tabs button[aria-pressed='true'] {
                 background: var(--panel);
                 color: var(--ink);
                 box-shadow: 0 1px 2px rgb(0 0 0 / 12%);
@@ -857,7 +857,7 @@
                 height: 14px;
                 transition: transform 0.15s ease-out;
             }
-            .twisty[aria-expanded='true'] svg.i {
+            .trow[aria-expanded='true'] .twisty svg.i {
                 transform: rotate(90deg);
             }
             .twisty.leaf {
@@ -3261,7 +3261,9 @@
                     if (!types.includes(l.type)) continue;
                     let via = l.via;
                     if (l.type === 'screen') {
-                        via = via.filter(screenShown);
+                        via = [...new Set(via.map(id => pickVariant(variantsOf(id))))].filter(
+                            screenShown,
+                        );
                         if (!via.length) continue;
                     }
                     if (!m.has(l.id)) m.set(l.id, { id: l.id, types: [], via: {} });
@@ -3445,7 +3447,7 @@
                     `<div class="seg" role="group">${options
                         .map(
                             ([v, l, dis]) =>
-                                `<button data-set="${name}" data-value="${v}" aria-pressed="${value === v}"${dis ? ' disabled' : ''}>${l}</button>`,
+                                `<button data-set="${esc(name)}" data-value="${esc(v)}" aria-pressed="${value === v}"${dis ? ' disabled' : ''}>${l}</button>`,
                         )
                         .join('')}</div>`;
                 const html = [];
@@ -3792,7 +3794,7 @@
                 <div class="ov">
                     <div class="card"><header><h2>Coverage at a glance</h2><p>${fmt(matched.length)} features in view · ${fmt(shotN)} with screenshots · means exclude features that do not exist on the platform</p></header><div class="kpis">${kpis || '<div class="kpi"><div class="t">Show a platform to see its coverage.</div></div>'}</div></div>
                     ${areasCard}
-                    <div class="card"><header><h2>Coverage landscape · ${esc(AXIS[state.axis].label)}</h2><p>One tile per feature in tree order: round = feature, square = option. Faded tiles are outside the filter. Select a tile to inspect it.</p></header>${land ? `<div class="land">${land}</div>` : '<p class="hint" style="padding:0 14px 14px">No features match.</p>'}</div>
+                    <div class="card"><header><h2>Coverage landscape · ${esc(AXIS[state.axis].label)}</h2><p>One tile per feature in tree order: round = feature, square = intent. Faded tiles are outside the filter. Select a tile to inspect it.</p></header>${land ? `<div class="land">${land}</div>` : '<p class="hint" style="padding:0 14px 14px">No features match.</p>'}</div>
                 </div>`;
             }
 
@@ -3948,7 +3950,7 @@
                 <div class="tablev"><table><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>`;
             }
             function exportCsv() {
-                const csvAxes = state.cov ? AXES : [];
+                const csvAxes = visibleAxes();
                 const cols = [
                     'id',
                     'name',
@@ -3956,7 +3958,7 @@
                     'level',
                     'frontend_team',
                     'backend_team',
-                    ...PLATFORMS,
+                    ...state.plat,
                     ...csvAxes.map(a => a + '_score'),
                     'screenshots',
                     'connections',
@@ -3972,7 +3974,7 @@
                             f.level,
                             f.team,
                             f.backend_team,
-                            ...PLATFORMS.map(p => f.platforms?.[p]),
+                            ...state.plat.map(p => f.platforms?.[p]),
                             ...csvAxes.map(a => (isNA(f.coverage[a]) ? '' : f.coverage[a].score)),
                             screensFor(f).length,
                             linkGroups(f).size,
@@ -4267,7 +4269,8 @@
                     .join('');
                 const own = f.ownership || {};
                 const erratumHtml = e => {
-                    const shot = e.screenshot_id && DATA.screens[e.screenshot_id];
+                    const rawShot = e.screenshot_id && DATA.screens[e.screenshot_id];
+                    const shot = rawShot && state.plat.includes(rawShot.platform) ? rawShot : null;
                     return `<div class="erratum">${shot ? `<button data-shot="${esc(e.screenshot_id)}" aria-label="Open corrected screenshot: ${esc(shot.caption)}"><img loading="lazy" src="${esc(shot.src)}" alt=""></button>` : ''}<span>${e.removes_this_feature ? '<span class="tag">capture does not show this feature</span> ' : ''}${esc(e.description)} <span class="muted">${esc(e.reason || '')}</span></span></div>`;
                 };
                 const obs = (f.observations || [])
@@ -5099,8 +5102,7 @@
                 const W = v.clientWidth,
                     H = v.clientHeight - 56;
                 const m = 24;
-                const fit = (lo, hi, nlo, nhi, size) => {
-                    const a = mapT[size === W ? 'x' : 'y'];
+                const fit = (a, lo, hi, nlo, nhi, size) => {
                     let d = 0;
                     if (a + hi * k > size - m) d = size - m - (a + hi * k);
                     if (a + lo * k + d < m) d = m - (a + lo * k);
@@ -5109,8 +5111,8 @@
                     if (a + nhi * k + d > size - m) d = size - m - (a + nhi * k);
                     return d;
                 };
-                const dx = fit(box.x0, box.x1, n.x, n.x + n.w, W);
-                const dy = fit(box.y0, box.y1, n.y, n.y + n.h, H);
+                const dx = fit(mapT.x, box.x0, box.x1, n.x, n.x + n.w, W);
+                const dy = fit(mapT.y, box.y0, box.y1, n.y, n.y + n.h, H);
                 if (dx || dy) mapGo({ k, x: mapT.x + dx, y: mapT.y + dy });
             }
             function mapToggle(id, open) {
@@ -5496,6 +5498,8 @@
                         thumbs: state.thumbs,
                         gsize: state.gsize,
                         ltypes: state.ltypes,
+                        mlinks: state.mlinks,
+                        device: state.device,
                         sort: state.sort,
                         dir: state.dir,
                         cov: state.cov,

@@ -1960,7 +1960,7 @@
         },
         {
             "path": "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx",
-            "symbol": "SecurityCheckScreen",
+            "symbol": "PackagingVisualCheckScreen",
             "registered_in": [
                 "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx"
             ],
@@ -2133,7 +2133,7 @@
         },
         {
             "path": "suite-native-app/module-device-onboarding/src/screens/DeviceVisualCheckScreen.tsx",
-            "symbol": "UninitializedDeviceLandingScreen",
+            "symbol": "DeviceVisualCheckScreen",
             "registered_in": [
                 "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx"
             ],
@@ -2149,11 +2149,11 @@
                 "Button",
                 "DeviceModelImage",
                 "DeviceOnboardingScreenWithExitButton",
+                "DeviceVisualCheckScreenContent",
                 "HeaderUnderlineSvg",
                 "Text",
                 "TextButton",
                 "Translation",
-                "UninitializedDeviceLandingScreenContent",
                 "VStack"
             ],
             "translation_keys": [
@@ -4424,7 +4424,7 @@
         },
         {
             "path": "suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx",
-            "symbol": "SignAndVerifyScreen",
+            "symbol": "SignVerifyScreen",
             "registered_in": ["suite-native-app/app/src/navigation/RootStackNavigator.tsx"],
             "feature_ids": ["wallet.sign-verify"],
             "mapping_basis": "direct component/evidence or inspected user control",
@@ -4439,7 +4439,7 @@
                 "RootStackParamList",
                 "Screen",
                 "ScreenHeader",
-                "SignAndVerifyForms"
+                "SignVerifyForms"
             ],
             "translation_keys": [],
             "findings": [],
@@ -6663,6 +6663,30 @@
             ],
             "disposition": "composition-reviewed",
             "source_sha256": "c701a966e66d95f8ee56f4915baafdfcd394cde189879f3b85d9606b5d4d149b"
+        },
+        {
+            "path": "suite-native/passphrase/src/components/PassphraseDuplicateAlert.tsx",
+            "symbol": "PassphraseDuplicateAlert",
+            "registered_in": [
+                "suite-native-app/module-passphrase/src/PassphraseStackNavigator.tsx"
+            ],
+            "feature_ids": ["wallet-access.hidden.duplicate"],
+            "mapping_basis": "inspected state/wrapper of existing capability",
+            "inspected_components": [
+                "suite-native-app/module-passphrase/src/PassphraseStackNavigator.tsx",
+                "suite-native-app/module-passphrase/src/screens/PassphraseLoadingScreen.tsx"
+            ],
+            "controls_in_source": ["PassphraseLoadingScreen", "useAlert", "useTranslate"],
+            "translation_keys": [
+                "modulePassphrase.passphraseMismatch.button",
+                "modulePassphrase.passphraseMismatch.subtitle",
+                "modulePassphrase.passphraseMismatch.title"
+            ],
+            "findings": [
+                "Registered inline in PassphraseStackNavigator when discovery hits a duplicate hidden wallet; shows alert and dispatches switchToDuplicatedWalletThunk to open the existing wallet."
+            ],
+            "disposition": "composition-reviewed",
+            "source_sha256": "d497063e06e522a15311bf64faa9f7d3d65ec5831e06c5c232c4b4ec7449d109"
         }
     ],
     "navigator_registrations": [
@@ -6800,9 +6824,9 @@
         },
         {
             "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
-            "component": "SignAndVerifyScreen",
+            "component": "SignVerifyScreen",
             "path": "suite-native-app/module-sign-verify/src/screens/SignVerifyScreen.tsx",
-            "symbol": "SignAndVerifyScreen"
+            "symbol": "SignVerifyScreen"
         },
         {
             "navigator": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
@@ -7034,9 +7058,9 @@
         },
         {
             "navigator": "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx",
-            "component": "UninitializedDeviceLandingScreen",
+            "component": "DeviceVisualCheckScreen",
             "path": "suite-native-app/module-device-onboarding/src/screens/DeviceVisualCheckScreen.tsx",
-            "symbol": "UninitializedDeviceLandingScreen"
+            "symbol": "DeviceVisualCheckScreen"
         },
         {
             "navigator": "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx",
@@ -7046,9 +7070,9 @@
         },
         {
             "navigator": "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx",
-            "component": "SecurityCheckScreen",
+            "component": "PackagingVisualCheckScreen",
             "path": "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx",
-            "symbol": "SecurityCheckScreen"
+            "symbol": "PackagingVisualCheckScreen"
         },
         {
             "navigator": "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx",

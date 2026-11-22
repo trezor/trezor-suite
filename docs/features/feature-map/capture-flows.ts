@@ -372,34 +372,112 @@ type Manifest = {
 const fmPath = (repoPath: string): string =>
     repoPath.startsWith(FM_PREFIX) ? repoPath.slice(FM_PREFIX.length) : repoPath;
 
-const readManifest = (root: string): Manifest => {
-    const observations = readJsonFile(
-        nodePath.join(root, 'parts/runtime-mobile-observations.json'),
+const requirePlain = (value: unknown, where: string): Plain => {
+    if (!isPlain(value)) throw new Error(`${where}: expected an object`);
+
+    return value;
+};
+
+const requireArray = (value: unknown, where: string): unknown[] => {
+    if (!Array.isArray(value)) throw new Error(`${where}: expected an array`);
+
+    return value;
+};
+
+const requireStr = (value: unknown, where: string): string => {
+    if (typeof value !== 'string') throw new Error(`${where}: expected a string`);
+
+    return value;
+};
+
+const requireStrArray = (value: unknown, where: string): string[] =>
+    requireArray(value, where).map((item, index) => requireStr(item, `${where}[${index}]`));
+
+const resolveScreenshotTarget = (root: string, repoPath: string): string => {
+    const screenshotsDir = nodePath.resolve(root, 'runtime/screenshots');
+    const resolved = nodePath.resolve(root, fmPath(repoPath));
+    const relative = nodePath.relative(screenshotsDir, resolved);
+    if (
+        !relative ||
+        relative.startsWith('..') ||
+        nodePath.isAbsolute(relative) ||
+        nodePath.extname(resolved).toLowerCase() !== '.png'
+    ) {
+        throw new Error(`unsafe screenshot target path: ${repoPath}`);
+    }
+
+    return resolved;
+};
+
+const readVariantsManifest = (
+    root: string,
+): {
+    raw: Plain;
+    preferredDevice: string;
+    baseDevices: { device: string; screenshotIds: string[] }[];
+    variants: DeviceVariant[];
+} => {
+    const raw = requirePlain(readJsonFile(nodePath.join(root, VARIANTS_JSON)), VARIANTS_JSON);
+    const preferredDevice = requireStr(raw.preferred_device, `${VARIANTS_JSON}.preferred_device`);
+    const baseDevices = requireArray(raw.base_devices, `${VARIANTS_JSON}.base_devices`).map(
+        (entry, index) => {
+            const obj = requirePlain(entry, `${VARIANTS_JSON}.base_devices[${index}]`);
+
+            return {
+                device: requireStr(obj.device, `${VARIANTS_JSON}.base_devices[${index}].device`),
+                screenshotIds: requireStrArray(
+                    obj.screenshot_ids,
+                    `${VARIANTS_JSON}.base_devices[${index}].screenshot_ids`,
+                ),
+            };
+        },
     );
+    const rawVariants = requireArray(raw.variants, `${VARIANTS_JSON}.variants`);
+    const variants: DeviceVariant[] = rawVariants.map((entry, index) => {
+        const obj = requirePlain(entry, `${VARIANTS_JSON}.variants[${index}]`);
+        requireStr(obj.variant_of, `${VARIANTS_JSON}.variants[${index}].variant_of`);
+        requireStr(obj.device, `${VARIANTS_JSON}.variants[${index}].device`);
+        requireStr(obj.path, `${VARIANTS_JSON}.variants[${index}].path`);
+        if (obj.captured_at !== undefined && typeof obj.captured_at !== 'string') {
+            throw new Error(`${VARIANTS_JSON}.variants[${index}].captured_at: expected a string`);
+        }
+
+        return obj as DeviceVariant;
+    });
+
+    return { raw, preferredDevice, baseDevices, variants };
+};
+
+const readManifest = (root: string): Manifest => {
+    const obsPath = 'parts/runtime-mobile-observations.json';
+    const observations = requirePlain(readJsonFile(nodePath.join(root, obsPath)), obsPath);
     const screenshots = new Map<string, string>();
-    for (const shot of (observations as { screenshots: { id: string; path: string }[] })
-        .screenshots)
-        screenshots.set(shot.id, fmPath(shot.path));
-    const variantsFile = readJsonFile(nodePath.join(root, VARIANTS_JSON)) as {
-        preferred_device: string;
-        base_devices: { device: string; screenshot_ids: string[] }[];
-        variants: { variant_of: string; device: string; path: string }[];
-    };
+    for (const [index, entry] of requireArray(
+        observations.screenshots,
+        `${obsPath}.screenshots`,
+    ).entries()) {
+        const shot = requirePlain(entry, `${obsPath}.screenshots[${index}]`);
+        screenshots.set(
+            requireStr(shot.id, `${obsPath}.screenshots[${index}].id`),
+            fmPath(requireStr(shot.path, `${obsPath}.screenshots[${index}].path`)),
+        );
+    }
+    const variantsManifest = readVariantsManifest(root);
     const baseDevice = new Map<string, string>();
-    for (const base of variantsFile.base_devices)
-        for (const id of base.screenshot_ids) baseDevice.set(id, base.device);
+    for (const base of variantsManifest.baseDevices)
+        for (const id of base.screenshotIds) baseDevice.set(id, base.device);
 
     return {
         screenshots,
         baseDevice,
-        variants: variantsFile.variants
+        variants: variantsManifest.variants
             .filter(variant => screenshots.has(variant.variant_of))
             .map(variant => ({
                 screenshotId: variant.variant_of,
                 device: variant.device,
                 image: fmPath(variant.path),
             })),
-        preferredDevice: variantsFile.preferred_device,
+        preferredDevice: variantsManifest.preferredDevice,
     };
 };
 
@@ -411,7 +489,10 @@ export const validateCaptureFlows = (root: string = FEATURE_MAP_DIR): Validation
         return { errors: [`${FLOWS_JSON} is missing`], warnings, flows: [] };
     }
     const data = readJsonFile(flowsPath);
-    const schema = readJsonFile(nodePath.join(FEATURE_MAP_DIR, SCHEMA_JSON)) as Plain;
+    const schema = requirePlain(
+        readJsonFile(nodePath.join(FEATURE_MAP_DIR, SCHEMA_JSON)),
+        SCHEMA_JSON,
+    );
     validateSchema(data, schema, schema, FLOWS_JSON, errors);
     if (errors.length) return { errors, warnings, flows: [] };
 
@@ -445,6 +526,8 @@ export const validateCaptureFlows = (root: string = FEATURE_MAP_DIR): Validation
                 errors.push(`${at}: lands_on ${step.lands_on} is not a native route value`);
             if (step.do === 'launch' && index !== 0)
                 errors.push(`${at}: launch must be the first step`);
+            if (step.id && step.do !== 'tap')
+                errors.push(`${at}: id is only supported on tap steps`);
             if (step.do === 'tap' && !step.id && !step.text)
                 errors.push(`${at}: tap needs id or text`);
             if (step.do === 'tap' && step.id && step.text)
@@ -562,23 +645,29 @@ const checkImages = (root: string, manifest: Manifest, flows: Flow[]): CheckImag
     );
 };
 
-/** Reference checks of runtime/flow-checks.json against the flows and existing captures. */
-export const checkFlowChecksReferences = (root: string, flows: Flow[]): string[] => {
+const inspectFlowChecksReferences = (
+    root: string,
+    flows: Flow[],
+): { errors: string[]; checks: LandingCheck[] } => {
     const errors: string[] = [];
     const path = nodePath.join(root, FLOW_CHECKS_JSON);
-    if (!fs.existsSync(path))
-        return [`${FLOW_CHECKS_JSON} is missing; run node capture-flows.ts check`];
-    const data = readJsonFile(path) as {
-        generated_by?: unknown;
-        tesseract_version?: unknown;
-        checks?: unknown;
-    };
-    if (data.generated_by !== GENERATED_BY)
+    if (!fs.existsSync(path)) {
+        return {
+            errors: [`${FLOW_CHECKS_JSON} is missing; run node capture-flows.ts check`],
+            checks: [],
+        };
+    }
+    const rawData = readJsonFile(path);
+    if (!isPlain(rawData)) {
+        return { errors: [`${FLOW_CHECKS_JSON}: expected an object`], checks: [] };
+    }
+    if (rawData.generated_by !== GENERATED_BY)
         errors.push(`${FLOW_CHECKS_JSON}: generated_by must be "${GENERATED_BY}"`);
-    if (typeof data.tesseract_version !== 'string' || !data.tesseract_version)
+    if (typeof rawData.tesseract_version !== 'string' || !rawData.tesseract_version)
         errors.push(`${FLOW_CHECKS_JSON}: tesseract_version missing`);
-    if (!Array.isArray(data.checks))
-        return [...errors, `${FLOW_CHECKS_JSON}: checks must be a list`];
+    if (!Array.isArray(rawData.checks)) {
+        return { errors: [...errors, `${FLOW_CHECKS_JSON}: checks must be a list`], checks: [] };
+    }
     const byId = new Map(flows.map(flow => [flow.screenshot_id, flow]));
     const expected = new Map(
         checkImages(root, readManifest(root), flows).map(image => [
@@ -587,68 +676,97 @@ export const checkFlowChecksReferences = (root: string, flows: Flow[]): string[]
         ]),
     );
     const seen = new Set<string>();
-    for (const [index, raw] of (data.checks as unknown[]).entries()) {
+    const parsedChecks: LandingCheck[] = [];
+    const order: string[] = [];
+    for (const [index, raw] of rawData.checks.entries()) {
         const where = `${FLOW_CHECKS_JSON} checks[${index}]`;
         if (!isPlain(raw)) {
             errors.push(`${where}: not an object`);
             continue;
         }
-        const check = raw as Partial<LandingCheck>;
-        const flow = byId.get(check.screenshot_id ?? '');
+        const screenshotId = typeof raw.screenshot_id === 'string' ? raw.screenshot_id : '';
+        const imagePath = typeof raw.image === 'string' ? raw.image : '';
+        order.push(`${screenshotId} ${imagePath}`);
+        const flow = byId.get(screenshotId);
         if (!flow) {
-            errors.push(`${where}: unknown screenshot_id ${String(check.screenshot_id)}`);
+            errors.push(`${where}: unknown screenshot_id ${String(raw.screenshot_id)}`);
             continue;
         }
-        const key = `${check.screenshot_id} ${check.image}`;
+        const key = `${screenshotId} ${imagePath}`;
         const image = expected.get(key);
         if (!image) {
-            errors.push(
-                `${where}: image ${String(check.image)} is not a capture of ${check.screenshot_id}`,
-            );
+            errors.push(`${where}: image ${String(raw.image)} is not a capture of ${screenshotId}`);
             continue;
         }
         if (seen.has(key)) errors.push(`${where}: duplicate check`);
         seen.add(key);
-        if (check.sha256 !== sha256Of(nodePath.join(root, image.image)))
+        const sha256 = typeof raw.sha256 === 'string' ? raw.sha256 : '';
+        if (sha256 !== sha256Of(nodePath.join(root, image.image)))
             errors.push(
                 `${where}: ${image.image} changed after its landing check (stale; rerun check)`,
             );
-        if (check.device !== image.device)
-            errors.push(`${where}: device ${String(check.device)} != ${image.device}`);
-        const found = Array.isArray(check.found) ? check.found : [];
-        const missing = Array.isArray(check.missing) ? check.missing : [];
+        const device = typeof raw.device === 'string' ? raw.device : '';
+        if (device !== image.device)
+            errors.push(`${where}: device ${String(raw.device)} != ${image.device}`);
+        const found =
+            Array.isArray(raw.found) && raw.found.every(v => typeof v === 'string')
+                ? raw.found
+                : null;
+        const missing =
+            Array.isArray(raw.missing) && raw.missing.every(v => typeof v === 'string')
+                ? raw.missing
+                : null;
+        if (!found || !missing) {
+            errors.push(`${where}: found and missing must be string lists`);
+            continue;
+        }
         const landmarks = [...flow.arrival.landmarks].sort();
         if (JSON.stringify([...found, ...missing].sort()) !== JSON.stringify(landmarks))
             errors.push(
                 `${where}: found + missing differ from the flow landmarks (stale; rerun check)`,
             );
-        if (check.result !== (missing.length ? 'drift' : 'pass'))
-            errors.push(
-                `${where}: result ${String(check.result)} disagrees with missing landmarks`,
-            );
+        const expectedResult: 'pass' | 'drift' = missing.length ? 'drift' : 'pass';
+        if (raw.result !== expectedResult) {
+            errors.push(`${where}: result ${String(raw.result)} disagrees with missing landmarks`);
+            continue;
+        }
+        parsedChecks.push({
+            screenshot_id: screenshotId,
+            image: imagePath,
+            device,
+            found,
+            missing,
+            result: expectedResult,
+            sha256,
+        });
     }
     for (const key of expected.keys()) {
         if (!seen.has(key))
             errors.push(`${FLOW_CHECKS_JSON}: no check for ${key} (stale; rerun check)`);
     }
-    const order = (data.checks as LandingCheck[]).map(c => `${c.screenshot_id} ${c.image}`);
     if (order.some((key, index) => index > 0 && key < order[index - 1]))
         errors.push(`${FLOW_CHECKS_JSON}: checks are not sorted`);
 
-    return errors;
+    return { errors, checks: parsedChecks };
 };
+
+/** Reference checks of runtime/flow-checks.json against the flows and existing captures. */
+export const checkFlowChecksReferences = (root: string, flows: Flow[]): string[] =>
+    inspectFlowChecksReferences(root, flows).errors;
 
 /** verify.ts entry point: static validation plus flow-checks.json references; throws on failure. */
 export const verifyCaptureFlows = (root: string = FEATURE_MAP_DIR) => {
     const result = validateCaptureFlows(root);
     const errors = [...result.errors];
-    if (!errors.length) errors.push(...checkFlowChecksReferences(root, result.flows));
+    let checks: LandingCheck[] = [];
+    if (!errors.length) {
+        const inspected = inspectFlowChecksReferences(root, result.flows);
+        errors.push(...inspected.errors);
+        checks = inspected.checks;
+    }
     if (errors.length) {
         throw new Error(`Capture flows failed verification:\n  ${errors.join('\n  ')}`);
     }
-    const { checks } = readJsonFile(nodePath.join(root, FLOW_CHECKS_JSON)) as {
-        checks: LandingCheck[];
-    };
 
     return {
         flows: result.flows.length,
@@ -799,6 +917,12 @@ const runReplay = (root: string, args: string[]): number => {
     const agentDevice = optionValue(rest, '--agent-device');
     if (!agentDevice)
         throw new Error('replay requires --agent-device <path to the agent-device CLI>');
+    const validation = validateCaptureFlows(root);
+    if (validation.errors.length) {
+        for (const error of validation.errors) process.stderr.write(`error: ${error}\n`);
+
+        return 1;
+    }
     const flowsPath = nodePath.join(root, FLOWS_JSON);
     const data = readJsonFile(flowsPath) as CaptureFlows;
     const device = optionValue(rest, '--device') ?? data.recorded_on;
@@ -815,18 +939,42 @@ const runReplay = (root: string, args: string[]): number => {
     if (unknownFlag) throw new Error(`unknown replay option ${unknownFlag}`);
     const state = data.start_states[startState];
     if (!state) throw new Error(`unknown start state ${startState}`);
+    if (runSetup && (state.prepare !== undefined || !state.setup.length)) {
+        throw new Error(
+            state.prepare !== undefined
+                ? `--setup cannot be used with ${startState}; run external prepare (${state.prepare}) instead`
+                : `--setup: start state ${startState} has no setup steps`,
+        );
+    }
+    const byId = new Map(data.flows.map(flow => [flow.screenshot_id, flow]));
+    const unknownIds = rest.filter(id => !byId.has(id));
+    if (unknownIds.length) throw new Error(`unknown flows: ${unknownIds.join(', ')}`);
+    const emptyStepIds = rest.filter(id => !(byId.get(id)?.steps.length ?? 0));
+    if (emptyStepIds.length)
+        throw new Error(`requested flows have no replay steps: ${emptyStepIds.join(', ')}`);
+    const wrongStateIds = rest.filter(id => byId.get(id)?.start_state !== startState);
+    if (wrongStateIds.length) {
+        const details = wrongStateIds
+            .map(id => `${id} (requires --start-state ${byId.get(id)?.start_state})`)
+            .join(', ');
+        throw new Error(`requested flows do not match --start-state ${startState}: ${details}`);
+    }
     const flows = data.flows.filter(
         flow =>
             flow.steps.length &&
             flow.start_state === startState &&
             (!rest.length || rest.includes(flow.screenshot_id)),
     );
-    const unknownIds = rest.filter(id => !data.flows.some(flow => flow.screenshot_id === id));
-    if (unknownIds.length) throw new Error(`unknown flows: ${unknownIds.join(', ')}`);
+    if (!flows.length) throw new Error(`no replayable flows found for --start-state ${startState}`);
+    if (state.prepare !== undefined && flows.length > 1) {
+        throw new Error(
+            `start state ${startState} requires external preparation (${state.prepare}) before each flow; replay one flow ID per invocation`,
+        );
+    }
     const variantsPath = nodePath.join(root, VARIANTS_JSON);
-    const variantsFile = readJsonFile(variantsPath) as { variants: DeviceVariant[] };
+    const variantsManifest = readVariantsManifest(root);
     const variantOf = (id: string) =>
-        variantsFile.variants.find(
+        variantsManifest.variants.find(
             variant => variant.variant_of === id && variant.device === device,
         );
     if (updateCaptures) {
@@ -836,6 +984,10 @@ const runReplay = (root: string, args: string[]): number => {
                 `--update-captures: no ${device} variant in ${VARIANTS_JSON} for ` +
                     missing.map(flow => flow.screenshot_id).join(', '),
             );
+        for (const flow of flows) {
+            const variant = variantOf(flow.screenshot_id);
+            if (variant) resolveScreenshotTarget(root, variant.path);
+        }
     }
     const tesseract = findTesseract();
     const workDir = fs.mkdtempSync(nodePath.join(os.tmpdir(), 'capture-flows-'));
@@ -879,9 +1031,9 @@ const runReplay = (root: string, args: string[]): number => {
         if (flow.status === 'drifted') failures++;
         const variant = variantOf(flow.screenshot_id);
         if (updateCaptures && variant && flow.status === 'replayed') {
-            fs.copyFileSync(image, nodePath.join(REPO_ROOT, variant.path));
+            fs.copyFileSync(image, resolveScreenshotTarget(root, variant.path));
             variant.captured_at = date.replace(/\.\d+Z$/, '+00:00');
-            dumpJson(variantsPath, variantsFile);
+            dumpJson(variantsPath, variantsManifest.raw);
             updated++;
         }
         process.stdout.write(

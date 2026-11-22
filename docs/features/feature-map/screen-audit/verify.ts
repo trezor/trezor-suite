@@ -147,7 +147,9 @@ const verify = (): void => {
 
     // Missing ledger entries are reported, never relabeled as inspected screens.
     const desktop = new Set(
-        pyGlob(pyJoin(REPO, 'suite-app/app/src/pages'), '*.tsx').map(p => pyRelativeTo(p, REPO)),
+        pyGlob(pyJoin(REPO, 'suite-app'), '*/src/pages/*.tsx')
+            .filter(p => !nodePath.basename(p).includes('.test.'))
+            .map(p => pyRelativeTo(p, REPO)),
     );
     const mobile = new Set<string>();
     for (const root of ['suite-native', 'suite-native-app']) {

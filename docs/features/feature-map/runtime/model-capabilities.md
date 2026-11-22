@@ -98,7 +98,7 @@ Find it: Recover wallet or Settings > Device > Check backup. Confidence: **high*
 
 Prerequisites: This distinction applies to recovery and backup-check workflows; Shamir recovery additionally requires Capability_Shamir.
 
-- [packages/suite/src/views/recovery/index.tsx:209](../../../../packages/suite/src/views/recovery/index.tsx#L209) — Backup check skips recovery-type selection for smaller Model One backups. (implementation).
+- [packages/suite/src/views/recovery/Recovery.tsx:209](../../../../packages/suite/src/views/recovery/Recovery.tsx#L209) — Backup check skips recovery-type selection for smaller Model One backups. (implementation).
 - [suite/e2e/tests/onboarding/t1b1/t1b1-recovery-advanced.test.ts:51](../../../../suite/e2e/tests/onboarding/t1b1/t1b1-recovery-advanced.test.ts#L51) — Onboarding test explicitly covers automatic advanced mode for 12 words. (automated-test).
 
 Runtime: No matching model-specific observation is recorded in the manifest snapshot. A reached UI state does not verify model exclusions, physical behavior or firmware boundaries.
@@ -187,7 +187,7 @@ Prerequisites: T2B1 packaging distinction is unit_packaging absent/0. Branded pl
 
 - [packages/suite/src/components/onboarding/Hologram.tsx:21](../../../../packages/suite/src/components/onboarding/Hologram.tsx#L21) — Old Safe 3 packaging branch and Model One dedicated animation. (implementation).
 - [suite-common/device-authenticity/src/deviceAuthenticityConstants.ts:14](../../../../suite-common/device-authenticity/src/deviceAuthenticityConstants.ts#L14) — Only Safe 7 asks for branded plastic wrapping. (implementation).
-- [suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx:27](../../../../suite-native-app/module-device-onboarding/src/screens/SecurityCheckScreen.tsx#L27) — Native packaging steps consume branded-wrap condition. (implementation).
+- [suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx:27](../../../../suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx#L27) — Native packaging steps consume branded-wrap condition. (implementation).
 
 Runtime: No matching model-specific observation is recorded in the manifest snapshot. A reached UI state does not verify model exclusions, physical behavior or firmware boundaries.
 
@@ -207,7 +207,7 @@ Find it: Settings > Device > Personalization > Display orientation. Confidence: 
 Prerequisites: Explicit model gate; display_rotation feature presence does not establish support. Native device settings composition does not expose this desktop/web control.
 
 - [packages/suite/src/views/settings/SettingsDevice/DisplayRotation.tsx:59](../../../../packages/suite/src/views/settings/SettingsDevice/DisplayRotation.tsx#L59) — Only Model T and Safe 5 render the control. (implementation).
-- [suite-app/app/src/pages/SettingsDevicePage.tsx:239](../../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L239) — Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards. (implementation).
+- [suite-app/module-settings/src/pages/SettingsDevicePage.tsx:239](../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L239) — Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards. (implementation).
 
 Runtime: No matching model-specific observation is recorded in the manifest snapshot. A reached UI state does not verify model exclusions, physical behavior or firmware boundaries.
 
@@ -229,7 +229,7 @@ Prerequisites: No hardcoded Suite model allowlist or numerical minimum is presen
 - [packages/suite/src/views/settings/SettingsDevice/Brightness.tsx:15](../../../../packages/suite/src/views/settings/SettingsDevice/Brightness.tsx#L15) — Capability-driven control calls setBrightness with no explicit value to open device adjustment. (implementation).
 - [suite-native-app/app/e2e/fixtures/btcDiscoveryFinishedStateT3T1.ts:216](../../../../suite-native-app/app/e2e/fixtures/btcDiscoveryFinishedStateT3T1.ts#L216) — Safe 5 fixture advertises brightness; fixture evidence only. (automated-test).
 - [suite/e2e/fixtures/remembered-wallet-db-lite.json:4348](../../../../suite/e2e/fixtures/remembered-wallet-db-lite.json#L4348) — Safe 7 remembered-device fixture advertises brightness. (automated-test).
-- [suite-app/app/src/pages/SettingsDevicePage.tsx:239](../../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L239) — Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards. (implementation).
+- [suite-app/module-settings/src/pages/SettingsDevicePage.tsx:239](../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L239) — Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards. (implementation).
 
 Runtime: No matching model-specific observation is recorded in the manifest snapshot. A reached UI state does not verify model exclusions, physical behavior or firmware boundaries.
 
@@ -252,7 +252,7 @@ Prerequisites: Suite checks the capability; no model allowlist or numerical mini
 
 - [packages/suite/src/views/settings/SettingsDevice/HapticFeedback.tsx:19](../../../../packages/suite/src/views/settings/SettingsDevice/HapticFeedback.tsx#L19) — Visibility checks capability and toggle applies haptic_feedback. (implementation).
 - [suite/e2e/fixtures/remembered-wallet-db-lite.json:4346](../../../../suite/e2e/fixtures/remembered-wallet-db-lite.json#L4346) — Safe 7 fixture includes Haptic. (automated-test).
-- [suite-app/app/src/pages/SettingsDevicePage.tsx:239](../../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L239) — Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards. (implementation).
+- [suite-app/module-settings/src/pages/SettingsDevicePage.tsx:239](../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L239) — Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards. (implementation).
 
 Runtime: No matching model-specific observation is recorded in the manifest snapshot. A reached UI state does not verify model exclusions, physical behavior or firmware boundaries.
 
@@ -275,7 +275,7 @@ Prerequisites: These are Suite image-conversion/validation constraints, not a ha
 
 - [packages/suite/src/utils/suite/homescreen.ts:24](../../../../packages/suite/src/utils/suite/homescreen.ts#L24) — Explicit per-model upload constraints. (implementation).
 - [packages/suite/src/components/suite/HomescreenGallery.tsx:24](../../../../packages/suite/src/components/suite/HomescreenGallery.tsx#L24) — Per-model gallery directories. (implementation).
-- [suite-app/app/src/pages/SettingsDevicePage.tsx:239](../../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L239) — Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards. (implementation).
+- [suite-app/module-settings/src/pages/SettingsDevicePage.tsx:239](../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L239) — Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards. (implementation).
 
 Runtime: No matching model-specific observation is recorded in the manifest snapshot. A reached UI state does not verify model exclusions, physical behavior or firmware boundaries.
 
@@ -317,7 +317,7 @@ Find it: Settings > Device > Security > Auto-lock. Confidence: **high**. Existin
 Prerequisites: No Suite model allowlist; options are 1 minute, 10 minutes, 1 hour, 1 day and 6 days. Requires connected/unlocked device for modification. Settings page additionally requires PIN protection and normal mode.
 
 - [packages/suite/src/views/settings/SettingsDevice/AutoLock.tsx:39](../../../../packages/suite/src/views/settings/SettingsDevice/AutoLock.tsx#L39) — Visibility determined by reported numeric field; predefined timeout choices. (implementation).
-- [suite-app/app/src/pages/SettingsDevicePage.tsx:239](../../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L239) — Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards. (implementation).
+- [suite-app/module-settings/src/pages/SettingsDevicePage.tsx:239](../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L239) — Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards. (implementation).
 
 Runtime: No matching model-specific observation is recorded in the manifest snapshot. A reached UI state does not verify model exclusions, physical behavior or firmware boundaries.
 
@@ -471,8 +471,8 @@ Find it: Settings > Device > Security / Advanced. Confidence: **high**. Existing
 
 Prerequisites: Normal mode: PIN protection and wipe code are composed; Change PIN requires pin_protection; safety-check button requires truthy safety_checks. Native settings composition exposes PIN management but does not compose desktop advanced safety-check/wipe-code controls. Firmware method availability is separate from a visible button; this audit does not assert old-firmware wipe-code support.
 
-- [suite-app/app/src/pages/SettingsDevicePage.tsx:219](../../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L219) — Security section composition checks features fields. (implementation).
-- [suite-app/app/src/pages/SettingsDevicePage.tsx:269](../../../../suite-app/app/src/pages/SettingsDevicePage.tsx#L269) — Wipe code composed only in normal mode. (implementation).
+- [suite-app/module-settings/src/pages/SettingsDevicePage.tsx:219](../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L219) — Security section composition checks features fields. (implementation).
+- [suite-app/module-settings/src/pages/SettingsDevicePage.tsx:269](../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L269) — Wipe code composed only in normal mode. (implementation).
 - [suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx:52](../../../../suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx#L52) — Native security section composition. (implementation).
 - [suite/e2e/tests/manual/settings/pin-and-wipe-code.test.ts:8](../../../../suite/e2e/tests/manual/settings/pin-and-wipe-code.test.ts#L8) — Manual PIN and wipe-code scenarios are intended behavior, not executed results. (manual-test).
 

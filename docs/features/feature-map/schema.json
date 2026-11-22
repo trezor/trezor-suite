@@ -214,6 +214,7 @@
                         }
                     },
                     "screenshot": {
+                        "description": "Frozen pre-runtime/historical static-audit screenshot field preserved by baselines; current runtime captures live in `screenshots` and `runtime.screenshots`.",
                         "type": "object",
                         "required": ["status", "path", "notes"],
                         "properties": {

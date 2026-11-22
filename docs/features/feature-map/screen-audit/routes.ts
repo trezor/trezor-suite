@@ -62,7 +62,33 @@ const isFile = (p: string) => {
     }
 };
 
-const readJsonFile = (p: string): any => JSON.parse(fs.readFileSync(p, 'utf8'));
+const SYSTEM_ALERT = 'system-alert';
+
+const isObj = (value: unknown): value is Obj =>
+    value !== null && typeof value === 'object' && !Array.isArray(value);
+
+const asObj = (value: unknown, where: string): Obj => {
+    if (!isObj(value)) throw new Error(`${where}: expected an object`);
+
+    return value;
+};
+
+const asArray = (value: unknown, where: string): unknown[] => {
+    if (!Array.isArray(value)) throw new Error(`${where}: expected an array`);
+
+    return value;
+};
+
+const asStr = (value: unknown, where: string): string => {
+    if (typeof value !== 'string') throw new Error(`${where}: expected a string`);
+
+    return value;
+};
+
+const asStrArray = (value: unknown): string[] =>
+    Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
+
+const readJsonFile = (p: string): unknown => JSON.parse(fs.readFileSync(p, 'utf8'));
 
 // ---------------------------------------------------------------------------
 // Source text helpers
@@ -223,28 +249,27 @@ const workspaces = (): Map<string, Workspace> => {
     const visit = (dir: string, depth: number) => {
         const pkg = nodePath.join(dir, 'package.json');
         if (isFile(pkg)) {
-            const json = readJsonFile(pkg);
-            if (typeof json.name === 'string') {
+            const rawPkg = readJsonFile(pkg);
+            if (isObj(rawPkg) && typeof rawPkg.name === 'string') {
                 const entries = new Map<string, string>();
-                const exp = json.exports;
+                const exp = rawPkg.exports;
                 const target = (value: unknown): string | null => {
                     if (typeof value === 'string') return value;
-                    if (value && typeof value === 'object') {
-                        const o = value as Obj;
-
-                        return target(o.default ?? o.import ?? o.require ?? null);
+                    if (isObj(value)) {
+                        return target(value.default ?? value.import ?? value.require ?? null);
                     }
 
                     return null;
                 };
-                if (exp && typeof exp === 'object') {
-                    for (const [key, value] of Object.entries(exp as Obj)) {
+                if (isObj(exp)) {
+                    for (const [key, value] of Object.entries(exp)) {
                         const t = target(value);
                         if (t) entries.set(key, t);
                     }
                 } else if (typeof exp === 'string') entries.set('.', exp);
-                if (!entries.has('.')) entries.set('.', json.main ?? 'src/index');
-                map.set(json.name, { dir, entries });
+                if (!entries.has('.'))
+                    entries.set('.', typeof rawPkg.main === 'string' ? rawPkg.main : 'src/index');
+                map.set(rawPkg.name, { dir, entries });
             }
         }
         if (depth === 0) return;
@@ -288,12 +313,18 @@ const resolveModule = (fromFile: string, spec: string): string | null => {
     const direct = ws.entries.get(key);
     if (direct) return tryFile(nodePath.join(ws.dir, direct));
     for (const [pattern, target] of ws.entries) {
-        if (!pattern.includes('*')) continue;
-        const [prefix, suffix] = pattern.split('*');
-        if (key.startsWith(prefix) && key.endsWith(suffix)) {
+        const starIndex = pattern.indexOf('*');
+        if (starIndex < 0) continue;
+        const prefix = pattern.slice(0, starIndex);
+        const suffix = pattern.slice(starIndex + 1);
+        if (
+            key.length >= prefix.length + suffix.length &&
+            key.startsWith(prefix) &&
+            key.endsWith(suffix)
+        ) {
             const star = key.slice(prefix.length, key.length - suffix.length);
 
-            return tryFile(nodePath.join(ws.dir, target.replace('*', star)));
+            return tryFile(nodePath.join(ws.dir, target.split('*').join(star)));
         }
     }
 
@@ -397,13 +428,18 @@ type Screenshot = { id: string; platform: string; features: string[] };
 export type Flow = { screenshot_id: string; route: string; status: string };
 
 const loadScreenshots = (): Screenshot[] => {
-    const catalog = readJsonFile(nodePath.join(CATALOG, 'features.json'));
+    const catalog = asObj(readJsonFile(nodePath.join(CATALOG, 'features.json')), 'features.json');
+    const runtime = asObj(catalog.runtime, 'features.json.runtime');
 
-    return (catalog.runtime.screenshots as Obj[]).map(s => ({
-        id: s.id as string,
-        platform: s.platform as string,
-        features: ((s.effective_feature_ids ?? s.feature_ids) as string[]) ?? [],
-    }));
+    return asArray(runtime.screenshots, 'features.json.runtime.screenshots').map((item, index) => {
+        const s = asObj(item, `features.json.runtime.screenshots[${index}]`);
+
+        return {
+            id: asStr(s.id, `features.json.runtime.screenshots[${index}].id`),
+            platform: asStr(s.platform, `features.json.runtime.screenshots[${index}].platform`),
+            features: asStrArray(s.effective_feature_ids ?? s.feature_ids),
+        };
+    });
 };
 
 /**
@@ -411,12 +447,20 @@ const loadScreenshots = (): Screenshot[] => {
  * the component file or, for an index file, a file in its directory.
  */
 const loadEvidenceIndex = (): ((file: string | null) => string[]) => {
-    const catalog = readJsonFile(nodePath.join(CATALOG, 'features.json'));
+    const catalog = asObj(readJsonFile(nodePath.join(CATALOG, 'features.json')), 'features.json');
     const byPath = new Map<string, string[]>();
-    for (const feature of catalog.features as Obj[]) {
-        for (const evidence of (feature.evidence ?? []) as Obj[]) {
-            if (evidence.kind !== 'implementation' || typeof evidence.path !== 'string') continue;
-            byPath.set(evidence.path, [...(byPath.get(evidence.path) ?? []), feature.id as string]);
+    for (const [index, rawFeature] of asArray(
+        catalog.features,
+        'features.json.features',
+    ).entries()) {
+        const feature = asObj(rawFeature, `features.json.features[${index}]`);
+        const featureId = asStr(feature.id, `features.json.features[${index}].id`);
+        const evidenceList = Array.isArray(feature.evidence) ? feature.evidence : [];
+        for (const rawEvidence of evidenceList) {
+            if (!isObj(rawEvidence)) continue;
+            if (rawEvidence.kind !== 'implementation' || typeof rawEvidence.path !== 'string')
+                continue;
+            byPath.set(rawEvidence.path, [...(byPath.get(rawEvidence.path) ?? []), featureId]);
         }
     }
 
@@ -440,15 +484,24 @@ const CAPTURE_FLOWS = nodePath.join(CATALOG, 'parts/capture-flows.json');
 
 const loadFlows = (): { present: boolean; flows: Flow[] } => {
     if (!fs.existsSync(CAPTURE_FLOWS)) return { present: false, flows: [] };
-    const data = readJsonFile(CAPTURE_FLOWS);
+    const data = asObj(readJsonFile(CAPTURE_FLOWS), 'capture-flows.json');
+    const rawFlows = Array.isArray(data.flows) ? data.flows : [];
 
     return {
         present: true,
-        flows: ((data.flows ?? []) as Obj[]).map(f => ({
-            screenshot_id: f.screenshot_id as string,
-            route: (((f.arrival ?? {}) as Obj).route as string) ?? '',
-            status: f.status as string,
-        })),
+        flows: rawFlows.map((item, index) => {
+            const f = asObj(item, `capture-flows.json.flows[${index}]`);
+            const arrival = isObj(f.arrival) ? f.arrival : {};
+
+            return {
+                screenshot_id: asStr(
+                    f.screenshot_id,
+                    `capture-flows.json.flows[${index}].screenshot_id`,
+                ),
+                route: typeof arrival.route === 'string' ? arrival.route : '',
+                status: asStr(f.status, `capture-flows.json.flows[${index}].status`),
+            };
+        }),
     };
 };
 
@@ -461,15 +514,22 @@ type LedgerRow = {
     ledger: string;
 };
 
-const loadLedger = (name: string): LedgerRow[] =>
-    (readJsonFile(nodePath.join(HERE, `${name}.json`)).screen_reviews as Obj[]).map(r => ({
-        path: r.path as string,
-        symbol: (r.symbol as string) ?? '',
-        feature_ids: (r.feature_ids as string[]) ?? [],
-        disposition: (r.disposition as string) ?? '',
-        registered_in: (r.registered_in as string[]) ?? [],
-        ledger: name,
-    }));
+const loadLedger = (name: string): LedgerRow[] => {
+    const data = asObj(readJsonFile(nodePath.join(HERE, `${name}.json`)), `${name}.json`);
+
+    return asArray(data.screen_reviews, `${name}.json.screen_reviews`).map((item, index) => {
+        const r = asObj(item, `${name}.json.screen_reviews[${index}]`);
+
+        return {
+            path: asStr(r.path, `${name}.json.screen_reviews[${index}].path`),
+            symbol: typeof r.symbol === 'string' ? r.symbol : '',
+            feature_ids: asStrArray(r.feature_ids),
+            disposition: typeof r.disposition === 'string' ? r.disposition : '',
+            registered_in: asStrArray(r.registered_in),
+            ledger: name,
+        };
+    });
+};
 
 const screenshotsFor = (features: string[], shots: Screenshot[], platforms: string[]) => {
     const wanted = new Set(features);
@@ -734,6 +794,15 @@ const buildMobile = (
 
     const flowMatches = new Map<string, Flow[]>();
     for (const f of flows) {
+        if (f.route === SYSTEM_ALERT) {
+            flowJoin.push({
+                screenshot_id: f.screenshot_id,
+                arrival_route: f.route,
+                matched_routes: [],
+                result: SYSTEM_ALERT,
+            });
+            continue;
+        }
         const parts = f.route.split('/');
         const value = parts[parts.length - 1];
         const parentValue = parts.length > 1 ? parts[parts.length - 2] : null;
@@ -872,9 +941,25 @@ const buildMobile = (
     records.sort((a, b) => cmp(a.source as string, b.source as string));
 
     // Cross-check with the ledger's navigator_registrations (README: 222 across 36 navigators).
-    const ledgerRegs = (
-        readJsonFile(nodePath.join(HERE, 'mobile.json')).navigator_registrations as Obj[]
-    ).map(r => `${r.navigator as string}#${r.component as string}`);
+    const mobileLedger = asObj(readJsonFile(nodePath.join(HERE, 'mobile.json')), 'mobile.json');
+    const rawLedgerRegs = asArray(
+        mobileLedger.navigator_registrations,
+        'mobile.json.navigator_registrations',
+    ).map((item, index) => {
+        const reg = asObj(item, `mobile.json.navigator_registrations[${index}]`);
+
+        return {
+            navigator: asStr(
+                reg.navigator,
+                `mobile.json.navigator_registrations[${index}].navigator`,
+            ),
+            component: asStr(
+                reg.component,
+                `mobile.json.navigator_registrations[${index}].component`,
+            ),
+        };
+    });
+    const ledgerRegs = rawLedgerRegs.map(r => `${r.navigator}#${r.component}`);
     const ledgerRegSet = new Set(ledgerRegs);
     const parsedPairs = regs.map(r => `${r.navigator}#${r.component ?? '?'}`);
     const parsedSet = new Set(parsedPairs);
@@ -882,11 +967,7 @@ const buildMobile = (
     const crossCheck = {
         readme_claim: '222 registrations across 36 navigators',
         ledger_navigator_registrations: ledgerRegs.length,
-        ledger_navigator_files: new Set(
-            (readJsonFile(nodePath.join(HERE, 'mobile.json')).navigator_registrations as Obj[]).map(
-                r => r.navigator as string,
-            ),
-        ).size,
+        ledger_navigator_files: new Set(rawLedgerRegs.map(r => r.navigator)).size,
         parsed_registrations: regs.length,
         parsed_navigator_files: navigatorFiles.length,
         parsed_nested_navigator_registrations: regs.filter(r => r.isNavigator).length,
@@ -900,7 +981,9 @@ const buildMobile = (
             regs
                 .filter(
                     r =>
-                        !r.isNavigator && !ledgerRegSet.has(`${r.navigator}#${r.component ?? '?'}`),
+                        !r.isNavigator &&
+                        r.componentKind !== 'inline' &&
+                        !ledgerRegSet.has(`${r.navigator}#${r.component ?? '?'}`),
                 )
                 .map(
                     r =>
@@ -1293,7 +1376,7 @@ const prettierJson = (value: unknown, level = 0, prefixWidth = 0, suffixWidth = 
     return `{\n${items.join(',\n')}\n${pad(level)}}`;
 };
 
-const mdCell = (value: string) => value.replace(/\|/g, '\\|');
+const mdCell = (value: string) => value.replace(/[\\|]/g, '\\$&').replace(/\r?\n/g, ' ');
 
 /** Markdown table already in Prettier's aligned form. */
 const mdTable = (header: string[], rows: string[][]): string => {
@@ -1310,8 +1393,35 @@ const mdTable = (header: string[], rows: string[][]): string => {
 
 const code = (s: unknown) => (s === null || s === undefined || s === '' ? '-' : `\`${String(s)}\``);
 
-const renderMarkdown = (data: any, cc: any, flowsPresent: boolean): string => {
-    const routes = data.routes as Obj[];
+type StatusTotals = Record<string, number> & { routes: number };
+type MobileCrossCheck = {
+    readme_claim: string;
+    ledger_navigator_registrations: number;
+    ledger_navigator_files: number;
+    parsed_registrations: number;
+    parsed_navigator_files: number;
+    parsed_nested_navigator_registrations: number;
+    parsed_inline_component_registrations: number;
+    parsed_screen_component_registrations: number;
+    parsed_conditional_registrations: number;
+    parsed_not_in_ledger: string[];
+    ledger_not_parsed: string[];
+    enum_members: number;
+    enum_count: number;
+    registered_enum_members: number;
+    edge_occurrences: number;
+    indirect_reference_files: number;
+};
+type ReportData = {
+    status_rules: Record<string, string>;
+    totals: Record<'mobile' | 'desktop-web', StatusTotals>;
+    flow_join: Obj[];
+    unresolved: Unresolved[];
+    routes: Obj[];
+};
+
+const renderMarkdown = (data: ReportData, cc: MobileCrossCheck, flowsPresent: boolean): string => {
+    const { routes } = data;
     const out: string[] = [];
     out.push('# Route coverage');
     out.push('');
@@ -1335,7 +1445,7 @@ const renderMarkdown = (data: any, cc: any, flowsPresent: boolean): string => {
     out.push(
         `Capture flows: ${
             flowsPresent
-                ? `${data.flow_join.length} flows joined by \`arrival.route\` (${data.flow_join.filter((f: Obj) => f.result === 'unique').length} unique, ${data.flow_join.filter((f: Obj) => f.result === 'ambiguous').length} ambiguous, ${data.flow_join.filter((f: Obj) => f.result === 'no-match').length} unmatched).`
+                ? `${data.flow_join.length} flows joined by \`arrival.route\` (${data.flow_join.filter(f => f.result === 'unique').length} unique, ${data.flow_join.filter(f => f.result === 'ambiguous').length} ambiguous, ${data.flow_join.filter(f => f.result === SYSTEM_ALERT).length} system-alert, ${data.flow_join.filter(f => f.result === 'no-match').length} unmatched).`
                 : '`parts/capture-flows.json` is absent, so no flow links were joined.'
         }`,
     );
@@ -1450,7 +1560,15 @@ const renderMarkdown = (data: any, cc: any, flowsPresent: boolean): string => {
 export const generateRouteCoverage = (flowsOverride?: {
     present: boolean;
     flows: Flow[];
-}): { json: string; md: string } => {
+}): {
+    json: string;
+    md: string;
+    summary: {
+        totals: Record<'mobile' | 'desktop-web', StatusTotals>;
+        unresolved: number;
+        flow_join: number;
+    };
+} => {
     moduleCache.clear();
     workspaceCache = null;
     const unresolved: Unresolved[] = [];
@@ -1518,7 +1636,15 @@ export const generateRouteCoverage = (flowsOverride?: {
     };
     const json = prettierJson(data) + '\n';
 
-    return { json, md: renderMarkdown(data, mobile.crossCheck, flowsPresent) };
+    return {
+        json,
+        md: renderMarkdown(data, mobile.crossCheck, flowsPresent),
+        summary: {
+            totals: data.totals,
+            unresolved: data.unresolved.length,
+            flow_join: data.flow_join.length,
+        },
+    };
 };
 
 /** Differences between the committed files and a fresh generation (empty when up to date). */
@@ -1548,21 +1674,10 @@ const main = () => {
 
         return;
     }
-    const { json, md } = generateRouteCoverage();
+    const { json, md, summary } = generateRouteCoverage();
     fs.writeFileSync(JSON_OUT, json);
     fs.writeFileSync(MD_OUT, md);
-    const data = JSON.parse(json);
-    process.stdout.write(
-        JSON.stringify(
-            {
-                totals: data.totals,
-                unresolved: data.unresolved.length,
-                flow_join: data.flow_join.length,
-            },
-            null,
-            2,
-        ) + '\n',
-    );
+    process.stdout.write(JSON.stringify(summary, null, 2) + '\n');
 };
 
 if (isMain(import.meta.filename)) main();

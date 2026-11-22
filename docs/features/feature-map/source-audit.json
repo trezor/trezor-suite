@@ -5916,6 +5916,284 @@
     ],
     "screens_and_navigators": [
         {
+            "path": "suite-app/module-account-detail/src/pages/NftsPage.tsx",
+            "feature_ids": ["wallet.nfts", "wallet.nfts.hidden"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-account-detail/src/pages/TokensPage.tsx",
+            "feature_ids": ["wallet.tokens"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-account-detail/src/pages/WalletDetailsPage.tsx",
+            "feature_ids": ["wallet.accounts.details", "wallet.accounts.details.type"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-activity-center/src/pages/NotificationPage.tsx",
+            "feature_ids": ["help.activity", "help.activity.system", "help.activity.transactions"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-apps-embedding/src/pages/AppsEmbeddingPage.tsx",
+            "feature_ids": [],
+            "status": "enumerated-only"
+        },
+        {
+            "path": "suite-app/module-assets/src/pages/AssetDetailPage.tsx",
+            "feature_ids": [
+                "wallet.portfolio.assets.details",
+                "wallet.portfolio.assets.details.earn-offer"
+            ],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-coinjoin/src/pages/WalletAnonymizePage.tsx",
+            "feature_ids": ["wallet.coinjoin", "wallet.coinjoin.confirmation"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-coinjoin/src/pages/WalletCoinjoinPage.tsx",
+            "feature_ids": ["wallet.coinjoin"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-connect-popup/src/pages/ConnectPopupPage.tsx",
+            "feature_ids": ["connect"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-earn/src/pages/EarnClaimPage.tsx",
+            "feature_ids": ["earn.yield.claim"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-earn/src/pages/EarnDepositPage.tsx",
+            "feature_ids": ["earn.yield.deposit"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-earn/src/pages/EarnPage.tsx",
+            "feature_ids": ["earn"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-earn/src/pages/EarnTronClaimPage.tsx",
+            "feature_ids": ["earn.staking.trx.claim"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-earn/src/pages/EarnTronRedirectPage.tsx",
+            "feature_ids": ["earn.staking.trx"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-earn/src/pages/EarnTronStakePage.tsx",
+            "feature_ids": ["earn.staking.trx.freeze"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-earn/src/pages/EarnTronUnstakePage.tsx",
+            "feature_ids": ["earn.staking.trx.unfreeze"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-earn/src/pages/EarnTronVotePage.tsx",
+            "feature_ids": ["earn.staking.trx.vote"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-earn/src/pages/EarnTronWithdrawPage.tsx",
+            "feature_ids": ["earn.staking.trx.withdraw"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-earn/src/pages/EarnUnwrapPage.tsx",
+            "feature_ids": ["earn.yield.standalone-unwrap"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-earn/src/pages/EarnWithdrawPage.tsx",
+            "feature_ids": ["earn.yield.withdraw"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-earn/src/pages/EarnWrapPage.tsx",
+            "feature_ids": ["earn.yield.standalone-wrap"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-earn/src/pages/WalletStakingPage.tsx",
+            "feature_ids": ["earn.staking", "earn.staking.trx.transactions"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
+            "feature_ids": [
+                "app-settings.application.service-messages.context",
+                "mobile.portfolio.questionnaire",
+                "mobile.portfolio.refresh",
+                "wallet.portfolio",
+                "wallet.portfolio.asset-first"
+            ],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-home/src/pages/HiddenTokensPage.tsx",
+            "feature_ids": ["wallet.portfolio.hidden-assets"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-password-manager/src/pages/PasswordManagerPage.tsx",
+            "feature_ids": ["labeling.password-manager"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-receive/src/pages/ReceivePage.tsx",
+            "feature_ids": ["mobile.receive.reuse", "mobile.receive.tag", "wallet.receive"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-refer-a-friend/src/pages/ReferAFriendPage.tsx",
+            "feature_ids": ["help.referral.prototype"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-send/src/pages/WalletSendPage.tsx",
+            "feature_ids": ["wallet.send"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-settings/src/pages/DesktopSettingsGeneralPage.tsx",
+            "feature_ids": ["app-settings"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
+            "feature_ids": [
+                "network-settings",
+                "network-settings.backends.electrum-onion",
+                "network-settings.discover",
+                "network-settings.enable",
+                "network-settings.search"
+            ],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-settings/src/pages/SettingsConnectedAppsPage.tsx",
+            "feature_ids": ["connect"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-settings/src/pages/SettingsDebugPage.tsx",
+            "feature_ids": ["app-settings.application.service-messages.debug"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
+            "feature_ids": [
+                "device-settings",
+                "device-settings.advanced",
+                "device-settings.backup",
+                "device-settings.connection",
+                "device-settings.firmware",
+                "device-settings.personalization",
+                "device-settings.security"
+            ],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-settings/src/pages/WebSettingsGeneralPage.tsx",
+            "feature_ids": ["app-settings"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-sign-verify/src/pages/SignVerifyPage.tsx",
+            "feature_ids": ["wallet.sign-verify"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-trading/src/pages/TradingBuyConfirmPage.tsx",
+            "feature_ids": ["trade.buy.provider-checkout"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-trading/src/pages/TradingBuyDetailPage.tsx",
+            "feature_ids": ["trade.buy.payment-status"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-trading/src/pages/TradingBuyFormPage.tsx",
+            "feature_ids": ["trade.buy", "trade.unavailable"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-trading/src/pages/TradingConciergeDetailPage.tsx",
+            "feature_ids": ["trade.concierge", "trade.unavailable"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-trading/src/pages/TradingExchangeAllowancePage.tsx",
+            "feature_ids": [],
+            "status": "enumerated-only"
+        },
+        {
+            "path": "suite-app/module-trading/src/pages/TradingExchangeApprovalPage.tsx",
+            "feature_ids": ["trade.swap.approval"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-trading/src/pages/TradingExchangeConfirmPage.tsx",
+            "feature_ids": ["trade.swap.clear-signing", "trade.swap.simulation"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-trading/src/pages/TradingExchangeDetailPage.tsx",
+            "feature_ids": ["trade.swap.status"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-trading/src/pages/TradingExchangeFormPage.tsx",
+            "feature_ids": ["trade.swap"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-trading/src/pages/TradingRedirectPage.tsx",
+            "feature_ids": ["trade"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-trading/src/pages/TradingSellConfirmPage.tsx",
+            "feature_ids": ["trade.sell.confirm-send"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-trading/src/pages/TradingSellDetailPage.tsx",
+            "feature_ids": ["trade.sell.status"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-trading/src/pages/TradingSellFormPage.tsx",
+            "feature_ids": ["trade.sell"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-trading/src/pages/TradingTransactionsPage.tsx",
+            "feature_ids": ["trade.history"],
+            "status": "direct-evidence"
+        },
+        {
+            "path": "suite-app/module-trading/src/pages/WalletTradePage.tsx",
+            "feature_ids": [],
+            "status": "enumerated-only"
+        },
+        {
+            "path": "suite-app/module-transactions/src/pages/TransactionsPage.tsx",
+            "feature_ids": ["wallet.accounts.overview", "wallet.transactions"],
+            "status": "direct-evidence"
+        },
+        {
             "path": "suite-native/coin-enabling/src/screens/CoinEnablingInitScreen.tsx",
             "feature_ids": [],
             "status": "enumerated-only"

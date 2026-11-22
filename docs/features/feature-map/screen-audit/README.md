@@ -1,10 +1,10 @@
 # Screen-by-screen source audit
 
-Audit date: 15 November 2026. This supplement reconciles desktop/web page composition and native screens against the existing user feature map. The current catalog contains **596 capabilities**, including **18 additions** from this pass, each with all existing metadata and four test-quality assessments.
+Audit date: 15 November 2026 (updated with later route-coverage checks). This supplement reconciles desktop/web page composition and native screens against the existing user feature map. It added **18 capabilities** (bringing the catalog to 596 at the time; later source additions brought it to **627** in [summary.json](../summary.json)), each with all existing metadata and four test-quality assessments.
 
 ## Scope and method
 
-Three independent reviewers covered desktop wallet, desktop administration/services, and native mobile. Desktop review has explicit dispositions for all **50 page files**. Native review reconciled **222 registrations across 36 navigators**; the integration follow-up also read 17 additional Screen-suffixed components/helpers, reconciling all **217 `*Screen.tsx` files**. The mobile ledger has 223 screen/state/helper entries (the route completeness follow-up added a component-path row for the inline passphrase-mismatch alert); these are distinct counts, not unique registered routes.
+Three independent reviewers covered desktop wallet, desktop administration/services, and native mobile. Desktop review has explicit dispositions for all **51 page files**. Native review reconciled **222 registrations across 36 navigators**; the integration follow-up also read 17 additional Screen-suffixed components/helpers, reconciling all **217 `*Screen.tsx` files**. The mobile ledger has 224 screen/state/helper entries (including component-path rows for the inline passphrase-mismatch and passphrase-duplicate alerts); these are distinct counts, not unique registered routes.
 
 Supporting desktop control excerpts are marked separately. File enumeration, imported controls and registered routes do not prove every dynamic provider/device branch or runtime reachability. Shared presentation wrappers, loading states, internal screens and aliases have explicit dispositions instead of becoming artificial capabilities. No application flows or E2E/manual suites were executed in this pass; the existing 238 captures are preserved and no new screenshots were taken.
 
