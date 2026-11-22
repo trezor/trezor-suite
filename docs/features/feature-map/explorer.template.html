@@ -2687,6 +2687,41 @@
                     display: none;
                 }
             }
+            /* Test coverage hidden (default): drop the score and subtree columns and score colours. */
+            body.cov-off .treewrap {
+                --cols: minmax(0, 1fr) var(--plat-w, 66px) 52px;
+            }
+            .mnode.mnc::before {
+                display: none;
+            }
+            .mapv.far .mnode.mnc {
+                background: var(--panel);
+            }
+            @media (max-width: 1440px) {
+                body.cov-off .layout:not(.no-detail) .treewrap {
+                    --cols: minmax(0, 1fr) var(--plat-w, 66px) 36px;
+                }
+            }
+            @media (max-width: 1280px) {
+                body.cov-off .layout:not(.no-detail) .tree,
+                body.cov-off .layout:not(.no-detail) .thead {
+                    --cols: minmax(0, 1fr) var(--plat-w, 66px) 36px;
+                }
+            }
+            @media (max-width: 720px) {
+                body.cov-off .tree,
+                body.cov-off .thead,
+                body.cov-off .layout:not(.no-detail) .tree,
+                body.cov-off .layout:not(.no-detail) .thead {
+                    --cols: minmax(0, 1fr);
+                }
+                .topbar .tools .icon-btn {
+                    padding-inline: 6px;
+                }
+                .cov-toggle span {
+                    display: none;
+                }
+            }
             @media (prefers-reduced-motion: reduce) {
                 * {
                     transition: none !important;
@@ -2753,6 +2788,20 @@
                     </button>
                 </nav>
                 <div class="tools" style="display: flex; gap: 6px">
+                    <button
+                        class="icon-btn cov-toggle"
+                        id="covBtn"
+                        aria-label="E2E coverage"
+                        aria-pressed="false"
+                        title="Show test coverage scores (automated E2E and manual)"
+                    >
+                        <svg class="i" viewBox="0 0 16 16" aria-hidden="true">
+                            <path
+                                d="M2.5 4l1.5 1.5L6.5 3M2.5 10.5L4 12l2.5-2.5M8.5 4.5h5M8.5 11h5"
+                            />
+                        </svg>
+                        <span>E2E coverage</span>
+                    </button>
                     <button
                         class="icon-btn"
                         id="themeBtn"
@@ -2959,6 +3008,7 @@
                     .toLowerCase();
             }
             const adj = new Map(F.map(f => [f.id, []]));
+            const nonTestLinkCount = DATA.links.filter(l => l.type !== 'test').length;
             for (const l of DATA.links) {
                 if (!adj.has(l.a) || !adj.has(l.b)) continue;
                 adj.get(l.a).push({ id: l.b, type: l.type, via: l.via });
@@ -3016,6 +3066,7 @@
                 missing: null,
                 mlinks: 'sel',
                 device: DEVICES[0] || null,
+                cov: false,
             };
             const state = structuredClone(DEFAULT);
             let expanded = new Set();
@@ -3082,6 +3133,7 @@
                 if (p.get('d') === '-1') s.dir = -1;
                 if (p.get('ml') === 'all') s.mlinks = 'all';
                 if (DEVICES.includes(p.get('dv'))) s.device = p.get('dv');
+                if (p.get('cov') === '1') s.cov = true;
                 return s;
             }
             function writeHash(push = false) {
@@ -3103,6 +3155,7 @@
                 if (state.sort !== 'tree') p.set('o', state.sort);
                 if (state.dir === -1) p.set('d', '-1');
                 if (state.mlinks !== DEFAULT.mlinks) p.set('ml', state.mlinks);
+                if (state.cov) p.set('cov', '1');
                 const h = p.toString();
                 const url = h ? '#' + h : location.pathname + location.search;
                 push =
@@ -3154,10 +3207,12 @@
                 if (score <= 9) return 8;
                 return 10;
             }
+            /* Every coverage axis is hidden until the "E2E coverage" switch turns test coverage on. */
             const axisVisible = axis =>
-                AXIS[axis].group === 'android'
+                state.cov &&
+                (AXIS[axis].group === 'android'
                     ? state.plat.includes('mobile')
-                    : state.plat.includes('desktop') || state.plat.includes('web');
+                    : state.plat.includes('desktop') || state.plat.includes('web'));
             const visibleAxes = () => AXES.filter(axisVisible);
             /* An axis has no meaningful score when unassessed, or when the platform lacks the feature and no test checks that state. */
             const isNA = c =>
@@ -3194,8 +3249,11 @@
             }
             const screensFor = f => f.screensAll.filter(screenShown);
             let linkCache = new Map();
+            /* "Shared test" connections come from coverage evidence, so they are hidden with test coverage. */
+            const linkTypes = () => (state.cov ? LINK_TYPES : LINK_TYPES.filter(t => t !== 'test'));
+            const activeLinkTypes = () => state.ltypes.filter(t => linkTypes().includes(t));
             /* Connections of f restricted to link types and to screenshots on shown platforms; Map<otherId, {types, via}>. */
-            function linkGroups(f, types = state.ltypes) {
+            function linkGroups(f, types = activeLinkTypes()) {
                 const key = f.id + '|' + types.join(',');
                 if (linkCache.has(key)) return linkCache.get(key);
                 const m = new Map();
@@ -3335,6 +3393,9 @@
             }
             function renderStatus() {
                 const total = F.length;
+                const connections = state.cov ? DATA.links.length : nonTestLinkCount;
+                $('sub').textContent =
+                    `${fmt(total)} features in ${ROOTS.length} areas · ${fmt(VARIANTS.size)} screens · ${fmt(connections)} connections · audited ${DATA.meta.audit_date}`;
                 const parts = [
                     platformSwitch('qplat'),
                     `<span class="count num">${fmt(MATCH.size)} <span class="muted">of ${fmt(total)} features</span></span>`,
@@ -3553,8 +3614,7 @@
                         ${team ? `<span class="team"${team.includes(' / ') ? ' title="Frontend team / backend team"' : ''}>${esc(team)}</span>` : ''}
                     </div></div>
                     <div class="plats">${plats}</div>
-                    <div class="covs">${covs}</div>
-                    ${f.kidCount ? rollBar(f, state.axis) : '<span class="roll"></span>'}
+                    ${state.cov ? `<div class="covs">${covs}</div>${f.kidCount ? rollBar(f, state.axis) : '<span class="roll"></span>'}` : ''}
                     ${linkCell(f)}
                     ${ctx ? '' : thumbsHtml(f)}
                 </div>`;
@@ -3595,26 +3655,29 @@
                 const head = `<div class="thead" aria-hidden="true">
                     <div>Feature <span class="muted">· ${fmt(MATCH.size)} match</span></div>
                     <div class="grp plats h-plats">${state.plat.map(p => `<span title="${PLATFORM_LABEL[p]} availability">${ICON[p]}</span>`).join('')}</div>
-                    <div class="covhead">${groups
-                        .map(
-                            g =>
-                                `<div title="${AXIS[g[0]].group === 'android' ? 'Android' : 'Desktop & web'} test coverage">${ICON[AXIS[g[0]].group === 'android' ? 'android' : 'desktop']}<span class="pair">${g
-                                    .map(
-                                        a =>
-                                            `<span title="${AXIS[a].label}">${AXIS[a].short}</span>`,
-                                    )
-                                    .join('')}</span></div>`,
-                        )
-                        .join('')}</div>
-                    <div class="h-roll" title="Distribution of ${esc(AXIS[state.axis].label)} scores in each subtree">Subtree</div>
+                    ${
+                        state.cov
+                            ? `<div class="covhead">${groups
+                                  .map(
+                                      g =>
+                                          `<div title="${AXIS[g[0]].group === 'android' ? 'Android' : 'Desktop & web'} test coverage">${ICON[AXIS[g[0]].group === 'android' ? 'android' : 'desktop']}<span class="pair">${g
+                                              .map(
+                                                  a =>
+                                                      `<span title="${AXIS[a].label}">${AXIS[a].short}</span>`,
+                                              )
+                                              .join('')}</span></div>`,
+                                  )
+                                  .join('')}</div>
+                    <div class="h-roll" title="Distribution of ${esc(AXIS[state.axis].label)} scores in each subtree">Subtree</div>`
+                            : ''
+                    }
                     <div class="h-lk" style="text-align:right" title="Connections">${ICON.link}</div>
                 </div>`;
                 const bar = `<div class="viewbar">
                     <button class="icon-btn" data-act="expand-all" title="Expand all">${ICON.plus}<span>Expand all</span></button>
                     <button class="icon-btn" data-act="collapse-all" title="Collapse all">${ICON.minus}<span>Collapse</span></button>
                     <span class="spacer"></span>
-                    ${scoreLegend()}
-                    ${axisSelect('Subtree bars', 'axis-pick')}
+                    ${state.cov ? scoreLegend() + axisSelect('Subtree bars', 'axis-pick') : ''}
                 </div>`;
                 const body = rows.length
                     ? rows.map(f => treeRow(f, focusId)).join('')
@@ -3698,6 +3761,12 @@
                     })
                     .join('');
                 const cols = 3 + state.plat.length + axes.length;
+                const areasCard = `<div class="card"><header><h2>Areas</h2><p>${state.cov ? '' : `${fmt(matched.length)} features in view · ${fmt(shotN)} with screenshots · `}Availability: solid = available, striped = conditional, outline = not available.${state.cov ? ' Cells show the mean score and the share scoring 5+.' : ''}</p></header>
+                    <div class="ovtable-wrap"><table><thead><tr><th>Area</th><th>Features</th>${state.plat.map(p => `<th>${ICON[p]} ${PLATFORM_LABEL[p]}</th>`).join('')}${axes.map(a => `<th>${AXIS[a].label}</th>`).join('')}<th>Screens</th></tr></thead><tbody>${areaRows || `<tr><td colspan="${cols}" class="muted">No areas match the filters.</td></tr>`}</tbody></table></div></div>`;
+                if (!state.cov) {
+                    $('main').innerHTML = `<div class="ov">${areasCard}</div>`;
+                    return;
+                }
                 const land = areas
                     .map(r => {
                         const all = [r, ...descendants(r)];
@@ -3722,8 +3791,7 @@
                     `<div class="viewbar">${axisSelect('Colour landscape by')}<span class="spacer"></span>${scoreLegend()}</div>
                 <div class="ov">
                     <div class="card"><header><h2>Coverage at a glance</h2><p>${fmt(matched.length)} features in view · ${fmt(shotN)} with screenshots · means exclude features that do not exist on the platform</p></header><div class="kpis">${kpis || '<div class="kpi"><div class="t">Show a platform to see its coverage.</div></div>'}</div></div>
-                    <div class="card"><header><h2>Areas</h2><p>Availability: solid = available, striped = conditional, outline = not available. Cells show the mean score and the share scoring 5+.</p></header>
-                    <div class="ovtable-wrap"><table><thead><tr><th>Area</th><th>Features</th>${state.plat.map(p => `<th>${ICON[p]} ${PLATFORM_LABEL[p]}</th>`).join('')}${axes.map(a => `<th>${AXIS[a].label}</th>`).join('')}<th>Screens</th></tr></thead><tbody>${areaRows || `<tr><td colspan="${cols}" class="muted">No areas match the filters.</td></tr>`}</tbody></table></div></div>
+                    ${areasCard}
                     <div class="card"><header><h2>Coverage landscape · ${esc(AXIS[state.axis].label)}</h2><p>One tile per feature in tree order: round = feature, square = option. Faded tiles are outside the filter. Select a tile to inspect it.</p></header>${land ? `<div class="land">${land}</div>` : '<p class="hint" style="padding:0 14px 14px">No features match.</p>'}</div>
                 </div>`;
             }
@@ -3807,10 +3875,16 @@
                         (!c.plat || state.plat.includes(c.plat)) &&
                         (!c.axis || axisVisible(c.axis)),
                 );
+            // Keep the saved coverage sort for when coverage is turned back on.
+            const tableSort = () =>
+                !state.cov && state.sort.startsWith('c:')
+                    ? { key: 'tree', dir: 1 }
+                    : { key: state.sort, dir: state.dir };
             function tableRows() {
-                const col = COLS.find(c => c.k === state.sort) || COLS[0];
+                const { key, dir } = tableSort();
+                const col = COLS.find(c => c.k === key) || COLS[0];
                 const rows = DFS.filter(f => MATCH.has(f.id));
-                if (col.k === 'tree') return state.dir === -1 ? rows.reverse() : rows;
+                if (col.k === 'tree') return dir === -1 ? rows.reverse() : rows;
                 const val = new Map(rows.map(f => [f.id, col.get(f)]));
                 return rows.sort((a, b) => {
                     const x = val.get(a.id),
@@ -3822,7 +3896,7 @@
                               ? 1
                               : -1;
                     return (
-                        (x < y ? -1 : x > y ? 1 : 0) * state.dir ||
+                        (x < y ? -1 : x > y ? 1 : 0) * dir ||
                         dfsIndex.get(a.id) - dfsIndex.get(b.id)
                     );
                 });
@@ -3830,6 +3904,7 @@
             function renderTable() {
                 const cols = visibleCols();
                 const rows = tableRows();
+                const { key, dir } = tableSort();
                 const th = cols
                     .map(c => {
                         const label = c.plat
@@ -3839,9 +3914,8 @@
                                 ' ' +
                                 AXIS[c.axis].short
                               : esc(c.label);
-                        const arrow =
-                            state.sort === c.k ? (state.dir === 1 ? ICON.up : ICON.down) : '';
-                        return `<th class="col-${c.k}" ${state.sort === c.k ? `aria-sort="${state.dir === 1 ? 'ascending' : 'descending'}"` : ''}><button class="thbtn" data-sort="${c.k}" aria-label="Sort by ${esc(c.label)}" title="Sort by ${esc(c.label)}">${label}${arrow}</button></th>`;
+                        const arrow = key === c.k ? (dir === 1 ? ICON.up : ICON.down) : '';
+                        return `<th class="col-${c.k}" ${key === c.k ? `aria-sort="${dir === 1 ? 'ascending' : 'descending'}"` : ''}><button class="thbtn" data-sort="${c.k}" aria-label="Sort by ${esc(c.label)}" title="Sort by ${esc(c.label)}">${label}${arrow}</button></th>`;
                     })
                     .join('');
                 const body = rows
@@ -3870,10 +3944,11 @@
                     })
                     .join('');
                 $('main').innerHTML =
-                    `<div class="viewbar"><span class="count num">${fmt(rows.length)} rows</span><span class="muted" style="font-size:12.5px">Features without a score on a platform sort last.</span><span class="spacer"></span><button class="icon-btn" data-act="csv">${ICON.download}<span>Export CSV</span></button></div>
+                    `<div class="viewbar"><span class="count num">${fmt(rows.length)} rows</span>${state.cov ? '<span class="muted" style="font-size:12.5px">Features without a score on a platform sort last.</span>' : ''}<span class="spacer"></span><button class="icon-btn" data-act="csv">${ICON.download}<span>Export CSV</span></button></div>
                 <div class="tablev"><table><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>`;
             }
             function exportCsv() {
+                const csvAxes = state.cov ? AXES : [];
                 const cols = [
                     'id',
                     'name',
@@ -3882,7 +3957,7 @@
                     'frontend_team',
                     'backend_team',
                     ...PLATFORMS,
-                    ...AXES.map(a => a + '_score'),
+                    ...csvAxes.map(a => a + '_score'),
                     'screenshots',
                     'connections',
                 ];
@@ -3898,7 +3973,7 @@
                             f.team,
                             f.backend_team,
                             ...PLATFORMS.map(p => f.platforms?.[p]),
-                            ...AXES.map(a => (isNA(f.coverage[a]) ? '' : f.coverage[a].score)),
+                            ...csvAxes.map(a => (isNA(f.coverage[a]) ? '' : f.coverage[a].score)),
                             screensFor(f).length,
                             linkGroups(f).size,
                         ]
@@ -4138,15 +4213,16 @@
                 const hist = f.historical_screenshot?.path
                     ? `<p class="hint">Historical repository image: <span class="mono">${esc(f.historical_screenshot.path)}</span></p>`
                     : '';
-                const all = linkGroups(f, LINK_TYPES);
+                const all = linkGroups(f, linkTypes());
                 const enabled = linkGroups(f);
                 const typeCounts = Object.fromEntries(
-                    LINK_TYPES.map(t => [
+                    linkTypes().map(t => [
                         t,
                         [...all.values()].filter(g => g.types.includes(t)).length,
                     ]),
                 );
-                const lgroups = LINK_TYPES.filter(t => state.ltypes.includes(t) && typeCounts[t])
+                const lgroups = linkTypes()
+                    .filter(t => state.ltypes.includes(t) && typeCounts[t])
                     .map(t => {
                         const items = [...enabled.values()]
                             .filter(g => g.types.includes(t))
@@ -4232,9 +4308,14 @@
                     <p class="desc">${esc(f.description)}</p>
                     <div class="dsec"><h3>${ICON.image} ${fromKids ? 'Screens from sub-features' : 'Screens'} <span class="muted num">${shots.length}</span></h3>${shotHtml}${flowHtml}${hist}</div>
                     <div class="dsec"><h3>Where to find it</h3><div class="pgrid">${plats}</div></div>
-                    <div class="dsec"><h3>Test coverage <span class="muted">· expand for gaps and tests</span></h3>${warnings.map(w => `<div class="warn">${ICON.warn}${esc(w)}</div>`).join('')}${covs || '<p class="muted">Show a platform to see its coverage.</p>'}</div>
+                    ${state.cov ? `<div class="dsec"><h3>Test coverage <span class="muted">· expand for gaps and tests</span></h3>${warnings.map(w => `<div class="warn">${ICON.warn}${esc(w)}</div>`).join('')}${covs || '<p class="muted">Show a platform to see its coverage.</p>'}</div>` : ''}
                     <div class="dsec"><h3>${ICON.link} Connections <span class="muted num">${enabled.size}</span>${enabled.size ? `<button class="link-btn r" data-act="only-linked" aria-pressed="${state.linked === f.id}">${state.linked === f.id ? 'Remove connection filter' : 'Filter to connections'}</button>` : ''}</h3>
-                        <div class="ltypes" role="group" aria-label="Connection types">${LINK_TYPES.map(t => `<button class="toggle-btn" data-ltype="${t}" aria-pressed="${state.ltypes.includes(t)}" ${typeCounts[t] || state.ltypes.includes(t) ? '' : 'disabled'} title="${esc(LINK[t].desc)}"><span class="ldot ${t}"></span>${LINK[t].label} <span class="num muted">${typeCounts[t]}</span></button>`).join('')}</div>
+                        <div class="ltypes" role="group" aria-label="Connection types">${linkTypes()
+                            .map(
+                                t =>
+                                    `<button class="toggle-btn" data-ltype="${t}" aria-pressed="${state.ltypes.includes(t)}" ${typeCounts[t] || state.ltypes.includes(t) ? '' : 'disabled'} title="${esc(LINK[t].desc)}"><span class="ldot ${t}"></span>${LINK[t].label} <span class="num muted">${typeCounts[t]}</span></button>`,
+                            )
+                            .join('')}</div>
                         ${enabled.size ? egoGraph(f, enabled, detailWidth) + lgroups : '<p class="muted" style="margin:0 0 8px">No connections of the selected types.</p>'}
                     </div>
                     ${childHtml}
@@ -4245,7 +4326,7 @@
                         ${errata ? `<details class="more"><summary>Other screenshot errata (${(f.errata || []).filter(e => !obsIds.has(e.observation_id)).length})</summary><ul>${errata}</ul></details>` : ''}
                         ${variants ? `<details class="more"><summary>Platform source records (${f.variants.length})</summary><ul>${variants}</ul></details>` : ''}
                         ${evid.length ? `<details class="more"><summary>Implementation evidence (${evid.length})</summary>${evidenceList(evid)}</details>` : ''}
-                        ${evidT.length ? `<details class="more"><summary>Test scenario references (${evidT.length})</summary>${evidenceList(evidT)}</details>` : ''}
+                        ${state.cov && evidT.length ? `<details class="more"><summary>Test scenario references (${evidT.length})</summary>${evidenceList(evidT)}</details>` : ''}
                         ${f.platform_notes && !GENERIC_NOTES.test(f.platform_notes) ? `<p class="hint">${esc(f.platform_notes)}</p>` : ''}
                     </div>
                 </div>`;
@@ -4380,9 +4461,8 @@
             function showTip(t) {
                 tipTarget = t;
                 const html = t ? tipContent(t) : '';
-                if (!html) return tip.classList.remove('on');
                 tip.innerHTML = html;
-                tip.classList.add('on');
+                tip.classList.toggle('on', !!html);
             }
             document.addEventListener('mouseover', e => {
                 const t = e.target.closest(TIP_SEL);
@@ -4497,14 +4577,16 @@
             });
 
             /* ---------- help ---------- */
-            function openHelp() {
+            function renderHelp() {
                 const h = $('help');
                 const r = Object.entries(DATA.rubric?.scale || {}).sort(
                     ([a], [b]) => parseInt(a, 10) - parseInt(b, 10),
                 );
                 h.innerHTML = `<div style="max-width:760px;margin:6vh auto;background:var(--panel);border-radius:12px;padding:22px 24px;box-shadow:var(--shadow);max-height:86vh;overflow:auto">
                     <div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:17px">How to read the map</h2><button class="icon-btn" data-act="help-close" aria-label="Close">${ICON.x}</button></div>
-                    <h3 style="font-size:13px;margin:18px 0 8px">Test-coverage scores (0–10)</h3>
+                    ${
+                        state.cov
+                            ? `<h3 style="font-size:13px;margin:18px 0 8px">Test-coverage scores (0–10)</h3>
                     <dl class="kv" style="grid-template-columns:60px 1fr">${r
                         .map(
                             ([k, v]) =>
@@ -4513,14 +4595,21 @@
                         .join(
                             '',
                         )}<dt><span class="sc na">–</span></dt><dd>The feature does not exist on that platform.</dd><dt><span class="sc un">?</span></dt><dd>Not assessed.</dd></dl>
-                    <p class="hint">Scores rate written test verification (automated E2E and manual procedures), not current pass rates. Android axes exclude iOS-only tests. Columns: Desktop E2E, Desktop manual, Android E2E, Android manual.</p>
+                    <p class="hint">Scores rate written test verification (automated E2E and manual procedures), not current pass rates. Android axes exclude iOS-only tests. Columns: Desktop E2E, Desktop manual, Android E2E, Android manual.</p>`
+                            : ''
+                    }
                     <h3 style="font-size:13px;margin:18px 0 8px">Availability</h3>
                     <div class="legend"><span class="item">${avGlyph('yes')} Available</span><span class="item">${avGlyph('conditional')} Conditional (device, OS, network, account, provider, firmware or flag)</span><span class="item">${avGlyph('no')} Not available</span><span class="item">${avGlyph('unknown')} Unknown</span></div>
                     <h3 style="font-size:13px;margin:18px 0 8px">Connections</h3>
-                    <dl class="kv" style="grid-template-columns:150px 1fr">${LINK_TYPES.map(t => `<dt><span class="ldot ${t}"></span> ${LINK[t].label}</dt><dd>${esc(LINK[t].desc)}</dd>`).join('')}</dl>
+                    <dl class="kv" style="grid-template-columns:150px 1fr">${linkTypes()
+                        .map(
+                            t =>
+                                `<dt><span class="ldot ${t}"></span> ${LINK[t].label}</dt><dd>${esc(LINK[t].desc)}</dd>`,
+                        )
+                        .join('')}</dl>
                     <p class="hint">With a feature selected, coloured dots in the tree mark connected rows; “+N” on a collapsed row counts connections inside it. On the map, connections are drawn as coloured curves and outlines; a dashed grey curve points to a collapsed branch that contains connected features.</p>
                     <h3 style="font-size:13px;margin:18px 0 8px">Map</h3>
-                    <p class="hint" style="margin-top:0">Drag to pan, scroll or pinch to zoom, double-click empty space to zoom in. Click a node to select it and click it again (or its round button) to expand or collapse it. The stripe on each node, and the whole node when zoomed out, shows the score of the axis chosen in “Colour by”. The overview in the corner shows where you are; click or drag in it to move.</p>
+                    <p class="hint" style="margin-top:0">Drag to pan, scroll or pinch to zoom, double-click empty space to zoom in. Click a node to select it and click it again (or its round button) to expand or collapse it.${state.cov ? ' The stripe on each node, and the whole node when zoomed out, shows the score of the axis chosen in “Colour by”.' : ''} The overview in the corner shows where you are; click or drag in it to move.</p>
                     <h3 style="font-size:13px;margin:18px 0 8px">Keyboard</h3>
                     <dl class="kv" style="grid-template-columns:170px 1fr">
                         <dt><kbd>/</kbd></dt><dd>Search</dd>
@@ -4532,8 +4621,13 @@
                         <dt><kbd>Esc</kbd></dt><dd>Close dialog, drawer or detail</dd>
                     </dl>
                     <p class="hint">The URL keeps the view, filters and selected feature; Back and Forward move between views and selections.</p>
-                    <p class="hint">${esc(DATA.meta.verification || '')} Commit ${esc(DATA.meta.commit)} · audited ${esc(DATA.meta.audit_date)}.</p></div>`;
-                h.showModal();
+                    <p class="hint">${state.cov && DATA.meta.verification ? esc(DATA.meta.verification) + ' ' : ''}Commit ${esc(DATA.meta.commit)} · audited ${esc(DATA.meta.audit_date)}.</p></div>`;
+                if (h.open)
+                    h.querySelector('[data-act="help-close"]').focus({ preventScroll: true });
+            }
+            function openHelp() {
+                renderHelp();
+                $('help').showModal();
             }
             $('help').addEventListener('click', e => {
                 if (e.target === e.currentTarget || e.target.closest('[data-act="help-close"]'))
@@ -4685,7 +4779,13 @@
                 const open = ks.length > 0 && expanded.has(f.id);
                 const ctx = CONTEXT.has(f.id);
                 const c = f.coverage[state.axis];
-                const b = !c || c.score == null ? 'mun' : isNA(c) ? 'mna' : 'mb' + bucket(c.score);
+                const b = !state.cov
+                    ? 'mnc'
+                    : !c || c.score == null
+                      ? 'mun'
+                      : isNA(c)
+                        ? 'mna'
+                        : 'mb' + bucket(c.score);
                 const sel = state.sel === f.id;
                 const plats = state.plat
                     .map(
@@ -4699,9 +4799,9 @@
                 const covs = groups
                     .map(g => `<span class="pair">${g.map(a => scoreCell(f, a)).join('')}</span>`)
                     .join('');
-                return `<div class="mnode ${n.side > 0 ? 'r' : 'l'} ${b}${f.level === 'area' ? ' area' : ''}${sel ? ' sel' : ''}${ctx ? ' ctx' : ''}" role="treeitem" aria-level="${f.depth + 1}" aria-selected="${sel}"${ks.length ? ` aria-expanded="${open}"` : ''} aria-label="${esc(f.name)}${ctx ? ' (context)' : ''}, ${AXIS[state.axis].label} ${scoreText(c)}" tabindex="${focusId === f.id ? 0 : -1}" data-id="${esc(f.id)}" style="left:${n.x}px;top:${n.y}px;width:${n.w}px;height:${n.h}px">
+                return `<div class="mnode ${n.side > 0 ? 'r' : 'l'} ${b}${f.level === 'area' ? ' area' : ''}${sel ? ' sel' : ''}${ctx ? ' ctx' : ''}" role="treeitem" aria-level="${f.depth + 1}" aria-selected="${sel}"${ks.length ? ` aria-expanded="${open}"` : ''} aria-label="${esc(f.name)}${ctx ? ' (context)' : ''}${state.cov ? `, ${AXIS[state.axis].label} ${scoreText(c)}` : ''}" tabindex="${focusId === f.id ? 0 : -1}" data-id="${esc(f.id)}" style="left:${n.x}px;top:${n.y}px;width:${n.w}px;height:${n.h}px">
                     <div class="mn-name"><span class="label" data-tip-feature="${esc(f.id)}">${hl(f.name)}</span>${f.scope === 'internal-reference' ? '<span class="tag">internal</span>' : ''}</div>
-                    <div class="mn-meta"><span class="plats">${plats}</span><span class="covs">${covs}</span>${linkCell(f)}</div>
+                    <div class="mn-meta"><span class="plats">${plats}</span>${state.cov ? `<span class="covs">${covs}</span>` : ''}${linkCell(f)}</div>
                     ${mapThumbs(f)}
                     ${ks.length ? `<button class="mtog" data-toggle="${esc(f.id)}" tabindex="-1" aria-hidden="true" title="${open ? 'Collapse' : 'Expand'} ${ks.length} sub-feature${ks.length === 1 ? '' : 's'}">${open ? ICON.minus : ks.length}</button>` : ''}
                 </div>`;
@@ -4758,7 +4858,7 @@
                     .map(([id, n]) => {
                         const c = byId.get(id).coverage[state.axis];
                         const fill =
-                            !c || c.score == null || isNA(c)
+                            !state.cov || !c || c.score == null || isNA(c)
                                 ? 'var(--line-strong)'
                                 : BUCKET_COLOR[bucket(c.score)];
                         return `<rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="8" fill="${fill}" data-n="${esc(id)}"${id === state.sel ? ' class="sel"' : ''}/>`;
@@ -4787,8 +4887,7 @@
                         )
                         .join('')}</span>
                     <span class="spacer"></span>
-                    ${scoreLegend()}
-                    ${axisSelect('Colour by')}
+                    ${state.cov ? scoreLegend() + axisSelect('Colour by') : ''}
                 </div>`;
                 const total = F.length;
                 const stage = nodes.length
@@ -5371,13 +5470,20 @@
             }
             function update(opts = {}) {
                 keepFocus(() => {
-                    if (!visibleAxes().includes(state.axis))
+                    const coverageOff = !state.cov;
+                    const coverageChanged =
+                        coverageOff !== document.body.classList.contains('cov-off');
+                    document.body.classList.toggle('cov-off', coverageOff);
+                    $('covBtn').setAttribute('aria-pressed', String(state.cov));
+                    if (coverageOff) showTip(null);
+                    if (state.cov && !visibleAxes().includes(state.axis))
                         state.axis = visibleAxes()[0] || 'desktop_automated';
                     compute();
                     renderStatus();
                     if (opts.filters !== false) renderFilters();
                     renderView();
                     renderDetail();
+                    if (coverageChanged && $('help').open) renderHelp();
                     writeHash(lastHist.view !== state.view);
                 });
             }
@@ -5392,6 +5498,7 @@
                         ltypes: state.ltypes,
                         sort: state.sort,
                         dir: state.dir,
+                        cov: state.cov,
                     };
                     Object.assign(state, structuredClone(DEFAULT), keep);
                 } else state[key] = structuredClone(DEFAULT[key]);
@@ -5548,11 +5655,14 @@
                 if (mapBtn) return mapCommand(mapBtn.dataset.map);
                 const sort = t.closest('[data-sort]');
                 if (sort) {
-                    if (state.sort === sort.dataset.sort) state.dir *= -1;
-                    else {
-                        state.sort = sort.dataset.sort;
-                        state.dir = /^c:|^shots$|^links$|^p:/.test(sort.dataset.sort) ? -1 : 1;
-                    }
+                    const { key, dir } = tableSort();
+                    state.sort = sort.dataset.sort;
+                    state.dir =
+                        state.sort === key
+                            ? -dir
+                            : /^c:|^shots$|^links$|^p:/.test(state.sort)
+                              ? -1
+                              : 1;
                     return update({ filters: false });
                 }
                 const item = t.closest('[data-id]');
@@ -5736,6 +5846,10 @@
                 } else if (e.key === '?') openHelp();
             });
             $('helpBtn').addEventListener('click', openHelp);
+            $('covBtn').addEventListener('click', () => {
+                state.cov = !state.cov;
+                update({ filters: false });
+            });
             $('themeBtn').addEventListener('click', () => {
                 const cur =
                     document.documentElement.dataset.theme ||
@@ -5764,8 +5878,6 @@
             const savedTheme = load('theme');
             if (savedTheme === 'light' || savedTheme === 'dark')
                 document.documentElement.dataset.theme = savedTheme;
-            $('sub').textContent =
-                `${fmt(F.length)} features in ${ROOTS.length} areas · ${fmt(VARIANTS.size)} screens · ${fmt(DATA.links.length)} connections · audited ${DATA.meta.audit_date}`;
             Object.assign(state, readHash());
             if (state.sel) reveal(state.sel);
             update();

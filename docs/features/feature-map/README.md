@@ -36,6 +36,8 @@ For a readable complete diagram, show areas first, expand a selected branch and 
 
 Open [explorer.html](./explorer.html) in a browser. It embeds the data, loads screenshots from `runtime/screenshots` and needs no network access.
 
+Test coverage is hidden by default to keep the views simple. The **E2E coverage** switch in the toolbar shows it in every view: the scores (automated E2E and manual), subtree distributions, the coverage overview and landscape, score colours on the map, the detail panel's coverage and test references, the _Shared test_ connections and the score columns in the CSV export. The switch is kept in the URL (`cov=1`). The descriptions below assume it is on.
+
 - **Tree** shows the hierarchy. Each row has platform availability, four coverage scores, a subtree score distribution, connection count and screenshot thumbnails. Filtering keeps non-matching ancestors as dimmed context and expands branches with matches.
 - **Overview** shows mean scores and score distributions per coverage axis, an area table, and a landscape with one tile per feature, colored by a selected axis.
 - **Screens** lists runtime screenshots for the filtered features, grouped by area. Each screenshot links to the features it shows. When a mobile screen was captured on several iPhone simulators, _iPhone model_ in the Display filters picks the capture shown in every view (iPhone 18 Pro by default), falling back to another model where the chosen one has no capture. The screenshot viewer switches models for the open screen.
