@@ -22,7 +22,13 @@ export const getSessionNetworks = (session: WalletConnectSession) => {
 
     Object.entries(session.namespaces).forEach(([namespaceId, namespace]) =>
         namespace?.chains?.forEach(chain => {
-            const supported = networksCollection.find(nc => chain === nc.caipId);
+            // The ethereum adapter builds eip155 chains from chainId, also for networks without
+            // a caipId, such as Ethereum Classic and the testnets.
+            const supported = networksCollection.find(nc =>
+                nc.networkType === 'ethereum'
+                    ? chain === `eip155:${nc.chainId}`
+                    : chain === nc.caipId,
+            );
             if (supported) {
                 networks.push({
                     namespaceId,
