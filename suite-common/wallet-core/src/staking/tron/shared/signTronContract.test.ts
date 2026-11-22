@@ -61,3 +61,18 @@ it.each([
         error: expected ? { kind: 'cancelled' } : { kind: 'sign-failed', message },
     });
 });
+
+it.each(['blockchainGetInfo', 'tronComposeTransaction', 'tronSignTransaction'] as const)(
+    'returns a safe error if %s rejects while preparing the transaction',
+    async method => {
+        jest.spyOn(TrezorConnect, method).mockRejectedValueOnce(new Error('Backend account data'));
+
+        await expect(
+            signTronContract({
+                account,
+                device,
+                contract: { type: 'UnfreezeBalanceV2Contract', parameter: { value: {} } } as never,
+            }),
+        ).resolves.toEqual({ error: { kind: 'sign-failed' } });
+    },
+);

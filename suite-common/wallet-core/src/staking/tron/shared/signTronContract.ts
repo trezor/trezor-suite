@@ -27,7 +27,7 @@ type SignTronContractParams = {
     contract: TronStakeContract;
 };
 
-export const signTronContract = async ({
+const prepareAndSignTronContract = async ({
     account,
     device,
     contract,
@@ -87,3 +87,6 @@ export const signTronContract = async ({
         txid: tronUtils.tronTxIdFromRawData(signed.payload.rawDataHex),
     };
 };
+
+export const signTronContract = (params: SignTronContractParams): Promise<SignTronContractResult> =>
+    prepareAndSignTronContract(params).catch(() => ({ error: { kind: 'sign-failed' } }));
