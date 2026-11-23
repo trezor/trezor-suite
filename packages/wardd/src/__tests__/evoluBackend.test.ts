@@ -3,6 +3,10 @@
  * twice is one row, and the WARD owner is its own -- not Suite's, and not another wallet's.
  */
 import { randomBytes } from '@noble/hashes/utils.js';
+import { promises as fs } from 'fs';
+import { DatabaseSync } from 'node:sqlite';
+import os from 'os';
+import path from 'path';
 
 import { toHex } from '@trezor/ward-core';
 
@@ -47,22 +51,45 @@ const attestation = (toCounter: number): StoredAttestation => ({
 
 describe('EvoluWardBackend', () => {
     it('stores a link whole, once', async () => {
-        const backend = await EvoluWardBackend.open({
-            wardId: randomBytes(32),
-            evoluNode: toHex(randomBytes(64)),
-            dataDir: null,
-        });
+        const dataDir = await fs.mkdtemp(path.join(os.tmpdir(), 'ward-history-'));
         try {
-            const one = link(1);
-            const two = link(2);
-            await backend.append(one);
-            await backend.append(two);
-            await backend.append(one);
-            const loaded = await backend.load();
-            expect(loaded).toHaveLength(2);
-            expect(loaded).toEqual(expect.arrayContaining([one, two]));
+            const backend = await EvoluWardBackend.open({
+                wardId: randomBytes(32),
+                evoluNode: toHex(randomBytes(64)),
+                dataDir,
+            });
+            try {
+                const one = link(1);
+                const two = link(2);
+                await Promise.all([backend.append(one), backend.append(one)]);
+                await backend.append(two);
+                await backend.append(one);
+                const repaired = { ...one, changes: [] };
+                await backend.append(repaired);
+                await backend.append(repaired);
+                const loaded = await backend.load();
+                expect(loaded).toHaveLength(2);
+                expect(loaded).toEqual(expect.arrayContaining([repaired, two]));
+            } finally {
+                await backend.close();
+            }
+            const files = await fs.readdir(dataDir);
+            const file = files.find(name => name.endsWith('.db') || name.endsWith('.sqlite'));
+            expect(file).toBeDefined();
+            const db = new DatabaseSync(path.join(dataDir, file!), { readOnly: true });
+            try {
+                const row = db
+                    .prepare(
+                        `select count(*) as copies from evolu_history
+                        where "table" = 'wardLink' and "column" = 'body'`,
+                    )
+                    .get();
+                expect(row).toEqual({ copies: 3 });
+            } finally {
+                db.close();
+            }
         } finally {
-            await backend.close();
+            await fs.rm(dataDir, { recursive: true, force: true });
         }
     });
 
@@ -76,8 +103,13 @@ describe('EvoluWardBackend', () => {
             const one = attestation(1);
             await backend.appendAttestation(one);
             await backend.appendAttestation(one);
+            const revisited = { ...one, toHeadNonce: toHex(randomBytes(32)) };
+            await backend.appendAttestation(revisited);
             await backend.append(link(1));
-            expect(await backend.loadAttestations()).toEqual([one]);
+            expect(await backend.loadAttestations()).toHaveLength(2);
+            expect(await backend.loadAttestations()).toEqual(
+                expect.arrayContaining([one, revisited]),
+            );
             expect(await backend.load()).toHaveLength(1);
         } finally {
             await backend.close();

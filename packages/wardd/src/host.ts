@@ -10,6 +10,8 @@
  * ONE CALL AT A TIME per wallet: a conversation reads the replica, the device answers against it,
  * and a write lands on top of it -- interleaving two would serve one a tree the other just moved.
  */
+import { ed25519 } from '@noble/curves/ed25519.js';
+
 import {
     type Attestation,
     EMPTY_ROOT,
@@ -24,6 +26,7 @@ import {
     WmConflict,
     WmUnavailable,
     applyResult as applyToTrie,
+    attestationPreimage,
     equalBytes,
     leafFromWire,
     leafIsDelete,
@@ -76,6 +79,8 @@ const rootOf = (v: string | null | undefined): Uint8Array | null => {
 
 const sameRoot = (a: Uint8Array | null, b: Uint8Array | null) =>
     equalBytes(a ?? EMPTY_ROOT, b ?? EMPTY_ROOT);
+
+const isCounter = (n: number) => Number.isInteger(n) && n >= 0 && n <= 0xffffffff;
 
 /** Bytes to the wire, leaving the field out when it is absent -- never `null`. */
 const opt = (key: string, v: Uint8Array | null | undefined): Json =>
@@ -272,11 +277,21 @@ export class WardHost {
      * its `to` end; the latest such attestation if there are several.
      */
     private newestAttested(trie: WardTrie, head: Head, kept: StoredAttestation[]) {
-        const byHead = new Map<string, StoredAttestation>();
+        const byHead = new Map<string, StoredAttestation[]>();
+        const empty = toHex(EMPTY_ROOT);
         for (const a of kept) {
-            const key = `${a.toCounter}/${toHex(rootOf(a.toRoot) ?? EMPTY_ROOT)}`;
-            const held = byHead.get(key);
-            if (!held || held.timestamp < a.timestamp) byHead.set(key, a);
+            if (
+                !a ||
+                !isCounter(a.toCounter) ||
+                !Number.isSafeInteger(a.timestamp) ||
+                (a.toRoot !== null && typeof a.toRoot !== 'string')
+            ) {
+                continue;
+            }
+            const key = `${a.toCounter}/${a.toRoot?.toLowerCase() || empty}`;
+            const proofs = byHead.get(key);
+            if (proofs) proofs.push(a);
+            else byHead.set(key, [a]);
         }
         const line: Head[] = [
             head,
@@ -285,11 +300,54 @@ export class WardHost {
                 .map(l => ({ counter: l.fromCounter, root: l.fromRoot })),
         ];
         for (const at of line) {
-            const attestation = byHead.get(`${at.counter}/${toHex(at.root ?? EMPTY_ROOT)}`);
+            const proofs = byHead.get(`${at.counter}/${toHex(at.root ?? EMPTY_ROOT)}`);
+            const attestation = proofs
+                ?.sort((a, b) => b.timestamp - a.timestamp)
+                .find(a => this.verifiesAttestation(a));
             if (attestation) return { at, attestation };
         }
 
         return null;
+    }
+
+    private verifiesAttestation(a: StoredAttestation): boolean {
+        if (
+            !this.wm ||
+            !isCounter(a.fromCounter) ||
+            !isCounter(a.toCounter) ||
+            !Number.isSafeInteger(a.timestamp) ||
+            a.timestamp < 0
+        ) {
+            return false;
+        }
+        try {
+            const nonce = toBytes(a.nonce);
+            const body = {
+                ...a,
+                fromRoot: rootOf(a.fromRoot) ?? EMPTY_ROOT,
+                toRoot: rootOf(a.toRoot) ?? EMPTY_ROOT,
+                fromHeadNonce: toBytes(a.fromHeadNonce),
+                toHeadNonce: toBytes(a.toHeadNonce),
+            };
+            const widths = [
+                nonce,
+                body.fromRoot,
+                body.toRoot,
+                body.fromHeadNonce,
+                body.toHeadNonce,
+            ];
+
+            return (
+                widths.every(field => field instanceof Uint8Array && field.length === 32) &&
+                ed25519.verify(
+                    toBytes(a.signature),
+                    attestationPreimage(nonce, this.wardId, body),
+                    this.wm.pubkey,
+                )
+            );
+        } catch {
+            return false;
+        }
     }
 
     /**
@@ -298,7 +356,7 @@ export class WardHost {
      */
     private async keepAttestation(att: Attestation, nonce: Uint8Array) {
         try {
-            await this.backend.appendAttestation({
+            const proof = {
                 fromCounter: att.fromCounter,
                 fromRoot: hexOrNull(rootOf(toHex(att.fromRoot))),
                 fromHeadNonce: toHex(att.fromHeadNonce),
@@ -308,7 +366,16 @@ export class WardHost {
                 timestamp: att.timestamp,
                 nonce: toHex(nonce),
                 signature: toHex(att.signature),
-            });
+            };
+            const kept = await this.backend.loadAttestations();
+            if (
+                kept.some(a => a?.toHeadNonce === proof.toHeadNonce && this.verifiesAttestation(a))
+            ) {
+                return;
+            }
+            if (this.verifiesAttestation(proof)) {
+                await this.backend.appendAttestation(proof);
+            }
         } catch (e) {
             this.log?.(`replica: could not keep the WM's attestation: ${String(e)}`);
         }

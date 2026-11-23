@@ -10,13 +10,7 @@ import { promises as fs } from 'fs';
 
 import { type DevWmSnapshot } from '@trezor/ward-core';
 
-import {
-    type StoredAttestation,
-    type StoredLink,
-    type WardBackend,
-    attestationId,
-    linkId,
-} from '../backend';
+import { type StoredAttestation, type StoredLink, type WardBackend, linkId } from '../backend';
 
 interface State {
     wardId: string | null;
@@ -82,20 +76,24 @@ export class ServiceStateFile implements WardBackend {
 
     async appendAttestation(attestation: StoredAttestation): Promise<void> {
         const held = this.state.attestations ?? [];
-        const id = attestationId(attestation);
-        if (!held.some(a => attestationId(a) === id)) {
-            this.state.attestations = [...held, { ...attestation }];
-            await this.save();
-        }
+        const state = {
+            ...this.state,
+            attestations: [
+                ...held.filter(a => a.toHeadNonce !== attestation.toHeadNonce),
+                { ...attestation },
+            ],
+        };
+        await this.save(state);
+        this.state = state;
     }
 
     close(): Promise<void> {
         return Promise.resolve();
     }
 
-    private async save() {
+    private async save(state = this.state) {
         if (!this.path) return;
-        await fs.writeFile(`${this.path}.tmp`, JSON.stringify(this.state));
+        await fs.writeFile(`${this.path}.tmp`, JSON.stringify(state));
         await fs.rename(`${this.path}.tmp`, this.path);
     }
 }

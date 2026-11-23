@@ -100,8 +100,7 @@ const WardLinkId = id('WardLinkId');
 const WardAttestationId = id('WardAttestationId');
 
 /**
- * One row per transition, and one per WM attestation kept; `body` is the whole `StoredLink` or
- * `StoredAttestation`, written once and never updated.
+ * One row per transition and one cached proof per WM head occurrence. Each body is written whole.
  */
 export const WardSchema = {
     wardLink: {
@@ -251,6 +250,8 @@ export interface EvoluBackendOptions {
 const DEFAULT_APPEND_TIMEOUT_MS = 30_000;
 
 export class EvoluWardBackend implements WardBackend {
+    private readonly pending = new Map<string, { body: string; done: Promise<void> }>();
+
     private constructor(
         private readonly evolu: Evolu<typeof WardSchema>,
         private readonly wardId: string,
@@ -315,24 +316,7 @@ export class EvoluWardBackend implements WardBackend {
     }
 
     append(link: StoredLink): Promise<void> {
-        // ONE MUTATION: Evolu applies a microtask's mutations in one SQLite transaction, and this
-        // is the only one -- the whole transition, batch included, or nothing. SETTLED either way:
-        // a failure Evolu reports, or none at all, rejects rather than hanging (see `settled`).
-        return settled(
-            done => {
-                this.evolu.upsert(
-                    'wardLink',
-                    {
-                        id: createIdFromString(linkId(link)),
-                        wardId: this.wardId,
-                        toCounter: getOrThrow(NonNegativeInt.from(link.toCounter)),
-                        body: JSON.stringify(link),
-                    },
-                    { onComplete: done },
-                );
-            },
-            { errors: this.errors, timeoutMs: this.appendTimeoutMs },
-        );
+        return this.appendRow('wardLink', linkId(link), link.toCounter, JSON.stringify(link));
     }
 
     loadAttestations(): Promise<StoredAttestation[]> {
@@ -340,26 +324,73 @@ export class EvoluWardBackend implements WardBackend {
             this.evolu
                 .getQueryRows(this.attestationQuery)
                 .filter(row => !row.isDeleted && typeof row.body === 'string')
-                .map(row => JSON.parse(row.body as string) as StoredAttestation),
+                .flatMap(row => {
+                    try {
+                        return [JSON.parse(row.body as string) as StoredAttestation];
+                    } catch {
+                        return [];
+                    }
+                }),
         );
     }
 
     appendAttestation(attestation: StoredAttestation): Promise<void> {
-        return settled(
-            done => {
-                this.evolu.upsert(
-                    'wardAttestation',
-                    {
-                        id: createIdFromString(attestationId(attestation)),
-                        wardId: this.wardId,
-                        toCounter: getOrThrow(NonNegativeInt.from(attestation.toCounter)),
-                        body: JSON.stringify(attestation),
-                    },
-                    { onComplete: done },
-                );
-            },
-            { errors: this.errors, timeoutMs: this.appendTimeoutMs },
+        return this.appendRow(
+            'wardAttestation',
+            attestationId(attestation),
+            attestation.toCounter,
+            JSON.stringify(attestation),
         );
+    }
+
+    private appendRow(
+        table: 'wardLink' | 'wardAttestation',
+        rowKey: string,
+        toCounter: number,
+        body: string,
+    ): Promise<void> {
+        const rowId =
+            table === 'wardLink'
+                ? createIdFromString<'WardLinkId'>(rowKey)
+                : createIdFromString<'WardAttestationId'>(rowKey);
+        const key = `${table}/${rowId}`;
+        const previous = this.pending.get(key);
+        if (previous?.body === body) return previous.done;
+
+        const write = () => {
+            const query = table === 'wardLink' ? this.query : this.attestationQuery;
+            // Evolu records a new history entry for every upsert. Compare the whole row so an
+            // identical append is free and a changed body can repair a damaged row.
+            const held = this.evolu.getQueryRows(query).find(row => row.id === rowId);
+            if (held && !held.isDeleted && held.toCounter === toCounter && held.body === body) {
+                return Promise.resolve();
+            }
+
+            return settled(
+                done => {
+                    this.evolu.upsert(
+                        table,
+                        {
+                            id: rowId,
+                            wardId: this.wardId,
+                            toCounter: getOrThrow(NonNegativeInt.from(toCounter)),
+                            body,
+                            ...(held?.isDeleted ? { isDeleted: 0 as const } : {}),
+                        },
+                        { onComplete: done },
+                    );
+                },
+                { errors: this.errors, timeoutMs: this.appendTimeoutMs },
+            );
+        };
+        const done = (
+            previous ? previous.done.then(write, write) : Promise.resolve().then(write)
+        ).finally(() => {
+            if (this.pending.get(key)?.done === done) this.pending.delete(key);
+        });
+        this.pending.set(key, { body, done });
+
+        return done;
     }
 
     async close(): Promise<void> {

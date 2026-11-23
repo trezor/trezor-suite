@@ -60,8 +60,8 @@ export const linkId = (link: StoredLink): string =>
  * A WM attestation this host relayed, kept with the round nonce it was signed over: proof that the
  * WM held `to` at `timestamp`. While the WM is down, `catchUp` names the newest head on the
  * replica's chain that one of these vouches for, and the device verifies the signature itself.
- * Append-only like the links, and replicated with them, so a host that never talked to the WM can
- * catch a device up too.
+ * Hosts keep one verified proof per head occurrence and replicate it with the links, so a host
+ * that never talked to the WM can catch a device up too.
  */
 export interface StoredAttestation {
     fromCounter: number;
@@ -79,9 +79,9 @@ export interface StoredAttestation {
     signature: string;
 }
 
-/** An attestation's identity: its signature, which covers every other field. */
+/** The WM assigns each head occurrence a nonce, shared by all attestations of that occurrence. */
 export const attestationId = (a: StoredAttestation): string =>
-    toHex(sha256(toBytes(a.signature))).slice(0, 32);
+    toHex(sha256(toBytes(a.toHeadNonce))).slice(0, 32);
 
 export interface WardBackend {
     /** Every link this replica holds, in the order they were appended where known. */
@@ -90,7 +90,7 @@ export interface WardBackend {
     append(link: StoredLink): Promise<void>;
     /** Every WM attestation this replica holds. */
     loadAttestations(): Promise<StoredAttestation[]>;
-    /** Persist one attestation; storing one already held is a no-op. */
+    /** Persist a verified attestation under its head occurrence. */
     appendAttestation(attestation: StoredAttestation): Promise<void>;
     close(): Promise<void>;
 }
