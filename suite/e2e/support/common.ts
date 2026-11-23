@@ -4,6 +4,7 @@ import { readdirSync } from 'node:fs';
 import path from 'node:path';
 
 import { formatCompactCryptoAmount, isMoneyLikeToken } from '@suite-common/formatters';
+// eslint-disable-next-line local-rules/no-package-deep-imports -- the fixture is not part of the package entry point
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
 import { getAccountDecimals } from '@suite-common/wallet-utils';
 import { BigNumber, localizeNumber, splitStringEveryNCharacters } from '@trezor/utils';

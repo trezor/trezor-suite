@@ -1,5 +1,6 @@
 import * as semver from 'semver';
 
+// eslint-disable-next-line local-rules/no-package-deep-imports -- standalone pre-app bundle; the package entry point would bundle all of suite-utils
 import {
     getBrowserName,
     getBrowserVersion,

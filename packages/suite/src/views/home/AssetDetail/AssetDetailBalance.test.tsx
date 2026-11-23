@@ -14,14 +14,13 @@ import { AssetDetailBalance } from './AssetDetailBalance';
 import { ETH, ETH_ASSET_KEY, getEthAssetState } from './assetDetailTestState';
 import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
 
+type AssetDetailAccountsModalProps = {
+    assetKey: WalletAssetKey;
+    onClose: () => void;
+};
+
 jest.mock('./AssetDetailModals/AssetDetailAccountsModal', () => ({
-    AssetDetailAccountsModal: ({
-        assetKey,
-        onClose,
-    }: {
-        assetKey: WalletAssetKey;
-        onClose: () => void;
-    }) => (
+    AssetDetailAccountsModal: ({ assetKey, onClose }: AssetDetailAccountsModalProps) => (
         <button type="button" data-testid="@asset-detail/accounts" onClick={onClose}>
             {assetKey}
         </button>

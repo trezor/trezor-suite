@@ -1,10 +1,15 @@
-import { TOR_CONTROLLER_STATUS, TorController } from '@trezor/request-manager';
-import { type TorConnectionOptions } from '@trezor/request-manager/src/types';
+import {
+    TOR_CONTROLLER_STATUS,
+    type TorConnectionOptions,
+    TorController,
+} from '@trezor/request-manager';
 
 import { BaseProcess, type Status } from './BaseProcess';
 import type { ILogger } from '../logger';
 
 export type TorProcessStatus = Status;
+
+type TorProcessParams = { options: TorConnectionOptions; logger: ILogger };
 
 export class TorProcess extends BaseProcess {
     torController: TorController;
@@ -13,7 +18,7 @@ export class TorProcess extends BaseProcess {
     torHost: string;
     torDataDir: string;
 
-    constructor({ options, logger }: { options: TorConnectionOptions; logger: ILogger }) {
+    constructor({ options, logger }: TorProcessParams) {
         super({
             resourceName: 'tor',
             processName: 'tor',

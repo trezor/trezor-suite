@@ -1,5 +1,4 @@
-import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
-import { BackendType } from '@trezor/e2e-utils/src/mocks/backendServer';
+import { type BackendType, BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
 import { step } from '../common';
 import {

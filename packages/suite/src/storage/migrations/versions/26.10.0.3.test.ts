@@ -16,7 +16,9 @@ const runMigration = () =>
         },
     });
 
-const createDB = async ({ withTokenManagement }: { withTokenManagement: boolean }) => {
+type CreateDBParams = { withTokenManagement: boolean };
+
+const createDB = async ({ withTokenManagement }: CreateDBParams) => {
     const db = await openDB<SuiteDBSchema>(DB_NAME, INITIAL_VERSION, {
         upgrade(upgradeDb) {
             upgradeDb.createObjectStore('walletSettings');

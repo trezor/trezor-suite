@@ -174,6 +174,7 @@ export type FetchAndUpdateAccountThunkState = AccountsRootState &
     StellarContractTokensRootState &
     TokenDefinitionsRootState &
     TransactionsRootState &
+    // eslint-disable-next-line local-rules/no-unused-intersection-members -- TODO: dependents (e.g. native send and earn) read wallet settings through this exported contract; declare it there first
     WalletSettingsRootState;
 
 export type FetchAndUpdateAccountThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;

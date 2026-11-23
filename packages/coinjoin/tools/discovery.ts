@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- development tool that reads the Bitcoin-only networks of Suite
 import { BITCOIN_ONLY_SYMBOLS, BitcoinOnlySymbolsItemType } from '@suite-common/suite-constants';
 import { isArrayMember } from '@trezor/utils';
 
