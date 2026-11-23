@@ -30,7 +30,7 @@ Nested mandatory skills still apply within their stated scope.
 - State/services: [Redux](skills/redux/SKILL.md),
   [Dependency injection](skills/dependency-injection/SKILL.md) where the package uses DI.
   For relevant operations: [Code splitting](skills/performance-code-splitting/SKILL.md).
-- Tests: [Test conventions](skills/tests/SKILL.md), [Commands](skills/tests-commands/SKILL.md),
+- Tests: [Test conventions](skills/tests/SKILL.md),
   [Common tests](skills/tests-common/SKILL.md) or [Native tests](skills/tests-native/SKILL.md).
   Preserve suite-common's test-first feature workflow and platform test utilities. E2E tests follow
   [Suite E2E instructions](suite/e2e/AGENTS.md), including their `tests/` layout; unit tests are co-located.
