@@ -80,9 +80,7 @@ export const useTradingExchangeConfirmFees = (account: Account | undefined) => {
                     return;
                 }
 
-                setComposableFeeLevels(previous =>
-                    previous?.join() === result.payload?.join() ? previous : result.payload,
-                );
+                setComposableFeeLevels(result.payload);
             });
         },
         [dispatch, decimals, shouldSendInSats],
@@ -150,6 +148,7 @@ export const useTradingExchangeConfirmFees = (account: Account | undefined) => {
         }
 
         dispatch(tradingActions.saveComposedTransactionInfo(composedTransactionInfo));
+        setComposableFeeLevels(undefined);
         compose(account);
     };
 
