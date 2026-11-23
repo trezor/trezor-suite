@@ -56,6 +56,9 @@
         {
             "path": "../../suite-common/earn-staking-common"
         },
+        {
+            "path": "../../suite-common/evm-networks-api"
+        },
         { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/fiat-services"

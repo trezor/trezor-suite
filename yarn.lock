@@ -12263,7 +12263,9 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.13.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/evm-networks-api": "workspace:*"
     "@suite-common/networks": "workspace:*"
+    "@suite-common/react-query": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
@@ -12535,6 +12537,21 @@ __metadata:
     "@trezor/requirements": "workspace:*"
     "@trezor/utils": "workspace:*"
     react-redux: "npm:9.3.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/evm-networks-api@workspace:*, @suite-common/evm-networks-api@workspace:^, @suite-common/evm-networks-api@workspace:suite-common/evm-networks-api":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/evm-networks-api@workspace:suite-common/evm-networks-api"
+  dependencies:
+    "@suite-common/react-query": "workspace:^"
+    "@suite-common/test-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/zod": "workspace:*"
+    orval: "npm:8.46.0"
+    prettier: "npm:^3.9.9"
   languageName: unknown
   linkType: soft
 
@@ -13430,6 +13447,7 @@ __metadata:
   dependencies:
     "@blockaid/client": "npm:1.9.0"
     "@scure/base": "npm:^2.0.0"
+    "@suite-common/evm-networks-api": "workspace:^"
     "@suite-common/react-query": "workspace:^"
     "@suite-common/wallet-config": "workspace:^"
     "@suite-common/wallet-constants": "workspace:*"
@@ -20891,6 +20909,7 @@ __metadata:
     "@suite-common/earn-staking": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/earn-staking-common": "workspace:*"
+    "@suite-common/evm-networks-api": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/firmware": "workspace:*"

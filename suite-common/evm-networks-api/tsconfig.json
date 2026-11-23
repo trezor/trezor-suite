@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../react-query" },
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/zod" },
+        { "path": "../test-utils" }
+    ]
+}
