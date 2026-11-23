@@ -6,7 +6,12 @@ import {
     type SellFiatTrade,
 } from 'invity-api';
 
-import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    asNetworkSymbol,
+    registerLegacyCustomEvmNetwork,
+    unregisterLegacyNetwork,
+} from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
@@ -30,6 +35,7 @@ import {
     isCrossChainTrade,
     isCryptoIdForNativeToken,
     isFinalStatus,
+    isNetworkTradable,
     mapTestnetSymbol,
     testnetToProdCryptoId,
     toTokenCryptoId,
@@ -803,5 +809,39 @@ describe('getTradingFormState', () => {
                 isSlip24Active: true,
             });
         });
+    });
+});
+
+describe(isNetworkTradable.name, () => {
+    const symbol = asNetworkSymbol('evm100');
+    const registerGnosis = (tradeCryptoId?: string) =>
+        registerLegacyCustomEvmNetwork({
+            symbol,
+            chainId: 100,
+            name: 'Gnosis',
+            displaySymbol: 'XDAI',
+            explorerUrl: 'https://gnosisscan.io',
+            testnet: false,
+            tradeCryptoId,
+        });
+
+    afterEach(() => {
+        unregisterLegacyNetwork(symbol);
+    });
+
+    it('is true for a bundled network', () => {
+        expect(isNetworkTradable(asNetworkSymbol('eth'))).toBe(true);
+    });
+
+    it('is false for a custom network without a trade id', () => {
+        registerGnosis();
+
+        expect(isNetworkTradable(symbol)).toBe(false);
+    });
+
+    it('is true for a custom network the EVM networks service gave a trade id', () => {
+        registerGnosis('xdai');
+
+        expect(isNetworkTradable(symbol)).toBe(true);
     });
 });

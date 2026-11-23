@@ -1,13 +1,20 @@
+import { type CustomEvmNetworkDefinition } from '@suite-common/wallet-types';
 import { mockCustomEvmNetworkDefinition } from '@suite-common/wallet-types/mocks';
+
+import { type CustomNetworkCatalogueEntry } from '#src/utils/settings/customNetworks/customNetworkCatalogue';
 
 import { filterCustomNetworks } from './filterCustomNetworks';
 
-const sonic = mockCustomEvmNetworkDefinition({ chainId: 146, name: 'Sonic', displaySymbol: 'S' });
-const mantle = mockCustomEvmNetworkDefinition({
-    chainId: 5000,
-    name: 'Mantle',
-    displaySymbol: 'MNT',
+const mockEntry = (
+    definition: Partial<CustomEvmNetworkDefinition>,
+): CustomNetworkCatalogueEntry => ({
+    definition: mockCustomEvmNetworkDefinition(definition),
+    mayClearSign: false,
+    simulationSupport: false,
 });
+
+const sonic = mockEntry({ chainId: 146, name: 'Sonic', displaySymbol: 'S' });
+const mantle = mockEntry({ chainId: 5000, name: 'Mantle', displaySymbol: 'MNT' });
 const networks = [sonic, mantle];
 
 describe(filterCustomNetworks.name, () => {

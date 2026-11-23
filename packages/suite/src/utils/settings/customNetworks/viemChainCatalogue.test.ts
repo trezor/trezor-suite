@@ -13,20 +13,25 @@ const mockChain = (overrides: MockChainOverrides = {}): ViemChain => ({
 
 const defaultParams = { excludedChainIds: [], includeTestnets: false };
 
-describe('buildViemChainCatalogue', () => {
-    it('maps a chain to a custom network definition', () => {
+describe(buildViemChainCatalogue.name, () => {
+    it('maps a chain to an unlabelled catalogue entry', () => {
         const result = buildViemChainCatalogue([mockChain()], defaultParams);
 
         expect(result).toEqual([
             {
-                symbol: 'evm146',
-                chainId: 146,
-                name: 'Sonic',
-                displaySymbol: 'S',
-                currencyName: 'Sonic',
-                rpcUrls: ['https://rpc.soniclabs.com'],
-                explorerUrl: 'https://sonicscan.org',
-                testnet: false,
+                definition: {
+                    symbol: 'evm146',
+                    chainId: 146,
+                    name: 'Sonic',
+                    displaySymbol: 'S',
+                    currencyName: 'Sonic',
+                    rpcUrls: ['https://rpc.soniclabs.com'],
+                    explorerUrl: 'https://sonicscan.org',
+                    testnet: false,
+                },
+                mayClearSign: false,
+                simulationSupport: false,
+                unsupportedReason: undefined,
             },
         ]);
     });
@@ -37,7 +42,7 @@ describe('buildViemChainCatalogue', () => {
             defaultParams,
         );
 
-        expect(result.map(({ explorerUrl }) => explorerUrl)).toEqual(['']);
+        expect(result.map(({ definition }) => definition.explorerUrl)).toEqual(['']);
     });
 
     it('dedupes chains by id and keeps the first one', () => {
@@ -46,25 +51,28 @@ describe('buildViemChainCatalogue', () => {
             defaultParams,
         );
 
-        expect(result.map(({ name }) => name)).toEqual(['Sonic']);
+        expect(result.map(({ definition }) => definition.name)).toEqual(['Sonic']);
     });
 
-    it('drops chains whose native currency does not have 18 decimals', () => {
-        const result = buildViemChainCatalogue(
-            [mockChain({ nativeCurrency: { name: 'Sonic', symbol: 'S', decimals: 6 } })],
-            defaultParams,
-        );
+    it.each([
+        [
+            'a 6-decimal native currency',
+            { nativeCurrency: { name: 'Sonic', symbol: 'S', decimals: 6 } },
+            { type: 'nativeCurrencyDecimals', decimals: 6 },
+        ],
+        ['no default http RPC URL', { rpcUrls: { default: { http: [] } } }, { type: 'noRpcUrl' }],
+        [
+            '6 decimals and no RPC URL',
+            {
+                nativeCurrency: { name: 'Sonic', symbol: 'S', decimals: 6 },
+                rpcUrls: { default: { http: [] } },
+            },
+            { type: 'nativeCurrencyDecimals', decimals: 6 },
+        ],
+    ])('lists a chain with %s as unsupported', (_, overrides, expectedReason) => {
+        const [entry] = buildViemChainCatalogue([mockChain(overrides)], defaultParams);
 
-        expect(result).toEqual([]);
-    });
-
-    it('drops chains without a default http RPC URL', () => {
-        const result = buildViemChainCatalogue(
-            [mockChain({ rpcUrls: { default: { http: [] } } })],
-            defaultParams,
-        );
-
-        expect(result).toEqual([]);
+        expect(entry?.unsupportedReason).toEqual(expectedReason);
     });
 
     it('drops excluded chain ids', () => {
@@ -73,14 +81,16 @@ describe('buildViemChainCatalogue', () => {
             excludedChainIds: new Set([1]),
         });
 
-        expect(result.map(({ chainId }) => chainId)).toEqual([2]);
+        expect(result.map(({ definition }) => definition.chainId)).toEqual([2]);
     });
 
     it('drops testnets unless they are requested', () => {
         const chains = [mockChain({ id: 1, testnet: true }), mockChain({ id: 2 })];
 
         expect(
-            buildViemChainCatalogue(chains, defaultParams).map(({ chainId }) => chainId),
+            buildViemChainCatalogue(chains, defaultParams).map(
+                ({ definition }) => definition.chainId,
+            ),
         ).toEqual([2]);
 
         const withTestnets = buildViemChainCatalogue(chains, {
@@ -88,30 +98,36 @@ describe('buildViemChainCatalogue', () => {
             includeTestnets: true,
         });
 
-        expect(withTestnets.map(({ chainId, testnet }) => [chainId, testnet])).toEqual([
+        expect(
+            withTestnets.map(({ definition }) => [definition.chainId, definition.testnet]),
+        ).toEqual([
             [1, true],
             [2, false],
         ]);
     });
 
-    it('sorts the result by name', () => {
+    it('sorts the supported chains by name before the unsupported ones', () => {
         const result = buildViemChainCatalogue(
             [
                 mockChain({ id: 1, name: 'Zora' }),
-                mockChain({ id: 2, name: 'Abstract' }),
+                mockChain({ id: 2, name: 'Abstract', rpcUrls: { default: { http: [] } } }),
                 mockChain({ id: 3, name: 'Mantle' }),
             ],
             defaultParams,
         );
 
-        expect(result.map(({ name }) => name)).toEqual(['Abstract', 'Mantle', 'Zora']);
+        expect(result.map(({ definition }) => definition.name)).toEqual([
+            'Mantle',
+            'Zora',
+            'Abstract',
+        ]);
     });
 
     it('does not share the chain RPC URL array with the definition', () => {
         const chain = mockChain();
-        const [definition] = buildViemChainCatalogue([chain], defaultParams);
+        const [entry] = buildViemChainCatalogue([chain], defaultParams);
 
-        definition?.rpcUrls.push('https://example.com');
+        entry?.definition.rpcUrls.push('https://example.com');
 
         expect(chain.rpcUrls.default.http).toEqual(['https://rpc.soniclabs.com']);
     });

@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { type CustomEvmNetworkDefinition } from '@suite-common/wallet-types';
 import {
     Banner,
     Card,
@@ -17,6 +16,7 @@ import {
 import { MagnifyingGlassIcon } from '@trezor/icons';
 
 import { useCustomNetworkCatalogue } from '#src/hooks/settings/useCustomNetworkCatalogue';
+import { type CustomNetworkCatalogueEntry } from '#src/utils/settings/customNetworks/customNetworkCatalogue';
 
 import { CUSTOM_NETWORK_ROW_HEIGHT, CustomNetworkListRow } from './CustomNetworkListRow';
 import { filterCustomNetworks } from './filterCustomNetworks';
@@ -24,7 +24,7 @@ import { filterCustomNetworks } from './filterCustomNetworks';
 const LIST_HEIGHT = 'min(480px, 55vh)';
 
 type CustomNetworkListStepProps = {
-    onSelect: (network: CustomEvmNetworkDefinition) => void;
+    onSelect: (entry: CustomNetworkCatalogueEntry) => void;
     onCancel: () => void;
 };
 
@@ -35,8 +35,8 @@ export const CustomNetworkListStep = ({ onSelect, onCancel }: CustomNetworkListS
 
     const listItems = useMemo(
         () =>
-            filterCustomNetworks(networks, searchQuery).map((network, index) => ({
-                network,
+            filterCustomNetworks(networks, searchQuery).map((entry, index) => ({
+                entry,
                 index,
                 height: CUSTOM_NETWORK_ROW_HEIGHT,
             })),
@@ -97,10 +97,10 @@ export const CustomNetworkListStep = ({ onSelect, onCancel }: CustomNetworkListS
                             items={listItems}
                             listHeight={LIST_HEIGHT}
                             listMinHeight={CUSTOM_NETWORK_ROW_HEIGHT}
-                            getItemKey={({ network }) => network.chainId}
-                            renderItem={({ network, index }) => (
+                            getItemKey={({ entry }) => entry.definition.chainId}
+                            renderItem={({ entry, index }) => (
                                 <CustomNetworkListRow
-                                    network={network}
+                                    entry={entry}
                                     hasDivider={index > 0}
                                     onSelect={onSelect}
                                 />

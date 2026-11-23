@@ -15,6 +15,9 @@ export type CustomEvmNetworkConfigParams = {
     displaySymbol: string;
     explorerUrl: string;
     testnet: boolean;
+    coingeckoId?: string;
+    nativeAssetCryptoId?: string;
+    tradeCryptoId?: string;
 };
 
 export type CustomEvmNetworkModuleParams = {
@@ -61,7 +64,15 @@ export const buildCustomEvmNetworkConfig = (
             address: `${explorerBase}/address/`,
             nft: `${explorerBase}/nft/`,
         },
-        features: ['tokens', 'eip1559', 'rbf', 'sign-verify'],
+        // Token definitions are published per CoinGecko chain, so only a chain the EVM networks service
+        // matched to one has a list that sorts its tokens and gives them icons.
+        features: [
+            'tokens',
+            'eip1559',
+            'rbf',
+            'sign-verify',
+            ...(params.coingeckoId ? (['coin-definitions'] as const) : []),
+        ],
         backendOptions: [{ type: 'evm-rpc' }],
         accountTypes: {
             ledger: {
@@ -79,6 +90,9 @@ export const buildCustomEvmNetworkConfig = (
         },
         caipId: `eip155:${params.chainId}`,
         yieldXyzId: null,
+        coingeckoId: params.coingeckoId,
+        nativeAssetCryptoId: params.nativeAssetCryptoId,
+        tradeCryptoId: params.tradeCryptoId,
     };
 };
 

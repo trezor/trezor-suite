@@ -127,6 +127,10 @@ export function getCryptoId(
     return network.tradeCryptoId as CryptoId;
 }
 
+// A custom EVM network has a trade id only when the EVM networks service knows the chain.
+export const isNetworkTradable = (networkSymbol: NetworkSymbol) =>
+    getNetwork(networkSymbol).tradeCryptoId !== undefined;
+
 export const isCryptoIdForNativeToken = (cryptoId: CryptoId) => {
     const { contractAddress } = parseCryptoId(cryptoId);
 
