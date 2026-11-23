@@ -398,6 +398,14 @@ const main = async () => {
                 failed++;
             }
         }
+
+        for (const relPath of Object.keys(cache)) {
+            if (!fs.existsSync(path.join(gitRoot, relPath))) {
+                log(`Test file no longer exists, removing ${relPath}`);
+                delete cache[relPath];
+            }
+        }
+
         writeCache(cacheFile, cache);
         log(`Cache written: ${cacheFile}`);
         if (failed > 0) process.exit(1);
