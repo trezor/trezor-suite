@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { type CustomEvmNetworkDefinition } from '@suite-common/wallet-types';
+import { type CustomNetworkCatalogueEntry } from '#src/utils/settings/customNetworks/customNetworkCatalogue';
 
 import { CustomNetworkDetailStep } from './CustomNetworkDetailStep';
 import { CustomNetworkListStep } from './CustomNetworkListStep';
@@ -10,12 +10,14 @@ type AddCustomNetworkModalProps = {
 };
 
 export const AddCustomNetworkModal = ({ onCancel }: AddCustomNetworkModalProps) => {
-    const [selectedNetwork, setSelectedNetwork] = useState<CustomEvmNetworkDefinition | null>(null);
+    const [selectedNetwork, setSelectedNetwork] = useState<CustomNetworkCatalogueEntry | null>(
+        null,
+    );
 
     if (selectedNetwork) {
         return (
             <CustomNetworkDetailStep
-                network={selectedNetwork}
+                entry={selectedNetwork}
                 onBackClick={() => setSelectedNetwork(null)}
                 onCancel={onCancel}
             />

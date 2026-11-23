@@ -1,7 +1,7 @@
-import { type CustomEvmNetworkDefinition } from '@suite-common/wallet-types';
+import { type CustomNetworkCatalogueEntry } from '#src/utils/settings/customNetworks/customNetworkCatalogue';
 
 export const filterCustomNetworks = (
-    networks: CustomEvmNetworkDefinition[],
+    networks: CustomNetworkCatalogueEntry[],
     searchQuery: string,
 ) => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -11,7 +11,7 @@ export const filterCustomNetworks = (
     }
 
     return networks.filter(
-        ({ name, displaySymbol, chainId }) =>
+        ({ definition: { name, displaySymbol, chainId } }) =>
             name.toLowerCase().includes(normalizedQuery) ||
             displaySymbol.toLowerCase().includes(normalizedQuery) ||
             String(chainId).includes(normalizedQuery),

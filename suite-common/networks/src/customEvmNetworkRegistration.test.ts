@@ -65,6 +65,23 @@ describe('custom EVM network registration', () => {
         );
     });
 
+    it('keeps the fiat rate ids of a network the EVM networks service knows', () => {
+        const { actions, networks } = createNetworks();
+
+        networks.registerCustomEvmNetwork({
+            symbol,
+            config: { ...config, coingeckoId: 'custom-chain', nativeAssetCryptoId: 'custom-coin' },
+        });
+
+        expect(networks.getNetworkConfig(symbol)).toMatchObject({
+            coingeckoId: 'custom-chain',
+            nativeAssetCryptoId: 'custom-coin',
+        });
+        expect(getDispatchedMetadata(actions).find(n => n.symbol === symbol)).toMatchObject({
+            coingeckoId: 'custom-chain',
+        });
+    });
+
     it('removes an unregistered network from Redux and the repository', () => {
         const { actions, networks } = createNetworks();
 

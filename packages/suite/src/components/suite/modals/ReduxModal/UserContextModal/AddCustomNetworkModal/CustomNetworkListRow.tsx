@@ -1,9 +1,13 @@
 import styled from 'styled-components';
 
-import { type CustomEvmNetworkDefinition } from '@suite-common/wallet-types';
 import { Column, Divider, Icon, Row, Text, commonFocusStyles } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
-import { NetworkIcon } from '@trezor/product-components';
+
+import { type CustomNetworkCatalogueEntry } from '#src/utils/settings/customNetworks/customNetworkCatalogue';
+
+import { CustomNetworkBadges } from './CustomNetworkBadges';
+import { CustomNetworkIcon } from './CustomNetworkIcon';
+import { CustomNetworkUnsupportedReason } from './CustomNetworkUnsupportedReason';
 
 export const CUSTOM_NETWORK_ROW_HEIGHT = 56;
 
@@ -19,7 +23,11 @@ const RowButton = styled.button`
     transition: background 0.2s ease-in-out;
     -webkit-app-region: no-drag;
 
-    &:hover {
+    &:disabled {
+        cursor: default;
+    }
+
+    &:hover:not(:disabled) {
         background: ${({ theme }) => theme.elementFillGhostHovered};
     }
 
@@ -29,30 +37,43 @@ const RowButton = styled.button`
 `;
 
 type CustomNetworkListRowProps = {
-    network: CustomEvmNetworkDefinition;
+    entry: CustomNetworkCatalogueEntry;
     hasDivider: boolean;
-    onSelect: (network: CustomEvmNetworkDefinition) => void;
+    onSelect: (entry: CustomNetworkCatalogueEntry) => void;
 };
 
 export const CustomNetworkListRow = ({
-    network,
+    entry,
     hasDivider,
     onSelect,
-}: CustomNetworkListRowProps) => (
-    <Column height={CUSTOM_NETWORK_ROW_HEIGHT} width="100%">
-        {hasDivider && <Divider margin={{ top: 0, bottom: 0 }} />}
-        <RowButton
-            type="button"
-            onClick={() => onSelect(network)}
-            data-testid={`@add-custom-network/network/${network.chainId}`}
-        >
-            <Row gap={12} flex="1" minWidth={0}>
-                <NetworkIcon size={32} networkSymbol={network.symbol} networkName={network.name} />
-                <Text typographyStyle="body-md" ellipsisLineCount={1}>
-                    {network.name}
-                </Text>
-            </Row>
-            <Icon as={CaretRightIcon} size={16} intent="neutral" priority="secondary" />
-        </RowButton>
-    </Column>
-);
+}: CustomNetworkListRowProps) => {
+    const { unsupportedReason } = entry;
+
+    return (
+        <Column height={CUSTOM_NETWORK_ROW_HEIGHT} width="100%">
+            {hasDivider && <Divider margin={{ top: 0, bottom: 0 }} />}
+            <RowButton
+                type="button"
+                disabled={unsupportedReason !== undefined}
+                onClick={() => onSelect(entry)}
+                data-testid={`@add-custom-network/network/${entry.definition.chainId}`}
+            >
+                <Row gap={12} flex="1" minWidth={0}>
+                    <CustomNetworkIcon entry={entry} />
+                    <Column alignItems="flex-start" minWidth={0}>
+                        <Text typographyStyle="body-md" ellipsisLineCount={1}>
+                            {entry.definition.name}
+                        </Text>
+                        {unsupportedReason && (
+                            <CustomNetworkUnsupportedReason reason={unsupportedReason} />
+                        )}
+                    </Column>
+                    {!unsupportedReason && <CustomNetworkBadges entry={entry} />}
+                </Row>
+                {!unsupportedReason && (
+                    <Icon as={CaretRightIcon} size={16} intent="neutral" priority="secondary" />
+                )}
+            </RowButton>
+        </Column>
+    );
+};

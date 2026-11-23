@@ -6510,6 +6510,32 @@ export const messages = defineMessages({
         id: 'TR_CUSTOM_NETWORKS_LOAD_ERROR',
         defaultMessage: 'The list of networks could not be loaded.',
     },
+    TR_CUSTOM_NETWORK_UNVERIFIED: {
+        id: 'TR_CUSTOM_NETWORK_UNVERIFIED',
+        defaultMessage: 'Unverified',
+    },
+    TR_CUSTOM_NETWORK_UNVERIFIED_WARNING: {
+        id: 'TR_CUSTOM_NETWORK_UNVERIFIED_WARNING',
+        defaultMessage:
+            'Trezor has not verified this network. Its details, including the RPC URLs, come from a community list. Add it only if you trust it.',
+    },
+    TR_CUSTOM_NETWORK_SIMULATION_SUPPORTED: {
+        id: 'TR_CUSTOM_NETWORK_SIMULATION_SUPPORTED',
+        defaultMessage: 'Transaction simulation',
+    },
+    TR_CUSTOM_NETWORK_MAY_CLEAR_SIGN: {
+        id: 'TR_CUSTOM_NETWORK_MAY_CLEAR_SIGN',
+        defaultMessage: 'Clear signing',
+    },
+    TR_CUSTOM_NETWORK_UNSUPPORTED_DECIMALS: {
+        id: 'TR_CUSTOM_NETWORK_UNSUPPORTED_DECIMALS',
+        defaultMessage:
+            "Can't be added: its currency uses {decimals} decimals, only 18 are supported.",
+    },
+    TR_CUSTOM_NETWORK_NO_RPC_URL: {
+        id: 'TR_CUSTOM_NETWORK_NO_RPC_URL',
+        defaultMessage: "Can't be added: no public RPC URL is available.",
+    },
     TR_CUSTOM_NETWORK_ALREADY_EXISTS: {
         id: 'TR_CUSTOM_NETWORK_ALREADY_EXISTS',
         defaultMessage: 'This network has already been added.',

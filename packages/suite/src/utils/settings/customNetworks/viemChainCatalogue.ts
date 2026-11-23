@@ -1,8 +1,11 @@
+import { getCustomEvmNetworkSymbol } from '@suite-common/wallet-types';
+
 import {
-    type CustomEvmNetworkDefinition,
-    getCustomEvmNetworkSymbol,
-} from '@suite-common/wallet-types';
-import { EVM_NATIVE_CURRENCY_DECIMALS } from '@trezor/network-ethereum-suite-common';
+    type BuildChainCatalogueParams,
+    type CustomNetworkCatalogueEntry,
+    compareCatalogueEntries,
+    getUnsupportedReason,
+} from './customNetworkCatalogue';
 
 /**
  * The subset of viem's `Chain` the catalogue reads, so the builder stays testable with plain objects.
@@ -14,11 +17,6 @@ export type ViemChain = {
     nativeCurrency: { name: string; symbol: string; decimals: number };
     rpcUrls: { default: { http: readonly string[] } };
     blockExplorers?: { default?: { url: string } };
-};
-
-export type BuildViemChainCatalogueParams = {
-    excludedChainIds: Iterable<number>;
-    includeTestnets: boolean;
 };
 
 const isViemChain = (value: unknown): value is ViemChain =>
@@ -43,55 +41,55 @@ export const loadViemChainCatalogue = async (): Promise<ViemChain[]> => {
     return entries.filter(isViemChain);
 };
 
-type IsSupportedChainParams = {
+type IsListedChainParams = {
     chain: ViemChain;
     excludedChainIds: ReadonlySet<number>;
     includeTestnets: boolean;
 };
 
-const isSupportedChain = ({ chain, excludedChainIds, includeTestnets }: IsSupportedChainParams) =>
-    chain.nativeCurrency.decimals === EVM_NATIVE_CURRENCY_DECIMALS &&
-    chain.rpcUrls.default.http.length > 0 &&
-    !excludedChainIds.has(chain.id) &&
-    (includeTestnets || !chain.testnet);
+const isListedChain = ({ chain, excludedChainIds, includeTestnets }: IsListedChainParams) =>
+    !excludedChainIds.has(chain.id) && (includeTestnets || !chain.testnet);
 
-const mapChainToDefinition = (chain: ViemChain): CustomEvmNetworkDefinition => ({
-    symbol: getCustomEvmNetworkSymbol(chain.id),
-    chainId: chain.id,
-    name: chain.name,
-    displaySymbol: chain.nativeCurrency.symbol,
-    currencyName: chain.nativeCurrency.name,
-    rpcUrls: [...chain.rpcUrls.default.http],
-    explorerUrl: chain.blockExplorers?.default?.url ?? '',
-    testnet: !!chain.testnet,
+const mapChainToCatalogueEntry = (chain: ViemChain): CustomNetworkCatalogueEntry => ({
+    definition: {
+        symbol: getCustomEvmNetworkSymbol(chain.id),
+        chainId: chain.id,
+        name: chain.name,
+        displaySymbol: chain.nativeCurrency.symbol,
+        currencyName: chain.nativeCurrency.name,
+        rpcUrls: [...chain.rpcUrls.default.http],
+        explorerUrl: chain.blockExplorers?.default?.url ?? '',
+        testnet: !!chain.testnet,
+    },
+    mayClearSign: false,
+    simulationSupport: false,
+    unsupportedReason: getUnsupportedReason({
+        nativeCurrencyDecimals: chain.nativeCurrency.decimals,
+        rpcUrlCount: chain.rpcUrls.default.http.length,
+    }),
 });
 
-/** Order in which the picker lists the networks. */
-export const compareCustomEvmNetworks = (
-    first: CustomEvmNetworkDefinition,
-    second: CustomEvmNetworkDefinition,
-) => first.name.localeCompare(second.name);
-
+/** Viem chains to list, the ones the user can add first. */
 export const buildViemChainCatalogue = (
     chains: readonly ViemChain[],
-    { excludedChainIds, includeTestnets }: BuildViemChainCatalogueParams,
-): CustomEvmNetworkDefinition[] => {
+    { excludedChainIds, includeTestnets }: BuildChainCatalogueParams,
+): CustomNetworkCatalogueEntry[] => {
     const excludedChainIdSet = new Set(excludedChainIds);
-    // Viem exports deprecated aliases of the same chain, so the first accepted entry wins.
-    const acceptedChainIds = new Set<number>();
-    const definitions: CustomEvmNetworkDefinition[] = [];
+    // Viem exports deprecated aliases of the same chain, so the first listed entry wins.
+    const listedChainIds = new Set<number>();
+    const entries: CustomNetworkCatalogueEntry[] = [];
 
     chains.forEach(chain => {
         if (
-            acceptedChainIds.has(chain.id) ||
-            !isSupportedChain({ chain, excludedChainIds: excludedChainIdSet, includeTestnets })
+            listedChainIds.has(chain.id) ||
+            !isListedChain({ chain, excludedChainIds: excludedChainIdSet, includeTestnets })
         ) {
             return;
         }
 
-        acceptedChainIds.add(chain.id);
-        definitions.push(mapChainToDefinition(chain));
+        listedChainIds.add(chain.id);
+        entries.push(mapChainToCatalogueEntry(chain));
     });
 
-    return definitions.sort(compareCustomEvmNetworks);
+    return entries.sort(compareCatalogueEntries);
 };

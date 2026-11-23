@@ -7,28 +7,34 @@ import {
     type CustomEvmNetworkRejection,
     addCustomEvmNetworkThunk,
 } from '@suite-common/wallet-core';
-import { type CustomEvmNetworkDefinition } from '@suite-common/wallet-types';
 import { Banner, Card, Column, Divider, Modal, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { NetworkIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import {
+    type CustomNetworkCatalogueEntry,
+    isCatalogueEntryVetted,
+} from '#src/utils/settings/customNetworks/customNetworkCatalogue';
+
+import { CustomNetworkBadges } from './CustomNetworkBadges';
 import { CustomNetworkDetailRow } from './CustomNetworkDetailRow';
+import { CustomNetworkIcon } from './CustomNetworkIcon';
 import { CUSTOM_RPC_URL_OPTION_VALUE, CustomNetworkRpcUrlField } from './CustomNetworkRpcUrlField';
 
 const FALLBACK_ERROR_KEY = 'TR_CUSTOM_BACKEND_VALIDATION_ERROR';
 
 type CustomNetworkDetailStepProps = {
-    network: CustomEvmNetworkDefinition;
+    entry: CustomNetworkCatalogueEntry;
     onBackClick: () => void;
     onCancel: () => void;
 };
 
 export const CustomNetworkDetailStep = ({
-    network,
+    entry,
     onBackClick,
     onCancel,
 }: CustomNetworkDetailStepProps) => {
+    const { definition: network } = entry;
     const { translationString } = useTranslation();
     const { dispatch } = useServices(injectDispatch);
     const [selectedRpcValue, setSelectedRpcValue] = useState(
@@ -93,15 +99,19 @@ export const CustomNetworkDetailStep = ({
             }
         >
             <Column gap={16} alignItems="stretch">
+                {!isCatalogueEntryVetted(entry) && (
+                    <Banner
+                        intent="warning"
+                        description={<Translation id="TR_CUSTOM_NETWORK_UNVERIFIED_WARNING" />}
+                    />
+                )}
+
                 <Card>
                     <Column gap={16} alignItems="stretch">
                         <Row gap={12}>
-                            <NetworkIcon
-                                size={32}
-                                networkSymbol={network.symbol}
-                                networkName={network.name}
-                            />
+                            <CustomNetworkIcon entry={entry} />
                             <Text typographyStyle="headline-sm">{network.name}</Text>
+                            <CustomNetworkBadges entry={entry} />
                         </Row>
 
                         <Divider margin={{ top: 0, bottom: 0 }} />

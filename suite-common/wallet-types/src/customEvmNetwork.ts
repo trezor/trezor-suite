@@ -11,6 +11,10 @@ export type CustomEvmNetworkDefinition = {
     testnet: boolean;
     /** Measured from the RPC when the network is added; absent when the RPC could not serve it. */
     blockTimeSeconds?: number;
+    // From the EVM networks service. Optional, so networks added before it still load.
+    coingeckoId?: string;
+    nativeAssetCryptoId?: string;
+    tradeCryptoId?: string;
 };
 
 const CUSTOM_EVM_NETWORK_SYMBOL_PREFIX = 'evm';

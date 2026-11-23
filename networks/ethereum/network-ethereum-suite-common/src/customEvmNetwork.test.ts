@@ -51,6 +51,21 @@ describe(buildCustomEvmNetworkConfig.name, () => {
         });
     });
 
+    it('carries the fiat rate and trade ids of a well-known network', () => {
+        const config = buildCustomEvmNetworkConfig({
+            ...params,
+            coingeckoId: 'mantle',
+            nativeAssetCryptoId: 'mantle',
+            tradeCryptoId: 'mantle',
+        });
+
+        expect(config).toMatchObject({
+            coingeckoId: 'mantle',
+            nativeAssetCryptoId: 'mantle',
+            tradeCryptoId: 'mantle',
+        });
+    });
+
     it.each([undefined, ''])('rejects a missing explorer URL (%p)', explorerUrl => {
         expect(() =>
             buildCustomEvmNetworkConfig({ ...params, explorerUrl: explorerUrl as string }),

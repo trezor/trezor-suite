@@ -15,6 +15,9 @@ export type CustomEvmNetworkConfigParams = {
     displaySymbol: string;
     explorerUrl: string;
     testnet: boolean;
+    coingeckoId?: string;
+    nativeAssetCryptoId?: string;
+    tradeCryptoId?: string;
 };
 
 export type CustomEvmNetworkModuleParams = {
@@ -79,6 +82,9 @@ export const buildCustomEvmNetworkConfig = (
         },
         caipId: `eip155:${params.chainId}`,
         yieldXyzId: null,
+        coingeckoId: params.coingeckoId,
+        nativeAssetCryptoId: params.nativeAssetCryptoId,
+        tradeCryptoId: params.tradeCryptoId,
     };
 };
 
