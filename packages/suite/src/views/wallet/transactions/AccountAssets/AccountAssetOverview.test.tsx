@@ -45,6 +45,7 @@ global.ResizeObserver = class MockedResizeObserver {
 const DEVICE_STATE = '1stTestnetAddress@device_id:0' as StaticSessionId;
 
 const ETH = asNetworkSymbol('eth');
+const BTC = asNetworkSymbol('btc');
 const ADA = asNetworkSymbol('ada');
 
 const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
@@ -105,10 +106,17 @@ const otherEthAccount = mockWalletAccount({
     formattedBalance: '10',
 });
 
+const btcAccount = mockWalletAccount({
+    symbol: BTC,
+    deviceState: DEVICE_STATE,
+    formattedBalance: '0.5',
+});
+
 const PRICED_RATES = {
     [getFiatRateKey(ETH, 'usd')]: mockRate(3000),
     [getFiatRateKey(ETH, 'usd', USDC)]: mockRate(1),
     [getFiatRateKey(ETH, 'usd', ONE_INCH)]: mockRate(0.29),
+    [getFiatRateKey(BTC, 'usd')]: mockRate(60000),
     [getFiatRateKey(ADA, 'usd')]: mockRate(0.5),
 };
 
@@ -120,42 +128,52 @@ type GetStateOptions = {
 const getState = (
     accounts: Account[],
     { rates, areSmallBalancesShown = true }: GetStateOptions,
-): MockSuiteState => ({
-    ...mockInitialAppState,
-    earn: {
-        staking: mockStakingState({
-            positions: {
-                [ethAccount.key]: [HALF_ETH_STAKED],
-                [adaAccount.key]: [ADA_DELEGATED],
+): MockSuiteState => {
+    const symbols = [...new Set(accounts.map(account => account.symbol))];
+
+    return {
+        ...mockInitialAppState,
+        earn: {
+            staking: mockStakingState({
+                positions: {
+                    [ethAccount.key]: [HALF_ETH_STAKED],
+                    [adaAccount.key]: [ADA_DELEGATED],
+                },
+            }),
+        },
+        networks: mockNetworksState(symbols),
+        device: {
+            ...mockInitialAppState.device,
+            selectedDevice: mockSuiteDevice({ state: { staticSessionId: DEVICE_STATE } }),
+        },
+        tokenDefinitions: {
+            [ETH]: {
+                coin: {
+                    data: [USDC, ONE_INCH],
+                    error: false,
+                    isLoading: false,
+                    hide: [],
+                    show: [],
+                },
             },
-        }),
-    },
-    networks: mockNetworksState([ETH, ADA]),
-    device: {
-        ...mockInitialAppState.device,
-        selectedDevice: mockSuiteDevice({ state: { staticSessionId: DEVICE_STATE } }),
-    },
-    tokenDefinitions: {
-        [ETH]: {
-            coin: { data: [USDC, ONE_INCH], error: false, isLoading: false, hide: [], show: [] },
         },
-    },
-    wallet: {
-        ...mockInitialAppState.wallet,
-        selectedAccount: selectedAccountInitialState,
-        accounts,
-        settings: {
-            ...mockInitialAppState.wallet.settings,
-            enabledNetworks: [ETH, ADA],
-            localCurrency: 'usd',
-            areHomeAssetSmallBalancesShown: areSmallBalancesShown,
+        wallet: {
+            ...mockInitialAppState.wallet,
+            selectedAccount: selectedAccountInitialState,
+            accounts,
+            settings: {
+                ...mockInitialAppState.wallet.settings,
+                enabledNetworks: symbols,
+                localCurrency: 'usd',
+                areHomeAssetSmallBalancesShown: areSmallBalancesShown,
+            },
+            fiat: {
+                ...mockInitialAppState.wallet.fiat,
+                current: rates,
+            },
         },
-        fiat: {
-            ...mockInitialAppState.wallet.fiat,
-            current: rates,
-        },
-    },
-});
+    };
+};
 
 type RenderOverviewOptions = Partial<GetStateOptions> & {
     /** What the staking API says Ethereum staking pays, as a percentage; nothing by default. */
@@ -164,6 +182,7 @@ type RenderOverviewOptions = Partial<GetStateOptions> & {
 
 const ETH_PRODUCT = mockStakingProductDescriptor();
 
+/** Renders the overview of the first account given. */
 const renderOverview = (
     accounts: [Account, ...Account[]],
     { rates = PRICED_RATES, ethStakingApy, ...options }: RenderOverviewOptions = {},
@@ -328,6 +347,22 @@ describe('the account overview with the asset-first Home', () => {
         expect(screen.getByTestId('@wallet/account-assets/fiat-amount')).toHaveTextContent(
             '$6,100.00',
         );
+    });
+
+    it('offers no filter on an account whose network holds no tokens', () => {
+        renderOverview([btcAccount]);
+
+        expect(rowTestIds()).toEqual(['@wallet/account-asset/btc/coin']);
+        expect(screen.queryByTestId('@dashboard/home-asset/grouping')).not.toBeInTheDocument();
+    });
+
+    it('lists the coin of an account without a filter even when Home hides small balances', () => {
+        // 0.00001 BTC at $60,000 is 60c, a small balance, with no menu here to show it again.
+        renderOverview([{ ...btcAccount, formattedBalance: '0.00001', balance: '1000' }], {
+            areSmallBalancesShown: false,
+        });
+
+        expect(rowTestIds()).toEqual(['@wallet/account-asset/btc/coin']);
     });
 
     describe('what navigating away from it reports', () => {

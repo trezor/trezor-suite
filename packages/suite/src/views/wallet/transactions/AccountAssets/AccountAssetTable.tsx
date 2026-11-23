@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { ASSET_TABLE_CELL_PADDING, AssetTableExpandRow, AssetTableFrame } from '@suite/assets';
+import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import {
     ASSET_TABLE_ROW_LIMIT,
@@ -42,11 +43,11 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
     );
     const smallBalances = useSelector(state => selectAccountSmallBalances(state, accountKey));
     const areSmallBalancesShown = useSelector(selectAreAssetTableSmallBalancesDisplayed);
-    const rows = areSmallBalancesShown
-        ? heldSections
-        : heldSections.filter(
-              section => !smallBalances.keys.has(getAccountListSectionKey(section)),
-          );
+    // Without the menu nothing on the page could show them again, so none are hidden.
+    const areSmallBalancesHidden = hasTokens && !areSmallBalancesShown;
+    const rows = areSmallBalancesHidden
+        ? heldSections.filter(section => !smallBalances.keys.has(getAccountListSectionKey(section)))
+        : heldSections;
     const isFoldable = rows.length > ASSET_TABLE_ROW_LIMIT;
     const { isExpanded, rowLimit, toggleExpanded, changeSmallBalances } = useAssetTableFolding({
         isFoldable,
@@ -69,12 +70,17 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
     return (
         <AssetTableFrame
             assetHeader={
-                <AssetTableFilterHeader
-                    areSmallBalancesShown={areSmallBalancesShown}
-                    smallBalances={smallBalances.summary}
-                    onSmallBalancesChange={changeSmallBalances}
-                    onOpenHiddenTokens={hasTokens ? openHiddenTokens : undefined}
-                />
+                // A network without tokens has nothing to filter or to hide.
+                hasTokens ? (
+                    <AssetTableFilterHeader
+                        areSmallBalancesShown={areSmallBalancesShown}
+                        smallBalances={smallBalances.summary}
+                        onSmallBalancesChange={changeSmallBalances}
+                        onOpenHiddenTokens={openHiddenTokens}
+                    />
+                ) : (
+                    <Translation id="TR_ASSET" />
+                )
             }
             data-testid="@wallet/account-assets/table"
         >
