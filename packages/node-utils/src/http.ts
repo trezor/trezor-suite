@@ -618,7 +618,7 @@ const checkReferer = ({
     pathname: string;
     logger: Log;
 }) => {
-    const { referer } = request.headers;
+    const { referer, origin } = request.headers;
     const referers = allowedReferer ?? [];
     let isRefererAllowed: boolean;
     // Allow all origins
@@ -631,25 +631,23 @@ const checkReferer = ({
         isRefererAllowed = referers.includes('');
     } else {
         // Domain of referer has to be in the allowed origins for that endpoint
-        let domain: string;
+        let domain: string | undefined;
         try {
             domain = new URL(referer).hostname;
         } catch {
             logger.warn(`Invalid referer ${referer}`);
-
-            return false;
         }
 
-        return (
-            referers.findIndex(r => {
+        isRefererAllowed =
+            domain !== undefined &&
+            referers.some(r => {
                 // Wildcard for subdomains
                 if (r.startsWith('*')) {
                     return domain.endsWith(r.substring(1));
                 }
 
                 return r.includes(domain);
-            }) > -1
-        );
+            });
     }
 
     if (!isRefererAllowed) {
@@ -665,10 +663,11 @@ const checkReferer = ({
 
 /**
  * Built-middleware "allow referers"
+ * A request with a rejected referer is answered with 403, so it never stays pending.
  */
 export const allowReferers =
     (allowedReferer: string[]): AnyRequestHandler =>
-    (request, _response, next, { logger }) => {
+    (request, response, next, { logger }) => {
         if (
             checkReferer({
                 request,
@@ -677,8 +676,13 @@ export const allowReferers =
                 logger,
             })
         ) {
-            next(request, _response);
+            next(request, response);
+
+            return;
         }
+
+        response.statusCode = 403;
+        response.end();
     };
 
 export const parseBodyTextHelper = (request: Request) =>
