@@ -1,27 +1,34 @@
-import { type ReactNode } from 'react';
-import { Provider } from 'react-redux';
+import '@suite-common/test-utils/globalOverrides';
 
-import { configureStore } from '@reduxjs/toolkit';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 
-import { IntlProviderForTests, messages } from '@suite/intl';
+import { messages } from '@suite/intl';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { FIVE_BINARIES_POOLS, asNetworkSymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getIndexOrThrow } from '@trezor/utils';
 
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
+
 import { StakingProviderConsentBanners } from './StakingProviderConsentBanners';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../mocks/mockInitialAppState';
 
-const store = configureStore({
-    reducer: { networks: () => mockNetworksState([asNetworkSymbol('ada')]) },
-});
+const renderBanners = (account: Account, flow: EarnFlow) => {
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
+        preloadedState: {
+            ...mockInitialAppState,
+            networks: mockNetworksState([asNetworkSymbol('ada')]),
+        },
+    });
 
-const Wrapper = ({ children }: { children: ReactNode }) => (
-    <Provider store={store}>
-        <IntlProviderForTests>{children}</IntlProviderForTests>
-    </Provider>
-);
+    renderWithProviders(services, <StakingProviderConsentBanners account={account} flow={flow} />);
+};
 
 const cardanoAccount = (poolId: string | null, isActive = true) =>
     mockWalletAccount(
@@ -56,9 +63,7 @@ describe('Cardano consent voting defaults', () => {
             message: 'TR_EARN_CARDANO_UPDATE_ABSTAIN',
         },
     ] as const)('$name', ({ flow, account, message }) => {
-        render(<StakingProviderConsentBanners account={account} flow={flow} />, {
-            wrapper: Wrapper,
-        });
+        renderBanners(account, flow);
 
         expect(
             screen.getByText(messages[message].defaultMessage.replace('{symbol}', 'ADA')),
