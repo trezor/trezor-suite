@@ -16,6 +16,8 @@ export interface Replica {
     head: Head;
     /** the head asked for is not one this replica can build: rows are missing */
     behind: boolean;
+    /** stored rows LEFT OUT because they do not reproduce their own root */
+    corrupt: number;
 }
 
 const sameRoot = (a: Uint8Array | null, b: Uint8Array | null) =>
@@ -35,20 +37,12 @@ const chainTo = (trie: WardTrie, head: Head): Link[] | null => {
     return back.reverse();
 };
 
-/**
- * Build the replica at `want` (normally the WM's head). Without one, or when `want` cannot be
- * built, the highest head the log can build is used and `behind` says so.
- *
- * EVERY STEP IS CHECKED against the root its link names: a row that does not reproduce its own
- * root is corrupt, and serving from it would only get the device to refuse later, for a reason
- * that no longer points here.
- */
-export const materialize = (
+/** One attempt: the replica, or the first row on the chosen chain that is corrupt. */
+const build = (
     links: readonly StoredLink[],
-    want?: Head | null,
-    /** narrate the rebuild: the walk back to genesis, each step's entries, each root */
-    log?: (line: string) => void,
-): Replica => {
+    want: Head | null | undefined,
+    log: ((line: string) => void) | undefined,
+): Omit<Replica, 'corrupt'> | { corrupt: StoredLink } => {
     const trie = new WardTrie();
     const stored = new Map<Link, StoredLink>();
     for (const s of links) {
@@ -122,15 +116,46 @@ export const materialize = (
             `rebuild:   root=${showRoot(trie.root())} (${trie.size} leaves)` +
                 (sameRoot(trie.root(), link.toRoot) ? ', matches the stored transition' : ''),
         );
-        if (!sameRoot(trie.root(), link.toRoot)) {
-            throw new Error(
-                `the stored link into counter ${link.toCounter} does not reproduce its root ` +
-                    `(${toHex(link.toRoot ?? EMPTY_ROOT)})`,
-            );
-        }
+        if (!sameRoot(trie.root(), link.toRoot)) return { corrupt: s };
     }
     trie.counter = head.counter;
     log?.(`rebuild: trie at #${head.counter}, root=${showRoot(trie.root())}, ${trie.size} leaves`);
 
     return { trie, head: { counter: head.counter, root: head.root }, behind };
+};
+
+/**
+ * Build the replica at `want` (normally the WM's head). Without one, or when `want` cannot be
+ * built, the highest head the log can build is used and `behind` says so.
+ *
+ * EVERY STEP IS CHECKED against the root its link names: a row that does not reproduce its own
+ * root is corrupt, and serving from it would only get the device to refuse later, for a reason
+ * that no longer points here. SUCH A ROW IS LEFT OUT, not fatal: one bad row -- a peer's bug, a
+ * damaged write -- must not stop this host serving every valid head. The rebuild starts again
+ * without it, so the head falls back to the next one that builds, and `corrupt` counts what was
+ * dropped. Rows are replicated and append-only, so a dropped row is still there next time; it is
+ * dropped again.
+ */
+export const materialize = (
+    links: readonly StoredLink[],
+    want?: Head | null,
+    /** narrate the rebuild: the walk back to genesis, each step's entries, each root */
+    log?: (line: string) => void,
+): Replica => {
+    const dropped = new Set<StoredLink>();
+    for (;;) {
+        const built = build(
+            links.filter(s => !dropped.has(s)),
+            want,
+            log,
+        );
+        if (!('corrupt' in built)) return { ...built, corrupt: dropped.size };
+        dropped.add(built.corrupt);
+        const { toCounter, toRoot } = built.corrupt;
+        // ALWAYS SAID, not only when narrating: a dropped row is a fault somewhere, not routine
+        log?.(
+            `rebuild: LEAVING OUT the stored link into #${toCounter} (root=${showRoot(bytesOrNull(toRoot))}): ` +
+                'its changes do not reproduce its root; rebuilding without it',
+        );
+    }
 };

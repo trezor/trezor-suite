@@ -21,6 +21,7 @@ import {
     type RelayMessage,
     TAG_COMMIT,
     TAG_REVERT,
+    TAG_STEP,
     TAG_WM_HEAD,
     TAG_WM_INIT,
     type WardLeaf,
@@ -397,25 +398,21 @@ export class FakeDevice {
         const authorisation = {
             counter: to.counter,
             auth_commit: toHex(this.authCommit(this.head, to)),
-            // without a WM the device mints no wm_sig: there is nobody to present it to
-            ...(this.opts.wm === false
-                ? {}
-                : {
-                      wm_sig: toHex(
-                          ed25519.sign(
-                              wmPreimage(
-                                  TAG_WM_HEAD,
-                                  this.wardId,
-                                  this.head.counter,
-                                  this.head.root,
-                                  to.counter,
-                                  to.root,
-                                  this.headNonce,
-                              ),
-                              this.keys.kSig,
-                          ),
-                      ),
-                  }),
+            // without a WM the step is signed for the HOST: TAG_STEP, over NO_HEAD_NONCE
+            wm_sig: toHex(
+                ed25519.sign(
+                    wmPreimage(
+                        this.opts.wm === false ? TAG_STEP : TAG_WM_HEAD,
+                        this.wardId,
+                        this.head.counter,
+                        this.head.root,
+                        to.counter,
+                        to.root,
+                        this.opts.wm === false ? NO_HEAD_NONCE : this.headNonce,
+                    ),
+                    this.keys.kSig,
+                ),
+            ),
             remaining: this.queue.length - n,
         };
 

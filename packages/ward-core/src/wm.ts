@@ -24,6 +24,8 @@ export const TAG_REVERT = ascii('WARD REVERT v3');
 export const TAG_WM_HEAD = ascii('WARD WM COMMIT v3');
 export const TAG_WM_INIT = ascii('WARD WM INIT v3');
 export const TAG_WM_REVERT = ascii('WARD WM REVERT v3');
+/** Without a WM (firmware built `--ward-without-wm`): the step signed for the HOST, over NO_HEAD_NONCE. */
+export const TAG_STEP = ascii('WARD STEP v1');
 const ATTEST_DOMAIN = ascii('WARD ATTEST v1');
 const ATTEST_VERSION = 6;
 /** The value `head_init_sig` is minted under -- NEVER a live head nonce. */

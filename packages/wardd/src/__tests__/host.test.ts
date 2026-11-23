@@ -6,7 +6,7 @@
 import { DevWm, serveEntry, toBytes, toHex } from '@trezor/ward-core';
 
 import { InMemoryWardBackend, type StoredLink } from '../backend';
-import { WardHost } from '../host';
+import { type Device, WardHost } from '../host';
 import { materialize } from '../replica';
 import { Wardd } from '../service';
 import { FakeDevice, newWallet } from './fakeDevice';
@@ -274,18 +274,41 @@ describe('a failed append', () => {
 });
 
 describe('the replica', () => {
-    it('refuses a stored link that does not reproduce its own root', async () => {
+    /** `link` with its one change moved to another path: the same root claimed, not reproduced */
+    const corrupted = (link: StoredLink): StoredLink => ({
+        ...link,
+        changes: [{ ...link.changes[0]!, entryKey: toHex(new Uint8Array(32).fill(9)) }],
+    });
+
+    it('leaves out a stored link that does not reproduce its own root, and says so', async () => {
         const { a, host } = await setup();
         a.enqueue('x', '1');
         await host.flush(a.call);
         const links = await (host as unknown as { backend: InMemoryWardBackend }).backend.load();
-        const forged: StoredLink = {
-            ...links[0]!,
-            changes: [{ ...links[0]!.changes[0]!, entryKey: toHex(new Uint8Array(32).fill(9)) }],
-        };
-        expect(() => materialize([forged], { counter: 1, root: toBytes(forged.toRoot!) })).toThrow(
-            'does not reproduce its root',
+        const forged = corrupted(links[0]!);
+        const lines: string[] = [];
+
+        const r = materialize([forged], { counter: 1, root: toBytes(forged.toRoot!) }, line =>
+            lines.push(line),
         );
+        // the head asked for cannot be built without it: genesis, and the replica says why
+        expect(r).toMatchObject({ behind: true, corrupt: 1, head: { counter: 0, root: null } });
+        expect(r.trie.links).toHaveLength(0);
+        expect(lines.some(l => l.includes('LEAVING OUT the stored link into #1'))).toBe(true);
+    });
+
+    it('falls back to the highest head that still builds, past a corrupt row', async () => {
+        const { a, host } = await setup();
+        a.enqueue('x', '1');
+        a.enqueue('y', '2');
+        await host.flush(a.call);
+        const links = await (host as unknown as { backend: InMemoryWardBackend }).backend.load();
+        const top = links.find(l => l.toCounter === 2)!;
+        const rest = links.filter(l => l !== top);
+
+        const r = materialize([...rest, corrupted(top)]);
+        expect(r).toMatchObject({ behind: false, corrupt: 1, head: { counter: 1 } });
+        expect(r.trie.size).toBe(1);
     });
 
     it("narrates a rebuild: the walk back to genesis, each step's entries, each root", async () => {
@@ -371,6 +394,23 @@ describe('wardd without a WM (--without-wm, the MVP)', () => {
         await expect(host.sync(b.call)).resolves.toMatchObject({ counter: 1, how: 'catchUp' });
         expect(b.head.counter).toBe(1);
         expect(b.provisional).toBeNull();
+    });
+
+    it("refuses to store a step this wallet's device did not sign", async () => {
+        const { a, host } = await mvp();
+        a.enqueue('alice', 'v1');
+        // a caller holding the token, handing wardd a step under a signature of its own
+        const forging: Device = async m => {
+            const reply = await a.call(m);
+            if (reply.name !== 'WardFlushQueueAck') return reply;
+
+            return { ...reply, message: { ...reply.message, wm_sig: '00'.repeat(64) } };
+        };
+
+        await expect(host.flush(forging)).rejects.toEqual(
+            expect.objectContaining({ code: 'bad_request' }),
+        );
+        expect(await host.storedLinks()).toHaveLength(0);
     });
 
     it('refuses the service channel, which needs a WM', async () => {

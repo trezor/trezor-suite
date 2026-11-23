@@ -13,8 +13,10 @@
 import {
     type Attestation,
     EMPTY_ROOT,
+    NO_HEAD_NONCE,
     type RelayErrorCode,
     type RelayMessage,
+    TAG_STEP,
     type WardEntryRequestJson,
     type WardResultJson,
     type WardTrie,
@@ -166,7 +168,7 @@ export class WardHost {
 
     status() {
         return this.exclusive(async () => {
-            const { trie, head, behind } = await this.replica();
+            const { trie, head, behind, corrupt } = await this.replica();
             const wm = await this.wmHead();
             const attested = this.newestAttested(trie, head, await this.backend.loadAttestations());
 
@@ -180,6 +182,8 @@ export class WardHost {
                 wmAvailable: wm.available,
                 withoutWm: !this.wm,
                 behind,
+                // stored rows left out of the replica because they do not reproduce their root
+                corrupt,
             };
         });
     }
@@ -338,9 +342,12 @@ export class WardHost {
         // so applying it to whatever head the replica is at now would build a tree the device never
         // built. The counter must follow on from the head, and the device's `wm_sig` -- which covers
         // both ends and the WM's current nonce -- must verify over exactly this step: then the row
-        // stored below is the step the device authorised, and nothing else ever is.
+        // stored below is the step the device authorised, and nothing else ever is. WITHOUT A WM
+        // the same signature comes under TAG_STEP over NO_HEAD_NONCE, and is checked the same way:
+        // it is all that stops anyone holding this wardd's token from storing a step no device of
+        // this wallet made.
         const fromCounter = result.leaves?.length ? result.from_counter : (result.counter ?? 0) - 1;
-        if (fromCounter !== head.counter || (this.wm && !result.wm_sig)) {
+        if (fromCounter !== head.counter || !result.wm_sig) {
             throw new RelayFailure(
                 'wm_conflict',
                 `this result was minted against counter ${fromCounter}; the head is at ` +
@@ -364,24 +371,22 @@ export class WardHost {
             );
         }
         const { wm } = this;
-        const headNonce = wm ? await wm.headNonce(this.wardId) : null;
-        const minted =
-            !wm ||
-            (headNonce &&
-                verifyWmSig(
-                    this.wardId,
-                    head.counter,
-                    head.root,
-                    result.counter!,
-                    toRoot,
-                    headNonce,
-                    toBytes(result.wm_sig),
-                ));
-        if (!minted) {
-            throw new RelayFailure(
-                'wm_conflict',
-                'this result was not minted on the current head; sync and flush again',
-            );
+        const step = [this.wardId, head.counter, head.root, result.counter!, toRoot] as const;
+        if (!wm) {
+            if (!verifyWmSig(...step, NO_HEAD_NONCE, toBytes(result.wm_sig), TAG_STEP)) {
+                throw new RelayFailure(
+                    'bad_request',
+                    "this step is not signed by this wallet's device; it is not stored",
+                );
+            }
+        } else {
+            const headNonce = await wm.headNonce(this.wardId);
+            if (!headNonce || !verifyWmSig(...step, headNonce, toBytes(result.wm_sig))) {
+                throw new RelayFailure(
+                    'wm_conflict',
+                    'this result was not minted on the current head; sync and flush again',
+                );
+            }
         }
         const changes = result.leaves?.length
             ? result.leaves.map(leaf => ({
