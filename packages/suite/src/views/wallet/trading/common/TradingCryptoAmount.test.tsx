@@ -3,6 +3,7 @@ import '@suite-common/test-utils/globalOverrides';
 import { screen } from '@testing-library/react';
 import { type CryptoId } from 'invity-api';
 
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
@@ -25,6 +26,7 @@ const renderCryptoAmount = (isDiscreetModeActive: boolean) => {
     const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: {
             ...mockInitialAppState,
+            networks: mockNetworksState([asNetworkSymbol('sol')]),
             discreetMode: { isActive: isDiscreetModeActive },
         },
     });
