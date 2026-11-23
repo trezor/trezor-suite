@@ -8,7 +8,7 @@ import { type RouteParams, selectRouterParams } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
-import { getTokens, selectAllAccountsToList } from '@suite-common/wallet-core';
+import { getAccountShownTokens, selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { accountSearchFn, getAccountTypeName } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
@@ -78,11 +78,10 @@ export const AccountsList = memo(({ scrollElementRef, scrollSentinels }: Account
         () =>
             accounts
                 .map(account => {
-                    const tokens = getTokens({
-                        tokens: account.tokens ?? [],
-                        symbol: account.symbol,
-                        tokenDefinitions: tokenDefinitions[account.symbol]?.coin,
-                    });
+                    const tokens = getAccountShownTokens(
+                        account,
+                        tokenDefinitions[account.symbol]?.coin,
+                    );
 
                     return { account, tokens };
                 })
@@ -113,7 +112,7 @@ export const AccountsList = memo(({ scrollElementRef, scrollSentinels }: Account
                     return accountSearchFn(account, searchString, {
                         coinsFilter: coinFilter,
                         accountLabel,
-                        searchableTokens: tokens.shownWithBalance,
+                        searchableTokens: tokens,
                         accountTypeName: accountTypeTranslationId
                             ? translationString(accountTypeTranslationId)
                             : undefined,
@@ -135,7 +134,7 @@ export const AccountsList = memo(({ scrollElementRef, scrollSentinels }: Account
         const accountItems = filteredAccounts.map(({ account, tokens }): AccountsListItem => ({
             kind: 'account',
             account,
-            tokens: tokens.shownWithBalance,
+            tokens,
             height: ESTIMATED_SECTION_HEIGHT,
         }));
 

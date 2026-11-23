@@ -106,6 +106,13 @@ export const getTokens = <T extends TokenInfo = TokenInfo>({
     };
 };
 
+export const getAccountShownTokens = (
+    account: Account,
+    tokenDefinitions: TokenDefinition | undefined,
+): TokenInfo[] =>
+    getTokens({ tokens: account.tokens ?? [], symbol: account.symbol, tokenDefinitions })
+        .shownWithBalance;
+
 export const getAccountAnalyticsTokenSymbols = (
     account: Account,
     tokenDefinitions: TokenDefinition | undefined,
@@ -116,8 +123,8 @@ export const getAccountAnalyticsTokenSymbols = (
         ? (getNetworkDisplaySymbol(symbol) as TokenSymbol)
         : undefined;
 
-    const tokenSymbols = getTokens({ tokens: account.tokens ?? [], symbol, tokenDefinitions })
-        .shownWithBalance.map(token => token.symbol)
+    const tokenSymbols = getAccountShownTokens(account, tokenDefinitions)
+        .map(token => token.symbol)
         .filter((tokenSymbol): tokenSymbol is TokenSymbol => !!tokenSymbol);
 
     return [...new Set(nativeTokenSymbol ? [nativeTokenSymbol, ...tokenSymbols] : tokenSymbols)];
