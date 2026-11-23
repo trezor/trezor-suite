@@ -8,13 +8,12 @@ import {
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { isTestnet } from '@suite-common/wallet-utils';
-import { Column, Icon, Paragraph, Row, Skeleton, Text } from '@trezor/components';
+import { Column, Icon, Paragraph, Row, Skeleton } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
-import { AmountUnitSwitchWrapper } from '#src/components/suite/AmountUnitSwitchWrapper';
-import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { FiatHeader } from '#src/components/wallet/FiatHeader';
+import { SecondaryCryptoAmount } from '#src/components/wallet/SecondaryCryptoAmount';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { useAccountHeaderContext } from '#src/support/suite/AccountHeaderProvider';
 
@@ -103,22 +102,13 @@ export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalan
                         data-testid="@wallet/account/fiat-amount"
                     />
                 )}
-                <AmountUnitSwitchWrapper symbol={symbol}>
-                    {shouldDisplayBaseCurrency && (
-                        <Text
-                            intent="neutral"
-                            typographyStyle="body-md"
-                            priority="secondary"
-                            as="div"
-                        >
-                            <FormattedCryptoAmount
-                                data-testid="@wallet/account/crypto-balance"
-                                value={formattedBalance}
-                                networkSymbol={symbol}
-                            />
-                        </Text>
-                    )}
-                </AmountUnitSwitchWrapper>
+                {shouldDisplayBaseCurrency && (
+                    <SecondaryCryptoAmount
+                        symbol={symbol}
+                        value={formattedBalance}
+                        data-testid="@wallet/account/crypto-balance"
+                    />
+                )}
             </Column>
             {balanceExcludesTranslationId && (
                 <Row gap={4}>

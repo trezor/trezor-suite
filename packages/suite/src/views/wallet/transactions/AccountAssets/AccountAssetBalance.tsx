@@ -1,9 +1,12 @@
 import { TotalBalanceCard, TotalBalanceHeadline } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { selectAccountAssetOverview, selectAccountFiatBalance } from '@suite-common/assets';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { isUtxoBased } from '@suite-common/wallet-utils';
 import { Box, Column } from '@trezor/components';
 
+import { SecondaryCryptoAmount } from '#src/components/wallet/SecondaryCryptoAmount';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { useAccountHeaderContext } from '#src/support/suite/AccountHeaderProvider';
 
@@ -13,6 +16,7 @@ type AccountAssetBalanceProps = {
 
 /** What the account is worth in total, and how many assets make it up. */
 export const AccountAssetBalance = ({ accountKey }: AccountAssetBalanceProps) => {
+    const account = useSelector(state => selectAccountByKey(state, accountKey));
     const assetCount = useSelector(
         state => selectAccountAssetOverview(state, accountKey).assetCount,
     );
@@ -36,6 +40,13 @@ export const AccountAssetBalance = ({ accountKey }: AccountAssetBalanceProps) =>
                         fiatValue={fiatValue}
                         data-testid="@wallet/account-assets/fiat-amount"
                     />
+                    {account && isUtxoBased(account) && (
+                        <SecondaryCryptoAmount
+                            symbol={account.symbol}
+                            value={account.formattedBalance}
+                            data-testid="@wallet/account-assets/crypto-amount"
+                        />
+                    )}
                 </Column>
             </TotalBalanceCard>
         </Box>
