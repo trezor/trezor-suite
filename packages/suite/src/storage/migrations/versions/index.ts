@@ -38,3 +38,4 @@ export { default as m26_11_0 } from './26.11.0';
 export { default as m26_11_0_1 } from './26.11.0.1';
 export { default as m26_11_0_2 } from './26.11.0.2';
 export { default as m26_12_0 } from './26.12.0';
+export { default as m26_12_0_1 } from './26.12.0.1';
