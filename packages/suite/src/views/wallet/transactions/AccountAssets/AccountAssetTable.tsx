@@ -27,6 +27,7 @@ import {
     HOME_ASSET_COL_WIDTHS,
 } from '#src/views/home/HomeAssetsTable/homeAssetTableLayout';
 
+import { AccountAssetEmptyState } from './AccountAssetEmptyState';
 import { AccountAssetRowContainer } from './AccountAssetRowContainer';
 
 type AccountAssetTableProps = {
@@ -44,6 +45,7 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
     const hasTokens = useSelector(state =>
         hasNetworkFeatures(selectAccountByKey(state, accountKey) ?? undefined, 'tokens'),
     );
+    const isUnused = useSelector(state => selectAccountByKey(state, accountKey)?.empty);
     const hasAssets = useSelector(state => selectHasShownWalletAssets(state, accountKey));
     const smallBalances = useSelector(state => selectSmallBalanceSummary(state, accountKey));
     const areSmallBalancesShown = useSelector(selectAreHomeAssetSmallBalancesDisplayed);
@@ -64,7 +66,8 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
     };
 
     if (!hasAssets) {
-        return null;
+        // The page offers an unused account its own empty state, with the ways to fund it.
+        return isUnused ? null : <AccountAssetEmptyState />;
     }
 
     return (

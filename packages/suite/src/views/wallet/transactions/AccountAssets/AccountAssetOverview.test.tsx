@@ -307,4 +307,20 @@ describe('the account overview with the asset-first Home', () => {
             screen.queryByTestId('@wallet/account-assets/crypto-amount'),
         ).not.toBeInTheDocument();
     });
+
+    it('says the account holds no assets once everything it held is spent', () => {
+        renderOverview([{ ...btcAccount, formattedBalance: '0', balance: '0' }]);
+
+        expect(screen.getByTestId('@wallet/account-assets/empty')).toHaveTextContent(
+            messages.TR_ACCOUNT_ASSETS_EMPTY_TITLE.defaultMessage,
+        );
+        expect(screen.queryByTestId('@wallet/account-assets/table')).not.toBeInTheDocument();
+    });
+
+    it('leaves an unused account to the page, which offers the ways to fund it', () => {
+        renderOverview([{ ...btcAccount, formattedBalance: '0', balance: '0', empty: true }]);
+
+        expect(screen.queryByTestId('@wallet/account-assets/empty')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('@wallet/account-assets/table')).not.toBeInTheDocument();
+    });
 });
