@@ -3,6 +3,7 @@ import {
     type Account,
     type AccountKey,
     type FormState,
+    type HexString,
     type PrecomposedTransactionCardanoFinal,
     type PrecomposedTransactionFinal,
     type PrecomposedTransactionFinalBumpFeeRbf,
@@ -17,6 +18,7 @@ import {
     findAccountsByAddress,
     findTransactions,
     fromGwei,
+    fromHex,
     getAccountAddresses,
     getEvmTransactionTextSignature,
     getPendingAccount,
@@ -250,34 +252,52 @@ export const addFakePendingTxThunk = createThunk<
         });
     },
 );
+
 type BuildFakePendingEvmTxParams = {
-    precomposedTransaction: PrecomposedTransactionFinal;
-    precomposedForm: FormState;
     txid: string;
     account: Account;
+    /** Decimal string, the nonce the transaction was signed with. */
     nonce: string;
     blockHeight: number;
+    /** Number of blocks after `blockHeight` until the record expires. */
     deadline: number;
+    /** Recipient address, or the contract address for a contract call. */
+    toAddress: string;
+    /** Native value in wei; the token amount in base units when `token` is set. */
+    amount: string;
+    /** Fee in wei. */
+    fee: string;
+    /** Decimal string, in units of gas. */
+    gasLimit: string;
+    /** Legacy gas price in wei; unset for an EIP-1559 transaction. */
+    gasPrice?: string;
+    /** EIP-1559 maximum fee per gas in wei; unset for a legacy transaction. */
+    maxFeePerGas?: string;
+    /** EIP-1559 maximum priority fee per gas in wei; unset for a legacy transaction. */
+    maxPriorityFeePerGas?: string;
+    /** Calldata as hex, with or without the `0x` prefix; empty for a plain transfer. */
+    data?: string;
+    /** Set for a token transfer; the record then moves the token instead of the native value. */
     token?: TokenInfo;
 };
 
 const buildFakePendingEvmTx = ({
-    precomposedTransaction,
-    precomposedForm,
     txid,
     account,
     nonce,
     blockHeight,
     deadline,
+    toAddress,
+    amount,
+    fee,
+    gasLimit,
+    gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    data,
     token,
 }: BuildFakePendingEvmTxParams): AccountTransaction & Partial<WalletAccountTransaction> => {
-    const { outputs: precomposedOutputs } = precomposedTransaction;
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const output: (typeof precomposedOutputs)[number] = precomposedOutputs[0];
     const fromAddress = account.descriptor;
-    const toAddress = output.address!;
-    const amount = output.amount.toString();
-    const isLegacyTx = !isEip1559(precomposedTransaction);
 
     const blockTime = Math.floor(Date.now() / 1000);
     const common = {
@@ -289,21 +309,17 @@ const buildFakePendingEvmTx = ({
         blockTime,
         blockHash: undefined,
         deadline: blockHeight + deadline,
-        fee: precomposedTransaction.fee,
+        fee,
         rbf: false,
         internalTransfers: [],
         ethereumSpecific: {
             status: -1,
             nonce: parseInt(nonce),
-            gasLimit: parseInt(precomposedTransaction.feeLimit ?? '0'),
-            gasPrice: isLegacyTx ? fromGwei(precomposedTransaction.feePerByte).toWei() : undefined,
-            maxFeePerGas: isLegacyTx
-                ? undefined
-                : fromGwei(precomposedTransaction.maxFeePerGas ?? '0').toWei(),
-            maxPriorityFeePerGas: isLegacyTx
-                ? undefined
-                : fromGwei(precomposedTransaction.maxPriorityFeePerGas ?? '0').toWei(),
-            data: ensureHexPrefix(precomposedForm?.transactionData),
+            gasLimit: parseInt(gasLimit),
+            gasPrice,
+            maxFeePerGas,
+            maxPriorityFeePerGas,
+            data: ensureHexPrefix(data),
         },
         details: {
             vin: [
@@ -338,7 +354,7 @@ const buildFakePendingEvmTx = ({
             multiTokenValues: token.multiTokenValues,
         };
 
-        const voutAddress = precomposedForm?.transactionData ? toAddress : token.contract;
+        const voutAddress = data ? toAddress : token.contract;
 
         return {
             ...common,
@@ -398,7 +414,9 @@ type AddFakePendingEvmTxThunkParams = {
     ethereumNonce?: string;
 };
 
-type AddFakePendingEvmTxThunkState = BlockchainRootState & FeesRootState & TransactionsRootState;
+export type AddFakePendingEvmTxThunkState = BlockchainRootState &
+    FeesRootState &
+    TransactionsRootState;
 
 export const addFakePendingEvmTxThunk = createThunk<
     void,
@@ -447,15 +465,104 @@ export const addFakePendingEvmTxThunk = createThunk<
             sig === 'transfer' ||
             isEvmYieldTxByTextSignature(sig);
 
+        const { outputs: precomposedOutputs } = precomposedTransaction;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const output: (typeof precomposedOutputs)[number] = precomposedOutputs[0];
+        const isLegacyTx = !isEip1559(precomposedTransaction);
+
         const fakeTx = buildFakePendingEvmTx({
-            precomposedTransaction,
-            precomposedForm,
             token: transfersToken ? precomposedTransaction.token : undefined,
             txid,
             account,
             nonce,
             blockHeight,
             deadline,
+            toAddress: output.address!,
+            amount: output.amount.toString(),
+            fee: precomposedTransaction.fee,
+            gasLimit: precomposedTransaction.feeLimit ?? '0',
+            gasPrice: isLegacyTx ? fromGwei(precomposedTransaction.feePerByte).toWei() : undefined,
+            maxFeePerGas: isLegacyTx
+                ? undefined
+                : fromGwei(precomposedTransaction.maxFeePerGas ?? '0').toWei(),
+            maxPriorityFeePerGas: isLegacyTx
+                ? undefined
+                : fromGwei(precomposedTransaction.maxPriorityFeePerGas ?? '0').toWei(),
+            data: precomposedForm.transactionData,
+        });
+
+        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+    },
+);
+
+type AddFakePendingEvmSignedTxThunkParams = {
+    /** The transaction as passed to TrezorConnect.ethereumSignTransaction. */
+    transaction: {
+        /** Recipient or contract address; `null` for a contract deployment, which gets no record. */
+        to: string | null;
+        /** `0x`-prefixed hex, in wei. */
+        value: string;
+        /** `0x`-prefixed hex calldata; absent or empty for a plain transfer. */
+        data?: string;
+        /** `0x`-prefixed hex, in units of gas. */
+        gasLimit: string;
+        /** `0x`-prefixed hex, in wei; set for a legacy transaction. */
+        gasPrice?: string;
+        /** `0x`-prefixed hex, in wei; set for an EIP-1559 transaction. */
+        maxFeePerGas?: string;
+        /** `0x`-prefixed hex, in wei; set for an EIP-1559 transaction. */
+        maxPriorityFeePerGas?: string;
+        /** `0x`-prefixed hex; the nonce the transaction was signed with. */
+        nonce: string;
+    };
+    /** Hash returned by the push. */
+    txid: string;
+    account: Account;
+};
+
+export type AddFakePendingEvmSignedTxThunkState = BlockchainRootState & FeesRootState;
+
+// For pushes that have no precomposed transaction, such as a dApp request over WalletConnect.
+export const addFakePendingEvmSignedTxThunk = createThunk<
+    void,
+    AddFakePendingEvmSignedTxThunkParams,
+    { state: AddFakePendingEvmSignedTxThunkState }
+>(
+    `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingEvmSignedTransaction`,
+    ({ transaction, txid, account }, { dispatch, getState }) => {
+        // A contract deployment has no recipient to show.
+        if (account.networkType !== 'ethereum' || !transaction.to) return;
+
+        const rawFeeInfo = selectRawNetworkFeeInfo(getState(), account.symbol);
+        // Without a block time there is no deadline to expire the record by.
+        if (!rawFeeInfo?.blockTime) return;
+
+        const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
+        const toDecimal = (hex: string) => fromHex(hex as HexString).toIntegerString();
+
+        const { maxFeePerGas: maxFeePerGasHex, maxPriorityFeePerGas: maxPriorityFeePerGasHex } =
+            transaction;
+        // Connect signs EIP-1559 only when both fields are set, otherwise legacy with gasPrice.
+        const isEip1559Tx = !!maxFeePerGasHex && !!maxPriorityFeePerGasHex;
+        const gasLimit = toDecimal(transaction.gasLimit);
+        const maxFeePerGas = isEip1559Tx ? toDecimal(maxFeePerGasHex) : undefined;
+        const gasPrice = isEip1559Tx ? undefined : toDecimal(transaction.gasPrice ?? '0x0');
+
+        const fakeTx = buildFakePendingEvmTx({
+            txid,
+            account,
+            nonce: toDecimal(transaction.nonce),
+            blockHeight,
+            deadline: FAKE_TX_TTL_SECONDS / rawFeeInfo.blockTime,
+            toAddress: transaction.to,
+            amount: toDecimal(transaction.value),
+            // The upper bound; the backend reports the fee actually paid once the tx is mined.
+            fee: new BigNumber(gasLimit).times(maxFeePerGas ?? gasPrice!).toFixed(),
+            gasLimit,
+            gasPrice,
+            maxFeePerGas,
+            maxPriorityFeePerGas: isEip1559Tx ? toDecimal(maxPriorityFeePerGasHex) : undefined,
+            data: transaction.data,
         });
 
         dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
