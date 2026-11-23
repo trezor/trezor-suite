@@ -2092,6 +2092,14 @@ export const messages = defineMessages({
         defaultMessage: '{count, plural, one {# asset} other {# assets}}',
         id: 'TR_ACCOUNT_ASSETS_COUNT',
     },
+    TR_ACCOUNT_ASSETS_EMPTY_TITLE: {
+        defaultMessage: 'No assets',
+        id: 'TR_ACCOUNT_ASSETS_EMPTY_TITLE',
+    },
+    TR_ACCOUNT_ASSETS_EMPTY_DESCRIPTION: {
+        defaultMessage: 'Assets you receive to this account will show up here.',
+        id: 'TR_ACCOUNT_ASSETS_EMPTY_DESCRIPTION',
+    },
     TR_ASSET: {
         defaultMessage: 'Asset',
         id: 'TR_ASSET',

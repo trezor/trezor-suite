@@ -50,6 +50,8 @@ const ADA = asNetworkSymbol('ada');
 
 const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
 const ONE_INCH = '0x111111111117dc0aa78b770fa6a738034120c302' as TokenAddress;
+/** No token definition vouches for it, so it is hidden as unrecognized. */
+const UNRECOGNIZED = '0x00000000000000000000000000000000000000ff' as TokenAddress;
 
 const mockRate = (rate: number) => ({ rate, usdRate: rate }) as CurrentRate;
 
@@ -374,6 +376,61 @@ describe('the account overview with the asset-first Home', () => {
         expect(
             screen.queryByTestId('@wallet/account-assets/crypto-amount'),
         ).not.toBeInTheDocument();
+    });
+
+    it('says the account holds no assets once everything it held is spent', () => {
+        renderOverview([{ ...btcAccount, formattedBalance: '0', balance: '0' }]);
+
+        expect(screen.getByTestId('@wallet/account-assets/empty')).toHaveTextContent(
+            messages.TR_ACCOUNT_ASSETS_EMPTY_TITLE.defaultMessage,
+        );
+        // A network without tokens has nothing hidden to offer.
+        expect(screen.queryByTestId('@dashboard/home-asset/grouping')).not.toBeInTheDocument();
+    });
+
+    it('keeps the hidden tokens reachable when they are all the account holds', () => {
+        const unrecognizedOnly = mockWalletAccount({
+            symbol: ETH,
+            deviceState: DEVICE_STATE,
+            index: 2,
+            descriptor: asAccountDescriptor('unrecognizedHolder'),
+            formattedBalance: '0',
+            tokens: [mockAccountToken({ symbol: 'SCAM', contract: UNRECOGNIZED, balance: '5' })],
+        });
+
+        renderOverview([unrecognizedOnly]);
+        fireEvent.click(screen.getByTestId('@dashboard/home-asset/grouping'));
+
+        expect(screen.getByTestId('@wallet/account-assets/empty')).toBeInTheDocument();
+        expect(screen.getByTestId('@dashboard/home-asset/hidden-tokens')).toHaveTextContent(
+            messages.TR_HIDDEN_TOKENS.defaultMessage,
+        );
+    });
+
+    it("opens the account's own hidden tokens, not the whole wallet's", () => {
+        const unrecognizedOnly = mockWalletAccount({
+            symbol: ETH,
+            deviceState: DEVICE_STATE,
+            index: 2,
+            descriptor: asAccountDescriptor('unrecognizedHolder'),
+            formattedBalance: '0',
+            tokens: [mockAccountToken({ symbol: 'SCAM', contract: UNRECOGNIZED, balance: '5' })],
+        });
+
+        const { suiteRouterHistory } = renderOverview([unrecognizedOnly]);
+        fireEvent.click(screen.getByTestId('@dashboard/home-asset/grouping'));
+        fireEvent.click(screen.getByTestId('@dashboard/home-asset/hidden-tokens'));
+
+        expect(suiteRouterHistory.navigate).toHaveBeenCalledWith(
+            expect.objectContaining({ pathname: getRoute('wallet-tokens-hidden')?.pattern }),
+        );
+    });
+
+    it('leaves an unused account to the page, which offers the ways to fund it', () => {
+        renderOverview([{ ...btcAccount, formattedBalance: '0', balance: '0', empty: true }]);
+
+        expect(screen.queryByTestId('@wallet/account-assets/empty')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('@wallet/account-assets/table')).not.toBeInTheDocument();
     });
 
     describe('what navigating away from it reports', () => {

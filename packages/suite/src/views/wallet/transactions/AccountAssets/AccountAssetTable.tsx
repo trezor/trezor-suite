@@ -10,7 +10,7 @@ import {
     selectAccountSmallBalances,
     selectAreAssetTableSmallBalancesDisplayed,
 } from '@suite-common/assets';
-import { selectAreTokensSupportedByAccount } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectAreTokensSupportedByAccount } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -22,6 +22,7 @@ import { useAssetTableFolding } from '#src/components/wallet/assets/useAssetTabl
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { DropdownRow } from '#src/views/wallet/tokens/DropdownRow';
 
+import { AccountAssetEmptyRow } from './AccountAssetEmptyRow';
 import { AccountAssetSectionRow } from './AccountAssetSectionRow';
 
 type AccountAssetTableProps = {
@@ -37,6 +38,7 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [isZeroBalanceOpen, setIsZeroBalanceOpen] = useState(false);
     const hasTokens = useSelector(state => selectAreTokensSupportedByAccount(state, accountKey));
+    const isUnused = useSelector(state => selectAccountByKey(state, accountKey)?.empty);
     const { heldSections, zeroBalanceSections } = useSelector(state =>
         selectAccountAssetOverview(state, accountKey),
     );
@@ -62,7 +64,10 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
         dispatch(gotoThunk({ routeName: 'wallet-tokens-hidden', preserveParams: true }));
     };
 
-    if (heldSections.length === 0 && zeroBalanceSections.length === 0) {
+    const isEmpty = heldSections.length === 0 && zeroBalanceSections.length === 0;
+
+    // The page offers an unused account its own empty state, with the ways to fund it.
+    if (isEmpty && isUnused) {
         return null;
     }
 
@@ -78,6 +83,7 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
             }
             data-testid="@wallet/account-assets/table"
         >
+            {isEmpty && <AccountAssetEmptyRow />}
             {rows.length === 0 && heldSections.length > 0 && (
                 <AssetTableSmallBalancesHiddenRow
                     onShowSmallBalances={() => changeSmallBalances(true)}
