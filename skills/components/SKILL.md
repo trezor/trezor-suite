@@ -1,6 +1,6 @@
 ---
 name: components
-description: React component file structure and patterns for Trezor Suite. Use when creating, refactoring or reviewing React components, including prop passing, component organization and directory layout.
+description: 'Use when creating, refactoring or reviewing Trezor Suite React components. Covers component structure, props, local context and directory layout.'
 ---
 
 # Components

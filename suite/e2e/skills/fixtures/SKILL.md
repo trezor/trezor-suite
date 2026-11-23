@@ -1,6 +1,6 @@
 ---
 name: fixtures
-description: 'Playwright fixture architecture in Suite E2E tests: scope, dependency injection, mocks lifecycle. Use whenever tests need shared setup, teardown or reusable resources.'
+description: 'Use when creating, changing or reviewing Suite E2E Playwright fixtures, shared setup or teardown. Covers fixture scope, dependencies and mock lifecycle.'
 ---
 
 # Fixtures in Trezor Suite E2E Tests

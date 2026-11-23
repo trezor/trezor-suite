@@ -1,6 +1,6 @@
 ---
 name: import-export
-description: Named export conventions and barrel file usage rules for the Trezor Suite codebase. Use when writing imports, exports, or deciding on module structure.
+description: 'Use when writing or reviewing Trezor Suite imports, exports or package public interfaces. Covers named exports and barrel files.'
 ---
 
 # Import/Export

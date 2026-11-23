@@ -1,6 +1,6 @@
 ---
 name: analytics-and-sentry-privacy
-description: Rules for keeping confidential data out of analytics events and Sentry reports (incl. `console.error`, tags, extras and breadcrumbs). Use when adding or changing an analytics event or its payload, or any code that reports to Sentry.
+description: 'Use when adding, changing or reviewing Trezor Suite analytics events or Sentry reporting, including console.error. Covers payload contracts and confidential data.'
 ---
 
 # Analytics and Sentry privacy

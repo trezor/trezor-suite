@@ -1,6 +1,6 @@
 ---
 name: naming
-description: Naming conventions for variables, functions, booleans, components, and domain-specific terms in Trezor Suite. Use when naming anything in the codebase.
+description: 'Use when creating, renaming or reviewing Trezor Suite identifiers and domain terms. Covers variables, functions, components and wallet terminology.'
 ---
 
 # Naming

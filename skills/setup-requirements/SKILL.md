@@ -1,6 +1,6 @@
 ---
 name: setup-requirements
-description: Prerequisites and initial environment setup for the Trezor Suite monorepo, including Node.js, Yarn, Git LFS, and submodules. Use when setting up or troubleshooting the development environment.
+description: 'Use when setting up a Trezor Suite checkout or diagnosing missing prerequisites or incomplete installation. Covers Node.js, Yarn, Git LFS, submodules and essential builds.'
 ---
 
 # Setup Requirements

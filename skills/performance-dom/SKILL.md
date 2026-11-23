@@ -1,6 +1,6 @@
 ---
 name: performance-dom
-description: Browser rendering performance for Trezor Suite — forced synchronous layout from geometry reads, observer APIs instead of measuring an element, and transitioning only compositor properties. Use when measuring, scrolling or animating a DOM element, or when writing a CSS transition. Web and desktop only.
+description: 'Use when writing or reviewing DOM measurement, scrolling, animations or CSS transitions in Trezor Suite web or desktop. Covers layout thrashing and compositor properties.'
 ---
 
 # DOM Manipulation and CSS Properties

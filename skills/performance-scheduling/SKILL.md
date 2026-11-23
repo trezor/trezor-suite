@@ -1,6 +1,6 @@
 ---
 name: performance-scheduling
-description: Deferring non-essential work with requestIdleCallback. Use when a startup path blocks interaction, or when scheduling analytics, prefetch or other background work.
+description: 'Use when deferring non-essential main-thread work or diagnosing startup blocking in Trezor Suite web or desktop. Covers requestIdleCallback scheduling for analytics and prefetch.'
 ---
 
 # Long and Non-Essential Tasks

@@ -1,6 +1,6 @@
 ---
 name: dependency-injection
-description: Dependency Injection pattern for service definitions, factories, and composition roots. Use when working with packages that use the DI pattern.
+description: 'Use when defining, wiring, testing or reviewing Trezor Suite injected services and composition roots, primarily in packages that reference this skill.'
 ---
 
 # Dependency injection
