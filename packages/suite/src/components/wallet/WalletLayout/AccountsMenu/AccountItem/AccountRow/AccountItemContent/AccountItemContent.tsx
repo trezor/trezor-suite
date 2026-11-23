@@ -6,6 +6,7 @@ import { WarningIcon } from '@trezor/icons';
 
 import { CoinBalance } from '#src/components/suite/CoinBalance';
 import { useSelector } from '#src/hooks/suite/useSelector';
+import { isAccountBalanceOnlyCoin } from '#src/utils/wallet/accountUtils';
 
 import { AccountItemBadges } from './AccountItemBadges';
 import { BalancePlaceholder, FiatBalancePlaceholder } from './BalancePlaceholder';
@@ -34,7 +35,10 @@ export const AccountItemContent = ({
     const isFailed = !!account.failed;
     const canShowBalance = account.backendType !== 'coinjoin' || account.status !== 'initial';
     const shouldShowBalancePlaceholder = !isFailed && !canShowBalance;
-    const shouldShowCryptoBalance = !isFailed && canShowBalance && tokenCount === 0 && !hasStaking;
+    const shouldShowCryptoBalance =
+        !isFailed &&
+        canShowBalance &&
+        isAccountBalanceOnlyCoin({ shownTokenCount: tokenCount, hasStaking });
 
     return (
         <Row

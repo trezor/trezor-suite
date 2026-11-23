@@ -26,3 +26,13 @@ export const getSelectedAccount = (
         ) || null
     );
 };
+
+type IsAccountBalanceOnlyCoinParams = {
+    shownTokenCount: number;
+    hasStaking: boolean;
+};
+
+export const isAccountBalanceOnlyCoin = ({
+    shownTokenCount,
+    hasStaking,
+}: IsAccountBalanceOnlyCoinParams): boolean => shownTokenCount === 0 && !hasStaking;
