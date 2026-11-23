@@ -222,11 +222,23 @@ export const storageLoadReducers = {
             (loadedSettings.theme?.variant as string | undefined) === 'debug'
                 ? { ...loadedSettings.theme, variant: 'light' as const }
                 : loadedSettings.theme;
+        const storedDebugTransports: unknown = loadedSettings.debug?.transports;
 
         return {
             ...state,
             ...loadedSettings,
             theme: theme ?? state.theme,
+            // Stored `debug` would otherwise replace the defaults whole, and settings saved by an
+            // older Suite lack the fields added since, such as `transports`. Filling them in here
+            // keeps the state matching its type, so no reader needs a fallback of its own.
+            debug: {
+                ...state.debug,
+                ...loadedSettings.debug,
+                // Stored data is not validated, and Connect init maps over the transports.
+                transports: Array.isArray(storedDebugTransports)
+                    ? loadedSettings.debug.transports
+                    : state.debug.transports,
+            },
             enabledSecurityChecks: {
                 ...state.enabledSecurityChecks,
                 ...loadedSettings.enabledSecurityChecks,
