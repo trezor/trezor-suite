@@ -10,6 +10,7 @@ type TransactionsPageQueryKeyParams = {
 export const commonQueryKeys = {
     networkTxSimulation: (input?: any) => ['network-tx-simulation', input],
     dappScan: (url?: string) => ['dapp-scan', url],
+    evmNetworks: () => ['evm-networks'],
     validatorsQueue: (accountKey: string | undefined, timestamp?: number) => [
         'everstake',
         'validatorsQueue',

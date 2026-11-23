@@ -1,3 +1,4 @@
+import { waitFor } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
@@ -34,6 +35,10 @@ import {
 } from '@suite-common/connect-init/mocks';
 import { connectPopupInitialState } from '@suite-common/connect-popup';
 import { prepareDeviceReducer } from '@suite-common/device';
+import {
+    type PrefetchEvmNetworksThunkDeps,
+    getCachedEvmNetworks,
+} from '@suite-common/evm-networks-api';
 import { firmwareInitialState } from '@suite-common/firmware';
 import {
     fetchConfigThunk,
@@ -43,6 +48,7 @@ import {
 } from '@suite-common/message-system';
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
 import { mockNetworksState } from '@suite-common/networks/mocks';
+import { createQueryClient } from '@suite-common/react-query';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -301,12 +307,14 @@ type InitActionTestDeps = ConnectInitThunkDeps &
     InitBlockchainThunkDeps &
     InitTokenDefinitionsThunkDeps &
     PeriodicFetchFiatRatesThunkDeps &
+    PrefetchEvmNetworksThunkDeps &
     WalletConnectInitThunkDeps &
     WithServices<InitThunkDesktopApiDep>;
 
 const initStore = (state: InitThunkState) => {
     const memoryHistory = createMemoryHistory();
     const suiteRouterHistory = createSuiteRouterHistory({ history: memoryHistory });
+    const queryClient = createQueryClient({ shouldRefetchOnEvents: false });
     const { services } = createTestCompositionRoot<InitActionTestDeps, InitThunkState>({
         services: store => ({
             ...createDesktopApiDep(),
@@ -325,6 +333,7 @@ const initStore = (state: InitThunkState) => {
                 () => state.wallet.settings.enabledNetworks,
             ),
             suiteRouterHistory,
+            queryClient,
             lockDevice: (isLocked: boolean): void => {
                 store.dispatch(lockDevice(isLocked));
             },
@@ -346,6 +355,7 @@ const initStore = (state: InitThunkState) => {
     return {
         store: services.store,
         suiteRouterHistory,
+        queryClient,
     };
 };
 
@@ -378,5 +388,32 @@ describe('Suite init thunk', () => {
                 expect(store.getState().router.app).toEqual(options.expectedApp);
             }
         });
+    });
+});
+
+describe('EVM networks prefetch', () => {
+    const initWithExperimentalFeatures = async (
+        experimental: InitThunkState['suiteSettings']['experimental'],
+    ) => {
+        const { store, queryClient } = initStore({
+            ...getInitialState(),
+            suiteSettings: { ...suiteSettingsInitialState, experimental },
+        });
+
+        await store.dispatch(initThunk());
+
+        return { queryClient };
+    };
+
+    it('prefetches the networks at startup with custom EVM networks enabled', async () => {
+        const { queryClient } = await initWithExperimentalFeatures(['custom-evm-networks']);
+
+        await waitFor(() => expect(getCachedEvmNetworks(queryClient)?.length).toBeGreaterThan(0));
+    });
+
+    it('does not query the networks with custom EVM networks disabled', async () => {
+        const { queryClient } = await initWithExperimentalFeatures([]);
+
+        expect(getCachedEvmNetworks(queryClient)).toBeUndefined();
     });
 });

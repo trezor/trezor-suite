@@ -1,0 +1,726 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Fiat Rates Server API",
+        "version": "2.0.0",
+        "description": "Trezor/SatoshiLabs fiat rates API: spot rates and point history by CAIP-19 asset identity. All routes reject requests whose raw query string exceeds 2048 characters with a 400 response."
+    },
+    "servers": [
+        {
+            "url": "/",
+            "description": "This server"
+        }
+    ],
+    "tags": [
+        {
+            "name": "rates",
+            "description": "Rates by CAIP-19 asset identity, any EVM chain, three answer states."
+        },
+        {
+            "name": "networks",
+            "description": "EVM networks a wallet could add."
+        },
+        {
+            "name": "health",
+            "description": "Service health."
+        }
+    ],
+    "paths": {
+        "/api/v2/rates": {
+            "get": {
+                "operationId": "getRates",
+                "tags": ["rates"],
+                "summary": "Spot rates for assets by CAIP-19 identity.",
+                "description": "Each requested asset answers in one of three states. `priced` carries the rates and the asset it is priced as (ETH on an L2 is priced as `eip155:1/native:0`). `notSupported` is final for the cache window: the chain is not admitted, the native cannot be identified, or the token is outside the provider catalog. `unavailable` means the derived chain table is not built yet or the provider failed; keep the last known price and retry. The lists of states and reasons only grow: a client treats a reason it does not know as `notSupported` and a state it does not know as `unavailable`. The response is 200 whatever the states; `Cache-Control` follows the weakest one.",
+                "parameters": [
+                    {
+                        "name": "assets",
+                        "in": "query",
+                        "required": true,
+                        "description": "Comma-separated CAIP-19 asset refs, e.g. \"eip155:1/native:0,eip155:42161/erc20:0xaf88d065e77c8cc2239327c5edb3a432268e5831\". At most 50 refs of up to 160 characters each.",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^[A-Za-z0-9:._/-]{1,160}(?:,[A-Za-z0-9:._/-]{1,160}){0,49}$"
+                        }
+                    },
+                    {
+                        "name": "quotes",
+                        "in": "query",
+                        "required": true,
+                        "description": "Comma-separated quote currencies, e.g. \"usd,eur\". At most 20, each one of: aed, ars, aud, bdt, bhd, bmd, brl, cad, chf, clp, cny, czk, dkk, eur, gbp, hkd, huf, idr, ils, inr, jpy, krw, kwd, lkr, mmk, mxn, myr, ngn, nok, nzd, php, pkr, pln, rub, sar, sek, sgd, thb, try, twd, uah, usd, vef, vnd, zar, btc, eth.",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^[A-Za-z0-9]{1,10}(?:,[A-Za-z0-9]{1,10}){0,19}$"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Per-asset answers.",
+                        "headers": {
+                            "Cache-Control": {
+                                "description": "Fresh responses are public-cacheable for the route TTL; stale/error responses are no-store.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Age": {
+                                "description": "Seconds since the cached data was fetched. Present only on fresh cacheable responses.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Rates"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid or missing query parameters.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/rates/history": {
+            "get": {
+                "operationId": "getRatesHistory",
+                "tags": ["rates"],
+                "summary": "Point history for one asset and quote.",
+                "description": "Points between `from` and `to` (Unix seconds, at most 366 days apart), stored under the asset the request is priced as, so an L2 ETH and Ethereum ETH share one series. The first request for a window costs one provider call, taken from a daily budget; later ones are served from storage. This route has its own per-client rate limit. `unavailable` is a 503 with `Retry-After`; the other states are 200. The lists of reasons only grow; a client treats one it does not know by its state.",
+                "parameters": [
+                    {
+                        "name": "asset",
+                        "in": "query",
+                        "required": true,
+                        "description": "One CAIP-19 asset ref, e.g. \"eip155:59144/native:0\".",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 160,
+                            "pattern": "^[A-Za-z0-9:._/-]+$"
+                        }
+                    },
+                    {
+                        "name": "quote",
+                        "in": "query",
+                        "required": true,
+                        "description": "One quote currency, e.g. \"usd\"; one of: aed, ars, aud, bdt, bhd, bmd, brl, cad, chf, clp, cny, czk, dkk, eur, gbp, hkd, huf, idr, ils, inr, jpy, krw, kwd, lkr, mmk, mxn, myr, ngn, nok, nzd, php, pkr, pln, rub, sar, sek, sgd, thb, try, twd, uah, usd, vef, vnd, zar, btc, eth.",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 10,
+                            "pattern": "^[A-Za-z0-9]+$"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": true,
+                        "description": "Inclusive start as Unix seconds.",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d{1,10}$"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": true,
+                        "description": "Inclusive end as Unix seconds; at most 366 days after from.",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d{1,10}$"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The series, or a final \"not supported\".",
+                        "headers": {
+                            "Cache-Control": {
+                                "description": "Fresh responses are public-cacheable for the route TTL; stale/error responses are no-store.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Age": {
+                                "description": "Seconds since the cached data was fetched. Present only on fresh cacheable responses.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/History"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid or missing query parameters.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Per-client history rate limit exceeded.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Daily upstream budget spent or provider failure; retry after `Retry-After` seconds.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/History"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/evm-networks": {
+            "get": {
+                "operationId": "getEvmNetworks",
+                "tags": ["networks"],
+                "summary": "EVM networks a wallet could add.",
+                "description": "Every EVM network the community list chains.json describes and does not deprecate, testnets and little-known networks included, in one document. Names, gas tokens, RPC and explorer URLs are third-party data: cleaned (https only, no credentials, no key templates) but vetted by no one. A row with `coingeckoId` is one CoinGecko knows under the same chain id with the same gas token; a client shows those by default and the rest as unvetted. `coingeckoId` does not mean the service has fiat rates for the network. The path is the version: the body may gain fields and never loses one. The list is rebuilt about once an hour, but `ETag` and `generatedAt` change only when the networks do; send `If-None-Match` with the last `ETag` to revalidate. 503 with `Retry-After` until the first list exists.",
+                "responses": {
+                    "200": {
+                        "description": "The list.",
+                        "headers": {
+                            "Cache-Control": {
+                                "description": "Fresh responses are public-cacheable for the route TTL; stale/error responses are no-store.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "ETag": {
+                                "description": "Weak validator of the networks; the same on every replica that holds the same networks.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EvmNetworks"
+                                }
+                            }
+                        }
+                    },
+                    "304": {
+                        "description": "The body named by `If-None-Match` is still current."
+                    },
+                    "503": {
+                        "description": "No list has been derived yet; retry after `Retry-After` seconds.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "operationId": "getHealth",
+                "tags": ["health"],
+                "summary": "Service health.",
+                "description": "Reports database/Redis connectivity, the CoinGecko circuit-breaker state, cache stats and the age of the derived chain table. `/health/liveness` answers as soon as the process serves HTTP; `/health/readiness` returns 503 while `status` is \"degraded\".",
+                "responses": {
+                    "200": {
+                        "description": "Health snapshot. `status` is \"degraded\" if any dependency is unhealthy.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Health"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Rates": {
+                "type": "object",
+                "properties": {
+                    "quotes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "assets": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "anyOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "state": {
+                                            "type": "string",
+                                            "enum": ["priced"]
+                                        },
+                                        "pricedAs": {
+                                            "type": "string",
+                                            "description": "The asset whose price this is; differs from the key for merged assets, e.g. L2 ETH priced as eip155:1/native:0."
+                                        },
+                                        "rates": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "value": {
+                                                        "type": "number"
+                                                    },
+                                                    "observedAt": {
+                                                        "description": "Unix seconds the provider last updated this price, when known.",
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                "required": ["value"],
+                                                "additionalProperties": false
+                                            },
+                                            "description": "Quote currency -> rate. A requested quote the provider lacks is absent."
+                                        },
+                                        "fetchedAt": {
+                                            "type": "string",
+                                            "description": "ISO timestamp the rates were fetched from the provider."
+                                        }
+                                    },
+                                    "required": ["state", "pricedAs", "rates", "fetchedAt"],
+                                    "additionalProperties": false
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "state": {
+                                            "type": "string",
+                                            "enum": ["notSupported"]
+                                        },
+                                        "reason": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "denied",
+                                                        "chainNotAdmitted",
+                                                        "nativeUnsupported",
+                                                        "tokenNotInCatalog",
+                                                        "notListed",
+                                                        "malformed"
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": ["state", "reason"],
+                                    "additionalProperties": false
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "state": {
+                                            "type": "string",
+                                            "enum": ["unavailable"]
+                                        }
+                                    },
+                                    "required": ["state"],
+                                    "additionalProperties": false
+                                }
+                            ]
+                        },
+                        "description": "Requested ref, as sent -> its answer."
+                    }
+                },
+                "required": ["quotes", "assets"],
+                "additionalProperties": false
+            },
+            "History": {
+                "anyOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "asset": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": ["priced"]
+                            },
+                            "pricedAs": {
+                                "type": "string"
+                            },
+                            "quote": {
+                                "type": "string"
+                            },
+                            "from": {
+                                "type": "number"
+                            },
+                            "to": {
+                                "type": "number"
+                            },
+                            "points": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "at": {
+                                            "type": "number",
+                                            "description": "Unix seconds."
+                                        },
+                                        "rate": {
+                                            "type": "number"
+                                        }
+                                    },
+                                    "required": ["at", "rate"],
+                                    "additionalProperties": false
+                                },
+                                "description": "Ascending, clipped to [from, to]; the provider decides the granularity."
+                            },
+                            "fetchedAt": {
+                                "type": "string",
+                                "description": "ISO timestamp the series was fetched from the provider."
+                            }
+                        },
+                        "required": [
+                            "asset",
+                            "state",
+                            "pricedAs",
+                            "quote",
+                            "from",
+                            "to",
+                            "points",
+                            "fetchedAt"
+                        ],
+                        "additionalProperties": false
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "asset": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": ["notSupported"]
+                            },
+                            "reason": {
+                                "anyOf": [
+                                    {
+                                        "type": "string",
+                                        "enum": [
+                                            "denied",
+                                            "chainNotAdmitted",
+                                            "nativeUnsupported",
+                                            "tokenNotInCatalog",
+                                            "notListed",
+                                            "malformed"
+                                        ]
+                                    },
+                                    {
+                                        "type": "string"
+                                    }
+                                ]
+                            }
+                        },
+                        "required": ["asset", "state", "reason"],
+                        "additionalProperties": false
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "asset": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": ["unavailable"]
+                            },
+                            "reason": {
+                                "description": "budget: the daily upstream allowance is spent; noTable: the derived chain table is not built yet. Retry after Retry-After.",
+                                "anyOf": [
+                                    {
+                                        "type": "string",
+                                        "enum": ["budget", "provider", "noTable"]
+                                    },
+                                    {
+                                        "type": "string"
+                                    }
+                                ]
+                            }
+                        },
+                        "required": ["asset", "state", "reason"],
+                        "additionalProperties": false
+                    }
+                ]
+            },
+            "EvmNetworks": {
+                "type": "object",
+                "properties": {
+                    "generatedAt": {
+                        "type": "string",
+                        "description": "When the networks last changed, ISO 8601."
+                    },
+                    "networks": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "caip2": {
+                                    "type": "string",
+                                    "pattern": "^eip155:-?\\d+(?:\\.\\d+)?$",
+                                    "description": "CAIP-2 chain id."
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "description": "Name as chains.json writes it. Third-party data."
+                                },
+                                "networkType": {
+                                    "description": "mainnet on every row with coingeckoId (CoinGecko lists no testnets); otherwise inferred from the chains.json name and title, unknown when the labels are missing or conflict. A client reads a value it does not know as unknown.",
+                                    "anyOf": [
+                                        {
+                                            "type": "string",
+                                            "enum": ["mainnet", "testnet", "unknown"]
+                                        },
+                                        {
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "nativeCurrency": {
+                                    "type": "object",
+                                    "properties": {
+                                        "symbol": {
+                                            "type": "string",
+                                            "minLength": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "minLength": 1
+                                        },
+                                        "decimals": {
+                                            "type": "integer",
+                                            "minimum": 0,
+                                            "maximum": 9007199254740991
+                                        }
+                                    },
+                                    "required": ["symbol", "name", "decimals"],
+                                    "additionalProperties": false
+                                },
+                                "rpcUrls": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "format": "uri"
+                                    },
+                                    "description": "Public https JSON-RPC endpoints from chains.json; possibly none. Third-party data."
+                                },
+                                "explorerUrl": {
+                                    "type": "string",
+                                    "format": "uri"
+                                },
+                                "coingeckoId": {
+                                    "description": "CoinGecko asset-platform id; present when CoinGecko knows the chain under this chain id with the same gas token. Marks a well-known network; says nothing about fiat rates.",
+                                    "type": "string",
+                                    "minLength": 1
+                                },
+                                "iconUrl": {
+                                    "description": "https URL of a raster image of the network, loadable without credentials. Today a CoinGecko CDN URL, only on rows with coingeckoId; the host may change.",
+                                    "type": "string",
+                                    "format": "uri"
+                                },
+                                "nativeAssetCryptoId": {
+                                    "description": "CoinGecko coin id of the gas coin, e.g. ethereum on an Ethereum L2. Present when CoinGecko lists the gas coin. Not a trade id.",
+                                    "type": "string",
+                                    "minLength": 1
+                                },
+                                "tradeCryptoId": {
+                                    "description": "Invity trade id of the gas coin on this chain. Not filled yet: absent on every network.",
+                                    "type": "string",
+                                    "minLength": 1
+                                },
+                                "mayClearSign": {
+                                    "type": "boolean",
+                                    "description": "Picker label: true when Trezor publishes clear-signing definitions for some contracts on this network. Not per transaction. false on every network until #84."
+                                },
+                                "simulationSupport": {
+                                    "type": "boolean",
+                                    "description": "true when Blockaid simulates transactions on this network; send the chain id as Blockaid chain. From a hand list checked against Blockaid, so a newly supported network is false until the list is updated."
+                                }
+                            },
+                            "required": [
+                                "caip2",
+                                "name",
+                                "networkType",
+                                "nativeCurrency",
+                                "rpcUrls",
+                                "mayClearSign",
+                                "simulationSupport"
+                            ],
+                            "additionalProperties": false
+                        },
+                        "description": "Ascending by the chain id in caip2."
+                    }
+                },
+                "required": ["generatedAt", "networks"],
+                "additionalProperties": false
+            },
+            "Health": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": ["ok", "degraded"]
+                    },
+                    "ready": {
+                        "type": "boolean",
+                        "description": "True when the replica should receive traffic; /health/readiness answers 503 otherwise."
+                    },
+                    "uptime": {
+                        "type": "number",
+                        "description": "Seconds since the process started."
+                    },
+                    "cache": {
+                        "type": "object",
+                        "properties": {
+                            "size": {
+                                "type": "number"
+                            },
+                            "hitRate": {
+                                "type": "number"
+                            },
+                            "oldestEntry": {
+                                "nullable": true,
+                                "type": "number"
+                            },
+                            "hits": {
+                                "type": "number"
+                            },
+                            "misses": {
+                                "type": "number"
+                            }
+                        },
+                        "required": ["size", "hitRate", "oldestEntry", "hits", "misses"],
+                        "additionalProperties": false
+                    },
+                    "database": {
+                        "type": "object",
+                        "properties": {
+                            "connected": {
+                                "type": "boolean"
+                            }
+                        },
+                        "required": ["connected"],
+                        "additionalProperties": false
+                    },
+                    "redis": {
+                        "type": "object",
+                        "properties": {
+                            "connected": {
+                                "type": "boolean"
+                            }
+                        },
+                        "required": ["connected"],
+                        "additionalProperties": false
+                    },
+                    "coingecko": {
+                        "type": "object",
+                        "properties": {
+                            "circuitState": {
+                                "type": "string",
+                                "enum": ["closed", "open", "half-open"]
+                            },
+                            "lastFetchAt": {
+                                "nullable": true,
+                                "type": "string"
+                            },
+                            "consecutiveFailures": {
+                                "type": "number"
+                            }
+                        },
+                        "required": ["circuitState", "lastFetchAt", "consecutiveFailures"],
+                        "additionalProperties": false
+                    },
+                    "identity": {
+                        "description": "The derived chain table; null before the first accepted run, absent when the identity job is off.",
+                        "nullable": true,
+                        "type": "object",
+                        "properties": {
+                            "generatedAt": {
+                                "type": "string",
+                                "description": "ISO timestamp the live derived chain table was generated."
+                            },
+                            "ageSeconds": {
+                                "type": "number"
+                            },
+                            "derivedChains": {
+                                "type": "number"
+                            }
+                        },
+                        "required": ["generatedAt", "ageSeconds", "derivedChains"],
+                        "additionalProperties": false
+                    }
+                },
+                "required": [
+                    "status",
+                    "ready",
+                    "uptime",
+                    "cache",
+                    "database",
+                    "redis",
+                    "coingecko"
+                ],
+                "additionalProperties": false
+            },
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string",
+                        "description": "Human-readable error message. Not a code: a client never branches on its text."
+                    }
+                },
+                "required": ["error"],
+                "additionalProperties": false
+            }
+        }
+    }
+}

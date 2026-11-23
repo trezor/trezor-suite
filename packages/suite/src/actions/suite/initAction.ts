@@ -14,6 +14,7 @@ import {
     type SuiteSettingsRootState,
     selectEarnStakingWorkerBaseUrl,
     selectEarnYieldWorkerBaseUrl,
+    selectHasExperimentalFeature,
     selectLanguage,
     suiteSettingsActions,
 } from '@suite/settings';
@@ -23,6 +24,10 @@ import { type ConnectInitThunkDeps, type ConnectInitThunkState } from '@suite-co
 import { type DeviceRootState } from '@suite-common/device';
 import { earnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-api';
 import { earnStakingWorkerBaseUrl } from '@suite-common/earn-staking-api';
+import {
+    type PrefetchEvmNetworksThunkDeps,
+    prefetchEvmNetworksThunk,
+} from '@suite-common/evm-networks-api';
 import {
     type MessageSystemRootState,
     initMessageSystemThunk,
@@ -84,6 +89,7 @@ type InitThunkDeps = ConnectInitThunkDeps &
     InitBlockchainThunkDeps &
     InitTokenDefinitionsThunkDeps &
     PeriodicFetchFiatRatesThunkDeps &
+    PrefetchEvmNetworksThunkDeps &
     WalletConnectInitThunkDeps &
     WithServices<InitThunkDesktopApiDep>;
 
@@ -146,6 +152,12 @@ export const initThunk =
         // Do not initialize Connect or anything else related to it, if there is an app-wide killswitch via message-system.
         const activeKillswitchMessage = selectActiveKillswitchMessage(getState());
         if (activeKillswitchMessage) return;
+
+        // Not awaited: only the custom network picker and transaction simulation read the result.
+        // Gated until the EVM networks service is deployed, so other users do not request it.
+        if (selectHasExperimentalFeature('custom-evm-networks')(getState())) {
+            dispatch(prefetchEvmNetworksThunk());
+        }
 
         // 6. init connect (could throw an error, then the error is caught in <ErrorBoundary /> in Main.tsx.
         try {

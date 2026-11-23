@@ -108,6 +108,7 @@
 !/suite-common/earn-staking-api
 !/suite-common/earn-staking-common
 !/suite-common/earn-staking-products
+!/suite-common/evm-networks-api
 !/suite-common/extra-dependencies
 !/suite-common/feedback
 !/suite-common/fiat-services
