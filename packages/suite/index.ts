@@ -307,6 +307,7 @@ export { isNetworkWithGraphFeature } from './src/utils/wallet/graph/utils';
 export { TradeBox } from './src/views/wallet/transactions/TradeBox/TradeBox';
 export { SingleAccountTransactionList } from './src/views/wallet/transactions/TransactionList/SingleAccountTransactionList';
 export { AccountAssetOverview } from './src/views/wallet/transactions/AccountAssets/AccountAssetOverview';
+export { hasAccountAssetOverview } from './src/views/wallet/transactions/AccountAssets/accountAssetOverviewRules';
 export { AccountEmpty } from './src/views/wallet/transactions/components/AccountEmpty';
 export { AccountOverviewBalance } from './src/views/wallet/transactions/components/AccountOverviewBalance';
 export { NoTransactions } from './src/views/wallet/transactions/components/NoTransactions';

@@ -4,6 +4,7 @@ import { motion, useAnimation } from 'framer-motion';
 import styled from 'styled-components';
 
 import { AccountTypeBadge, useAccountLabel } from '@suite/account';
+import { Address } from '@suite/address';
 import { useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -24,9 +25,15 @@ const DetailsContainer = styled(motion.div)`
 type AccountDetailsProps = {
     selectedAccount: Account;
     isBalanceShown: boolean;
+    /** Only for an account that is one address: a UTXO account's descriptor is its xpub. */
+    isAddressShown?: boolean;
 };
 
-export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetailsProps) => {
+export const AccountDetails = ({
+    selectedAccount,
+    isBalanceShown,
+    isAddressShown = false,
+}: AccountDetailsProps) => {
     const hasMountedRef = useRef(false);
     const controls = useAnimation();
     const { defaultLabel, label } = useAccountLabel({ account: selectedAccount });
@@ -110,6 +117,16 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                     padding={8}
                 >
                     <H2 typographyStyle={getTypographyStyle()}>{accountNameElement}</H2>
+                    {isAddressShown && (
+                        <Address
+                            value={selectedAccount.descriptor}
+                            isTruncated
+                            typographyStyle="body-sm"
+                            intent="neutral"
+                            priority="secondary"
+                            data-testid="@wallet/account/address"
+                        />
+                    )}
                     {isBalanceShown && (
                         <Text
                             intent="neutral"

@@ -10,7 +10,12 @@ import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/messag
 import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
+import {
+    hasAccountAssetOverview,
+    isAccountOneAddress,
+} from '#src/views/wallet/transactions/AccountAssets/accountAssetOverviewRules';
 
+import { AccountDetails } from './AccountName/AccountDetails';
 import { AccountName } from './AccountName/AccountName';
 import { AccountSubpageName } from './AccountName/AccountSubpageName';
 import { AssetDetailName } from './AssetDetailName';
@@ -76,6 +81,24 @@ export const PageName = () => {
             <BasicName>
                 <Translation id="TR_APPS_EMBEDDING" />
             </BasicName>
+        );
+    }
+
+    // The asset-first overview names the account and, where it is one address, the address, with
+    // no balance revealed on scroll.
+    if (
+        selectedAccount &&
+        isHomeTableActive &&
+        currentRoute === 'wallet-index' &&
+        hasAccountAssetOverview(selectedAccount)
+    ) {
+        return (
+            <AccountDetails
+                key={selectedAccount.key}
+                selectedAccount={selectedAccount}
+                isBalanceShown={false}
+                isAddressShown={isAccountOneAddress(selectedAccount)}
+            />
         );
     }
 

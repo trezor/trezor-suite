@@ -3,12 +3,12 @@ import { Translation } from '@suite/intl';
 import { selectAccountAssetOverview, selectAccountFiatBalance } from '@suite-common/assets';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { isUtxoBased } from '@suite-common/wallet-utils';
 import { Box, Column } from '@trezor/components';
 
 import { SecondaryCryptoAmount } from '#src/components/wallet/SecondaryCryptoAmount';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { useAccountHeaderContext } from '#src/support/suite/AccountHeaderProvider';
+
+import { isAccountOneAddress } from './accountAssetOverviewRules';
 
 type AccountAssetBalanceProps = {
     accountKey: AccountKey;
@@ -21,10 +21,9 @@ export const AccountAssetBalance = ({ accountKey }: AccountAssetBalanceProps) =>
         state => selectAccountAssetOverview(state, accountKey).assetCount,
     );
     const fiatValue = useSelector(state => selectAccountFiatBalance(state, accountKey));
-    const { balanceSectionRef } = useAccountHeaderContext();
 
     return (
-        <Box ref={balanceSectionRef} flex="1" minWidth={280}>
+        <Box flex="1" minWidth={280}>
             <TotalBalanceCard
                 label={<Translation id="TR_ACCOUNT_ASSETS_BALANCE" />}
                 labelAside={
@@ -40,7 +39,7 @@ export const AccountAssetBalance = ({ accountKey }: AccountAssetBalanceProps) =>
                         fiatValue={fiatValue}
                         data-testid="@wallet/account-assets/fiat-amount"
                     />
-                    {account && isUtxoBased(account) && (
+                    {account && !isAccountOneAddress(account) && (
                         <SecondaryCryptoAmount
                             symbol={account.symbol}
                             value={account.formattedBalance}
