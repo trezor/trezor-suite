@@ -18,13 +18,17 @@ pub async fn stop_scan(manager: AdapterManager) -> MethodResult {
     // below fails.
     manager.set_scanning(false).await;
 
-    let adapter = manager.get_powered_adapter_or_die().await?;
-    let success = match adapter.stop_scan().await {
-        Ok(_) => true,
-        Err(err) => {
-            info!("stop_scan/adapter.stop_scan error: {err}");
-            false
-        }
+    // Without an adapter there is no scan to stop. Not `get_powered_adapter_or_die`:
+    // it reports `AdapterDisabled` and starts the always-retrying adapter loader.
+    let success = match manager.get_adapter_or_die().await {
+        Ok(adapter) => match adapter.stop_scan().await {
+            Ok(_) => true,
+            Err(err) => {
+                info!("stop_scan/adapter.stop_scan error: {err}");
+                false
+            }
+        },
+        Err(_) => true,
     };
 
     manager.clear_serviceless_devices().await;
