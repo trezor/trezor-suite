@@ -89,6 +89,7 @@ export function SelectTokenAssetModal({
             setValue(tokenInputName, newlySelectedToken?.contract || null, {
                 shouldDirty: true,
             });
+            setValue(`outputs.${outputId}.nftTokenId`, undefined, { shouldDirty: true });
             setValue(amountInputName, '', {
                 shouldDirty: true,
             });

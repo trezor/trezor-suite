@@ -8,6 +8,17 @@ export const EVM_ABI = {
         approve: parseAbi(['function approve(address spender, uint256 amount)']),
         transfer: parseAbi(['function transfer(address to, uint256 amount)']),
     },
+    // The encoder takes one function per ABI, so the 4-arg overload with `data` is left out.
+    erc721: {
+        safeTransferFrom: parseAbi([
+            'function safeTransferFrom(address from, address to, uint256 tokenId)',
+        ]),
+    },
+    erc1155: {
+        safeTransferFrom: parseAbi([
+            'function safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes data)',
+        ]),
+    },
     erc4626: {
         deposit: parseAbi(['function deposit(uint256 assets, address receiver)']),
         withdraw: parseAbi(['function withdraw(uint256 assets, address receiver, address owner)']),

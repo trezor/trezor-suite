@@ -128,8 +128,8 @@ describe('the collections the section lists', () => {
         expect(selectNftCollection(state, punksOnEth)?.name).toBe('CryptoPunks');
         expect(selectNftCollectionItems(state, punksOnEth, false, ITEMS_LIMIT)).toEqual({
             items: [
-                { id: '1492', amount: '1', explorerUrl: expect.any(String) },
-                { id: '4820', amount: '1', explorerUrl: expect.any(String) },
+                expect.objectContaining({ id: '1492', amount: '1', contractAddress: PUNKS }),
+                expect.objectContaining({ id: '4820', amount: '1', contractAddress: PUNKS }),
             ],
             totalCount: 2,
         });
@@ -141,7 +141,7 @@ describe('the collections the section lists', () => {
         });
 
         expect(selectNftCollectionItems(state, apesOnEth, false, ITEMS_LIMIT)).toEqual({
-            items: [{ id: '7', amount: '3', explorerUrl: expect.any(String) }],
+            items: [expect.objectContaining({ id: '7', amount: '3', contractAddress: APES })],
             totalCount: 1,
         });
     });
@@ -171,6 +171,28 @@ describe('the collections the section lists', () => {
 
         expect(selectShownNftCollectionKeys(state)).toEqual([punksOnEth]);
         expect(selectNftCollection(state, punksOnEth)?.itemCount).toBe(2);
+    });
+
+    it('keeps the account each item of a shared collection is sent from', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({
+                    index: 0,
+                    tokens: [erc1155(APES, 'Apes', [{ id: '7', value: '1' }])],
+                }),
+                mockAccount({
+                    index: 1,
+                    tokens: [erc1155(APES, 'Apes', [{ id: '7', value: '2' }])],
+                }),
+            ],
+        });
+
+        const items = selectNftCollectionItems(state, apesOnEth, false, ITEMS_LIMIT)?.items ?? [];
+
+        expect(items.map(({ account, amount }) => [account.index, amount])).toEqual([
+            [0, '1'],
+            [1, '2'],
+        ]);
     });
 
     it('counts the balance of a collection the backend lists no items for', () => {

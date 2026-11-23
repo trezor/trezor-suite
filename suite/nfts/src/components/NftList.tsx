@@ -7,7 +7,13 @@ import { Box, Column, Divider, Row, Text, VirtualizedList } from '@trezor/compon
 import { typographyStylesBase } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
-import { NFT_ITEM_ICON_SIZE, NFT_ROW_PADDING, NftItemRow, NftMoreItemsRow } from './NftItemRow';
+import {
+    NFT_ITEM_ICON_SIZE,
+    NFT_ITEM_SEND_BUTTON_SIZE,
+    NFT_ROW_PADDING,
+    NftItemRow,
+    NftMoreItemsRow,
+} from './NftItemRow';
 import { NftRow } from './NftRow';
 import {
     type NftCollectionItems,
@@ -31,7 +37,11 @@ const NFT_COLLECTION_ROW_HEIGHT =
 
 const NFT_ITEM_ROW_HEIGHT =
     NFT_ROW_PADDING.vertical * 2 +
-    Math.max(NFT_ITEM_ICON_SIZE, typographyStylesBase['body-sm'].lineHeight);
+    Math.max(
+        NFT_ITEM_ICON_SIZE,
+        NFT_ITEM_SEND_BUTTON_SIZE,
+        typographyStylesBase['body-sm'].lineHeight,
+    );
 
 const NFT_MORE_ROW_HEIGHT =
     NFT_ROW_PADDING.vertical * 2 + typographyStylesBase['body-sm'].lineHeight;
@@ -48,9 +58,10 @@ const NO_ITEMS: NftCollectionItems = { items: [], totalCount: 0 };
 
 type NftListProps = {
     isHidden: boolean;
+    onSendItem?: (item: NftItem) => void;
 };
 
-export const NftList = ({ isHidden }: NftListProps) => {
+export const NftList = ({ isHidden, onSendItem }: NftListProps) => {
     const assetKeys = useSelector(
         isHidden ? selectHiddenNftCollectionKeys : selectShownNftCollectionKeys,
     );
@@ -151,14 +162,16 @@ export const NftList = ({ isHidden }: NftListProps) => {
                         />
                     );
                 case 'item':
-                    return <NftItemRow assetKey={row.assetKey} item={row.item} />;
+                    return (
+                        <NftItemRow assetKey={row.assetKey} item={row.item} onSend={onSendItem} />
+                    );
                 case 'more':
                     return <NftMoreItemsRow count={row.count} />;
                 default:
                     return exhaustive(row);
             }
         },
-        [isHidden, openKeys, toggleCollection],
+        [isHidden, onSendItem, openKeys, toggleCollection],
     );
 
     const renderItem = useCallback(

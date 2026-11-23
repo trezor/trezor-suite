@@ -96,6 +96,8 @@ export type Output = {
     currency: BaseCurrencyOption;
     label?: string;
     token: string | null;
+    // Set when `token` is an NFT collection; which of its items is sent.
+    nftTokenId?: string;
     dataHex?: string; // bitcoin opreturn/ethereum data
     dataAscii?: string; // bitcoin opreturn/ethereum data
 };
@@ -120,8 +122,15 @@ export type FeesState = {
     };
 };
 
+// `safeTransferFrom` names the sender in its calldata, unlike ERC-20 `transfer`.
+export type NftTransfer = {
+    from: string;
+    tokenId: string;
+};
+
 export type EthTransactionData = {
     token?: TokenInfo;
+    nft?: NftTransfer;
     chainId: number;
     to: string;
     amount: string;

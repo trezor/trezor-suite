@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { AssetIcon, AssetName, AssetSymbol } from '@suite/assets';
-import { HiddenPlaceholder } from '@suite/discreet-mode';
+import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
@@ -21,7 +21,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { CaretDownIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { setSendFormPrefill } from '#src/actions/suite/suiteActions';
+import { clearSendFormPrefill } from '#src/actions/suite/suiteActions';
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useSelector } from '#src/hooks/suite/useSelector';
@@ -49,13 +49,14 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     const sendFormPrefill = useSelector(selectSendFormPrefill);
 
     const [isTokensModalActive, setIsTokensModalActive] = useState(false);
-    const [prefillContractAddress, setPrefillContractAddress] = useState(sendFormPrefill);
+    const [prefill, setPrefill] = useState(sendFormPrefill);
 
     const explorer = useSelector(state => selectExplorer(state, account.symbol)) as Explorer;
     const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
 
     const tokenInputName = `outputs.${outputId}.token` as const;
     const tokenContractAddress = watch(tokenInputName);
+    const nftTokenId = watch(`outputs.${outputId}.nftTokenId`);
 
     const isTokenKnown = useSelector(state =>
         selectIsSpecificCoinDefinitionKnown(
@@ -81,16 +82,23 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     }, [account, outputId, tokenWatch, setAmount, getValues, isSetMaxActive]);
 
     useEffect(() => {
-        if (prefillContractAddress) {
-            setValue(tokenInputName, prefillContractAddress, {
+        if (prefill) {
+            setValue(tokenInputName, prefill.contractAddress, {
                 shouldValidate: true,
                 shouldDirty: true,
             });
+            if (prefill.type === 'nft') {
+                // Always one item for now, also for ERC-1155.
+                setValue(`outputs.${outputId}.nftTokenId`, prefill.tokenId, {
+                    shouldDirty: true,
+                });
+                setValue(`outputs.${outputId}.amount`, '1', { shouldDirty: true });
+            }
             setDraftSaveRequest(true);
-            setPrefillContractAddress(undefined);
-            dispatch(setSendFormPrefill({ contractAddress: undefined }));
+            setPrefill(undefined);
+            dispatch(clearSendFormPrefill());
         }
-    }, [prefillContractAddress, setValue, tokenInputName, setDraftSaveRequest, dispatch]);
+    }, [prefill, outputId, setValue, tokenInputName, setDraftSaveRequest, dispatch]);
 
     const selectedToken = useMemo(
         () => account.tokens?.find(token => token.contract === tokenContractAddress),
@@ -153,23 +161,37 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                     priority="secondary"
                                     typographyStyle="body-sm"
                                 >
-                                    <HiddenPlaceholder>
-                                        <FormattedCryptoAmount
-                                            value={
-                                                selectedToken?.balance || account.formattedBalance
-                                            }
-                                            networkSymbol={account.symbol}
-                                            contractAddress={selectedTokenAddress}
-                                            isCompact
-                                            data-testid={tokenInputName}
-                                        />
-                                    </HiddenPlaceholder>{' '}
-                                    <BaseCurrencyValue
-                                        tokenAddress={selectedToken?.contract as TokenAddress}
-                                        amount={selectedToken?.balance || account.formattedBalance}
-                                        symbol={account.symbol}
-                                        showApproximationIndicator
-                                    />
+                                    {nftTokenId !== undefined ? (
+                                        <HiddenPlaceholder>
+                                            #<RedactNumericalValue value={nftTokenId} />
+                                        </HiddenPlaceholder>
+                                    ) : (
+                                        <>
+                                            <HiddenPlaceholder>
+                                                <FormattedCryptoAmount
+                                                    value={
+                                                        selectedToken?.balance ||
+                                                        account.formattedBalance
+                                                    }
+                                                    networkSymbol={account.symbol}
+                                                    contractAddress={selectedTokenAddress}
+                                                    isCompact
+                                                    data-testid={tokenInputName}
+                                                />
+                                            </HiddenPlaceholder>{' '}
+                                            <BaseCurrencyValue
+                                                tokenAddress={
+                                                    selectedToken?.contract as TokenAddress
+                                                }
+                                                amount={
+                                                    selectedToken?.balance ||
+                                                    account.formattedBalance
+                                                }
+                                                symbol={account.symbol}
+                                                showApproximationIndicator
+                                            />
+                                        </>
+                                    )}
                                 </Text>
                             </Row>
                             {networkTokenContractAddress && (

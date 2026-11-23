@@ -12,6 +12,7 @@ import {
 } from '#src/actions/suite/storageLifecycleActions';
 import {
     addDeviceIdToSeenDisconnectNotification,
+    clearSendFormPrefill,
     closeEvmExplanationBanner,
     confirmEvmExplanationModal,
     setRecentlyConnectedDevicePath,
@@ -22,6 +23,7 @@ import {
 } from '#src/actions/suite/suiteActions';
 
 import { type EvmSettings } from './evmSettings';
+import { type SendFormPrefill } from './sendFormPrefill';
 
 export type SuiteRootState = {
     suite: SuiteState;
@@ -40,7 +42,7 @@ type SuiteLifecycle =
     | { status: 'db-corrupted'; error: unknown };
 
 export interface PrefillFields {
-    sendForm?: string;
+    sendForm?: SendFormPrefill;
     transactionHistory?: string;
 }
 
@@ -69,7 +71,6 @@ const initialState: SuiteState = {
         explanationBannerClosed: {},
     },
     prefillFields: {
-        sendForm: '',
         transactionHistory: '',
     },
     countryCode: null,
@@ -131,7 +132,9 @@ const suiteReducer = (state: SuiteState = initialState, action: UnknownAction): 
                 },
             };
         } else if (setSendFormPrefill.match(action)) {
-            draft.prefillFields.sendForm = action.payload.contractAddress;
+            draft.prefillFields.sendForm = action.payload;
+        } else if (clearSendFormPrefill.match(action)) {
+            draft.prefillFields.sendForm = undefined;
         } else if (setTransactionHistoryPrefill.match(action)) {
             draft.prefillFields.transactionHistory = action.payload;
         } else if (isTransportEventOfType(action, TRANSPORT.START)) {

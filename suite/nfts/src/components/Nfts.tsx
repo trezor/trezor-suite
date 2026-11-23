@@ -7,6 +7,7 @@ import { Card, Collapsible, Column, Row, SubTabs, Text } from '@trezor/component
 
 import { NftList } from './NftList';
 import {
+    type NftItem,
     type NftState,
     selectHiddenNftCollectionCount,
     selectShownNftCollectionCount,
@@ -22,9 +23,10 @@ type NftsToggle = {
 
 type NftsProps = {
     onToggle?: (toggle: NftsToggle) => void;
+    onSendItem?: (item: NftItem) => void;
 };
 
-export const Nfts = ({ onToggle }: NftsProps) => {
+export const Nfts = ({ onToggle, onSendItem }: NftsProps) => {
     const isNftSectionEnabled = useSelector(selectIsNftSectionEnabled);
     const shownCount = useSelector((state: NftState & SuiteSettingsRootState) =>
         isNftSectionEnabled ? selectShownNftCollectionCount(state) : 0,
@@ -103,7 +105,7 @@ export const Nfts = ({ onToggle }: NftsProps) => {
                             </Text>
                         </Row>
 
-                        <NftList key={tab} isHidden={tab === 'hidden'} />
+                        <NftList key={tab} isHidden={tab === 'hidden'} onSendItem={onSendItem} />
                     </Column>
                 </Collapsible.Content>
             </Collapsible>

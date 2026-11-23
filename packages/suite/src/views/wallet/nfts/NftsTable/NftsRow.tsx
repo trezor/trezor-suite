@@ -49,6 +49,7 @@ import { setTransactionHistoryPrefill } from '#src/actions/suite/suiteActions';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { getTokenAddressTranslationId } from '#src/utils/wallet/tokenUtils';
 
+import { NftSendButton } from './NftSendButton';
 import { DropdownRow } from '../../tokens/DropdownRow';
 
 type NftsRowProps = {
@@ -223,26 +224,35 @@ const NftsRow = ({
                         isHighlightedOnHover={false}
                     >
                         <Table.Cell colSpan={2}>
-                            <Text typographyStyle="body-sm">
-                                <HiddenPlaceholder>
-                                    <Row gap={8}>
-                                        <IconCircle
-                                            icon={PictureFrameIcon}
-                                            size={32}
-                                            intent="neutral"
-                                        />
-                                        <Link href={getNftExplorerUrl(explorer, nft, id)}>
-                                            <Text textWrap="nowrap">{NftName}</Text>
-                                        </Link>
-                                        <Text>
-                                            #<RedactNumericalValue value={id} />
-                                        </Text>
-                                        <Badge size="small">
-                                            <RedactNumericalValue value="1x" />
-                                        </Badge>
-                                    </Row>
-                                </HiddenPlaceholder>
-                            </Text>
+                            <Row justifyContent="space-between" gap={8}>
+                                <Text typographyStyle="body-sm">
+                                    <HiddenPlaceholder>
+                                        <Row gap={8}>
+                                            <IconCircle
+                                                icon={PictureFrameIcon}
+                                                size={32}
+                                                intent="neutral"
+                                            />
+                                            <Link href={getNftExplorerUrl(explorer, nft, id)}>
+                                                <Text textWrap="nowrap">{NftName}</Text>
+                                            </Link>
+                                            <Text>
+                                                #<RedactNumericalValue value={id} />
+                                            </Text>
+                                            <Badge size="small">
+                                                <RedactNumericalValue value="1x" />
+                                            </Badge>
+                                        </Row>
+                                    </HiddenPlaceholder>
+                                </Text>
+                                {account && (
+                                    <NftSendButton
+                                        account={account}
+                                        contract={nft.contract}
+                                        tokenId={id}
+                                    />
+                                )}
+                            </Row>
                         </Table.Cell>
                     </Table.Row>
                 ))}
@@ -254,28 +264,41 @@ const NftsRow = ({
                         isHighlightedOnHover={false}
                     >
                         <Table.Cell colSpan={2}>
-                            <Text typographyStyle="body-sm">
-                                <HiddenPlaceholder>
-                                    <Row gap={8}>
-                                        <IconCircle
-                                            icon={PictureFrameIcon}
-                                            size={32}
-                                            intent="neutral"
-                                        />
-                                        <Link
-                                            href={getNftExplorerUrl(explorer, nft, value?.id || '')}
-                                        >
-                                            <Text textWrap="nowrap">{NftName}</Text>
-                                        </Link>
-                                        <Text>
-                                            #<RedactNumericalValue value={value.id || ''} />
-                                        </Text>
-                                        <Badge size="small">
-                                            <RedactNumericalValue value={value.value || ''} />x
-                                        </Badge>
-                                    </Row>
-                                </HiddenPlaceholder>
-                            </Text>
+                            <Row justifyContent="space-between" gap={8}>
+                                <Text typographyStyle="body-sm">
+                                    <HiddenPlaceholder>
+                                        <Row gap={8}>
+                                            <IconCircle
+                                                icon={PictureFrameIcon}
+                                                size={32}
+                                                intent="neutral"
+                                            />
+                                            <Link
+                                                href={getNftExplorerUrl(
+                                                    explorer,
+                                                    nft,
+                                                    value?.id || '',
+                                                )}
+                                            >
+                                                <Text textWrap="nowrap">{NftName}</Text>
+                                            </Link>
+                                            <Text>
+                                                #<RedactNumericalValue value={value.id || ''} />
+                                            </Text>
+                                            <Badge size="small">
+                                                <RedactNumericalValue value={value.value || ''} />x
+                                            </Badge>
+                                        </Row>
+                                    </HiddenPlaceholder>
+                                </Text>
+                                {account && value.id !== undefined && (
+                                    <NftSendButton
+                                        account={account}
+                                        contract={nft.contract}
+                                        tokenId={value.id}
+                                    />
+                                )}
+                            </Row>
                         </Table.Cell>
                     </Table.Row>
                 ))}

@@ -34,6 +34,7 @@ import type {
     FormStateTradingExchange,
     FormStateTradingSell,
     GeneralPrecomposedTransactionFinal,
+    NftTransfer,
     Output,
     RbfTransactionParams,
     SendFormDraftKey,
@@ -51,6 +52,7 @@ import {
     type PROTO,
     type TokenInfo,
 } from '@trezor/connect';
+import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 import {
@@ -61,6 +63,7 @@ import {
 import { isBaseCurrencyWithSats } from './baseCurrency';
 import { fromEther, fromGwei, fromIntegerString, fromWei } from './ethConverter';
 import { isEip1559, isEvmApprovalTx, sanitizeHex, strip } from './ethUtils';
+import { NFT_MULTITOKEN_STANDARDS, isNftToken } from './transactionUtils';
 
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
@@ -140,13 +143,66 @@ const getSerializedErc20Transfer = (token: TokenInfo, to: string, amount: string
     return `0x${ERC20_TRANSFER}${erc20recipient}${erc20amount}`;
 };
 
-// TrezorBlockchain.estimateFee for ETH
+// Blockbook reports 18 decimals for NFT contracts, which rarely implement `decimals()`.
+const getTokenSendDecimals = (token: Pick<TokenInfo, 'standard' | 'decimals'>) =>
+    isNftToken(token) ? 0 : token.decimals;
+
+const getNftItemBalance = (token: TokenInfo, tokenId: string) => {
+    if (NFT_MULTITOKEN_STANDARDS.has(token.standard)) {
+        return token.multiTokenValues?.find(value => value.id === tokenId)?.value ?? '0';
+    }
+
+    return token.ids?.includes(tokenId) ? '1' : '0';
+};
+
+// Lets the fungible compose math run on one NFT item: 0 decimals, balance = holdings of that id.
+export const getNftItemSendToken = (token: TokenInfo, tokenId: string): TokenInfo => ({
+    ...token,
+    decimals: 0,
+    balance: getNftItemBalance(token, tokenId),
+});
+
+// `amount` is only encoded for ERC-1155; an ERC-721 id is a single item.
+const getSerializedNftTransfer = (
+    token: TokenInfo,
+    to: string,
+    amount: string,
+    nft: NftTransfer | undefined,
+) => {
+    if (!nft) throw new Error('NFT transfer requires a token id and sender');
+
+    const context = { sender: asEvmAddress(nft.from) };
+    const tokenId = new BigNumber(nft.tokenId);
+    const result = NFT_MULTITOKEN_STANDARDS.has(token.standard)
+        ? Calldata.evm.erc1155.safeTransferFrom.encode(
+              { from: nft.from, to, id: tokenId, amount: new BigNumber(amount), data: '0x' },
+              context,
+          )
+        : Calldata.evm.erc721.safeTransferFrom.encode({ from: nft.from, to, tokenId }, context);
+
+    if (!result.isValid || !result.data) {
+        throw new Error(result.errors[0]?.code ?? 'INVALID_NFT_TRANSFER_PARAMS');
+    }
+
+    return result.data;
+};
+
+// TrezorConnect.blockchainEstimateFee for ETH
 export const getEthereumEstimateFeeParams = (
     to: string,
     amount: string,
     token?: TokenInfo,
     data?: string,
+    nft?: NftTransfer,
 ) => {
+    if (token && isNftToken(token)) {
+        return {
+            to: token.contract,
+            value: '0x0',
+            data: getSerializedNftTransfer(token, to, amount, nft),
+        };
+    }
+
     if (token) {
         // use the data if provided
         if (data) {
@@ -221,7 +277,11 @@ export const prepareEthereumTransaction = (
         result.data = sanitizeHex(txInfo.data);
     }
 
-    if (txInfo.token) {
+    if (txInfo.token && isNftToken(txInfo.token)) {
+        result.data = getSerializedNftTransfer(txInfo.token, txInfo.to, txInfo.amount, txInfo.nft);
+        result.to = txInfo.token.contract;
+        result.value = '0x00';
+    } else if (txInfo.token) {
         const isApprovalTx = isEvmApprovalTx(txInfo.data);
 
         if (txInfo.data && txInfo.data !== '0x' && !isApprovalTx) {
@@ -519,7 +579,7 @@ export const getExternalComposeOutput = (
     if (!isMaxActive && !amount) return; // incomplete Output
 
     const tokenInfo = findToken(account.tokens, token);
-    const decimals = tokenInfo ? tokenInfo.decimals : network.decimals;
+    const decimals = tokenInfo ? getTokenSendDecimals(tokenInfo) : network.decimals;
     const formattedAmount = convertAmountUnitsToSubunits(amount, decimals);
 
     let output: ExternalOutput;

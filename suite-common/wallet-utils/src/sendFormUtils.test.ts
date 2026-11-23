@@ -1,5 +1,8 @@
 import { asNetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
+import {
+    DEFAULT_PAYMENT,
+    ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+} from '@suite-common/wallet-constants';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
@@ -16,9 +19,11 @@ import {
     getCryptoAmountWithReserve,
     getCryptoMaxAmountWithReserve,
     getCustomFeeWarning,
+    getEthereumEstimateFeeParams,
     getExternalComposeOutput,
     getGasLimitWithBuffer,
     getLowestFeeFromLevels,
+    getNftItemSendToken,
     isAmountWithinNetworkReserve,
     isCustomFeeBelowLowestLevel,
     isMaxFeePerGasBelowBaseFee,
@@ -1068,5 +1073,109 @@ describe('sendForm utils', () => {
         it('falls back to the backup limit rather than signing a zero gas limit', () => {
             expect(getGasLimitWithBuffer('0')).toBe(ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT);
         });
+    });
+});
+
+describe('NFT send', () => {
+    const SENDER = '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3';
+    const RECIPIENT = '0xB836472D21991eB9842e15BEaE1AF6c8B63D6a96';
+    const CONTRACT = '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85';
+    const MAX_UINT256_ID =
+        '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+
+    // Reference calldata from viem `encodeFunctionData`, independent of the builders.
+    const ERC721_MAX_ID_DATA =
+        '0x42842e0e0000000000000000000000009ea3721b5bf3b64b4418c38b603154d2d597fae3000000000000000000000000b836472d21991eb9842e15beae1af6c8b63d6a96ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+    const ERC1155_ID_42_AMOUNT_1_DATA =
+        '0xf242432a0000000000000000000000009ea3721b5bf3b64b4418c38b603154d2d597fae3000000000000000000000000b836472d21991eb9842e15beae1af6c8b63d6a96000000000000000000000000000000000000000000000000000000000000002a000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000';
+
+    const erc721 = {
+        standard: 'ERC721' as const,
+        contract: CONTRACT,
+        decimals: 18,
+        ids: ['1', MAX_UINT256_ID],
+    };
+    const erc1155 = {
+        standard: 'ERC1155' as const,
+        contract: CONTRACT,
+        decimals: 18,
+        multiTokenValues: [{ id: '42', value: '3' }],
+    };
+    const txInfo = { chainId: 1, nonce: '1', gasLimit: '100000', gasPrice: '1', amount: '1' };
+
+    it('signs an ERC-721 transfer to the contract with the full uint256 id', () => {
+        const result = prepareEthereumTransaction({
+            ...txInfo,
+            token: erc721,
+            to: RECIPIENT,
+            nft: { from: SENDER, tokenId: MAX_UINT256_ID },
+        });
+
+        expect(result).toMatchObject({ to: CONTRACT, value: '0x00', data: ERC721_MAX_ID_DATA });
+    });
+
+    it('signs an ERC-1155 transfer of one item', () => {
+        const result = prepareEthereumTransaction({
+            ...txInfo,
+            token: erc1155,
+            to: RECIPIENT,
+            nft: { from: SENDER, tokenId: '42' },
+        });
+
+        expect(result).toMatchObject({
+            to: CONTRACT,
+            value: '0x00',
+            data: ERC1155_ID_42_AMOUNT_1_DATA,
+        });
+    });
+
+    it('never falls back to ERC-20 calldata when the token id is missing', () => {
+        expect(() =>
+            prepareEthereumTransaction({ ...txInfo, token: erc721, to: RECIPIENT }),
+        ).toThrow();
+        expect(() => getEthereumEstimateFeeParams(RECIPIENT, '1', erc721)).toThrow();
+    });
+
+    it('estimates the fee against the contract with the signed calldata', () => {
+        expect(
+            getEthereumEstimateFeeParams(RECIPIENT, '1', erc721, undefined, {
+                from: SENDER,
+                tokenId: MAX_UINT256_ID,
+            }),
+        ).toEqual({ to: CONTRACT, value: '0x0', data: ERC721_MAX_ID_DATA });
+    });
+
+    it('estimates while no recipient is typed yet (recipient = sender)', () => {
+        const params = getEthereumEstimateFeeParams(SENDER, '1', erc721, undefined, {
+            from: SENDER,
+            tokenId: '1',
+        });
+
+        expect(params.to).toBe(CONTRACT);
+    });
+
+    it('views an owned ERC-721 item as one unit with 0 decimals', () => {
+        expect(getNftItemSendToken(erc721, MAX_UINT256_ID)).toMatchObject({
+            decimals: 0,
+            balance: '1',
+        });
+        expect(getNftItemSendToken(erc721, '2').balance).toBe('0');
+    });
+
+    it('views an ERC-1155 item with its held amount', () => {
+        expect(getNftItemSendToken(erc1155, '42')).toMatchObject({ decimals: 0, balance: '3' });
+        expect(getNftItemSendToken(erc1155, '43').balance).toBe('0');
+    });
+
+    it('composes an NFT amount with 0 decimals', () => {
+        const account = mockWalletAccount({ symbol: ethSymbol, tokens: [erc721] });
+        const composed = getExternalComposeOutput(
+            { outputs: [{ ...DEFAULT_PAYMENT, token: CONTRACT, amount: '1' }] },
+            account,
+            getNetwork(ethSymbol),
+        );
+
+        expect(composed?.decimals).toBe(0);
+        expect(composed?.output).toMatchObject({ amount: '1' });
     });
 });

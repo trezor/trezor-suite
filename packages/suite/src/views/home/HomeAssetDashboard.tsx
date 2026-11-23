@@ -9,6 +9,7 @@ import {
 import { Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
+import { useStartSendReceiveWithAnalytics } from '#src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/hooks/useStartSendReceiveWithAnalytics';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectDiscoveryOverallStatus } from '#src/utils/wallet/selectDiscoveryOverallStatus';
 
@@ -21,6 +22,7 @@ import { DashboardPromoBanner } from '../dashboard/DashboardPromoBanner/Dashboar
 
 export const HomeAssetDashboard = memo(() => {
     const { analytics } = useServices(injectDesktopAnalytics);
+    const { startNFTSend } = useStartSendReceiveWithAnalytics();
     const emptyStateKind = useSelector(state =>
         getHomeAssetEmptyStateKind({
             accounts: selectAllAccountsToList(state),
@@ -47,6 +49,9 @@ export const HomeAssetDashboard = memo(() => {
                             ? { action: 'expand', collectionCount, hiddenCount }
                             : { action: 'collapse' },
                     })
+                }
+                onSendItem={({ account, contractAddress, id }) =>
+                    startNFTSend({ account, contractAddress, tokenId: id })
                 }
             />
         </Column>

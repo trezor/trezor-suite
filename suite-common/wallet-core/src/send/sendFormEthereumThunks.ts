@@ -38,9 +38,11 @@ import {
     getEvmNonceInfo,
     getEvmNonceInfoFromConfirmedNonce,
     getExternalComposeOutput,
+    getNftItemSendToken,
     getTxStakeNameByDataHex,
     isEip1559,
     isEvmApprovalTx,
+    isNftToken,
     prepareEthereumTransaction,
     subunitsToUnits,
     tryGetAccountIdentity,
@@ -311,9 +313,23 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                 message: 'Unable to compose output.',
             });
 
-        const { output, tokenInfo, decimals } = composedOutput;
+        const { output, tokenInfo: selectedToken, decimals } = composedOutput;
         const { availableBalance } = account;
-        const { amount } = firstOutput;
+        const { amount, nftTokenId } = firstOutput;
+
+        const isNftOutput = !!selectedToken && isNftToken(selectedToken);
+        if (isNftOutput && nftTokenId === undefined) {
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+                message: 'NFT output without a token id.',
+            });
+        }
+        const nft =
+            isNftOutput && nftTokenId !== undefined
+                ? { from: account.descriptor, tokenId: nftTokenId }
+                : undefined;
+        const tokenInfo =
+            selectedToken && nft ? getNftItemSendToken(selectedToken, nft.tokenId) : selectedToken;
         // Use the resolved onchain address for a named input (e.g. ENS), otherwise the raw input.
         const address = firstOutput.resolvedAddress ?? firstOutput.address;
 
@@ -325,6 +341,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                       amount || (tokenInfo ? tokenInfo.balance! : account.formattedBalance),
                       tokenInfo,
                       formState.transactionData,
+                      nft,
                   );
 
         // trezor/blockbook#1639: declare our local pending txs so blockbook estimates gas against
@@ -620,8 +637,13 @@ export const signEthereumSendFormTransactionThunk = createThunk<
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const firstSignOutput: (typeof signOutputs)[number] = signOutputs[0];
         // transform to TrezorConnect.ethereumSignTransaction params
+        const { nftTokenId } = firstSignOutput;
         const transaction = prepareEthereumTransaction({
             token: precomposedTransaction.token,
+            nft:
+                nftTokenId === undefined
+                    ? undefined
+                    : { from: selectedAccount.descriptor, tokenId: nftTokenId },
             chainId: network.chainId,
             // Use the resolved onchain address for a named input (e.g. ENS), otherwise the raw input.
             to: firstSignOutput.resolvedAddress ?? firstSignOutput.address,

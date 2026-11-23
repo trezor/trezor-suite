@@ -5,12 +5,13 @@ import { suiteSettingsActions } from '@suite/settings';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
+import { type SendFormPrefill } from '#src/reducers/suite/sendFormPrefill';
+
 import * as SUITE from './constants/suiteConstants';
 
-export const setSendFormPrefill = createAction(
-    SUITE.SET_SEND_FORM_PREFILL,
-    (payload: { contractAddress: string | undefined }) => ({ payload }),
-);
+export const setSendFormPrefill = createAction<SendFormPrefill>(SUITE.SET_SEND_FORM_PREFILL);
+
+export const clearSendFormPrefill = createAction(SUITE.CLEAR_SEND_FORM_PREFILL);
 
 export const desktopHandshake = createAction(
     SUITE.DESKTOP_HANDSHAKE,

@@ -288,7 +288,7 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
             {
                 online: true,
                 evmSettings: { confirmExplanationModalClosed: {}, explanationBannerClosed: {} },
-                prefillFields: { sendForm: '', transactionHistory: '' },
+                prefillFields: { transactionHistory: '' },
                 countryCode: null,
             },
             () => ({}),
