@@ -259,43 +259,6 @@ export const closeDialogThunk = createThunk<void, CloseDialogParams, void>(
 );
 ```
 
-### Test at the correct boundary
-
-Follow the full [`@suite-common/test-utils` guide](../../docs/tests/suite-common-test-utils.md).
-
-Unit-test a thunk as a function. Redux thunk middleware ultimately calls a thunk with three
-arguments: `dispatch`, `getState`, and `extra`, so a unit test can provide those arguments directly.
-Do not create a store or an application root merely to obtain them.
-
-Use `createMockDispatch` from `@trezor/redux-utils/mocks`. It stores every plain dispatched
-action in an array and recursively executes function actions with the same test dependencies. Build
-`getState` and `extra` from the thunk's exported contracts, and keep the fixture local to the test:
-
-```ts
-const state: XyzThunkState = {
-    // Only the state required by xyzThunk.
-};
-const extra: XyzThunkDeps = {
-    services: {
-        // Only the services required by xyzThunk.
-    },
-};
-const getState = () => state;
-const { actions, dispatch } = createMockDispatch({ getState, extra });
-
-await xyzThunk()(dispatch, getState, extra);
-
-expect(extra.services.someService).toHaveBeenCalled();
-expect(actions).toEqual([
-    expect.objectContaining({ type: xyzThunk.pending.type }),
-    expect.objectContaining({ type: xyzThunk.fulfilled.type }),
-]);
-```
-
-Use `createTestCompositionRoot` only when the test intentionally covers Redux integration and
-should verify the resulting state or rendered UI. The underlying `createTestStore` is internal to
-`@suite-common/test-utils`; tests always compose through `createTestCompositionRoot`.
-
 ### Composition roots
 
 Composition roots must be synchronous. They construct and wire services; asynchronous startup
