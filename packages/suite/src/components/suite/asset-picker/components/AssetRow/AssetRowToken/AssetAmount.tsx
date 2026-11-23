@@ -1,4 +1,5 @@
 import { AssetValue } from '@suite/assets';
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { type TokenAddress } from '@suite-common/tokens';
@@ -58,7 +59,9 @@ export function AssetAmount({
                     typographyStyle={isFiatPrimary ? 'body-md' : 'body-sm'}
                     isDisabled={isDisabled}
                 >
-                    <BaseCurrencyAmountFormatter value={fiatAmount} currency={fiatCurrency} />
+                    <HiddenPlaceholder>
+                        <BaseCurrencyAmountFormatter value={fiatAmount} currency={fiatCurrency} />
+                    </HiddenPlaceholder>
                 </Text>
             )}
             {!fiatAmount && showNoTradingPairText && (
