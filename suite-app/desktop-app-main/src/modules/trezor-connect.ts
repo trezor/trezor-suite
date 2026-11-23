@@ -11,7 +11,6 @@ import { NodeUsbTransport, UdpTransport } from '@trezor/transport';
 import { BridgeTransport } from '@trezor/transport-common';
 import { parseElectrumUrl } from '@trezor/utils';
 
-import { bluetoothModuleState } from './bluetooth';
 import { getStoredFirmwares } from './firmware';
 import type { ModuleInit, ModuleInitBackground } from './module';
 import { looselyTypedIpcMain } from '../ipcMain';
@@ -60,25 +59,20 @@ export const transportFactory = (
 // override TrezorConnect.init and TrezorConnect.updateConnectSettings params:
 // 1) translate legacy string transports to DI references (see above)
 // 2) add BluetoothTransport if the bluetooth module is enabled
-export const getTransportsParam = (
-    rawTransports?: ConnectSettings['transports'],
+type RawTransports = (ConnectSettingsTransport | ConnectSettingsTransport['name'])[];
+
+const getTransportsParam = (
+    rawTransports?: RawTransports,
     createLogger?: CreateLogger,
     usbImplementation?: UsbImplementation,
-): ConnectSettings['transports'] => {
-    const transports = rawTransports
-        ?.map(transport => transportFactory(transport, createLogger, usbImplementation))
-        .filter((transport): transport is ConnectSettingsTransport => transport !== undefined);
-    const bluetooth = bluetoothModuleState.getTransport();
+): ConnectSettingsTransport[] => {
+    const transports = rawTransports?.flatMap(
+        transport => transportFactory(transport, createLogger, usbImplementation) ?? [],
+    );
 
     // An explicit non-empty selection (e.g. from the debug transport picker) is honored as-is.
     if (transports && transports.length > 0) {
-        return bluetooth ? [...transports, bluetooth] : transports;
-    }
-
-    if (bluetooth) {
-        // No explicit transports: restore the Bridge default explicitly so we don't end up with a
-        // Bluetooth-only list (direct USB is not added to the Bluetooth fallback - unchanged).
-        return [bluetooth, new BridgeTransport(createTransportParams(createLogger))];
+        return transports;
     }
 
     // No explicit transports and no Bluetooth: supply connect's [Bridge, NodeUsbTransport] default
@@ -116,6 +110,33 @@ export const initBackground: ModuleInitBackground = ({
         return TrezorConnect.updateConnectSettings(payload);
     };
 
+    let bluetoothTransport: ConnectSettingsTransport | undefined;
+    const getTransportsWithBluetooth = (transports?: RawTransports) => {
+        const defaultTransports = getTransportsParam(
+            transports,
+            createLogger,
+            getUsbImplementation(),
+        );
+
+        return bluetoothTransport
+            ? defaultTransports.concat([bluetoothTransport])
+            : defaultTransports;
+    };
+
+    mainThreadEmitter.on('module/trezor-connect/set-bluetooth-transport', async transport => {
+        bluetoothTransport = transport;
+
+        const curr = await TrezorConnect.getSettings();
+        if (curr.success) {
+            const currentTransports =
+                curr.payload.transports?.filter(t => t.name !== 'BluetoothTransport') ?? [];
+
+            TrezorConnect.updateConnectSettings({
+                transports: getTransportsWithBluetooth(currentTransports.map(t => t.name)),
+            });
+        }
+    });
+
     const ipcProxyOptions: IpcProxyHandlerOptions<typeof TrezorConnect> = {
         onCreateInstance: () => ({
             onRequest: async (...proxyArgs) => {
@@ -152,11 +173,7 @@ export const initBackground: ModuleInitBackground = ({
                     settings.debug = settings.debug || getSwitchValue('log-level') === 'debug';
                     createLogger = (prefix: string) => initLog(prefix, !!settings.debug);
                     settings.createLogger = createLogger;
-                    settings.transports = getTransportsParam(
-                        settings.transports,
-                        createLogger,
-                        getUsbImplementation(),
-                    );
+                    settings.transports = getTransportsWithBluetooth(settings.transports);
 
                     const response = await TrezorConnect.init(settings);
                     await setProxy();
@@ -202,11 +219,7 @@ export const initBackground: ModuleInitBackground = ({
                 // fallback here would make `newTransports` defined in Core and trigger a needless
                 // SET_TRANSPORTS → resetTransports → deviceList.init on every such update.
                 if (method === 'updateConnectSettings' && params[0].transports !== undefined) {
-                    params[0].transports = getTransportsParam(
-                        params[0].transports,
-                        createLogger,
-                        getUsbImplementation(),
-                    );
+                    params[0].transports = getTransportsWithBluetooth(params[0].transports);
                 }
 
                 return (TrezorConnect[method] as any)(...params);

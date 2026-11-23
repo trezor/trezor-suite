@@ -17,17 +17,7 @@ import { BluetoothProcess } from '../libs/processes/BluetoothProcess';
 
 export const SERVICE_NAME = '@trezor/transport-bluetooth';
 
-// Export module state and use it trezor-connect module to override init + updateConnectSettings params
-// getTransport function is reassigned in onLoad, onQuit
-type BluetoothModuleState = {
-    getTransport: () => BluetoothTransport | undefined;
-};
-
-export const bluetoothModuleState: BluetoothModuleState = {
-    getTransport: () => undefined,
-};
-
-export const init: ModuleInit = ({ logger }) => {
+export const init: ModuleInit = ({ logger, mainThreadEmitter }) => {
     // BluetoothTransport's Logger types args as unknown[]; Suite's global logger
     // expects string[]. In practice BluetoothTransport only ever passes strings.
     const desktopLogger: ConstructorParameters<typeof BluetoothTransport>[0]['logger'] = {
@@ -46,13 +36,25 @@ export const init: ModuleInit = ({ logger }) => {
             const process = new BluetoothProcess({ port, logger });
             await process.start();
 
+            const url = process.getUrl();
+            const headers = createHeaders(process.getToken());
+
             const client = new BluetoothIpc({
-                url: process.getUrl(),
+                url,
                 logger: desktopLogger,
                 headers: createHeaders(process.getToken()),
             });
 
-            return { process, client };
+            const transport = new BluetoothTransport({
+                id: 'BluetoothTransport',
+                url,
+                logger: desktopLogger,
+                headers,
+                // writeWithResponse: isMacOs(),
+                // writeWithDelay: isWindows(),
+            });
+
+            return { process, client, transport };
         },
         ({ process }) => process.stop(),
         err => logger.error(SERVICE_NAME, `Failed to stop process: ${err}`),
@@ -61,28 +63,22 @@ export const init: ModuleInit = ({ logger }) => {
     const getClient = () =>
         (lazyBluetooth.get() ?? throwError('BluetoothIpc api not initialized')).client;
 
-    const getBluetoothTransport = () => {
-        const api = lazyBluetooth.get();
-
-        return api
-            ? new BluetoothTransport({
-                  id: 'BluetoothTransport',
-                  url: api.process.getUrl(),
-                  logger: desktopLogger,
-                  headers: createHeaders(api.process.getToken()),
-                  // writeWithResponse: isMacOs(),
-                  // writeWithDelay: isWindows(),
-              })
-            : undefined;
-    };
-
     const proxyOptions: IpcProxyHandlerOptions<BluetoothIpcApi> = {
         onCreateInstance() {
             return {
                 onRequest: async (method, params) => {
                     logger.debug(SERVICE_NAME, `call ${method}`);
                     if (method === 'init') {
-                        await lazyBluetooth.getOrInit();
+                        const api = await lazyBluetooth.getOrInit();
+                        const initResult = await api.client.init(...params);
+                        if (initResult.success) {
+                            mainThreadEmitter.emit(
+                                'module/trezor-connect/set-bluetooth-transport',
+                                api.transport,
+                            );
+                        }
+
+                        return initResult;
                     }
 
                     const client = getClient();
@@ -142,15 +138,12 @@ export const init: ModuleInit = ({ logger }) => {
     };
 
     const unregisterProxy = createIpcProxyHandler(looselyTypedIpcMain, 'Bluetooth', proxyOptions);
-    const onLoad = () => {
-        bluetoothModuleState.getTransport = getBluetoothTransport;
-    };
+    const onLoad = () => {};
 
     const onQuit = async () => {
         logger.info(SERVICE_NAME, 'Stopping (app quit)');
         unregisterProxy();
         await lazyBluetooth.dispose();
-        bluetoothModuleState.getTransport = () => undefined;
     };
 
     return { onLoad, onQuit };
