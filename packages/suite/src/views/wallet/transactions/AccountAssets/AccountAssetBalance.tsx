@@ -15,7 +15,6 @@ import { AmountUnitSwitchWrapper } from '#src/components/suite/AmountUnitSwitchW
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { NoRatesTooltip } from '#src/components/suite/Ticker/NoRatesTooltip';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { useAccountHeaderContext } from '#src/support/suite/AccountHeaderProvider';
 import { HomeTotalBalance } from '#src/views/home/HomeBalance/HomeTotalBalance';
 
 /** The line height of the total headline, so its placeholders keep the card from jumping. */
@@ -33,7 +32,6 @@ export const AccountAssetBalance = ({ accountKey }: AccountAssetBalanceProps) =>
     const isIncomplete = useSelector(state => selectIsAssetTableTotalIncomplete(state, accountKey));
     const isRatePending = useSelector(state => selectIsAssetTableRatePending(state, accountKey));
     const shouldAnimateSkeleton = useSelector(selectShouldAnimateLoadingSkeleton);
-    const { balanceSectionRef } = useAccountHeaderContext();
 
     return (
         <Box flex="1" minWidth={280}>
@@ -55,7 +53,7 @@ export const AccountAssetBalance = ({ accountKey }: AccountAssetBalanceProps) =>
                             />
                         </Text>
                     </Row>
-                    <Column ref={balanceSectionRef} alignItems="flex-start">
+                    <Column alignItems="flex-start">
                         {fiatValue !== undefined && (
                             <HomeTotalBalance
                                 fiatValue={fiatValue}

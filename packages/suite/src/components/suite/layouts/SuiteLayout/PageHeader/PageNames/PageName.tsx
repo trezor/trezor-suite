@@ -11,6 +11,7 @@ import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
 
+import { AccountDetails } from './AccountName/AccountDetails';
 import { AccountName } from './AccountName/AccountName';
 import { AccountSubpageName } from './AccountName/AccountSubpageName';
 import { AssetDetailName } from './AssetDetailName';
@@ -76,6 +77,24 @@ export const PageName = () => {
             <BasicName>
                 <Translation id="TR_APPS_EMBEDDING" />
             </BasicName>
+        );
+    }
+
+    // The asset-first overview names the account and its address, with no balance revealed on
+    // scroll. A Privacy account keeps the overview it had, and so the header.
+    if (
+        selectedAccount &&
+        isHomeTableActive &&
+        currentRoute === 'wallet-index' &&
+        selectedAccount.backendType !== 'coinjoin'
+    ) {
+        return (
+            <AccountDetails
+                key={selectedAccount.key}
+                selectedAccount={selectedAccount}
+                isBalanceShown={false}
+                isAddressShown
+            />
         );
     }
 
