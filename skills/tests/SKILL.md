@@ -1,6 +1,6 @@
 ---
 name: tests
-description: Test style guidelines including naming conventions, mock organization, translation handling, and file structure. Use when writing or organizing tests in the Trezor Suite codebase.
+description: Test style guidelines including naming conventions, mock organization, dispatch and thunk testing, translation handling, and file structure. Use when writing or organizing tests in the Trezor Suite codebase.
 ---
 
 # Tests
@@ -151,3 +151,83 @@ service contract as the type argument:
 export const mockGetHttpReceiverAddress = (address = 'http://localhost:21325') =>
     mock<DesktopApi['getHttpReceiverAddress']>(() => Promise.resolve(address));
 ```
+
+## Dispatch in tests
+
+Every `dispatch` in a test comes from `createMockDispatch` or from a store built by the platform
+test utilities. Pick by what the test asserts:
+
+| The test asserts                                     | `dispatch` comes from                                                                                                                                                                                        |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| which actions were dispatched, which services called | `createMockDispatch` from `@trezor/redux-utils/mocks`                                                                                                                                                        |
+| the state or UI after reducers and middleware ran    | `createTestCompositionRoot` ([guide](../../docs/tests/suite-common-test-utils.md#integration-test-with-createtestcompositionroot)); in native, `createLightStore` ([Native tests](../tests-native/SKILL.md)) |
+
+`createMockDispatch({ getState, extra })` returns `{ actions, dispatch, onDispatch }`. `dispatch`
+pushes every plain action to `actions` and runs every dispatched thunk, nested ones included, with
+the same `dispatch`, `getState` and `extra`.
+
+### A thunk
+
+Redux calls a thunk with `dispatch`, `getState` and `extra`; the unit test passes those three
+itself. Build `getState` and `extra` from the thunk's exported contracts and keep the fixture local
+to the test:
+
+```ts
+const state: XyzThunkState = {
+    // Only the state required by xyzThunk.
+};
+const extra: XyzThunkDeps = {
+    services: {
+        // Only the services required by xyzThunk.
+    },
+};
+const getState = () => state;
+const { actions, dispatch } = createMockDispatch({ getState, extra });
+
+await xyzThunk()(dispatch, getState, extra);
+
+expect(extra.services.someService).toHaveBeenCalled();
+expect(actions).toEqual([
+    expect.objectContaining({ type: xyzThunk.pending.type }),
+    expect.objectContaining({ type: xyzThunk.fulfilled.type }),
+]);
+```
+
+### A hook or component that dispatches
+
+Render it with the platform store provider, and swap the store's `dispatch` for the mock one so the
+test can assert on `actions`:
+
+```ts
+const store = createStoreFromPreloadedState(preloadedState);
+const { actions, dispatch } = createMockDispatch({ getState: store.getState, extra: undefined });
+
+const { result } = await renderHookWithStoreProvider(() => useXyz(), {
+    services: { store: { ...store, dispatch } },
+});
+
+await act(() => result.current.submit());
+
+expect(actions).toContainEqual(xyzActions.submitted());
+```
+
+A thunk the test replaces with `jest.mock` still goes through this `dispatch`: the mock thunk is
+called with the same three arguments.
+
+### Waiting for a dispatched action
+
+Production code often ignores what `dispatch` returns, so awaiting the trigger does not wait for the
+thunk. Subscribe with `onDispatch` before triggering, call `resolve` on the action the test waits
+for, and await the subscription:
+
+```ts
+const finished = onDispatch((action, resolve) => {
+    if (action.type === xyzThunk.fulfilled.type) resolve();
+});
+
+triggerTheCodeUnderTest();
+
+await finished;
+```
+
+A subscription that is neither awaited nor unsubscribed fails the test.
