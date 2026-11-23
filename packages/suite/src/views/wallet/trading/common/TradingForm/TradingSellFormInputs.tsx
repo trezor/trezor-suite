@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { type TokenAddress } from '@suite-common/tokens';
@@ -7,6 +8,7 @@ import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    type TradingFormAccountRootState,
     type TradingSellFormProps,
     type TradingSellType,
     isCountrySubdivisionRequired,
@@ -19,7 +21,6 @@ import { Column, Row } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { useIsFeeRefetchDisabled } from '#src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
-import { useSelector } from '#src/hooks/suite/useSelector';
 import { useSelectedTradingAsset } from '#src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
 import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -53,7 +54,9 @@ export const TradingSellFormInputs = () => {
         showReserveBanner,
     } = context;
     const asset = useSelectedTradingAsset(type);
-    const account = useSelector(state => selectTradingSendAccount(state, type));
+    const account = useSelector((state: TradingFormAccountRootState) =>
+        selectTradingSendAccount(state, type),
+    );
     const isRefetchDisabled = useIsFeeRefetchDisabled();
 
     useFetchFees({ networkSymbol: account?.symbol, isRefetchDisabled });
