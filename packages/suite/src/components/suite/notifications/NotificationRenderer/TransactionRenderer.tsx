@@ -3,6 +3,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { getTxAnchor, gotoThunk, selectRouteName, selectRouterApp } from '@suite/router';
 import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     selectAccounts,
     selectNetworkBlockchainInfo,
@@ -30,6 +31,7 @@ import { AccountLabeling } from '#src/components/suite/labeling/AccountLabeling'
 import type { NotificationViewProps } from '#src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
+import { NFTItemName } from './NFTItemName';
 import type { NotificationRendererProps } from './NotificationRendererProps';
 
 type TransactionRendererProps = NotificationViewProps &
@@ -66,10 +68,34 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
     const transactionToken = 'token' in props.notification ? props.notification.token : undefined;
     const notificationAmount =
         'amount' in props.notification ? props.notification.amount : undefined;
+    const nftTokenId =
+        'nftTokenId' in props.notification ? props.notification.nftTokenId : undefined;
     // An approval prints the ticker itself, next to the amount.
     const isSymbolRenderedBesideAmount =
         props.notification.type === 'tx-approved' || props.notification.type === 'tx-revoked';
     const toastTestIdPrefix = `@toast/${props.notification.type}`;
+    const formattedAmount =
+        notificationAmount !== undefined ? (
+            <FormattedCryptoAmount
+                value={notificationAmount}
+                networkSymbol={isSymbolRenderedBesideAmount ? undefined : symbol}
+                contractAddress={transactionToken?.contract}
+                tokenDecimals={transactionToken?.decimals}
+                isCompact
+                disableHiddenPlaceholder
+            />
+        ) : undefined;
+    // An NFT is always sent as a single item, so name it instead of showing an amount of 1.
+    const sentAsset =
+        nftTokenId !== undefined && transactionToken ? (
+            <NFTItemName
+                networkSymbol={symbol}
+                contractAddress={toTokenAddress(transactionToken.contract)}
+                tokenId={nftTokenId}
+            />
+        ) : (
+            formattedAmount
+        );
 
     const handleTransactionClick = () => {
         const deviceToSelect = accountDevice || device;
@@ -137,20 +163,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
                         notificationType={props.notification.type}
                         symbol={props.notification.symbol}
                         token={transactionToken}
-                        amount={
-                            notificationAmount !== undefined ? (
-                                <FormattedCryptoAmount
-                                    value={notificationAmount}
-                                    networkSymbol={
-                                        isSymbolRenderedBesideAmount ? undefined : symbol
-                                    }
-                                    contractAddress={transactionToken?.contract}
-                                    tokenDecimals={transactionToken?.decimals}
-                                    isCompact
-                                    disableHiddenPlaceholder
-                                />
-                            ) : undefined
-                        }
+                        amount={sentAsset}
                         isInfiniteApproval={
                             props.notification.type === 'tx-approved' &&
                             props.notification.isInfiniteApproval
