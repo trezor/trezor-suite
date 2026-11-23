@@ -14,6 +14,7 @@ import { mock } from '@trezor/dependency-injection';
 import type { GetTokenLogoIdentifiers } from '@trezor/network-assets-types';
 import { createBitcoinSuiteCommonNetworkModule } from '@trezor/network-bitcoin-suite-common';
 import { createEthereumSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
+import { openNetworkModule } from '@trezor/network-module-suite-common-types';
 import { createDeferred } from '@trezor/utils';
 
 import { TokenIcon } from './TokenIcon';
@@ -21,8 +22,8 @@ import { TokenIcon } from './TokenIcon';
 const ethSymbol = asNetworkSymbol('eth');
 const networkModuleRepository = createNetworkModuleRepository({
     networkModules: [
-        createBitcoinSuiteCommonNetworkModule({ getTrezorConnect: mock() }),
-        createEthereumSuiteCommonNetworkModule({ getTrezorConnect: mock() }),
+        openNetworkModule(createBitcoinSuiteCommonNetworkModule({ getTrezorConnect: mock() })),
+        openNetworkModule(createEthereumSuiteCommonNetworkModule({ getTrezorConnect: mock() })),
     ],
 });
 const ethereumModule = networkModuleRepository.get(ethSymbol);

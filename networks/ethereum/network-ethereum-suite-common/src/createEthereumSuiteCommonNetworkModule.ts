@@ -1,10 +1,10 @@
 import { isWrappedNativeToken } from '@trezor/network-ethereum/constants';
 import { ethereumAssets } from '@trezor/network-ethereum-assets';
-import { supportedEthereumNetworks } from '@trezor/network-ethereum-types';
 import {
-    type SuiteCommonNetworkModule,
-    createNetworkModule,
-} from '@trezor/network-module-suite-common-types';
+    type EthereumNetworkSymbol,
+    supportedEthereumNetworks,
+} from '@trezor/network-ethereum-types';
+import { type NetworkModule, createNetworkModule } from '@trezor/network-module-suite-common-types';
 
 import { ethereumValidator } from './addressValidator/ethereumAddressValidator';
 import {
@@ -20,7 +20,7 @@ import {
 export type EthereumSuiteCommonNetworkModuleDeps = EthereumNamedAddressResolverCompositionRootDeps &
     EthereumSignVerifyDeps;
 
-export type EthereumSuiteCommonNetworkModule = SuiteCommonNetworkModule;
+export type EthereumSuiteCommonNetworkModule = NetworkModule<EthereumNetworkSymbol>;
 
 export const createEthereumSuiteCommonNetworkModule = (
     deps: EthereumSuiteCommonNetworkModuleDeps,

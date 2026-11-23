@@ -35,6 +35,7 @@ import { resolveConnectPath } from '@trezor/env-utils';
 import { createBitcoinSuiteNativeNetworkModule } from '@trezor/network-bitcoin-suite-native';
 import { createCardanoSuiteNativeNetworkModule } from '@trezor/network-cardano-suite-native';
 import { createEthereumSuiteNativeNetworkModule } from '@trezor/network-ethereum-suite-native';
+import { openSuiteNativeNetworkModule } from '@trezor/network-module-suite-native-types';
 import type { SuiteNativeNetworkModule } from '@trezor/network-module-suite-native-types';
 import { createRippleSuiteNativeNetworkModule } from '@trezor/network-ripple-suite-native';
 import { createSolanaSuiteNativeNetworkModule } from '@trezor/network-solana-suite-native';
@@ -106,13 +107,13 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         fetch: globalThis.fetch.bind(globalThis),
     });
     const suiteNativeNetworkModules: SuiteNativeNetworkModule[] = [
-        createBitcoinSuiteNativeNetworkModule(deps),
-        createEthereumSuiteNativeNetworkModule(deps),
-        createRippleSuiteNativeNetworkModule(),
-        createCardanoSuiteNativeNetworkModule(deps),
-        createSolanaSuiteNativeNetworkModule(),
-        createStellarSuiteNativeNetworkModule(),
-        createTronSuiteNativeNetworkModule(),
+        openSuiteNativeNetworkModule(createBitcoinSuiteNativeNetworkModule(deps)),
+        openSuiteNativeNetworkModule(createEthereumSuiteNativeNetworkModule(deps)),
+        openSuiteNativeNetworkModule(createRippleSuiteNativeNetworkModule()),
+        openSuiteNativeNetworkModule(createCardanoSuiteNativeNetworkModule(deps)),
+        openSuiteNativeNetworkModule(createSolanaSuiteNativeNetworkModule()),
+        openSuiteNativeNetworkModule(createStellarSuiteNativeNetworkModule()),
+        openSuiteNativeNetworkModule(createTronSuiteNativeNetworkModule()),
     ];
     const networkModuleRepository = createNetworkModuleRepository({
         networkModules: suiteNativeNetworkModules.map(networkModule => networkModule.getCommon()),

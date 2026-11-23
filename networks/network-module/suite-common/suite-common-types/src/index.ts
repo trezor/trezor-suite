@@ -27,7 +27,8 @@ export type {
     VerifyMessageParams,
 } from './signVerify/NetworkVerifyMessage';
 export { createNetworkModule } from './createNetworkModule';
-export type { NetworkModuleDefinition } from './createNetworkModule';
+export type { NetworkModule, NetworkModuleDefinition } from './createNetworkModule';
+export { openNetworkModule } from './openNetworkModule';
 export { asDisplayOrderKey } from './DisplayOrderKey';
 export type { DisplayOrderKey } from './DisplayOrderKey';
 export type { NetworkSuiteCommonModuleApi } from './NetworkSuiteCommonModuleApi';

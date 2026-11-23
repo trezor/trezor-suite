@@ -1,6 +1,7 @@
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { type NetworkModuleDefinition, createNetworkModule } from './createNetworkModule';
+import { openNetworkModule } from './openNetworkModule';
 
 const createTestResolver = () => {
     const definition: NetworkModuleDefinition<'aaa' | 'taaa'> = {
@@ -25,13 +26,15 @@ const createTestResolver = () => {
                 Promise.resolve(value === '0x123' ? 'alice.name' : null),
         },
     };
-    const { namedAddressResolver } = createNetworkModule(['aaa', 'taaa'], definition);
+    const { namedAddressResolver } = openNetworkModule(
+        createNetworkModule(['aaa', 'taaa'], definition),
+    );
     if (!namedAddressResolver) throw new Error('Expected a named address resolver.');
 
     return namedAddressResolver;
 };
 
-describe('createNetworkModule named address resolver', () => {
+describe('openNetworkModule named address resolver', () => {
     it('reports support for supported, disabled, and foreign networks', () => {
         const resolver = createTestResolver();
 
@@ -63,24 +66,26 @@ describe('createNetworkModule named address resolver', () => {
     });
 });
 
-describe('createNetworkModule account sync interval', () => {
+describe('openNetworkModule account sync interval', () => {
     const getAccountSyncInterval = jest.fn((symbol: 'aaa' | 'taaa') =>
         symbol === 'aaa' ? 40_000 : 60_000,
     );
-    const networkModule = createNetworkModule(['aaa', 'taaa'], {
-        icon: {
-            getIcons: () => ({ coin: 'coin.svg', network: 'network.svg' }),
-            getIconPaths: () => ({ coin: 'coin.svg', network: 'network.svg' }),
-        },
-        addressValidator: {
-            isAddressValid: () => true,
-            getAddressType: () => undefined,
-        },
-        getNetworkConfig: () => {
-            throw new Error('Network config is not used by interval tests.');
-        },
-        getAccountSyncInterval,
-    });
+    const networkModule = openNetworkModule(
+        createNetworkModule(['aaa', 'taaa'], {
+            icon: {
+                getIcons: () => ({ coin: 'coin.svg', network: 'network.svg' }),
+                getIconPaths: () => ({ coin: 'coin.svg', network: 'network.svg' }),
+            },
+            addressValidator: {
+                isAddressValid: () => true,
+                getAddressType: () => undefined,
+            },
+            getNetworkConfig: () => {
+                throw new Error('Network config is not used by interval tests.');
+            },
+            getAccountSyncInterval,
+        }),
+    );
 
     it('uses the interval configured for each supported symbol', () => {
         expect(networkModule.getAccountSyncInterval(asNetworkSymbol('aaa'))).toBe(40_000);

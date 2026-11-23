@@ -1,12 +1,13 @@
-import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
+import type { NetworkModule } from '@trezor/network-module-suite-common-types';
+import { asNetworkSymbols } from '@trezor/network-module-types';
 
 import type { SuiteNetworkModule } from './SuiteNetworkModule';
 
 export const createNetworkModuleSuite = <
-    TSuiteCommonNetworkModule extends SuiteCommonNetworkModule,
+    TSuiteCommonNetworkModule extends Pick<NetworkModule<string>, 'getSupportedNetworks'>,
 >(
     common: TSuiteCommonNetworkModule,
 ): SuiteNetworkModule<TSuiteCommonNetworkModule> => ({
-    getSupportedNetworks: common.getSupportedNetworks,
+    getSupportedNetworks: () => asNetworkSymbols(common.getSupportedNetworks()),
     getCommon: () => common,
 });

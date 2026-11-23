@@ -1,10 +1,7 @@
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 import { cardanoAssets } from '@trezor/network-cardano-assets';
-import { supportedCardanoNetworks } from '@trezor/network-cardano-types';
-import {
-    type SuiteCommonNetworkModule,
-    createNetworkModule,
-} from '@trezor/network-module-suite-common-types';
+import { type CardanoNetworkSymbol, supportedCardanoNetworks } from '@trezor/network-cardano-types';
+import { type NetworkModule, createNetworkModule } from '@trezor/network-module-suite-common-types';
 
 import { adaValidator, preloadCborDecode } from './addressValidator/cardanoAddressValidator';
 import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
@@ -15,7 +12,7 @@ import {
 
 export type CardanoSuiteCommonNetworkModuleDeps = CardanoSignVerifyDeps;
 
-export type CardanoSuiteCommonNetworkModule = SuiteCommonNetworkModule;
+export type CardanoSuiteCommonNetworkModule = NetworkModule<CardanoNetworkSymbol>;
 
 export const createCardanoSuiteCommonNetworkModule = (
     deps: CardanoSuiteCommonNetworkModuleDeps,

@@ -2,9 +2,7 @@ import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-comm
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
 /** @serviceContract */
-export type SuiteNetworkModule<
-    TSuiteCommonNetworkModule extends SuiteCommonNetworkModule = SuiteCommonNetworkModule,
-> = {
+export type SuiteNetworkModule<TSuiteCommonNetworkModule = SuiteCommonNetworkModule> = {
     getSupportedNetworks: () => readonly NetworkSymbol[];
     getCommon: () => TSuiteCommonNetworkModule;
 };

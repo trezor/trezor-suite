@@ -10,6 +10,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { createBitcoinSuiteCommonNetworkModule } from '@trezor/network-bitcoin-suite-common';
 import { createCardanoSuiteCommonNetworkModule } from '@trezor/network-cardano-suite-common';
 import { createEthereumSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
+import { openNetworkModule } from '@trezor/network-module-suite-common-types';
 import { mockGetTrezorConnect } from '@trezor/network-module-suite-common-types/mocks';
 import { createRippleSuiteCommonNetworkModule } from '@trezor/network-ripple-suite-common';
 import { createSolanaSuiteCommonNetworkModule } from '@trezor/network-solana-suite-common';
@@ -35,13 +36,13 @@ const STRING_UP_TO_T3T1_DISPLAY_LIMIT = new RegExp(`.{1,${DISPLAY_CHAR_LIMIT_T3T
 const networkModuleDeps = { getTrezorConnect: mockGetTrezorConnect };
 const networkModuleRepository = createNetworkModuleRepository({
     networkModules: [
-        createBitcoinSuiteCommonNetworkModule(networkModuleDeps),
-        createEthereumSuiteCommonNetworkModule(networkModuleDeps),
-        createRippleSuiteCommonNetworkModule(),
-        createCardanoSuiteCommonNetworkModule(networkModuleDeps),
-        createSolanaSuiteCommonNetworkModule(),
-        createStellarSuiteCommonNetworkModule(),
-        createTronSuiteCommonNetworkModule(),
+        openNetworkModule(createBitcoinSuiteCommonNetworkModule(networkModuleDeps)),
+        openNetworkModule(createEthereumSuiteCommonNetworkModule(networkModuleDeps)),
+        openNetworkModule(createRippleSuiteCommonNetworkModule()),
+        openNetworkModule(createCardanoSuiteCommonNetworkModule(networkModuleDeps)),
+        openNetworkModule(createSolanaSuiteCommonNetworkModule()),
+        openNetworkModule(createStellarSuiteCommonNetworkModule()),
+        openNetworkModule(createTronSuiteCommonNetworkModule()),
     ],
 });
 const addressValidator = createAddressValidator({ networkModuleRepository });

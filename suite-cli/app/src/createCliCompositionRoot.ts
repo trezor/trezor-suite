@@ -20,7 +20,10 @@ import type { LoggerDep } from '@trezor/logger';
 import { createBitcoinSuiteCommonNetworkModule } from '@trezor/network-bitcoin-suite-common';
 import { createCardanoSuiteCommonNetworkModule } from '@trezor/network-cardano-suite-common';
 import { createEthereumSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
-import type { NetworkSuiteCommonModuleApi } from '@trezor/network-module-suite-common-types';
+import {
+    type NetworkSuiteCommonModuleApi,
+    openNetworkModule,
+} from '@trezor/network-module-suite-common-types';
 import { createRippleSuiteCommonNetworkModule } from '@trezor/network-ripple-suite-common';
 import { createSolanaSuiteCommonNetworkModule } from '@trezor/network-solana-suite-common';
 import { createStellarSuiteCommonNetworkModule } from '@trezor/network-stellar-suite-common';
@@ -35,13 +38,13 @@ export type CliCompositionRoot = CliAppDep;
 export const createCliCompositionRoot = (deps: CliCompositionRootDeps): CliCompositionRoot => {
     const networkModuleRepository = createNetworkModuleRepository({
         networkModules: [
-            createBitcoinSuiteCommonNetworkModule(deps),
-            createEthereumSuiteCommonNetworkModule(deps),
-            createRippleSuiteCommonNetworkModule(),
-            createCardanoSuiteCommonNetworkModule(deps),
-            createSolanaSuiteCommonNetworkModule(),
-            createStellarSuiteCommonNetworkModule(),
-            createTronSuiteCommonNetworkModule(),
+            openNetworkModule(createBitcoinSuiteCommonNetworkModule(deps)),
+            openNetworkModule(createEthereumSuiteCommonNetworkModule(deps)),
+            openNetworkModule(createRippleSuiteCommonNetworkModule()),
+            openNetworkModule(createCardanoSuiteCommonNetworkModule(deps)),
+            openNetworkModule(createSolanaSuiteCommonNetworkModule()),
+            openNetworkModule(createStellarSuiteCommonNetworkModule()),
+            openNetworkModule(createTronSuiteCommonNetworkModule()),
         ],
     });
     const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });

@@ -61,6 +61,7 @@ import type { CreateLoggerDep } from '@trezor/logger';
 import { createBitcoinSuiteNetworkModule } from '@trezor/network-bitcoin-suite';
 import { createCardanoSuiteNetworkModule } from '@trezor/network-cardano-suite';
 import { createEthereumSuiteNetworkModule } from '@trezor/network-ethereum-suite';
+import { openSuiteNetworkModule } from '@trezor/network-module-suite-types';
 import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
 import { createRippleSuiteNetworkModule } from '@trezor/network-ripple-suite';
 import { createSolanaSuiteNetworkModule } from '@trezor/network-solana-suite';
@@ -161,13 +162,13 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     });
 
     const suiteNetworkModules: SuiteNetworkModule[] = [
-        createBitcoinSuiteNetworkModule(deps),
-        createEthereumSuiteNetworkModule(deps),
-        createRippleSuiteNetworkModule(),
-        createCardanoSuiteNetworkModule(deps),
-        createSolanaSuiteNetworkModule(),
-        createStellarSuiteNetworkModule(),
-        createTronSuiteNetworkModule(),
+        openSuiteNetworkModule(createBitcoinSuiteNetworkModule(deps)),
+        openSuiteNetworkModule(createEthereumSuiteNetworkModule(deps)),
+        openSuiteNetworkModule(createRippleSuiteNetworkModule()),
+        openSuiteNetworkModule(createCardanoSuiteNetworkModule(deps)),
+        openSuiteNetworkModule(createSolanaSuiteNetworkModule()),
+        openSuiteNetworkModule(createStellarSuiteNetworkModule()),
+        openSuiteNetworkModule(createTronSuiteNetworkModule()),
     ];
     const networkModuleRepository = createNetworkModuleRepository({
         networkModules: suiteNetworkModules.map(networkModule => networkModule.getCommon()),

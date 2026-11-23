@@ -7,6 +7,7 @@ import type { SuiteCommonNetworkModule } from './SuiteCommonNetworkModule';
 import type { AddressValidator } from './addressValidator/AddressValidator';
 import { createNetworkModule } from './createNetworkModule';
 import type { NamedAddressResolver } from './namedAddressResolver/NamedAddressResolver';
+import { openNetworkModule } from './openNetworkModule';
 
 // A stand-in for a network package's closed symbol type, so this package stays independent of
 // any particular network.
@@ -23,25 +24,26 @@ declare const isWrappedNativeToken: IsWrappedNativeToken<TestNetworkSymbol>;
 declare const getAccountSyncInterval: (symbol: TestNetworkSymbol) => number;
 declare const getNetworkConfig: (symbol: TestNetworkSymbol) => SuiteCommonNetworkConfig;
 
-// The module a shared layer sees speaks the open symbol, whatever the closed one was.
-const _module: SuiteCommonNetworkModule = createNetworkModule(supportedTestNetworks, {
-    icon,
-    addressValidator,
-    namedAddressResolver,
-    isWrappedNativeToken,
-    getNetworkConfig,
-    getAccountSyncInterval,
-});
+// The opened module a shared layer sees speaks the open symbol, whatever the closed one was.
+const _module: SuiteCommonNetworkModule = openNetworkModule(
+    createNetworkModule(supportedTestNetworks, {
+        icon,
+        addressValidator,
+        namedAddressResolver,
+        isWrappedNativeToken,
+        getNetworkConfig,
+        getAccountSyncInterval,
+    }),
+);
 
 // A name system is optional.
-const _withoutNamedAddresses: SuiteCommonNetworkModule = createNetworkModule(
-    supportedTestNetworks,
-    {
+const _withoutNamedAddresses: SuiteCommonNetworkModule = openNetworkModule(
+    createNetworkModule(supportedTestNetworks, {
         icon,
         addressValidator,
         getNetworkConfig,
         getAccountSyncInterval,
-    },
+    }),
 );
 
 // The capabilities are written against the closed symbol: no conversion at the call site.
