@@ -349,6 +349,7 @@ import {
     WardRejoinAck,
     WardRollback,
     WardRollbackAck,
+    WardSetPersistWithoutWm,
     WardSync,
     WardSyncAck,
     WardVerifyChain,
@@ -720,6 +721,7 @@ export const MessageType = Type.Object(
         WardSetPointer,
         WardCatchUp,
         WardCatchUpAck,
+        WardSetPersistWithoutWm,
         WardSync,
         WardSyncAck,
         WardIngestAttestation,
@@ -947,7 +949,8 @@ export type WireInMessage =
     | 'WardPublishConflict'
     | 'WardResetService'
     | 'WardSetPointer'
-    | 'WardCatchUp';
+    | 'WardCatchUp'
+    | 'WardSetPersistWithoutWm';
 
 export type WireOutMessage =
     | 'Success'

@@ -10,11 +10,19 @@ import { promises as fs } from 'fs';
 
 import { type DevWmSnapshot } from '@trezor/ward-core';
 
-import { type StoredLink, type WardBackend, linkId } from '../backend';
+import {
+    type StoredAttestation,
+    type StoredLink,
+    type WardBackend,
+    attestationId,
+    linkId,
+} from '../backend';
 
 interface State {
     wardId: string | null;
     links: StoredLink[];
+    /** absent in a file written before attestations were kept */
+    attestations?: StoredAttestation[];
     wm: DevWmSnapshot | null;
 }
 
@@ -66,6 +74,19 @@ export class ServiceStateFile implements WardBackend {
             this.state.links.push(JSON.parse(JSON.stringify(link)));
         }
         await this.save();
+    }
+
+    loadAttestations(): Promise<StoredAttestation[]> {
+        return Promise.resolve((this.state.attestations ?? []).map(a => ({ ...a })));
+    }
+
+    async appendAttestation(attestation: StoredAttestation): Promise<void> {
+        const held = this.state.attestations ?? [];
+        const id = attestationId(attestation);
+        if (!held.some(a => attestationId(a) === id)) {
+            this.state.attestations = [...held, { ...attestation }];
+            await this.save();
+        }
     }
 
     close(): Promise<void> {

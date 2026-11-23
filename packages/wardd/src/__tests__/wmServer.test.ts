@@ -8,7 +8,8 @@ import path from 'path';
 
 import { HttpWm, WmConflict, WmUnavailable, toHex } from '@trezor/ward-core';
 
-import { RelayFailure } from '../host';
+import { InMemoryWardBackend, type StoredAttestation } from '../backend';
+import { RelayFailure, WardHost } from '../host';
 import { Wardd } from '../service';
 import { startWmServer } from '../wmServer';
 import { FakeDevice, newWallet } from './fakeDevice';
@@ -150,7 +151,76 @@ describe('wardd while the WARD Manager is down', () => {
         );
         await expect(host.catchUp(second.call)).resolves.toMatchObject({ counter: 2 });
         expect(second.provisional?.counter).toBe(2);
+        expect(second.provisional?.timestamp).toEqual(expect.any(Number));
         expect(second.head.counter).toBe(0); // nothing persisted
         expect(second.online).toBe(false);
+    });
+
+    /** A replica that keeps the rows but not the WM's attestations from `from` up. */
+    class ForgetfulBackend extends InMemoryWardBackend {
+        constructor(private readonly from: number) {
+            super();
+        }
+
+        appendAttestation(attestation: StoredAttestation) {
+            return attestation.toCounter >= this.from
+                ? Promise.resolve()
+                : super.appendAttestation(attestation);
+        }
+    }
+
+    it('stops at the newest head a kept WM attestation names, below the replica head', async () => {
+        const { server, wm } = await withWm();
+        const keys = newWallet();
+        const first = new FakeDevice(keys);
+        // the attestation of #2 never reached this replica: the WM went down after the advance
+        const host = new WardHost(first.wardId, new ForgetfulBackend(2), wm);
+        first.enqueue('alice', 'v1');
+        first.enqueue('bob', 'v2');
+        await host.flush(first.call);
+        await server.close();
+
+        const second = new FakeDevice(keys);
+        await expect(host.catchUp(second.call)).resolves.toMatchObject({
+            counter: 1,
+            replicaCounter: 2,
+        });
+        expect(second.provisional?.counter).toBe(1);
+        expect(second.head.counter).toBe(0);
+    });
+
+    it('with no kept attestation, offers the head bare, which a WM device refuses', async () => {
+        const { server, wm } = await withWm();
+        const keys = newWallet();
+        const first = new FakeDevice(keys);
+        const host = new WardHost(first.wardId, new ForgetfulBackend(0), wm);
+        first.enqueue('alice', 'v1');
+        await host.flush(first.call);
+        await server.close();
+
+        const second = new FakeDevice(keys);
+        await expect(host.catchUp(second.call)).rejects.toEqual(
+            expect.objectContaining({ code: 'device_failure' }),
+        );
+        expect(second.provisional).toBeNull();
+    });
+
+    it('with no kept attestation, moves a device built without a WM, which persists', async () => {
+        const { server, wm } = await withWm();
+        const keys = newWallet();
+        const first = new FakeDevice(keys);
+        const host = new WardHost(first.wardId, new ForgetfulBackend(0), wm);
+        first.enqueue('alice', 'v1');
+        await host.flush(first.call);
+        await server.close();
+
+        const mvp = new FakeDevice(keys, { wm: false });
+        await expect(host.catchUp(mvp.call)).resolves.toMatchObject({
+            counter: 1,
+            persisted: true,
+            timestamp: null,
+        });
+        expect(mvp.head.counter).toBe(1);
+        expect(mvp.provisional).toBeNull();
     });
 });

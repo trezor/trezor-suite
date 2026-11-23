@@ -56,11 +56,42 @@ export const linkId = (link: StoredLink): string =>
         ),
     ).slice(0, 32);
 
+/**
+ * A WM attestation this host relayed, kept with the round nonce it was signed over: proof that the
+ * WM held `to` at `timestamp`. While the WM is down, `catchUp` names the newest head on the
+ * replica's chain that one of these vouches for, and the device verifies the signature itself.
+ * Append-only like the links, and replicated with them, so a host that never talked to the WM can
+ * catch a device up too.
+ */
+export interface StoredAttestation {
+    fromCounter: number;
+    /** hex; null is the empty tree */
+    fromRoot: string | null;
+    fromHeadNonce: string;
+    toCounter: number;
+    /** hex; null is the empty tree */
+    toRoot: string | null;
+    toHeadNonce: string;
+    /** the WM's clock, seconds: when it reached `to` */
+    timestamp: number;
+    /** the round nonce the signature covers */
+    nonce: string;
+    signature: string;
+}
+
+/** An attestation's identity: its signature, which covers every other field. */
+export const attestationId = (a: StoredAttestation): string =>
+    toHex(sha256(toBytes(a.signature))).slice(0, 32);
+
 export interface WardBackend {
     /** Every link this replica holds, in the order they were appended where known. */
     load(): Promise<StoredLink[]>;
     /** Persist one link, atomically; resolves once it is durable locally. */
     append(link: StoredLink): Promise<void>;
+    /** Every WM attestation this replica holds. */
+    loadAttestations(): Promise<StoredAttestation[]>;
+    /** Persist one attestation; storing one already held is a no-op. */
+    appendAttestation(attestation: StoredAttestation): Promise<void>;
     close(): Promise<void>;
 }
 
@@ -99,12 +130,21 @@ export const loggingBackend = (inner: WardBackend, log: (line: string) => void):
             await inner.append(link);
             log(`replica: stored ${step} (durable locally)`);
         },
+        loadAttestations: () => inner.loadAttestations(),
+        async appendAttestation(attestation) {
+            log(
+                `replica: keeping the WM's attestation of #${attestation.toCounter}` +
+                    ` root=${short(attestation.toRoot)} at ${attestation.timestamp}`,
+            );
+            await inner.appendAttestation(attestation);
+        },
         close: () => inner.close(),
     };
 };
 
 export class InMemoryWardBackend implements WardBackend {
     private links = new Map<string, StoredLink>();
+    private attestations = new Map<string, StoredAttestation>();
 
     load() {
         return Promise.resolve([...this.links.values()]);
@@ -113,6 +153,16 @@ export class InMemoryWardBackend implements WardBackend {
     append(link: StoredLink) {
         // round-trip through JSON so a caller mutating its object cannot reach into the store
         this.links.set(linkId(link), JSON.parse(JSON.stringify(link)));
+
+        return Promise.resolve();
+    }
+
+    loadAttestations() {
+        return Promise.resolve([...this.attestations.values()]);
+    }
+
+    appendAttestation(attestation: StoredAttestation) {
+        this.attestations.set(attestationId(attestation), { ...attestation });
 
         return Promise.resolve();
     }

@@ -67,8 +67,10 @@ export class FakeDevice {
     readonly wardId: Uint8Array;
     head: Head = { counter: 0, root: EMPTY_ROOT };
     online = false;
+    /** the WM's timestamp for `head`, as the firmware persists it beside the head */
+    headTime: number | null = null;
     /** the head `WardCatchUp` reached, for this session only; never `head` */
-    provisional: Head | null = null;
+    provisional: (Head & { timestamp: number }) | null = null;
     queue: { entryKey: Uint8Array; leaf: WardLeaf | null }[] = [];
     private headNonce: Uint8Array = NO_HEAD_NONCE;
     private nonce: Uint8Array | null = null;
@@ -77,7 +79,11 @@ export class FakeDevice {
     private wf: Workflow | null = null;
     private readonly wmPubkey = new DevWm().pubkey;
 
-    constructor(private readonly keys: WalletKeys = newWallet()) {
+    constructor(
+        private readonly keys: WalletKeys = newWallet(),
+        /** `wm: false` is a firmware built without a WM (the MVP): catch-up needs no attestation and persists */
+        private readonly opts: { wm?: boolean } = {},
+    ) {
         this.wardId = ed25519.getPublicKey(keys.kSig);
     }
 
@@ -141,6 +147,7 @@ export class FakeDevice {
 
     private adopt(to: Head) {
         this.head = to;
+        this.headTime = this.att!.timestamp ?? 0;
         this.headNonce = toBytes(this.att!.to_head_nonce);
         this.online = true;
         // the in-flight change took effect only if THIS head is the one it made
@@ -256,7 +263,11 @@ export class FakeDevice {
         });
     }
 
-    /** WardCatchUp: walks back like the firmware; the fake keeps the head it reads from apart. */
+    /**
+     * WardCatchUp: like the firmware, the named head must carry a cached WM attestation (verified
+     * over the nonce the host supplies, no older than the stored head's), and the walk back from
+     * it must land on the stored head. The fake keeps the head it reads from apart.
+     */
     *onWardCatchUp(m: Json): Workflow {
         const to = { counter: m.to_counter as number, root: fromWire(m.to_root) };
         if (to.counter < this.head.counter) {
@@ -264,9 +275,40 @@ export class FakeDevice {
                 `the host offered head #${to.counter}, older than #${this.head.counter}`,
             );
         }
+        if (this.opts.wm === false) {
+            const landed = yield* this.walk(to, this.head.counter);
+            if (!same(landed, this.head)) throw new Error('that head does not descend');
+            this.head = to;
+            this.headTime = null;
+
+            return msg('WardCatchUpAck', {
+                counter: to.counter,
+                reverts_crossed: 0,
+                persisted: true,
+            });
+        }
+        if (!m.nonce || !m.wm_signature || m.timestamp === undefined) {
+            throw new Error("catch-up needs the WM's attestation of the named head");
+        }
+        const body = {
+            fromCounter: m.from_counter,
+            fromRoot: fromWire(m.from_root),
+            fromHeadNonce: toBytes(m.from_head_nonce),
+            toCounter: to.counter,
+            toRoot: to.root,
+            toHeadNonce: toBytes(m.to_head_nonce),
+            timestamp: m.timestamp,
+        };
+        const preimage = attestationPreimage(toBytes(m.nonce), this.wardId, body);
+        if (!ed25519.verify(toBytes(m.wm_signature), preimage, this.wmPubkey)) {
+            throw new Error('the WM never attested that head');
+        }
+        if (this.headTime !== null && m.timestamp < this.headTime) {
+            throw new Error("that head was attested before this device's head");
+        }
         const landed = yield* this.walk(to, this.head.counter);
         if (!same(landed, this.head)) throw new Error('that head does not descend');
-        this.provisional = to;
+        this.provisional = { ...to, timestamp: m.timestamp };
 
         return msg('WardCatchUpAck', { counter: to.counter, reverts_crossed: 0 });
     }

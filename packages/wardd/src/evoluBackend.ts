@@ -53,7 +53,13 @@ import { WebSocket } from 'ws';
 
 import { concatBytes, toBytes, toHex } from '@trezor/ward-core';
 
-import { type StoredLink, type WardBackend, linkId } from './backend';
+import {
+    type StoredAttestation,
+    type StoredLink,
+    type WardBackend,
+    attestationId,
+    linkId,
+} from './backend';
 
 /**
  * The WARD owner secret: the SLIP-21 child `WARD` of the node the device returns for
@@ -91,11 +97,21 @@ export const wardOwner = (secretBytes: Uint8Array): AppOwner => {
 };
 
 const WardLinkId = id('WardLinkId');
+const WardAttestationId = id('WardAttestationId');
 
-/** One row per transition; `body` is the whole `StoredLink`, written once and never updated. */
+/**
+ * One row per transition, and one per WM attestation kept; `body` is the whole `StoredLink` or
+ * `StoredAttestation`, written once and never updated.
+ */
 export const WardSchema = {
     wardLink: {
         id: WardLinkId,
+        wardId: EvoluString,
+        toCounter: NonNegativeInt,
+        body: EvoluString,
+    },
+    wardAttestation: {
+        id: WardAttestationId,
         wardId: EvoluString,
         toCounter: NonNegativeInt,
         body: EvoluString,
@@ -239,6 +255,7 @@ export class EvoluWardBackend implements WardBackend {
         private readonly evolu: Evolu<typeof WardSchema>,
         private readonly wardId: string,
         private readonly query: ReturnType<typeof createQuery>,
+        private readonly attestationQuery: ReturnType<typeof createQuery>,
         private readonly unsubscribe: () => void,
         private readonly run: ReturnType<typeof createNodeRun>['run'],
         private readonly errors: ErrorStore,
@@ -263,16 +280,25 @@ export class EvoluWardBackend implements WardBackend {
         const query = createQuery(db =>
             db.selectFrom('wardLink').selectAll().where('wardId', '=', wardId),
         );
+        const attestationQuery = createQuery(db =>
+            db.selectFrom('wardAttestation').selectAll().where('wardId', '=', wardId),
+        );
         // SUBSCRIBED, so rows another host replicates in are in `getQueryRows` without a reload,
         // and a local append's rows are there by the time its `onComplete` fires.
-        const unsubscribe = evolu.subscribeQuery(query)(() => {});
+        const unsubscribeLinks = evolu.subscribeQuery(query)(() => {});
+        const unsubscribeAttestations = evolu.subscribeQuery(attestationQuery)(() => {});
         await evolu.loadQuery(query);
+        await evolu.loadQuery(attestationQuery);
 
         return new EvoluWardBackend(
             evolu,
             wardId,
             query,
-            unsubscribe,
+            attestationQuery,
+            () => {
+                unsubscribeLinks();
+                unsubscribeAttestations();
+            },
             run,
             evoluError,
             opts.appendTimeoutMs ?? DEFAULT_APPEND_TIMEOUT_MS,
@@ -301,6 +327,33 @@ export class EvoluWardBackend implements WardBackend {
                         wardId: this.wardId,
                         toCounter: getOrThrow(NonNegativeInt.from(link.toCounter)),
                         body: JSON.stringify(link),
+                    },
+                    { onComplete: done },
+                );
+            },
+            { errors: this.errors, timeoutMs: this.appendTimeoutMs },
+        );
+    }
+
+    loadAttestations(): Promise<StoredAttestation[]> {
+        return Promise.resolve(
+            this.evolu
+                .getQueryRows(this.attestationQuery)
+                .filter(row => !row.isDeleted && typeof row.body === 'string')
+                .map(row => JSON.parse(row.body as string) as StoredAttestation),
+        );
+    }
+
+    appendAttestation(attestation: StoredAttestation): Promise<void> {
+        return settled(
+            done => {
+                this.evolu.upsert(
+                    'wardAttestation',
+                    {
+                        id: createIdFromString(attestationId(attestation)),
+                        wardId: this.wardId,
+                        toCounter: getOrThrow(NonNegativeInt.from(attestation.toCounter)),
+                        body: JSON.stringify(attestation),
                     },
                     { onComplete: done },
                 );

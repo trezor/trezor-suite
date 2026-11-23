@@ -11,6 +11,7 @@
  * and a write lands on top of it -- interleaving two would serve one a tree the other just moved.
  */
 import {
+    type Attestation,
     EMPTY_ROOT,
     type RelayErrorCode,
     type RelayMessage,
@@ -31,7 +32,7 @@ import {
     verifyWmSig,
 } from '@trezor/ward-core';
 
-import { type StoredLink, type WardBackend, hexOrNull } from './backend';
+import { type StoredAttestation, type StoredLink, type WardBackend, hexOrNull } from './backend';
 import { type Head, type Replica, materialize } from './replica';
 
 /** Send one message to the device on the client's session; resolves to its answer. */
@@ -158,12 +159,15 @@ export class WardHost {
 
     status() {
         return this.exclusive(async () => {
-            const { head, behind } = await this.replica();
+            const { trie, head, behind } = await this.replica();
             const wm = await this.wmHead();
+            const attested = this.newestAttested(trie, head, await this.backend.loadAttestations());
 
             return {
                 counter: head.counter,
                 root: hexOrNull(head.root),
+                // `catchUp`'s target: the newest head on the chain a kept WM attestation names
+                attestedCounter: attested?.at.counter ?? null,
                 wmCounter: wm.available ? (wm.head?.counter ?? null) : null,
                 wmRoot: wm.available ? hexOrNull(wm.head?.root) : null,
                 wmAvailable: wm.available,
@@ -194,31 +198,106 @@ export class WardHost {
     }
 
     /**
-     * Walk the device up to this replica's head WITHOUT the WM -- what a host can do while the WM
-     * is down. The device proves the chain back to its stored head and reads from this head for
-     * the session only, under the "not proven current" warning; it persists nothing.
+     * Walk the device up WITHOUT the WM -- what a host can do while the WM is down -- to the
+     * NEWEST HEAD ON THIS REPLICA'S CHAIN THAT A KEPT WM ATTESTATION VOUCHES FOR, which may be
+     * below the replica's head. The device verifies the attestation, proves the chain back to its
+     * stored head and reads from that head for the session only, under a warning that it reflects
+     * nothing since the attestation's timestamp, nor reverts -- or persists it, where the user
+     * allowed that for the wallet (`persisted` says which).
+     *
+     * WITH NO KEPT ATTESTATION the replica's head is offered bare. A firmware built without a WM
+     * (the MVP) follows the chain alone and always persists; one with a WM refuses, and the device
+     * stays on its stored head.
      */
     catchUp(device: Device) {
         return this.exclusive(async () => {
             const { trie, head } = await this.replica();
+            const target = this.newestAttested(trie, head, await this.backend.loadAttestations());
+            const at = target?.at ?? head;
+            const a = target?.attestation;
+            const attested = a
+                ? {
+                      nonce: a.nonce,
+                      from_counter: a.fromCounter,
+                      ...opt('from_root', rootOf(a.fromRoot)),
+                      from_head_nonce: a.fromHeadNonce,
+                      to_head_nonce: a.toHeadNonce,
+                      timestamp: a.timestamp,
+                      wm_signature: a.signature,
+                  }
+                : {};
             const ack = expectReply(
                 await this.answerChain(
                     device,
                     trie,
                     await device({
                         name: 'WardCatchUp',
-                        message: { to_counter: head.counter, ...opt('to_root', head.root) },
+                        message: {
+                            to_counter: at.counter,
+                            ...opt('to_root', at.root),
+                            ...attested,
+                        },
                     }),
                 ),
                 'WardCatchUpAck',
             );
 
             return {
-                counter: ack.counter ?? head.counter,
-                root: hexOrNull(head.root),
+                counter: ack.counter ?? at.counter,
+                root: hexOrNull(at.root),
+                timestamp: a?.timestamp ?? null,
+                replicaCounter: head.counter,
                 reverts: ack.reverts_crossed ?? 0,
+                persisted: ack.persisted ?? false,
             };
         });
+    }
+
+    /**
+     * The newest state on the replica's line, from its head down, that a kept attestation names as
+     * its `to` end; the latest such attestation if there are several.
+     */
+    private newestAttested(trie: WardTrie, head: Head, kept: StoredAttestation[]) {
+        const byHead = new Map<string, StoredAttestation>();
+        for (const a of kept) {
+            const key = `${a.toCounter}/${toHex(rootOf(a.toRoot) ?? EMPTY_ROOT)}`;
+            const held = byHead.get(key);
+            if (!held || held.timestamp < a.timestamp) byHead.set(key, a);
+        }
+        const line: Head[] = [
+            head,
+            ...trie
+                .linksEndingAt(head.counter, head.root, Number.MAX_SAFE_INTEGER)
+                .map(l => ({ counter: l.fromCounter, root: l.fromRoot })),
+        ];
+        for (const at of line) {
+            const attestation = byHead.get(`${at.counter}/${toHex(at.root ?? EMPTY_ROOT)}`);
+            if (attestation) return { at, attestation };
+        }
+
+        return null;
+    }
+
+    /**
+     * Keep what the WM just signed, for `catchUp` while it is down. A failure to store it fails
+     * nothing: the attestation is a convenience for later, and the round it answers goes on.
+     */
+    private async keepAttestation(att: Attestation, nonce: Uint8Array) {
+        try {
+            await this.backend.appendAttestation({
+                fromCounter: att.fromCounter,
+                fromRoot: hexOrNull(rootOf(toHex(att.fromRoot))),
+                fromHeadNonce: toHex(att.fromHeadNonce),
+                toCounter: att.toCounter,
+                toRoot: hexOrNull(rootOf(toHex(att.toRoot))),
+                toHeadNonce: toHex(att.toHeadNonce),
+                timestamp: att.timestamp,
+                nonce: toHex(nonce),
+                signature: toHex(att.signature),
+            });
+        } catch (e) {
+            this.log?.(`replica: could not keep the WM's attestation: ${String(e)}`);
+        }
     }
 
     flush(device: Device, opts: { maxBatch?: number } = {}) {
@@ -361,6 +440,7 @@ export class WardHost {
                 await this.onWmChange();
             }
             const att = await this.wm.attest(wardId, toBytes(req.nonce ?? ''));
+            await this.keepAttestation(att, toBytes(req.nonce ?? ''));
             const { trie, head } = await this.replica();
             // THE WM'S LINE, oldest first, from the device's head on: what it needs to walk forward
             const line = head.counter
@@ -448,6 +528,7 @@ export class WardHost {
                 throw e;
             }
             const att = await this.wm.attest(this.wardId, toBytes(req.nonce ?? ''));
+            await this.keepAttestation(att, toBytes(req.nonce ?? ''));
 
             return {
                 name: 'WardPublishAck',
@@ -516,6 +597,7 @@ export class WardHost {
         }
 
         const att = await this.wm.attest(wardId, toBytes(ack.nonce ?? ''));
+        await this.keepAttestation(att, toBytes(ack.nonce ?? ''));
         expectReply(
             await device({
                 name: 'WardIngestAttestation',

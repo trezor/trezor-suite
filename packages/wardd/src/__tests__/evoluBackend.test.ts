@@ -6,7 +6,7 @@ import { randomBytes } from '@noble/hashes/utils.js';
 
 import { toHex } from '@trezor/ward-core';
 
-import { type StoredLink } from '../backend';
+import { type StoredAttestation, type StoredLink } from '../backend';
 import {
     AppendFailed,
     type ErrorStore,
@@ -33,6 +33,18 @@ const link = (toCounter: number): StoredLink => ({
     ],
 });
 
+const attestation = (toCounter: number): StoredAttestation => ({
+    fromCounter: toCounter - 1,
+    fromRoot: null,
+    fromHeadNonce: toHex(randomBytes(32)),
+    toCounter,
+    toRoot: toHex(randomBytes(32)),
+    toHeadNonce: toHex(randomBytes(32)),
+    timestamp: 1_700_000_000 + toCounter,
+    nonce: toHex(randomBytes(32)),
+    signature: toHex(randomBytes(64)),
+});
+
 describe('EvoluWardBackend', () => {
     it('stores a link whole, once', async () => {
         const backend = await EvoluWardBackend.open({
@@ -49,6 +61,24 @@ describe('EvoluWardBackend', () => {
             const loaded = await backend.load();
             expect(loaded).toHaveLength(2);
             expect(loaded).toEqual(expect.arrayContaining([one, two]));
+        } finally {
+            await backend.close();
+        }
+    });
+
+    it('keeps a WM attestation whole, once, apart from the links', async () => {
+        const backend = await EvoluWardBackend.open({
+            wardId: randomBytes(32),
+            evoluNode: toHex(randomBytes(64)),
+            dataDir: null,
+        });
+        try {
+            const one = attestation(1);
+            await backend.appendAttestation(one);
+            await backend.appendAttestation(one);
+            await backend.append(link(1));
+            expect(await backend.loadAttestations()).toEqual([one]);
+            expect(await backend.load()).toHaveLength(1);
         } finally {
             await backend.close();
         }
