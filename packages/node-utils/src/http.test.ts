@@ -166,6 +166,28 @@ describe('HttpServer', () => {
         expect(res2.status).toEqual(200);
     });
 
+    test.each([
+        { name: 'referer not in the allowed list', referer: 'https://accounts.example.com/' },
+        { name: 'missing referer when empty referer is not allowed', referer: undefined },
+        { name: 'invalid referer', referer: 'not a url' },
+    ])('allowReferer middleware answers 403 for $name', async ({ referer }) => {
+        const handler = jest.fn((_request, response) => {
+            response.end('ok');
+        });
+        server.get('/foo', [allowReferers(['www.meow.com']), handler]);
+        await server.start();
+
+        const address = server.getServerAddress();
+        const res = await fetch(`http://${address.address}:${address.port}/foo`, {
+            headers: referer ? { referer } : {},
+            signal: AbortSignal.timeout(2000),
+        });
+
+        expect(res.status).toEqual(403);
+        expect(handler).not.toHaveBeenCalled();
+        expect(muteLogger.warn).toHaveBeenCalledWith('Referer rejected for /foo');
+    });
+
     test('handler order', async () => {
         const calledHandlers: string[] = [];
         const handler =
