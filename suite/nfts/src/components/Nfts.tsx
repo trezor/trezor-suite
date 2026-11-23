@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { type SuiteSettingsRootState, selectIsNftSectionEnabled } from '@suite/settings';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Card, Collapsible, Column, Row, SubTabs, Text } from '@trezor/components';
 
 import { NftList } from './NftList';
@@ -21,16 +22,17 @@ type NftsToggle = {
 };
 
 type NftsProps = {
+    accountKey?: AccountKey;
     onToggle?: (toggle: NftsToggle) => void;
 };
 
-export const Nfts = ({ onToggle }: NftsProps) => {
+export const Nfts = ({ accountKey, onToggle }: NftsProps) => {
     const isNftSectionEnabled = useSelector(selectIsNftSectionEnabled);
     const shownCount = useSelector((state: NftState & SuiteSettingsRootState) =>
-        isNftSectionEnabled ? selectShownNftCollectionCount(state) : 0,
+        isNftSectionEnabled ? selectShownNftCollectionCount(state, accountKey) : 0,
     );
     const hiddenCount = useSelector((state: NftState & SuiteSettingsRootState) =>
-        isNftSectionEnabled ? selectHiddenNftCollectionCount(state) : 0,
+        isNftSectionEnabled ? selectHiddenNftCollectionCount(state, accountKey) : 0,
     );
     const [chosenTab, setChosenTab] = useState<NftTab>();
     const [isOpen, setIsOpen] = useState(false);
@@ -103,7 +105,7 @@ export const Nfts = ({ onToggle }: NftsProps) => {
                             </Text>
                         </Row>
 
-                        <NftList key={tab} isHidden={tab === 'hidden'} />
+                        <NftList key={tab} isHidden={tab === 'hidden'} accountKey={accountKey} />
                     </Column>
                 </Collapsible.Content>
             </Collapsible>
