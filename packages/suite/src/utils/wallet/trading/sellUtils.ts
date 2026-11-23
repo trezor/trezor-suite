@@ -5,6 +5,8 @@ import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import { getLocationOrigin, isDesktop } from '@trezor/env-utils';
 
+import { getRedirectFeeHash } from '#src/utils/wallet/trading/tradingUtils';
+
 export const createQuoteLink = async (
     { desktopApi }: DesktopApiDep<'getHttpReceiverAddress'>,
     request: SellFiatTradeQuoteRequest,
@@ -25,17 +27,7 @@ export const createQuoteLink = async (
         hash = `p-${hash}/${orderId}`;
     }
 
-    // fees info
-    if (composedInfo.composed) {
-        hash += account.networkType === 'solana' ? '/normal' : '/custom'; // manually set fee type
-        hash += `/${composedInfo.composed.feePerByte}`;
-        hash += `/${composedInfo.composed.maxFeePerGas}`;
-        hash += `/${composedInfo.composed.maxPriorityFeePerGas}`;
-
-        if (composedInfo.composed.feeLimit) {
-            hash += `/${composedInfo.composed.feeLimit}`;
-        }
-    }
+    hash += getRedirectFeeHash(account.networkType, composedInfo);
 
     const params = `sell-offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
 

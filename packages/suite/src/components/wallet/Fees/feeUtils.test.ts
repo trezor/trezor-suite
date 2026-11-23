@@ -91,6 +91,12 @@ describe('getFeeTooltipTextId', () => {
             'TR_TRON_FEE_ACTIVATION_DESC',
         );
     });
+
+    it('explains the fee as a maximum for a Tron token transfer', () => {
+        expect(getFeeTooltipTextId({ networkType: 'tron', isTokenTransfer: true })).toBe(
+            'TR_TRON_MAX_FEE_DESC',
+        );
+    });
 });
 
 describe('getTronFeeLimitSun', () => {

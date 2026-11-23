@@ -174,7 +174,7 @@ export const composeTradingTransactionThunk = createThunk<
         }
 
         if (network.networkType === 'tron') {
-            formState.feeLimit = precomposedToSign.estimatedFeeLimit ?? precomposedToSign.fee ?? '';
+            formState.feeLimit = precomposedToSign.feeLimit ?? precomposedToSign.fee ?? '';
         }
 
         return fulfillWithValue({ formState, precomposedTransaction: precomposedToSign });

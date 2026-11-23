@@ -1,4 +1,4 @@
-import { getCryptoId } from '@suite-common/trading';
+import { type TradingComposedTransactionInfo, getCryptoId } from '@suite-common/trading';
 import { type Network, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type Account } from '@suite-common/wallet-types';
@@ -7,6 +7,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import {
     getBuyReceiveExtraFieldDescription,
     getComposeAddressPlaceholder,
+    getRedirectFeeHash,
     resolveAddressAndToken,
     tradingGetAccountLabel,
     tradingGetAmountLabels,
@@ -180,6 +181,47 @@ describe('trading utils', () => {
             const result = await getComposeAddressPlaceholder(account, {} as Network);
 
             expect(result).toBe('');
+        });
+    });
+
+    describe('getRedirectFeeHash', () => {
+        const composed: TradingComposedTransactionInfo['composed'] = {
+            fee: '10',
+            feePerByte: '1',
+            maxFeePerGas: '2',
+            maxPriorityFeePerGas: '3',
+            feeLimit: '4',
+        };
+        const composedInfo: TradingComposedTransactionInfo = { selectedFee: 'normal', composed };
+
+        it('returns nothing without a composed transaction', () => {
+            expect(getRedirectFeeHash('bitcoin', { selectedFee: 'normal' })).toBe('');
+        });
+
+        it('sends the fee as custom for other networks', () => {
+            expect(getRedirectFeeHash('bitcoin', composedInfo)).toBe('/custom/1/2/3/4');
+        });
+
+        it('keeps the normal fee level for solana', () => {
+            expect(getRedirectFeeHash('solana', { ...composedInfo, selectedFee: 'custom' })).toBe(
+                '/normal/1/2/3/4',
+            );
+        });
+
+        it.each([
+            ['normal', '/normal/1/2/3/4'],
+            ['custom', '/custom/1/2/3/4'],
+        ] as const)('keeps the %s fee level for tron', (selectedFee, expected) => {
+            expect(getRedirectFeeHash('tron', { ...composedInfo, selectedFee })).toBe(expected);
+        });
+
+        it('omits the fee limit when it is not set', () => {
+            expect(
+                getRedirectFeeHash('bitcoin', {
+                    ...composedInfo,
+                    composed: { ...composed, feeLimit: undefined },
+                }),
+            ).toBe('/custom/1/2/3');
         });
     });
 });

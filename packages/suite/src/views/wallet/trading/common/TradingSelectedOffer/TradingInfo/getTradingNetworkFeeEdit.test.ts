@@ -8,6 +8,7 @@ import { getTradingNetworkFeeEdit } from './getTradingNetworkFeeEdit';
 
 const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 const solAccount = mockWalletAccount({ symbol: asNetworkSymbol('sol') });
+const trxAccount = mockWalletAccount({ symbol: asNetworkSymbol('trx') });
 
 const feeInfo: FeeInfo = {
     blockHeight: 890366,
@@ -57,6 +58,38 @@ describe('getTradingNetworkFeeEdit', () => {
             assumeNewAccount: true,
             onConfirm,
         });
+    });
+
+    it('offers the Tron token fee edit once the recipient is known', () => {
+        expect(
+            getTradingNetworkFeeEdit({
+                account: trxAccount,
+                feeInfo,
+                composeFormState,
+                assumeNewAccount: false,
+                onConfirm,
+                isTokenTransfer: true,
+            }),
+        ).toEqual({
+            account: trxAccount,
+            feeInfo,
+            composeFormState,
+            assumeNewAccount: false,
+            onConfirm,
+        });
+    });
+
+    it('offers no Tron token fee edit while the recipient is unknown', () => {
+        expect(
+            getTradingNetworkFeeEdit({
+                account: trxAccount,
+                feeInfo,
+                composeFormState,
+                assumeNewAccount: true,
+                onConfirm,
+                isTokenTransfer: true,
+            }),
+        ).toBeUndefined();
     });
 
     it.each([

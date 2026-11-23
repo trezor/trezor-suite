@@ -116,6 +116,7 @@ export const useFeesForm = ({
             networkFeeInfo,
             symbol: account?.symbol,
             minimalFeeLimit,
+            availableBalance: account?.availableBalance,
             translate,
             isEip1559Fee,
             isTrc20: networkType === 'tron' && !!tokenContract,

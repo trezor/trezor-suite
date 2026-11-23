@@ -69,7 +69,6 @@ import { createThunk } from '@trezor/redux-utils';
 import { type Ok } from '@trezor/type-utils';
 
 import { createFormStateForSendForm } from './utils';
-import { getTradingFormDraftFeeLimit } from './utils/getTradingFormDraftFeeLimit';
 
 const NATIVE_TRADING_EXCHANGE_THUNK_PREFIX = 'trading/native';
 
@@ -227,12 +226,9 @@ export const composeTradingTransactionThunk = createThunk<
                                 ...formState,
                                 selectedFee: selectedFeeLevel,
                                 feePerUnit: composed.feePerByte,
-                                feeLimit: getTradingFormDraftFeeLimit({
-                                    networkType: account.networkType,
-                                    fee: composed.fee,
-                                    feeLimit: composed.feeLimit,
-                                    estimatedFeeLimit: composed.estimatedFeeLimit,
-                                }),
+                                feeLimit:
+                                    composed.feeLimit ??
+                                    (account.networkType === 'tron' ? composed.fee : ''),
                             },
                         }),
                     );

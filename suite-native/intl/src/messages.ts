@@ -5071,6 +5071,7 @@ export const messages = {
             tron: {
                 feeLimit: 'Fee Limit (SUN)',
                 feeLimitBelowRecommended: 'Fee limit must be at least {minFeeLimit}',
+                useRecommended: 'Use recommended',
             },
             confirmButton: 'Confirm fee',
             submitButton: 'Review and sign',
