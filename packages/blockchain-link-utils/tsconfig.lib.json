@@ -7,10 +7,6 @@
     },
     "references": [
         { "path": "../blockchain-link-types" },
-        { "path": "../env-utils" },
-        {
-            "path": "../../networks/solana/network-solana"
-        },
         { "path": "../utils" },
         { "path": "../eslint" },
         { "path": "../type-utils" }

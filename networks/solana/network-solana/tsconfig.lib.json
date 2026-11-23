@@ -6,6 +6,10 @@
     },
     "include": ["./src"],
     "references": [
+        {
+            "path": "../../../packages/blockchain-link-types"
+        },
+        { "path": "../../../packages/env-utils" },
         { "path": "../network-solana-types" },
         {
             "path": "../../../packages/type-utils"

@@ -19409,9 +19409,7 @@ __metadata:
   resolution: "@trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils"
   dependencies:
     "@trezor/blockchain-link-types": "workspace:*"
-    "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
-    "@trezor/network-solana": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
   peerDependencies:
@@ -20415,6 +20413,8 @@ __metadata:
     "@solana/kit": "npm:^8.4.0"
     "@solana/rpc-api": "npm:^8.4.0"
     "@solana/rpc-types": "npm:^8.4.0"
+    "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/network-solana-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"

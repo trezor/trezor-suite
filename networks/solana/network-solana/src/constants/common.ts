@@ -1,3 +1,5 @@
+import type { TokenStandard } from '@trezor/blockchain-link-types';
+
 // Docs regarding solana programs: https://spl.solana.com/
 // Token program docs: https://spl.solana.com/token
 export const TOKEN_PROGRAM_PUBLIC_KEY = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
@@ -33,7 +35,7 @@ export const SOLANA_MAINNET_GENESIS_HASH = '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc1
 // failed the whole page (#32345).
 //
 // Raising it further is not free. The ceiling is a promise that we can present what the node hands
-// back, so it must stay at the highest version `solanaUtils.transformTransaction` understands, not
+// back, so it must stay at the highest version `transformSolanaTransaction` understands, not
 // at the highest version that exists. Set it above that and the failure moves from a page that does
 // not load to transactions that render wrongly, which is worse and much quieter.
 //
@@ -62,6 +64,18 @@ export const tokenProgramsInfo = {
         tokenStandard: 'SPL-2022',
     },
 } as const;
+
+type TokenProgramName = (typeof tokenProgramNames)[number];
+
+export const tokenStandardToTokenProgramName = (standard: TokenStandard): TokenProgramName => {
+    const tokenProgram = Object.entries(tokenProgramsInfo).find(
+        ([_, programInfo]) => programInfo.tokenStandard === standard,
+    );
+    if (!tokenProgram)
+        throw new Error(`Cannot convert token standard ${standard} to Solana token program name`);
+
+    return tokenProgram[0] as TokenProgramName;
+};
 
 export enum Network {
     Mainnet = 'mainnet-beta',

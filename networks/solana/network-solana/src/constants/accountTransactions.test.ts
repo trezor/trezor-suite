@@ -1,24 +1,19 @@
-import { type TokenTransfer, type Transaction } from '@trezor/blockchain-link-types/src';
-import type {
-    ParsedTransactionWithMeta,
-    SolanaValidParsedTxWithMeta,
-} from '@trezor/network-solana/types';
+import type { TokenTransfer, Transaction } from '@trezor/blockchain-link-types';
 
-import { fixtures } from './__fixtures__/solana';
+import { fixtures } from './__fixtures__/accountTransactions';
 import {
-    type ApiTokenAccount,
     extractAccountBalanceDiff,
     getAmount,
     getDetails,
     getInternalTransfers,
     getNativeEffects,
     getTargets,
-    getTokenNameAndSymbol,
     getTokens,
     getTxType,
-    transformTokenInfo,
-    transformTransaction,
-} from './solana';
+    transformSolanaTransaction,
+} from './accountTransactions';
+import { type ApiTokenAccount, getTokenNameAndSymbol, transformSolanaTokenInfo } from './tokens';
+import type { ParsedTransactionWithMeta, SolanaValidParsedTxWithMeta } from '../types';
 
 describe('solana/utils', () => {
     // Token Utils
@@ -147,10 +142,10 @@ describe('solana/utils', () => {
         });
     });
 
-    describe('transformTransaction', () => {
+    describe('transformSolanaTransaction', () => {
         fixtures.transformTransaction.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
-                const result = transformTransaction(
+                const result = transformSolanaTransaction(
                     // @ts-expect-error Fixtures don't fully implement this interface.
                     input.transaction as SolanaValidParsedTxWithMeta,
                     input.accountAddress,
@@ -161,11 +156,11 @@ describe('solana/utils', () => {
         });
     });
 
-    describe('transformTokenInfo', () => {
+    describe('transformSolanaTokenInfo', () => {
         fixtures.transformTokenInfo.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 expect(
-                    transformTokenInfo(
+                    transformSolanaTokenInfo(
                         input.accountInfo as unknown as ApiTokenAccount[],
                         input.map,
                     ),
