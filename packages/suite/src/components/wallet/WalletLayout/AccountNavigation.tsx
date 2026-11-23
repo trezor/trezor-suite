@@ -5,6 +5,7 @@ import { gotoThunk, selectRouterParams } from '@suite/router';
 import { type WalletParams } from '@suite/router';
 import { selectIsNftSectionEnabled } from '@suite/settings';
 import { selectIsStakingSupportedSymbol } from '@suite-common/earn-staking';
+import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
@@ -27,6 +28,10 @@ export const AccountNavigation = ({ account }: AccountNavigationProps) => {
     const routerParams = useSelector(selectRouterParams) as WalletParams;
     const enabledNftSection = useSelector(selectIsNftSectionEnabled);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
+    const isAssetFirstHome = useIsExperimentVariantActive({
+        experimentId: ExperimentId.assetFirstHomeTable,
+        variant: 'B',
+    });
 
     const isStakingSupported = useSelector(
         state => account !== undefined && selectIsStakingSupportedSymbol(state, account.symbol),
@@ -66,7 +71,8 @@ export const AccountNavigation = ({ account }: AccountNavigationProps) => {
                 goToWithAnalytics({ routeName: 'wallet-nfts', preserveParams: true });
             },
             title: <Translation id="TR_NAV_NFTS" />,
-            isHidden: !hasNetworkFeatures(account, 'nfts') || !enabledNftSection,
+            isHidden:
+                isAssetFirstHome || !hasNetworkFeatures(account, 'nfts') || !enabledNftSection,
             activeRoutes: ['wallet-nfts', 'wallet-nfts-hidden'],
             'data-testid': '@wallet/menu/wallet-nfts',
         },
