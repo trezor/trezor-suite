@@ -950,6 +950,22 @@ mod tests {
         assert!(!manager.is_scanning().await);
     }
 
+    // The stop of a scan must not start the always-retrying adapter loader, and
+    // there is nothing to stop without an adapter. That is the difference to
+    // `get_powered_adapter_or_die`, which would report `AdapterDisabled`.
+    #[tokio::test]
+    async fn stopping_a_scan_without_an_adapter_does_not_start_the_loader() {
+        use crate::server::types::WsResponsePayload;
+
+        let manager = AdapterManager::new().await.expect("manager");
+
+        assert!(matches!(
+            crate::server::methods::stop_scan(manager.clone()).await,
+            Ok(WsResponsePayload::Success { success: true })
+        ));
+        assert!(manager.manager_state.lock().await.adapter_loader.is_none());
+    }
+
     // A client starts the scan again when the adapter is enabled again. That
     // start must not find the flag of the scan the adapter stopped.
     #[tokio::test]
