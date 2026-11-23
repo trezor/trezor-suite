@@ -2,6 +2,8 @@ import { type AsyncThunkAction } from '@reduxjs/toolkit';
 
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { getCachedEvmNetworks } from '@suite-common/evm-networks-api';
+import { type QueryClientDep } from '@suite-common/react-query';
 import { type LockDeviceDep } from '@suite-common/suite-types';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -85,7 +87,7 @@ const sanitizeCallSource = (source: ConnectCallSource): ConnectCallSource => {
 export type ConnectPopupCallInnerThunkState = DeviceRootState & ConnectPopupStateRootState;
 
 export type ConnectPopupCallInnerThunkDeps = {
-    services: AnalyticsDep & LockDeviceDep;
+    services: AnalyticsDep & LockDeviceDep & QueryClientDep;
 };
 
 export type ConnectPopupCallThunkState = ConnectPopupCallInnerThunkState;
@@ -99,7 +101,11 @@ export const connectPopupCallInnerThunk = createThunk<
 >(`${CONNECT_POPUP_MODULE}/callThunk`, async (declaredParams, { dispatch, getState, extra }) => {
     const params = { ...declaredParams, source: sanitizeCallSource(declaredParams.source) };
     const paramsCompat = applyRequestCompatibility(params);
-    const flow = createPopupFlow(paramsCompat, { dispatch, getState });
+    const flow = createPopupFlow(paramsCompat, {
+        dispatch,
+        getState,
+        getEvmNetworks: () => getCachedEvmNetworks(extra.services.queryClient),
+    });
 
     try {
         const responseOriginal = await flow.run();

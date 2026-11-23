@@ -53,6 +53,7 @@ describe('SelectAccount', () => {
                 device: { selectedDevice: mockSuiteDevice() },
                 connectPopup: { activeCall: { state: 'select-account', candidates } },
             }),
+            getEvmNetworks: () => undefined,
         });
 
         await expect(flow['callMethod'](params.payload)).resolves.toEqual({

@@ -56,7 +56,11 @@ export class SendTransaction extends CommonPopupFlow<'sendTransaction'> {
                 },
                 source: this.source,
             },
-            { dispatch: this.dispatch, getState: this.getState },
+            {
+                dispatch: this.dispatch,
+                getState: this.getState,
+                getEvmNetworks: this.getEvmNetworks,
+            },
         );
 
         return (await this.signFlow.process(tx)).response;

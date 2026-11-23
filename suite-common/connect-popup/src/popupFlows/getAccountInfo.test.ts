@@ -28,6 +28,7 @@ const createFlow = (payload: PopupFlowParams<'getAccountInfo'>['payload']) =>
         {
             dispatch: jest.fn(),
             getState: () => ({ device: { selectedDevice: mockSuiteDevice() } }),
+            getEvmNetworks: () => undefined,
         },
     );
 

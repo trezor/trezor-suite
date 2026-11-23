@@ -35,6 +35,7 @@ class PopupOnlyFlow extends CommonPopupFlow<'selectAccount'> {
                     connectPopup: { permissions: [] },
                     device: { selectedDevice: mockSuiteDevice({ connected: true }) },
                 }),
+                getEvmNetworks: () => undefined,
             },
         );
     }

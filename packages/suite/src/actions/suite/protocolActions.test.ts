@@ -1,6 +1,7 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { networksActions, networksReducer } from '@suite-common/networks';
 import { mockNetworkMetadata } from '@suite-common/networks/mocks';
+import { createQueryClient } from '@suite-common/react-query';
 import { type LockDevice } from '@suite-common/suite-types';
 import { mock } from '@trezor/dependency-injection';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
@@ -32,6 +33,7 @@ const createHandleProtocolRequestDeps = () => {
                 navigate: jest.fn(),
                 listen: jest.fn(),
             },
+            queryClient: createQueryClient({ shouldRefetchOnEvents: false }),
         },
     };
 

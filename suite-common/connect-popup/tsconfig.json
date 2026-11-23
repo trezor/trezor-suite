@@ -4,7 +4,9 @@
     "references": [
         { "path": "../analytics" },
         { "path": "../device" },
+        { "path": "../evm-networks-api" },
         { "path": "../networks" },
+        { "path": "../react-query" },
         { "path": "../suite-types" },
         { "path": "../toast-notifications" },
         { "path": "../tx-simulation" },

@@ -1,6 +1,7 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { type EvmNetwork } from '@suite-common/evm-networks-api';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect, {
@@ -51,6 +52,7 @@ export type PopupFlowParams<M extends CallMethodKeys> = {
 export type PopupFlowThunkApi = {
     dispatch: Dispatch;
     getState: () => any;
+    getEvmNetworks: () => readonly EvmNetwork[] | undefined;
 };
 
 export type PopupFlowResponse<M extends CallMethodKeys> =
@@ -83,16 +85,18 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
     protected readonly source: ConnectCallSource;
     protected readonly dispatch: Dispatch;
     protected readonly getState: () => any;
+    protected readonly getEvmNetworks: PopupFlowThunkApi['getEvmNetworks'];
 
     constructor(
         { method, payload, source }: PopupFlowParams<M>,
-        { dispatch, getState }: PopupFlowThunkApi,
+        { dispatch, getState, getEvmNetworks }: PopupFlowThunkApi,
     ) {
         this.method = method;
         this.payload = payload;
         this.source = source;
         this.dispatch = dispatch;
         this.getState = getState;
+        this.getEvmNetworks = getEvmNetworks;
     }
 
     /**

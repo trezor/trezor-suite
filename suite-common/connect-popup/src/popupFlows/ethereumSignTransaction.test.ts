@@ -1,4 +1,11 @@
-import { getNetwork } from '@suite-common/wallet-config';
+import { type EvmNetwork } from '@suite-common/evm-networks-api';
+import { mockEvmNetwork } from '@suite-common/evm-networks-api/mocks';
+import {
+    asNetworkSymbol,
+    getNetwork,
+    registerLegacyCustomEvmNetwork,
+    unregisterLegacyNetwork,
+} from '@suite-common/wallet-config';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { mockAccountToken } from '@suite-common/wallet-types/mocks';
@@ -45,21 +52,29 @@ type RunPreCallParams = {
     source: ConnectCallSource;
     dispatch: jest.Mock;
     txSigningPrecomposed?: PrecomposedTransactionFinal;
+    evmNetworks?: readonly EvmNetwork[];
 };
 
-const runPreCall = ({ payload, source, dispatch, txSigningPrecomposed }: RunPreCallParams) => {
+const runPreCall = ({
+    payload,
+    source,
+    dispatch,
+    txSigningPrecomposed,
+    evmNetworks,
+}: RunPreCallParams) => {
     const flow = new EthereumSignTransaction(
         { method: 'ethereumSignTransaction', payload, source },
         {
             dispatch,
             getState: () => ({}),
+            getEvmNetworks: () => evmNetworks,
         },
     );
 
     return flow['preCall'](txSigningPrecomposed);
 };
 
-const runSimulationPreCall = (chainId: number) => {
+const runSimulationPreCall = (chainId: number, evmNetworks?: readonly EvmNetwork[]) => {
     const dispatch = jest.fn(action => {
         // Stands in for the user confirming the simulation modal. Deferred to the next tick
         // because the flow creates the permission deferred right after this dispatch.
@@ -88,6 +103,7 @@ const runSimulationPreCall = (chainId: number) => {
             manifest: { appName: 'dapp' },
         },
         dispatch,
+        evmNetworks,
     });
 
     return { run, dispatch };
@@ -172,6 +188,55 @@ describe('EthereumSignTransaction.preCall', () => {
         expect(dispatch).not.toHaveBeenCalledWith(
             expect.objectContaining({ type: connectPopupActions.txSimulation.type }),
         );
+    });
+
+    it('opens the simulation modal on a chain the EVM networks service marks as simulated', async () => {
+        const { chainId } = getNetwork('arc');
+        const { run, dispatch } = runSimulationPreCall(chainId, [
+            mockEvmNetwork({ chainId, simulationSupport: true }),
+        ]);
+        await run;
+
+        expect(dispatch).toHaveBeenCalledWith(
+            connectPopupActions.txSimulation({ fromAddress: '0xabc' }),
+        );
+    });
+
+    describe('on a user-added network', () => {
+        const symbol = asNetworkSymbol('evm100');
+        const registerGnosis = () =>
+            registerLegacyCustomEvmNetwork({
+                symbol,
+                chainId: 100,
+                name: 'Gnosis',
+                displaySymbol: 'XDAI',
+                explorerUrl: 'https://gnosisscan.io',
+                testnet: false,
+            });
+
+        afterEach(() => {
+            unregisterLegacyNetwork(symbol);
+        });
+
+        it('opens the simulation modal while the network is registered', async () => {
+            registerGnosis();
+
+            const { run, dispatch } = runSimulationPreCall(100);
+            await run;
+
+            expect(dispatch).toHaveBeenCalledWith(
+                connectPopupActions.txSimulation({ fromAddress: '0xabc' }),
+            );
+        });
+
+        it('skips the simulation modal for the same chain when it is not registered', async () => {
+            const { run, dispatch } = runSimulationPreCall(100);
+            await run;
+
+            expect(dispatch).not.toHaveBeenCalledWith(
+                expect.objectContaining({ type: connectPopupActions.txSimulation.type }),
+            );
+        });
     });
 
     it('stores a token transfer connect could not decode with the account token', async () => {
