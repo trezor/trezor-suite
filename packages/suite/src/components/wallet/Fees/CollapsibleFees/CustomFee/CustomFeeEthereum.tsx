@@ -4,17 +4,16 @@ import { useFormContext, useFormState } from 'react-hook-form';
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { type FormState } from '@suite-common/wallet-types';
-import { isEip1559, isInteger } from '@suite-common/wallet-utils';
+import { isEip1559 } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
-import { BigNumber } from '@trezor/utils';
 
 import { InputError } from '#src/components/wallet/InputError';
 import { useSelector } from '#src/hooks/suite';
-import { validateDecimals } from '#src/utils/suite/validation';
 
 import { type CustomFeeBasicProps } from './CustomFeeBasicProps';
 import { FEE_LIMIT, FEE_PER_UNIT, MAX_FEE_PER_GAS, MAX_PRIORITY_FEE_PER_GAS } from './constants';
+import { getCustomFeeEthereumRules } from './getCustomFeeEthereumRules';
 import { useFeesContext } from '../../context/FeesContext';
 
 export const CustomFeeEthereum = ({
@@ -34,9 +33,9 @@ export const CustomFeeEthereum = ({
 
     const { errors } = useFormState<FormState>();
 
-    const { maxFee, minFee, levels, minPriorityFee } = feeInfo;
+    const { levels } = feeInfo;
 
-    // Use `watch` (not `getValues`) so the cross-field `trigger` effects re-run and validate closures see fresh values.
+    // Re-validates the pair when either side changes; the rules read the other side via `getValues`.
     const customMaxFeePerGas = watch(MAX_FEE_PER_GAS);
     const customMaxPriorityFeePerGas = watch(MAX_PRIORITY_FEE_PER_GAS);
 
@@ -45,28 +44,14 @@ export const CustomFeeEthereum = ({
         trigger(MAX_PRIORITY_FEE_PER_GAS);
     }, [customMaxPriorityFeePerGas, customMaxFeePerGas, trigger]);
 
-    const gasLimitRules = {
-        required: translationString('GAS_LIMIT_IS_NOT_SET'),
-        validate: {
-            integer: (value: string) => {
-                if (!isInteger(value)) {
-                    return translationString('CUSTOM_FEE_IS_NOT_INTEGER');
-                }
-            },
-            positive: (value: string) => {
-                if (new BigNumber(value).isZero()) {
-                    return translationString('GAS_LIMIT_IS_NOT_SET');
-                }
-            },
-            feeLimit: (value: string) => {
-                const estimatedFeeLimit = getValues('estimatedFeeLimit');
-                const feeBig = new BigNumber(value);
-                if (estimatedFeeLimit && feeBig.lt(estimatedFeeLimit)) {
-                    return translationString('CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED');
-                }
-            },
-        },
-    };
+    const { gasLimitRules, gasPriceRules, maxFeePerGasRules, maxPriorityFeePerGasRules } =
+        getCustomFeeEthereumRules({
+            translationString,
+            sharedRules,
+            feeInfo,
+            networkType,
+            getValues,
+        });
 
     const gasLimitValidationProps = {
         onClick: () => {
@@ -82,56 +67,6 @@ export const CustomFeeEthereum = ({
     const gasLimitValidationButtonProps =
         errors.feeLimit?.type === 'feeLimit' ? gasLimitValidationProps : undefined;
 
-    const gasPriceRules = {
-        ...sharedRules,
-        validate: {
-            ethereumDecimalsLimit: validateDecimals(translationString, {
-                decimals: 9,
-                except: networkType !== 'ethereum',
-            }),
-            range: (value: string) => {
-                const customFee = new BigNumber(value);
-
-                if (customFee.isGreaterThan(maxFee) || customFee.isLessThan(minFee)) {
-                    return translationString('CUSTOM_FEE_NOT_IN_RANGE', {
-                        minFee: new BigNumber(minFee).toString(),
-                        maxFee: new BigNumber(maxFee).toString(),
-                    });
-                }
-            },
-        },
-    };
-
-    const maxFeePerGasRules = {
-        ...sharedRules,
-        validate: {
-            ethereumDecimalsLimit: gasPriceRules.validate.ethereumDecimalsLimit,
-            customMaxFeePerGasRange: (value: string) => {
-                const customMaxFeePerGas = new BigNumber(value);
-
-                if (
-                    customMaxFeePerGas.isGreaterThan(maxFee) ||
-                    customMaxFeePerGas.isLessThan(minFee)
-                ) {
-                    return translationString('CUSTOM_FEE_NOT_IN_RANGE', {
-                        minFee: new BigNumber(minFee).toString(),
-                        maxFee: new BigNumber(maxFee).toString(),
-                    });
-                }
-            },
-            customMaxFeePerGasLowerThanPriority: (value: string) => {
-                const customMaxFeePerGas = new BigNumber(value);
-
-                if (
-                    customMaxPriorityFeePerGas &&
-                    customMaxFeePerGas.isLessThan(customMaxPriorityFeePerGas)
-                ) {
-                    return translationString('CUSTOM_MAX_LOWER_THAN_PRIORITY');
-                }
-            },
-        },
-    };
-
     const recommendedMaxFeePerGas = levels.find(level => level.label === 'normal')?.maxFeePerGas;
     const maxFeePerGasValidationProps = {
         onClick: () => {
@@ -146,26 +81,6 @@ export const CustomFeeEthereum = ({
         errors.maxFeePerGas?.type === 'customMaxFeePerGasRange'
             ? maxFeePerGasValidationProps
             : undefined;
-
-    const maxPriorityFeePerGasRules = {
-        ...sharedRules,
-        validate: {
-            ethereumDecimalsLimit: gasPriceRules.validate.ethereumDecimalsLimit,
-            customPriorityFeePerGas: (value: string) => {
-                const customPriorityFeePerGas = new BigNumber(value);
-
-                if (customMaxFeePerGas && customPriorityFeePerGas.gt(customMaxFeePerGas)) {
-                    return translationString('CUSTOM_PRIORITY_HIGHER_THAN_MAX');
-                }
-
-                if (customPriorityFeePerGas.lt(minPriorityFee)) {
-                    return translationString('CUSTOM_MAX_PRIORITY_FEE_NOT_IN_RANGE', {
-                        minPriorityFee: new BigNumber(minPriorityFee).toString(),
-                    });
-                }
-            },
-        },
-    };
 
     const gweiInputAddon = (
         <Text intent="neutral" priority="secondary" typographyStyle="body-xs">
