@@ -103,6 +103,10 @@
         }
     },
     "defaultBase": "origin/develop",
+    // Nx 24 selects individual affected tasks by default; keep selecting whole affected projects.
+    "affected": {
+        "legacy": true
+    },
     "$schema": "./node_modules/nx/schemas/nx-schema.json",
     // Read-only token: it can download from the remote cache, but not upload to it.
     "nxCloudAccessToken": "NmE2NmFlYTUtN2JhZi00ZmQ3LWEyYzMtYWRkNzc3MTg0YmUyfHJlYWQ=",
