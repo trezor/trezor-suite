@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 import { type RouteProp, useIsFocused, useRoute } from '@react-navigation/native';
 
@@ -133,6 +133,11 @@ export const YieldDepositNoBalanceScreen = () => {
         vault?.id,
     ]);
 
+    const tokenMetadataSources = useMemo(
+        () => yieldFlowDataToTokenMetadataSources(yieldFlowData),
+        [yieldFlowData],
+    );
+
     if (resolutionStatus !== 'resolved') {
         return null;
     }
@@ -140,7 +145,7 @@ export const YieldDepositNoBalanceScreen = () => {
     const depositSymbol = wrappedNativeSymbol ?? tokenSymbol;
 
     return (
-        <TokenMetadataProvider sources={yieldFlowDataToTokenMetadataSources(yieldFlowData)}>
+        <TokenMetadataProvider sources={tokenMetadataSources}>
             <Screen
                 header={
                     <YieldFlowScreenHeader

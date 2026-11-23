@@ -1,6 +1,6 @@
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { AssetSymbol } from '@suite-native/assets';
+import { useAssetSymbolText } from '@suite-native/assets';
 import { Button, HStack, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -21,13 +21,11 @@ export const EarnNoBalanceFooter = ({
     onReceivePress,
     onSwapPress,
 }: EarnNoBalanceFooterProps) => {
+    const displaySymbol = useAssetSymbolText(networkSymbol, contractAddress);
+
     if (!onBuyPress && !onReceivePress && !onSwapPress) {
         return null;
     }
-
-    const displaySymbol = (
-        <AssetSymbol networkSymbol={networkSymbol} contractAddress={contractAddress} />
-    );
 
     const buyButton = onBuyPress && (
         <Button iconLeft="creditCard" onPress={onBuyPress} testID="@earn/no-balance/buy-button">
