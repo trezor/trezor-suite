@@ -7,6 +7,10 @@
  *                     purpose, which it must refuse. For test stacks only.
  *       [--wm URL]    the WARD Manager to use (`wm` process, see wmCli.ts); without it, an
  *                     in-process development WM persisted in the data dir
+ *       [--without-wm]
+ *                     NO WARD Manager at all, for firmware built `--ward-without-wm` (the MVP):
+ *                     a sync is a catch-up the device persists, a write is stored without a WM's
+ *                     say. Cannot be combined with --wm.
  *
  * With no --token-file, a token is generated into `<data-dir>/token` (mode 0600) and reused.
  *
@@ -75,12 +79,18 @@ const main = async () => {
     const dataDir = value('data-dir') ?? path.join(os.homedir(), '.trezor-ward');
     await fs.mkdir(dataDir, { recursive: true, mode: 0o700 });
     const verbose = flag('verbose');
+    const withoutWm = flag('without-wm');
+    if (withoutWm && value('wm')) {
+        console.error('--without-wm and --wm cannot be combined');
+        process.exit(2);
+    }
     const log = (line: string) => process.stdout.write(`${new Date().toISOString()} ${line}\n`);
     const wardd = await Wardd.create({
         dataDir: memory ? null : dataDir,
         memory,
         relayUrl: value('relay'),
         wm: value('wm') ? new HttpWm(value('wm')!) : undefined,
+        withoutWm,
         log: verbose ? log : undefined,
     });
     const origins = values('origin');
@@ -98,7 +108,7 @@ const main = async () => {
     console.log(
         `wardd listening on ws://127.0.0.1:${server.port} (data: ${memory ? 'memory' : dataDir}` +
             `${value('relay') ? `, relay: ${value('relay')}` : ''}` +
-            `, WM: ${value('wm') ?? 'in-process'})`,
+            `, WM: ${withoutWm ? 'none (MVP)' : (value('wm') ?? 'in-process')})`,
     );
     const stop = async () => {
         await server.close();

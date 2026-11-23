@@ -19,6 +19,11 @@ export interface WarddOptions {
     memory?: boolean;
     /** the WM; the persisted in-process dev WM if omitted */
     wm?: WmClient;
+    /**
+     * Run WITHOUT a WM, for firmware built `--ward-without-wm` (the MVP): a sync is a catch-up the
+     * device persists, and a write is stored without a WM's say. Excludes `wm`.
+     */
+    withoutWm?: boolean;
     /** say what each replica stores (`--verbose`) */
     log?: (line: string) => void;
 }
@@ -31,11 +36,16 @@ export class Wardd {
 
     private constructor(
         private readonly opts: WarddOptions,
-        readonly wm: WmClient,
+        readonly wm: WmClient | null,
         private readonly persistWm: () => Promise<void>,
     ) {}
 
     static async create(opts: WarddOptions): Promise<Wardd> {
+        if (opts.withoutWm) {
+            if (opts.wm) throw new Error('a wardd without a WM cannot also be given one');
+
+            return new Wardd(opts, null, () => Promise.resolve());
+        }
         if (opts.wm) return new Wardd(opts, opts.wm, () => Promise.resolve());
         const dev = new DevWm();
         if (opts.dataDir === null) return new Wardd(opts, dev, () => Promise.resolve());

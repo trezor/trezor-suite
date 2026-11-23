@@ -82,7 +82,8 @@ const opt = (key: string, v: Uint8Array | null | undefined): Json =>
 export interface HostSyncResult {
     counter: number;
     root: string | null;
-    how: 'reconcile' | 'verifyChain' | 'rejoin';
+    /** `catchUp` is the only route without a WM (`--without-wm`) */
+    how: 'reconcile' | 'verifyChain' | 'rejoin' | 'catchUp';
     discarded?: number;
 }
 
@@ -102,7 +103,12 @@ export class WardHost {
     constructor(
         readonly wardId: Uint8Array,
         private readonly backend: WardBackend,
-        private readonly wm: WmClient,
+        /**
+         * null: deployed WITHOUT a WM (the MVP, `--without-wm`). The replica's head is then the
+         * highest head its rows build, a write is stored without a WM's say, and a sync is a
+         * `catchUp`, which the device persists.
+         */
+        private readonly wm: WmClient | null,
         private readonly onWmChange: () => void | Promise<void> = () => {},
         /** narrate replica rebuilds (`--verbose`) */
         private readonly log?: (line: string) => void,
@@ -132,6 +138,7 @@ export class WardHost {
         head: { counter: number; root: Uint8Array | null } | null;
         available: boolean;
     }> {
+        if (!this.wm) return { head: null, available: false };
         try {
             return { head: await this.wm.head(this.wardId), available: true };
         } catch (e) {
@@ -171,6 +178,7 @@ export class WardHost {
                 wmCounter: wm.available ? (wm.head?.counter ?? null) : null,
                 wmRoot: wm.available ? hexOrNull(wm.head?.root) : null,
                 wmAvailable: wm.available,
+                withoutWm: !this.wm,
                 behind,
             };
         });
@@ -210,47 +218,49 @@ export class WardHost {
      * stays on its stored head.
      */
     catchUp(device: Device) {
-        return this.exclusive(async () => {
-            const { trie, head } = await this.replica();
-            const target = this.newestAttested(trie, head, await this.backend.loadAttestations());
-            const at = target?.at ?? head;
-            const a = target?.attestation;
-            const attested = a
-                ? {
-                      nonce: a.nonce,
-                      from_counter: a.fromCounter,
-                      ...opt('from_root', rootOf(a.fromRoot)),
-                      from_head_nonce: a.fromHeadNonce,
-                      to_head_nonce: a.toHeadNonce,
-                      timestamp: a.timestamp,
-                      wm_signature: a.signature,
-                  }
-                : {};
-            const ack = expectReply(
-                await this.answerChain(
-                    device,
-                    trie,
-                    await device({
-                        name: 'WardCatchUp',
-                        message: {
-                            to_counter: at.counter,
-                            ...opt('to_root', at.root),
-                            ...attested,
-                        },
-                    }),
-                ),
-                'WardCatchUpAck',
-            );
+        return this.exclusive(() => this.catchUpInner(device));
+    }
 
-            return {
-                counter: ack.counter ?? at.counter,
-                root: hexOrNull(at.root),
-                timestamp: a?.timestamp ?? null,
-                replicaCounter: head.counter,
-                reverts: ack.reverts_crossed ?? 0,
-                persisted: ack.persisted ?? false,
-            };
-        });
+    private async catchUpInner(device: Device) {
+        const { trie, head } = await this.replica();
+        const target = this.newestAttested(trie, head, await this.backend.loadAttestations());
+        const at = target?.at ?? head;
+        const a = target?.attestation;
+        const attested = a
+            ? {
+                  nonce: a.nonce,
+                  from_counter: a.fromCounter,
+                  ...opt('from_root', rootOf(a.fromRoot)),
+                  from_head_nonce: a.fromHeadNonce,
+                  to_head_nonce: a.toHeadNonce,
+                  timestamp: a.timestamp,
+                  wm_signature: a.signature,
+              }
+            : {};
+        const ack = expectReply(
+            await this.answerChain(
+                device,
+                trie,
+                await device({
+                    name: 'WardCatchUp',
+                    message: {
+                        to_counter: at.counter,
+                        ...opt('to_root', at.root),
+                        ...attested,
+                    },
+                }),
+            ),
+            'WardCatchUpAck',
+        );
+
+        return {
+            counter: ack.counter ?? at.counter,
+            root: hexOrNull(at.root),
+            timestamp: a?.timestamp ?? null,
+            replicaCounter: head.counter,
+            reverts: ack.reverts_crossed ?? 0,
+            persisted: ack.persisted ?? false,
+        };
     }
 
     /**
@@ -309,6 +319,10 @@ export class WardHost {
      * advanced to a head no replica holds has a wallet nobody can serve. Losing a race to another
      * host between the two leaves the row as a dead branch -- harmless, and kept, since it is this
      * device's side of any later rejoin.
+     *
+     * WITHOUT A WM storing it is all there is: the device mints no `wm_sig`, and the row becomes the
+     * replica's head because it builds the highest one. Two hosts storing at one counter fork the
+     * chain, and nothing short of a WM picks between them.
      */
     private async applyInner(
         result: WardResultJson,
@@ -326,7 +340,7 @@ export class WardHost {
         // both ends and the WM's current nonce -- must verify over exactly this step: then the row
         // stored below is the step the device authorised, and nothing else ever is.
         const fromCounter = result.leaves?.length ? result.from_counter : (result.counter ?? 0) - 1;
-        if (fromCounter !== head.counter || !result.wm_sig) {
+        if (fromCounter !== head.counter || (this.wm && !result.wm_sig)) {
             throw new RelayFailure(
                 'wm_conflict',
                 `this result was minted against counter ${fromCounter}; the head is at ` +
@@ -349,18 +363,20 @@ export class WardHost {
                 'this replica builds a different root for the change',
             );
         }
-        const headNonce = await this.wm.headNonce(this.wardId);
+        const { wm } = this;
+        const headNonce = wm ? await wm.headNonce(this.wardId) : null;
         const minted =
-            headNonce &&
-            verifyWmSig(
-                this.wardId,
-                head.counter,
-                head.root,
-                result.counter!,
-                toRoot,
-                headNonce,
-                toBytes(result.wm_sig),
-            );
+            !wm ||
+            (headNonce &&
+                verifyWmSig(
+                    this.wardId,
+                    head.counter,
+                    head.root,
+                    result.counter!,
+                    toRoot,
+                    headNonce,
+                    toBytes(result.wm_sig),
+                ));
         if (!minted) {
             throw new RelayFailure(
                 'wm_conflict',
@@ -389,8 +405,9 @@ export class WardHost {
             changes,
         };
         await this.backend.append(link);
+        if (!wm) return { counter: link.toCounter, root: link.toRoot, published: true };
         try {
-            await this.wm.advance({
+            await wm.advance({
                 wardId: this.wardId,
                 fromCounter: link.fromCounter,
                 fromRoot: head.root,
@@ -421,6 +438,7 @@ export class WardHost {
     /** WardSyncRequest -> WardSyncResponse: the WM's attested step, and the links into it. */
     serviceSync(req: Json) {
         return this.exclusive(async () => {
+            const wm = this.requireWm('the service channel');
             const wardId = toBytes(req.ward_id ?? '');
             if (!equalBytes(wardId, this.wardId)) {
                 throw new Error('a sync for another wallet than this store');
@@ -429,17 +447,17 @@ export class WardHost {
                 counter: req.current_counter ?? 0,
                 root: rootOf(req.current_root),
             };
-            if (!(await this.wm.headNonce(wardId))) {
+            if (!(await wm.headNonce(wardId))) {
                 // first contact: enrol from the device's opening head (genesis only -- see syncInner)
                 if (current.counter !== 0) {
                     throw new Error(
                         'the WM does not know this wallet and enrols only at counter 0',
                     );
                 }
-                await this.wm.enrol(wardId, current.root, toBytes(req.head_init_sig ?? ''));
+                await wm.enrol(wardId, current.root, toBytes(req.head_init_sig ?? ''));
                 await this.onWmChange();
             }
-            const att = await this.wm.attest(wardId, toBytes(req.nonce ?? ''));
+            const att = await wm.attest(wardId, toBytes(req.nonce ?? ''));
             await this.keepAttestation(att, toBytes(req.nonce ?? ''));
             const { trie, head } = await this.replica();
             // THE WM'S LINE, oldest first, from the device's head on: what it needs to walk forward
@@ -511,6 +529,7 @@ export class WardHost {
                 auth_commit: req.auth_commit,
                 wm_sig: req.wm_sig,
             };
+            const wm = this.requireWm('the service channel');
             try {
                 await this.applyInner(result, {
                     fromRoot: rootOf(req.from_root),
@@ -518,7 +537,7 @@ export class WardHost {
                 });
             } catch (e) {
                 if (e instanceof RelayFailure && e.code === 'wm_conflict') {
-                    const wmHead = await this.wm.head(this.wardId);
+                    const wmHead = await wm.head(this.wardId);
 
                     return {
                         name: 'WardPublishConflict',
@@ -527,7 +546,7 @@ export class WardHost {
                 }
                 throw e;
             }
-            const att = await this.wm.attest(this.wardId, toBytes(req.nonce ?? ''));
+            const att = await wm.attest(this.wardId, toBytes(req.nonce ?? ''));
             await this.keepAttestation(att, toBytes(req.nonce ?? ''));
 
             return {
@@ -540,6 +559,18 @@ export class WardHost {
                 },
             };
         });
+    }
+
+    /** The WM, or refuse `what` on a wardd running without one (`--without-wm`). */
+    private requireWm(what: string): WmClient {
+        if (!this.wm) {
+            throw new RelayFailure(
+                'bad_request',
+                `${what} needs a WARD Manager; this wardd runs without one`,
+            );
+        }
+
+        return this.wm;
     }
 
     /** The stored rows, as the replica is built from them. */
@@ -571,6 +602,14 @@ export class WardHost {
      * - it is AHEAD of the WM: the WM's register regressed, which only a rollback repairs.
      */
     private async syncInner(device: Device, opts: { rejoin?: boolean }): Promise<HostSyncResult> {
+        const { wm } = this;
+        if (!wm) {
+            // WITHOUT A WM a sync is a catch-up to the replica's head, which the device persists:
+            // genesis on first use, and after every write this host has stored
+            const r = await this.catchUpInner(device);
+
+            return { counter: r.counter, root: r.root, how: 'catchUp' };
+        }
         const ack = expectReply(await device({ name: 'WardSync', message: {} }), 'WardSyncAck');
         const wardId = toBytes(ack.ward_id ?? '');
         if (!equalBytes(wardId, this.wardId)) {
@@ -583,7 +622,7 @@ export class WardHost {
         // absent and means "not said", NOT the empty tree -- see `forkOf`
         const dev: Head = { counter: ack.counter ?? 0, root: rootOf(ack.root) };
 
-        if (!(await this.wm.headNonce(wardId))) {
+        if (!(await wm.headNonce(wardId))) {
             // ENROLMENT IS GENESIS ONLY: see MockWM.attest_head for why a WM must not be seeded
             // from whatever head the first device to reach it happens to hold.
             if (dev.counter !== 0) {
@@ -592,11 +631,11 @@ export class WardHost {
                     'the WM does not know this wallet and enrols only at counter 0',
                 );
             }
-            await this.wm.enrol(wardId, dev.root, toBytes(ack.head_init_sig ?? ''));
+            await wm.enrol(wardId, dev.root, toBytes(ack.head_init_sig ?? ''));
             await this.onWmChange();
         }
 
-        const att = await this.wm.attest(wardId, toBytes(ack.nonce ?? ''));
+        const att = await wm.attest(wardId, toBytes(ack.nonce ?? ''));
         await this.keepAttestation(att, toBytes(ack.nonce ?? ''));
         expectReply(
             await device({

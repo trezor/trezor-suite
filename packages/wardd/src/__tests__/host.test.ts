@@ -3,7 +3,7 @@
  * along the chain, a fork that needs the user's rejoin, a lost compare-and-swap, and the replica
  * refusing a corrupt row.
  */
-import { type DevWm, serveEntry, toBytes, toHex } from '@trezor/ward-core';
+import { DevWm, serveEntry, toBytes, toHex } from '@trezor/ward-core';
 
 import { InMemoryWardBackend, type StoredLink } from '../backend';
 import { WardHost } from '../host';
@@ -264,7 +264,7 @@ describe('a failed append', () => {
         a.enqueue('alice', '1');
         await expect(host.flush(a.call)).rejects.toThrow('the write failed');
         // THE WM DID NOT MOVE: nothing is published that was not stored
-        expect(await wardd.wm.head(a.wardId)).toEqual({ counter: 0, root: null });
+        expect(await wardd.wm?.head(a.wardId)).toEqual({ counter: 0, root: null });
         // AND THE LOCK IS FREE: the next call runs rather than waiting on the failed one
         await expect(host.status()).resolves.toMatchObject({ counter: 0, wmCounter: 0 });
         // once writes work again, the change -- still queued on the device -- goes through
@@ -324,8 +324,65 @@ describe('the replica', () => {
         const first = await Wardd.create({ dataDir: dir, memory: true });
         const a = new FakeDevice();
         await (await first.openStore({ wardId: toHex(a.wardId) })).sync(a.call);
-        const nonce = await first.wm.headNonce(a.wardId);
+        const nonce = await first.wm?.headNonce(a.wardId);
         const second = await Wardd.create({ dataDir: dir, memory: true });
-        expect(await second.wm.headNonce(a.wardId)).toEqual(nonce);
+        expect(await second.wm?.headNonce(a.wardId)).toEqual(nonce);
+    });
+});
+
+describe('wardd without a WM (--without-wm, the MVP)', () => {
+    const mvp = async () => {
+        const wardd = await Wardd.create({ dataDir: null, memory: true, withoutWm: true });
+        const keys = newWallet();
+        const a = new FakeDevice(keys, { wm: false });
+        const host = await wardd.openStore({ wardId: toHex(a.wardId) });
+
+        return { wardd, keys, a, host };
+    };
+
+    it('flushes by storing each change and catching the device up to it, persisted', async () => {
+        const { a, host } = await mvp();
+        a.enqueue('alice', 'v1');
+        a.enqueue('bob', 'v2');
+
+        await expect(host.flush(a.call)).resolves.toMatchObject({
+            counter: 2,
+            published: 2,
+            remaining: 0,
+        });
+        // the device's STORED head moved, and its queue settled, with no WM ever involved
+        expect(a.head.counter).toBe(2);
+        expect(a.queue).toHaveLength(0);
+        expect(a.online).toBe(false);
+        expect(await host.status()).toMatchObject({
+            counter: 2,
+            withoutWm: true,
+            wmAvailable: false,
+            attestedCounter: null,
+        });
+    });
+
+    it('syncs another device of the wallet by a catch-up it persists', async () => {
+        const { keys, a, host } = await mvp();
+        a.enqueue('alice', 'v1');
+        await host.flush(a.call);
+
+        const b = new FakeDevice(keys, { wm: false });
+        await expect(host.sync(b.call)).resolves.toMatchObject({ counter: 1, how: 'catchUp' });
+        expect(b.head.counter).toBe(1);
+        expect(b.provisional).toBeNull();
+    });
+
+    it('refuses the service channel, which needs a WM', async () => {
+        const { a, host } = await mvp();
+        await expect(
+            host.serviceSync({ ward_id: toHex(a.wardId), nonce: toHex(new Uint8Array(32)) }),
+        ).rejects.toEqual(expect.objectContaining({ code: 'bad_request' }));
+    });
+
+    it('cannot be given a WM as well', async () => {
+        await expect(
+            Wardd.create({ dataDir: null, memory: true, withoutWm: true, wm: new DevWm() }),
+        ).rejects.toThrow('cannot also be given one');
     });
 });

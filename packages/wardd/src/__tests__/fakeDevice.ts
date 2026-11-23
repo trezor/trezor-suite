@@ -67,6 +67,8 @@ export class FakeDevice {
     readonly wardId: Uint8Array;
     head: Head = { counter: 0, root: EMPTY_ROOT };
     online = false;
+    /** without a WM: whether a catch-up has stored a head yet (genesis included), as writes need */
+    stored = false;
     /** the WM's timestamp for `head`, as the firmware persists it beside the head */
     headTime: number | null = null;
     /** the head `WardCatchUp` reached, for this session only; never `head` */
@@ -180,6 +182,9 @@ export class FakeDevice {
     }
 
     onWardSync(): RelayMessage {
+        if (this.opts.wm === false) {
+            throw new Error('WARD: this firmware has no WARD Manager; catch up with WardCatchUp');
+        }
         this.nonce = randomBytes(32);
         const { counter, root } = this.head;
 
@@ -280,6 +285,12 @@ export class FakeDevice {
             if (!same(landed, this.head)) throw new Error('that head does not descend');
             this.head = to;
             this.headTime = null;
+            this.stored = true;
+            // as `adopt`: the in-flight change took effect only if THIS head is the one it made
+            if (this.inflight && same(this.inflight.to, to)) {
+                this.queue.splice(0, this.inflight.count);
+            }
+            this.inflight = null;
 
             return msg('WardCatchUpAck', {
                 counter: to.counter,
@@ -334,7 +345,9 @@ export class FakeDevice {
     }
 
     *onWardFlushQueue(m: Json): Workflow {
-        if (!this.online) throw new Error('flush needs a synced session');
+        if (this.opts.wm === false ? !this.stored : !this.online) {
+            throw new Error('flush needs a synced session');
+        }
         const batched = (m.max_batch ?? 1) > 1;
         const n = Math.min(m.max_batch ?? 1, MAX_BATCH, this.queue.length);
         if (!n) return msg('WardFlushQueueAck', { remaining: 0 });
@@ -384,20 +397,25 @@ export class FakeDevice {
         const authorisation = {
             counter: to.counter,
             auth_commit: toHex(this.authCommit(this.head, to)),
-            wm_sig: toHex(
-                ed25519.sign(
-                    wmPreimage(
-                        TAG_WM_HEAD,
-                        this.wardId,
-                        this.head.counter,
-                        this.head.root,
-                        to.counter,
-                        to.root,
-                        this.headNonce,
-                    ),
-                    this.keys.kSig,
-                ),
-            ),
+            // without a WM the device mints no wm_sig: there is nobody to present it to
+            ...(this.opts.wm === false
+                ? {}
+                : {
+                      wm_sig: toHex(
+                          ed25519.sign(
+                              wmPreimage(
+                                  TAG_WM_HEAD,
+                                  this.wardId,
+                                  this.head.counter,
+                                  this.head.root,
+                                  to.counter,
+                                  to.root,
+                                  this.headNonce,
+                              ),
+                              this.keys.kSig,
+                          ),
+                      ),
+                  }),
             remaining: this.queue.length - n,
         };
 
