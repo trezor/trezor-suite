@@ -13,19 +13,20 @@ import {
 } from './ConfirmValueModal/ConfirmValueModal';
 import { ConfirmActionModal } from './DeviceContextModal/ConfirmActionModal';
 import { ConnectAddressConfirmation } from './UserContextModal/ConnectAddressConfirmation';
+import { ConnectSelectAccount } from './UserContextModal/ConnectSelectAccount/ConnectSelectAccount';
 
 export const ConfirmXpubModal = (
     props: Pick<ConfirmValueModalProps, 'isConfirmed' | 'onCancel'>,
 ) => {
     const device = useSelector(selectSelectedDevice);
     const account = useSelector(selectSelectedAccount);
-    const isConnectPopup = useSelector(
-        state => selectConnectPopupCall(state)?.state === 'address-confirmation',
-    );
+    const popupCallState = useSelector(state => selectConnectPopupCall(state)?.state);
 
-    if (isConnectPopup) return <ConnectAddressConfirmation />;
+    if (popupCallState === 'address-confirmation') return <ConnectAddressConfirmation />;
+    // The picker's xpub verification ends with a device modal that nothing replaces afterwards, so
+    // the picker has to stay on screen in its place, as it does for ButtonRequest_Address.
+    if (popupCallState === 'select-account') return <ConnectSelectAccount />;
     if (!device) return null;
-    // TODO: special case for Connect Popup
     if (!account) return <ConfirmActionModal device={device} />;
 
     const xpub = getFirmwareDescriptor(account, { withChecksum: true });
