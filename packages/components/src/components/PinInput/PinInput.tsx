@@ -109,6 +109,8 @@ const SymbolInput = ({
 
     return (
         <SymbolBox
+            autoComplete="off"
+            autoCorrect="off"
             onKeyDown={onKeyDown}
             value={symbol}
             ref={inputRef}
