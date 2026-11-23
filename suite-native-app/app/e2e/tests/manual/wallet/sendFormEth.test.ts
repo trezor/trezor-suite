@@ -24,4 +24,25 @@ describe.skip('Manual', () => {
         },
         async () => {},
     );
+
+    it(
+        'Ethereum recipient checksum conversion with and without transaction history',
+        {
+            testCase: 'Verify ETH recipient checksum handling in the mobile Send form',
+            prerequisites: [
+                'Connected Trezor and a funded Ethereum account',
+                'Two Ethereum wallet addresses with known mixed-case checksums: one with transaction history and one with no history',
+            ],
+            steps: [
+                'In the ETH Send form, paste the used address in lowercase. Verify it changes to the expected checksum automatically without a conversion alert',
+                'Paste the unused address in lowercase. Verify Suite shows the checksum alert. Tap "Convert" and verify the address matches the expected checksum',
+                'Paste the same unused address already checksummed. Verify it stays exactly as pasted and no conversion alert appears',
+                'For each case, enter an ETH amount and continue to "Review and sign". Verify the expected recipient appears on the Trezor, then cancel on the device',
+            ],
+            category: TestCategory.Accounts,
+            priority: TestPriority.Low,
+            stream: TestStream.Wallet,
+        },
+        async () => {},
+    );
 });
