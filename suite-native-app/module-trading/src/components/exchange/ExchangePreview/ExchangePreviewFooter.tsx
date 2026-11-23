@@ -25,9 +25,9 @@ export const ExchangePreviewFooter = memo(
 
         const quote = useSelector(selectTradingExchangeSelectedQuote);
         const isTradeFinalized = isFinalStatus('exchange', quote?.status);
-        const { issue, isSimulationEnabled } = useExchangeIssue();
+        const { issue } = useExchangeIssue();
 
-        const shouldShowBackToTradeForm = isSimulationEnabled && issue && !isTradeFinalized;
+        const shouldShowBackToTradeForm = issue && !isTradeFinalized;
 
         if (shouldShowBackToTradeForm) {
             return (

@@ -97,7 +97,7 @@ export const ExchangePreviewIssueBanner = ({
 }: ExchangePreviewIssueBannerProps) => {
     const locale = useSelector(selectLocale);
 
-    const { issue, isSimulationEnabled, isSimulationLoading, isSimulation } = useExchangeIssue();
+    const { issue, isSimulationLoading, isSimulation } = useExchangeIssue();
     useExchangeIssueAnalytics({ issue, isSimulationLoading, isSimulation });
 
     const { handleSignTransaction, isSigningPreparationLoading } = useExchangeSignTransaction({
@@ -118,12 +118,6 @@ export const ExchangePreviewIssueBanner = ({
     }
 
     const { title, description, bullets } = getIssueContent(issue, percentFormatter);
-
-    if (!isSimulationEnabled) {
-        return (
-            <AnimatedBannerFull intent={issue.severity} title={title} description={description} />
-        );
-    }
 
     return (
         <AnimatedBannerFull
