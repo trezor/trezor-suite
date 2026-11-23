@@ -45,6 +45,7 @@ export type * from './types/tradingDetail';
 export type * from './types';
 export * from './utils';
 export { createAssetOption } from './utils/createAssetOption';
+export * from './utils/amountLimitUtils';
 export * from './utils/apiKeyUtils';
 export {
     createInstallTradeApiKey,

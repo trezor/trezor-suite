@@ -42,6 +42,7 @@ import {
 } from './TradingFormInput/TradingFormInputSellAsset/TradingFormInputSellAsset';
 import { TradingFormSection } from './TradingFormSection';
 import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
+import { useTradingAmountLimitFill } from './useTradingAmountLimitFill';
 
 export const TradingSellFormInputs = () => {
     const context = useTradingFormContext<TradingSellType>();
@@ -94,12 +95,30 @@ export const TradingSellFormInputs = () => {
 
     const countryRequiresSubdivision = isCountrySubdivisionRequired(countrySelect?.value);
 
+    const amountLimitFillParams = {
+        cryptoInputName: TRADING_FORM_OUTPUT_AMOUNT,
+        fiatInputName: TRADING_FORM_OUTPUT_FIAT,
+        isInSats: shouldSendInSats,
+        cryptoDecimals: sendAssetDecimals,
+    } as const;
+    const cryptoAmountError = errors.outputs?.[0]?.amount;
+    const fiatAmountError = errors.outputs?.[0]?.fiat;
+    const fillCryptoAmountLimit = useTradingAmountLimitFill({
+        ...amountLimitFillParams,
+        errorType: cryptoAmountError?.type,
+    });
+    const fillFiatAmountLimit = useTradingAmountLimitFill({
+        ...amountLimitFillParams,
+        errorType: fiatAmountError?.type,
+    });
+
     return (
         <Column gap={20}>
             <TradingFormCard>
                 <TradingFormSection
                     title={<Translation id="TR_TRADING_YOU_PAY" />}
-                    errorMessage={errors.outputs?.[0]?.amount?.message}
+                    errorMessage={cryptoAmountError?.message}
+                    onErrorClick={fillCryptoAmountLimit}
                     data-testid="@trading/form/you-pay"
                 >
                     <Row gap={12} alignItems="center">
@@ -143,7 +162,8 @@ export const TradingSellFormInputs = () => {
 
                 <TradingFormSection
                     title={<Translation id="TR_TRADING_YOU_GET" />}
-                    errorMessage={errors.outputs?.[0]?.fiat?.message}
+                    errorMessage={fiatAmountError?.message}
+                    onErrorClick={fillFiatAmountLimit}
                     data-testid="@trading/form/you-get"
                 >
                     <Row gap={12} alignItems="center">

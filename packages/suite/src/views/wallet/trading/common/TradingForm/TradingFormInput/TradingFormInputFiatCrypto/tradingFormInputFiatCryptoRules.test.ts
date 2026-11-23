@@ -54,6 +54,17 @@ describe('getFiatInputRules', () => {
                 'TR_BUY_VALIDATION_ERROR_MINIMUM_FIAT:{"minimum":"10.00","currency":"USD"}',
             );
         });
+
+        it('returns error with the minimum rounded up to an amount that passes', () => {
+            const { minFiat } = getValidators({
+                ...baseProps,
+                amountLimits: { currency: 'USD', minFiat: '25.123' },
+            });
+            expect(minFiat('25.12')).toBe(
+                'TR_BUY_VALIDATION_ERROR_MINIMUM_FIAT:{"minimum":"25.13","currency":"USD"}',
+            );
+            expect(minFiat('25.13')).toBeUndefined();
+        });
     });
 
     describe('maxFiat', () => {
@@ -83,6 +94,17 @@ describe('getFiatInputRules', () => {
             expect(maxFiat('1000.01')).toBe(
                 'TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT:{"maximum":"1000.00","currency":"USD"}',
             );
+        });
+
+        it('returns error with the maximum rounded down to an amount that passes', () => {
+            const { maxFiat } = getValidators({
+                ...baseProps,
+                amountLimits: { currency: 'USD', maxFiat: '1000.999' },
+            });
+            expect(maxFiat('1001')).toBe(
+                'TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT:{"maximum":"1000.99","currency":"USD"}',
+            );
+            expect(maxFiat('1000.99')).toBeUndefined();
         });
     });
 });
