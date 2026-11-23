@@ -69,7 +69,12 @@ const initStore = (preloaded: {
             wallet: {
                 accounts: [{ ...(preloaded.account ?? account), tokens: preloaded.tokens ?? [] }],
                 customTokens: preloaded.customTokens
-                    ? { [accountKey]: preloaded.customTokens }
+                    ? {
+                          [accountKey]: preloaded.customTokens.map(c => ({
+                              contract: c,
+                              addedAt: 0,
+                          })),
+                      }
                     : {},
             },
         },

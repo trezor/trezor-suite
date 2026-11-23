@@ -5,6 +5,7 @@ import {
     type CustomTokensState,
     customTokensActions,
     customTokensReducer,
+    selectCustomToken,
     selectCustomTokenContracts,
     selectIsCustomToken,
 } from './customTokensSlice';
@@ -20,7 +21,8 @@ const reduce = (state: CustomTokensState, ...actions: { type: string }[]) =>
 
 const rootState = (customTokens: CustomTokensState) => ({ wallet: { customTokens } });
 
-const add = (c: string) => customTokensActions.addCustomToken({ accountKey, symbol, contract: c });
+const add = (c: string, addedAt = 1) =>
+    customTokensActions.addCustomToken({ accountKey, symbol, contract: c, addedAt });
 const remove = (c: string) =>
     customTokensActions.removeCustomToken({ accountKey, symbol, contract: c });
 
@@ -34,10 +36,10 @@ describe(customTokensActions.addCustomToken.type, () => {
         expect(selectCustomTokenContracts(rootState(state), otherAccountKey)).toEqual([]);
     });
 
-    it('does not add the same contract twice in a different casing', () => {
-        const state = reduce({}, add(contract), add(contract.toLowerCase()));
+    it('does not add the same contract twice in a different casing and keeps its first date', () => {
+        const state = reduce({}, add(contract, 1), add(contract.toLowerCase(), 2));
 
-        expect(selectCustomTokenContracts(rootState(state), accountKey)).toHaveLength(1);
+        expect(state[accountKey]).toEqual([{ contract: contract.toLowerCase(), addedAt: 1 }]);
     });
 });
 
@@ -62,5 +64,16 @@ describe(selectIsCustomToken.name, () => {
         expect(selectIsCustomToken(state, { key: accountKey, symbol }, contract)).toBe(true);
         expect(selectIsCustomToken(state, { key: accountKey, symbol }, otherContract)).toBe(false);
         expect(selectIsCustomToken(state, { key: otherAccountKey, symbol }, contract)).toBe(false);
+    });
+});
+
+describe(selectCustomToken.name, () => {
+    it('returns when the token was added regardless of casing', () => {
+        const state = rootState(reduce({}, add(contract.toLowerCase(), 42)));
+
+        expect(selectCustomToken(state, { key: accountKey, symbol }, contract)?.addedAt).toBe(42);
+        expect(
+            selectCustomToken(state, { key: accountKey, symbol }, otherContract),
+        ).toBeUndefined();
     });
 });

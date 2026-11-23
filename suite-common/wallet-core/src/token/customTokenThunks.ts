@@ -80,6 +80,7 @@ export const addCustomTokenThunk = createThunk<
                 accountKey,
                 symbol: account.symbol,
                 contract: token.contract,
+                addedAt: Date.now(),
             }),
         );
 
