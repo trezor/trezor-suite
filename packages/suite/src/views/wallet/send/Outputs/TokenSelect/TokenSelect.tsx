@@ -30,6 +30,7 @@ import { selectSendFormPrefill } from '#src/selectors/suite/suiteSelectors';
 import { getTokenAddressTranslationId } from '#src/utils/wallet/tokenUtils';
 
 import { SelectTokenAssetModal } from './SelectTokenAssetModal/SelectTokenAssetModal';
+import { useNFTOptions } from './SelectTokenAssetModal/hooks/useNFTOptions';
 
 type TokenSelectProps = {
     outputId: number;
@@ -106,8 +107,10 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     );
     const selectedTokenAddress = selectedToken ? toTokenAddress(selectedToken.contract) : undefined;
 
-    const hasNoStandardTokens = !account.tokens?.filter(token => !isNftToken(token))?.length;
-    const onOpenTokensModal = !hasNoStandardTokens ? () => setIsTokensModalActive(true) : undefined;
+    const hasStandardTokens = !!account.tokens?.some(token => !isNftToken(token));
+    const hasSelectableNFTs = useNFTOptions(account).length > 0;
+    const hasSelectableAssets = hasStandardTokens || hasSelectableNFTs;
+    const onOpenTokensModal = hasSelectableAssets ? () => setIsTokensModalActive(true) : undefined;
 
     const networkTokenContractAddress =
         selectedToken && getContractAddressForNetworkSymbol(account.symbol, selectedToken.contract);
@@ -243,7 +246,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                             )}
                         </Column>
                     </Row>
-                    {!hasNoStandardTokens && (
+                    {hasSelectableAssets && (
                         <IconButton
                             icon={CaretDownIcon}
                             intent="neutral"
