@@ -1,4 +1,4 @@
-import { spawn, spawnSync } from 'node:child_process';
+import { execFileSync, spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -72,6 +72,7 @@ const DEFAULT_COVERAGE_MAP_DIR = 'coverage-map';
 const DEFAULT_INDEX_FILE = `${DEFAULT_COVERAGE_MAP_DIR}/index.json`;
 const DEFAULT_LLM_ANALYSIS_FILE = `${DEFAULT_COVERAGE_MAP_DIR}/llm-analysis.json`;
 const DEFAULT_BASE_REF = 'origin/develop';
+const E2E_TESTS_DIR = 'suite/e2e/tests';
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const OPENROUTER_MODEL = 'moonshotai/kimi-k2.7-code';
@@ -217,6 +218,17 @@ const getChangedFiles = (headRef = 'HEAD', baseRef = DEFAULT_BASE_REF): string[]
     return unique(files).filter(isAllowedFile);
 };
 
+const getTestFilesAtRef = (ref: string): Set<string> => {
+    // Without --full-tree, the path resolves from the cwd (packages/e2e-utils) and lists nothing.
+    const testFileList = execFileSync(
+        'git',
+        ['ls-tree', '-r', '--name-only', '--full-tree', ref, '--', E2E_TESTS_DIR],
+        { encoding: 'utf8' },
+    );
+
+    return new Set(testFileList.split('\n').filter(line => line !== ''));
+};
+
 // ---------------------------------------------------------------------------
 // Remote file download with etag / md5 freshness check
 // ---------------------------------------------------------------------------
@@ -275,21 +287,28 @@ const downloadIfStale = async (url: string, localFile: string): Promise<void> =>
 // Coverage-map lookup
 // ---------------------------------------------------------------------------
 
+type SelectTestsByChangedFilesParams = {
+    index: CoverageIndex;
+    changedFiles: string[];
+    existingTestFiles: Set<string>;
+};
+
 /**
  * Returns per-file coverage data rather than a flat merged list.
  * Keeping the changedFile→tests relationship intact lets the prompt reason about
  * how "broad" each match is: a file that maps to many tests is likely a global
  * utility, whereas one that maps to 1–2 tests is a targeted feature file.
  */
-const selectTestsByChangedFiles = (
-    index: CoverageIndex,
-    changedFiles: string[],
-): { matchedByFile: TestMatchByFile[]; uncovered: string[] } => {
+const selectTestsByChangedFiles = ({
+    index,
+    changedFiles,
+    existingTestFiles,
+}: SelectTestsByChangedFilesParams): { matchedByFile: TestMatchByFile[]; uncovered: string[] } => {
     const matchedByFile: TestMatchByFile[] = [];
     const uncovered: string[] = [];
 
     for (const changedFile of changedFiles) {
-        const tests = index[changedFile];
+        const tests = index[changedFile]?.filter(test => existingTestFiles.has(test));
         if (tests && tests.length > 0) {
             matchedByFile.push({ changedFile, tests: [...tests].sort() });
         } else {
@@ -926,13 +945,19 @@ const main = async () => {
     }
 
     // 4. Map changed files → tests via coverage index
+    const existingTestFiles = getTestFilesAtRef(headRef);
     const index = readJson<CoverageIndex>(indexFile);
-    const llmAnalysis = readJson<Record<string, unknown>>(llmAnalysisFile);
+    const llmAnalysis = Object.fromEntries(
+        Object.entries(readJson<Record<string, unknown>>(llmAnalysisFile)).filter(([testPath]) =>
+            existingTestFiles.has(testPath),
+        ),
+    );
 
-    const { matchedByFile, uncovered: uncoveredFiles } = selectTestsByChangedFiles(
+    const { matchedByFile, uncovered: uncoveredFiles } = selectTestsByChangedFiles({
         index,
         changedFiles,
-    );
+        existingTestFiles,
+    });
     const uniqueMatchedTests = new Set(matchedByFile.flatMap(({ tests }) => tests));
     log(
         `Coverage mapping: ${uniqueMatchedTests.size} unique test(s) matched across ${matchedByFile.length} of ${changedFiles.length} changed file(s) with coverage data, ${uncoveredFiles.length} file(s) with no coverage data.`,
@@ -977,6 +1002,9 @@ const main = async () => {
     const result: SelectionResult = {
         changed_files: changedFiles,
         ...llmResult,
+        recommendations: llmResult.recommendations.filter(({ test }) =>
+            existingTestFiles.has(test),
+        ),
     };
 
     output(JSON.stringify(result, null, 2));
