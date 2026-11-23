@@ -1,26 +1,48 @@
-import { act, renderHook } from '@suite-common/test-utils';
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { type TranslationFunction } from '@suite/intl';
+import {
+    act,
+    createTestCompositionRoot,
+    renderHookWithStoreProvider,
+} from '@suite-common/test-utils';
 import { type FeeInfo } from '@suite-common/wallet-types';
-import { getConvertedOrDefaultFeeInfo, isInteger } from '@suite-common/wallet-utils';
+import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+
+import { getCustomFeeEthereumRules } from '#src/components/wallet/Fees/CollapsibleFees/CustomFee/getCustomFeeEthereumRules';
 
 import { useEvmTxSimulationFeesForm } from './useEvmTxSimulationFeesForm';
 
 jest.mock('#src/hooks/suite', () => ({ useSelector: () => undefined }));
-jest.mock('#src/hooks/wallet/form/useFees', () => ({
-    useFees: () => ({ changeFeeLevel: jest.fn() }),
-}));
-jest.mock('#src/hooks/wallet/form/useComposedLevelsPlaceholder', () => ({
-    useComposedLevelsPlaceholder: () => ({}),
-}));
 jest.mock('@suite-common/wallet-utils', () => ({
     ...jest.requireActual('@suite-common/wallet-utils'),
     getConvertedOrDefaultFeeInfo: jest.fn(),
 }));
 
+type State = { wallet: { fees: Record<string, never> } };
+
+const translationString: TranslationFunction = id => id;
+
+const renderFeesForm = (feeInfo: FeeInfo, defaultGasLimit = '21000') => {
+    jest.mocked(getConvertedOrDefaultFeeInfo).mockReturnValue(feeInfo);
+    const { services } = createTestCompositionRoot<void, State>({
+        reducer: combineReducers({ wallet: () => ({ fees: {} }) }),
+    });
+
+    const { result } = renderHookWithStoreProvider(
+        () =>
+            useEvmTxSimulationFeesForm({ accountBalance: '1000000000000000000', defaultGasLimit }),
+        { services },
+    );
+
+    return result;
+};
+
 describe('useEvmTxSimulationFeesForm selection', () => {
     it.each(['legacy', 'eip1559'] as const)(
         'keeps the chosen fee level separate from %s gas values',
         type => {
-            const feeInfo: FeeInfo = {
+            const result = renderFeesForm({
                 blockHeight: 0,
                 blockTime: 12,
                 minFee: 0,
@@ -38,14 +60,7 @@ describe('useEvmTxSimulationFeesForm selection', () => {
                           }
                         : {}),
                 })),
-            };
-            jest.mocked(getConvertedOrDefaultFeeInfo).mockReturnValue(feeInfo);
-            const { result } = renderHook(() =>
-                useEvmTxSimulationFeesForm({
-                    accountBalance: '1000000000000000000',
-                    defaultGasLimit: '21000',
-                }),
-            );
+            });
 
             for (const label of ['low', 'normal', 'high', 'custom'] as const) {
                 act(() => result.current.form.setValue('selectedFee', label));
@@ -67,75 +82,114 @@ describe('useEvmTxSimulationFeesForm selection', () => {
     );
 });
 
-describe('useEvmTxSimulationFeesForm custom fee guard', () => {
-    const renderWithGasLimitRule = () => {
-        jest.mocked(getConvertedOrDefaultFeeInfo).mockReturnValue({
-            blockHeight: 0,
-            blockTime: 12,
-            minFee: 0,
-            maxFee: 100,
-            minPriorityFee: 0,
-            levels: [{ label: 'normal', blocks: 1, feePerUnit: '1' }],
+describe('useEvmTxSimulationFeesForm custom fee', () => {
+    const FEE_INFO: FeeInfo = {
+        blockHeight: 0,
+        blockTime: 12,
+        minFee: 1,
+        maxFee: 100,
+        minPriorityFee: 0,
+        levels: [
+            { label: 'low' as const, maxFeePerGas: '10', maxPriorityFeePerGas: '1' },
+            { label: 'normal' as const, maxFeePerGas: '20', maxPriorityFeePerGas: '2' },
+            { label: 'high' as const, maxFeePerGas: '30', maxPriorityFeePerGas: '3' },
+        ].map(level => ({ ...level, blocks: 1, feePerUnit: '20', baseFeePerGas: '5' })),
+    };
+
+    const HIGH_LEVEL_FEE = {
+        type: 'eip1559',
+        gasLimit: '0x5208',
+        maxFeePerGas: '0x6fc23ac00',
+        maxPriorityFeePerGas: '0xb2d05e00',
+        baseFeePerGas: '0x12a05f200',
+    };
+
+    // Registers the rules the mounted CustomFeeEthereum inputs would, then opens Custom.
+    const renderCustomFee = (defaultGasLimit?: string) => {
+        const result = renderFeesForm(FEE_INFO, defaultGasLimit);
+        const { form, changeFeeLevel } = result.current;
+        const rules = getCustomFeeEthereumRules({
+            translationString,
+            sharedRules: { required: translationString('CUSTOM_FEE_IS_NOT_SET') },
+            feeInfo: FEE_INFO,
+            networkType: 'ethereum',
+            getValues: form.getValues,
         });
-        const { result } = renderHook(() =>
-            useEvmTxSimulationFeesForm({
-                accountBalance: '1000000000000000000',
-                defaultGasLimit: '21000',
-            }),
-        );
-        // Stands in for the mounted gas limit input, which owns the real rules.
+
         act(() => {
-            result.current.form.register('feeLimit', {
-                validate: value => isInteger(value) || 'not an integer',
-            });
+            form.register('feeLimit', rules.gasLimitRules);
+            form.register('maxFeePerGas', rules.maxFeePerGasRules);
+            form.register('maxPriorityFeePerGas', rules.maxPriorityFeePerGasRules);
         });
+        act(() => changeFeeLevel('custom'));
 
         return result;
     };
 
-    it('blocks confirmation while a custom field is invalid', async () => {
-        const result = renderWithGasLimitRule();
-
-        act(() => {
-            result.current.form.setValue('selectedFee', 'custom');
-            result.current.form.setValue('feeLimit', '21000.5');
-        });
-
+    const validateCustomFee = async (result: ReturnType<typeof renderCustomFee>) => {
         let isValid: boolean | undefined;
         await act(async () => {
             isValid = await result.current.validateCustomFee();
         });
 
-        expect(isValid).toBe(false);
-        expect(result.current.hasCustomFeeErrors).toBe(true);
+        return isValid;
+    };
 
-        act(() => result.current.form.setValue('feeLimit', '21001'));
-        await act(async () => {
-            isValid = await result.current.validateCustomFee();
-        });
+    it('accepts the values Custom opens with', async () => {
+        const result = renderCustomFee();
 
-        expect(isValid).toBe(true);
+        expect(await validateCustomFee(result)).toBe(true);
         expect(result.current.hasCustomFeeErrors).toBe(false);
     });
 
-    it('ignores custom field errors once a preset level is selected', async () => {
-        const result = renderWithGasLimitRule();
+    it.each([
+        { case: 'a fractional gas limit', field: 'feeLimit', value: '21000.5' },
+        { case: 'a zero gas limit', field: 'feeLimit', value: '0' },
+        { case: 'an empty priority fee', field: 'maxPriorityFeePerGas', value: '' },
+        { case: 'a priority fee above the max fee', field: 'maxPriorityFeePerGas', value: '25' },
+    ] as const)('blocks confirmation with $case', async ({ field, value }) => {
+        const result = renderCustomFee();
+
+        act(() => result.current.form.setValue(field, value));
+
+        expect(await validateCustomFee(result)).toBe(false);
+        expect(result.current.hasCustomFeeErrors).toBe(true);
+    });
+
+    it('accepts a hex default gas limit', async () => {
+        const result = renderCustomFee('0x5208');
+
+        expect(result.current.form.getValues('feeLimit')).toBe('21000');
+        expect(await validateCustomFee(result)).toBe(true);
+        expect(result.current.getSelectedFee()).toMatchObject({ gasLimit: '0x5208' });
+    });
+
+    it('signs a preset level after leaving Custom with an invalid gas limit', async () => {
+        const result = renderCustomFee();
+
+        act(() => result.current.form.setValue('feeLimit', '21000.5'));
+        expect(await validateCustomFee(result)).toBe(false);
+
+        act(() => result.current.changeFeeLevel('high'));
+
+        expect(await validateCustomFee(result)).toBe(true);
+        expect(result.current.hasCustomFeeErrors).toBe(false);
+        expect(result.current.getSelectedFee()).toEqual(HIGH_LEVEL_FEE);
+    });
+
+    it('signs the preset level values, not the leftover custom ones', () => {
+        const result = renderCustomFee();
 
         act(() => {
-            result.current.form.setValue('selectedFee', 'custom');
-            result.current.form.setValue('feeLimit', '');
+            result.current.form.setValue('feeLimit', '50000');
+            result.current.form.setValue('maxFeePerGas', '5');
+            result.current.form.setValue('maxPriorityFeePerGas', '2');
         });
-        await act(async () => {
-            await result.current.validateCustomFee();
-        });
-        act(() => result.current.form.setValue('selectedFee', 'normal'));
+        act(() => result.current.changeFeeLevel('high'));
 
-        let isValid: boolean | undefined;
-        await act(async () => {
-            isValid = await result.current.validateCustomFee();
+        expect(result.current.getSelectedFee()).toEqual(HIGH_LEVEL_FEE);
+        expect(result.current.composedLevels.high).toMatchObject({
+            fee: String(30e9 * 21000),
         });
-
-        expect(isValid).toBe(true);
-        expect(result.current.hasCustomFeeErrors).toBe(false);
     });
 });
