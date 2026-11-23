@@ -1,6 +1,13 @@
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
-import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { locksInitialState } from '@suite/locks';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import {
+    act,
+    createTestCompositionRoot,
+    renderHookWithStoreProvider,
+} from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TradingError,
@@ -14,11 +21,6 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { useTradingExchangeTradeActions } from './useTradingExchangeTradeActions';
 import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
-
-jest.mock('@suite/device', () => ({
-    ...jest.requireActual('@suite/device'),
-    useDevice: () => ({ device: { connected: true } }),
-}));
 
 jest.mock('@suite/intl', () => ({
     ...jest.requireActual('@suite/intl'),
@@ -100,6 +102,11 @@ jest.mock('@suite-common/trading', () => {
 });
 
 const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+const DEVICE = mockSuiteDevice({
+    connected: true,
+    available: true,
+    state: { staticSessionId: ACCOUNT.deviceState, sessionId: 'before-reconnect' },
+});
 const ETHEREUM_CRYPTO_ID = 'ethereum' as CryptoId;
 const BITCOIN_CRYPTO_ID = 'bitcoin' as CryptoId;
 
@@ -117,6 +124,7 @@ type StateOverrides = {
     selectedQuoteTimestamp?: number;
     accountKey?: Account['key'] | undefined;
     accounts?: Account[];
+    selectedDevice?: TrezorDevice;
 };
 
 const buildState = (overrides: StateOverrides = {}) => {
@@ -131,6 +139,10 @@ const buildState = (overrides: StateOverrides = {}) => {
     };
 
     return {
+        device: {
+            selectedDevice: 'selectedDevice' in overrides ? overrides.selectedDevice : DEVICE,
+        },
+        locks: locksInitialState,
         wallet: {
             accounts,
             trading: {
@@ -159,7 +171,7 @@ const renderActions = (overrides?: StateOverrides) => {
 
     const { getActions } = services.store;
 
-    return { getActions, result };
+    return { getActions, result, store: services.store };
 };
 
 describe('useTradingExchangeTradeActions', () => {
@@ -384,6 +396,56 @@ describe('useTradingExchangeTradeActions', () => {
 
             expect(args.account).toBe(ACCOUNT);
         });
+
+        it('uses the reconnected device when signing resumes from the original click', async () => {
+            const { result, store } = renderActions({
+                selectedDevice: mockSuiteDevice({ ...DEVICE, connected: false, available: false }),
+            });
+            const { signDataAndConfirm } = result.current;
+            const reconnected = mockSuiteDevice({
+                connected: true,
+                available: true,
+                path: 'reconnected-path',
+                state: { staticSessionId: ACCOUNT.deviceState, sessionId: 'after-reconnect' },
+            });
+            const previousState = store.getState();
+            act(() => {
+                store.replaceReducer(() => ({
+                    ...previousState,
+                    device: { ...previousState.device, selectedDevice: reconnected },
+                }));
+            });
+
+            await signDataAndConfirm();
+
+            expect(mockSignDataAndConfirmThunk).toHaveBeenCalledWith(
+                expect.objectContaining({ device: reconnected }),
+            );
+        });
+
+        it.each([
+            ['disconnects', undefined],
+            ['becomes unavailable', mockSuiteDevice({ ...DEVICE, available: false })],
+            [
+                'switches wallets',
+                mockSuiteDevice({ ...DEVICE, state: { staticSessionId: 'other@device:0' } }),
+            ],
+        ] as const)(
+            'stops when the selected device %s before signing',
+            async (_, selectedDevice) => {
+                const { result, getActions } = renderActions({ selectedDevice });
+
+                await result.current.signDataAndConfirm();
+
+                expect(mockSignDataAndConfirmThunk).not.toHaveBeenCalled();
+                expect(getActions()).toContainEqual(
+                    expect.objectContaining({
+                        type: notificationsActions.addToast.type,
+                        payload: expect.objectContaining({ error: 'TR_DEVICE_NOT_CONNECTED' }),
+                    }),
+                );
+            },
+        );
 
         it('does nothing when the account is missing', async () => {
             const { result } = renderActions({ accountKey: undefined, accounts: [] });
