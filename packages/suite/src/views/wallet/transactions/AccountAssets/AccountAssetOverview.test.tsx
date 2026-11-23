@@ -21,7 +21,6 @@ import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { AccountHeaderProvider } from '#src/support/suite/AccountHeaderProvider';
 import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { AccountAssetOverview } from './AccountAssetOverview';
@@ -203,9 +202,7 @@ const renderOverview = (
 
     renderWithProviders(
         { ...services, networks: { networkIcon: mockNetworkIcon() } },
-        <AccountHeaderProvider>
-            <AccountAssetOverview accountKey={accounts[0].key} />
-        </AccountHeaderProvider>,
+        <AccountAssetOverview accountKey={accounts[0].key} />,
     );
 
     return { analytics, suiteRouterHistory };

@@ -4,10 +4,12 @@ import { motion, useAnimation } from 'framer-motion';
 import styled from 'styled-components';
 
 import { AccountTypeBadge, useAccountLabel } from '@suite/account';
+import { Address } from '@suite/address';
 import { useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { isUtxoBased } from '@suite-common/wallet-utils';
 import { Column, H2, Row, Text, motionEasing } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
@@ -24,9 +26,15 @@ const DetailsContainer = styled(motion.div)`
 type AccountDetailsProps = {
     selectedAccount: Account;
     isBalanceShown: boolean;
+    /** Shown only where the account is one address: a UTXO account's descriptor is its xpub. */
+    isAddressShown?: boolean;
 };
 
-export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetailsProps) => {
+export const AccountDetails = ({
+    selectedAccount,
+    isBalanceShown,
+    isAddressShown = false,
+}: AccountDetailsProps) => {
     const hasMountedRef = useRef(false);
     const controls = useAnimation();
     const { defaultLabel, label } = useAccountLabel({ account: selectedAccount });
@@ -110,6 +118,16 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                     padding={8}
                 >
                     <H2 typographyStyle={getTypographyStyle()}>{accountNameElement}</H2>
+                    {isAddressShown && !isUtxoBased(selectedAccount) && (
+                        <Address
+                            value={selectedAccount.descriptor}
+                            isTruncated
+                            typographyStyle="body-sm"
+                            intent="neutral"
+                            priority="secondary"
+                            data-testid="@wallet/account/address"
+                        />
+                    )}
                     {isBalanceShown && (
                         <Text
                             intent="neutral"

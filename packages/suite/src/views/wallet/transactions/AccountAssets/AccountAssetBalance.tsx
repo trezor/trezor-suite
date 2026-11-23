@@ -9,7 +9,6 @@ import { Box, Column, Text } from '@trezor/components';
 import { AmountUnitSwitchWrapper } from '#src/components/suite/AmountUnitSwitchWrapper';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { useAccountHeaderContext } from '#src/support/suite/AccountHeaderProvider';
 
 type AccountAssetBalanceProps = {
     accountKey: AccountKey;
@@ -22,10 +21,9 @@ export const AccountAssetBalance = ({ accountKey }: AccountAssetBalanceProps) =>
         state => selectAccountAssetOverview(state, accountKey).assetCount,
     );
     const fiatValue = useSelector(state => selectAccountFiatBalance(state, accountKey));
-    const { balanceSectionRef } = useAccountHeaderContext();
 
     return (
-        <Box ref={balanceSectionRef} flex="1" minWidth={280}>
+        <Box flex="1" minWidth={280}>
             <TotalBalanceCard
                 label={<Translation id="TR_ACCOUNT_ASSETS_BALANCE" />}
                 labelAside={
