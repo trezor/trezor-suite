@@ -6,6 +6,7 @@ services:
     environment:
       - SDL_VIDEODRIVER=dummy
       - XDG_RUNTIME_DIR=/var/tmp
+      - UV_NO_SYNC=1
 
   trezor-user-env-regtest:
     container_name: trezor-user-env-regtest

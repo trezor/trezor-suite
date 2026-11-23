@@ -4,6 +4,7 @@ services:
     environment:
       - SDL_VIDEODRIVER=dummy
       - XDG_RUNTIME_DIR=/var/tmp
+      - UV_NO_SYNC=1
     network_mode: host
     # in case local developement on mac is needed, these ports will be useful
     # ports:
