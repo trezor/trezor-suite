@@ -27,7 +27,7 @@ export const AccountNavigation = ({ account }: AccountNavigationProps) => {
     const routerParams = useSelector(selectRouterParams) as WalletParams;
     const enabledNftSection = useSelector(selectIsNftSectionEnabled);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    // The asset-first overview lists the account's tokens itself.
+    // The asset-first overview lists the account's tokens and NFTs itself.
     const isAssetFirst = useIsExperimentVariantActive({
         experimentId: ExperimentId.assetFirstHomeTable,
         variant: 'B',
@@ -66,7 +66,7 @@ export const AccountNavigation = ({ account }: AccountNavigationProps) => {
                 goToWithAnalytics({ routeName: 'wallet-nfts', preserveParams: true });
             },
             title: <Translation id="TR_NAV_NFTS" />,
-            isHidden: !hasNetworkFeatures(account, 'nfts') || !enabledNftSection,
+            isHidden: isAssetFirst || !hasNetworkFeatures(account, 'nfts') || !enabledNftSection,
             activeRoutes: ['wallet-nfts', 'wallet-nfts-hidden'],
             'data-testid': '@wallet/menu/wallet-nfts',
         },

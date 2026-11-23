@@ -387,3 +387,36 @@ describe('what a row can open', () => {
         expect(selectNftCollection(state, apesOnEth)?.hasListedItems).toBe(false);
     });
 });
+
+describe('the collections of one account', () => {
+    it("lists only that account's collections and counts only its items", () => {
+        const first = mockAccount({ index: 0, tokens: [erc721(PUNKS, 'CryptoPunks', ['1'])] });
+        const second = mockAccount({
+            index: 1,
+            tokens: [erc721(PUNKS, 'CryptoPunks', ['2', '3']), erc721(APES, 'Apes', ['4'])],
+        });
+        const state = createState({ accounts: [first, second] });
+
+        expect(selectShownNftCollectionKeys(state, first.key)).toEqual([punksOnEth]);
+        expect(selectShownNftCollectionCount(state, first.key)).toBe(1);
+        expect(selectNftCollection(state, punksOnEth, false, first.key)?.itemCount).toBe(1);
+        expect(selectNftCollectionItems(state, punksOnEth, false, ITEMS_LIMIT, first.key)).toEqual({
+            items: [{ id: '1', amount: '1', explorerUrl: expect.any(String) }],
+            totalCount: 1,
+        });
+        expect(selectNftCollectionExplorerUrl(state, punksOnEth, false, first.key)).toEqual(
+            expect.any(String),
+        );
+    });
+
+    it('lists an account asked for by key whatever networks the wallet has enabled', () => {
+        const onPolygon = mockAccount({
+            symbol: POL,
+            tokens: [erc721(PUNKS, 'CryptoPunks', ['1'])],
+        });
+        const state = createState({ accounts: [onPolygon], enabledNetworks: [ETH] });
+
+        expect(selectShownNftCollectionCount(state)).toBe(0);
+        expect(selectShownNftCollectionCount(state, onPolygon.key)).toBe(1);
+    });
+});
