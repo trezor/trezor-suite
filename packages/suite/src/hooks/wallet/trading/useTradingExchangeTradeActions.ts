@@ -2,9 +2,8 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
 
-import { useDevice } from '@suite/device';
 import { selectHasExperimentalFeature } from '@suite/settings';
-import { type DeviceRootState } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import {
     Feature,
     type MessageSystemRootState,
@@ -22,7 +21,7 @@ import {
 } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
+import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 
 import { signAndPushSendFormTransactionThunk } from '#src/actions/wallet/send/sendFormThunks';
 import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
@@ -34,9 +33,8 @@ import { type TradingExchangeConfirmTradeProps } from '#src/types/trading/tradin
 import { useTradingErrorToast } from './useTradingErrorToast';
 
 export const useTradingExchangeTradeActions = () => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getState } = useServices(injectDispatch, injectGetState);
     const { showTradingErrorToast } = useTradingErrorToast();
-    const { device } = useDevice();
 
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const selectedQuoteTimestamp = useSelector(selectTradingExchangeSelectedQuoteTimestamp);
@@ -173,6 +171,17 @@ export const useTradingExchangeTradeActions = () => {
 
         const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData, nextStep } =
             commonFunctions;
+
+        const device = selectSelectedDevice(getState());
+        if (
+            !device?.connected ||
+            !device.available ||
+            device.state?.staticSessionId !== account.deviceState
+        ) {
+            showTradingErrorToast({ type: 'sign-tx-error', code: 'device-not-connected' });
+
+            return;
+        }
 
         await dispatch(
             exchangeThunks.signDataAndConfirmThunk({
