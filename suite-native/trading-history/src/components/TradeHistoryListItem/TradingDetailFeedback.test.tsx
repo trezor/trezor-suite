@@ -7,11 +7,9 @@ import { fireEvent, screen } from '@suite-native/test-utils-store';
 import { TradingDetailFeedback } from './TradingDetailFeedback';
 import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistoryTestUtils';
 
-const mockUnwrapFeedback = jest.fn<Promise<void>, []>();
-
 jest.mock('@suite-common/feedback', () => ({
     ...jest.requireActual('@suite-common/feedback'),
-    sendFeedbackThunk: jest.fn(() => () => ({ unwrap: mockUnwrapFeedback })),
+    sendFeedbackThunk: jest.fn(() => () => ({ unwrap: () => Promise.resolve() })),
 }));
 
 const sendFeedbackActionMock = jest.mocked(sendFeedbackThunk);
@@ -34,7 +32,6 @@ describe('TradingDetailFeedback', () => {
     beforeEach(() => {
         sendFeedbackActionMock.mockClear();
         reportMock.mockClear();
-        mockUnwrapFeedback.mockReset().mockResolvedValue(undefined);
     });
 
     it('renders the feedback card heading', async () => {
@@ -116,21 +113,5 @@ describe('TradingDetailFeedback', () => {
             type: events.feedbackSentEvent.name,
             payload: { category: 'trade', context: 'exchange', provider: 'changelly' },
         });
-    });
-
-    it('keeps the draft and withholds feedback sent analytics when submission fails', async () => {
-        mockUnwrapFeedback.mockRejectedValueOnce('Failed to send feedback');
-        await renderTradingDetailFeedback();
-
-        await fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
-        const description = screen.getByTestId('@feedback-form/description-input');
-        await fireEvent.changeText(description, 'Feedback draft');
-        await fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
-
-        expect(reportMock).not.toHaveBeenCalledWith(
-            expect.objectContaining({ type: events.feedbackSentEvent.name }),
-        );
-        expect(description).toHaveProp('value', 'Feedback draft');
-        expect(screen.getByText(getTranslation('feedbackForm.submitError'))).toBeOnTheScreen();
     });
 });

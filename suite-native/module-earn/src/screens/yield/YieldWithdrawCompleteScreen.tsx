@@ -127,7 +127,7 @@ export const YieldWithdrawCompleteScreen = () => {
     const content = (
         <EarnCompleteScreenContent
             type="withdraw"
-            vaultId={vault.id}
+            feedbackContext={{ vaultId: vault.id }}
             buttonTranslationId="earn.yieldCompleteScreen.backToOverview"
             onButtonPress={handleExit}
             rows={rows}

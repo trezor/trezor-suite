@@ -4,9 +4,11 @@ import { useSelector } from 'react-redux';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
-    type FeedbackCategory,
+    type EarnFeedbackContext,
+    type EarnFeedbackFeature,
     type Rating,
     buildUserFeedbackData,
+    getEarnFeedbackPayloads,
     sendFeedbackThunk,
 } from '@suite-common/feedback';
 import { type WrappedNativeFlowType, type YieldFlowType } from '@suite-common/wallet-core';
@@ -73,8 +75,6 @@ export type EarnCompleteSummaryRow = {
 
 type EarnCompleteScreenType = YieldFlowType | WrappedNativeFlowType | EarnFormDraftPrefix;
 
-type EarnCompleteFeedbackFeature = Extract<FeedbackCategory, 'yield' | 'staking'>;
-
 type EarnCompleteScreenContentProps = {
     buttonTranslationId: TxKeyPath;
     onButtonPress: () => void;
@@ -82,8 +82,8 @@ type EarnCompleteScreenContentProps = {
     subtitle?: ReactNode;
     title: ReactNode;
     type: EarnCompleteScreenType;
-    feedbackFeature?: EarnCompleteFeedbackFeature;
-    vaultId?: string;
+    feedbackFeature?: EarnFeedbackFeature;
+    feedbackContext: EarnFeedbackContext;
 };
 
 export const EarnCompleteScreenContent = ({
@@ -94,54 +94,53 @@ export const EarnCompleteScreenContent = ({
     title,
     type,
     feedbackFeature = 'yield',
-    vaultId,
+    feedbackContext,
 }: EarnCompleteScreenContentProps) => {
     const { applyStyle } = useNativeStyles();
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const device = useSelector(selectSelectedDevice);
 
+    const feedbackPayloads = getEarnFeedbackPayloads({
+        feature: feedbackFeature,
+        context: type,
+        details: feedbackContext,
+    });
+
     const onFeedbackRatingSelect = (rating: Rating) => {
         analytics.report({
             type: events.feedbackRatingSelectedEvent.name,
-            payload: {
-                rating,
-                category: feedbackFeature,
-                context: type,
-                provider: vaultId,
-            },
+            payload: { ...feedbackPayloads.analytics, rating },
         });
     };
 
-    const onFeedbackSubmit = (rating: Rating, description: string) => {
+    const onFeedbackSubmit = async (rating: Rating, description: string) => {
         const userData = buildUserFeedbackData(device);
 
-        dispatch(
+        await dispatch(
             sendFeedbackThunk({
                 type: 'SUGGESTION',
                 payload: {
-                    category: 'feature',
-                    feature: feedbackFeature,
-                    context: type,
+                    ...feedbackPayloads.suggestion,
                     description,
                     rating,
-                    vaultId,
                     ...userData,
                 },
             }),
-        );
+        ).unwrap();
 
         analytics.report({
             type: events.feedbackSentEvent.name,
-            payload: { category: feedbackFeature, context: type, provider: vaultId },
+            payload: feedbackPayloads.analytics,
         });
 
-        if (
-            feedbackFeature === 'yield' &&
-            ['deposit', 'withdraw', 'redeem', 'claim'].includes(type)
-        ) {
+        if (feedbackPayloads.yieldInteraction) {
             analytics.report({
                 type: sharedEvents.yieldInteractionEvent.name,
-                payload: { element: 'feedback-submit', value: rating, vaultId },
+                payload: {
+                    element: 'feedback-submit',
+                    value: rating,
+                    ...feedbackPayloads.yieldInteraction,
+                },
             });
         }
     };

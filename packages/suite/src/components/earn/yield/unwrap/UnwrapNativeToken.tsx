@@ -199,6 +199,7 @@ export const UnwrapNativeToken = ({
                 <WrappedNativeFlowComplete
                     account={account}
                     flow="unwrap"
+                    tokenSymbol={wrappedToken.symbol}
                     heading={<Translation id="TR_UNWRAP_COMPLETE_HEADING" />}
                     description={
                         <Translation

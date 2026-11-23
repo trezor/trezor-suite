@@ -1,6 +1,8 @@
 import { Translation } from '@suite/intl';
+import { getYieldClaimFeedbackContext } from '@suite-common/feedback';
 import { useFormatters } from '@suite-common/formatters';
 import { toTokenSymbol } from '@suite-common/tokens';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldFlowCompleteRewardItem } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Column, Text } from '@trezor/components';
@@ -11,14 +13,16 @@ import { YieldRewardItem } from './YieldRewardItem';
 
 type YieldFlowCompleteClaimProps = {
     rewards: YieldFlowCompleteRewardItem[];
+    networkSymbol: NetworkSymbol;
 };
 
-export const YieldFlowCompleteClaim = ({ rewards }: YieldFlowCompleteClaimProps) => {
+export const YieldFlowCompleteClaim = ({ rewards, networkSymbol }: YieldFlowCompleteClaimProps) => {
     const { BaseCurrencyAmountFormatter, CryptoAmountFormatter } = useFormatters();
 
     return (
         <YieldFlowComplete
             type="claim"
+            feedbackContext={getYieldClaimFeedbackContext(rewards, networkSymbol)}
             heading={<Translation id="TR_EARN_YIELD_CLAIM_COMPLETE" />}
             description={<Translation id="TR_EARN_YIELD_CLAIM_COMPLETE_DESCRIPTION" />}
         >

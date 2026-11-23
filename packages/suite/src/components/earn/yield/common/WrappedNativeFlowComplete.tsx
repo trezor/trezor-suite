@@ -9,6 +9,7 @@ import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@tre
 import { useServices } from '@trezor/dependency-injection';
 import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';
 
+import { EarnFlowFeedbackCard } from '#src/components/earn/common/EarnFlowFeedbackCard';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 import { useNavigateToAccountRoute } from './useNavigateToAccountRoute';
@@ -16,6 +17,7 @@ import { useNavigateToAccountRoute } from './useNavigateToAccountRoute';
 type WrappedNativeFlowCompleteProps = {
     account: Account;
     flow: WrappedNativeFlowType;
+    tokenSymbol: string;
     heading: ReactNode;
     description: ReactNode;
     children?: ReactNode;
@@ -24,6 +26,7 @@ type WrappedNativeFlowCompleteProps = {
 export const WrappedNativeFlowComplete = ({
     account,
     flow,
+    tokenSymbol,
     heading,
     description,
     children,
@@ -87,6 +90,13 @@ export const WrappedNativeFlowComplete = ({
             <Button intent="neutral" priority="secondary" onClick={handleBackToOverview}>
                 <Translation id="TR_EARN_YIELD_BACK_TO_OVERVIEW" />
             </Button>
+
+            <EarnFlowFeedbackCard
+                featureTitleId="TR_EARN_DEFI_YIELD"
+                feature="yield"
+                context={flow}
+                feedbackContext={{ networkSymbol: account.symbol, tokenSymbols: [tokenSymbol] }}
+            />
         </Column>
     );
 };

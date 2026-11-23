@@ -5,62 +5,78 @@ import {
 } from '@suite/analytics';
 import { FeedbackCard } from '@suite/feature-feedback';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { events } from '@suite-common/analytics';
+import { selectSelectedDevice } from '@suite-common/device';
 import {
-    type FeedbackCategory,
+    type EarnFeedbackContext,
+    type EarnFeedbackFeature,
     type Rating,
     buildUserFeedbackData,
+    getEarnFeedbackPayloads,
     sendFeedbackThunk,
 } from '@suite-common/feedback';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { useSelector } from '#src/hooks/suite/useSelector';
+
 type EarnFlowFeedbackCardProps = {
     featureTitleId: TranslationKey;
-    analyticsCategory: FeedbackCategory;
+    feature: EarnFeedbackFeature;
     context: string;
-    provider?: string;
-    feature: string;
-    onSubmit?: (rating: Rating) => void;
+    feedbackContext: EarnFeedbackContext;
 };
 
 export const EarnFlowFeedbackCard = ({
     featureTitleId,
-    analyticsCategory,
-    context,
-    provider,
     feature,
-    onSubmit,
+    context,
+    feedbackContext,
 }: EarnFlowFeedbackCardProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { translationString } = useTranslation();
+    const device = useSelector(selectSelectedDevice);
+    const feedbackPayloads = getEarnFeedbackPayloads({
+        feature,
+        context,
+        details: feedbackContext,
+    });
 
     const handleRatingSelect = (rating: Rating) => {
         analytics.report({
             type: feedbackRatingSelectedEvent.name,
-            payload: { rating, category: analyticsCategory, context, provider },
+            payload: { ...feedbackPayloads.analytics, rating },
         });
     };
 
-    const handleSubmit = (rating: Rating, description: string) => {
-        onSubmit?.(rating);
-
-        dispatch(
+    const handleSubmit = async (rating: Rating, description: string) => {
+        await dispatch(
             sendFeedbackThunk({
                 type: 'SUGGESTION',
                 payload: {
-                    category: 'feature',
-                    feature,
+                    ...feedbackPayloads.suggestion,
                     rating,
                     description,
-                    ...buildUserFeedbackData(),
+                    ...buildUserFeedbackData(device),
                 },
             }),
-        );
+        ).unwrap();
 
         analytics.report({
             type: feedbackSentEvent.name,
-            payload: { category: analyticsCategory, context, provider },
+            payload: feedbackPayloads.analytics,
         });
+
+        if (feedbackPayloads.yieldInteraction) {
+            analytics.report({
+                type: events.yieldInteractionEvent.name,
+                payload: {
+                    element: 'feedback-submit',
+                    value: rating,
+                    ...feedbackPayloads.yieldInteraction,
+                },
+            });
+        }
     };
 
     return (
