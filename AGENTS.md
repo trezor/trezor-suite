@@ -34,8 +34,8 @@ Nested mandatory skills still apply within their stated scope.
   [Common tests](skills/tests-common/SKILL.md) or [Native tests](skills/tests-native/SKILL.md).
   Preserve suite-common's test-first feature workflow and platform test utilities. E2E tests follow
   [Suite E2E instructions](suite/e2e/AGENTS.md), including their `tests/` layout; unit tests are co-located.
-- Setup/verification: [Setup](skills/setup-requirements/SKILL.md),
-  [Development commands](skills/development-commands/SKILL.md), [Troubleshooting](skills/common-issues/SKILL.md).
+- Setup/verification: [Development commands](skills/development-commands/SKILL.md),
+  [Troubleshooting](skills/common-issues/SKILL.md).
 - Package/dependency work: [Packages](skills/packages/SKILL.md), [Common tasks](skills/common-tasks/SKILL.md),
   [Publishing metadata](skills/publish-config/SKILL.md). Orientation: [Project structure](skills/project-structure/SKILL.md).
 - Persistence/browser APIs: [IDB migrations](skills/idb-migrations/SKILL.md),
