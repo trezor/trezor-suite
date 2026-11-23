@@ -4,7 +4,7 @@ import { screen } from '@testing-library/react';
 
 import { messages } from '@suite/intl';
 import { mockNetworksState } from '@suite-common/networks/mocks';
-import { EarnFlow } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { FIVE_BINARIES_POOLS, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -19,7 +19,7 @@ import {
     mockInitialAppState,
 } from '../../../../../../mocks/mockInitialAppState';
 
-const renderBanners = (account: Account, flow: EarnFlow) => {
+const renderBanners = (account: Account, flow: StakeModalFlow) => {
     const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: {
             ...mockInitialAppState,
