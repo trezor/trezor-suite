@@ -8,4 +8,5 @@ export * from './components/AssetValue';
 export * from './components/WalletAssetListItem';
 export * from './components/WalletAssetCardSegment';
 export * from './hooks/useAssetPrice';
+export * from './hooks/useAssetSymbolText';
 export { selectIsAssetListLoading } from './assetsSelectors';
