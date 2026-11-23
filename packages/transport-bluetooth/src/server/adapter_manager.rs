@@ -160,22 +160,24 @@ impl AdapterManager {
         };
         info!("Adapter found with state {state:?}");
 
-        self.set_adapter_state(AdapterState::from(state.clone()))
-            .await;
-
         if state == CentralState::Unknown {
-            // permissions were declined just now.
-            // it will throw "PermissionDenied" in further call
-            #[cfg(target_os = "macos")]
-            {
-                self.set_adapter_state(AdapterState::PermissionDenied).await;
-            }
-            self.dispatch_adapter_event().await;
+            // The adapter cannot be used and the loader has to retry. btleplug
+            // reports `Unknown` when the state cannot be read at all: macOS
+            // permissions declined just now (the next call throws
+            // "PermissionDenied"), or a windows radio that is neither On nor Off.
+            // Every platform must bail out here, not only macOS.
+            let reported = if cfg!(target_os = "macos") {
+                AdapterState::PermissionDenied
+            } else {
+                AdapterState::Unknown
+            };
+            self.update_adapter_state(reported).await;
 
             return None;
         }
 
-        self.dispatch_adapter_event().await;
+        self.update_adapter_state(AdapterState::from(state.clone()))
+            .await;
 
         // store adapter
         let mut adp = self.adapter.lock().await;
@@ -203,8 +205,7 @@ impl AdapterManager {
             Ok(adapters) => match adapters.into_iter().nth(0) {
                 Some(adapter) => self.init_adapter(adapter).await,
                 None => {
-                    self.set_adapter_state(AdapterState::Disabled).await;
-                    self.dispatch_adapter_event().await;
+                    self.update_adapter_state(AdapterState::Disabled).await;
 
                     None
                 }
@@ -214,13 +215,13 @@ impl AdapterManager {
                 match err.to_string().as_str() {
                     "Permission denied" => {
                         // macos: CBManagerAuthorization(2) > PermissionDenied
-                        self.set_adapter_state(AdapterState::PermissionDenied).await;
+                        self.update_adapter_state(AdapterState::PermissionDenied)
+                            .await;
                     }
                     _ => {
-                        self.set_adapter_state(AdapterState::Disabled).await;
+                        self.update_adapter_state(AdapterState::Disabled).await;
                     }
                 }
-                self.dispatch_adapter_event().await;
 
                 None
             }
@@ -284,6 +285,11 @@ impl AdapterManager {
     pub async fn set_scanning(&self, value: bool) {
         let mut state = self.manager_state.lock().await;
         state.is_scanning = value;
+    }
+
+    pub async fn take_scanning(&self) -> bool {
+        let mut state = self.manager_state.lock().await;
+        std::mem::take(&mut state.is_scanning)
     }
 
     pub async fn set_known_peripherals(&self, value: Vec<KnownDevice>) {
@@ -523,8 +529,9 @@ impl AdapterManager {
                 match event {
                     CentralEvent::StateUpdate(state) => {
                         info!("CentralEvent::StateUpdate {state:?}");
-                        self_ref.set_adapter_state(AdapterState::from(state)).await;
-                        self_ref.dispatch_adapter_event().await;
+                        self_ref
+                            .update_adapter_state(AdapterState::from(state))
+                            .await;
                     }
                     CentralEvent::DeviceDiscovered(id) => {
                         if let Some(device) = utils::scan_filter(&adapter, &id).await {
@@ -797,6 +804,19 @@ impl AdapterManager {
         }
     }
 
+    async fn update_adapter_state(&self, state: AdapterState) {
+        let enabled = matches!(state, AdapterState::Enabled);
+        self.set_adapter_state(state).await;
+        // The system stops the scan with the adapter. Reset the flag before the
+        // clients get the new state: a client starts the scan again when the
+        // adapter is enabled, and that start must not find the old flag.
+        if !enabled && self.take_scanning().await {
+            info!("Adapter not enabled, the scan stopped");
+            self.clear_serviceless_devices().await;
+        }
+        self.dispatch_adapter_event().await;
+    }
+
     async fn dispatch_adapter_event(&self) {
         let state = self.adapter_state.lock().await.clone();
         self.dispatch_notification(NotificationEvent::AdapterStateChanged { state })
@@ -927,6 +947,17 @@ mod tests {
 
         // The last client disconnects.
         manager.remove_listener(&client_b).await;
+        assert!(!manager.is_scanning().await);
+    }
+
+    // A client starts the scan again when the adapter is enabled again. That
+    // start must not find the flag of the scan the adapter stopped.
+    #[tokio::test]
+    async fn adapter_off_resets_the_scan_flag() {
+        let manager = AdapterManager::new().await.expect("manager");
+        manager.set_scanning(true).await;
+
+        manager.update_adapter_state(AdapterState::Disabled).await;
         assert!(!manager.is_scanning().await);
     }
 }

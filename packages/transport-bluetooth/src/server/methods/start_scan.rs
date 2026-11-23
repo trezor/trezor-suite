@@ -61,7 +61,6 @@ pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast)
 
     // listen for Abort and AdapterStateChanged messages from the other threads
     let mut receiver = broadcast.subscribe();
-    let manager_ref = manager.clone();
     tokio::spawn(async move {
         loop {
             let event = match receiver.recv().await {
@@ -83,19 +82,12 @@ pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast)
                     // Last-client cleanup is owned by AdapterManager::remove_listener.
                     break;
                 }
-                ChannelMessage::Notification(NotificationEvent::AdapterStateChanged { state }) => {
-                    match state {
-                        AdapterState::Enabled => {
-                            if manager_ref.is_scanning().await {
-                                // TODO: server or client should decide when to restart scanning?
-                                // start_scanning(&adapter);
-                            }
-                        }
-                        _ => {
-                            stop_scanning(&adapter, &manager_ref).await;
-                            manager_ref.set_scanning(false).await;
-                        }
-                    }
+                ChannelMessage::Notification(NotificationEvent::AdapterStateChanged { state })
+                    if !matches!(state, AdapterState::Enabled) =>
+                {
+                    // AdapterManager reset the flag before it sent this notification
+                    info!("Adapter {state:?}, the scan stopped");
+                    break;
                 }
                 _ => {}
             }
