@@ -59,6 +59,7 @@ type AddressBaseProps = {
     isDisabled?: TextProps['isDisabled'];
     isCopyAllowed?: boolean;
     isUnderlined?: boolean;
+    truncatedFormat?: 'long' | 'short';
     onCopy?: () => void;
 };
 
@@ -86,6 +87,7 @@ export const Address = ({
     'data-testid': dataTestId,
     isCopyAllowed = false,
     isUnderlined = false,
+    truncatedFormat = 'long',
     onCopy,
 }: AddressProps) => {
     const { dispatch } = useServices(injectDispatch);
@@ -95,7 +97,7 @@ export const Address = ({
 
     const addressWithoutPrefix = clearAddressPrefix(value);
     const formattedValue = AddressFormatter.format(addressWithoutPrefix, {
-        format: isTruncated ? 'long' : 'full',
+        format: isTruncated ? truncatedFormat : 'full',
         isChunked: isAddressChunked,
     });
     const formattedValueFull = AddressFormatter.format(addressWithoutPrefix, {

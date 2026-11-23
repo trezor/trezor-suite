@@ -13,6 +13,7 @@ import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AccountName } from './AccountName/AccountName';
 import { AccountSubpageName } from './AccountName/AccountSubpageName';
+import { isAccountAddressInHeader } from './AccountName/isAccountAddressInHeader';
 import { AssetDetailName } from './AssetDetailName';
 import { BasicName } from './BasicName';
 import { HiddenTokensName } from './HiddenTokensName';
@@ -80,7 +81,17 @@ export const PageName = () => {
     }
 
     if (selectedAccount && isAccountTabPage) {
-        return <AccountName key={selectedAccount.key} selectedAccount={selectedAccount} />;
+        return (
+            <AccountName
+                key={selectedAccount.key}
+                selectedAccount={selectedAccount}
+                isAddressShown={isAccountAddressInHeader({
+                    account: selectedAccount,
+                    routeName: currentRoute,
+                    isAssetFirstHome: isHomeTableActive,
+                })}
+            />
+        );
     }
 
     if (selectedAccount) {

@@ -11,9 +11,10 @@ import { AccountDetails } from './AccountDetails';
 
 interface AccountNameProps {
     selectedAccount: Account;
+    isAddressShown?: boolean;
 }
 
-export const AccountName = ({ selectedAccount }: AccountNameProps) => {
+export const AccountName = ({ selectedAccount, isAddressShown }: AccountNameProps) => {
     const [isScrolled, setIsScrolled] = useState(false);
     const routeName = useSelector(selectRouteName);
     const accountHeaderContext = useOptionalAccountHeaderContext();
@@ -58,6 +59,7 @@ export const AccountName = ({ selectedAccount }: AccountNameProps) => {
             key={selectedAccount.key}
             selectedAccount={selectedAccount}
             isBalanceShown={isScrolled}
+            isAddressShown={isAddressShown}
         />
     );
 };

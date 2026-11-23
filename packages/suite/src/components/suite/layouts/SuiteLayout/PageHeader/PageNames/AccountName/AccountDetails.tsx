@@ -4,6 +4,7 @@ import { motion, useAnimation } from 'framer-motion';
 import styled from 'styled-components';
 
 import { AccountTypeBadge, useAccountLabel } from '@suite/account';
+import { Address } from '@suite/address';
 import { useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -24,9 +25,14 @@ const DetailsContainer = styled(motion.div)`
 type AccountDetailsProps = {
     selectedAccount: Account;
     isBalanceShown: boolean;
+    isAddressShown?: boolean;
 };
 
-export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetailsProps) => {
+export const AccountDetails = ({
+    selectedAccount,
+    isBalanceShown,
+    isAddressShown = false,
+}: AccountDetailsProps) => {
     const hasMountedRef = useRef(false);
     const controls = useAnimation();
     const { defaultLabel, label } = useAccountLabel({ account: selectedAccount });
@@ -34,8 +40,16 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
     const { translationString } = useTranslation();
 
-    const { symbol, key, path, accountType, formattedBalance, deviceState, networkType } =
-        selectedAccount;
+    const {
+        symbol,
+        key,
+        path,
+        descriptor,
+        accountType,
+        formattedBalance,
+        deviceState,
+        networkType,
+    } = selectedAccount;
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
     const getTypographyStyle = () => {
@@ -110,6 +124,18 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                     padding={8}
                 >
                     <H2 typographyStyle={getTypographyStyle()}>{accountNameElement}</H2>
+                    {isAddressShown && (
+                        <Address
+                            value={descriptor}
+                            isTruncated
+                            truncatedFormat="short"
+                            isChunked={false}
+                            typographyStyle="body-sm"
+                            intent="neutral"
+                            priority="secondary"
+                            data-testid="@wallet/account/address"
+                        />
+                    )}
                     {isBalanceShown && (
                         <Text
                             intent="neutral"
