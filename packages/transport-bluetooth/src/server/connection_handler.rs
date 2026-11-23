@@ -17,7 +17,7 @@ use crate::server::{
     adapter_manager::{AdapterError, AdapterManager},
     connection_broadcast::{ConnectionBroadcast, ConnectionBroadcastError},
     handle_message,
-    types::{AbortProcess, ChannelMessage},
+    types::ChannelMessage,
     utils,
 };
 
@@ -123,10 +123,6 @@ async fn handle_ws_connection(
     // peer disconnected
     manager.remove_listener(&broadcast).await;
     channel_message_listener.abort();
-
-    broadcast.send(ChannelMessage::Abort(AbortProcess::ClientDisconnected(
-        peer,
-    )));
 
     info!("Closing websocket connection");
 

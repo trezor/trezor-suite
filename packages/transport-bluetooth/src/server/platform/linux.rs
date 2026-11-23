@@ -158,8 +158,7 @@ fn watch_abort(
                 Err(RecvError::Closed) => break,
             };
 
-            // TODO: if websocket client connection is related to this device
-            // AbortProcess::ClientDisconnected
+            // TODO: abort when the websocket client that requested the connection disconnects
             if let ChannelMessage::Abort(AbortProcess::DeviceDisconnected(id)) = event {
                 if current_id == id {
                     disconnect_device(id).await;

@@ -18,6 +18,9 @@ use tokio::{
 use crate::server::{
     device::{DeviceConnectionStatus, TrezorDevice, SERVICE_UUID},
     notification_registry::{NotificationRegistry, RemovedStream},
+    scan_coordinator::{
+        ConnectError, ConnectionGuard, ScanCoordinator, ScanTurn, SCAN_REQUEST_WAIT,
+    },
     types::{
         AbortProcess, AdapterState, ChannelMessage, KnownDevice, NotificationCharacteristic,
         NotificationEvent,
@@ -41,11 +44,11 @@ pub struct AdapterManager {
     serviceless_peripherals: Arc<DashMap<String, ServicelessDevice>>,
     serviceless_peripherals_prune_ts: Arc<Mutex<u128>>,
     notification_streams: NotificationRegistry,
+    scan: ScanCoordinator<Adapter>,
 }
 
 struct ManagerState {
     adapter_loader: Option<JoinHandle<()>>,
-    is_scanning: bool,
     listeners: Vec<ConnectionBroadcast>,
     peripherals: DashMap<String, TrezorDevice>,
     known_peripherals: Vec<KnownDevice>,
@@ -83,6 +86,9 @@ pub enum AdapterError {
     #[error("ClientDisconnected")]
     ClientDisconnected,
 
+    #[error("RadioBusy")]
+    RadioBusy,
+
     #[error("Btleplug error: {0}")]
     BtleplugError(#[from] btleplug::Error),
 }
@@ -90,11 +96,10 @@ pub enum AdapterError {
 impl AdapterManager {
     pub async fn new() -> Result<Self, AdapterError> {
         let manager = Manager::new().await?;
-        let adapter = Arc::new(Mutex::new(None));
+        let adapter: Arc<Mutex<Option<Adapter>>> = Arc::new(Mutex::new(None));
         let adapter_state = Arc::new(Mutex::new(AdapterState::Unknown));
         let manager_state = Arc::new(Mutex::new(ManagerState {
             adapter_loader: None,
-            is_scanning: false,
             listeners: Vec::new(),
             peripherals: DashMap::new(),
             known_peripherals: Vec::new(),
@@ -102,6 +107,7 @@ impl AdapterManager {
 
         Ok(Self {
             manager,
+            scan: ScanCoordinator::new(adapter.clone(), cfg!(target_os = "linux")),
             adapter,
             adapter_state,
             manager_state,
@@ -110,6 +116,31 @@ impl AdapterManager {
             serviceless_peripherals_prune_ts: Arc::new(Mutex::new(0)),
             notification_streams: NotificationRegistry::default(),
         })
+    }
+
+    /// The turn to start or stop the scan. Fails with `RadioBusy` when it takes
+    /// longer than `SCAN_REQUEST_WAIT`.
+    pub async fn lock_scan(&self) -> Result<ScanTurn<'_, Adapter>, AdapterError> {
+        tokio::time::timeout(SCAN_REQUEST_WAIT, self.scan.turn())
+            .await
+            .map_err(|_| AdapterError::RadioBusy)
+    }
+
+    /// A connection to `device_id`, with the scan that it needs running. Fails with
+    /// `RadioBusy` when it has to wait past `deadline`, and with the adapter error
+    /// when the scan does not start.
+    pub async fn lock_connection(
+        &self,
+        device_id: &str,
+        deadline: tokio::time::Instant,
+    ) -> Result<ConnectionGuard<Adapter>, AdapterError> {
+        self.scan
+            .connect(device_id, deadline)
+            .await
+            .map_err(|err| match err {
+                ConnectError::Timeout => AdapterError::RadioBusy,
+                ConnectError::Scan(err) => err.into(),
+            })
     }
 
     // get current adapter or start loader if there is none
@@ -275,21 +306,6 @@ impl AdapterManager {
 
     pub async fn get_adapter_state(&self) -> AdapterState {
         self.adapter_state.lock().await.clone()
-    }
-
-    pub async fn is_scanning(&self) -> bool {
-        let state = self.manager_state.lock().await;
-        state.is_scanning
-    }
-
-    pub async fn set_scanning(&self, value: bool) {
-        let mut state = self.manager_state.lock().await;
-        state.is_scanning = value;
-    }
-
-    pub async fn take_scanning(&self) -> bool {
-        let mut state = self.manager_state.lock().await;
-        std::mem::take(&mut state.is_scanning)
     }
 
     pub async fn set_known_peripherals(&self, value: Vec<KnownDevice>) {
@@ -670,7 +686,18 @@ impl AdapterManager {
         state.listeners.push(listener.clone());
     }
 
-    pub async fn remove_listener(&self, listener: &ConnectionBroadcast) {
+    pub async fn has_listener(&self, listener: &ConnectionBroadcast) -> bool {
+        self.manager_state
+            .lock()
+            .await
+            .listeners
+            .iter()
+            .any(|item| item.same_channel(listener))
+    }
+
+    /// Returns the scan cleanup task when this was the last listener. The
+    /// cleanup can wait for a connection, so the caller must not await it.
+    pub async fn remove_listener(&self, listener: &ConnectionBroadcast) -> Option<JoinHandle<()>> {
         // Unregister the listener before sweeping its streams. A request of
         // this connection still being processed then either registers its
         // stream in time to be swept below, or is rejected by
@@ -685,6 +712,19 @@ impl AdapterManager {
         self.close_notification_streams(Some(listener.get_peer()), None, None)
             .await;
 
+        if !self.manager_state.lock().await.listeners.is_empty() {
+            return None;
+        }
+
+        let manager = self.clone();
+        Some(tokio::spawn(async move {
+            manager.stop_scan_without_listeners().await;
+        }))
+    }
+
+    async fn stop_scan_without_listeners(&self) {
+        // a start_scan of the last client can still run
+        let mut scan = self.scan.turn().await;
         let mut state = self.manager_state.lock().await;
         if !state.listeners.is_empty() {
             return;
@@ -693,23 +733,16 @@ impl AdapterManager {
         if let Some(adapter_loader) = state.adapter_loader.take() {
             adapter_loader.abort();
         }
-
-        let was_scanning = state.is_scanning;
-        state.is_scanning = false;
-        drop(state); // unlock for get_adapter_or_die
+        drop(state);
 
         // Scanning must not outlive the last client, even when the client
-        // that originally started it disconnected earlier.
-        if was_scanning {
+        // that originally started it disconnected earlier. A connection that
+        // still runs keeps the scan until it ends.
+        if self.scan.is_wanted() {
             info!("All clients disconnected, stopping scanning");
-            if let Ok(adapter) = self.get_adapter_or_die().await {
-                if let Err(err) = adapter.stop_scan().await {
-                    info!("remove_listener/adapter.stop_scan: {err}");
-                }
-            }
-
-            self.clear_serviceless_devices().await;
         }
+        scan.stop().await;
+        self.clear_serviceless_devices().await;
     }
 
     /// Registers a notification stream task owned by `peer`. Returns `false`
@@ -807,10 +840,10 @@ impl AdapterManager {
     async fn update_adapter_state(&self, state: AdapterState) {
         let enabled = matches!(state, AdapterState::Enabled);
         self.set_adapter_state(state).await;
-        // The system stops the scan with the adapter. Reset the flag before the
-        // clients get the new state: a client starts the scan again when the
-        // adapter is enabled, and that start must not find the old flag.
-        if !enabled && self.take_scanning().await {
+        // The system stops the scan with the adapter. Drop it before the clients
+        // get the new state: a client starts the scan again when the adapter is
+        // enabled, and that start must not find the old one.
+        if self.scan.set_enabled(enabled) {
             info!("Adapter not enabled, the scan stopped");
             self.clear_serviceless_devices().await;
         }
@@ -929,6 +962,17 @@ mod tests {
         assert!(aborted.load(Ordering::SeqCst));
     }
 
+    fn in_a_minute() -> tokio::time::Instant {
+        tokio::time::Instant::now() + Duration::from_secs(60)
+    }
+
+    // The adapter is powered on, but there is none to scan with: only the demand of
+    // the client is recorded.
+    async fn want_scan(manager: &AdapterManager) {
+        manager.update_adapter_state(AdapterState::Enabled).await;
+        manager.scan.turn().await.start().await.expect("start");
+    }
+
     // Finding 3 of https://github.com/trezor/trezor-suite/issues/31948:
     // scanning must stop with the last client, not with the client that
     // originally started it.
@@ -939,41 +983,213 @@ mod tests {
         let client_b = ConnectionBroadcast::new("b".to_string()).expect("broadcast");
         manager.add_listener(client_a.clone()).await;
         manager.add_listener(client_b.clone()).await;
-        manager.set_scanning(true).await;
+        want_scan(&manager).await;
 
         // The client that started the scan disconnects first.
         manager.remove_listener(&client_a).await;
-        assert!(manager.is_scanning().await);
+        assert!(manager.scan.is_wanted());
 
         // The last client disconnects.
-        manager.remove_listener(&client_b).await;
-        assert!(!manager.is_scanning().await);
+        let cleanup = manager.remove_listener(&client_b).await;
+        cleanup.expect("the last listener").await.expect("cleanup");
+        assert!(!manager.scan.is_wanted());
+    }
+
+    #[tokio::test]
+    async fn queued_starts_do_not_publish_a_scan_or_outlive_their_client() {
+        let manager = AdapterManager::new().await.expect("manager");
+        let client = ConnectionBroadcast::new("client".to_string()).expect("broadcast");
+        manager.add_listener(client.clone()).await;
+        let turn = manager.scan.turn().await;
+
+        let start = || {
+            Box::pin(crate::server::methods::start_scan(
+                manager.clone(),
+                client.clone(),
+            ))
+        };
+        let mut first = start();
+        let mut second = start();
+        assert!(futures::poll!(&mut first).is_pending());
+        assert!(futures::poll!(&mut second).is_pending());
+        assert!(!manager.scan.is_wanted());
+        let mut cleanup = manager
+            .remove_listener(&client)
+            .await
+            .expect("the last listener");
+        assert!(futures::poll!(&mut cleanup).is_pending());
+
+        drop(turn);
+        for request in [first, second] {
+            assert!(matches!(
+                request.await,
+                Err(crate::server::types::MethodError::Adapter(
+                    AdapterError::ClientDisconnected
+                ))
+            ));
+        }
+        cleanup.await.expect("cleanup");
+        assert!(!manager.scan.is_wanted());
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn busy_scan_requests_leave_the_scan_demand_untouched() {
+        use crate::server::{methods, types::MethodError};
+
+        async fn assert_busy(manager: &AdapterManager, client: &ConnectionBroadcast, wanted: bool) {
+            let (stop, start) = tokio::join!(
+                methods::stop_scan(manager.clone()),
+                methods::start_scan(manager.clone(), client.clone()),
+            );
+            for result in [stop, start] {
+                assert!(matches!(
+                    result,
+                    Err(MethodError::Adapter(AdapterError::RadioBusy))
+                ));
+            }
+            assert_eq!(manager.scan.is_wanted(), wanted);
+        }
+
+        let manager = AdapterManager::new().await.expect("manager");
+        let client = ConnectionBroadcast::new("client".to_string()).expect("broadcast");
+        manager.add_listener(client.clone()).await;
+
+        let turn = manager.scan.turn().await;
+        assert_busy(&manager, &client, false).await;
+        drop(turn);
+
+        want_scan(&manager).await;
+        let _turn = manager.scan.turn().await;
+        assert_busy(&manager, &client, true).await;
+    }
+
+    #[tokio::test]
+    async fn last_listener_cleans_up_after_a_cancelled_stop() {
+        let manager = AdapterManager::new().await.expect("manager");
+        let client = ConnectionBroadcast::new("client".to_string()).expect("broadcast");
+        manager.add_listener(client.clone()).await;
+        want_scan(&manager).await;
+        let turn = manager.scan.turn().await;
+
+        let mut stop = Box::pin(crate::server::methods::stop_scan(manager.clone()));
+        assert!(futures::poll!(&mut stop).is_pending());
+        assert!(manager.scan.is_wanted());
+        let mut cleanup = manager
+            .remove_listener(&client)
+            .await
+            .expect("the last listener");
+        assert!(futures::poll!(&mut cleanup).is_pending());
+        drop(stop);
+        assert!(manager.scan.is_wanted());
+
+        drop(turn);
+        cleanup.await.expect("cleanup");
+        assert!(!manager.scan.is_wanted());
+    }
+
+    // The scan ends with the last client and the last connection, not before.
+    #[cfg(target_os = "linux")]
+    #[tokio::test(start_paused = true)]
+    async fn last_listener_leaves_during_a_connection_without_waiting() {
+        let manager = AdapterManager::new().await.expect("manager");
+        let client = ConnectionBroadcast::new("client".to_string()).expect("broadcast");
+        manager.add_listener(client.clone()).await;
+        want_scan(&manager).await;
+        let _connection = manager
+            .lock_connection("device", in_a_minute())
+            .await
+            .expect("connection");
+
+        let cleanup = manager.remove_listener(&client).await;
+        // a timeout, so a regression fails instead of a hang
+        tokio::time::timeout(Duration::from_secs(1), cleanup.expect("the last listener"))
+            .await
+            .expect("the cleanup must not wait for the connection")
+            .expect("cleanup");
+        assert!(!manager.scan.is_wanted());
+    }
+
+    #[cfg(target_os = "linux")]
+    #[tokio::test(start_paused = true)]
+    async fn stop_scan_during_a_connection_does_not_wait() {
+        use crate::server::{methods, types::WsResponsePayload};
+
+        let manager = AdapterManager::new().await.expect("manager");
+        want_scan(&manager).await;
+        let _connection = manager
+            .lock_connection("device", in_a_minute())
+            .await
+            .expect("connection");
+
+        let started = tokio::time::Instant::now();
+        assert!(matches!(
+            methods::stop_scan(manager.clone()).await,
+            Ok(WsResponsePayload::Success { success: true })
+        ));
+        assert_eq!(started.elapsed(), Duration::ZERO);
+        assert!(!manager.scan.is_wanted());
+    }
+
+    // The test page sends stop_scan more than once.
+    #[tokio::test]
+    async fn repeated_stop_requests_succeed() {
+        use crate::server::{methods, types::WsResponsePayload};
+
+        let manager = AdapterManager::new().await.expect("manager");
+        want_scan(&manager).await;
+
+        for _ in 0..3 {
+            assert!(matches!(
+                methods::stop_scan(manager.clone()).await,
+                Ok(WsResponsePayload::Success { success: true })
+            ));
+            assert!(!manager.scan.is_wanted());
+        }
     }
 
     // The stop of a scan must not start the always-retrying adapter loader, and
-    // there is nothing to stop without an adapter. That is the difference to
-    // `get_powered_adapter_or_die`, which would report `AdapterDisabled`.
+    // there is nothing to stop without an adapter.
     #[tokio::test]
     async fn stopping_a_scan_without_an_adapter_does_not_start_the_loader() {
-        use crate::server::types::WsResponsePayload;
+        use crate::server::{methods, types::WsResponsePayload};
 
         let manager = AdapterManager::new().await.expect("manager");
 
         assert!(matches!(
-            crate::server::methods::stop_scan(manager.clone()).await,
+            methods::stop_scan(manager.clone()).await,
             Ok(WsResponsePayload::Success { success: true })
         ));
         assert!(manager.manager_state.lock().await.adapter_loader.is_none());
     }
 
     // A client starts the scan again when the adapter is enabled again. That
-    // start must not find the flag of the scan the adapter stopped.
+    // start must not find the demand of the scan the adapter stopped.
     #[tokio::test]
-    async fn adapter_off_resets_the_scan_flag() {
+    async fn adapter_off_resets_the_scan_demand() {
         let manager = AdapterManager::new().await.expect("manager");
-        manager.set_scanning(true).await;
+        want_scan(&manager).await;
 
         manager.update_adapter_state(AdapterState::Disabled).await;
-        assert!(!manager.is_scanning().await);
+
+        assert!(!manager.scan.is_wanted());
+    }
+
+    // The request computes the deadline from its timeout, the manager only reports it.
+    #[tokio::test(start_paused = true)]
+    async fn a_connection_that_waits_past_its_deadline_is_busy() {
+        let manager = AdapterManager::new().await.expect("manager");
+        let _first = manager
+            .lock_connection("device", in_a_minute())
+            .await
+            .expect("connection");
+        let started = tokio::time::Instant::now();
+
+        assert!(matches!(
+            manager
+                .lock_connection("device", started + Duration::from_secs(5))
+                .await,
+            Err(AdapterError::RadioBusy)
+        ));
+        assert_eq!(started.elapsed(), Duration::from_secs(5));
     }
 }
