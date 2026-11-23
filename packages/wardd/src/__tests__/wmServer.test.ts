@@ -6,7 +6,7 @@ import { promises as fs } from 'fs';
 import os from 'os';
 import path from 'path';
 
-import { HttpWm, WmConflict, WmUnavailable, toHex } from '@trezor/ward-core';
+import { DEBUG_WM_SEED, DevWm, HttpWm, WmConflict, WmUnavailable, toHex } from '@trezor/ward-core';
 
 import { InMemoryWardBackend, type StoredAttestation } from '../backend';
 import { RelayFailure, WardHost } from '../host';
@@ -14,9 +14,14 @@ import { Wardd } from '../service';
 import { startWmServer } from '../wmServer';
 import { FakeDevice, newWallet } from './fakeDevice';
 
-const withWm = async (dataDir: string | null = null) => {
+const withWm = async (dataDir: string | null = null, devWm?: DevWm) => {
     const lines: string[] = [];
-    const server = await startWmServer({ port: 0, dataDir, log: line => lines.push(line) });
+    const server = await startWmServer({
+        port: 0,
+        dataDir,
+        wm: devWm,
+        log: line => lines.push(line),
+    });
 
     return { server, lines, wm: new HttpWm(`http://127.0.0.1:${server.port}`) };
 };
@@ -31,13 +36,21 @@ const setup = async (wm: HttpWm) => {
 
 describe('the WARD Manager over HTTP', () => {
     it('enrols, attests and advances for wardd as the in-process WM does', async () => {
-        const { server, wm, lines } = await withWm();
+        const acceptedAt = 1_700_000_000;
+        const { server, wm, lines } = await withWm(
+            null,
+            new DevWm(DEBUG_WM_SEED, () => acceptedAt),
+        );
         try {
             const { a, host } = await setup(wm);
             a.enqueue('alice', 'bc1q-alice');
             await expect(host.flush(a.call)).resolves.toMatchObject({ counter: 1, published: 1 });
             expect(a.online).toBe(true);
             expect(await wm.head(a.wardId)).toMatchObject({ counter: 1 });
+            expect(await wm.attest(a.wardId, new Uint8Array(32))).toMatchObject({
+                toCounter: 1,
+                timestamp: acceptedAt,
+            });
             expect(await host.status()).toMatchObject({ wmCounter: 1, wmAvailable: true });
             // it logs its decisions, never an entry
             expect(lines.some(l => l.startsWith('[enrol]'))).toBe(true);
@@ -100,6 +113,11 @@ describe('the WARD Manager over HTTP', () => {
             expect((await post('attest', { nonce: 'xx' })).status).toBe(400);
             expect((await post('attest', { nonce: '11'.repeat(32) })).status).toBe(404);
             expect((await post('advance', { fromCounter: -1 })).status).toBe(400);
+            const override = await post('advance', { timestamp: 1 });
+            expect(override.status).toBe(400);
+            expect(await override.json()).toEqual({
+                error: 'the WARD Manager assigns the acceptance timestamp',
+            });
             expect((await fetch(`${base}/head`)).status).toBe(200);
             expect(server.wm.snapshot().heads).toEqual({});
         } finally {
@@ -109,6 +127,28 @@ describe('the WARD Manager over HTTP', () => {
 });
 
 describe('wardd while the WARD Manager is down', () => {
+    it('keeps one proof per WM head across sync rounds and can use it offline', async () => {
+        const { server, wm } = await withWm();
+        const backend = new InMemoryWardBackend();
+        const keys = newWallet();
+        const first = new FakeDevice(keys);
+        const host = new WardHost(first.wardId, backend, wm);
+        try {
+            first.enqueue('alice', 'v1');
+            await host.flush(first.call);
+            const initial = await backend.loadAttestations();
+            expect(initial.map(a => a.toCounter)).toEqual([0, 1]);
+
+            await host.sync(new FakeDevice(keys).call);
+            await host.sync(new FakeDevice(keys).call);
+            expect(await backend.loadAttestations()).toEqual(initial);
+        } finally {
+            await server.close();
+        }
+        const second = new FakeDevice(keys);
+        await expect(host.catchUp(second.call)).resolves.toMatchObject({ counter: 1 });
+    });
+
     it('reports it, fails a sync as wm_unavailable, and still serves its last head', async () => {
         const { server, wm } = await withWm();
         const { a, host } = await setup(wm);

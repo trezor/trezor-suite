@@ -138,7 +138,7 @@ export interface WmClient {
     enrol(wardId: Uint8Array, root: Uint8Array | null, headInitSig: Uint8Array): Promise<void>;
     /** Sign the step that reached the current head, bound to the device's round nonce. */
     attest(wardId: Uint8Array, nonce: Uint8Array): Promise<Attestation>;
-    /** Compare-and-swap an advance authorised by `wm_sig`; resolves to whether it was a revert. */
+    /** Compare-and-swap a signed advance, timestamp it at the WM, and report whether it was a revert. */
     advance(step: {
         wardId: Uint8Array;
         fromCounter: number;
@@ -146,7 +146,6 @@ export interface WmClient {
         toCounter: number;
         toRoot: Uint8Array | null;
         wmSig: Uint8Array;
-        timestamp?: number;
     }): Promise<boolean>;
     headNonce(wardId: Uint8Array): Promise<Uint8Array | null>;
     /** The head it holds, or null if the wallet is not enrolled. A null root is the empty tree. */
@@ -278,7 +277,7 @@ export class DevWm implements WmClient {
             fromRoot: rootOrEmpty(step.fromRoot),
             counter: step.toCounter,
             root: rootOrEmpty(step.toRoot),
-            timestamp: step.timestamp ?? this.now(),
+            timestamp: this.now(),
             fromHeadNonce: h.headNonce,
             headNonce: this.draw(step.wardId),
         });

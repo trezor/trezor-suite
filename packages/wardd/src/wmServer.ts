@@ -6,7 +6,7 @@
  *   GET  /v1/wards/<wardId>/head        -> { head: { counter, root, headNonce } | null }
  *   POST /v1/wards/<wardId>/enrol       { root, headInitSig }
  *   POST /v1/wards/<wardId>/attest      { nonce }               -> attestation
- *   POST /v1/wards/<wardId>/advance     { fromCounter, fromRoot, toCounter, toRoot, wmSig, timestamp? }
+ *   POST /v1/wards/<wardId>/advance     { fromCounter, fromRoot, toCounter, toRoot, wmSig }
  *                                       -> { revert }, or 409 { error: 'conflict', headCounter }
  *
  * The WM sees ward ids, counters, roots and signatures -- never an entry. It logs each decision.
@@ -191,6 +191,10 @@ export const startWmServer = async (opts: WmServerOptions) => {
 
                 return {};
             }
+            if ('timestamp' in body) {
+                throw new HttpError(400, 'the WARD Manager assigns the acceptance timestamp');
+            }
+
             const step = {
                 wardId,
                 fromCounter: counterField(body.fromCounter, 'fromCounter'),
@@ -198,9 +202,6 @@ export const startWmServer = async (opts: WmServerOptions) => {
                 toCounter: counterField(body.toCounter, 'toCounter'),
                 toRoot: rootField(body.toRoot, 'toRoot'),
                 wmSig: sigField(body.wmSig, 'wmSig'),
-                ...(body.timestamp === undefined
-                    ? {}
-                    : { timestamp: counterField(body.timestamp, 'timestamp') }),
             };
             const what = `#${step.fromCounter} -> #${step.toCounter}`;
             try {

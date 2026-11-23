@@ -128,7 +128,6 @@ export class HttpWm implements WmClient {
                 toCounter: step.toCounter,
                 toRoot: hexOrNull(step.toRoot),
                 wmSig: toHex(step.wmSig),
-                ...(step.timestamp === undefined ? {} : { timestamp: step.timestamp }),
             },
         );
 
