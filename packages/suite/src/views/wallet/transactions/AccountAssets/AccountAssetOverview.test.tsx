@@ -45,6 +45,7 @@ global.ResizeObserver = class MockedResizeObserver {
 const DEVICE_STATE = '1stTestnetAddress@device_id:0' as StaticSessionId;
 
 const ETH = asNetworkSymbol('eth');
+const BTC = asNetworkSymbol('btc');
 const ADA = asNetworkSymbol('ada');
 
 const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
@@ -105,21 +106,31 @@ const otherEthAccount = mockWalletAccount({
     formattedBalance: '10',
 });
 
+const btcAccount = mockWalletAccount({
+    symbol: BTC,
+    deviceState: DEVICE_STATE,
+    formattedBalance: '0.5',
+});
+
 const PRICED_RATES = {
     [getFiatRateKey(ETH, 'usd')]: mockRate(3000),
     [getFiatRateKey(ETH, 'usd', USDC)]: mockRate(1),
     [getFiatRateKey(ETH, 'usd', ONE_INCH)]: mockRate(0.29),
+    [getFiatRateKey(BTC, 'usd')]: mockRate(60000),
     [getFiatRateKey(ADA, 'usd')]: mockRate(0.5),
 };
 
 type GetStateOptions = {
     rates: Record<string, CurrentRate>;
     areSmallBalancesShown?: boolean;
+    localCurrency?: MockSuiteState['wallet']['settings']['localCurrency'];
 };
+
+const networksOf = (accounts: Account[]) => [...new Set(accounts.map(({ symbol }) => symbol))];
 
 const getState = (
     accounts: Account[],
-    { rates, areSmallBalancesShown = true }: GetStateOptions,
+    { rates, areSmallBalancesShown = true, localCurrency = 'usd' }: GetStateOptions,
 ): MockSuiteState => ({
     ...mockInitialAppState,
     earn: {
@@ -130,7 +141,7 @@ const getState = (
             },
         }),
     },
-    networks: mockNetworksState([ETH, ADA]),
+    networks: mockNetworksState(networksOf(accounts)),
     device: {
         ...mockInitialAppState.device,
         selectedDevice: mockSuiteDevice({ state: { staticSessionId: DEVICE_STATE } }),
@@ -146,8 +157,8 @@ const getState = (
         accounts,
         settings: {
             ...mockInitialAppState.wallet.settings,
-            enabledNetworks: [ETH, ADA],
-            localCurrency: 'usd',
+            enabledNetworks: networksOf(accounts),
+            localCurrency,
             areHomeAssetSmallBalancesShown: areSmallBalancesShown,
         },
         fiat: {
@@ -328,6 +339,33 @@ describe('the account overview with the asset-first Home', () => {
         expect(screen.getByTestId('@wallet/account-assets/fiat-amount')).toHaveTextContent(
             '$6,100.00',
         );
+    });
+
+    it('shows the crypto balance under the fiat total on a network without tokens', () => {
+        renderOverview([btcAccount]);
+
+        expect(screen.getByTestId('@wallet/account-assets/fiat-amount')).toHaveTextContent(
+            '$30,000.00',
+        );
+        expect(
+            screen.getByTestId('@wallet/account-assets/crypto-amount-with-symbol'),
+        ).toHaveTextContent('0.5 BTC');
+    });
+
+    it('shows only the fiat total on a network with tokens, a UTXO one included', () => {
+        renderOverview([adaAccount]);
+
+        expect(
+            screen.queryByTestId('@wallet/account-assets/crypto-amount'),
+        ).not.toBeInTheDocument();
+    });
+
+    it('does not repeat the balance when the totals are shown in the coin itself', () => {
+        renderOverview([btcAccount], { localCurrency: 'btc' });
+
+        expect(
+            screen.queryByTestId('@wallet/account-assets/crypto-amount'),
+        ).not.toBeInTheDocument();
     });
 
     describe('what navigating away from it reports', () => {
