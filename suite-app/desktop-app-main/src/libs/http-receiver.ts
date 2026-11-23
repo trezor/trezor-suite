@@ -194,7 +194,9 @@ export const createHttpReceiver = ({ logger, ...options }: CreateHttpReceiverPar
     ]);
 
     httpReceiver.get('/oauth', [
-        allowReferers(['', '127.0.0.1', 'www.dropbox.com']), // No referer is sent by Google, Dropbox sends referer when using Safari
+        // Google sends no referer on a plain redirect, but `https://accounts.google.com/` when its consent page calls the redirect URI itself.
+        // Dropbox sends a referer when using Safari.
+        allowReferers(['', '127.0.0.1', 'accounts.google.com', 'www.dropbox.com']),
         (request, response) => {
             const { search, hash } = parseRequestUrl(request.url);
 

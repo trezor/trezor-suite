@@ -21,7 +21,13 @@ describe('http receiver', () => {
         await receiver.stop();
     });
 
-    it.each(fixtures)('$method: $path', async ({ method, path, search, result }) => {
+    const cases = fixtures.map(fixture => ({
+        ...fixture,
+        referer: fixture.headers?.referer ?? 'none',
+    }));
+
+    it.each(cases)('$method: $path (referer: $referer)', async fixture => {
+        const { method, path, search, headers, result } = fixture;
         const receiver = createHttpReceiver({ logger, port: 0 });
         const spy = jest.spyOn(receiver, 'emit');
 
@@ -42,10 +48,17 @@ describe('http receiver', () => {
                 family: 'IPv4',
             });
 
-            const response = await fetch(url, { method });
+            const response = await fetch(url, {
+                method,
+                headers,
+                signal: AbortSignal.timeout(2000),
+            });
 
             if (result.emit) {
                 expect(spy).toHaveBeenLastCalledWith(...result.emit);
+            }
+            if (result.notEmit) {
+                expect(spy).not.toHaveBeenCalledWith(result.notEmit, expect.anything());
             }
 
             expect(response.status).toEqual(result.response.status);
