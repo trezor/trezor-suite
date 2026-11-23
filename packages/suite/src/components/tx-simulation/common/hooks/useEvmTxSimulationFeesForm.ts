@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useForm, useFormState, useWatch } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { type TxSimulationEVMResult } from '@suite-common/tx-simulation';
 import {
@@ -20,14 +20,8 @@ import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from '#src/hooks/suite';
 import { useComposedLevelsPlaceholder } from '#src/hooks/wallet/form/useComposedLevelsPlaceholder';
+import { useCustomFeeValidation } from '#src/hooks/wallet/form/useCustomFeeValidation';
 import { type FeesFormValues, useFees } from '#src/hooks/wallet/form/useFees';
-
-const CUSTOM_FEE_FIELDS = [
-    'feeLimit',
-    'feePerUnit',
-    'maxFeePerGas',
-    'maxPriorityFeePerGas',
-] as const;
 
 // Dapps and the yield builder pass the gas limit as a hex quantity; the gas limit input takes decimals.
 const toDecimalGasLimit = (gasLimit: string) => {
@@ -92,23 +86,7 @@ export function useEvmTxSimulationFeesForm({
         name: ['selectedFee', 'feePerUnit', 'maxFeePerGas', 'feeLimit', 'estimatedFeeLimit'],
     });
 
-    const { errors } = useFormState({ control: form.control, name: CUSTOM_FEE_FIELDS });
-    // Leaf reads: react-hook-form mutates `errors` in place, so the compiler would freeze the object.
-    const hasCustomFeeErrors =
-        selectedFee === 'custom' &&
-        Boolean(
-            errors.feeLimit?.type ||
-            errors.feePerUnit?.type ||
-            errors.maxFeePerGas?.type ||
-            errors.maxPriorityFeePerGas?.type,
-        );
-
-    // Unmounted inputs are skipped, so this validates only the active fee kind.
-    function validateCustomFee() {
-        if (form.getValues('selectedFee') !== 'custom') return Promise.resolve(true);
-
-        return form.trigger(CUSTOM_FEE_FIELDS);
-    }
+    const { hasCustomFeeErrors, validateCustomFee } = useCustomFeeValidation(form);
 
     // The custom gas limit field keeps its value after leaving Custom, so only Custom may use it.
     const feeTotalCalculation = useCallback(

@@ -12,6 +12,8 @@ import { asAmountSubunit, findToken, getAllowanceAmountForLimit } from '@suite-c
 import { useCurrentRef } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
+import { useCustomFeeValidation } from '#src/hooks/wallet/form/useCustomFeeValidation';
+
 import { useAllowanceCompose } from './useAllowanceCompose';
 import { useAllowanceSend } from './useAllowanceSend';
 
@@ -107,8 +109,13 @@ export const useAllowanceTransaction = ({
             values: errorMessage.values,
         };
     }, [selectedComposedLevel]);
+    const { hasCustomFeeErrors, validateCustomFee } = useCustomFeeValidation(methods);
     const canSubmit =
-        isTokenResolved && !isComposing && !!composedTransaction && !composedLevelsError;
+        isTokenResolved &&
+        !isComposing &&
+        !!composedTransaction &&
+        !composedLevelsError &&
+        !hasCustomFeeErrors;
 
     const composeRequestRef = useCurrentRef(composeRequest);
     const callbacksRef = useCurrentRef({
@@ -134,6 +141,7 @@ export const useAllowanceTransaction = ({
 
     const confirmAndSend = useCallback(async () => {
         if (!composedTransaction || !isTokenResolved) return;
+        if (selectedFee === 'custom' && !(await validateCustomFee())) return;
 
         callbacksRef.current.onConfirm?.(limitType, selectedFee);
         callbacksRef.current.onSendStart?.();
@@ -151,7 +159,15 @@ export const useAllowanceTransaction = ({
         }
 
         callbacksRef.current.onSendFailed?.();
-    }, [composedTransaction, isTokenResolved, send, limitType, selectedFee, callbacksRef]);
+    }, [
+        composedTransaction,
+        isTokenResolved,
+        validateCustomFee,
+        send,
+        limitType,
+        selectedFee,
+        callbacksRef,
+    ]);
 
     const handleCancel = useCallback(() => {
         callbacksRef.current.onCancel?.();
