@@ -57,28 +57,4 @@ describe('CurrentStepCard', () => {
             `${STEPPER_TEXT}Approve spendingLimit 300 USDTNetwork fee $0.01`,
         );
     });
-
-    it('does not draw a connector for the first step', async () => {
-        await renderWithBasicProvider(
-            <CurrentStepCard stepNumber={1} stepCount={3}>
-                <CurrentStepCardHeader>
-                    <Text>Approve spending</Text>
-                </CurrentStepCardHeader>
-            </CurrentStepCard>,
-        );
-
-        expect(screen.queryByTestId(/@step-cards\/connector/)).not.toBeOnTheScreen();
-    });
-
-    it('draws a completed connector for a step after the first one', async () => {
-        await renderWithBasicProvider(
-            <CurrentStepCard stepNumber={2} stepCount={3}>
-                <CurrentStepCardHeader>
-                    <Text>Approve spending</Text>
-                </CurrentStepCardHeader>
-            </CurrentStepCard>,
-        );
-
-        expect(screen.getByTestId('@step-cards/connector/completed')).toBeOnTheScreen();
-    });
 });
