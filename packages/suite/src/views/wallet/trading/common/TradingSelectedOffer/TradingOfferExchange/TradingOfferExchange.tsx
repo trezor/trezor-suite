@@ -94,8 +94,8 @@ export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) =
     } = useDexExchangeTxSimulation(txSimulationParams);
     const { issue, isSimulationEnabled, isSimulation } = useExchangeIssue(txSimulationParams);
 
-    const isSelectedFeeUnaffordable = !!composableFeeLevels;
-    const visibleIssue = isSelectedFeeUnaffordable ? null : issue;
+    const isSelectedFeeAffordable = !composableFeeLevels;
+    const visibleIssue = isSelectedFeeAffordable ? issue : null;
 
     useExchangeIssueAnalytics({ issue: visibleIssue, isSimulationLoading, isSimulation });
 
@@ -124,7 +124,7 @@ export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) =
     const { exchange, signData } = selectedTrade;
     const isSignData = formStep === 'SIGN_DATA' && !!signData;
 
-    const shouldGoBackToTradeForm = !!visibleIssue || isSelectedFeeUnaffordable;
+    const shouldGoBackToTradeForm = !!visibleIssue || !isSelectedFeeAffordable;
 
     const networkFeeEdit =
         sendAccount && composableFeeLevels?.length !== 0
@@ -230,7 +230,7 @@ export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) =
                     />
                 )}
 
-                {isSelectedFeeUnaffordable && sendAccount && (
+                {!isSelectedFeeAffordable && sendAccount && (
                     <Banner
                         icon={WarningCircleIcon}
                         intent="critical"

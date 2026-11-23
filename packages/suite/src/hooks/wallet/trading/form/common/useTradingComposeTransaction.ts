@@ -325,11 +325,11 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
 
             const maxAmount =
                 type === 'exchange'
-                    ? TRADING_FEE_LEVEL_PRIORITY.map(label => {
+                    ? (TRADING_FEE_LEVEL_PRIORITY.map(label => {
                           const level = composedLevels[label];
 
                           return level?.type === 'error' ? undefined : level?.max;
-                      }).find(Boolean)
+                      }).find(Boolean) ?? composed.max)
                     : composed.max;
 
             if (typeof setMaxOutputId === 'number' && maxAmount && !isBtcExchangeSwap) {

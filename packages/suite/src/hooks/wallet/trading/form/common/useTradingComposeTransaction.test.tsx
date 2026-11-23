@@ -39,6 +39,7 @@ jest.mock('@suite/intl', () => ({
 }));
 
 let mockComposedLevels: PrecomposedLevels | undefined;
+let mockSelectedFee = 'normal';
 
 jest.mock('#src/hooks/wallet/form/useCompose', () => ({
     useCompose: () => ({
@@ -51,7 +52,7 @@ jest.mock('#src/hooks/wallet/form/useCompose', () => ({
 }));
 
 jest.mock('#src/hooks/wallet/form/useFees', () => ({
-    useFees: () => ({ changeFeeLevel: jest.fn(), selectedFee: 'normal' }),
+    useFees: () => ({ changeFeeLevel: jest.fn(), selectedFee: mockSelectedFee }),
 }));
 
 jest.mock('#src/utils/wallet/trading/tradingUtils', () => ({
@@ -199,6 +200,7 @@ describe('useTradingComposeTransaction', () => {
     afterEach(() => {
         jest.clearAllMocks();
         mockComposedLevels = undefined;
+        mockSelectedFee = 'normal';
     });
 
     it('shows the short fee error without the fee amount', async () => {
@@ -243,6 +245,30 @@ describe('useTradingComposeTransaction', () => {
 
         await waitFor(() =>
             expect(result.current.methods.getValues(TRADING_FORM_OUTPUT_AMOUNT)).toBe('0.8'),
+        );
+    });
+
+    it('computes swap max at the custom fee level when no predefined level composes', async () => {
+        const feeError: PrecomposedLevels[string] = {
+            type: 'error',
+            error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+            errorMessage: { id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+        };
+        mockComposedLevels = {
+            high: feeError,
+            normal: feeError,
+            low: feeError,
+            custom: getComposedLevel('0.6'),
+        };
+        mockSelectedFee = 'custom';
+
+        const { result } = renderComposeTransaction({
+            type: 'exchange',
+            defaultValues: { setMaxOutputId: 0 },
+        });
+
+        await waitFor(() =>
+            expect(result.current.methods.getValues(TRADING_FORM_OUTPUT_AMOUNT)).toBe('0.6'),
         );
     });
 
