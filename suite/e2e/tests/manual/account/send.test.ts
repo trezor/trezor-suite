@@ -37,6 +37,30 @@ test.describe.skip('Account send', { tag: ['@group=manual'] }, () => {
     );
 
     test(
+        'Ethereum recipient checksum conversion with and without transaction history',
+        {
+            annotation: createTestAnnotation({
+                testCase:
+                    'Verifies how the Ethereum Send form handles recipient checksums based on address history and casing.',
+                prerequisites: [
+                    'Ethereum Send form open in Suite',
+                    'Two Ethereum wallet addresses with known mixed-case checksums: one with transaction history and one with no history',
+                ],
+                steps: [
+                    'Paste the used address in lowercase. Confirm Suite changes it to the expected checksum automatically, without showing a "Convert to checksum" button',
+                    'Paste the unused address in lowercase. Confirm it stays lowercase and Suite shows a "Convert to checksum" button. Click it and verify the result matches the expected checksum',
+                    'Paste the same unused address already checksummed. Confirm the address stays exactly as pasted and no conversion prompt appears',
+                    'For each case, enter an ETH amount, open transaction review, and confirm the Trezor displays the expected recipient before cancelling on the device',
+                ],
+                category: TestCategory.Accounts,
+                priority: TestPriority.Low,
+                stream: TestStream.Wallet,
+            }),
+        },
+        async () => {},
+    );
+
+    test(
         'Recipient address validation',
         {
             annotation: createTestAnnotation({
