@@ -37,7 +37,7 @@ import type {
     TradingSignAndPushError,
     TradingSignAndPushSendFormTransactionProps,
 } from '../../types';
-import { mapTestnetSymbol } from '../../utils';
+import { getCryptoId, mapTestnetSymbol } from '../../utils';
 import { toTradingError } from '../../utils/tradingErrorUtils';
 
 export type RecomposeAndSignTxThunkProps = ComposeTradingTransactionThunkProps & {
@@ -68,14 +68,16 @@ const isComposedTradedAsset = (
     send: FormStateTradingCryptoCurrency,
     { token }: GeneralPrecomposedTransactionFinal,
 ): boolean => {
+    const accountSymbol = mapTestnetSymbol(account.symbol);
+    const tradedSymbol = mapTestnetSymbol(send.symbol);
     const tradedContract =
         send.contractAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN
             ? undefined
             : send.contractAddress;
 
     return (
-        mapTestnetSymbol(account.symbol) === mapTestnetSymbol(send.symbol) &&
-        token?.contract.toLowerCase() === tradedContract?.toLowerCase()
+        accountSymbol === tradedSymbol &&
+        getCryptoId(accountSymbol, token?.contract) === getCryptoId(tradedSymbol, tradedContract)
     );
 };
 
