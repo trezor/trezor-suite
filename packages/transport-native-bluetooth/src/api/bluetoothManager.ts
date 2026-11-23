@@ -150,7 +150,9 @@ class BluetoothManager {
             { allowDuplicates: true }, // ensures we get frequent scan updates even on iOS
             (error, scannedDevice) => {
                 if (error) {
-                    errorLog('Scan error', error);
+                    if (error.errorCode !== BleErrorCode.BluetoothPoweredOff) {
+                        errorLog('Scan error', error);
+                    }
                     this.stopStaleNearbyDevicesRemoval();
                     errorHandler?.(error);
                 }
