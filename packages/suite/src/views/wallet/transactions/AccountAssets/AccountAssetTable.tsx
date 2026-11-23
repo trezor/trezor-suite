@@ -11,7 +11,11 @@ import {
     selectAccountSmallBalances,
     selectAreAssetTableSmallBalancesDisplayed,
 } from '@suite-common/assets';
-import { selectAreTokensSupportedByAccount } from '@suite-common/wallet-core';
+import {
+    selectAccountByKey,
+    selectAccountHiddenTokens,
+    selectAreTokensSupportedByAccount,
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -23,6 +27,7 @@ import { useAssetTableFolding } from '#src/components/wallet/assets/useAssetTabl
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { DropdownRow } from '#src/views/wallet/tokens/DropdownRow';
 
+import { AccountAssetEmptyState } from './AccountAssetEmptyState';
 import { AccountAssetSectionRow } from './AccountAssetSectionRow';
 
 type AccountAssetTableProps = {
@@ -38,6 +43,10 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [isZeroBalanceOpen, setIsZeroBalanceOpen] = useState(false);
     const hasTokens = useSelector(state => selectAreTokensSupportedByAccount(state, accountKey));
+    const isUnused = useSelector(state => selectAccountByKey(state, accountKey)?.empty);
+    const hasHiddenTokens = useSelector(
+        state => selectAccountHiddenTokens(state, accountKey).length > 0,
+    );
     const { heldSections, zeroBalanceSections } = useSelector(state =>
         selectAccountAssetOverview(state, accountKey),
     );
@@ -64,7 +73,12 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
     };
 
     if (heldSections.length === 0 && zeroBalanceSections.length === 0) {
-        return null;
+        // The page offers an unused account its own empty state, with the ways to fund it.
+        return isUnused ? null : (
+            <AccountAssetEmptyState
+                onOpenHiddenTokens={hasHiddenTokens ? openHiddenTokens : undefined}
+            />
+        );
     }
 
     return (
