@@ -1,5 +1,8 @@
+import { Nfts, selectAccountNftHoldings } from '@suite/nfts';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Column, Row } from '@trezor/components';
+
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AccountAssetBalance } from './AccountAssetBalance';
 import { AccountAssetEarn } from './AccountAssetEarn';
@@ -9,13 +12,18 @@ type AccountAssetOverviewProps = {
     accountKey: AccountKey;
 };
 
-/** The account as Home shows the wallet: its worth, its stake and each asset it holds. */
-export const AccountAssetOverview = ({ accountKey }: AccountAssetOverviewProps) => (
-    <Column gap={16} alignItems="stretch" data-testid="@wallet/account-assets">
-        <Row gap={16} alignItems="stretch" flexWrap="wrap">
-            <AccountAssetBalance accountKey={accountKey} />
-            <AccountAssetEarn accountKey={accountKey} />
-        </Row>
-        <AccountAssetTable accountKey={accountKey} />
-    </Column>
-);
+/** The account as Home shows the wallet: its worth, its stake, each asset and its NFTs. */
+export const AccountAssetOverview = ({ accountKey }: AccountAssetOverviewProps) => {
+    const nftHoldings = useSelector(state => selectAccountNftHoldings(state, accountKey));
+
+    return (
+        <Column gap={16} alignItems="stretch" data-testid="@wallet/account-assets">
+            <Row gap={16} alignItems="stretch" flexWrap="wrap">
+                <AccountAssetBalance accountKey={accountKey} />
+                <AccountAssetEarn accountKey={accountKey} />
+            </Row>
+            <AccountAssetTable accountKey={accountKey} />
+            <Nfts holdings={nftHoldings} />
+        </Column>
+    );
+};

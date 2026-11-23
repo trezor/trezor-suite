@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Nfts } from '@suite/nfts';
+import { Nfts, selectWalletNftHoldings } from '@suite/nfts';
 import {
     selectAllAccountsToList,
     selectDiscoveryForSelectedDevice,
@@ -21,6 +21,7 @@ import { DashboardPromoBanner } from '../dashboard/DashboardPromoBanner/Dashboar
 
 export const HomeAssetDashboard = memo(() => {
     const { analytics } = useServices(injectDesktopAnalytics);
+    const nftHoldings = useSelector(selectWalletNftHoldings);
     const emptyStateKind = useSelector(state =>
         getHomeAssetEmptyStateKind({
             accounts: selectAllAccountsToList(state),
@@ -40,6 +41,7 @@ export const HomeAssetDashboard = memo(() => {
             <HomeAssetTable />
             <HomeAssetFeedback />
             <Nfts
+                holdings={nftHoldings}
                 onToggle={({ isOpen, collectionCount, hiddenCount }) =>
                     analytics.report({
                         type: events.dashboardNftsEvent.name,

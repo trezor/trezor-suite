@@ -2,15 +2,11 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { type SuiteSettingsRootState, selectIsNftSectionEnabled } from '@suite/settings';
+import { selectIsNftSectionEnabled } from '@suite/settings';
 import { Card, Collapsible, Column, Row, SubTabs, Text } from '@trezor/components';
 
 import { NftList } from './NftList';
-import {
-    type NftState,
-    selectHiddenNftCollectionCount,
-    selectShownNftCollectionCount,
-} from '../nftSelectors';
+import { type NftHoldings, getNftCollectionCount } from '../nftSelectors';
 
 type NftTab = 'shown' | 'hidden';
 
@@ -21,17 +17,15 @@ type NftsToggle = {
 };
 
 type NftsProps = {
+    /** What to list: the wallet's NFTs on Home, one account's on its overview. */
+    holdings: NftHoldings;
     onToggle?: (toggle: NftsToggle) => void;
 };
 
-export const Nfts = ({ onToggle }: NftsProps) => {
+export const Nfts = ({ holdings, onToggle }: NftsProps) => {
     const isNftSectionEnabled = useSelector(selectIsNftSectionEnabled);
-    const shownCount = useSelector((state: NftState & SuiteSettingsRootState) =>
-        isNftSectionEnabled ? selectShownNftCollectionCount(state) : 0,
-    );
-    const hiddenCount = useSelector((state: NftState & SuiteSettingsRootState) =>
-        isNftSectionEnabled ? selectHiddenNftCollectionCount(state) : 0,
-    );
+    const shownCount = isNftSectionEnabled ? getNftCollectionCount(holdings.shown) : 0;
+    const hiddenCount = isNftSectionEnabled ? getNftCollectionCount(holdings.hidden) : 0;
     const [chosenTab, setChosenTab] = useState<NftTab>();
     const [isOpen, setIsOpen] = useState(false);
 
@@ -103,7 +97,11 @@ export const Nfts = ({ onToggle }: NftsProps) => {
                             </Text>
                         </Row>
 
-                        <NftList key={tab} isHidden={tab === 'hidden'} />
+                        <NftList
+                            key={tab}
+                            held={tab === 'hidden' ? holdings.hidden : holdings.shown}
+                            isHidden={tab === 'hidden'}
+                        />
                     </Column>
                 </Collapsible.Content>
             </Collapsible>

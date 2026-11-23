@@ -1,19 +1,24 @@
 import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { explorerInitialState, getWalletAssetKey } from '@suite-common/wallet-core';
+import {
+    type WalletAssetKey,
+    explorerInitialState,
+    getWalletAssetKey,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
     type NftState,
-    selectHiddenNftCollectionCount,
-    selectHiddenNftCollectionKeys,
-    selectNftCollection,
-    selectNftCollectionExplorerUrl,
-    selectNftCollectionItems,
-    selectShownNftCollectionCount,
-    selectShownNftCollectionKeys,
+    getNftCollection,
+    getNftCollectionCount,
+    getNftCollectionExplorerUrl,
+    getNftCollectionItems,
+    getNftCollectionKeys,
+    selectAccountNftHoldings,
+    selectNftCollectionExplorer,
+    selectWalletNftHoldings,
 } from './nftSelectors';
 
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
@@ -117,16 +122,40 @@ const scamOnEth = getWalletAssetKey({
     contractAddress: SCAM_DROP,
 });
 
+/** What an open collection of the wallet lists, as the section builds it. */
+const collectionItems = (state: NftState, assetKey: WalletAssetKey) => {
+    const { shown } = selectWalletNftHoldings(state);
+
+    return getNftCollectionItems(
+        shown,
+        assetKey,
+        ITEMS_LIMIT,
+        selectNftCollectionExplorer(state, shown, assetKey),
+    );
+};
+
+const collectionExplorerUrl = (state: NftState, assetKey: WalletAssetKey) => {
+    const { shown } = selectWalletNftHoldings(state);
+
+    return getNftCollectionExplorerUrl(
+        shown,
+        assetKey,
+        selectNftCollectionExplorer(state, shown, assetKey),
+    );
+};
+
 describe('the collections the section lists', () => {
     it('lists a vouched-for collection with its items', () => {
         const state = createState({
             accounts: [mockAccount({ tokens: [erc721(PUNKS, 'CryptoPunks', ['1492', '4820'])] })],
         });
 
-        expect(selectShownNftCollectionKeys(state)).toEqual([punksOnEth]);
-        expect(selectHiddenNftCollectionKeys(state)).toEqual([]);
-        expect(selectNftCollection(state, punksOnEth)?.name).toBe('CryptoPunks');
-        expect(selectNftCollectionItems(state, punksOnEth, false, ITEMS_LIMIT)).toEqual({
+        expect(getNftCollectionKeys(selectWalletNftHoldings(state).shown)).toEqual([punksOnEth]);
+        expect(getNftCollectionKeys(selectWalletNftHoldings(state).hidden)).toEqual([]);
+        expect(getNftCollection(selectWalletNftHoldings(state).shown, punksOnEth)?.name).toBe(
+            'CryptoPunks',
+        );
+        expect(collectionItems(state, punksOnEth)).toEqual({
             items: [
                 { id: '1492', amount: '1', explorerUrl: expect.any(String) },
                 { id: '4820', amount: '1', explorerUrl: expect.any(String) },
@@ -140,7 +169,7 @@ describe('the collections the section lists', () => {
             accounts: [mockAccount({ tokens: [erc1155(APES, 'Apes', [{ id: '7', value: '3' }])] })],
         });
 
-        expect(selectNftCollectionItems(state, apesOnEth, false, ITEMS_LIMIT)).toEqual({
+        expect(collectionItems(state, apesOnEth)).toEqual({
             items: [{ id: '7', amount: '3', explorerUrl: expect.any(String) }],
             totalCount: 1,
         });
@@ -153,9 +182,11 @@ describe('the collections the section lists', () => {
             ],
         });
 
-        expect(selectShownNftCollectionKeys(state)).toEqual([apesOnEth]);
-        expect(selectNftCollection(state, apesOnEth)?.itemCount).toBe(1);
-        expect(selectNftCollectionItems(state, apesOnEth, false, ITEMS_LIMIT)).toEqual({
+        expect(getNftCollectionKeys(selectWalletNftHoldings(state).shown)).toEqual([apesOnEth]);
+        expect(getNftCollection(selectWalletNftHoldings(state).shown, apesOnEth)?.itemCount).toBe(
+            1,
+        );
+        expect(collectionItems(state, apesOnEth)).toEqual({
             items: [],
             totalCount: 1,
         });
@@ -169,8 +200,10 @@ describe('the collections the section lists', () => {
             ],
         });
 
-        expect(selectShownNftCollectionKeys(state)).toEqual([punksOnEth]);
-        expect(selectNftCollection(state, punksOnEth)?.itemCount).toBe(2);
+        expect(getNftCollectionKeys(selectWalletNftHoldings(state).shown)).toEqual([punksOnEth]);
+        expect(getNftCollection(selectWalletNftHoldings(state).shown, punksOnEth)?.itemCount).toBe(
+            2,
+        );
     });
 
     it('counts the balance of a collection the backend lists no items for', () => {
@@ -182,11 +215,13 @@ describe('the collections the section lists', () => {
             ],
         });
 
-        expect(selectNftCollectionItems(state, punksOnEth, false, ITEMS_LIMIT)).toEqual({
+        expect(collectionItems(state, punksOnEth)).toEqual({
             items: [],
             totalCount: 0,
         });
-        expect(selectNftCollection(state, punksOnEth)?.itemCount).toBe(3);
+        expect(getNftCollection(selectWalletNftHoldings(state).shown, punksOnEth)?.itemCount).toBe(
+            3,
+        );
     });
 
     it('counts the balance of an account that lists no items next to one that does', () => {
@@ -200,7 +235,9 @@ describe('the collections the section lists', () => {
             ],
         });
 
-        expect(selectNftCollection(state, punksOnEth)?.itemCount).toBe(3);
+        expect(getNftCollection(selectWalletNftHoldings(state).shown, punksOnEth)?.itemCount).toBe(
+            3,
+        );
     });
 
     it('orders the collections by name', () => {
@@ -212,7 +249,10 @@ describe('the collections the section lists', () => {
             ],
         });
 
-        expect(selectShownNftCollectionKeys(state)).toEqual([apesOnEth, punksOnEth]);
+        expect(getNftCollectionKeys(selectWalletNftHoldings(state).shown)).toEqual([
+            apesOnEth,
+            punksOnEth,
+        ]);
     });
 });
 
@@ -231,10 +271,17 @@ describe('the collections the section hides', () => {
             hiddenCollections: [APES],
         });
 
-        expect(selectShownNftCollectionKeys(state)).toEqual([punksOnEth]);
-        expect(selectHiddenNftCollectionKeys(state)).toEqual([apesOnEth, scamOnEth]);
-        expect(selectNftCollection(state, scamOnEth, true)?.name).toBe('Claim your reward');
-        expect(selectNftCollection(state, scamOnEth)?.name).toBeUndefined();
+        expect(getNftCollectionKeys(selectWalletNftHoldings(state).shown)).toEqual([punksOnEth]);
+        expect(getNftCollectionKeys(selectWalletNftHoldings(state).hidden)).toEqual([
+            apesOnEth,
+            scamOnEth,
+        ]);
+        expect(getNftCollection(selectWalletNftHoldings(state).hidden, scamOnEth)?.name).toBe(
+            'Claim your reward',
+        );
+        expect(
+            getNftCollection(selectWalletNftHoldings(state).shown, scamOnEth)?.name,
+        ).toBeUndefined();
     });
 
     it('shows what a network without NFT definitions holds, as its NFT tab does', () => {
@@ -248,14 +295,14 @@ describe('the collections the section hides', () => {
             enabledNetworks: [SEPOLIA],
         });
 
-        expect(selectShownNftCollectionKeys(state)).toEqual([
+        expect(getNftCollectionKeys(selectWalletNftHoldings(state).shown)).toEqual([
             getWalletAssetKey({
                 deviceState: ALICE,
                 networkSymbol: SEPOLIA,
                 contractAddress: SCAM_DROP,
             }),
         ]);
-        expect(selectHiddenNftCollectionKeys(state)).toEqual([]);
+        expect(getNftCollectionKeys(selectWalletNftHoldings(state).hidden)).toEqual([]);
     });
 });
 
@@ -273,8 +320,8 @@ describe('what the section leaves out', () => {
             enabledNetworks: [ETH],
         });
 
-        expect(selectShownNftCollectionKeys(state)).toEqual([]);
-        expect(selectHiddenNftCollectionKeys(state)).toEqual([]);
+        expect(getNftCollectionKeys(selectWalletNftHoldings(state).shown)).toEqual([]);
+        expect(getNftCollectionKeys(selectWalletNftHoldings(state).hidden)).toEqual([]);
     });
 
     it('leaves out a collection that holds nothing', () => {
@@ -282,8 +329,8 @@ describe('what the section leaves out', () => {
             accounts: [mockAccount({ tokens: [erc721(PUNKS, 'CryptoPunks', [])] })],
         });
 
-        expect(selectShownNftCollectionKeys(state)).toEqual([]);
-        expect(selectShownNftCollectionCount(state)).toBe(0);
+        expect(getNftCollectionKeys(selectWalletNftHoldings(state).shown)).toEqual([]);
+        expect(getNftCollectionCount(selectWalletNftHoldings(state).shown)).toBe(0);
     });
 });
 
@@ -300,7 +347,9 @@ describe('what a write leaves alone', () => {
             ],
         });
 
-        expect(selectShownNftCollectionKeys(after)).toBe(selectShownNftCollectionKeys(before));
+        expect(getNftCollectionKeys(selectWalletNftHoldings(after).shown)).toBe(
+            getNftCollectionKeys(selectWalletNftHoldings(before).shown),
+        );
     });
 
     it('hands back an equal collection when only a balance moves', () => {
@@ -309,8 +358,8 @@ describe('what a write leaves alone', () => {
                 accounts: [mockAccount({ balance, tokens: [erc721(PUNKS, 'CryptoPunks', ['1'])] })],
             });
 
-        expect(selectNftCollection(stateWith('2'), punksOnEth)).toEqual(
-            selectNftCollection(stateWith('1'), punksOnEth),
+        expect(getNftCollection(selectWalletNftHoldings(stateWith('2')).shown, punksOnEth)).toEqual(
+            getNftCollection(selectWalletNftHoldings(stateWith('1')).shown, punksOnEth),
         );
     });
 });
@@ -322,7 +371,7 @@ describe('what an open collection builds', () => {
             accounts: [mockAccount({ tokens: [erc721(PUNKS, 'CryptoPunks', ids)] })],
         });
 
-        const result = selectNftCollectionItems(state, punksOnEth, false, ITEMS_LIMIT);
+        const result = collectionItems(state, punksOnEth);
 
         expect(result?.items).toHaveLength(ITEMS_LIMIT);
         expect(result?.totalCount).toBe(60);
@@ -346,13 +395,13 @@ describe('what the collapsed section counts', () => {
             enabledNetworks: [ETH],
         });
 
-        expect(selectShownNftCollectionCount(state)).toBe(1);
-        expect(selectHiddenNftCollectionCount(state)).toBe(1);
-        expect(selectShownNftCollectionCount(state)).toBe(
-            selectShownNftCollectionKeys(state).length,
+        expect(getNftCollectionCount(selectWalletNftHoldings(state).shown)).toBe(1);
+        expect(getNftCollectionCount(selectWalletNftHoldings(state).hidden)).toBe(1);
+        expect(getNftCollectionCount(selectWalletNftHoldings(state).shown)).toBe(
+            getNftCollectionKeys(selectWalletNftHoldings(state).shown).length,
         );
-        expect(selectHiddenNftCollectionCount(state)).toBe(
-            selectHiddenNftCollectionKeys(state).length,
+        expect(getNftCollectionCount(selectWalletNftHoldings(state).hidden)).toBe(
+            getNftCollectionKeys(selectWalletNftHoldings(state).hidden).length,
         );
     });
 });
@@ -363,10 +412,10 @@ describe('where a collection links to', () => {
             accounts: [mockAccount({ tokens: [erc721(PUNKS, 'CryptoPunks', ['1492'])] })],
         });
 
-        const [item] = selectNftCollectionItems(state, punksOnEth, false, ITEMS_LIMIT)?.items ?? [];
+        const [item] = collectionItems(state, punksOnEth)?.items ?? [];
 
         expect(item?.explorerUrl).toContain(`${PUNKS}/1492`);
-        expect(selectNftCollectionExplorerUrl(state, punksOnEth, false)).toContain(PUNKS);
+        expect(collectionExplorerUrl(state, punksOnEth)).toContain(PUNKS);
     });
 });
 
@@ -383,7 +432,49 @@ describe('what a row can open', () => {
             ],
         });
 
-        expect(selectNftCollection(state, punksOnEth)?.hasListedItems).toBe(true);
-        expect(selectNftCollection(state, apesOnEth)?.hasListedItems).toBe(false);
+        expect(
+            getNftCollection(selectWalletNftHoldings(state).shown, punksOnEth)?.hasListedItems,
+        ).toBe(true);
+        expect(
+            getNftCollection(selectWalletNftHoldings(state).shown, apesOnEth)?.hasListedItems,
+        ).toBe(false);
+    });
+});
+
+describe('the collections of one account', () => {
+    it("lists only that account's collections and counts only its items", () => {
+        const first = mockAccount({ index: 0, tokens: [erc721(PUNKS, 'CryptoPunks', ['1'])] });
+        const second = mockAccount({
+            index: 1,
+            tokens: [erc721(PUNKS, 'CryptoPunks', ['2', '3']), erc721(APES, 'Apes', ['4'])],
+        });
+        const state = createState({ accounts: [first, second] });
+        const { shown } = selectAccountNftHoldings(state, first.key);
+
+        expect(getNftCollectionKeys(shown)).toEqual([punksOnEth]);
+        expect(getNftCollectionCount(shown)).toBe(1);
+        expect(getNftCollection(shown, punksOnEth)?.itemCount).toBe(1);
+        expect(
+            getNftCollectionItems(
+                shown,
+                punksOnEth,
+                ITEMS_LIMIT,
+                selectNftCollectionExplorer(state, shown, punksOnEth),
+            ),
+        ).toEqual({
+            items: [{ id: '1', amount: '1', explorerUrl: expect.any(String) }],
+            totalCount: 1,
+        });
+    });
+
+    it('lists an account asked for by key whatever networks the wallet has enabled', () => {
+        const onPolygon = mockAccount({
+            symbol: POL,
+            tokens: [erc721(PUNKS, 'CryptoPunks', ['1'])],
+        });
+        const state = createState({ accounts: [onPolygon], enabledNetworks: [ETH] });
+
+        expect(getNftCollectionCount(selectWalletNftHoldings(state).shown)).toBe(0);
+        expect(getNftCollectionCount(selectAccountNftHoldings(state, onPolygon.key).shown)).toBe(1);
     });
 });

@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
@@ -12,25 +12,29 @@ import { NetworkIcon } from '@trezor/product-components';
 import { NFT_ROW_PADDING } from './NftItemRow';
 import { NftUrlBlur } from './NftUrlBlur';
 import {
+    type NftHolding,
     type NftState,
-    selectNftCollection,
-    selectNftCollectionExplorerUrl,
+    getNftCollection,
+    getNftCollectionExplorerUrl,
+    selectNftCollectionExplorer,
 } from '../nftSelectors';
 
 type NftRowProps = {
     assetKey: WalletAssetKey;
-    isHidden: boolean;
+    /** The holdings of the list the row is in. */
+    held: readonly NftHolding[];
     isOpen: boolean;
     onToggle: (assetKey: WalletAssetKey) => void;
 };
 
-export const NftRow = memo(({ assetKey, isHidden, isOpen, onToggle }: NftRowProps) => {
-    const collection = useSelector(
-        (state: NftState) => selectNftCollection(state, assetKey, isHidden),
-        shallowEqual,
-    );
+export const NftRow = memo(({ assetKey, held, isOpen, onToggle }: NftRowProps) => {
+    const collection = getNftCollection(held, assetKey);
     const explorerUrl = useSelector((state: NftState) =>
-        selectNftCollectionExplorerUrl(state, assetKey, isHidden),
+        getNftCollectionExplorerUrl(
+            held,
+            assetKey,
+            selectNftCollectionExplorer(state, held, assetKey),
+        ),
     );
     const { NetworkNameFormatter } = useFormatters();
 
