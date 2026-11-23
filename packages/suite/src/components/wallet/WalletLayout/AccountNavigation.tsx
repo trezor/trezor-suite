@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouterParams } from '@suite/router';
 import { type WalletParams } from '@suite/router';
 import { selectIsNftSectionEnabled } from '@suite/settings';
+import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
@@ -26,6 +27,11 @@ export const AccountNavigation = ({ account }: AccountNavigationProps) => {
     const routerParams = useSelector(selectRouterParams) as WalletParams;
     const enabledNftSection = useSelector(selectIsNftSectionEnabled);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
+    // The asset-first overview lists the account's tokens itself.
+    const isAssetFirst = useIsExperimentVariantActive({
+        experimentId: ExperimentId.assetFirstHomeTable,
+        variant: 'B',
+    });
     const network = getNetworkOptional(routerParams?.symbol);
     const goToWithAnalytics = useGoToWithAnalytics(account);
 
@@ -45,7 +51,7 @@ export const AccountNavigation = ({ account }: AccountNavigationProps) => {
                 goToWithAnalytics({ routeName: 'wallet-tokens', preserveParams: true });
             },
             title: <Translation id="TR_NAV_TOKENS" />,
-            isHidden: !hasNetworkFeatures(account, 'tokens'),
+            isHidden: isAssetFirst || !hasNetworkFeatures(account, 'tokens'),
             activeRoutes: [
                 'wallet-tokens',
                 'wallet-tokens-hidden',

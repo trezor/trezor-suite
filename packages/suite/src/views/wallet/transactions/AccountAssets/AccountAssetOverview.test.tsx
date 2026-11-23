@@ -32,6 +32,7 @@ global.ResizeObserver = class MockedResizeObserver {
 const DEVICE_STATE = '1stTestnetAddress@device_id:0' as StaticSessionId;
 
 const ETH = asNetworkSymbol('eth');
+const BTC = asNetworkSymbol('btc');
 
 const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
 const ONE_INCH = '0x111111111117dc0aa78b770fa6a738034120c302' as TokenAddress;
@@ -73,10 +74,17 @@ const otherEthAccount = mockWalletAccount({
     formattedBalance: '10',
 });
 
+const btcAccount = mockWalletAccount({
+    symbol: BTC,
+    deviceState: DEVICE_STATE,
+    formattedBalance: '0.5',
+});
+
 const PRICED_RATES = {
     [getFiatRateKey(ETH, 'usd')]: mockRate(3000),
     [getFiatRateKey(ETH, 'usd', USDC)]: mockRate(1),
     [getFiatRateKey(ETH, 'usd', ONE_INCH)]: mockRate(0.29),
+    [getFiatRateKey(BTC, 'usd')]: mockRate(60000),
 };
 
 type GetStateOptions = {
@@ -89,56 +97,67 @@ type GetStateOptions = {
 const getState = (
     accounts: Account[],
     { rates, areSmallBalancesShown = true, ethStakingApy }: GetStateOptions,
-): MockSuiteState => ({
-    ...mockInitialAppState,
-    earn: {
-        staking: mockStakingState({ positions: { [ethAccount.key]: [HALF_ETH_STAKED] } }),
-    },
-    networks: mockNetworksState([ETH]),
-    device: {
-        ...mockInitialAppState.device,
-        selectedDevice: mockSuiteDevice({ state: { staticSessionId: DEVICE_STATE } }),
-    },
-    tokenDefinitions: {
-        [ETH]: {
-            coin: { data: [USDC, ONE_INCH], error: false, isLoading: false, hide: [], show: [] },
+): MockSuiteState => {
+    const symbols = [...new Set(accounts.map(account => account.symbol))];
+
+    return {
+        ...mockInitialAppState,
+        earn: {
+            staking: mockStakingState({ positions: { [ethAccount.key]: [HALF_ETH_STAKED] } }),
         },
-    },
-    wallet: {
-        ...mockInitialAppState.wallet,
-        selectedAccount: selectedAccountInitialState,
-        accounts,
-        settings: {
-            ...mockInitialAppState.wallet.settings,
-            enabledNetworks: [ETH],
-            localCurrency: 'usd',
-            areHomeAssetSmallBalancesShown: areSmallBalancesShown,
+        networks: mockNetworksState(symbols),
+        device: {
+            ...mockInitialAppState.device,
+            selectedDevice: mockSuiteDevice({ state: { staticSessionId: DEVICE_STATE } }),
         },
-        fiat: {
-            ...mockInitialAppState.wallet.fiat,
-            current: rates,
-        },
-        stake: {
-            ...mockInitialAppState.wallet.stake,
-            data: {
-                ...mockInitialAppState.wallet.stake.data,
-                data: {
-                    ...mockInitialAppState.wallet.stake.data.data,
-                    eth:
-                        ethStakingApy === undefined
-                            ? undefined
-                            : {
-                                  stats: { apy: ethStakingApy, nextRewardPayout: 0 },
-                                  validators: {},
-                              },
+        tokenDefinitions: {
+            [ETH]: {
+                coin: {
+                    data: [USDC, ONE_INCH],
+                    error: false,
+                    isLoading: false,
+                    hide: [],
+                    show: [],
                 },
             },
         },
-    },
-});
+        wallet: {
+            ...mockInitialAppState.wallet,
+            selectedAccount: selectedAccountInitialState,
+            accounts,
+            settings: {
+                ...mockInitialAppState.wallet.settings,
+                enabledNetworks: symbols,
+                localCurrency: 'usd',
+                areHomeAssetSmallBalancesShown: areSmallBalancesShown,
+            },
+            fiat: {
+                ...mockInitialAppState.wallet.fiat,
+                current: rates,
+            },
+            stake: {
+                ...mockInitialAppState.wallet.stake,
+                data: {
+                    ...mockInitialAppState.wallet.stake.data,
+                    data: {
+                        ...mockInitialAppState.wallet.stake.data.data,
+                        eth:
+                            ethStakingApy === undefined
+                                ? undefined
+                                : {
+                                      stats: { apy: ethStakingApy, nextRewardPayout: 0 },
+                                      validators: {},
+                                  },
+                    },
+                },
+            },
+        },
+    };
+};
 
+/** Renders the overview of the first account given. */
 const renderOverview = (
-    accounts: Account[],
+    accounts: [Account, ...Account[]],
     { rates = PRICED_RATES, ...options }: Partial<GetStateOptions> = {},
 ) => {
     const { services } = createTestCompositionRoot<void, MockSuiteState>({
@@ -148,7 +167,7 @@ const renderOverview = (
     renderWithProviders(
         { ...services, networks: { networkIcon: mockNetworkIcon() } },
         <AccountHeaderProvider>
-            <AccountAssetOverview accountKey={ethAccount.key} />
+            <AccountAssetOverview accountKey={accounts[0].key} />
         </AccountHeaderProvider>,
     );
 };
@@ -260,5 +279,12 @@ describe('the account overview with the asset-first Home', () => {
         expect(
             screen.queryByTestId('@wallet/account-assets/fiat-amount/approximate'),
         ).not.toBeInTheDocument();
+    });
+
+    it('offers no filter on an account whose network holds no tokens', () => {
+        renderOverview([btcAccount]);
+
+        expect(rowTestIds()).toEqual(['@wallet/account-asset/btc/coin']);
+        expect(screen.queryByTestId('@dashboard/home-asset/grouping')).not.toBeInTheDocument();
     });
 });

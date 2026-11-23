@@ -11,8 +11,9 @@ import {
     selectIsHomeAssetTableFoldable,
     selectSmallBalanceSummary,
 } from '@suite-common/assets';
-import { setAreHomeAssetSmallBalancesShown } from '@suite-common/wallet-core';
+import { selectAccountByKey, setAreHomeAssetSmallBalancesShown } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Card, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -40,6 +41,9 @@ type AccountAssetTableProps = {
 export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
     const { dispatch } = useServices(injectDispatch);
     const [isExpanded, setIsExpanded] = useState(false);
+    const hasTokens = useSelector(state =>
+        hasNetworkFeatures(selectAccountByKey(state, accountKey) ?? undefined, 'tokens'),
+    );
     const hasAssets = useSelector(state => selectHasShownWalletAssets(state, accountKey));
     const smallBalances = useSelector(state => selectSmallBalanceSummary(state, accountKey));
     const areSmallBalancesShown = useSelector(selectAreHomeAssetSmallBalancesDisplayed);
@@ -69,14 +73,18 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
                 <Table.Header>
                     <Table.Row>
                         <Table.Cell padding={HOME_ASSET_CELL_PADDING.first}>
-                            <HomeAssetTableFilterHeader
-                                areSmallBalancesShown={areSmallBalancesShown}
-                                smallBalances={smallBalances}
-                                onSmallBalancesChange={changeSmallBalances}
-                                onOpenHiddenTokens={() =>
-                                    dispatch(gotoThunk({ routeName: 'suite-hidden-tokens' }))
-                                }
-                            />
+                            {hasTokens ? (
+                                <HomeAssetTableFilterHeader
+                                    areSmallBalancesShown={areSmallBalancesShown}
+                                    smallBalances={smallBalances}
+                                    onSmallBalancesChange={changeSmallBalances}
+                                    onOpenHiddenTokens={() =>
+                                        dispatch(gotoThunk({ routeName: 'suite-hidden-tokens' }))
+                                    }
+                                />
+                            ) : (
+                                <Translation id="TR_ASSET" />
+                            )}
                         </Table.Cell>
                         <Table.Cell align="end">
                             <Translation id="TR_EXCHANGE_RATE" />
