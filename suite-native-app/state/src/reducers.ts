@@ -78,6 +78,7 @@ import {
     migrateTransactionsBnbToBsc,
     migrateTransactionsDeprecateNetworks,
     preparePersistReducer,
+    replaceDescriptorWithDescriptors,
     sortAccountsByCoin,
     tokenDefinitionsPersistTransform,
     walletPersistTransform,
@@ -410,7 +411,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         reducer: persistentDeviceDataReducer,
         persistedKeys: ['devices'],
         key: 'persistentDeviceData',
-        version: 1,
+        version: 2,
         migrations: {
             1: async (oldState: any /* FIXME */) => {
                 // persistentDeviceData used to be persisted as part of the `devices` persist key
@@ -429,6 +430,14 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                 const devices = backfillManualCheckResult(rawPersistentDeviceData);
 
                 return { ...(oldState ?? {}), devices };
+            },
+            2: (oldState: any /* FIXME */) => {
+                if (!oldState?.devices) return oldState;
+
+                return {
+                    ...oldState,
+                    devices: replaceDescriptorWithDescriptors(oldState.devices),
+                };
             },
         },
         storage: deps.mmkvStorage,

@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.12.0.1
+
+- replace the optional `descriptor` of `persistentDeviceData` entries with the `descriptors` array
+
 ## 26.12.0
 
 - add `referAFriend` object store (Refer a Friend API settings and per-device referral records)
