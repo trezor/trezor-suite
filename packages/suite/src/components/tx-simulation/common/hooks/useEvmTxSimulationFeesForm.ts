@@ -29,6 +29,13 @@ const CUSTOM_FEE_FIELDS = [
     'maxPriorityFeePerGas',
 ] as const;
 
+// Dapps and the yield builder pass the gas limit as a hex quantity; the gas limit input takes decimals.
+const toDecimalGasLimit = (gasLimit: string) => {
+    const gasLimitBig = new BigNumber(gasLimit);
+
+    return gasLimitBig.isFinite() ? gasLimitBig.toFixed() : gasLimit;
+};
+
 interface UseTxFeesFormProps {
     accountBalance: string;
     networkType?: NetworkType;
@@ -47,10 +54,11 @@ export function useEvmTxSimulationFeesForm({
     accountBalance,
     networkType = 'ethereum',
     networkSymbol = asNetworkSymbol('eth'),
-    defaultGasLimit = ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+    defaultGasLimit: rawDefaultGasLimit = ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
     txValue = '0',
     isGasLimitFinal = false,
 }: UseTxFeesFormProps) {
+    const defaultGasLimit = toDecimalGasLimit(rawDefaultGasLimit);
     const form = useForm<FeesFormValues>({
         mode: 'onChange',
         defaultValues: {
