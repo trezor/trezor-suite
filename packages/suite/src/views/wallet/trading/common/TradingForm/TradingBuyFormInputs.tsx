@@ -36,6 +36,7 @@ import { TradingFormInputPaymentMethod } from '#src/views/wallet/trading/common/
 
 import { TradingFormCard } from './TradingFormCard';
 import { TradingFormSection } from './TradingFormSection';
+import { useTradingAmountLimitFill } from './useTradingAmountLimitFill';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import {
     TradingFormInputBuyAsset,
@@ -109,12 +110,28 @@ export const TradingBuyFormInputs = () => {
 
     const countryRequiresSubdivision = isCountrySubdivisionRequired(countrySelect?.value);
 
+    const amountLimitFillParams = {
+        cryptoInputName: TRADING_FORM_CRYPTO_INPUT,
+        fiatInputName: TRADING_FORM_FIAT_INPUT,
+        isInSats: shouldBuyInSats,
+        cryptoDecimals: getNetworkDecimalsWithFallback(cryptoSelect?.networkSymbol),
+    } as const;
+    const fillFiatAmountLimit = useTradingAmountLimitFill({
+        ...amountLimitFillParams,
+        errorType: errors.fiatInput?.type,
+    });
+    const fillCryptoAmountLimit = useTradingAmountLimitFill({
+        ...amountLimitFillParams,
+        errorType: errors.cryptoInput?.type,
+    });
+
     return (
         <Column gap={16}>
             <TradingFormCard>
                 <TradingFormSection
                     title={<Translation id="TR_TRADING_YOU_PAY" />}
                     errorMessage={errors.fiatInput?.message}
+                    onErrorClick={fillFiatAmountLimit}
                     data-testid="@trading/form/you-pay"
                 >
                     <Row gap={12} alignItems="center">
@@ -130,6 +147,7 @@ export const TradingBuyFormInputs = () => {
                 <TradingFormSection
                     title={<Translation id="TR_TRADING_YOU_GET" />}
                     errorMessage={errors.cryptoInput?.message}
+                    onErrorClick={fillCryptoAmountLimit}
                     data-testid="@trading/form/you-get"
                 >
                     <Row gap={12} alignItems="center">

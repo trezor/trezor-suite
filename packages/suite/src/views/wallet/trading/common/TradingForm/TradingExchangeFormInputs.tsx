@@ -50,6 +50,7 @@ import {
     TRADING_BASE_CURRENCY_SKELETON_WIDTH,
     getTradingAmountInputStyle,
 } from './tradingFormInputsUtils';
+import { useTradingAmountLimitFill } from './useTradingAmountLimitFill';
 import { useTradingExchangeAssetSelect } from './useTradingExchangeAssetSelect';
 import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 
@@ -129,12 +130,22 @@ export const TradingExchangeFormInputs = () => {
     const exchangeBuySupportedCryptoIds = useSelector(selectTradingExchangeBuyCryptoIds);
     const exchangeSellSupportedCryptoIds = useSelector(selectTradingExchangeSellCryptoIds);
 
+    const sendAmountError = errors.outputs?.[0]?.amount;
+    const fillSendAmountLimit = useTradingAmountLimitFill({
+        errorType: sendAmountError?.type,
+        cryptoInputName: TRADING_FORM_OUTPUT_AMOUNT,
+        fiatInputName: TRADING_FORM_OUTPUT_FIAT,
+        isInSats: shouldSendInSats,
+        cryptoDecimals: sendAssetDecimals,
+    });
+
     return (
         <Column gap={20}>
             <TradingFormCard>
                 <TradingFormSection
                     title={<Translation id="TR_TRADING_YOU_PAY" />}
-                    errorMessage={errors.outputs?.[0]?.amount?.message}
+                    errorMessage={sendAmountError?.message}
+                    onErrorClick={fillSendAmountLimit}
                     data-testid="@trading/form/you-pay"
                 >
                     <Row gap={12} alignItems="center">

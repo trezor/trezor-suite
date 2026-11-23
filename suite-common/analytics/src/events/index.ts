@@ -47,6 +47,7 @@ export { stakingNavigateEvent } from './stakingNavigateEvent';
 export { stakingStakeEvent } from './stakingStakeEvent';
 export { stakingUnstakeEvent } from './stakingUnstakeEvent';
 export { suiteSyncLabelCreatedEvent } from './suiteSyncLabelCreatedEvent';
+export { tradingAmountLimitFillEvent } from './tradingAmountLimitFillEvent';
 export {
     transactionCreatedEvent,
     type TransactionCreatedEventAction,

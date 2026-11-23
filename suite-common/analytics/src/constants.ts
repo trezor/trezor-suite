@@ -69,4 +69,5 @@ export enum EventType {
     DashboardAssetListMenu = 'dashboard/asset-list-menu',
     DashboardNfts = 'dashboard/nfts',
     DashboardAssetTable = 'dashboard/asset-table',
+    TradingAmountLimitFill = 'trading/amount-limit-fill',
 }

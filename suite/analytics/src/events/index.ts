@@ -13,6 +13,7 @@ export {
     stakingNavigateEvent,
     stakingStakeEvent,
     stakingUnstakeEvent,
+    tradingAmountLimitFillEvent,
     yieldEarnEntryEvent,
 } from '@suite-common/analytics';
 
