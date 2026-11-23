@@ -51,10 +51,10 @@ export const TradingDetailFeedback = ({
         });
     };
 
-    const handleSubmit = (rating: Rating, description: string) => {
+    const handleSubmit = async (rating: Rating, description: string) => {
         const userData = buildUserFeedbackData(device);
 
-        dispatch(
+        await dispatch(
             sendFeedbackThunk({
                 type: 'SUGGESTION',
                 payload: {
@@ -75,7 +75,7 @@ export const TradingDetailFeedback = ({
                     ...userData,
                 },
             }),
-        );
+        ).unwrap();
 
         analytics.report({
             type: events.feedbackSentEvent.name,

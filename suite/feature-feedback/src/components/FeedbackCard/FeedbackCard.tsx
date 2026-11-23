@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 
 import { type Rating, ratingOptions } from '@suite-common/feedback';
 import { Card, Column, Flex, H3, IconCircle, Paragraph, Row } from '@trezor/components';
@@ -8,6 +8,7 @@ import { EmojiRatingSelector } from '@trezor/product-components';
 import { FeedbackFormModal } from './FeedbackFormModal';
 
 type FeedbackCardView = 'form' | 'success';
+type SubmissionState = 'idle' | 'sending' | 'failed';
 
 export type FeedbackCardProps = {
     heading: ReactNode;
@@ -16,7 +17,7 @@ export type FeedbackCardProps = {
     cancelLabel: ReactNode;
     successHeading: ReactNode;
     successDescription: ReactNode;
-    onSubmit: (rating: Rating, description: string) => void;
+    onSubmit: (rating: Rating, description: string) => void | Promise<void>;
     onRatingSelect?: (rating: Rating) => void;
     defaultView?: FeedbackCardView;
     /** Puts the ratings under the heading instead of across the card from it. */
@@ -38,28 +39,46 @@ export const FeedbackCard = ({
     const [rating, setRating] = useState<Rating | undefined>();
     const [feedbackText, setFeedbackText] = useState('');
     const [view, setView] = useState<FeedbackCardView>(defaultView);
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [submissionState, setSubmissionState] = useState<SubmissionState>('idle');
+    const submissionPending = useRef(false);
 
     const isFormValid = rating !== undefined && feedbackText.trim().length > 0;
 
     const handleRatingSelect = (selectedRating: Rating) => {
+        if (submissionPending.current) return;
+
         setRating(selectedRating);
         onRatingSelect?.(selectedRating);
     };
 
     const handleCancel = () => {
+        setIsFormOpen(false);
+        if (submissionPending.current || submissionState !== 'idle') return;
+
         setRating(undefined);
         setFeedbackText('');
     };
 
-    const handleSubmit = () => {
-        if (!isFormValid) {
-            return;
-        }
+    const handleSubmit = async () => {
+        if (!isFormValid || submissionPending.current) return;
 
-        onSubmit(rating, feedbackText);
-        setView('success');
-        setRating(undefined);
-        setFeedbackText('');
+        submissionPending.current = true;
+        setSubmissionState('sending');
+
+        try {
+            const submission = onSubmit(rating, feedbackText);
+            if (submission) await submission;
+            setView('success');
+            setIsFormOpen(false);
+            setRating(undefined);
+            setFeedbackText('');
+            setSubmissionState('idle');
+        } catch {
+            setSubmissionState('failed');
+        } finally {
+            submissionPending.current = false;
+        }
     };
 
     if (view === 'success') {
@@ -91,13 +110,16 @@ export const FeedbackCard = ({
                     <EmojiRatingSelector
                         options={ratingOptions}
                         value={rating}
-                        onChange={handleRatingSelect}
+                        onChange={selectedRating => {
+                            handleRatingSelect(selectedRating);
+                            setIsFormOpen(true);
+                        }}
                         data-testid="@feedback/card/rating"
                     />
                 </Flex>
             </Card>
 
-            {rating !== undefined && (
+            {isFormOpen && rating !== undefined && (
                 <FeedbackFormModal
                     heading={heading}
                     description={description}
@@ -106,9 +128,10 @@ export const FeedbackCard = ({
                     rating={rating}
                     feedbackText={feedbackText}
                     isSubmitDisabled={!isFormValid}
+                    isSubmitting={submissionState === 'sending'}
                     onRatingSelect={handleRatingSelect}
                     onFeedbackTextChange={setFeedbackText}
-                    onSubmit={handleSubmit}
+                    onSubmit={() => void handleSubmit()}
                     onCancel={handleCancel}
                 />
             )}

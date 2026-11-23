@@ -17,15 +17,20 @@ export const sendFeedbackThunk = createThunk<void, Feedback, void>(
         );
 
         try {
-            await fetch(`${url}?${params.toString()}`, {
+            const response = await fetch(`${url}?${params.toString()}`, {
                 method: 'GET',
             });
-            dispatch(notificationsActions.addToast({ type: 'user-feedback-send-success' }));
-        } catch (err) {
-            dispatch(notificationsActions.addToast({ type: 'user-feedback-send-error' }));
-            console.error('failed to send user feedback', err);
+            if (response.ok) {
+                dispatch(notificationsActions.addToast({ type: 'user-feedback-send-success' }));
 
-            return rejectWithValue('Failed to send feedback');
+                return;
+            }
+        } catch {
+            // Network failures use the same error toast as server rejections.
         }
+
+        dispatch(notificationsActions.addToast({ type: 'user-feedback-send-error' }));
+
+        return rejectWithValue('Failed to send feedback');
     },
 );

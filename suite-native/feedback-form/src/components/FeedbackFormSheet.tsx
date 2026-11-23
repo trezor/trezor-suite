@@ -8,11 +8,13 @@ import {
     Box,
     Button,
     HStack,
+    Hint,
     Input,
     type InputType,
     Text,
     VStack,
 } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { EmojiRatingButton } from './EmojiRatingButton';
@@ -29,6 +31,8 @@ type FeedbackFormSheetProps = {
     successDescription: ReactNode;
     closeLabel: ReactNode;
     isSuccessDisplayed: boolean;
+    isSubmitting: boolean;
+    hasSubmissionError: boolean;
     rating?: Rating;
     feedbackText: string;
     onRatingSelect: (rating: Rating) => void;
@@ -56,6 +60,8 @@ export const FeedbackFormSheet = ({
     successDescription,
     closeLabel,
     isSuccessDisplayed,
+    isSubmitting,
+    hasSubmissionError,
     rating,
     feedbackText,
     onRatingSelect,
@@ -123,6 +129,7 @@ export const FeedbackFormSheet = ({
                             placeholderTextColor={utils.colors.contentSecondary}
                             asBottomSheetInput
                             multiline
+                            editable={!isSubmitting}
                             numberOfLines={3}
                             value={feedbackText}
                             onChangeText={onFeedbackTextChange}
@@ -135,8 +142,16 @@ export const FeedbackFormSheet = ({
                             </Text>
                         </Box>
                     </VStack>
+                    {hasSubmissionError && (
+                        <Box accessibilityRole="alert" accessibilityLiveRegion="polite">
+                            <Hint variant="error">
+                                <Translation id="feedbackForm.submitError" />
+                            </Hint>
+                        </Box>
+                    )}
                     <Button
                         isDisabled={!isFormValid}
+                        isLoading={isSubmitting}
                         onPress={onSubmit}
                         testID="@feedback-form/submit-button"
                     >

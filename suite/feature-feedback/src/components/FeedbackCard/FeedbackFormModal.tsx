@@ -12,6 +12,7 @@ export type FeedbackFormModalProps = {
     rating: Rating;
     feedbackText: string;
     isSubmitDisabled: boolean;
+    isSubmitting: boolean;
     onRatingSelect: (rating: Rating) => void;
     onFeedbackTextChange: (feedbackText: string) => void;
     onSubmit: () => void;
@@ -26,6 +27,7 @@ export const FeedbackFormModal = ({
     rating,
     feedbackText,
     isSubmitDisabled,
+    isSubmitting,
     onRatingSelect,
     onFeedbackTextChange,
     onSubmit,
@@ -39,6 +41,7 @@ export const FeedbackFormModal = ({
             <>
                 <Modal.Button
                     isDisabled={isSubmitDisabled}
+                    isLoading={isSubmitting}
                     onClick={onSubmit}
                     data-testid="@feedback/form-modal/submit-button"
                 >
@@ -57,6 +60,7 @@ export const FeedbackFormModal = ({
 
             <Textarea
                 rows={3}
+                readOnly={isSubmitting}
                 value={feedbackText}
                 onChange={e => onFeedbackTextChange(e.target.value)}
                 characterCount

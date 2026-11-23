@@ -154,6 +154,48 @@ describe('FeedbackCard', () => {
         expect(screen.getAllByText(SUCCESS_HEADING).length).toBeGreaterThan(0);
     });
 
+    it('allows dismissing a pending submission and preserves the draft for retry', async () => {
+        let rejectRequest = (_error: Error) => {};
+        const request = new Promise<void>((_, reject) => {
+            rejectRequest = reject;
+        });
+        const submit = jest.fn(() => Promise.resolve()).mockReturnValueOnce(request);
+        await renderFeedbackCard({ onSubmit: submit });
+
+        await fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
+        const description = screen.getByTestId('@feedback-form/description-input');
+        await fireEvent.changeText(description, 'Feedback draft');
+        const submitButton = screen.getByTestId('@feedback-form/submit-button');
+        await fireEvent.press(submitButton);
+
+        expect(submitButton).toBeDisabled();
+        expect(description).toHaveProp('editable', false);
+        await fireEvent.press(submitButton);
+        expect(submit).toHaveBeenCalledTimes(1);
+
+        await dismissSheet();
+        expect(dismissSpy).toHaveBeenCalledTimes(1);
+
+        await act(() => {
+            rejectRequest(new Error('Request failed'));
+        });
+        await fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
+
+        expect(screen.getByText(getTranslation('feedbackForm.submitError'))).toBeOnTheScreen();
+        expect(screen.getByTestId('@feedback-form/description-input')).toHaveProp(
+            'value',
+            'Feedback draft',
+        );
+        expectSheetRatingSelection('4', true);
+        const retryButton = screen.getByTestId('@feedback-form/submit-button');
+        expect(retryButton).toBeEnabled();
+
+        await fireEvent.press(retryButton);
+
+        expect(submit).toHaveBeenLastCalledWith('4', 'Feedback draft');
+        expect(screen.getAllByText(SUCCESS_HEADING)).toHaveLength(2);
+    });
+
     it('resets the form when the sheet is dismissed without submitting', async () => {
         await renderFeedbackCard();
 

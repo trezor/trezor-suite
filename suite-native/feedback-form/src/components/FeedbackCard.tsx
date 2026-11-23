@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 import { LinearTransition } from 'react-native-reanimated';
 
 import { type Rating, ratingOptions } from '@suite-common/feedback';
@@ -20,6 +20,7 @@ import { FeedbackFormSheet } from './FeedbackFormSheet';
 import { FeedbackSuccessMessage } from './FeedbackSuccessMessage';
 
 type FeedbackCardView = 'form' | 'success';
+type SubmissionState = 'idle' | 'sending' | 'failed';
 
 const ratingRowStyle = prepareNativeStyle(() => ({
     width: '100%',
@@ -34,7 +35,7 @@ export type FeedbackCardProps = {
     successHeading: ReactNode;
     successDescription: ReactNode;
     closeLabel: ReactNode;
-    onSubmit: (rating: Rating, description: string) => void;
+    onSubmit: (rating: Rating, description: string) => void | Promise<void>;
     onRatingSelect?: (rating: Rating) => void;
     defaultView?: FeedbackCardView;
     onDismiss?: () => void;
@@ -57,9 +58,13 @@ export const FeedbackCard = ({
     const [rating, setRating] = useState<Rating | undefined>();
     const [feedbackText, setFeedbackText] = useState('');
     const [view, setView] = useState<FeedbackCardView>(defaultView);
+    const [submissionState, setSubmissionState] = useState<SubmissionState>('idle');
+    const submissionPending = useRef(false);
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal({ isNestedSheet: true });
 
     const selectRating = (selectedRating: Rating) => {
+        if (submissionPending.current) return;
+
         setRating(selectedRating);
         onRatingSelect?.(selectedRating);
     };
@@ -71,18 +76,32 @@ export const FeedbackCard = ({
 
     const isFormValid = rating !== undefined && feedbackText.trim().length > 0;
 
-    const handleSubmit = () => {
-        if (!isFormValid) {
-            return;
-        }
+    const handleSubmit = async () => {
+        if (!isFormValid || submissionPending.current) return;
 
-        onSubmit(rating, feedbackText);
-        setView('success');
+        submissionPending.current = true;
+        setSubmissionState('sending');
+
+        try {
+            const submission = onSubmit(rating, feedbackText);
+            if (submission) await submission;
+            setView('success');
+            setRating(undefined);
+            setFeedbackText('');
+            setSubmissionState('idle');
+        } catch {
+            setSubmissionState('failed');
+        } finally {
+            submissionPending.current = false;
+        }
     };
 
     const handleSheetDismiss = () => {
+        if (submissionPending.current || submissionState === 'failed') return;
+
         setRating(undefined);
         setFeedbackText('');
+        setSubmissionState('idle');
     };
 
     const dismissButton = onDismiss && <FeedbackCardDismissButton onPress={onDismiss} />;
@@ -134,11 +153,13 @@ export const FeedbackCard = ({
                 successDescription={successDescription}
                 closeLabel={closeLabel}
                 isSuccessDisplayed={view === 'success'}
+                isSubmitting={submissionState === 'sending'}
+                hasSubmissionError={submissionState === 'failed'}
                 rating={rating}
                 feedbackText={feedbackText}
                 onRatingSelect={selectRating}
                 onFeedbackTextChange={setFeedbackText}
-                onSubmit={handleSubmit}
+                onSubmit={() => void handleSubmit()}
                 onClose={closeModal}
                 onDismiss={handleSheetDismiss}
             />
