@@ -1,9 +1,13 @@
 import { TotalBalanceCard, TotalBalanceHeadline } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { selectAccountAssetOverview, selectAccountFiatBalance } from '@suite-common/assets';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { Box, Column } from '@trezor/components';
+import { isUtxoBased } from '@suite-common/wallet-utils';
+import { Box, Column, Text } from '@trezor/components';
 
+import { AmountUnitSwitchWrapper } from '#src/components/suite/AmountUnitSwitchWrapper';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { useAccountHeaderContext } from '#src/support/suite/AccountHeaderProvider';
 
@@ -13,6 +17,7 @@ type AccountAssetBalanceProps = {
 
 /** What the account is worth in total, and how many assets make it up. */
 export const AccountAssetBalance = ({ accountKey }: AccountAssetBalanceProps) => {
+    const account = useSelector(state => selectAccountByKey(state, accountKey));
     const assetCount = useSelector(
         state => selectAccountAssetOverview(state, accountKey).assetCount,
     );
@@ -36,6 +41,22 @@ export const AccountAssetBalance = ({ accountKey }: AccountAssetBalanceProps) =>
                         fiatValue={fiatValue}
                         data-testid="@wallet/account-assets/fiat-amount"
                     />
+                    {account && isUtxoBased(account) && (
+                        <Text
+                            as="div"
+                            typographyStyle="body-md"
+                            intent="neutral"
+                            priority="secondary"
+                            data-testid="@wallet/account-assets/crypto-amount"
+                        >
+                            <AmountUnitSwitchWrapper symbol={account.symbol}>
+                                <FormattedCryptoAmount
+                                    value={account.formattedBalance}
+                                    networkSymbol={account.symbol}
+                                />
+                            </AmountUnitSwitchWrapper>
+                        </Text>
+                    )}
                 </Column>
             </TotalBalanceCard>
         </Box>
