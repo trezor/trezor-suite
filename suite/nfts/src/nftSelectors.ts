@@ -18,7 +18,7 @@ import {
     selectExplorer,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { getNftContractExplorerUrl, getNftExplorerUrl } from '@suite-common/wallet-utils';
 import { type MultiTokenValue, type TokenInfo } from '@trezor/blockchain-link-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
@@ -59,11 +59,21 @@ const toNftHolding = ({ deviceState, symbol, token }: ToNftHoldingParams): NftHo
     };
 };
 
+/** The account a section is about; none given, every account of the wallet, as Home shows. */
+const selectNftAccountKey = (_state: NftState, accountKey?: AccountKey) => accountKey;
+
 const selectPartitionedNftHoldings = createMemoizedSelector(
-    [selectVisibleDeviceAccounts, selectTokenDefinitions, selectEnabledNetworks],
-    (accounts, tokenDefinitions, enabledNetworks): PartitionedNftHoldings => {
+    [
+        selectVisibleDeviceAccounts,
+        selectTokenDefinitions,
+        selectEnabledNetworks,
+        selectNftAccountKey,
+    ],
+    (accounts, tokenDefinitions, enabledNetworks, accountKey): PartitionedNftHoldings => {
         const partitions = accounts
-            .filter(({ symbol }) => enabledNetworks.includes(symbol))
+            .filter(({ key, symbol }) =>
+                accountKey === undefined ? enabledNetworks.includes(symbol) : key === accountKey,
+            )
             .map(({ deviceState, symbol, tokens }) => {
                 const { shownWithBalance, hiddenWithBalance, unverifiedWithBalance } = getTokens({
                     tokens: tokens ?? [],
@@ -240,33 +250,52 @@ export const selectNftCollection = (
     state: NftState,
     assetKey: WalletAssetKey,
     isHidden = false,
+    accountKey?: AccountKey,
 ): NftCollection | undefined =>
-    (isHidden ? selectHiddenNftCollections(state) : selectShownNftCollections(state)).get(assetKey);
+    (isHidden
+        ? selectHiddenNftCollections(state, accountKey)
+        : selectShownNftCollections(state, accountKey)
+    ).get(assetKey);
 
 const selectNftCollectionHoldings = (
     state: NftState,
     assetKey: WalletAssetKey,
     isHidden: boolean,
+    accountKey?: AccountKey,
 ) =>
-    (isHidden ? selectHiddenNftHoldingsByKey(state) : selectShownNftHoldingsByKey(state)).get(
-        assetKey,
-    );
+    (isHidden
+        ? selectHiddenNftHoldingsByKey(state, accountKey)
+        : selectShownNftHoldingsByKey(state, accountKey)
+    ).get(assetKey);
 
 const selectNftCollectionExplorer = (
     state: NftState,
     assetKey: WalletAssetKey,
     isHidden: boolean,
+    accountKey?: AccountKey,
 ) => {
-    const held = selectNftCollectionHoldings(state, assetKey, isHidden);
+    const held = selectNftCollectionHoldings(state, assetKey, isHidden, accountKey);
 
     return held === undefined ? undefined : selectExplorer(state, held[0].symbol);
 };
 
 export const selectNftCollectionItems = createMemoizedSelector(
     [
-        selectNftCollectionHoldings,
+        (
+            state: NftState,
+            assetKey: WalletAssetKey,
+            isHidden: boolean,
+            _limit: number,
+            accountKey?: AccountKey,
+        ) => selectNftCollectionHoldings(state, assetKey, isHidden, accountKey),
         (_state: NftState, _assetKey: WalletAssetKey, _isHidden: boolean, limit: number) => limit,
-        selectNftCollectionExplorer,
+        (
+            state: NftState,
+            assetKey: WalletAssetKey,
+            isHidden: boolean,
+            _limit: number,
+            accountKey?: AccountKey,
+        ) => selectNftCollectionExplorer(state, assetKey, isHidden, accountKey),
     ],
     (held, limit, explorer): NftCollectionItems | undefined =>
         held === undefined ? undefined : getNftItems(held, limit, explorer),
@@ -276,9 +305,10 @@ export const selectNftCollectionExplorerUrl = (
     state: NftState,
     assetKey: WalletAssetKey,
     isHidden: boolean,
+    accountKey?: AccountKey,
 ): string | undefined => {
-    const held = selectNftCollectionHoldings(state, assetKey, isHidden);
-    const explorer = selectNftCollectionExplorer(state, assetKey, isHidden);
+    const held = selectNftCollectionHoldings(state, assetKey, isHidden, accountKey);
+    const explorer = selectNftCollectionExplorer(state, assetKey, isHidden, accountKey);
 
     return held === undefined || explorer === undefined
         ? undefined

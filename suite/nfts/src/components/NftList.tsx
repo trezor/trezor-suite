@@ -3,6 +3,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Column, Divider, Row, Text, VirtualizedList } from '@trezor/components';
 import { typographyStylesBase } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
@@ -48,11 +49,14 @@ const NO_ITEMS: NftCollectionItems = { items: [], totalCount: 0 };
 
 type NftListProps = {
     isHidden: boolean;
+    accountKey?: AccountKey;
 };
 
-export const NftList = ({ isHidden }: NftListProps) => {
-    const assetKeys = useSelector(
-        isHidden ? selectHiddenNftCollectionKeys : selectShownNftCollectionKeys,
+export const NftList = ({ isHidden, accountKey }: NftListProps) => {
+    const assetKeys = useSelector((state: NftState) =>
+        isHidden
+            ? selectHiddenNftCollectionKeys(state, accountKey)
+            : selectShownNftCollectionKeys(state, accountKey),
     );
     const [openKeys, setOpenKeys] = useState<ReadonlySet<WalletAssetKey>>(() => new Set());
 
@@ -60,8 +64,13 @@ export const NftList = ({ isHidden }: NftListProps) => {
         (state: NftState) =>
             assetKeys.map(assetKey =>
                 openKeys.has(assetKey)
-                    ? (selectNftCollectionItems(state, assetKey, isHidden, NFT_ITEMS_LIMIT) ??
-                      NO_ITEMS)
+                    ? (selectNftCollectionItems(
+                          state,
+                          assetKey,
+                          isHidden,
+                          NFT_ITEMS_LIMIT,
+                          accountKey,
+                      ) ?? NO_ITEMS)
                     : NO_ITEMS,
             ),
         shallowEqual,
@@ -146,6 +155,7 @@ export const NftList = ({ isHidden }: NftListProps) => {
                         <NftRow
                             assetKey={row.assetKey}
                             isHidden={isHidden}
+                            accountKey={accountKey}
                             isOpen={openKeys.has(row.assetKey)}
                             onToggle={toggleCollection}
                         />
@@ -158,7 +168,7 @@ export const NftList = ({ isHidden }: NftListProps) => {
                     return exhaustive(row);
             }
         },
-        [isHidden, openKeys, toggleCollection],
+        [isHidden, accountKey, openKeys, toggleCollection],
     );
 
     const renderItem = useCallback(

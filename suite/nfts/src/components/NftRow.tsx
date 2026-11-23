@@ -5,6 +5,7 @@ import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Badge, Box, Icon, Link, Row, Text } from '@trezor/components';
 import { ArrowUpRightIcon, CaretDownIcon, CaretRightIcon } from '@trezor/icons';
 import { NetworkIcon } from '@trezor/product-components';
@@ -20,17 +21,18 @@ import {
 type NftRowProps = {
     assetKey: WalletAssetKey;
     isHidden: boolean;
+    accountKey?: AccountKey;
     isOpen: boolean;
     onToggle: (assetKey: WalletAssetKey) => void;
 };
 
-export const NftRow = memo(({ assetKey, isHidden, isOpen, onToggle }: NftRowProps) => {
+export const NftRow = memo(({ assetKey, isHidden, accountKey, isOpen, onToggle }: NftRowProps) => {
     const collection = useSelector(
-        (state: NftState) => selectNftCollection(state, assetKey, isHidden),
+        (state: NftState) => selectNftCollection(state, assetKey, isHidden, accountKey),
         shallowEqual,
     );
     const explorerUrl = useSelector((state: NftState) =>
-        selectNftCollectionExplorerUrl(state, assetKey, isHidden),
+        selectNftCollectionExplorerUrl(state, assetKey, isHidden, accountKey),
     );
     const { NetworkNameFormatter } = useFormatters();
 
