@@ -161,10 +161,10 @@ describe('ExchangePreviewIssueBanner', () => {
         ).toBeOnTheScreen();
     });
 
-    it('renders the issue without continue anyway when the simulation is disabled', async () => {
+    it('renders the issue with continue anyway when the simulation is disabled', async () => {
         setIssue(priceImpactIssue, { isSimulationEnabled: false });
 
-        const { getByText, queryByText } = await renderExchangePreviewIssueBanner();
+        const { getByText } = await renderExchangePreviewIssueBanner();
 
         expect(
             getByText(
@@ -174,8 +174,8 @@ describe('ExchangePreviewIssueBanner', () => {
             ),
         ).toBeOnTheScreen();
         expect(
-            queryByText(getTranslation('moduleTrading.transactionSimulation.continueAnyway')),
-        ).toBeNull();
+            getByText(getTranslation('moduleTrading.transactionSimulation.continueAnyway')),
+        ).toBeOnTheScreen();
     });
 
     it('continues to the outputs review on continue anyway press', async () => {
