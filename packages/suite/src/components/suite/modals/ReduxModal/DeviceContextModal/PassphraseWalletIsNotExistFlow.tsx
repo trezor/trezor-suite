@@ -53,7 +53,7 @@ export const PassphraseWalletIsNotExistFlow = ({
         );
     }
 
-    if (discovery.status === 'enter-passphrase') {
+    if (discovery.status === 'waiting-for-passphrase' || discovery.status === 'enter-passphrase') {
         return (
             <EnterPassphrase
                 device={device}

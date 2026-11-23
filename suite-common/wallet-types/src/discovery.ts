@@ -32,6 +32,9 @@ export type DiscoveryStatus = CommonDiscoveryStatus &
               status: 'starting';
           }
         | {
+              status: 'waiting-for-passphrase';
+          }
+        | {
               status: 'enter-passphrase';
           }
         | {
