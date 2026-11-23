@@ -6,22 +6,24 @@ runs:
     # actions/checkout leaves a depth-1 clone. On pull_request events HEAD is the PR merge commit
     # without its parents, on push events it is the pushed tip without its history.
 
-    - name: Fetch the parents of the PR merge commit and derive the Nx SHAs from them
+    - name: Fetch the base parent of the PR merge commit and derive the Nx SHAs from it
       id: pr-range
       if: ${{ github.event_name == 'pull_request' }}
       shell: bash
-      env:
-        PR_NUMBER: ${{ github.event.pull_request.number }}
       # The merge commit's first parent is the tip of the base branch it was created on, so
-      # HEAD^1..HEAD is exactly what the PR changes, whatever the base branch is: develop, a release
+      # parent..HEAD is exactly what the PR changes, whatever the base branch is: develop, a release
       # branch or another PR's branch. For a develop PR it is also the merge base nx-set-shas would
-      # derive from origin/develop. A depth-1 merge commit has no parents, so it is deepened by one,
-      # which is all Nx needs: the merge base of HEAD^1 and HEAD is HEAD^1 itself. A re-run checks
-      # out the original run's merge commit and gets that commit's parents the same way. The PR
-      # branch history is not needed either, which also makes this work for PRs from forks.
+      # derive from origin/develop. The depth-1 merge commit still records its parents, so the first
+      # parent is read from the commit object and fetched by SHA at depth 1. `git fetch --deepen`
+      # would be shorter, but GitHub regenerates the merge commit with a new SHA, for stacked PRs
+      # every few minutes, and deepening a merge commit no longer advertised fetches nothing. Nx needs no history: `git merge-base` finds nothing between two
+      # shallow tips, so Nx diffs the base against HEAD directly, which needs only their trees. A
+      # re-run checks out the original run's merge commit and gets its parent the same way. The PR
+      # branch history is not needed either, which also makes this work for PRs from forks. A
+      # checkout that already has the base skips the fetch, which would make a full clone shallow.
       run: |
-        git fetch --no-tags --deepen=1 origin "+${GITHUB_SHA}:refs/remotes/pull/${PR_NUMBER}/merge"
-        base=$(git rev-parse HEAD^1)
+        base=$(git cat-file -p HEAD | sed -n 's/^parent //p' | head -n 1)
+        git cat-file -e "${base}^{commit}" 2>/dev/null || git fetch --no-tags --depth=1 origin "$base"
         echo "NX_BASE=$base" >> "$GITHUB_ENV"
         echo "NX_HEAD=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
         echo "base=$base" >> "$GITHUB_OUTPUT"
