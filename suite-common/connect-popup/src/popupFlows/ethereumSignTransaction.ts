@@ -27,7 +27,12 @@ export class EthereumSignTransaction extends AbstractSignTransactionFlow<'ethere
         // The simulation modal has nothing to render for a chain Blockaid can't scan, so opening it
         // would leave the call waiting on a confirmation the user never sees. Decided from the raw
         // payload, as the simulation is, not from the defaulted chain ID above.
-        if (isEvmTxSimulationSupported({ method: this.method, payload: this.payload })) {
+        if (
+            isEvmTxSimulationSupported(
+                { method: this.method, payload: this.payload },
+                this.getEvmNetworks(),
+            )
+        ) {
             await this.simulateTransaction(TrezorConnect.ethereumGetAddress, path);
         }
 

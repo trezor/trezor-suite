@@ -2,6 +2,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { events } from '@suite-common/analytics';
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
+import { type EvmNetworksResponse, evmNetworksQueryOptions } from '@suite-common/evm-networks-api';
+import { type QueryClient, createQueryClient } from '@suite-common/react-query';
 import { type LockDevice, type LockDeviceDep } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -322,7 +324,10 @@ describe('connectPopupCallInnerThunk', () => {
         source: { type: 'web', origin: 'https://app.example', manifest: { appName: 'app' } },
     };
 
-    const runCallThunk = async (params: PopupFlowParams<CallMethodKeys>) => {
+    const runCallThunk = async (
+        params: PopupFlowParams<CallMethodKeys>,
+        queryClient: QueryClient = createQueryClient({ shouldRefetchOnEvents: false }),
+    ) => {
         const dispatch = jest.fn();
         const extra: ConnectPopupCallInnerThunkDeps = {
             services: {
@@ -336,6 +341,7 @@ describe('connectPopupCallInnerThunk', () => {
                     report: mock(),
                 },
                 lockDevice: mock(),
+                queryClient,
             },
         };
         const deferred = getPopupCallDeferred(true);
@@ -368,6 +374,36 @@ describe('connectPopupCallInnerThunk', () => {
                 paramNames: ['coin', 'outputs'],
             }),
         });
+    });
+
+    it('hands the flow the EVM networks cached in the query client', async () => {
+        const run = jest
+            .spyOn(CommonPopupFlow.prototype, 'run')
+            .mockResolvedValue({ success: true, payload: { message: 'ok' } });
+        const queryClient = createQueryClient({ shouldRefetchOnEvents: false });
+        const evmNetworksResponse: EvmNetworksResponse = {
+            generatedAt: '2026-11-18T00:00:00.000Z',
+            networks: [
+                {
+                    caip2: 'eip155:5000',
+                    name: 'Mantle',
+                    nativeCurrency: { symbol: 'MNT', name: 'Mantle', decimals: 18 },
+                    networkType: 'mainnet',
+                    rpcUrls: [],
+                    mayClearSign: false,
+                    simulationSupport: true,
+                },
+            ],
+        };
+
+        await runCallThunk(interactiveComposeParams, queryClient);
+        const flow = run.mock.contexts[0] as CommonPopupFlow;
+
+        expect(flow['getEvmNetworks']()).toBeUndefined();
+
+        queryClient.setQueryData(evmNetworksQueryOptions.queryKey, evmNetworksResponse);
+
+        expect(flow['getEvmNetworks']()).toBe(evmNetworksResponse.networks);
     });
 
     it('answers and reports a failed call, cleaning the flow up only after the error is shown', async () => {

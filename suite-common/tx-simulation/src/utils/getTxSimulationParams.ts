@@ -3,6 +3,7 @@ import { type MessageScanParams } from '@blockaid/client/resources/solana/messag
 import { type TransactionScanParams as StellarScanParams } from '@blockaid/client/resources/stellar/transaction';
 import { base58 } from '@scure/base';
 
+import { type EvmNetwork } from '@suite-common/evm-networks-api';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
 
@@ -16,25 +17,32 @@ type EvmSignRequest =
     | Pick<TxSimulationMethod<'ethereumSignTransaction'>, 'method' | 'payload'>
     | Pick<TxSimulationMethod<'ethereumSignTypedData'>, 'method' | 'payload'>;
 
-const resolveBlockaidEvmChainOfRequest = ({ method, payload }: EvmSignRequest) =>
+const resolveBlockaidEvmChainOfRequest = (
+    { method, payload }: EvmSignRequest,
+    evmNetworks?: readonly EvmNetwork[],
+) =>
     method === 'ethereumSignTransaction'
-        ? resolveBlockaidEvmChain(payload.transaction.chainId)
+        ? resolveBlockaidEvmChain(payload.transaction.chainId, evmNetworks)
         : resolveBlockaidEvmChain(
               payload.data.domain.chainId ? Number(payload.data.domain.chainId) : undefined,
+              evmNetworks,
           );
 
-export const isEvmTxSimulationSupported = (request: EvmSignRequest) =>
-    resolveBlockaidEvmChainOfRequest(request) !== null;
+export const isEvmTxSimulationSupported = (
+    request: EvmSignRequest,
+    evmNetworks?: readonly EvmNetwork[],
+) => resolveBlockaidEvmChainOfRequest(request, evmNetworks) !== null;
 
 function transformPayloadOfEthereumSignTransaction(
     action: TxSimulationMethod<'ethereumSignTransaction'>,
+    evmNetworks?: readonly EvmNetwork[],
 ) {
     const {
         payload: { transaction },
         fromAddress,
         sourceOrigin,
     } = action;
-    const chain = resolveBlockaidEvmChainOfRequest(action);
+    const chain = resolveBlockaidEvmChainOfRequest(action, evmNetworks);
 
     if (!chain) {
         return null;
@@ -68,13 +76,14 @@ function transformPayloadOfEthereumSignTransaction(
 
 function transformPayloadOfEthereumSignTypedData(
     action: TxSimulationMethod<'ethereumSignTypedData'>,
+    evmNetworks?: readonly EvmNetwork[],
 ) {
     const {
         payload: { data },
         fromAddress,
         sourceOrigin,
     } = action;
-    const chain = resolveBlockaidEvmChainOfRequest(action);
+    const chain = resolveBlockaidEvmChainOfRequest(action, evmNetworks);
 
     if (!chain) {
         return null;
@@ -146,19 +155,22 @@ function transformPayloadOfStellarSignTransaction({
 /**
  * Transform payload to the format expected by the tx simulation API.
  */
-export function getTxSimulationParams(action: TxSimulationAction | null) {
+export function getTxSimulationParams(
+    action: TxSimulationAction | null,
+    evmNetworks?: readonly EvmNetwork[],
+) {
     if (!action) {
         return null;
     }
 
     switch (action.method) {
         case 'ethereumSignTransaction': {
-            const params = transformPayloadOfEthereumSignTransaction(action);
+            const params = transformPayloadOfEthereumSignTransaction(action, evmNetworks);
 
             return params && ({ method: action.method, params } as const);
         }
         case 'ethereumSignTypedData': {
-            const params = transformPayloadOfEthereumSignTypedData(action);
+            const params = transformPayloadOfEthereumSignTypedData(action, evmNetworks);
 
             return params && ({ method: action.method, params } as const);
         }

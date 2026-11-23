@@ -112,6 +112,7 @@ const createFlow = (dispatch: jest.Mock, source: ConnectCallSource = WEB_SOURCE,
                 device: { selectedDevice: mockSuiteDevice() },
                 connectPopup: { activeCall: PICKER },
             }),
+            getEvmNetworks: () => undefined,
         },
     );
 
