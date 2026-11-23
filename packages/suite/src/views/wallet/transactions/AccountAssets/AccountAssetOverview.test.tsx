@@ -287,4 +287,24 @@ describe('the account overview with the asset-first Home', () => {
         expect(rowTestIds()).toEqual(['@wallet/account-asset/btc/coin']);
         expect(screen.queryByTestId('@dashboard/home-asset/grouping')).not.toBeInTheDocument();
     });
+
+    it('shows the crypto balance next to the fiat total of a UTXO account', () => {
+        renderOverview([btcAccount]);
+
+        // 0.5 BTC at $60,000.
+        expect(screen.getByTestId('@wallet/account-assets/fiat-amount')).toHaveTextContent(
+            '$30,000.00',
+        );
+        expect(screen.getByTestId('@wallet/account-assets/crypto-amount')).toHaveTextContent(
+            '0.5 BTC',
+        );
+    });
+
+    it('shows only the fiat total of an address-based account', () => {
+        renderOverview([ethAccount]);
+
+        expect(
+            screen.queryByTestId('@wallet/account-assets/crypto-amount'),
+        ).not.toBeInTheDocument();
+    });
 });

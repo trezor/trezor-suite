@@ -6,9 +6,13 @@ import {
     selectIsAssetTableTotalIncomplete,
     selectShownWalletAssetKeys,
 } from '@suite-common/assets';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { isUtxoBased } from '@suite-common/wallet-utils';
 import { Box, Card, Column, Row, Skeleton, Text } from '@trezor/components';
 
+import { AmountUnitSwitchWrapper } from '#src/components/suite/AmountUnitSwitchWrapper';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { NoRatesTooltip } from '#src/components/suite/Ticker/NoRatesTooltip';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { useAccountHeaderContext } from '#src/support/suite/AccountHeaderProvider';
@@ -23,6 +27,7 @@ type AccountAssetBalanceProps = {
 
 /** What the account is worth in total, and how many assets make it up. */
 export const AccountAssetBalance = ({ accountKey }: AccountAssetBalanceProps) => {
+    const account = useSelector(state => selectAccountByKey(state, accountKey));
     const assetCount = useSelector(state => selectShownWalletAssetKeys(state, accountKey).length);
     const { fiatValue } = useSelector(state => selectHomeAssetTotals(state, accountKey));
     const isIncomplete = useSelector(state => selectIsAssetTableTotalIncomplete(state, accountKey));
@@ -76,6 +81,22 @@ export const AccountAssetBalance = ({ accountKey }: AccountAssetBalanceProps) =>
                             >
                                 <NoRatesTooltip />
                             </Row>
+                        )}
+                        {account && isUtxoBased(account) && (
+                            <Text
+                                as="div"
+                                typographyStyle="body-md"
+                                intent="neutral"
+                                priority="secondary"
+                                data-testid="@wallet/account-assets/crypto-amount"
+                            >
+                                <AmountUnitSwitchWrapper symbol={account.symbol}>
+                                    <FormattedCryptoAmount
+                                        value={account.formattedBalance}
+                                        networkSymbol={account.symbol}
+                                    />
+                                </AmountUnitSwitchWrapper>
+                            </Text>
                         )}
                     </Column>
                 </Column>
