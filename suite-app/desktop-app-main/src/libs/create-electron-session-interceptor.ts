@@ -15,7 +15,7 @@ import { hasSwitch } from './process-switches';
  */
 export const createElectronSessionInterceptor = (): RequestInterceptor => {
     let beforeRequestListeners: BeforeRequestListener[] = [];
-    const filter = { urls: ['*://*/*'] };
+    const filter = { urls: ['*://*/*', 'file:///*'] };
 
     // URLs that should work even in offline mode (e.g., localhost, test servers)
     const offlineModeAllowedUrls = [
