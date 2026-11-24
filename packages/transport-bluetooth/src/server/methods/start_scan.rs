@@ -28,14 +28,14 @@ async fn stop_scanning(adapter: &Adapter, manager: &AdapterManager) {
 pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast) -> MethodResult {
     // a running scan only needs the queue, not the radio
     let radio = manager
-        .lock_discovery_for_request("start_scan", async { !manager.is_scanning().await })
+        .lock_discovery_for_request("start_scan", async { !manager.is_adapter_scanning().await })
         .await?;
     if !manager.has_listener(&broadcast).await {
         return Err(AdapterError::ClientDisconnected.into());
     }
 
     // AdapterManager resets the flag when the adapter turns off
-    if manager.is_scanning().await {
+    if manager.continue_adapter_scan().await {
         info!("AdapterManager is already scanning");
         drop(radio);
         let devices = manager.get_devices().await;

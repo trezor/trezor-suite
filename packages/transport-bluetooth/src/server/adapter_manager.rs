@@ -52,6 +52,8 @@ pub struct AdapterManager {
 struct ManagerState {
     adapter_loader: Option<JoinHandle<()>>,
     is_scanning: bool,
+    // Stays set after a stop_scan until the adapter stops the scan.
+    adapter_scanning: bool,
     listeners: Vec<ConnectionBroadcast>,
     peripherals: DashMap<String, TrezorDevice>,
     known_peripherals: Vec<KnownDevice>,
@@ -104,6 +106,7 @@ impl AdapterManager {
         let manager_state = Arc::new(Mutex::new(ManagerState {
             adapter_loader: None,
             is_scanning: false,
+            adapter_scanning: false,
             listeners: Vec::new(),
             peripherals: DashMap::new(),
             known_peripherals: Vec::new(),
@@ -183,6 +186,7 @@ impl AdapterManager {
         if self.is_scanning().await {
             return true;
         }
+        self.manager_state.lock().await.adapter_scanning = false;
         // without an adapter there is no scan to stop
         let Ok(adapter) = self.get_adapter_or_die().await else {
             return true;
@@ -363,14 +367,32 @@ impl AdapterManager {
         state.is_scanning
     }
 
+    /// True also after a stop_scan, while the adapter stop waits for the
+    /// connections.
+    pub async fn is_adapter_scanning(&self) -> bool {
+        self.manager_state.lock().await.adapter_scanning
+    }
+
+    /// Sets the flag again when the adapter still scans. The adapter stop
+    /// that waits for the connections then does not run.
+    pub async fn continue_adapter_scan(&self) -> bool {
+        let mut state = self.manager_state.lock().await;
+        state.is_scanning = state.adapter_scanning;
+
+        state.is_scanning
+    }
+
     pub async fn set_scanning(&self, value: bool) {
         let mut state = self.manager_state.lock().await;
         state.is_scanning = value;
+        state.adapter_scanning |= value;
     }
 
     pub async fn take_scanning(&self) -> bool {
         let mut state = self.manager_state.lock().await;
-        std::mem::take(&mut state.is_scanning)
+        state.is_scanning = false;
+
+        std::mem::take(&mut state.adapter_scanning)
     }
 
     pub async fn set_known_peripherals(&self, value: Vec<KnownDevice>) {
@@ -1246,6 +1268,37 @@ mod tests {
         assert!(!manager.is_scanning().await);
     }
 
+    // The adapter scans until the connection ends. A start in that time
+    // continues the scan, and the stop in the background does not run.
+    #[cfg(target_os = "linux")]
+    #[tokio::test(start_paused = true)]
+    async fn start_scan_after_a_stop_during_a_connection_does_not_wait() {
+        use crate::server::{methods, types::WsResponsePayload};
+
+        let manager = AdapterManager::new().await.expect("manager");
+        let client = ConnectionBroadcast::new("client".to_string()).expect("broadcast");
+        manager.add_listener(client.clone()).await;
+        manager.set_scanning(true).await;
+        let connection = manager
+            .radio_lock
+            .lock_connection("connect", "device")
+            .await;
+        methods::stop_scan(manager.clone())
+            .await
+            .expect("stop_scan");
+
+        let started = tokio::time::Instant::now();
+        assert!(matches!(
+            methods::start_scan(manager.clone(), client).await,
+            Ok(WsResponsePayload::Peripherals { .. })
+        ));
+        assert_eq!(started.elapsed(), Duration::ZERO);
+
+        drop(connection);
+        sleep(Duration::from_millis(1)).await;
+        assert!(manager.is_scanning().await);
+    }
+
     // A client starts the scan again when the adapter is enabled again. That
     // start must not find the flag of the scan the adapter stopped.
     #[tokio::test]
@@ -1255,6 +1308,7 @@ mod tests {
 
         manager.update_adapter_state(AdapterState::Disabled).await;
         assert!(!manager.is_scanning().await);
+        assert!(!manager.is_adapter_scanning().await);
     }
 
     #[tokio::test(start_paused = true)]
