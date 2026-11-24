@@ -162,6 +162,7 @@ export { ReferralError } from './src/views/refer-a-friend/ReferralError';
 export { ReferralInvitation } from './src/views/refer-a-friend/ReferralInvitation';
 export { ReferralJoinedContent } from './src/views/refer-a-friend/ReferralJoinedContent';
 export { ReferralLoading } from './src/views/refer-a-friend/ReferralLoading';
+export { ReferralOtherWalletBanner } from './src/views/refer-a-friend/ReferralOtherWalletBanner';
 export { ReferralUnavailable } from './src/views/refer-a-friend/ReferralUnavailable';
 export { ANNUAL_REWARD_LIMIT } from './src/views/refer-a-friend/referralConstants';
 export { useReferralActions } from './src/views/refer-a-friend/useReferralActions';

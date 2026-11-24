@@ -10597,6 +10597,15 @@ export const messages = defineMessages({
         id: 'TR_REFERRAL_JOIN_PROGRAM',
         defaultMessage: 'Join program',
     },
+    TR_REFERRAL_OTHER_WALLET_TITLE: {
+        id: 'TR_REFERRAL_OTHER_WALLET_TITLE',
+        defaultMessage: 'This Trezor isn’t part of Refer-A-Friend yet.',
+    },
+    TR_REFERRAL_OTHER_WALLET_DESCRIPTION: {
+        id: 'TR_REFERRAL_OTHER_WALLET_DESCRIPTION',
+        defaultMessage:
+            'This Trezor uses a different wallet backup. Joining here creates a separate link with its own rewards.',
+    },
     TR_REFERRAL_CARD_YOU_GET: {
         id: 'TR_REFERRAL_CARD_YOU_GET',
         defaultMessage: 'You get',
