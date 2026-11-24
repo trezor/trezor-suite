@@ -818,12 +818,15 @@ describe(`${Preloader.name} component`, () => {
                 <Index app="onboarding" />,
             );
             const deviceStep = screen.getByTestId('@onboarding/stepper/device');
-            expect(deviceStep.getAttribute('aria-label')).toMatch(/67%$/);
+            expect(
+                screen.getByTestId('@onboarding/stepper/device').getAttribute('aria-label'),
+            ).toMatch(/67%$/);
 
             act(() => {
                 services.store.dispatch(deviceActions.deviceDisconnect(device));
             });
-            expect(deviceStep.getAttribute('aria-label')).toMatch(/67%$/);
+            expect(screen.queryByTestId('@onboarding/stepper')).toBeNull();
+            expect(deviceStep).not.toBeInTheDocument();
 
             const bootloaderDevice = mockSuiteDevice(
                 { mode: 'bootloader', connected: true, available: true },
@@ -837,12 +840,16 @@ describe(`${Preloader.name} component`, () => {
             act(() => {
                 services.store.dispatch(deviceActions.updateSelectedDevice(bootloaderDevice));
             });
-            expect(deviceStep.getAttribute('aria-label')).toMatch(/67%$/);
+            expect(
+                screen.getByTestId('@onboarding/stepper/device').getAttribute('aria-label'),
+            ).toMatch(/67%$/);
 
             act(() => {
                 services.store.dispatch(deviceActions.updateSelectedDevice(device));
             });
-            expect(deviceStep.getAttribute('aria-label')).toMatch(/67%$/);
+            expect(
+                screen.getByTestId('@onboarding/stepper/device').getAttribute('aria-label'),
+            ).toMatch(/67%$/);
             unmount();
         },
     );
@@ -1020,6 +1027,94 @@ describe(`${Preloader.name} component`, () => {
         expect(screen.queryByTestId('@onboarding/device-check/setup-button')).toBeNull();
         unmount();
     });
+
+    it('blocks an initialized replacement device even without a disconnect event', () => {
+        const firstDevice = mockSuiteDevice(
+            {
+                id: 'first-device',
+                mode: 'initialize',
+                connected: true,
+                available: true,
+                firmware: 'valid',
+            },
+            { initialized: false },
+        );
+        const secondDevice = mockSuiteDevice(
+            {
+                id: 'second-device',
+                mode: 'normal',
+                connected: true,
+                available: true,
+                firmware: 'valid',
+            },
+            { device_id: 'second-device', initialized: true },
+        );
+        const initialState = getInitialState({
+            suite: {
+                transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
+            },
+            device: { selectedDevice: firstDevice },
+            persistentDeviceData: { devices: [] },
+        });
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
+            preloadedState: initialState,
+            reducer: (state = initialState, action) => ({
+                ...state,
+                router: routerReducer(state.router, action),
+                onboarding: onboardingReducers(state.onboarding, action),
+                device: deviceActions.updateSelectedDevice.match(action)
+                    ? { ...state.device, selectedDevice: action.payload }
+                    : state.device,
+            }),
+            services: createServices,
+        });
+        const { unmount } = renderWithProviders(
+            { ...services, networks: { networkIcon } },
+            <Index app="dashboard" />,
+        );
+        expect(screen.getByTestId('@onboarding/device-check/setup-button')).toBeVisible();
+
+        act(() => {
+            services.store.dispatch(deviceActions.updateSelectedDevice(secondDevice));
+        });
+
+        expect(screen.queryByTestId('@onboarding/device-check/setup-button')).toBeNull();
+        expect(screen.queryByTestId('@onboarding/path-create-button')).toBeNull();
+        fireEvent.click(
+            screen.getByTestId('@onboarding/unexpected-state/is-same/start-over-button'),
+        );
+        expect(services.store.getState().router.app).not.toBe('onboarding');
+        expect(services.store.getState().onboarding.isActive).toBe(false);
+        expect(screen.getByTestId('@onboarding/complete-onboarding')).toBeVisible();
+        unmount();
+    });
+
+    it.each(['security-check', 'firmware', 'create-or-recover', 'set-pin', 'final'] as const)(
+        'hides the stepper for a disconnected remembered device at %s',
+        activeStepId => {
+            const initialState = getInitialState({
+                router: createRouterStateMockForRoute('onboarding-index'),
+                suite: {
+                    transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
+                },
+                device: { selectedDevice: mockSuiteDevice({ connected: false, available: false }) },
+            });
+            initialState.onboarding = { ...initialState.onboarding, isActive: true, activeStepId };
+            const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
+                preloadedState: initialState,
+                services: createServices,
+            });
+            const { unmount } = renderWithProviders(
+                { ...services, networks: { networkIcon } },
+                <Index app="onboarding" />,
+            );
+
+            expect(screen.queryByTestId('@onboarding/stepper')).toBeNull();
+            expect(screen.getByTestId('@suite/menu/settings')).toBeVisible();
+            expect(screen.getByTestId('@guide/button-open')).toBeVisible();
+            unmount();
+        },
+    );
 
     it('keeps ALT+W available on the dashboard when a previous onboarding remains active', () => {
         const initialState = getInitialState({
@@ -1242,7 +1337,7 @@ describe(`${Preloader.name} component`, () => {
 
         expect(services.store.getState().router.route?.name).toBe('settings-index');
         expect(screen.queryByTestId('@onboarding-layout/body')).toBeNull();
-        expect(screen.getByTestId('@onboarding/stepper')).toBeVisible();
+        expect(screen.queryByTestId('@onboarding/stepper')).toBeNull();
         fireEvent.click(screen.getByTestId('@settings/back'));
         expect(services.store.getState().router.route?.name).toBe('onboarding-index');
         expect(services.store.getState().onboarding.activeStepId).toBe('final');

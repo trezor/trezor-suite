@@ -1,6 +1,13 @@
+import { selectIsDeviceConnected } from '@suite-common/device';
 import { Column, Divider } from '@trezor/components';
 import { QuestionIcon } from '@trezor/icons';
-import { OnboardingStepper, useGuide, useOnboarding, useResponsiveContext } from '@trezor/suite';
+import {
+    OnboardingStepper,
+    useGuide,
+    useOnboarding,
+    useResponsiveContext,
+    useSelector,
+} from '@trezor/suite';
 
 import { NavigationItem } from './NavigationItem';
 import { SettingsNavigationItem } from './SettingsNavigationItem';
@@ -9,12 +16,13 @@ import { Sidebar } from './Sidebar';
 export const OnboardingSidebar = () => {
     const { openGuide } = useGuide();
     const { isActive } = useOnboarding();
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const { isSidebarCollapsed } = useResponsiveContext();
 
     return (
         <Sidebar isDeviceSelectorInteractive={false}>
             <Column flex="1" overflow="auto">
-                {isActive && <OnboardingStepper />}
+                {isActive && isDeviceConnected && <OnboardingStepper />}
             </Column>
             <Divider margin={0} color="surfaceBorderSunken" />
             <Column

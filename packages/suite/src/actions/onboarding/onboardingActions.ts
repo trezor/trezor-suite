@@ -8,7 +8,6 @@ import { type RecoveryState, recoveryRerunThunk } from '@suite/recovery';
 import {
     type GotoThunkState,
     type SuiteRouterHistoryDep,
-    closeModalAppThunk,
     gotoThunk,
     selectRouterApp,
 } from '@suite/router';
@@ -137,7 +136,7 @@ const goToSuiteThunk =
 
         dispatch(initialRunCompletedThunk({ isFreshDeviceSetup }));
         dispatch(resetOnboarding());
-        dispatch(closeModalAppThunk(true));
+        dispatch(gotoThunk({ routeName: 'suite-index' }));
 
         // For Bitcoin-only firmware, pre-activate BTC so the user lands on a populated dashboard
         // instead of the empty "activate assets" state. Only do this on initial setup, when no
