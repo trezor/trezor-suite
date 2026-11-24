@@ -25,7 +25,7 @@ const startWardd = async () => {
             const { id, method, params } = frame;
             if (method === 'hello') {
                 return params.token === 'good'
-                    ? send({ id, result: { version: '1.0' } })
+                    ? send({ id, result: { version: '2.0' } })
                     : send({ id, error: { code: 'unauthorised', message: 'wrong pairing token' } });
             }
             if (method === 'sync') {
@@ -69,7 +69,7 @@ describe('WarddClient', () => {
         expect(wardd.received[0]).toEqual({
             id: 1,
             method: 'hello',
-            params: { version: '1.0', token: 'good' },
+            params: { version: '2.0', token: 'good' },
         });
         client.close();
         await expect(
@@ -136,6 +136,20 @@ describe('createWarddProvider', () => {
         wardd = await startWardd();
     });
     afterEach(() => wardd.close());
+
+    it('sends only the WARD child when opening an Evolu replica', async () => {
+        const provider = createWarddProvider({ url: wardd.url, token: 'good', WebSocket: ws });
+        const evoluNode = Buffer.from(Array.from({ length: 64 }, (_, i) => i)).toString('hex');
+        try {
+            await provider.openStore({ wardId: 'ab'.repeat(32), evoluNode });
+            expect(wardd.received.find(frame => frame.method === 'openStore').params).toEqual({
+                wardId: 'ab'.repeat(32),
+                wardOwnerSecret: 'fa46e3e20d89f32d8e70c6864f06407a79d036a7cf851d2fcfbb5228ffce42d3',
+            });
+        } finally {
+            await provider.dispose?.();
+        }
+    });
 
     it('rebuilds the cumulative staged set a batched flush needs from one pull at a time', async () => {
         const provider = createWarddProvider({ url: wardd.url, token: 'good', WebSocket: ws });

@@ -1,6 +1,7 @@
 import type { WardProvider } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
+import { deriveWardOwnerSecret } from './deriveWardOwnerSecret';
 import { WarddClient, type WarddClientOptions, stripAbsent } from './warddClient';
 
 /**
@@ -47,10 +48,13 @@ export const createWarddProvider = (options: WarddClientOptions): WarddProvider 
     };
 
     return {
-        async openStore(params) {
+        async openStore({ wardId, evoluNode }) {
             staged = [];
 
-            return (await connected()).call('openStore', params);
+            return (await connected()).call('openStore', {
+                wardId,
+                ...(evoluNode ? { wardOwnerSecret: deriveWardOwnerSecret(evoluNode) } : {}),
+            });
         },
 
         async serveEntry(request: PROTO.WardEntryRequest) {

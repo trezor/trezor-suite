@@ -10,10 +10,11 @@
  */
 import { randomBytes } from '@noble/hashes/utils.js';
 
-import { DevWm, toHex } from '@trezor/ward-core';
+import { DevWm, WardTrie, toHex } from '@trezor/ward-core';
 
 import { InMemoryWardBackend, type StoredLink } from '../backend';
 import { WardHost } from '../host';
+import { materialize } from '../replica';
 import { FakeDevice, newWallet } from './fakeDevice';
 
 const hex = (n: number) => toHex(randomBytes(n));
@@ -55,6 +56,50 @@ const setup = (opts: { wm: boolean }) => {
 
 const rowInto = async (backend: InMemoryWardBackend, counter: number) =>
     (await backend.load()).find(l => l.toCounter === counter)!;
+
+it('characterizes predecessor lookup work during a linear replica rebuild', () => {
+    const { linksEndingAt: rebuild } = WardTrie.prototype;
+    let inspected = 0;
+    const walk = jest.spyOn(WardTrie.prototype, 'linksEndingAt').mockImplementation(function (
+        this: WardTrie,
+        ...args
+    ) {
+        const { links } = this;
+        this.links = new Proxy(links, {
+            get(target, key, receiver) {
+                if (typeof key === 'string' && /^\d+$/.test(key)) inspected++;
+
+                return Reflect.get(target, key, receiver);
+            },
+        });
+        try {
+            return rebuild.apply(this, args);
+        } finally {
+            this.links = links;
+        }
+    });
+    try {
+        for (const count of [128, 256]) {
+            inspected = 0;
+            const links: StoredLink[] = Array.from({ length: count }, (_, i) => ({
+                fromCounter: i,
+                fromRoot: null,
+                toCounter: i + 1,
+                toRoot: null,
+                operation: 'commit',
+                authCommit: '00'.repeat(32),
+                wmSig: null,
+                changes: [],
+            }));
+            expect(materialize(links, { counter: count, root: null }).head.counter).toBe(count);
+            // Current cost, independent of machine speed. Replace this with a linear
+            // bound when predecessor lookup is indexed.
+            expect(inspected).toBe((count * (count + 1)) / 2 + count);
+        }
+    } finally {
+        walk.mockRestore();
+    }
+});
 
 describe('the replica with a corrupt row', () => {
     it('keeps serving the valid head, and taking writes, after a corrupt row lands above it', async () => {

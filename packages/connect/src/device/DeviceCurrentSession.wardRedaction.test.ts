@@ -51,6 +51,20 @@ const setup = () => {
 };
 
 describe('DeviceCurrentSession: WARD log redaction', () => {
+    it('redacts the Evolu node and its delegated identity proof', async () => {
+        const { session, respondWith, loggedText } = setup();
+        const node = 'ab'.repeat(64);
+        const proof = 'cd'.repeat(64);
+        respondWith({ type: 'EvoluNode', message: { data: node } });
+
+        await session.typedCall('EvoluGetNode', 'EvoluNode', {
+            proof_of_delegated_identity: proof,
+        });
+
+        expect(loggedText()).not.toContain(node);
+        expect(loggedText()).not.toContain(proof);
+    });
+
     it('redacts the secret value on the way out and the leaf content on the way back', async () => {
         const { session, respondWith, loggedText } = setup();
         respondWith({

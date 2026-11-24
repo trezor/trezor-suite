@@ -21,9 +21,9 @@ import type { Params, Response } from '../../params';
  * - `status`: the replica's head and the WM's, with no device involved.
  *
  * THE WALLET. `wardId` names it; when omitted the device is asked (`WardSync`). The replica is
- * owned by a child of the wallet's Evolu node: pass `evoluNode` if the host has it, or
- * `proof_of_delegated_identity` to have it fetched in this session (`EvoluGetNode`). A wardd
- * running in memory needs neither.
+ * owned by a child of the wallet's Evolu node. Pass `evoluNode` if the host has it, or
+ * `proof_of_delegated_identity` to fetch the node in this session (`EvoluGetNode`).
+ * Connect derives the WARD-only secret locally. A daemon running in memory needs neither.
  *
  * `token` is wardd's pairing token; `url` defaults to `ws://127.0.0.1:21329`. wardd's refusals keep
  * their code in the message (`wardd needs_rejoin: ...`).

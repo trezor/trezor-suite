@@ -66,7 +66,7 @@ export class Wardd {
     }
 
     /** Open (or return the already-open) host for a wallet. */
-    openStore(params: { wardId: string; evoluNode?: string }): Promise<WardHost> {
+    openStore(params: { wardId: string; wardOwnerSecret?: string }): Promise<WardHost> {
         const key = toHex(toBytes(params.wardId));
         let host = this.hosts.get(key);
         if (!host) {
@@ -84,15 +84,18 @@ export class Wardd {
         return host;
     }
 
-    private openBackend(params: { wardId: string; evoluNode?: string }): Promise<WardBackend> {
+    private openBackend(params: {
+        wardId: string;
+        wardOwnerSecret?: string;
+    }): Promise<WardBackend> {
         if (this.opts.memory) return Promise.resolve(new InMemoryWardBackend());
-        if (!params.evoluNode) {
-            return Promise.reject(new Error('openStore needs the evoluNode to own the replica'));
+        if (!params.wardOwnerSecret) {
+            return Promise.reject(new Error('openStore needs the WARD owner secret'));
         }
 
         return EvoluWardBackend.open({
             wardId: toBytes(params.wardId),
-            evoluNode: params.evoluNode,
+            wardOwnerSecret: params.wardOwnerSecret,
             dataDir: this.opts.dataDir,
             relayUrl: this.opts.relayUrl,
         });

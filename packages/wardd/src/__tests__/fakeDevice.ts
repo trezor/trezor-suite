@@ -477,22 +477,39 @@ export class FakeDevice {
         }
     }
 
-    /** WardSyncResponse: verify the step, walk the links forward from this head, adopt. */
-    onServiceSyncResponse(m: Json) {
+    /** Verify the attested step, then pull pages back to this device's head. */
+    async onServiceSyncResponse(m: Json, pull: (request: RelayMessage) => Promise<RelayMessage>) {
         if (!this.serviceNonce) throw new Error('no sync round is open');
         const from = { counter: m.from_counter ?? 0, root: fromWire(m.from_root) };
         const to = { counter: m.to_counter ?? 0, root: fromWire(m.to_root) };
         this.verifyAttestation(this.serviceNonce, m, from, to);
         this.serviceNonce = null;
-        let cursor = this.head;
-        for (const l of (m.links ?? []) as Json[]) {
-            const lf = { counter: l.from_counter, root: fromWire(l.from_root) };
-            const lt = { counter: l.to_counter, root: fromWire(l.to_root) };
-            if (!same(lf, cursor)) continue;
-            this.checkLink(lf, lt, toBytes(l.auth_commit));
-            cursor = lt;
+        let cursor = to;
+        let first = true;
+        while (cursor.counter > this.head.counter) {
+            const page = await pull(
+                msg('WardChainRequest', {
+                    to_counter: cursor.counter,
+                    ...wireRoot('to_root', cursor.root),
+                }),
+            );
+            const links = page.message.links as Json[];
+            if (page.name !== 'WardChainLinkAck' || !links?.length) {
+                throw new Error('the service could not continue the chain');
+            }
+            for (const l of links) {
+                const lf = { counter: l.from_counter, root: fromWire(l.from_root) };
+                const lt = { counter: l.to_counter, root: fromWire(l.to_root) };
+                if (!same(lt, cursor) || lf.counter >= lt.counter || (first && !same(lf, from))) {
+                    throw new Error('the link does not match the chain');
+                }
+                this.checkLink(lf, lt, toBytes(l.auth_commit));
+                cursor = lf;
+                first = false;
+                if (cursor.counter <= this.head.counter) break;
+            }
         }
-        if (!same(cursor, to)) throw new Error('the links do not reach the attested head');
+        if (!same(cursor, this.head)) throw new Error('the links do not reach the stored head');
         this.head = to;
         this.headNonce = toBytes(m.to_head_nonce);
         this.online = true;

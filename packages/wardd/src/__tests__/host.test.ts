@@ -27,6 +27,26 @@ const headOf = async (host: WardHost) => {
 };
 
 describe('wardd conversations', () => {
+    it('characterizes replica work for queued catch-up after its caller disconnects', async () => {
+        const device = new FakeDevice();
+        const backend = new InMemoryWardBackend();
+        const load = jest.spyOn(backend, 'load');
+        const host = new WardHost(device.wardId, backend, null);
+        let releaseWallet = () => {};
+        const hold = new Promise<void>(resolve => (releaseWallet = resolve));
+        const running = host.exclusive(() => hold);
+        const disconnected = new Error('the caller disconnected while queued');
+        const queued = host.catchUp(() => Promise.reject(disconnected));
+        expect(load).not.toHaveBeenCalled();
+
+        releaseWallet();
+        await Promise.all([running, expect(queued).rejects.toBe(disconnected)]);
+        // Until queue cancellation is wired up, catch-up rebuilds before asking
+        // for a device reply and discovering that its caller is gone.
+        expect(load).toHaveBeenCalledTimes(1);
+        await expect(host.status()).resolves.toMatchObject({ counter: 0 });
+    });
+
     it('enrols the wallet at genesis and brings the device online', async () => {
         const { a, host, wm } = await setup();
         await expect(host.sync(a.call)).resolves.toMatchObject({ counter: 0, how: 'reconcile' });

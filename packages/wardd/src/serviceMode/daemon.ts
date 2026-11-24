@@ -2,8 +2,9 @@
  * `wardd --service`: wardd serving a SERVICE build itself, over the device's WARD interface.
  *
  * On a service build the device does not ask the calling app for WARD data -- it asks a daemon on a
- * dedicated interface, inverting the conversation: wardd binds the interface once
- * (`WardServiceOpen`) and from then on only answers what the device asks. This replaces the Python
+ * dedicated interface, inverting the conversation: wardd announces itself with
+ * `WardServiceOpen` and repeats that announcement when idle so the device can rebind.
+ * This replaces the Python
  * stand-in `connect-cli/e2e/ward-service-daemon.py`, keeping its command line and its log lines,
  * which `ward-queue.sh` parses:
  *
@@ -16,7 +17,7 @@
  */
 import { DevWm, toBytes, toHex } from '@trezor/ward-core';
 
-import { WardHost } from '../host';
+import { type ServiceSyncRound, WardHost } from '../host';
 import { materialize } from '../replica';
 import { SERVICE_PROTOCOL_VERSION, type ServiceMessage, UdpCodec, WARD_PORT_OFFSET } from './codec';
 import { ServiceStateFile } from './stateFile';
@@ -44,6 +45,7 @@ const hexlead = (v: unknown, length = 8) => {
     return v.slice(0, 2 * length) + (v.length > 2 * length ? '…' : '');
 };
 const num = (v: unknown) => (typeof v === 'number' ? String(v) : 'None');
+const BIND_RETRY_MS = 1000;
 
 const detailOf = ({ name, message: m }: ServiceMessage) => {
     if (name === 'WardServiceFetch') {
@@ -107,10 +109,15 @@ export const runServiceDaemon = async (opts: ServiceDaemonOptions): Promise<numb
         }
         log(`NOTE ${now()} the service interface speaks codec v1`);
 
-        await io.write({
-            name: 'WardServiceOpen',
-            message: { protocol_version: SERVICE_PROTOCOL_VERSION },
-        });
+        const announce = (renewBinding: boolean) =>
+            io.write({
+                name: 'WardServiceOpen',
+                message: {
+                    protocol_version: SERVICE_PROTOCOL_VERSION,
+                    ...(renewBinding ? { renew_binding: true } : {}),
+                },
+            });
+        await announce(false);
         const ack = await io.read(15_000);
         if (ack?.name !== 'WardServiceOpenAck') {
             log(
@@ -130,20 +137,28 @@ export const runServiceDaemon = async (opts: ServiceDaemonOptions): Promise<numb
         // THE LOOP OF ONE MESSAGE: the device writes a request and reads the reply; no pipelining.
         const served: string[] = [];
         let stopping = false;
+        let syncRound: ServiceSyncRound | undefined;
         void opts.stopped.then(() => {
             stopping = true;
         });
         while (!stopping) {
-            const request = await io.read(500);
-            if (!request) continue;
+            const request = await io.read(BIND_RETRY_MS);
+            if (!request) {
+                if (!stopping) await announce(true);
+                continue;
+            }
             served.push(request.name);
             const detail = detailOf(request);
             let reply: ServiceMessage;
             try {
+                if (request.name !== 'WardChainRequest') syncRound = undefined;
                 if (request.name === 'WardSyncRequest') {
-                    reply = await (
+                    syncRound = await (
                         await hostFor(String(request.message.ward_id ?? ''))
                     ).serviceSync(request.message);
+                    reply = syncRound.response;
+                } else if (request.name === 'WardChainRequest' && syncRound) {
+                    reply = syncRound.chainPage(request.message);
                 } else if (!host) {
                     throw new Error(`${request.name} before any sync: no wallet established`);
                 } else if (request.name === 'WardServiceFetch') {

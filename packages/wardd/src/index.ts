@@ -3,4 +3,4 @@ export * from './replica';
 export * from './host';
 export * from './service';
 export * from './server';
-export { EvoluWardBackend, WardSchema, wardOwner, wardOwnerSecret } from './evoluBackend';
+export { EvoluWardBackend, WardSchema, wardOwner } from './evoluBackend';

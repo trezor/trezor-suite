@@ -46,12 +46,10 @@ import {
     startDbWorker,
 } from '@evolu/common/local-first';
 import { createBetterSqliteDriver } from '@evolu/nodejs';
-import { hmac } from '@noble/hashes/hmac.js';
-import { sha512 } from '@noble/hashes/sha2.js';
 import path from 'path';
 import { WebSocket } from 'ws';
 
-import { concatBytes, toBytes, toHex } from '@trezor/ward-core';
+import { toBytes, toHex } from '@trezor/ward-core';
 
 import {
     type StoredAttestation,
@@ -60,23 +58,6 @@ import {
     attestationId,
     linkId,
 } from './backend';
-
-/**
- * The WARD owner secret: the SLIP-21 child `WARD` of the node the device returns for
- * `['TREZOR', 'Evolu']` -- i.e. `['TREZOR', 'Evolu', 'WARD']`. `evoluNode` is that node's 64
- * bytes; a child is HMAC-SHA512 keyed by the parent's first half, and its key is the second half.
- */
-export const wardOwnerSecret = (evoluNode: string): Uint8Array => {
-    const node = toBytes(evoluNode);
-    if (node.length !== 64) throw new Error('evoluNode must be the 64-byte SLIP-21 node');
-    const child = hmac(
-        sha512,
-        node.slice(0, 32),
-        concatBytes(Uint8Array.of(0), new TextEncoder().encode('WARD')),
-    );
-
-    return child.slice(32, 64);
-};
 
 /** The Evolu owner for a WARD secret, derived the way Suite derives its own from a Trezor node. */
 export const wardOwner = (secretBytes: Uint8Array): AppOwner => {
@@ -238,7 +219,7 @@ export const settled = (
 
 export interface EvoluBackendOptions {
     wardId: Uint8Array;
-    evoluNode: string;
+    wardOwnerSecret: string;
     /** where the SQLite file lives; null keeps it in memory (tests) */
     dataDir: string | null;
     /** an Evolu relay to replicate through; none keeps the replica local */
@@ -264,7 +245,7 @@ export class EvoluWardBackend implements WardBackend {
     ) {}
 
     static async open(opts: EvoluBackendOptions): Promise<EvoluWardBackend> {
-        const owner = wardOwner(wardOwnerSecret(opts.evoluNode));
+        const owner = wardOwner(toBytes(opts.wardOwnerSecret));
         const { run, evoluError } = createNodeRun(opts.dataDir);
         const evolu = getOrThrow(
             await run(

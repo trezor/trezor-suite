@@ -6,6 +6,7 @@ import { Assert } from '@trezor/schema-utils';
 import type { MethodMessage } from '../../core/AbstractMethod';
 import { AbstractMethod } from '../../core/AbstractMethod';
 import type { DeviceCommands } from '../../device/DeviceCommands';
+import { deriveWardOwnerSecret } from '../../ward/deriveWardOwnerSecret';
 import { WarddClient, WarddError, type WarddMessage, stripAbsent } from '../../ward/warddClient';
 
 /**
@@ -112,6 +113,9 @@ export default class WardRelay extends AbstractMethod<'wardRelay', WardRelaySche
             });
             evoluNode = node.message.data;
         }
-        await client.call('openStore', { wardId, ...(evoluNode ? { evoluNode } : {}) });
+        await client.call('openStore', {
+            wardId,
+            ...(evoluNode ? { wardOwnerSecret: deriveWardOwnerSecret(evoluNode) } : {}),
+        });
     }
 }

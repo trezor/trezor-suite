@@ -22,11 +22,16 @@ import {
 import { runServiceDaemon } from '../serviceMode/daemon';
 import { ServiceStateFile } from '../serviceMode/stateFile';
 
+const syncDevice = async (device: FakeDevice, host: WardHost) => {
+    const round = await host.serviceSync(device.serviceSyncRequest().message);
+    await device.onServiceSyncResponse(round.response.message, request =>
+        Promise.resolve(round.chainPage(request.message)),
+    );
+};
+
 /** What a service build's WARD operation does: sync, fetch the leaf, publish. */
 const publishNext = async (device: FakeDevice, host: WardHost) => {
-    device.onServiceSyncResponse(
-        (await host.serviceSync(device.serviceSyncRequest().message)).message,
-    );
+    await syncDevice(device, host);
     const fetched = await host.serviceFetch(device.serviceFetchRequest().message);
     expect(fetched.name).toBe('WardEntryAck');
     const reply = await host.servicePublish(device.servicePublishRequest(fetched.message).message);
@@ -80,8 +85,8 @@ describe('the service responder', () => {
         // both sync at genesis, both fetch; a publishes first
         a.enqueue('a', '1');
         b.enqueue('b', '2');
-        a.onServiceSyncResponse((await host.serviceSync(a.serviceSyncRequest().message)).message);
-        b.onServiceSyncResponse((await host.serviceSync(b.serviceSyncRequest().message)).message);
+        await syncDevice(a, host);
+        await syncDevice(b, host);
         const fa = await host.serviceFetch(a.serviceFetchRequest().message);
         const fb = await host.serviceFetch(b.serviceFetchRequest().message);
         const pb = b.servicePublishRequest(fb.message);
@@ -95,6 +100,42 @@ describe('the service responder', () => {
         // b syncs and its change goes through on top
         expect((await publishNext(b, host)).name).toBe('WardPublishAck');
         expect(b.head.counter).toBe(2);
+    });
+
+    it('pages history larger than the wire buffer against a single attestation', async () => {
+        const keys = newWallet();
+        const writer = new FakeDevice(keys);
+        const reader = new FakeDevice(keys);
+        const { state, wm } = await fresh();
+        const host = new WardHost(writer.wardId, state, wm);
+        for (let i = 0; i < 130; i++) {
+            writer.enqueue('alice', String(i));
+            await publishNext(writer, host);
+        }
+        const anchor = writer.head;
+        const round = await host.serviceSync(reader.serviceSyncRequest().message);
+        expect(round.response.message).not.toHaveProperty('links');
+        const pageSizes: number[] = [];
+        let unpagedSize = 0;
+        await reader.onServiceSyncResponse(round.response.message, async request => {
+            expect(reader.head.counter).toBe(0);
+            const page = round.chainPage(request.message);
+            const { id, bytes } = encodeMessage(page);
+            const links = page.message.links as unknown[];
+            expect(bytes.length).toBeLessThan(8704);
+            pageSizes.push(links.length);
+            unpagedSize += bytes.length;
+            if (pageSizes.length === 1) {
+                writer.enqueue('alice', 'newer');
+                await publishNext(writer, host);
+            }
+
+            return decodeMessage(id, bytes);
+        });
+        expect(pageSizes).toEqual([64, 64, 2]);
+        expect(unpagedSize).toBeGreaterThan(8704);
+        expect(reader.head).toEqual(anchor);
+        expect(writer.head.counter).toBe(131);
     });
 
     it('resumes from its state file: the same replica, the same WM head nonce', async () => {
@@ -166,7 +207,8 @@ describe('the service codec', () => {
  */
 describe('wardd --service over UDP', () => {
     it('binds, serves sync / fetch / publish, logs every exchange, and stops', async () => {
-        const device = new FakeDevice();
+        const keys = newWallet();
+        const device = new FakeDevice(keys);
         device.enqueue('alice', 'bc1q-alice');
         const endpoint = createSocket('udp4');
         await new Promise<void>(resolve => endpoint.bind(0, '127.0.0.1', () => resolve()));
@@ -229,7 +271,11 @@ describe('wardd --service over UDP', () => {
         await send(device.serviceSyncRequest());
         const sync = await receive();
         expect(sync.name).toBe('WardSyncResponse');
-        device.onServiceSyncResponse(sync.message);
+        await device.onServiceSyncResponse(sync.message, async request => {
+            await send(request);
+
+            return receive();
+        });
         await send(device.serviceFetchRequest());
         const fetched = await receive();
         expect(fetched.name).toBe('WardEntryAck');
@@ -238,6 +284,34 @@ describe('wardd --service over UDP', () => {
         expect(ack.name).toBe('WardPublishAck');
         device.onServicePublishAck(ack.message);
         expect(device.head.counter).toBe(1);
+
+        const restored = new FakeDevice(keys);
+        await send(restored.serviceSyncRequest());
+        const attested = await receive();
+        expect(attested.name).toBe('WardSyncResponse');
+        await expect(
+            restored.onServiceSyncResponse(attested.message, async request => {
+                await send(request);
+
+                // Drop the response and wait for the same daemon to renew its binding.
+                expect((await receive()).name).toBe('WardChainLinkAck');
+                expect(await receive()).toMatchObject({
+                    name: 'WardServiceOpen',
+                    message: { renew_binding: true },
+                });
+                throw new Error('service exchange timed out');
+            }),
+        ).rejects.toThrow('service exchange timed out');
+        expect(restored.head.counter).toBe(0);
+        await send(restored.serviceSyncRequest());
+        const retried = await receive();
+        expect(retried.name).toBe('WardSyncResponse');
+        await restored.onServiceSyncResponse(retried.message, async request => {
+            await send(request);
+
+            return receive();
+        });
+        expect(restored.head).toEqual(device.head);
 
         stop();
         await expect(daemon).resolves.toBe(0);
@@ -249,8 +323,12 @@ describe('wardd --service over UDP', () => {
             '1 WardSyncRequest -> WardSyncResponse',
             '2 WardServiceFetch -> WardEntryAck',
             '3 WardPublish -> WardPublishAck',
+            '4 WardSyncRequest -> WardSyncResponse',
+            '5 WardChainRequest -> WardChainLinkAck',
+            '6 WardSyncRequest -> WardSyncResponse',
+            '7 WardChainRequest -> WardChainLinkAck',
         ]);
-        expect(lines).toContain('STOPPED 3');
+        expect(lines).toContain('STOPPED 7');
         expect(lines.find(l => l.includes('WardSyncRequest'))).toMatch(/from counter=0$/);
     });
 });

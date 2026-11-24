@@ -28,7 +28,7 @@ const call = (
     id: number,
     method: string,
     params: object = {},
-    device?: FakeDevice,
+    device?: Pick<FakeDevice, 'call'>,
 ): Promise<WarddFrame> =>
     new Promise(resolve => {
         const onMessage = async (data: unknown) => {
@@ -81,7 +81,7 @@ describe('the wardd socket', () => {
 
     it('refuses another major version', async () => {
         const ws = await open(server.port);
-        expect(await call(ws, 1, 'hello', { version: '2.0', token: TOKEN })).toMatchObject({
+        expect(await call(ws, 1, 'hello', { version: '1.0', token: TOKEN })).toMatchObject({
             error: { code: 'version_mismatch' },
         });
         ws.close();
@@ -91,6 +91,23 @@ describe('the wardd socket', () => {
         const ws = await open(server.port);
         await call(ws, 1, 'hello', { version: RELAY_PROTOCOL_VERSION, token: TOKEN });
         expect(await call(ws, 2, 'status')).toMatchObject({ error: { code: 'no_store' } });
+        ws.close();
+    });
+
+    it('accepts a WARD owner credential and rejects the legacy parent field', async () => {
+        const ws = await open(server.port);
+        const wardId = toHex(new FakeDevice().wardId);
+        await call(ws, 1, 'hello', { version: RELAY_PROTOCOL_VERSION, token: TOKEN });
+        expect(
+            await call(ws, 2, 'openStore', { wardId, evoluNode: '00'.repeat(64) }),
+        ).toMatchObject({
+            error: { code: 'bad_request' },
+        });
+        expect(
+            await call(ws, 3, 'openStore', { wardId, wardOwnerSecret: '00'.repeat(32) }),
+        ).toMatchObject({
+            result: { counter: 0 },
+        });
         ws.close();
     });
 
@@ -164,4 +181,45 @@ describe('a wardd with --adversarial-tests', () => {
             await server.close();
         }
     });
+});
+
+it('releases the wallet after a device reply deadline and lets another client finish', async () => {
+    const wardd = await Wardd.create({ dataDir: null, memory: true });
+    const server = await startServer({ wardd, token: TOKEN, port: 0, deviceReplyTimeoutMs: 250 });
+    try {
+        const device = new FakeDevice();
+        const stalled = await open(server.port);
+        const ready = await open(server.port);
+        for (const ws of [stalled, ready]) {
+            await call(ws, 1, 'hello', { version: RELAY_PROTOCOL_VERSION, token: TOKEN });
+            await call(ws, 2, 'openStore', { wardId: toHex(device.wardId) });
+        }
+
+        let called = () => {};
+        const started = new Promise<void>(resolve => (called = resolve));
+        const closed = new Promise(resolve => stalled.once('close', resolve));
+        const interrupted = call(
+            stalled,
+            3,
+            'sync',
+            {},
+            {
+                call: () => {
+                    called();
+
+                    return new Promise(() => {});
+                },
+            },
+        );
+        await started;
+        device.enqueue('alice', 'bc1q-alice');
+        const next = call(ready, 3, 'flush', {}, device);
+        await expect(interrupted).resolves.toMatchObject({
+            error: { code: 'device_failure', message: expect.stringContaining('timed out') },
+        });
+        await closed;
+        await expect(next).resolves.toMatchObject({ result: { counter: 1, published: 1 } });
+    } finally {
+        await server.close();
+    }
 });

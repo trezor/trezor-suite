@@ -23,6 +23,8 @@ const blacklist: Record<string, string[] | true> = {
     PublicKey: ['node', 'xpub'],
     DecryptedMessage: ['message', 'address'],
     Features: true,
+    EvoluGetNode: true,
+    EvoluNode: true,
     // WARD entries are user secrets: the leaf `value`/`content` and the restore-capable
     // `mac`/`auth_*` are as sensitive as a passphrase, and `app_id`/`identifier`/`entry_key` are the
     // labels that key them -- keep all of it out of the device-call log, as PassphraseAck.passphrase

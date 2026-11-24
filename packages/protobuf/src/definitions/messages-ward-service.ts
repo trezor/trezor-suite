@@ -89,6 +89,7 @@ export type WardServiceOpen = Static<typeof WardServiceOpen>;
 export const WardServiceOpen = Type.Object(
     {
         protocol_version: Type.Optional(Type.Number()),
+        renew_binding: Type.Optional(Type.Boolean()),
     },
     { $id: 'WardServiceOpen' },
 );

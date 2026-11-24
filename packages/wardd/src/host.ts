@@ -55,6 +55,15 @@ export class RelayFailure extends Error {
 
 type Json = Record<string, any>;
 
+export interface ServiceSyncRound {
+    response: RelayMessage;
+    chainPage: (request: Json) => RelayMessage;
+}
+
+// A 32-byte MAC, two 32-byte roots, two uint32 counters and protobuf framing cost
+// at most 116 bytes per link. A full page fits the firmware's 8704-byte buffer.
+const SERVICE_CHAIN_PAGE_SIZE = 64;
+
 const expectReply = (reply: RelayMessage, ...names: string[]): Json => {
     if (reply.name === 'Failure') {
         throw new RelayFailure(
@@ -507,8 +516,8 @@ export class WardHost {
     // service build the device talks to wardd over its own interface and pulls what it needs. A
     // port of tests/ward_service.py `MockWardService`, minus its failure-mode knobs.
 
-    /** WardSyncRequest -> WardSyncResponse: the WM's attested step, and the links into it. */
-    serviceSync(req: Json) {
+    /** Attest once, then serve backwards from a snapshot of that history. */
+    serviceSync(req: Json): Promise<ServiceSyncRound> {
         return this.exclusive(async () => {
             const wm = this.requireWm('the service channel');
             const wardId = toBytes(req.ward_id ?? '');
@@ -531,33 +540,63 @@ export class WardHost {
             }
             const att = await wm.attest(wardId, toBytes(req.nonce ?? ''));
             await this.keepAttestation(att, toBytes(req.nonce ?? ''));
-            const { trie, head } = await this.replica();
-            // THE WM'S LINE, oldest first, from the device's head on: what it needs to walk forward
-            const line = head.counter
-                ? trie.linksEndingAt(head.counter, head.root, Number.MAX_SAFE_INTEGER).reverse()
-                : [];
-            const links = line
-                .filter(l => l.fromCounter >= current.counter)
-                .map(l => ({
-                    from_counter: l.fromCounter,
-                    ...opt('from_root', l.fromRoot),
-                    to_counter: l.toCounter,
-                    ...opt('to_root', l.toRoot),
-                    auth_commit: toHex(l.authCommit),
-                }));
+            const anchor = { counter: att.toCounter, root: rootOf(toHex(att.toRoot)) };
+            let cursor = anchor;
+            const snapshot =
+                anchor.counter > current.counter
+                    ? materialize(await this.backend.load(), anchor)
+                    : undefined;
+            let history = snapshot?.behind ? undefined : snapshot?.trie;
 
             return {
-                name: 'WardSyncResponse',
-                message: {
-                    from_counter: att.fromCounter,
-                    ...opt('from_root', rootOf(toHex(att.fromRoot))),
-                    to_counter: att.toCounter,
-                    ...opt('to_root', rootOf(toHex(att.toRoot))),
-                    timestamp: att.timestamp,
-                    wm_signature: toHex(att.signature),
-                    from_head_nonce: toHex(att.fromHeadNonce),
-                    to_head_nonce: toHex(att.toHeadNonce),
-                    links,
+                response: {
+                    name: 'WardSyncResponse',
+                    message: {
+                        from_counter: att.fromCounter,
+                        ...opt('from_root', rootOf(toHex(att.fromRoot))),
+                        to_counter: anchor.counter,
+                        ...opt('to_root', anchor.root),
+                        timestamp: att.timestamp,
+                        wm_signature: toHex(att.signature),
+                        from_head_nonce: toHex(att.fromHeadNonce),
+                        to_head_nonce: toHex(att.toHeadNonce),
+                    },
+                },
+                chainPage(request) {
+                    if (
+                        request.to_counter !== cursor.counter ||
+                        !sameRoot(rootOf(request.to_root), cursor.root)
+                    ) {
+                        throw new Error('unexpected service chain cursor');
+                    }
+                    const links = history
+                        ? serveChain(
+                              history,
+                              cursor.counter,
+                              cursor.root,
+                              SERVICE_CHAIN_PAGE_SIZE,
+                          ).filter(link => link.from_counter >= current.counter)
+                        : [];
+                    if (
+                        links.some(
+                            link =>
+                                link.auth_commit.length !== 64 ||
+                                (link.from_root !== undefined && link.from_root.length !== 64) ||
+                                (link.to_root !== undefined && link.to_root.length !== 64),
+                        )
+                    ) {
+                        throw new Error('invalid service chain link');
+                    }
+                    const last = links.at(-1);
+                    if (last) {
+                        cursor = {
+                            counter: last.from_counter,
+                            root: rootOf(last.from_root),
+                        };
+                    }
+                    if (!last || cursor.counter === current.counter) history = undefined;
+
+                    return { name: 'WardChainLinkAck', message: { links } };
                 },
             };
         });

@@ -8,7 +8,7 @@
  */
 import { createHash, timingSafeEqual } from 'crypto';
 import { type AddressInfo } from 'net';
-import { WebSocketServer } from 'ws';
+import { WebSocket, WebSocketServer } from 'ws';
 
 import {
     type ClientFrame,
@@ -28,6 +28,8 @@ import { type Device, RelayFailure, type WardHost } from './host';
 import { type Wardd } from './service';
 
 export const DEFAULT_PORT = 21329;
+const DEVICE_REPLY_TIMEOUT_MS = 120_000;
+const CONVERSATION_TIMEOUT_MS = 900_000;
 
 export const DEFAULT_ORIGINS = [
     'https://suite.trezor.io',
@@ -41,6 +43,7 @@ export interface ServerOptions {
     token: string;
     port?: number;
     allowedOrigins?: readonly string[];
+    deviceReplyTimeoutMs?: number;
     /**
      * One line per exchange: the call, its outcome, and every device message by NAME. Payloads,
      * values and the token are never logged; keys and roots are shortened.
@@ -107,19 +110,42 @@ export const startServer = async (opts: ServerOptions) => {
         let host: WardHost | null = null;
         const pending = new Map<
             number,
-            { resolve: (reply: RelayMessage) => void; reject: (e: Error) => void }
+            {
+                resolve: (reply: RelayMessage) => void;
+                reject: (e: Error) => void;
+                timer: ReturnType<typeof setTimeout>;
+            }
         >();
-        const send = (frame: WarddFrame) => socket.send(JSON.stringify(frame));
+        const active = new Set<number>();
+        const send = (frame: WarddFrame) => {
+            if (socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify(frame));
+        };
         const fail = (id: number, code: RelayErrorCode, message: string) =>
             send({ id, error: { code, message } });
 
-        // A CLIENT THAT GOES AWAY MID-CONVERSATION must end it, or the wallet's lock is held forever.
+        const takePending = (id: number) => {
+            const waiting = pending.get(id);
+            if (waiting) {
+                clearTimeout(waiting.timer);
+                pending.delete(id);
+            }
+
+            return waiting;
+        };
+
+        const cancelPending = (reason: string) => {
+            for (const id of pending.keys()) {
+                takePending(id)?.reject(new RelayFailure('device_failure', reason));
+            }
+        };
+
         socket.on('close', () => {
             log(`[${conn}] closed`);
-            for (const { reject } of pending.values()) {
-                reject(new RelayFailure('device_failure', 'the client went away'));
-            }
-            pending.clear();
+            cancelPending('the client went away');
+        });
+        socket.on('error', () => {
+            socket.terminate();
+            cancelPending('the client connection failed');
         });
 
         const handle = async (call: RelayCall): Promise<Record<string, unknown>> => {
@@ -144,20 +170,63 @@ export const startServer = async (opts: ServerOptions) => {
             if (!authed) throw new RelayFailure('unauthorised', 'hello first');
             if (call.method === 'openStore') {
                 if (typeof p.wardId !== 'string') throw new RelayFailure('bad_request', 'wardId');
-                host = await opts.wardd.openStore({ wardId: p.wardId, evoluNode: p.evoluNode });
+                if ('evoluNode' in p) {
+                    throw new RelayFailure(
+                        'bad_request',
+                        'openStore requires the WARD owner secret',
+                    );
+                }
+                if (
+                    p.wardOwnerSecret !== undefined &&
+                    (typeof p.wardOwnerSecret !== 'string' ||
+                        !/^[\da-f]{64}$/i.test(p.wardOwnerSecret))
+                ) {
+                    throw new RelayFailure('bad_request', 'invalid WARD owner secret');
+                }
+                host = await opts.wardd.openStore({
+                    wardId: p.wardId,
+                    wardOwnerSecret: p.wardOwnerSecret,
+                });
                 const { counter, root, wmAvailable } = await host.status();
 
                 return { counter, root, wmAvailable };
             }
             if (!host) throw new RelayFailure('no_store', 'openStore first');
+            let deadline: number | undefined;
             const device: Device = message =>
                 new Promise((resolve, reject) => {
+                    if (socket.readyState !== WebSocket.OPEN) {
+                        reject(new RelayFailure('device_failure', 'the client went away'));
+
+                        return;
+                    }
+                    const now = performance.now();
+                    deadline ??= now + CONVERSATION_TIMEOUT_MS;
+                    const timeout = Math.min(
+                        opts.deviceReplyTimeoutMs ?? DEVICE_REPLY_TIMEOUT_MS,
+                        deadline - now,
+                    );
+                    const expire = () => {
+                        const reason = 'timed out waiting for the client device';
+                        takePending(call.id);
+                        reject(new RelayFailure('device_failure', reason));
+                        fail(call.id, 'device_failure', reason);
+                        // Reconnect so that a late reply cannot answer a later conversation.
+                        socket.close(1008, reason);
+                        cancelPending(reason);
+                    };
+                    if (timeout <= 0) {
+                        expire();
+
+                        return;
+                    }
                     pending.set(call.id, {
                         resolve: reply => {
                             log(`[${conn}] #${call.id}   <- ${reply.name}`);
                             resolve(reply);
                         },
                         reject,
+                        timer: setTimeout(expire, timeout),
                     });
                     log(`[${conn}] #${call.id}   -> ${message.name}`);
                     send({ id: call.id, deviceCall: message });
@@ -207,29 +276,39 @@ export const startServer = async (opts: ServerOptions) => {
                 return fail(0, 'bad_request', 'not JSON');
             }
             if (typeof frame?.id !== 'number') return fail(0, 'bad_request', 'no id');
+            if (socket.readyState !== WebSocket.OPEN) return;
             if ('deviceReply' in frame) {
-                const waiting = pending.get(frame.id);
+                const waiting = takePending(frame.id);
                 if (!waiting) return fail(frame.id, 'bad_request', 'no deviceCall is waiting');
-                pending.delete(frame.id);
 
                 return waiting.resolve(frame.deviceReply);
             }
             const { id } = frame;
+            if (active.has(id)) {
+                const reason = 'call id is already in use';
+                socket.close(1008, reason);
+                cancelPending(reason);
+
+                return;
+            }
+            active.add(id);
             log(`[${conn}] #${id} ${String(frame.method)}${describeCall(frame)}`);
             handle(frame).then(
                 result => {
+                    active.delete(id);
                     log(
                         `[${conn}] #${id} ${String(frame.method)} ok ${outcome(frame.method, result)}`,
                     );
                     send({ id, result });
                 },
                 (e: unknown) => {
+                    active.delete(id);
                     log(
                         `[${conn}] #${id} ${String(frame.method)} FAILED ${
                             e instanceof RelayFailure ? e.code : 'internal'
                         }: ${e instanceof Error ? e.message : String(e)}`,
                     );
-                    pending.delete(id);
+                    takePending(id);
                     if (e instanceof RelayFailure) fail(id, e.code, e.message);
                     else fail(id, 'internal', e instanceof Error ? e.message : String(e));
                     // a wrong token ends the socket; "hello first" leaves it to say hello

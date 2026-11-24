@@ -18,7 +18,7 @@
  * `deviceReply` whose name is the pull; wardd answers it with the next `deviceCall`.
  */
 
-export const RELAY_PROTOCOL_VERSION = '1.0';
+export const RELAY_PROTOCOL_VERSION = '2.0';
 
 /** A protobuf message by name, JSON body, bytes as hex. */
 export interface RelayMessage {
@@ -29,7 +29,7 @@ export interface RelayMessage {
 export type RelayMethod =
     /** Handshake: `{ version, token }` -> `{ version, wardd }`. First frame on every socket. */
     | 'hello'
-    /** Open the wallet's replica: `{ wardId, evoluNode }` (hex) -> `{ counter, root }`. */
+    /** Open the wallet's replica with its WARD owner secret. All byte fields are hex. */
     | 'openStore'
     /** Answer one pull outside a conversation: `{ request, staged? }` -> WardEntryAck body. */
     | 'serveEntry'

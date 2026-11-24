@@ -1,4 +1,4 @@
-# WARD relay protocol, version 1.0
+# WARD relay protocol, version 2.0
 
 This is the contract between `wardd` (the local WARD service) and every integration that talks to
 a Trezor: Connect, HWI (Python), BHWI and async-hwi (Rust), and Lark (Java). The types are in
@@ -40,6 +40,9 @@ wardd  → client  { "id": 1, "result": { "counter": 5, "root": "…" } }
   `WardChainRequest`, the client sends that as the `deviceReply`. `wardd` answers with the next
   `deviceCall` (`WardEntryAck` or `WardChainLinkAck`).
 - **A device `Failure` is also a `deviceReply`.** `wardd` ends the call with `device_failure`.
+- **Device replies have deadlines.** `wardd` allows two minutes per reply and fifteen minutes
+  from the first device request. A timeout returns `device_failure` and closes the socket.
+  Reconnect and sync to learn whether a publication already landed.
 - **The session must be the unlocked wallet session.** WARD roots are per wallet (per
   passphrase), so the conversation must run on the session the user unlocked.
 
@@ -48,16 +51,18 @@ wardd  → client  { "id": 1, "result": { "counter": 5, "root": "…" } }
 | method        | params                                     | result                                    | conversation                               |
 | ------------- | ------------------------------------------ | ----------------------------------------- | ------------------------------------------ |
 | `hello`       | `{ version, token }`                       | `{ version, wardd }`                      | no; must be the first frame                |
-| `openStore`   | `{ wardId, evoluNode }`                    | `{ counter, root }`                       | no                                         |
+| `openStore`   | `{ wardId, wardOwnerSecret? }`             | `{ counter, root, wmAvailable }`          | no                                         |
 | `serveEntry`  | `{ request, staged? }`                     | `WardEntryAck` body                       | no (used by Connect's `wardProvider` hook) |
 | `applyResult` | a `WardLeafAck` / `WardFlushQueueAck` body | `{ counter, root, published }`            | no                                         |
 | `sync`        | `{ rejoin? }`                              | `{ counter, root, how }`                  | yes                                        |
 | `flush`       | `{ maxBatch? }`                            | `{ counter, root, published, remaining }` | yes                                        |
 | `status`      | `{}`                                       | `{ counter, root, wmCounter, wmRoot }`    | no                                         |
 
-**Evolu key hand-off (`openStore`):** `evoluNode` is the SLIP-21 node the device returns from
-`EvoluGetNode`. The client gets it through its normal delegated-identity flow and passes it on.
-`wardd` derives its own WARD owner from it (`['TREZOR','Evolu','WARD']`), separate from Suite's.
+**Evolu key hand-off (`openStore`)**. The client derives the 32-byte WARD owner secret
+locally from the SLIP-21 node returned by `EvoluGetNode`, using its `WARD` child. Only that
+child's key is sent to wardd. The owner ID and existing replica storage stay compatible.
+An in-memory daemon can open a store without a credential. Version 1 clients must upgrade
+before connecting to a version 2 daemon.
 
 ## Errors
 

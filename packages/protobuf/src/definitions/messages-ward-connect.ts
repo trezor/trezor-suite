@@ -54,6 +54,7 @@ export const WardChainRequest = Type.Object(
     {
         to_counter: Type.Optional(Type.Number()),
         to_root: Type.Optional(Type.String()),
+        to_head_nonce: Type.Optional(Type.String()),
     },
     { $id: 'WardChainRequest' },
 );
@@ -176,6 +177,7 @@ export const WardRollback = Type.Object(
         from_head_nonce: Type.Optional(Type.String()),
         to_head_nonce: Type.Optional(Type.String()),
         recovered_root: Type.Optional(Type.String()),
+        recovered_counter: Type.Optional(Type.Number()),
     },
     { $id: 'WardRollback' },
 );

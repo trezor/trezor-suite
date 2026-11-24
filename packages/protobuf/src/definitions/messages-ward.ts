@@ -3,6 +3,17 @@
 // DO NOT EDIT
 import { type Static, Type } from '@trezor/schema-utils';
 
+export type WardChainAcceptance = Static<typeof WardChainAcceptance>;
+export const WardChainAcceptance = Type.Object(
+    {
+        nonce: Type.Optional(Type.String()),
+        from_head_nonce: Type.Optional(Type.String()),
+        timestamp: Type.Optional(Type.Number()),
+        wm_signature: Type.Optional(Type.String()),
+    },
+    { $id: 'WardChainAcceptance' },
+);
+
 export type WardChainLink = Static<typeof WardChainLink>;
 export const WardChainLink = Type.Object(
     {
@@ -11,6 +22,7 @@ export const WardChainLink = Type.Object(
         to_counter: Type.Optional(Type.Number()),
         to_root: Type.Optional(Type.String()),
         auth_commit: Type.Optional(Type.String()),
+        acceptance: Type.Optional(WardChainAcceptance),
     },
     { $id: 'WardChainLink' },
 );

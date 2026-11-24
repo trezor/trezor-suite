@@ -17,7 +17,6 @@ import {
     EvoluWardBackend,
     settled,
     wardOwner,
-    wardOwnerSecret,
 } from '../evoluBackend';
 
 const link = (toCounter: number): StoredLink => ({
@@ -55,7 +54,7 @@ describe('EvoluWardBackend', () => {
         try {
             const backend = await EvoluWardBackend.open({
                 wardId: randomBytes(32),
-                evoluNode: toHex(randomBytes(64)),
+                wardOwnerSecret: toHex(randomBytes(32)),
                 dataDir,
             });
             try {
@@ -96,7 +95,7 @@ describe('EvoluWardBackend', () => {
     it('keeps a WM attestation whole, once, apart from the links', async () => {
         const backend = await EvoluWardBackend.open({
             wardId: randomBytes(32),
-            evoluNode: toHex(randomBytes(64)),
+            wardOwnerSecret: toHex(randomBytes(32)),
             dataDir: null,
         });
         try {
@@ -116,15 +115,10 @@ describe('EvoluWardBackend', () => {
         }
     });
 
-    it("derives the WARD owner as a child of the wallet's Evolu node", () => {
-        const node = randomBytes(64);
-        const secret = wardOwnerSecret(toHex(node));
-        expect(secret).toHaveLength(32);
-        // not Suite's owner secret (the node's first half), and stable
-        expect(toHex(secret)).not.toBe(toHex(node.slice(0, 32)));
-        expect(wardOwnerSecret(toHex(node))).toEqual(secret);
-        expect(wardOwner(secret).id).not.toBe(wardOwner(node.slice(0, 32)).id);
-        expect(() => wardOwnerSecret(toHex(randomBytes(32)))).toThrow('64-byte');
+    it('opens the same Evolu owner for the same WARD secret', () => {
+        const secret = randomBytes(32);
+        expect(wardOwner(secret).id).toBe(wardOwner(secret.slice()).id);
+        expect(wardOwner(secret).id).not.toBe(wardOwner(randomBytes(32)).id);
     });
 });
 
@@ -202,7 +196,7 @@ describe('EvoluWardBackend.append when Evolu never completes', () => {
     it('rejects instead of hanging', async () => {
         const backend = await EvoluWardBackend.open({
             wardId: randomBytes(32),
-            evoluNode: toHex(randomBytes(64)),
+            wardOwnerSecret: toHex(randomBytes(32)),
             dataDir: null,
             appendTimeoutMs: 50,
         });

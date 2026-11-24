@@ -1,6 +1,6 @@
 /**
  * A client of `wardd`, the local WARD service, speaking the relay contract
- * (`packages/ward-core/relay.md`, version 1.x).
+ * (`packages/ward-core/relay.md`, version 2.x).
  *
  * THE FRAMES ARE RESTATED HERE rather than imported, because `@trezor/connect` is published and the
  * contract's types live in a private package. They are four shapes and a version string; a binding
@@ -12,7 +12,7 @@
  */
 
 export const WARDD_DEFAULT_URL = 'ws://127.0.0.1:21329';
-export const WARDD_RELAY_VERSION = '1.0';
+export const WARDD_RELAY_VERSION = '2.0';
 
 /** A protobuf message by name, JSON body, bytes as hex. */
 export type WarddMessage = { name: string; message: Record<string, unknown> };
