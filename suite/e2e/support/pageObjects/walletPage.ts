@@ -137,7 +137,7 @@ export class WalletPage {
         this.selectedSendTokenContract = this.page.getByTestId('@wallet/send/token-contract/0');
         this.pendingTransactionHeading = this.page
             .getByTestId('@wallet/accounts/transaction-list/pending/group/0')
-            .getByTestId('@transaction-item/0/heading');
+            .getByTestId('@wallet/transaction/unconfirmed-heading');
         this.sendForm = this.page.getByTestId('@wallet/send/outputs-and-options');
         this.sendFormHeader = this.page.getByTestId('@wallet/send-header');
         this.totalSent = this.page.getByTestId('@wallet/send/total-sent');
