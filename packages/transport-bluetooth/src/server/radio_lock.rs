@@ -109,6 +109,7 @@ impl RadioLock {
         }
     }
 
+    #[cfg(test)]
     pub async fn lock_discovery(&self, owner: &str) -> DiscoveryGuard<'_> {
         self.lock_discovery_if_needed(owner, std::future::ready(true))
             .await
@@ -154,11 +155,21 @@ impl RadioLock {
     /// Waits for running connections without the queue, so other discovery
     /// calls continue meanwhile. Use it for work that no client request waits for.
     pub async fn lock_discovery_when_idle(&self, owner: &str) -> DiscoveryGuard<'_> {
-        if self.exclusive_discovery {
-            self.wait_until(owner, "discovery", |state| state.connecting.is_empty())
-                .await;
+        loop {
+            if self.exclusive_discovery {
+                self.wait_until(owner, "discovery", |state| state.connecting.is_empty())
+                    .await;
+            }
+            let queue = self.inner.discovery_queue.lock().await;
+            if !self.exclusive_discovery || self.state().try_enter_discovery() {
+                return DiscoveryGuard {
+                    lock: self,
+                    _queue: queue,
+                };
+            }
+            // A connection started before this call got the queue. Do not
+            // keep the queue during that connection.
         }
-        self.lock_discovery(owner).await
     }
 
     fn state(&self) -> StdMutexGuard<'_, State> {
@@ -288,6 +299,30 @@ mod tests {
         assert!(queue.now_or_never().is_some());
 
         drop(connection);
+        assert!(poll!(deferred).is_ready());
+    }
+
+    // The deferred call waits for the queue when the connections end. A new
+    // connection can start meanwhile.
+    #[tokio::test]
+    async fn deferred_discovery_releases_the_queue_for_a_new_connection() {
+        let lock = RadioLock::new(true);
+        let first = lock.lock_connection("connect 1", "dev1").await;
+        let start_scan = lock
+            .lock_discovery_if_needed("start_scan", std::future::ready(false))
+            .await;
+        let mut deferred = Box::pin(lock.lock_discovery_when_idle("deferred stop"));
+        assert!(poll!(&mut deferred).is_pending());
+
+        drop(first);
+        assert!(poll!(&mut deferred).is_pending());
+        let second = lock.lock_connection("connect 2", "dev2").await;
+        drop(start_scan);
+        assert!(poll!(&mut deferred).is_pending());
+        let stop_scan = lock.lock_discovery_if_needed("stop_scan", std::future::ready(false));
+        assert!(stop_scan.now_or_never().is_some());
+
+        drop(second);
         assert!(poll!(deferred).is_ready());
     }
 
