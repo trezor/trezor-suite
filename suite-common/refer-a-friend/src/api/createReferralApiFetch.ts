@@ -35,6 +35,8 @@ const getErrorCode = async (response: Response): Promise<string | undefined> => 
 
         return hasProp(body, 'error') && typeof body.error === 'string' ? body.error : undefined;
     } catch {
+        console.error('Referral API: error response body is not valid JSON');
+
         return undefined;
     }
 };
