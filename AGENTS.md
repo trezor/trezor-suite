@@ -94,8 +94,8 @@ Project gates are in `.github/workflows/check-code-validation.yml`; target prere
 ## Setup and commands
 
 Run commands from the repository root unless stated otherwise.
-An install with `yarn --mode=skip-build`, as CI validation uses, is enough only for lint and typecheck;
-running the app, E2E or tests that load native modules requires a full install.
+An install with `yarn --mode=skip-build` is enough only for lint and typecheck; running the app, E2E
+or tests that load native modules requires a full install.
 
 - Web/desktop development: follow `README.md`.
 - Mobile development: follow `suite-native-app/app/README.md`.
