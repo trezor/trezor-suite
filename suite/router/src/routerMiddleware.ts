@@ -28,8 +28,12 @@ export const routerMiddleware = createRouterMiddleware((action, { dispatch, getS
 
         // Store back route for navigation when closing the settings.
         // Exclude settings routes – we want to close the settings and not just switch the settings tab...
-        // Exclude foreground apps – to prevent going back to modals and other unexpected states.
-        if (prevRouter.app !== 'settings' && !prevRouter.route?.isForegroundApp) {
+        // Exclude foreground apps, except onboarding when opening Settings, so returning resumes setup.
+        if (
+            prevRouter.app !== 'settings' &&
+            (!prevRouter.route?.isForegroundApp ||
+                (prevRouter.app === 'onboarding' && action.payload.app === 'settings'))
+        ) {
             return next({
                 ...action,
                 payload: {

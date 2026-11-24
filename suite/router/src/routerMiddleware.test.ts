@@ -1,5 +1,6 @@
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 
+import { createRouterStateMockForRoute } from '../mocks';
 import { getRoute } from './router';
 import { routerMiddleware } from './routerMiddleware';
 import type { RouterRootState, RouterState } from './routerReducer';
@@ -32,6 +33,30 @@ const initStore = (router?: Partial<RouterState>) =>
     }).services.store;
 
 describe('routerMiddleware', () => {
+    it('keeps onboarding as the return route while navigating Settings tabs', () => {
+        const store = initStore(createRouterStateMockForRoute('onboarding-index'));
+
+        store.dispatch(
+            routerLocationChange({
+                app: 'settings',
+                pathname: '/settings',
+                route: getRequiredRoute('settings-index'),
+                params: undefined,
+            }),
+        );
+        expect(store.getState().router.settingsBackRoute.name).toBe('onboarding-index');
+
+        store.dispatch(
+            routerLocationChange({
+                app: 'settings',
+                pathname: '/settings/device',
+                route: getRequiredRoute('settings-device'),
+                params: undefined,
+            }),
+        );
+        expect(store.getState().router.settingsBackRoute.name).toBe('onboarding-index');
+    });
+
     describe('dispatch @router/appChanged action', () => {
         it('dispatch if prevApp !== nextApp', () => {
             const store = initStore({ app: 'unknown' });

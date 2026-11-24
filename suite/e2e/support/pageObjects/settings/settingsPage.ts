@@ -143,7 +143,9 @@ export class SettingsPage {
             '@settings/early-access-confirm-button',
         );
         this.earlyAccessSkipButton = this.page.getByTestId('@settings/early-access-skip-button');
-        this.settingsCloseButton = this.page.getByTestId('@suite/menu/suite-index');
+        this.settingsCloseButton = this.page
+            .getByTestId('@settings/back')
+            .or(this.page.getByTestId('@suite/menu/suite-index'));
         this.modal = this.page.modal;
         this.modalCloseButton = this.page.modalCloseButton;
         this.deviceLabelInput = this.page.getByTestId('@settings/device/label-input');

@@ -6,6 +6,7 @@ import { KillswitchMessageScreen } from '@suite/message-system';
 import {
     selectHasRoute,
     selectIsForegroundApp,
+    selectIsOnboardingSettings,
     selectRouterApp,
     selectRouterLoaded,
 } from '@suite/router';
@@ -55,6 +56,7 @@ export const Preloader = memo(({ children }: PropsWithChildren) => {
     const isRouterLoaded = useSelector(selectRouterLoaded);
     const routerApp = useSelector(selectRouterApp);
     const isForegroundApp = useSelector(selectIsForegroundApp);
+    const isOnboardingSettings = useSelector(selectIsOnboardingSettings);
     const hasRoute = useSelector(selectHasRoute);
     const prerequisite = useSelector(selectPrerequisite);
     const shouldDisplayDeviceCompromisedOnRoute = useSelector(
@@ -144,6 +146,14 @@ export const Preloader = memo(({ children }: PropsWithChildren) => {
 
     if (isOnboarding || isStartingOnboarding) {
         return <Onboarding sidebar={<OnboardingSidebar />} />;
+    }
+
+    if (isOnboardingSettings) {
+        return (
+            <SuiteLayout sidebar={<OnboardingSidebar />} showGuideButton={false}>
+                {children}
+            </SuiteLayout>
+        );
     }
 
     if (isInteractiveDeviceChecksFlowDisplayed) {

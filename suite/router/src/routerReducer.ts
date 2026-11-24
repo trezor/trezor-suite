@@ -97,6 +97,9 @@ export const selectRoute = (state: RouterRootState): RouterState['route'] => sta
 export const selectRouterParams = (state: RouterRootState) => state.router.params;
 export const selectRouteName = (state: RouterRootState) => state.router.route?.name;
 export const selectSettingsBackRoute = (state: RouterRootState) => state.router.settingsBackRoute;
+
+export const selectIsOnboardingSettings = (state: RouterRootState) =>
+    state.router.app === 'settings' && state.router.settingsBackRoute.name === 'onboarding-index';
 export const selectRouterUrl = (state: RouterRootState) =>
     `${state.router.pathname}${state.router.search}${state.router.hash}`;
 export const selectURLSearchParams = createMemoizedSelector(

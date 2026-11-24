@@ -5,7 +5,13 @@ import { useToggleDebugMode } from '@suite/debug';
 import { injectDesktopApi } from '@suite/desktop-app-api';
 import { openModal } from '@suite/modal';
 import { selectIsRegionRestricted } from '@suite/regions';
-import { SettingsAnchor, closeModalAppThunk, gotoThunk, selectRouterApp } from '@suite/router';
+import {
+    SettingsAnchor,
+    closeModalAppThunk,
+    gotoThunk,
+    selectIsOnboardingSettings,
+    selectRouterApp,
+} from '@suite/router';
 import { selectAutodetectTheme, selectTheme, suiteSettingsActions } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
@@ -47,6 +53,7 @@ export const useAppShortcuts = () => {
 
     const isBioAuthEnabled = useSelector(selectIsBioAuthEnabled);
     const isOnboardingRoute = useSelector(selectRouterApp) === 'onboarding';
+    const isOnboardingSettings = useSelector(selectIsOnboardingSettings);
     const isRegionRestricted = useSelector(selectIsRegionRestricted);
     const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
     const toggleDebugMode = useToggleDebugMode();
@@ -99,7 +106,13 @@ export const useAppShortcuts = () => {
         }
 
         // press ALT + W to open the wallet/device switcher
-        if (altOnly && e.code === KEYBOARD_CODE.KEY_W && isDeviceSelected && !isOnboardingRoute) {
+        if (
+            altOnly &&
+            e.code === KEYBOARD_CODE.KEY_W &&
+            isDeviceSelected &&
+            !isOnboardingRoute &&
+            !isOnboardingSettings
+        ) {
             e.preventDefault();
             if (!discoveryInProgress) {
                 dispatch(

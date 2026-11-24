@@ -9,6 +9,7 @@ import {
     gotoThunk,
     routerAppChanged,
     selectCanSwitchDevice,
+    selectIsOnboardingSettings,
     selectRoute,
 } from '@suite/router';
 import { updateOnlineStatus } from '@suite/suite-lifecycle';
@@ -84,7 +85,8 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
     (action, { dispatch, next, getState, extra }) => {
         if (
             routerAppChanged.match(action) &&
-            (action.payload === 'recovery' || action.payload === 'onboarding')
+            (action.payload === 'recovery' ||
+                (action.payload === 'onboarding' && !selectIsOnboardingSettings(getState())))
         ) {
             dispatch(recoveryActions.resetReducer());
         }

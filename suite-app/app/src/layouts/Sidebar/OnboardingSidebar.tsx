@@ -1,13 +1,6 @@
-import { selectRouterApp } from '@suite/router';
 import { Column, Divider } from '@trezor/components';
 import { QuestionIcon } from '@trezor/icons';
-import {
-    OnboardingStepper,
-    useGuide,
-    useOnboarding,
-    useResponsiveContext,
-    useSelector,
-} from '@trezor/suite';
+import { OnboardingStepper, useGuide, useOnboarding, useResponsiveContext } from '@trezor/suite';
 
 import { NavigationItem } from './NavigationItem';
 import { SettingsNavigationItem } from './SettingsNavigationItem';
@@ -17,12 +10,11 @@ export const OnboardingSidebar = () => {
     const { openGuide } = useGuide();
     const { isActive } = useOnboarding();
     const { isSidebarCollapsed } = useResponsiveContext();
-    const isOnboardingRoute = useSelector(selectRouterApp) === 'onboarding';
 
     return (
         <Sidebar isDeviceSelectorInteractive={false}>
             <Column flex="1" overflow="auto">
-                {isActive && isOnboardingRoute && <OnboardingStepper />}
+                {isActive && <OnboardingStepper />}
             </Column>
             <Divider margin={0} color="surfaceBorderSunken" />
             <Column

@@ -7,7 +7,12 @@ import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type DesktopDeviceState } from '@suite/device';
 import { lockUI, locksReducer } from '@suite/locks';
-import { type RouterState, type SuiteRouterHistoryDep, routerReducer } from '@suite/router';
+import {
+    type RouterState,
+    type SuiteRouterHistoryDep,
+    routerMiddleware,
+    routerReducer,
+} from '@suite/router';
 import { createRouterStateMockForRoute, mockSuiteRouterHistory } from '@suite/router/mocks';
 import { events } from '@suite-common/analytics';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
@@ -42,7 +47,12 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { isLinux } from '@trezor/env-utils';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
-import { SIDEBAR_MIN_WIDTH, type SuiteState, onboardingReducers } from '@trezor/suite';
+import {
+    SIDEBAR_MIN_WIDTH,
+    SettingsLayout,
+    type SuiteState,
+    onboardingReducers,
+} from '@trezor/suite';
 import {
     type MockSuiteState,
     findByTestId,
@@ -1077,6 +1087,7 @@ describe(`${Preloader.name} component`, () => {
             };
             const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
                 preloadedState: initialState,
+                middleware: [routerMiddleware(() => ({}))],
                 reducer: (state = initialState, action) => ({
                     ...state,
                     router: routerReducer(state.router, action),
@@ -1086,7 +1097,9 @@ describe(`${Preloader.name} component`, () => {
             });
             const { unmount } = renderWithProviders(
                 { ...services, networks: { networkIcon } },
-                <Index app="dashboard" />,
+                <Preloader>
+                    <SettingsLayout>Settings content</SettingsLayout>
+                </Preloader>,
             );
 
             expect(services.store.getState().router.app).toBe('onboarding');
@@ -1096,13 +1109,100 @@ describe(`${Preloader.name} component`, () => {
 
             expect(bottomNavigation.getAllByRole('button')).toEqual([settingsButton, helpButton]);
             expect(screen.getAllByTestId('@suite/menu/settings')).toHaveLength(1);
+            const stepBeforeSettings = services.store.getState().onboarding.activeStepId;
+            const startTimeBeforeSettings =
+                services.store.getState().onboarding.onboardingAnalytics.startTime;
             fireEvent.click(settingsButton);
 
             expect(services.store.getState().router.route?.name).toBe('settings-index');
             expect(screen.queryByTestId('@onboarding-layout/body')).toBeNull();
+            expect(screen.getByTestId('@onboarding/stepper')).toBeVisible();
+            expect(screen.queryByTestId('@suite/menu/suite-index')).toBeNull();
+            expect(screen.getAllByTestId('@guide/button-open')).toHaveLength(1);
+            expect(screen.getByTestId('@suite/menu/settings')).toHaveAttribute(
+                'aria-current',
+                'page',
+            );
+
+            fireEvent.keyDown(window, { code: 'KeyW', altKey: true });
+            expect(services.store.getState().router.route?.name).toBe('settings-index');
+
+            fireEvent.click(screen.getByTestId('@settings/menu/device'));
+            expect(services.store.getState().router.route?.name).toBe('settings-device');
+            expect(screen.getByTestId('@onboarding/stepper')).toBeVisible();
+            fireEvent.click(screen.getByTestId('@settings/back'));
+
+            expect(services.store.getState().router.route?.name).toBe('onboarding-index');
+            expect(services.store.getState().onboarding.activeStepId).toBe(stepBeforeSettings);
+            expect(services.store.getState().onboarding.onboardingAnalytics.startTime).toBe(
+                startTimeBeforeSettings,
+            );
+            expect(screen.getByTestId('@onboarding/device-check/setup-button')).toBeVisible();
             unmount();
         },
     );
+
+    it('keeps the normal Settings sidebar when an earlier onboarding is still active', () => {
+        const initialState = getInitialState({
+            router: createRouterStateMockForRoute('settings-index'),
+            suite: {
+                transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
+            },
+            device: { selectedDevice: defaultDevice },
+        });
+        initialState.onboarding = { ...initialState.onboarding, isActive: true };
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
+            preloadedState: initialState,
+            services: createServices,
+        });
+        const { unmount } = renderWithProviders(
+            { ...services, networks: { networkIcon } },
+            <Preloader>
+                <SettingsLayout>Settings content</SettingsLayout>
+            </Preloader>,
+        );
+
+        expect(screen.getByTestId('@settings/menu/title')).toBeVisible();
+        expect(screen.getByTestId('@suite/menu/suite-index')).toBeVisible();
+        expect(screen.queryByTestId('@onboarding/stepper')).toBeNull();
+        expect(screen.queryByTestId('@settings/back')).toBeNull();
+        unmount();
+    });
+
+    it('shows the offline banner during the onboarding manual check', () => {
+        const initialState = getInitialState({
+            router: createRouterStateMockForRoute('onboarding-index'),
+            suite: {
+                online: false,
+                transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
+            },
+            device: {
+                selectedDevice: mockSuiteDevice(
+                    { mode: 'initialize', connected: true, available: true, firmware: 'valid' },
+                    { initialized: false },
+                ),
+            },
+            persistentDeviceData: { devices: [] },
+        });
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
+            preloadedState: initialState,
+            reducer: (state = initialState, action) => ({
+                ...state,
+                router: routerReducer(state.router, action),
+                onboarding: onboardingReducers(state.onboarding, action),
+            }),
+            services: createServices,
+        });
+        const { unmount } = renderWithProviders(
+            { ...services, networks: { networkIcon } },
+            <Index app="onboarding" />,
+        );
+
+        expect(screen.getByTestId('@onboarding/device-check/setup-button')).toBeVisible();
+        expect(screen.getByTestId('@suite/no-connection-banner')).toBeVisible();
+        expect(screen.getByTestId('TR_YOU_WERE_DISCONNECTED_DOT')).toBeVisible();
+        unmount();
+    });
 
     it('keeps Settings accessible after the device disconnects at the end of onboarding', () => {
         const initialState = {
@@ -1122,6 +1222,7 @@ describe(`${Preloader.name} component`, () => {
         };
         const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: initialState,
+            middleware: [routerMiddleware(() => ({}))],
             reducer: (state = initialState, action) => ({
                 ...state,
                 router: routerReducer(state.router, action),
@@ -1131,7 +1232,9 @@ describe(`${Preloader.name} component`, () => {
         });
         const { unmount } = renderWithProviders(
             { ...services, networks: { networkIcon } },
-            <Index app="onboarding" />,
+            <Preloader>
+                <SettingsLayout>Settings content</SettingsLayout>
+            </Preloader>,
         );
 
         expect(services.store.getState().router.app).toBe('onboarding');
@@ -1139,6 +1242,10 @@ describe(`${Preloader.name} component`, () => {
 
         expect(services.store.getState().router.route?.name).toBe('settings-index');
         expect(screen.queryByTestId('@onboarding-layout/body')).toBeNull();
+        expect(screen.getByTestId('@onboarding/stepper')).toBeVisible();
+        fireEvent.click(screen.getByTestId('@settings/back'));
+        expect(services.store.getState().router.route?.name).toBe('onboarding-index');
+        expect(services.store.getState().onboarding.activeStepId).toBe('final');
         unmount();
     });
 

@@ -18,10 +18,8 @@ import {
     updateAnalytics,
 } from '#src/actions/onboarding/onboardingActions';
 import * as STEP from '#src/constants/onboarding/steps';
-import {
-    type OnboardingRootState,
-    selectIsOnboardingActive,
-} from '#src/reducers/onboarding/onboardingReducer';
+import { selectIsOnboardingActive } from '#src/reducers/onboarding/onboardingReducer';
+import { type OnboardingRootState } from '#src/reducers/onboarding/onboardingState';
 
 // gotoThunk releases foreground router locks; device prompts and modals still block entry.
 export const selectCanStartOnboarding = (state: LocksRootState & ModalRootState) =>

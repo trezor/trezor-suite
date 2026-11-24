@@ -11,9 +11,8 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect';
 import { createDeferred } from '@trezor/utils';
 
-import onboardingReducer, {
-    type OnboardingRootState,
-} from '#src/reducers/onboarding/onboardingReducer';
+import onboardingReducer from '#src/reducers/onboarding/onboardingReducer';
+import { type OnboardingRootState } from '#src/reducers/onboarding/onboardingState';
 
 import {
     type RerunRecoveryThunkDeps,
