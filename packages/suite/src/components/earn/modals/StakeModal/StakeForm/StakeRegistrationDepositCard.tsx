@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -18,6 +19,8 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
 
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, key ?? ''));
     const isUpdateProviderFlow = isStakingActive && account.networkType === 'cardano';
+
+    const nativeAssetId = createAssetId({ networkSymbol: symbol });
 
     return (
         <Card paddingType="small" flex="1">
@@ -56,7 +59,7 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                             typographyStyle="body-md-strong"
                         >
                             {CARDANO_STAKING_REGISTRATION_DEPOSIT}{' '}
-                            <AssetSymbol networkSymbol={symbol} />
+                            <AssetSymbol assetId={nativeAssetId} />
                         </Paragraph>
                     </Row>
                     <Row gap={20} justifyContent="space-between">
@@ -86,7 +89,7 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                                 : 'TR_STAKE_FUNDS_WARNING'
                         }
                         values={{
-                            networkDisplaySymbol: <AssetSymbol networkSymbol={symbol} />,
+                            networkDisplaySymbol: <AssetSymbol assetId={nativeAssetId} />,
                         }}
                     />
                 }

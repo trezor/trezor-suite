@@ -1,6 +1,7 @@
+import { createAssetId } from '@suite-common/assets';
 import { type TokenInfoBranded } from '@suite-common/tokens';
 import { type Account } from '@suite-common/wallet-types';
-import { AssetName, AssetSymbol } from '@suite-native/assets';
+import { AssetIcon, AssetName, AssetSymbol } from '@suite-native/assets';
 import { Box, Card, HStack } from '@suite-native/atoms';
 import { YieldBadge } from '@suite-native/earn';
 import {
@@ -10,7 +11,6 @@ import {
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useYourPositionCardYieldBadge } from '../hooks/useYourPositionCardYieldBadge';
@@ -45,26 +45,21 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
 
     if (!symbol) return null;
 
+    const assetId = createAssetId({ networkSymbol: symbol, contractAddress: token?.contract });
     const balance = token?.balance ?? account?.formattedBalance ?? '0';
 
     return (
         <Card style={applyStyle(cardStyle)} noShadow>
             <HStack alignItems="center" flex={1}>
                 <Box marginRight="sp6">
-                    <TokenIcon
-                        networkSymbol={symbol}
-                        contractAddress={token?.contract}
-                        showNetworkIcon
-                        size="medium"
-                    />
+                    <AssetIcon assetId={assetId} showNetworkIcon size="medium" />
                 </Box>
 
                 <HStack alignItems="center" justifyContent="space-between" flex={1}>
                     <Box style={applyStyle(cardContentStyle)}>
                         <HStack>
                             <AssetSymbol
-                                networkSymbol={symbol}
-                                contractAddress={token?.contract}
+                                assetId={assetId}
                                 variant="body-sm-strong"
                                 color="contentPrimary"
                             />
@@ -80,8 +75,7 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                         </HStack>
 
                         <AssetName
-                            networkSymbol={symbol}
-                            contractAddress={token?.contract}
+                            assetId={assetId}
                             variant="body-sm"
                             color="contentSecondary"
                             numberOfLines={1}

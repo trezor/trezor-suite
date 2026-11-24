@@ -1,3 +1,4 @@
+import { createAssetId } from '@suite-common/assets';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { AssetSymbol } from '@suite-native/assets';
 import { BannerFull } from '@suite-native/atoms';
@@ -20,19 +21,20 @@ export const InstantUnstakeConfirmationBanner = ({
     const { amount, symbol, unstakingPeriodInDays, dismiss } = data;
     const hasDays = unstakingPeriodInDays !== null && unstakingPeriodInDays > 0;
 
+    const nativeAssetId = createAssetId({ networkSymbol: symbol });
     const description = hasDays ? (
         <Translation
             id="earn.stakingManagementScreen.instantUnstakeBanner.descriptionWithDays"
             values={{
                 amount,
-                symbol: <AssetSymbol networkSymbol={symbol} variant="body-sm" />,
+                symbol: <AssetSymbol assetId={nativeAssetId} variant="body-sm" />,
                 days: unstakingPeriodInDays,
             }}
         />
     ) : (
         <Translation
             id="earn.stakingManagementScreen.instantUnstakeBanner.descriptionWithoutDays"
-            values={{ amount, symbol: <AssetSymbol networkSymbol={symbol} variant="body-sm" /> }}
+            values={{ amount, symbol: <AssetSymbol assetId={nativeAssetId} variant="body-sm" /> }}
         />
     );
 
@@ -44,7 +46,7 @@ export const InstantUnstakeConfirmationBanner = ({
             title={
                 <Translation
                     id="earn.stakingManagementScreen.instantUnstakeBanner.title"
-                    values={{ amount, symbol: <AssetSymbol networkSymbol={symbol} /> }}
+                    values={{ amount, symbol: <AssetSymbol assetId={nativeAssetId} /> }}
                 />
             }
             description={description}

@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type TokenAddress } from '@suite-common/tokens';
+import { type TokenAddress, normalizeTokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type NetworkSymbol } from '@trezor/network-module-types';
 
@@ -18,14 +18,18 @@ export const useTokenMetadata = (
     contractAddress: TokenAddress | undefined,
 ): TokenMetadata | null => {
     const { tokensByNetwork } = useContext(TokenMetadataContext);
+    const contractKey =
+        networkSymbol && contractAddress
+            ? normalizeTokenAddress(networkSymbol, contractAddress)
+            : undefined;
     const accountToken = useSelector((state: AccountsRootState) =>
         networkSymbol && contractAddress
             ? selectTokenByNetworkAndContract(state, networkSymbol, contractAddress)
             : null,
     );
     const contextToken =
-        networkSymbol && contractAddress
-            ? tokensByNetwork.get(networkSymbol)?.get(contractAddress)
+        networkSymbol && contractKey
+            ? tokensByNetwork.get(networkSymbol)?.get(contractKey)
             : undefined;
 
     if (!accountToken || !contextToken) {

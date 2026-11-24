@@ -1,3 +1,4 @@
+import { createAssetId } from '@suite-common/assets';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { AssetSymbol } from '@suite-native/assets';
 import {
@@ -45,7 +46,7 @@ export const CardanoAutoStakedModal = ({ ref, networkSymbol }: CardanoAutoStaked
                             values={{
                                 symbol: (
                                     <AssetSymbol
-                                        networkSymbol={networkSymbol}
+                                        assetId={createAssetId({ networkSymbol })}
                                         color="contentSecondary"
                                     />
                                 ),

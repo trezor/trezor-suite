@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { createAssetId } from '@suite-common/assets';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { AssetSymbol } from '@suite-native/assets';
@@ -164,7 +165,7 @@ export const UnstakeFlowScreen = () => {
                                         amount: unstakeLimitAmount,
                                         symbol: (
                                             <AssetSymbol
-                                                networkSymbol={networkSymbol}
+                                                assetId={createAssetId({ networkSymbol })}
                                                 variant="body-sm"
                                                 color="contentInfo"
                                             />

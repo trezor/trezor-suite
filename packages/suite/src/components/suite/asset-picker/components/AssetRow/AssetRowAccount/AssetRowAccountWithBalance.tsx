@@ -1,4 +1,5 @@
 import { AssetIcon } from '@suite/assets';
+import { createAssetId } from '@suite-common/assets';
 import { type Account } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 
@@ -22,6 +23,7 @@ export function AssetRowAccountWithBalance({
     isInsideGroup = false,
 }: AssetRowAccountWithBalanceProps) {
     const isDisabled = !onClick;
+    const assetId = createAssetId({ networkSymbol: account.symbol });
 
     return (
         <ItemClickableContainer
@@ -32,8 +34,8 @@ export function AssetRowAccountWithBalance({
             isDisabled={isDisabled}
         >
             <Row data-testid={dataTestId} gap={12} alignItems="center" overflow="hidden">
-                <AssetIcon networkSymbol={account.symbol} size={40} showNetworkIcon />
-                <AssetDetails networkSymbol={account.symbol} isDisabled={isDisabled} />
+                <AssetIcon assetId={assetId} size={40} showNetworkIcon />
+                <AssetDetails assetId={assetId} isDisabled={isDisabled} />
             </Row>
             <AccountAmount
                 account={account}

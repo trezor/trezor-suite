@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
@@ -162,12 +163,13 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
     // the transaction row, so it's spelled out while the native side stays a bare symbol
     // ("Wrap ETH into 0.1 WETH" / "Unwrap 0.1 WETH to ETH", see trezor/trezor-suite#30552).
     const wrapKind = getNativeWrapTxKind(transaction);
+    const nativeAssetId = createAssetId({ networkSymbol: transaction.symbol });
     if (wrapKind) {
         return (
             <Translation
                 id={wrapKind === 'wrap' ? 'TR_TX_WRAP' : 'TR_TX_UNWRAP'}
                 values={{
-                    nativeSymbol: <AssetSymbol networkSymbol={transaction.symbol} />,
+                    nativeSymbol: <AssetSymbol assetId={nativeAssetId} />,
                     wrappedAmount: <WrapTxAmount transaction={transaction} wrapped />,
                 }}
             />
@@ -279,7 +281,7 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
         (transaction.tokens.length === 1 &&
             (transaction.internalTransfers.length === 1 || transaction.targets.length === 1))
     ) {
-        const nativeSymbol = <AssetSymbol networkSymbol={transaction.symbol} />;
+        const nativeSymbol = <AssetSymbol assetId={nativeAssetId} />;
         const combined = [
             ...transaction.tokens.map(t => ({
                 type: t.type,
@@ -317,7 +319,11 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
             <Translation
                 id={messageId}
                 values={{
-                    symbol: <AssetSymbol networkSymbol={transactionSymbol} />,
+                    symbol: (
+                        <AssetSymbol
+                            assetId={createAssetId({ networkSymbol: transactionSymbol })}
+                        />
+                    ),
                     multiple: isMultiTokenTransaction,
                 }}
             />

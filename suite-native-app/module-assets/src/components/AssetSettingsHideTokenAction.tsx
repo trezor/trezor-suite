@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import {
     type HomeAssetTableState,
+    createAssetId,
     selectWalletAssetHiddenReason,
     selectWalletAssetKey,
 } from '@suite-common/assets';
@@ -99,8 +100,10 @@ export const AssetSettingsHideTokenAction = ({
                             // Nested Text does not inherit the alert title's text style.
                             <AssetSymbol
                                 isTruncated
-                                networkSymbol={networkSymbol}
-                                contractAddress={tokenContract}
+                                assetId={createAssetId({
+                                    networkSymbol,
+                                    contractAddress: tokenContract,
+                                })}
                                 variant="headline-sm"
                             />
                         ),

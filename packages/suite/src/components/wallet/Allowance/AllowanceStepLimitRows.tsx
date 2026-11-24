@@ -1,5 +1,6 @@
 import { AssetIcon, AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import { type AllowanceLimitType, type AllowanceTransactionType } from '@suite-common/wallet-types';
 import { Icon, Row } from '@trezor/components';
 import { ArrowRightIcon } from '@trezor/icons';
@@ -25,13 +26,11 @@ export const AllowanceStepLimitRows = ({
     currentLimitAmount,
     onEditLimit,
 }: AllowanceStepLimitRowsProps) => {
-    const tokenIcon = (
-        <AssetIcon
-            networkSymbol={token.networkSymbol}
-            contractAddress={token.contractAddress}
-            size={20}
-        />
-    );
+    const assetId = createAssetId({
+        networkSymbol: token.networkSymbol,
+        contractAddress: token.contractAddress,
+    });
+    const tokenIcon = <AssetIcon assetId={assetId} size={20} />;
 
     if (transactionType === 'revoke') {
         return (
@@ -47,11 +46,7 @@ export const AllowanceStepLimitRows = ({
                         contractAddress={token.contractAddress}
                         typographyStyle="body-sm"
                     />
-                    <Icon as={ArrowRightIcon} size={16} />0{' '}
-                    <AssetSymbol
-                        networkSymbol={token.networkSymbol}
-                        contractAddress={token.contractAddress}
-                    />
+                    <Icon as={ArrowRightIcon} size={16} />0 <AssetSymbol assetId={assetId} />
                 </Row>
             </AllowanceStepRow>
         );

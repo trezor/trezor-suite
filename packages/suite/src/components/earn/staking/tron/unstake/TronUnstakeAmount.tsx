@@ -3,6 +3,7 @@ import { useFormState, useWatch } from 'react-hook-form';
 import { AssetSymbol } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { createAssetId } from '@suite-common/assets';
 import { getNetwork } from '@suite-common/wallet-config';
 import { AMOUNT_MAX_LENGTH } from '@suite-common/wallet-core';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
@@ -89,7 +90,7 @@ export const TronUnstakeAmount = () => {
         rightContent: (
             <Text typographyStyle="body-md" intent="neutral" priority="secondary">
                 {currency === 'crypto' ? (
-                    <AssetSymbol networkSymbol={account.symbol} />
+                    <AssetSymbol assetId={createAssetId({ networkSymbol: account.symbol })} />
                 ) : (
                     baseCurrencyCode.toUpperCase()
                 )}

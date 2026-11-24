@@ -2,6 +2,7 @@ import { AssetSymbol } from '@suite/assets';
 import { useDevice } from '@suite/device';
 import { Form } from '@suite/form';
 import { Translation, type TranslationKey } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import { toTokenAddress } from '@suite-common/tokens';
 import { REVOKE_ALLOWANCE_AMOUNT } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -87,7 +88,13 @@ export const RevokeModal = ({
 
     const tokenContract = toTokenAddress(token.contract);
     const displaySymbol = (
-        <AssetSymbol networkSymbol={account.symbol} contractAddress={tokenContract} isTruncated />
+        <AssetSymbol
+            assetId={createAssetId({
+                networkSymbol: account.symbol,
+                contractAddress: tokenContract,
+            })}
+            isTruncated
+        />
     );
     const currentLimit =
         preapprovedAmount && preapprovedAmount !== '0' ? preapprovedAmount : undefined;

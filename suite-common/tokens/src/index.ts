@@ -5,3 +5,4 @@ export {
     toTokenAddress,
     toTokenSymbol,
 } from './Token';
+export { normalizeTokenAddress } from './normalizeTokenAddress';

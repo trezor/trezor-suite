@@ -5,6 +5,7 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { AssetSymbol } from '@suite/assets';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import {
     CARDANO_ALWAYS_ABSTAIN_DREP_ID,
@@ -222,7 +223,11 @@ export const StakeChangeDelegateModalLoaded = ({
                                     id="TR_STAKING_NEW_PREFERENCE_DESCRIPTION"
                                     values={{
                                         displaySymbol: (
-                                            <AssetSymbol networkSymbol={account.symbol} />
+                                            <AssetSymbol
+                                                assetId={createAssetId({
+                                                    networkSymbol: account.symbol,
+                                                })}
+                                            />
                                         ),
                                     }}
                                 />

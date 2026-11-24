@@ -5,6 +5,7 @@ import { AssetSymbol } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { TokenSymbol } from '@suite/token';
+import { createAssetId } from '@suite-common/assets';
 import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { AMOUNT_MAX_LENGTH, selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
@@ -115,7 +116,11 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     }
 
     const withTokens = hasNetworkFeatures(account, 'tokens');
-    const displayTicker = shouldSendInSats ? 'sat' : <AssetSymbol networkSymbol={symbol} />;
+    const displayTicker = shouldSendInSats ? (
+        'sat'
+    ) : (
+        <AssetSymbol assetId={createAssetId({ networkSymbol: symbol })} />
+    );
     const amountSymbol = withTokens && token ? token.symbol : displayTicker;
     const isLowAnonymity = isLowAnonymityWarning(outputError);
     const hasError = !!error;

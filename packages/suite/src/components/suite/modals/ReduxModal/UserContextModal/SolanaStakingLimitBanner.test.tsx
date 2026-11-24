@@ -1,7 +1,9 @@
-import { type ReactNode, isValidElement } from 'react';
+import { type ComponentProps, type ReactNode, isValidElement } from 'react';
 
 import { render, screen, waitFor } from '@testing-library/react';
 
+import { type AssetSymbol } from '@suite/assets';
+import { parseAssetId } from '@suite-common/assets';
 import { type Account, type PrecomposedLevels } from '@suite-common/wallet-types';
 import { mockSolanaStakingAccount } from '@suite-common/wallet-types/mocks';
 import { MAX_CLAIM_ACCOUNTS } from '@trezor/network-solana/constants';
@@ -25,8 +27,8 @@ jest.mock('#src/hooks/suite/useSelector', () => ({
 jest.mock('@suite/intl', () => ({
     Translation: ({ id, values }: { id: string; values: Record<string, unknown> }) =>
         `${id} ${JSON.stringify(values, (_key, value) =>
-            isValidElement<{ networkSymbol: string }>(value)
-                ? value.props.networkSymbol.toUpperCase()
+            isValidElement<ComponentProps<typeof AssetSymbol>>(value)
+                ? parseAssetId(value.props.assetId).networkSymbol.toUpperCase()
                 : value,
         )}`,
 }));

@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Banner } from '@trezor/components';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
@@ -21,7 +22,7 @@ export const EarnEthBannerView = ({
 }: EarnEthBannerViewProps) => {
     const formatApyValue = useFormatApy();
 
-    const displaySymbol = <AssetSymbol networkSymbol={networkSymbol} />;
+    const displaySymbol = <AssetSymbol assetId={createAssetId({ networkSymbol })} />;
 
     return (
         <Banner

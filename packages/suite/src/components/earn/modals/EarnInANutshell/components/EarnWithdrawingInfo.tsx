@@ -2,6 +2,7 @@ import React from 'react';
 
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getUnstakingPeriodInDays, selectEthereumValidatorsQueue } from '@suite-common/wallet-core';
@@ -43,89 +44,100 @@ const EthereumWithdrawingRows = ({
     flow,
     networkSymbol,
     daysToUnstake,
-}: EarnWithdrawingRowsProps) => (
-    <>
-        <WithdrawingSignRow flow={flow} />
-        <EarnInfoRow
-            heading={<Translation id="TR_EARN_LEAVE_STAKING_POOL" />}
-            subheading={
-                <Translation
-                    id="TR_EARN_STAKING_CONSOLIDATING_FUNDS"
-                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
-                />
-            }
-            content={{
-                text: (
-                    <Translation id="TR_EARN_APPROXIMATE_DAYS" values={{ count: daysToUnstake }} />
-                ),
-            }}
-        />
-        <EarnInfoRow
-            heading={
-                <Translation
-                    id="TR_EARN_CLAIM_UNSTAKED"
-                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
-                />
-            }
-            subheading={
-                <Translation
-                    id="TR_EARN_YOUR_UNSTAKED_FUNDS"
-                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
-                />
-            }
-            content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
-        />
-        <EarnInfoRow
-            heading={
-                <Translation
-                    id="TR_EARN_RECEIVE_IN_ACCOUNT"
-                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
-                />
-            }
-        />
-    </>
-);
+}: EarnWithdrawingRowsProps) => {
+    const assetId = createAssetId({ networkSymbol });
 
-const SolanaWithdrawingRows = ({ flow, networkSymbol }: EarnWithdrawingRowsProps) => (
-    <>
-        <WithdrawingSignRow flow={flow} />
-        <EarnInfoRow
-            heading={<Translation id="TR_EARN_COOL_DOWN_PERIOD" />}
-            subheading={
-                <Translation
-                    id="TR_EARN_STAKING_WAIT_FOR_DEACTIVATION"
-                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
-                />
-            }
-            content={{
-                text: <Translation id="TR_UP_TO_DAYS" values={{ count: SOLANA_EPOCH_DAYS }} />,
-            }}
-        />
-        <EarnInfoRow
-            heading={
-                <Translation
-                    id="TR_EARN_CLAIM_UNSTAKED"
-                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
-                />
-            }
-            subheading={
-                <Translation
-                    id="TR_EARN_YOUR_UNSTAKED_FUNDS"
-                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
-                />
-            }
-            content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
-        />
-        <EarnInfoRow
-            heading={
-                <Translation
-                    id="TR_EARN_RECEIVE_IN_ACCOUNT"
-                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
-                />
-            }
-        />
-    </>
-);
+    return (
+        <>
+            <WithdrawingSignRow flow={flow} />
+            <EarnInfoRow
+                heading={<Translation id="TR_EARN_LEAVE_STAKING_POOL" />}
+                subheading={
+                    <Translation
+                        id="TR_EARN_STAKING_CONSOLIDATING_FUNDS"
+                        values={{ networkDisplaySymbol: <AssetSymbol assetId={assetId} /> }}
+                    />
+                }
+                content={{
+                    text: (
+                        <Translation
+                            id="TR_EARN_APPROXIMATE_DAYS"
+                            values={{ count: daysToUnstake }}
+                        />
+                    ),
+                }}
+            />
+            <EarnInfoRow
+                heading={
+                    <Translation
+                        id="TR_EARN_CLAIM_UNSTAKED"
+                        values={{ networkDisplaySymbol: <AssetSymbol assetId={assetId} /> }}
+                    />
+                }
+                subheading={
+                    <Translation
+                        id="TR_EARN_YOUR_UNSTAKED_FUNDS"
+                        values={{ networkDisplaySymbol: <AssetSymbol assetId={assetId} /> }}
+                    />
+                }
+                content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
+            />
+            <EarnInfoRow
+                heading={
+                    <Translation
+                        id="TR_EARN_RECEIVE_IN_ACCOUNT"
+                        values={{ networkDisplaySymbol: <AssetSymbol assetId={assetId} /> }}
+                    />
+                }
+            />
+        </>
+    );
+};
+
+const SolanaWithdrawingRows = ({ flow, networkSymbol }: EarnWithdrawingRowsProps) => {
+    const assetId = createAssetId({ networkSymbol });
+
+    return (
+        <>
+            <WithdrawingSignRow flow={flow} />
+            <EarnInfoRow
+                heading={<Translation id="TR_EARN_COOL_DOWN_PERIOD" />}
+                subheading={
+                    <Translation
+                        id="TR_EARN_STAKING_WAIT_FOR_DEACTIVATION"
+                        values={{ networkDisplaySymbol: <AssetSymbol assetId={assetId} /> }}
+                    />
+                }
+                content={{
+                    text: <Translation id="TR_UP_TO_DAYS" values={{ count: SOLANA_EPOCH_DAYS }} />,
+                }}
+            />
+            <EarnInfoRow
+                heading={
+                    <Translation
+                        id="TR_EARN_CLAIM_UNSTAKED"
+                        values={{ networkDisplaySymbol: <AssetSymbol assetId={assetId} /> }}
+                    />
+                }
+                subheading={
+                    <Translation
+                        id="TR_EARN_YOUR_UNSTAKED_FUNDS"
+                        values={{ networkDisplaySymbol: <AssetSymbol assetId={assetId} /> }}
+                    />
+                }
+                content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
+            />
+            <EarnInfoRow
+                heading={
+                    <Translation
+                        id="TR_EARN_RECEIVE_IN_ACCOUNT"
+                        values={{ networkDisplaySymbol: <AssetSymbol assetId={assetId} /> }}
+                    />
+                }
+            />
+        </>
+    );
+};
 
 const CardanoWithdrawingRows = ({ flow, networkSymbol }: EarnWithdrawingRowsProps) => (
     <>
@@ -135,7 +147,11 @@ const CardanoWithdrawingRows = ({ flow, networkSymbol }: EarnWithdrawingRowsProp
             subheading={
                 <Translation
                     id="TR_EARN_YOUR_DEPOSIT_IS_RETURNED"
-                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
+                    values={{
+                        networkDisplaySymbol: (
+                            <AssetSymbol assetId={createAssetId({ networkSymbol })} />
+                        ),
+                    }}
                 />
             }
             content={{ text: <Translation id="TR_EARN_INSTANTLY" /> }}

@@ -4,6 +4,7 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import {
     type HomeAssetTableState,
+    createAssetId,
     selectWalletAssetHoldings,
     selectWalletAssetKey,
 } from '@suite-common/assets';
@@ -74,8 +75,10 @@ export const AssetDetailAccountsBottomSheet = ({ ref }: AssetDetailAccountsBotto
                         assetName: (
                             <AssetSymbol
                                 isTruncated
-                                networkSymbol={networkSymbol}
-                                contractAddress={tokenContract}
+                                assetId={createAssetId({
+                                    networkSymbol,
+                                    contractAddress: tokenContract,
+                                })}
                                 variant="body-sm"
                                 color="contentSecondary"
                             />

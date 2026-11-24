@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { createAssetId } from '@suite-common/assets';
 import { type TokenAddress } from '@suite-common/tokens';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
@@ -51,6 +52,8 @@ export const CardanoTokenSendMinAdaAmountInfo = ({
         ? subunitsToUnits({ symbol, value: minAdaAmount }).toFixed()
         : null;
 
+    const nativeAssetId = createAssetId({ networkSymbol: symbol });
+
     return (
         <VStack spacing="sp4">
             <HStack justifyContent="space-between" alignItems="center">
@@ -64,7 +67,7 @@ export const CardanoTokenSendMinAdaAmountInfo = ({
                         id="moduleSend.outputs.recipients.cardano.tokenSendMinAdaAmount.title"
                         values={{
                             networkDisplaySymbol: (
-                                <AssetSymbol networkSymbol={symbol} variant="body-sm" />
+                                <AssetSymbol assetId={nativeAssetId} variant="body-sm" />
                             ),
                         }}
                     />
@@ -86,7 +89,10 @@ export const CardanoTokenSendMinAdaAmountInfo = ({
                                 id="moduleSend.outputs.recipients.cardano.tokenSendMinAdaAmount.title"
                                 values={{
                                     networkDisplaySymbol: (
-                                        <AssetSymbol networkSymbol={symbol} variant="headline-sm" />
+                                        <AssetSymbol
+                                            assetId={nativeAssetId}
+                                            variant="headline-sm"
+                                        />
                                     ),
                                 }}
                             />
@@ -97,7 +103,7 @@ export const CardanoTokenSendMinAdaAmountInfo = ({
                                 values={{
                                     networkDisplaySymbol: (
                                         <AssetSymbol
-                                            networkSymbol={symbol}
+                                            assetId={nativeAssetId}
                                             variant="body-sm"
                                             color="contentSecondary"
                                         />
@@ -118,7 +124,7 @@ export const CardanoTokenSendMinAdaAmountInfo = ({
                         values={{
                             networkDisplaySymbol: (
                                 <AssetSymbol
-                                    networkSymbol={symbol}
+                                    assetId={nativeAssetId}
                                     variant="body-xs"
                                     color="contentCritical"
                                 />

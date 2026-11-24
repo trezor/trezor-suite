@@ -18,10 +18,7 @@ export type TokenMetadataSource = {
     tokens: readonly TokenMetadata[];
 };
 
-export type TokenMetadataByNetwork = ReadonlyMap<
-    NetworkSymbol,
-    ReadonlyMap<TokenAddress, TokenMetadata>
->;
+export type TokenMetadataByNetwork = ReadonlyMap<NetworkSymbol, ReadonlyMap<string, TokenMetadata>>;
 
 type TokenMetadataContextValue = {
     sources: readonly TokenMetadataSource[];

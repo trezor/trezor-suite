@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { type ExtendedMessageDescriptor } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FormState, type StakeFormState } from '@suite-common/wallet-types';
@@ -36,21 +37,22 @@ export const getTransactionReviewModalActionTranslation = ({
         data: precomposedForm.transactionData,
     });
 
+    const nativeAssetId = createAssetId({ networkSymbol: symbol });
     switch (stakeType) {
         case 'stake':
             return {
                 id: source === 'heading' ? 'TR_EARN_STAKE_TOKEN' : 'TR_STAKE_STAKE',
-                values: { symbol: <AssetSymbol networkSymbol={symbol} /> },
+                values: { symbol: <AssetSymbol assetId={nativeAssetId} /> },
             };
         case 'unstake':
             return {
                 id: source === 'heading' ? 'TR_STAKE_UNSTAKE_TOKEN' : 'TR_STAKE_UNSTAKE',
-                values: { symbol: <AssetSymbol networkSymbol={symbol} /> },
+                values: { symbol: <AssetSymbol assetId={nativeAssetId} /> },
             };
         case 'claim':
             return {
                 id: source === 'heading' ? 'TR_STAKE_CLAIM_TOKEN' : 'TR_STAKE_CLAIM',
-                values: { symbol: <AssetSymbol networkSymbol={symbol} /> },
+                values: { symbol: <AssetSymbol assetId={nativeAssetId} /> },
             };
         // no default
     }
@@ -79,8 +81,10 @@ export const getTransactionReviewModalActionTranslation = ({
             values: {
                 displaySymbol: (
                     <AssetSymbol
-                        networkSymbol={symbol}
-                        contractAddress={toTokenAddress(approvalToken.contract)}
+                        assetId={createAssetId({
+                            networkSymbol: symbol,
+                            contractAddress: toTokenAddress(approvalToken.contract),
+                        })}
                     />
                 ),
             },
@@ -103,7 +107,7 @@ export const getTransactionReviewModalActionTranslation = ({
                         ? 'TR_EARN_YIELD_WRAP_TITLE'
                         : 'TR_EARN_YIELD_UNWRAP_TITLE',
                 values: {
-                    nativeSymbol: <AssetSymbol networkSymbol={symbol} />,
+                    nativeSymbol: <AssetSymbol assetId={nativeAssetId} />,
                     tokenSymbol: getWrappedNativeSymbol(symbol),
                 },
             };

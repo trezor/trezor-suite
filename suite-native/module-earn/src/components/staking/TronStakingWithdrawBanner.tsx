@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { createAssetId } from '@suite-common/assets';
 import {
     type StakingRootState,
     formatStakingAmount,
@@ -45,7 +46,7 @@ export const TronStakingWithdrawBanner = ({
                         amount: withdrawableBalance,
                         displaySymbol: (
                             <AssetSymbol
-                                networkSymbol={networkSymbol}
+                                assetId={createAssetId({ networkSymbol })}
                                 variant="body-sm"
                                 color="contentInfo"
                             />

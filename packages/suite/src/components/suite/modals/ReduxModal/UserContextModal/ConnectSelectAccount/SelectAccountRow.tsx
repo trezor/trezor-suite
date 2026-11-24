@@ -2,6 +2,7 @@ import { type MouseEvent, type ReactNode } from 'react';
 
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import { type SelectAccountCandidate } from '@suite-common/connect-popup';
 import {
     Badge,
@@ -103,11 +104,12 @@ export const SelectAccountRow = ({
             );
         }
 
+        const nativeAssetId = createAssetId({ networkSymbol: symbol });
         if (interactionMode === 'drillIn') {
             return (
                 <Row alignItems="center" gap={8}>
                     <Text typographyStyle="body-sm">
-                        {balance ?? '0'} <AssetSymbol networkSymbol={symbol} />
+                        {balance ?? '0'} <AssetSymbol assetId={nativeAssetId} />
                     </Text>
                     <Icon as={CaretRightIcon} size={16} intent="neutral" />
                 </Row>
@@ -117,7 +119,7 @@ export const SelectAccountRow = ({
         return (
             <>
                 <Text typographyStyle="body-sm">
-                    {balance ?? '0'} <AssetSymbol networkSymbol={symbol} />
+                    {balance ?? '0'} <AssetSymbol assetId={nativeAssetId} />
                 </Text>
                 {displayValue && (
                     <Row alignItems="center" gap={8} onClick={stop}>

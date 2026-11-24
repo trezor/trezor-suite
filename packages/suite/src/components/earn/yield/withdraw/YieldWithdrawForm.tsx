@@ -4,6 +4,7 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
+import { createAssetId } from '@suite-common/assets';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     getYieldFlowStepSequence,
@@ -313,7 +314,11 @@ export const YieldWithdrawForm = () => {
                                     values={{
                                         tokenSymbol: token.symbol,
                                         nativeSymbol: (
-                                            <AssetSymbol networkSymbol={account.symbol} />
+                                            <AssetSymbol
+                                                assetId={createAssetId({
+                                                    networkSymbol: account.symbol,
+                                                })}
+                                            />
                                         ),
                                     }}
                                 />

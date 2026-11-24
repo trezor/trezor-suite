@@ -1,6 +1,7 @@
 import { AssetSymbol } from '@suite/assets';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import { Banner, Column } from '@trezor/components';
 
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
@@ -39,7 +40,11 @@ export const TronVoteStep = () => {
                                 id="AMOUNT_NOT_ENOUGH_CURRENCY_FEE"
                                 values={{
                                     networkDisplaySymbol: (
-                                        <AssetSymbol networkSymbol={account.symbol} />
+                                        <AssetSymbol
+                                            assetId={createAssetId({
+                                                networkSymbol: account.symbol,
+                                            })}
+                                        />
                                     ),
                                 }}
                             />

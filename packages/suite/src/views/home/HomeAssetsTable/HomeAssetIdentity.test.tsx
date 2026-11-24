@@ -2,6 +2,7 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
+import { createAssetId } from '@suite-common/assets';
 import { mockNetworkIcon, mockNetworksState } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TokenAddress } from '@suite-common/tokens';
@@ -38,7 +39,7 @@ const renderIdentity = (contractAddress: TokenAddress) => {
 
     renderWithProviders(
         { ...services, networks: { networkIcon: mockNetworkIcon() } },
-        <HomeAssetIdentity symbol={ETH} contractAddress={contractAddress} />,
+        <HomeAssetIdentity assetId={createAssetId({ networkSymbol: ETH, contractAddress })} />,
     );
 };
 

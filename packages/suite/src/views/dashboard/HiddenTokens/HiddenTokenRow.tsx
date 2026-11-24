@@ -2,6 +2,7 @@ import { memo } from 'react';
 
 import { gotoThunk } from '@suite/router';
 import {
+    createAssetId,
     selectWalletAssetContractAddress,
     selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
@@ -57,6 +58,8 @@ export const HiddenTokenRow = memo(function HiddenTokenRow({
         return null;
     }
 
+    const assetId = createAssetId({ networkSymbol, contractAddress });
+
     const handleClick = () => {
         if (!isAssetDetailEnabled) {
             onSelect(assetKey);
@@ -81,7 +84,7 @@ export const HiddenTokenRow = memo(function HiddenTokenRow({
         >
             <Row gap={16} padding={HIDDEN_TOKEN_ROW_PADDING}>
                 <Row flex="1" minWidth={0}>
-                    <HomeAssetIdentity symbol={networkSymbol} contractAddress={contractAddress} />
+                    <HomeAssetIdentity assetId={assetId} />
                 </Row>
                 <Column
                     width={HIDDEN_TOKEN_PRICE_WIDTH}

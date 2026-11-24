@@ -2,6 +2,7 @@ import { AssetSymbol } from '@suite/assets';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectIsRegionRestricted } from '@suite/regions';
+import { createAssetId } from '@suite-common/assets';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -60,7 +61,9 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                                     priority="secondary"
                                     typographyStyle="body-sm"
                                 >
-                                    <AssetSymbol networkSymbol={account.symbol} />
+                                    <AssetSymbol
+                                        assetId={createAssetId({ networkSymbol: account.symbol })}
+                                    />
                                 </Text>
                             </InfoItem>
                         </AssetDetailLink>

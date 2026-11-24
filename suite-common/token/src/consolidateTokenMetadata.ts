@@ -1,4 +1,4 @@
-import { type TokenAddress } from '@suite-common/tokens';
+import { normalizeTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import {
@@ -18,7 +18,7 @@ export const consolidateTokenMetadata = ({
     parentTokensByNetwork,
 }: ConsolidateTokenMetadataParams): TokenMetadataByNetwork => {
     const tokensByNetwork = new Map(parentTokensByNetwork);
-    const localNetworks = new Map<NetworkSymbol, Map<TokenAddress, TokenMetadata>>();
+    const localNetworks = new Map<NetworkSymbol, Map<string, TokenMetadata>>();
 
     // Index each collection once; rows and formatters must not scan a catalog for every amount.
     // Earlier sources and nearer providers take precedence over inherited metadata.
@@ -30,8 +30,9 @@ export const consolidateTokenMetadata = ({
             tokensByNetwork.set(source.networkSymbol, tokens);
         }
         for (const token of source.tokens.toReversed()) {
-            const inherited = tokens.get(token.contract);
-            tokens.set(token.contract, {
+            const contractKey = normalizeTokenAddress(source.networkSymbol, token.contract);
+            const inherited = tokens.get(contractKey);
+            tokens.set(contractKey, {
                 contract: token.contract,
                 name: token.name ?? inherited?.name,
                 symbol: token.symbol ?? inherited?.symbol,

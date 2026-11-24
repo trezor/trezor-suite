@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Banner, Button, Column, Text } from '@trezor/components';
 
@@ -43,7 +44,9 @@ export const YieldActionStepWarning = ({
                                 amount: insufficientFeeReserve.amount,
                                 nativeSymbol: (
                                     <AssetSymbol
-                                        networkSymbol={insufficientFeeReserve.networkSymbol}
+                                        assetId={createAssetId({
+                                            networkSymbol: insufficientFeeReserve.networkSymbol,
+                                        })}
                                     />
                                 ),
                             }}
@@ -120,7 +123,11 @@ export const YieldActionStepWarning = ({
                             values={{
                                 amount: reserveKept.amount,
                                 nativeSymbol: (
-                                    <AssetSymbol networkSymbol={reserveKept.networkSymbol} />
+                                    <AssetSymbol
+                                        assetId={createAssetId({
+                                            networkSymbol: reserveKept.networkSymbol,
+                                        })}
+                                    />
                                 ),
                             }}
                         />
@@ -143,7 +150,9 @@ export const YieldActionStepWarning = ({
                                 amount: reserveRecommendation.amount,
                                 nativeSymbol: (
                                     <AssetSymbol
-                                        networkSymbol={reserveRecommendation.networkSymbol}
+                                        assetId={createAssetId({
+                                            networkSymbol: reserveRecommendation.networkSymbol,
+                                        })}
                                     />
                                 ),
                             }}
@@ -167,7 +176,10 @@ export const YieldActionStepWarning = ({
                                 amount: feeReserveTopUpRecommendation.amount,
                                 nativeSymbol: (
                                     <AssetSymbol
-                                        networkSymbol={feeReserveTopUpRecommendation.networkSymbol}
+                                        assetId={createAssetId({
+                                            networkSymbol:
+                                                feeReserveTopUpRecommendation.networkSymbol,
+                                        })}
                                     />
                                 ),
                             }}

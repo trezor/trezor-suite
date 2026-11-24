@@ -2,6 +2,7 @@ import { useRef } from 'react';
 
 import { AssetIcon, AssetSymbol } from '@suite/assets';
 import { Translation, type TranslationKey } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import { useTokenMetadata } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -74,9 +75,8 @@ export const AllowanceLimitSelector = ({
 }: AllowanceLimitSelectorProps) => {
     const popoverRef = useRef<PopoverRef>(null);
     const token = useTokenMetadata(networkSymbol, contractAddress);
-    const symbolLabel = (
-        <AssetSymbol networkSymbol={networkSymbol} contractAddress={contractAddress} isTruncated />
-    );
+    const assetId = createAssetId({ networkSymbol, contractAddress });
+    const symbolLabel = <AssetSymbol assetId={assetId} isTruncated />;
 
     const providerKind: ProviderKind = provider.kind ?? 'provider';
 
@@ -126,11 +126,7 @@ export const AllowanceLimitSelector = ({
         >
             <Column gap={4} flex="1" alignItems="flex-start">
                 <Row gap={8}>
-                    <AssetIcon
-                        networkSymbol={networkSymbol}
-                        contractAddress={contractAddress}
-                        size={20}
-                    />
+                    <AssetIcon assetId={assetId} size={20} />
                     <Text typographyStyle="body-sm-strong">
                         <Translation id={LIMIT_TYPE_LABEL_ID[type]} values={translationValues} />
                     </Text>
@@ -152,11 +148,7 @@ export const AllowanceLimitSelector = ({
                         />
                     </Text>
                     <Row gap={8}>
-                        <AssetIcon
-                            networkSymbol={networkSymbol}
-                            contractAddress={contractAddress}
-                            size={20}
-                        />
+                        <AssetIcon assetId={assetId} size={20} />
                         <Text
                             typographyStyle="body-sm-strong"
                             data-testid="@modal/approve/limit-value"

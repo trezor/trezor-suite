@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { createAssetId } from '@suite-common/assets';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { AssetSymbol } from '@suite-native/assets';
 import {
@@ -26,7 +27,9 @@ export const EarnConsentsDelegatingCard = ({
 }: EarnConsentsDelegatingCardProps) => {
     const [hasAgreed, setHasAgreed] = useState(false);
     const itemsTranslationKey = getNetwork(symbol).networkType === 'solana' ? 'sol' : 'eth';
-    const displaySymbol = <AssetSymbol networkSymbol={symbol} variant="body-sm-strong" />;
+    const displaySymbol = (
+        <AssetSymbol assetId={createAssetId({ networkSymbol: symbol })} variant="body-sm-strong" />
+    );
 
     return (
         <Card>

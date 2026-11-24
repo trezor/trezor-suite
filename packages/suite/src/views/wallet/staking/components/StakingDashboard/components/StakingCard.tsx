@@ -2,6 +2,7 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { createAssetId } from '@suite-common/assets';
 import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api/src/staking';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
@@ -244,6 +245,8 @@ export const StakingCard = ({
         });
     };
 
+    const nativeAssetId = createAssetId({ networkSymbol: account.symbol });
+
     return (
         <Card data-testid="@wallet/staking/card">
             <Column flex="1" gap={32}>
@@ -281,7 +284,7 @@ export const StakingCard = ({
                                     id="TR_STAKE_FUNDS_FULLY_ACCESSIBLE"
                                     values={{
                                         networkDisplaySymbol: (
-                                            <AssetSymbol networkSymbol={account.symbol} />
+                                            <AssetSymbol assetId={nativeAssetId} />
                                         ),
                                     }}
                                 />
@@ -326,7 +329,7 @@ export const StakingCard = ({
                                             id="TR_STAKE_ETH_REWARDS_EARN_APY"
                                             values={{
                                                 networkDisplaySymbol: (
-                                                    <AssetSymbol networkSymbol={account.symbol} />
+                                                    <AssetSymbol assetId={nativeAssetId} />
                                                 ),
                                             }}
                                         />

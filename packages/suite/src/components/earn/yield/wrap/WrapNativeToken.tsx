@@ -8,6 +8,7 @@ import { AssetSymbol } from '@suite/assets';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { createAssetId } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -253,6 +254,7 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
     const { formState } = methods;
 
     const renderContent = () => {
+        const nativeAssetId = createAssetId({ networkSymbol: account.symbol });
         if (broadcast && isFlowComplete) {
             return (
                 <WrappedNativeFlowComplete
@@ -263,7 +265,7 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
                         <Translation
                             id="TR_WRAP_COMPLETE_DESCRIPTION"
                             values={{
-                                nativeSymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                                nativeSymbol: <AssetSymbol assetId={nativeAssetId} />,
                                 tokenSymbol: token.symbol,
                             }}
                         />
@@ -296,7 +298,7 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
                     <Translation
                         id="TR_EARN_YIELD_WRAP_TITLE"
                         values={{
-                            nativeSymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                            nativeSymbol: <AssetSymbol assetId={nativeAssetId} />,
                             tokenSymbol: token.symbol,
                         }}
                     />

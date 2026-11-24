@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import type {
     YieldFlowDisplayToken,
     YieldPendingTransactionState,
@@ -45,98 +46,102 @@ export const YieldWrapStep = ({
     pendingTransaction,
     fiatToggle,
     onPendingTxClick,
-}: YieldWrapStepProps) => (
-    <Column gap={16}>
-        <YieldAmountCard
-            tokenSymbol={<AssetSymbol networkSymbol={token.networkSymbol} />}
-            decimals={token.decimals}
-            isDisabled={!!pendingTransaction}
-            // The wrap amount is the native coin, so no token contract address.
-            approxFiat={{ symbol: token.networkSymbol }}
-            heading={{
-                amountLabelTranslationId: 'TR_EARN_YIELD_WRAP_AMOUNT',
-            }}
-            summary={{
-                labelTranslationId: 'TR_EARN_YIELD_AVAILABLE_TO_WRAP',
-                value: (
-                    <FormattedCryptoAmount
-                        value={availableAmount}
-                        networkSymbol={token.networkSymbol}
-                        tokenDecimals={token.decimals}
-                    />
-                ),
-                onMaxClick: pendingTransaction ? undefined : onMaxClick,
-            }}
-            fiatToggle={pendingTransaction ? undefined : fiatToggle}
-            warning={warning}
-        />
+}: YieldWrapStepProps) => {
+    const assetId = createAssetId({ networkSymbol: token.networkSymbol });
 
-        {shouldShowReceivingRow && (
-            <Card type="contrast" paddingType="small">
-                <Row justifyContent="space-between" alignItems="center" width="100%" gap={8}>
-                    <Text typographyStyle="body-md">
-                        <Translation id="TR_EARN_YIELD_WRAP_RECEIVING" />
-                    </Text>
-                    <Row alignItems="center" gap={8} minWidth={0}>
-                        <TokenIcon
-                            size={20}
+    return (
+        <Column gap={16}>
+            <YieldAmountCard
+                tokenSymbol={<AssetSymbol assetId={assetId} />}
+                decimals={token.decimals}
+                isDisabled={!!pendingTransaction}
+                // The wrap amount is the native coin, so no token contract address.
+                approxFiat={{ symbol: token.networkSymbol }}
+                heading={{
+                    amountLabelTranslationId: 'TR_EARN_YIELD_WRAP_AMOUNT',
+                }}
+                summary={{
+                    labelTranslationId: 'TR_EARN_YIELD_AVAILABLE_TO_WRAP',
+                    value: (
+                        <FormattedCryptoAmount
+                            value={availableAmount}
                             networkSymbol={token.networkSymbol}
-                            contractAddress={token.contractAddress ?? null}
-                            placeholder={token.symbol}
-                            showNetworkIcon
-                            isBordered={false}
+                            tokenDecimals={token.decimals}
                         />
-                        <Box
-                            minWidth={0}
-                            data-testid="@yield/form/wrap-receiving-amount-with-symbol"
-                        >
-                            <TruncatedAmount>
-                                <Text typographyStyle="body-md" ellipsisLineCount={1}>
-                                    <FormattedCryptoAmount
-                                        value={receivingAmount}
-                                        networkSymbol={token.symbol}
-                                    />
-                                </Text>
-                            </TruncatedAmount>
-                        </Box>
-                    </Row>
-                </Row>
-            </Card>
-        )}
+                    ),
+                    onMaxClick: pendingTransaction ? undefined : onMaxClick,
+                }}
+                fiatToggle={pendingTransaction ? undefined : fiatToggle}
+                warning={warning}
+            />
 
-        <Row gap={8} width="100%">
-            <Button
-                size="large"
-                flex="1"
-                onClick={onSubmit}
-                isLoading={isSubmitting}
-                isDisabled={isSubmitDisabled || !!pendingTransaction}
-                data-testid="@yield/form/wrap-button"
-            >
-                <Translation
-                    id="TR_EARN_YIELD_WRAP_SUBMIT"
-                    values={{ nativeSymbol: <AssetSymbol networkSymbol={token.networkSymbol} /> }}
-                />
-            </Button>
-            {onSkip && (
+            {shouldShowReceivingRow && (
+                <Card type="contrast" paddingType="small">
+                    <Row justifyContent="space-between" alignItems="center" width="100%" gap={8}>
+                        <Text typographyStyle="body-md">
+                            <Translation id="TR_EARN_YIELD_WRAP_RECEIVING" />
+                        </Text>
+                        <Row alignItems="center" gap={8} minWidth={0}>
+                            <TokenIcon
+                                size={20}
+                                networkSymbol={token.networkSymbol}
+                                contractAddress={token.contractAddress ?? null}
+                                placeholder={token.symbol}
+                                showNetworkIcon
+                                isBordered={false}
+                            />
+                            <Box
+                                minWidth={0}
+                                data-testid="@yield/form/wrap-receiving-amount-with-symbol"
+                            >
+                                <TruncatedAmount>
+                                    <Text typographyStyle="body-md" ellipsisLineCount={1}>
+                                        <FormattedCryptoAmount
+                                            value={receivingAmount}
+                                            networkSymbol={token.symbol}
+                                        />
+                                    </Text>
+                                </TruncatedAmount>
+                            </Box>
+                        </Row>
+                    </Row>
+                </Card>
+            )}
+
+            <Row gap={8} width="100%">
                 <Button
                     size="large"
-                    intent="neutral"
-                    priority="secondary"
-                    onClick={onSkip}
-                    isDisabled={isSubmitting || !!pendingTransaction}
-                    data-testid="@yield/form/wrap-skip-button"
+                    flex="1"
+                    onClick={onSubmit}
+                    isLoading={isSubmitting}
+                    isDisabled={isSubmitDisabled || !!pendingTransaction}
+                    data-testid="@yield/form/wrap-button"
                 >
-                    <Translation id="TR_SKIP" />
+                    <Translation
+                        id="TR_EARN_YIELD_WRAP_SUBMIT"
+                        values={{ nativeSymbol: <AssetSymbol assetId={assetId} /> }}
+                    />
                 </Button>
-            )}
-        </Row>
+                {onSkip && (
+                    <Button
+                        size="large"
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={onSkip}
+                        isDisabled={isSubmitting || !!pendingTransaction}
+                        data-testid="@yield/form/wrap-skip-button"
+                    >
+                        <Translation id="TR_SKIP" />
+                    </Button>
+                )}
+            </Row>
 
-        {pendingTransaction && onPendingTxClick && (
-            <YieldPendingTransaction
-                pendingTransaction={pendingTransaction}
-                onTxClick={onPendingTxClick}
-            />
-        )}
-    </Column>
-);
+            {pendingTransaction && onPendingTxClick && (
+                <YieldPendingTransaction
+                    pendingTransaction={pendingTransaction}
+                    onTxClick={onPendingTxClick}
+                />
+            )}
+        </Column>
+    );
+};

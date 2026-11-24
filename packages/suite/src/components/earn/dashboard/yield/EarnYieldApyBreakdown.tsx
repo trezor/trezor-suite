@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { AssetSymbol } from '@suite/assets';
 import { Translation, type TranslationKey } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import {
     type RewardDtoV2,
     type TokenDtoV2,
@@ -126,7 +127,7 @@ export const EarnYieldApyBreakdown = ({
                         networkSymbol,
                         reward.token.address,
                     ) ? (
-                        <AssetSymbol networkSymbol={networkSymbol} />
+                        <AssetSymbol assetId={createAssetId({ networkSymbol })} />
                     ) : (
                         reward.token.symbol
                     );

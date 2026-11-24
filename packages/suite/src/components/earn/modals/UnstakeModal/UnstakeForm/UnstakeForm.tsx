@@ -1,6 +1,7 @@
 import { AssetSymbol } from '@suite/assets';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import {
     getSolanaUnstakeAmountBounds,
@@ -74,6 +75,8 @@ export const UnstakeForm = () => {
 
     const { formState } = methods;
 
+    const nativeAssetId = createAssetId({ networkSymbol: account.symbol });
+
     return (
         <Form form={methods} formState={formState} onSubmit={handleSubmit(signTx)}>
             <Column gap={32} margin={{ bottom: 20 }}>
@@ -98,7 +101,7 @@ export const UnstakeForm = () => {
                                             isBalance: true,
                                             withSymbol: false,
                                         }),
-                                        symbol: <AssetSymbol networkSymbol={account.symbol} />,
+                                        symbol: <AssetSymbol assetId={nativeAssetId} />,
                                         br: <br />,
                                     }}
                                 />
@@ -132,11 +135,7 @@ export const UnstakeForm = () => {
                                                         : 'TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT_HIGHER_ONLY'
                                                 }
                                                 values={{
-                                                    symbol: (
-                                                        <AssetSymbol
-                                                            networkSymbol={account.symbol}
-                                                        />
-                                                    ),
+                                                    symbol: <AssetSymbol assetId={nativeAssetId} />,
                                                     higher: renderClickableUnstakeAmount(
                                                         unstakeAmountBounds.closestHigher,
                                                     ),
@@ -197,7 +196,7 @@ export const UnstakeForm = () => {
                                 <Translation
                                     id="TR_STAKE_UNSTAKING_APPROXIMATE"
                                     values={{
-                                        symbol: <AssetSymbol networkSymbol={account.symbol} />,
+                                        symbol: <AssetSymbol assetId={nativeAssetId} />,
                                     }}
                                 />
                             </Tooltip>

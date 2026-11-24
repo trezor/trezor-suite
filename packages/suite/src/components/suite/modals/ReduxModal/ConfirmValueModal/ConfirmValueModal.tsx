@@ -10,6 +10,7 @@ import { Labeling } from '@suite/labeling';
 import { selectIsMetadataEnabled } from '@suite/metadata';
 import { MODAL_CONTEXT_USER, selectModalContext } from '@suite/modal';
 import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
+import { createAssetId } from '@suite-common/assets';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -188,7 +189,11 @@ export const ConfirmValueModal = ({
                                             <Link onClick={handleOpenGuide}>{chunks}</Link>
                                         ),
                                         displaySymbol: (
-                                            <AssetSymbol networkSymbol={account.symbol} />
+                                            <AssetSymbol
+                                                assetId={createAssetId({
+                                                    networkSymbol: account.symbol,
+                                                })}
+                                            />
                                         ),
                                     }}
                                 />

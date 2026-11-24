@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { StepList } from '@trezor/components';
 
@@ -18,7 +19,7 @@ export const YieldWithdrawingInfo = ({
 }: YieldWithdrawingInfoProps) => {
     // The user's account receives the native coin (e.g. ETH); `depositSymbol` is the wrapped
     // token the vault redeems into (e.g. WETH), which the unwrap step then converts back.
-    const nativeSymbol = <AssetSymbol networkSymbol={networkSymbol} />;
+    const nativeSymbol = <AssetSymbol assetId={createAssetId({ networkSymbol })} />;
     const receiveSymbol = isWrappedNativeVault ? nativeSymbol : depositSymbol;
 
     return (

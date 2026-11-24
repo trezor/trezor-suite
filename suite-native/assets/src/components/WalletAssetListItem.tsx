@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     type HomeAssetTableState,
+    createAssetId,
     selectWalletAssetAmount,
     selectWalletAssetContractAddress,
     selectWalletAssetFiatValue,
@@ -108,8 +109,10 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
                         <Box flexShrink={1}>
                             <AssetSymbol
                                 isTruncated
-                                networkSymbol={networkSymbol}
-                                contractAddress={contractAddress}
+                                assetId={createAssetId({
+                                    networkSymbol,
+                                    contractAddress,
+                                })}
                                 variant="body-sm"
                                 numberOfLines={1}
                             />

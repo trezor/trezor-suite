@@ -5,6 +5,7 @@ import { AssetIcon, AssetName, AssetSymbol } from '@suite/assets';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { type Explorer, getNetwork } from '@suite-common/wallet-config';
@@ -98,6 +99,11 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     );
     const selectedTokenAddress = selectedToken ? toTokenAddress(selectedToken.contract) : undefined;
 
+    const assetId = createAssetId({
+        networkSymbol: account.symbol,
+        contractAddress: selectedTokenAddress,
+    });
+
     const hasNoStandardTokens = !account.tokens?.filter(token => !isNftToken(token))?.length;
     const onOpenTokensModal = !hasNoStandardTokens ? () => setIsTokensModalActive(true) : undefined;
 
@@ -126,13 +132,12 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                     <Row justifyContent="flex-start" gap={12}>
                         {selectedTokenAddress ? (
                             <AssetIcon
-                                networkSymbol={account.symbol}
-                                contractAddress={selectedTokenAddress}
+                                assetId={assetId}
                                 size={24}
                                 shouldTryToFetch={isTokenKnown}
                             />
                         ) : (
-                            <AssetIcon networkSymbol={account.symbol} size={40} showNetworkIcon />
+                            <AssetIcon assetId={assetId} size={40} showNetworkIcon />
                         )}
                         <Column alignItems="flex-start">
                             <Row justifyContent="flex-start">
@@ -141,10 +146,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                     typographyStyle="body-md"
                                     data-testid={`@wallet/send/token-name/${outputId}`}
                                 >
-                                    <AssetName
-                                        networkSymbol={account.symbol}
-                                        contractAddress={selectedTokenAddress}
-                                    />
+                                    <AssetName assetId={assetId} />
                                 </Text>
                             </Row>
                             <Row>
@@ -239,12 +241,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                             <Translation
                                 id="TR_DEFI_YIELD_TOKEN_BANNER_TITLE"
                                 values={{
-                                    token: (
-                                        <AssetSymbol
-                                            networkSymbol={account.symbol}
-                                            contractAddress={selectedTokenAddress}
-                                        />
-                                    ),
+                                    token: <AssetSymbol assetId={assetId} />,
                                 }}
                             />
                         }

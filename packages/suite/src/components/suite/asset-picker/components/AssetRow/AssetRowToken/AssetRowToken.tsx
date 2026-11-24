@@ -1,4 +1,5 @@
 import { AssetIcon } from '@suite/assets';
+import { createAssetId } from '@suite-common/assets';
 import { toTokenAddress } from '@suite-common/tokens';
 import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
@@ -35,6 +36,7 @@ export function AssetRowToken({
     );
     const isDisabled = !onClick;
     const contractAddress = toTokenAddress(token.contract);
+    const assetId = createAssetId({ networkSymbol: account.symbol, contractAddress });
 
     return (
         <ItemClickableContainer
@@ -45,23 +47,13 @@ export function AssetRowToken({
             isDisabled={isDisabled}
         >
             <Row data-testid={dataTestId} gap={12} overflow="hidden" flex="1" minWidth={0}>
-                <AssetIcon
-                    size={40}
-                    networkSymbol={account.symbol}
-                    contractAddress={contractAddress}
-                    showNetworkIcon={showNetworkIcon}
-                />
-                <AssetDetails
-                    networkSymbol={account.symbol}
-                    contractAddress={contractAddress}
-                    isDisabled={isDisabled}
-                />
+                <AssetIcon size={40} assetId={assetId} showNetworkIcon={showNetworkIcon} />
+                <AssetDetails assetId={assetId} isDisabled={isDisabled} />
             </Row>
             {token.balance && (
                 <Row flex="0 0 auto">
                     <AssetAmount
-                        networkSymbol={account.symbol}
-                        contractAddress={contractAddress}
+                        assetId={assetId}
                         amount={token.balance}
                         fiatAmount={
                             token.fiatRate ? asBaseCurrencyAmount(token.fiatValue) : undefined

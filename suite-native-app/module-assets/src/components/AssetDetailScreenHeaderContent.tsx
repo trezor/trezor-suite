@@ -1,5 +1,6 @@
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { createAssetId } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { AssetSymbol } from '@suite-native/assets';
 import { HStack, Text, VStack } from '@suite-native/atoms';
@@ -23,8 +24,10 @@ export const AssetDetailScreenHeaderContent = () => {
             <VStack spacing={0} flexShrink={1}>
                 <AssetSymbol
                     isTruncated
-                    networkSymbol={networkSymbol}
-                    contractAddress={tokenContract}
+                    assetId={createAssetId({
+                        networkSymbol,
+                        contractAddress: tokenContract,
+                    })}
                     variant="body-md-strong"
                     numberOfLines={1}
                     ellipsizeMode="tail"

@@ -5,6 +5,7 @@ import { AssetSymbol } from '@suite/assets';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import {
     getStakingDataForNetwork,
     selectAreFeesLoading,
@@ -146,13 +147,15 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
 
     const isLoading = isComposing || isSubmitting || isDiscoveryRunning || areFeesLoading;
 
+    const nativeAssetId = createAssetId({ networkSymbol: account.symbol });
+
     return (
         <Modal
             data-testid="@staking/claim-modal"
             heading={
                 <Translation
                     id={isCardanoNetworkType ? 'TR_EARN_CLAIM_REWARDS' : 'TR_STAKE_CLAIM_TOKEN'}
-                    values={{ symbol: <AssetSymbol networkSymbol={account.symbol} /> }}
+                    values={{ symbol: <AssetSymbol assetId={nativeAssetId} /> }}
                 />
             }
             description={
@@ -163,7 +166,7 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                             : 'TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED'
                     }
                     values={{
-                        networkDisplaySymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                        networkDisplaySymbol: <AssetSymbol assetId={nativeAssetId} />,
                     }}
                 />
             }

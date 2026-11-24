@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { StepList } from '@trezor/components';
@@ -36,7 +37,9 @@ export const YieldDepositingInfo = ({
                         <Translation
                             id="TR_EARN_YIELD_WRAP_TITLE"
                             values={{
-                                nativeSymbol: <AssetSymbol networkSymbol={networkSymbol} />,
+                                nativeSymbol: (
+                                    <AssetSymbol assetId={createAssetId({ networkSymbol })} />
+                                ),
                                 tokenSymbol: depositSymbol,
                             }}
                         />

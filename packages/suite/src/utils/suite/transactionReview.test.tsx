@@ -1,4 +1,5 @@
 import { AssetSymbol } from '@suite/assets';
+import { createAssetId } from '@suite-common/assets';
 import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
@@ -64,8 +65,10 @@ describe('getTransactionReviewModalActionTranslation', () => {
                 values: {
                     displaySymbol: (
                         <AssetSymbol
-                            networkSymbol={asNetworkSymbol('eth')}
-                            contractAddress={toTokenAddress(TOKEN_CONTRACT)}
+                            assetId={createAssetId({
+                                networkSymbol: asNetworkSymbol('eth'),
+                                contractAddress: toTokenAddress(TOKEN_CONTRACT),
+                            })}
                         />
                     ),
                 },
@@ -87,8 +90,10 @@ describe('getTransactionReviewModalActionTranslation', () => {
                 values: {
                     displaySymbol: (
                         <AssetSymbol
-                            networkSymbol={asNetworkSymbol('eth')}
-                            contractAddress={toTokenAddress(TOKEN_CONTRACT)}
+                            assetId={createAssetId({
+                                networkSymbol: asNetworkSymbol('eth'),
+                                contractAddress: toTokenAddress(TOKEN_CONTRACT),
+                            })}
                         />
                     ),
                 },

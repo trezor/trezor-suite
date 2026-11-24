@@ -2,6 +2,7 @@ import { useEvent } from 'react-use';
 
 import { AssetIcon } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { Column, H3, Modal, Text } from '@trezor/components';
 
@@ -37,8 +38,12 @@ export const TradingExchangeSwitchInactiveNetworkModal = ({
                 <Column gap={16} alignItems="flex-start">
                     <AssetIcon
                         size={48}
-                        networkSymbol={asset.networkSymbol}
-                        contractAddress={asset.isNativeToken ? undefined : asset.contractAddress}
+                        assetId={createAssetId({
+                            networkSymbol: asset.networkSymbol,
+                            contractAddress: asset.isNativeToken
+                                ? undefined
+                                : asset.contractAddress,
+                        })}
                         showNetworkIcon
                     />
                     <Column gap={4} alignItems="flex-start">

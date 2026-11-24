@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/assets';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Column, Modal } from '@trezor/components';
 import { WarningCircleIcon } from '@trezor/icons';
@@ -74,7 +75,11 @@ export const TradingExchangeNetworkFeeModalLayout = ({
                                     id="TR_TRADING_NETWORK_FEE_MODAL_NOT_ENOUGH_FUNDS"
                                     values={{
                                         networkDisplaySymbol: (
-                                            <AssetSymbol networkSymbol={account.symbol} />
+                                            <AssetSymbol
+                                                assetId={createAssetId({
+                                                    networkSymbol: account.symbol,
+                                                })}
+                                            />
                                         ),
                                     }}
                                 />

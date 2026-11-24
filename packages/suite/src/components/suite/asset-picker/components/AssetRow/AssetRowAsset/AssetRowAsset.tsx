@@ -1,4 +1,5 @@
 import { AssetIcon } from '@suite/assets';
+import { createAssetId } from '@suite-common/assets';
 import { type TradeableAssetBalance, type TradingAssetOption } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 import { selectShouldShowNetworkIcon } from '@trezor/product-components';
@@ -29,6 +30,10 @@ export function AssetRowAsset({
     );
 
     const tokenContract = asset.isNativeToken ? undefined : asset.contractAddress;
+    const assetId = createAssetId({
+        networkSymbol: asset.networkSymbol,
+        contractAddress: tokenContract,
+    });
 
     return (
         <ItemClickableContainer
@@ -40,17 +45,15 @@ export function AssetRowAsset({
             <Row data-testid={dataTestId} gap={12} overflow="hidden" flex="1" minWidth={0}>
                 <AssetIcon
                     size={40}
-                    networkSymbol={asset.networkSymbol}
-                    contractAddress={tokenContract}
+                    assetId={assetId}
                     showNetworkIcon={!tokenContract || showNetworkIcon}
                 />
-                <AssetDetails networkSymbol={asset.networkSymbol} contractAddress={tokenContract} />
+                <AssetDetails assetId={assetId} />
             </Row>
             {balance && (
                 <Row flex="0 0 auto">
                     <AssetAmount
-                        networkSymbol={asset.networkSymbol}
-                        contractAddress={tokenContract}
+                        assetId={assetId}
                         amount={balance.cryptoAmount}
                         fiatAmount={balance.fiatAmount ?? undefined}
                         isFiatPrimary

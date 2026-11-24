@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { createAssetId } from '@suite-common/assets';
 import {
     formatStakingAmount,
     isStakingOperationAvailable,
@@ -138,6 +139,8 @@ export const StakingClaimReviewScreen = () => {
         });
     };
 
+    const nativeAssetId = createAssetId({ networkSymbol: symbol });
+
     return (
         <Screen
             header={
@@ -150,7 +153,7 @@ export const StakingClaimReviewScreen = () => {
                                 values={{
                                     displaySymbol: (
                                         <AssetSymbol
-                                            networkSymbol={symbol}
+                                            assetId={nativeAssetId}
                                             variant="body-md-strong"
                                         />
                                     ),
@@ -202,7 +205,7 @@ export const StakingClaimReviewScreen = () => {
                                     values={{
                                         displaySymbol: (
                                             <AssetSymbol
-                                                networkSymbol={symbol}
+                                                assetId={nativeAssetId}
                                                 variant="body-sm"
                                                 color="contentBrand"
                                             />
@@ -223,7 +226,7 @@ export const StakingClaimReviewScreen = () => {
                                         amount: claimableLimitAmount,
                                         symbol: (
                                             <AssetSymbol
-                                                networkSymbol={symbol}
+                                                assetId={nativeAssetId}
                                                 variant="body-sm"
                                                 color="contentInfo"
                                             />

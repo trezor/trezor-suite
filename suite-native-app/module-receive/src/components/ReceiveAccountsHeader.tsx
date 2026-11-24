@@ -1,3 +1,4 @@
+import { createAssetId } from '@suite-common/assets';
 import {
     type TradingAssetOption,
     cryptoIdToNetworkSymbolAndContractAddress,
@@ -24,7 +25,9 @@ export const ReceiveAccountsHeader = ({ asset, closeActionType }: ReceiveAccount
 
     const { contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(asset.id);
     const assetName = (
-        <AssetName networkSymbol={asset.networkSymbol} contractAddress={contractAddress} />
+        <AssetName
+            assetId={createAssetId({ networkSymbol: asset.networkSymbol, contractAddress })}
+        />
     );
 
     const closeAction = () => {

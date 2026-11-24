@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { createAssetId } from '@suite-common/assets';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -34,8 +35,10 @@ export const AccountBalanceScreenHeader = ({
                         values={{
                             assetName: (
                                 <AssetSymbol
-                                    networkSymbol={account.symbol}
-                                    contractAddress={tokenContract}
+                                    assetId={createAssetId({
+                                        networkSymbol: account.symbol,
+                                        contractAddress: tokenContract,
+                                    })}
                                     variant="body-md-strong"
                                 />
                             ),
