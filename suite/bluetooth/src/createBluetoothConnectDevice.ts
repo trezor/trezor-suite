@@ -2,8 +2,12 @@ import { type Dispatch } from '@reduxjs/toolkit';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import TrezorConnect, { type BluetoothDeviceId, type Device } from '@trezor/connect';
-import { bluetoothIpc } from '@trezor/transport-bluetooth';
+import {
+    type BluetoothDeviceId,
+    type Device,
+    type TrezorConnectPrivilegedAPI,
+} from '@trezor/connect';
+import { type BluetoothIpcApi } from '@trezor/transport-bluetooth';
 
 import {
     setBluetoothDeviceNeedsManualPairing,
@@ -13,6 +17,8 @@ import {
 
 type BluetoothConnectDeviceDeps = {
     dispatch: Dispatch;
+    bluetoothIpc: Pick<BluetoothIpcApi, 'connectDevice' | 'disconnectDevice'>;
+    getTrezorConnect: () => Pick<TrezorConnectPrivilegedAPI, 'on' | 'off'>;
 };
 
 export type BluetoothConnectDevice = (deviceId: BluetoothDeviceId) => Promise<{ success: boolean }>;
@@ -21,7 +27,7 @@ export const createBluetoothConnectDevice =
     (deps: BluetoothConnectDeviceDeps): BluetoothConnectDevice =>
     async deviceId => {
         deps.dispatch(startConnectingBluetoothDevice({ deviceId }));
-        const result = await bluetoothIpc.connectDevice(deviceId);
+        const result = await deps.bluetoothIpc.connectDevice(deviceId);
 
         if (!result.success) {
             const errorMessage = result.error.message;
@@ -34,7 +40,7 @@ export const createBluetoothConnectDevice =
             }
 
             // This can fail, but we are silent about this as the device may not be there anymore
-            await bluetoothIpc.disconnectDevice(deviceId);
+            await deps.bluetoothIpc.disconnectDevice(deviceId);
 
             // linux: emits DeviceDisconnect right after DeviceConnect but before subscription. Operation already in progress is the error from subscription process
             // macos: connect error Peer removed
@@ -60,6 +66,7 @@ export const createBluetoothConnectDevice =
 
         // wait for device handshake in @trezor/connect
         await new Promise<void>(resolve => {
+            const trezorConnect = deps.getTrezorConnect();
             const closeViewAfterConnection = (device: Device) => {
                 if (
                     device.descriptor.apiType !== 'bluetooth' ||
@@ -68,16 +75,16 @@ export const createBluetoothConnectDevice =
                     return;
                 }
 
-                TrezorConnect.off('device-connect', closeViewAfterConnection);
-                TrezorConnect.off('device-connect_unacquired', closeViewAfterConnection);
-                TrezorConnect.off('device-disconnect', closeViewAfterConnection);
+                trezorConnect.off('device-connect', closeViewAfterConnection);
+                trezorConnect.off('device-connect_unacquired', closeViewAfterConnection);
+                trezorConnect.off('device-disconnect', closeViewAfterConnection);
 
                 resolve();
             };
 
-            TrezorConnect.on('device-connect', closeViewAfterConnection);
-            TrezorConnect.on('device-connect_unacquired', closeViewAfterConnection);
-            TrezorConnect.on('device-disconnect', closeViewAfterConnection);
+            trezorConnect.on('device-connect', closeViewAfterConnection);
+            trezorConnect.on('device-connect_unacquired', closeViewAfterConnection);
+            trezorConnect.on('device-disconnect', closeViewAfterConnection);
         });
 
         deps.dispatch(stopConnectingBluetoothDevice({ deviceId }));

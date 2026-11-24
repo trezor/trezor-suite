@@ -15,7 +15,9 @@ import {
 } from '@suite-common/bluetooth';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { type FirmwareRootState, selectFirmware } from '@suite-common/firmware';
+import { type TrezorConnectPrivilegedAPI } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
+import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { createBackgroundScan } from './bluetoothBackgroundScan';
@@ -62,6 +64,7 @@ type CompositionRootState = WithBluetoothRootState & DesktopDeviceRootState & Fi
 type CompositionRootDeps = DesktopApiDep<'openSystemSettings'> & {
     getState: () => CompositionRootState;
     dispatch: Dispatch;
+    getTrezorConnect: () => Pick<TrezorConnectPrivilegedAPI, 'bleUnpair' | 'on' | 'off'>;
 };
 
 export type Bluetooth = {
@@ -94,10 +97,14 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         getKnownDevices,
     });
 
-    const startScan = createBluetoothStartScan({ dispatch: deps.dispatch });
+    const startScan = createBluetoothStartScan({
+        dispatch: deps.dispatch,
+        bluetoothIpc,
+    });
 
     const stopScan = createBluetoothStopScan({
         dispatch: deps.dispatch,
+        bluetoothIpc,
         getDefaultConnectionMode: toGetter(deps.getState, selectDeviceDefaultConnectionMode),
         getIsConnectionModalOpen: toGetter(deps.getState, selectIsConnectionModalOpen),
     });
@@ -111,11 +118,14 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
 
     const connectDevice = createBluetoothConnectDevice({
         dispatch: deps.dispatch,
+        bluetoothIpc,
+        getTrezorConnect: deps.getTrezorConnect,
     });
 
     const disconnectDevice = createBluetoothDisconnectDevice({
         dispatch: deps.dispatch,
         backgroundScan,
+        bluetoothIpc,
     });
 
     const onDeviceConnected = createBluetoothOnDeviceConnected({
@@ -126,6 +136,7 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
     const forgetDevice = createBluetoothForgetDevice({
         dispatch: deps.dispatch,
         disconnectDevice,
+        bluetoothIpc,
     });
 
     const forgetAllDevices = createBluetoothForgetAllDevices({
@@ -135,6 +146,7 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
 
     const unpairCurrentBond = createBluetoothUnpairCurrentBond({
         getSelectedDevice: toGetter(deps.getState, selectSelectedDevice),
+        getTrezorConnect: deps.getTrezorConnect,
     });
 
     const onPowerSuspend = createOnPowerSuspend({

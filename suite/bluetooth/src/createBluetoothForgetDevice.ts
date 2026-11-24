@@ -1,7 +1,7 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type ForgetBluetoothDeviceThunkParams, bluetoothActions } from '@suite-common/bluetooth';
-import { bluetoothIpc } from '@trezor/transport-bluetooth';
+import { type BluetoothIpcApi } from '@trezor/transport-bluetooth';
 
 import { type BluetoothDisconnectDevice } from './createBluetoothDisconnectDevice';
 import { setIsUnpairingDevice } from './desktopBluetoothReducer';
@@ -9,6 +9,7 @@ import { setIsUnpairingDevice } from './desktopBluetoothReducer';
 export type BluetoothForgetDeviceDeps = {
     dispatch: Dispatch;
     disconnectDevice: BluetoothDisconnectDevice;
+    bluetoothIpc: Pick<BluetoothIpcApi, 'forgetDevice'>;
 };
 
 // Params type comes from @suite-common/bluetooth, shared with the thunk wired into @suite-common/device.
@@ -22,7 +23,7 @@ export const createBluetoothForgetDevice =
             await deps.disconnectDevice(params.bluetoothId);
         }
 
-        const resultForget = await bluetoothIpc.forgetDevice(params.bluetoothId);
+        const resultForget = await deps.bluetoothIpc.forgetDevice(params.bluetoothId);
         deps.dispatch(setIsUnpairingDevice({ isUnpairing: false }));
 
         if (!resultForget.success && !params.isOsUnpairingFinished) {
