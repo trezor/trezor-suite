@@ -1,8 +1,9 @@
 import { type SelectedAccountState, selectedAccountReducer } from '@suite/account';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type RouterState } from '@suite/router';
+import { deviceActions } from '@suite-common/device';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
-import { mockGetIsWindowVisible } from '@suite-common/suite-types/mocks';
+import { mockGetIsWindowVisible, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -10,17 +11,22 @@ import {
     type AccountsState,
     type FormDraftState,
     type SendState,
+    type StakeState,
     type SyncAccountsWithBlockchainThunkDeps,
     type TransactionsState,
     accountsRefreshTimeReducer,
     blockchainActions,
     formDraftInitialState,
+    getStakeFormsDefaultValues,
     prepareAccountsReducer,
     prepareBlockchainMiddleware,
     prepareBlockchainReducer,
     prepareBlockchainSubscriptionMiddleware,
     prepareSendFormReducer,
+    prepareStakeReducer,
     prepareWalletSettingsReducer,
+    stakeActions,
+    stakeInitialState,
 } from '@suite-common/wallet-core';
 import {
     type BlockchainNetworks,
@@ -33,6 +39,10 @@ import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { updateWindowVisibility } from '#src/actions/suite/windowActions';
 import walletMiddleware from '#src/middlewares/wallet/walletMiddleware';
+import {
+    type AccountSearchState,
+    accountSearchInitialState,
+} from '#src/reducers/wallet/accountSearchReducer';
 
 import * as fixtures from './__fixtures__/walletMiddleware';
 import { mockExtraDependenciesForReducers } from '../../../mocks/mockExtraDependenciesForReducers';
@@ -45,6 +55,8 @@ const sendFormReducer = prepareSendFormReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
     reducers: { storageLoadFormDrafts: mockReducer() },
 });
+
+const stakeReducer = prepareStakeReducer(undefined);
 
 interface Args {
     router?: Partial<RouterState>;
@@ -68,7 +80,9 @@ type State = {
         transactions: TransactionsState;
         settings: WalletSettings;
         selectedAccount: SelectedAccountState;
+        accountSearch: AccountSearchState;
         send: SendState;
+        stake: StakeState;
         formDrafts: FormDraftState;
     };
 };
@@ -117,6 +131,8 @@ const getInitialState = ({
             status: 'loaded',
         } as SelectedAccountState,
         send: { ...sendFormReducer(undefined, { type: 'foo' } as any), ...send },
+        stake: stakeInitialState,
+        accountSearch: accountSearchInitialState,
         formDrafts: formDraftInitialState,
     },
 });
@@ -146,6 +162,7 @@ const mockStore = (preloadedState: State) =>
                     action,
                 ),
                 send: sendFormReducer(state.wallet.send, action),
+                stake: stakeReducer(state.wallet.stake, action),
             },
         }),
         preloadedState,
@@ -201,6 +218,52 @@ describe('walletMiddleware', () => {
                 expect(TrezorBlockchain.disconnect).toHaveBeenCalledTimes(disconnect.called);
             }
         });
+    });
+
+    it('preserves a signed Solana unstake when its passphrase wallet is selected again', () => {
+        const account = mockWalletAccount({ symbol: asNetworkSymbol('dsol') });
+        const device = mockSuiteDevice({
+            useEmptyPassphrase: false,
+            state: { staticSessionId: account.deviceState },
+        });
+        const store = mockStore(getInitialState({ accounts: [account] }));
+        store.dispatch(
+            stakeActions.requestSignTransaction({
+                accountKey: account.key,
+                formValues: {
+                    ...getStakeFormsDefaultValues({
+                        address: account.descriptor,
+                        stakeType: 'unstake',
+                    }),
+                    options: ['broadcast'],
+                    setMaxOutputId: undefined,
+                },
+                transactionInfo: {
+                    type: 'final',
+                    fee: '9137',
+                    feePerByte: '0',
+                    bytes: 200,
+                    totalSpent: '9137',
+                    max: undefined,
+                    inputs: [],
+                    outputs: [],
+                    outputsPermutation: [],
+                },
+            }),
+        );
+        store.dispatch(
+            stakeActions.requestPushTransaction({ tx: 'signed-unstake', symbol: account.symbol }),
+        );
+        const review = store.getState().wallet.stake;
+
+        store.dispatch(deviceActions.selectDevice(device));
+
+        expect(store.getState().wallet.stake).toEqual(review);
+
+        store.dispatch(deviceActions.selectDevice(mockSuiteDevice()));
+
+        expect(store.getState().wallet.stake.precomposedForm).toBeUndefined();
+        expect(store.getState().wallet.stake.serializedTx).toBeUndefined();
     });
 
     describe('window visibility regain', () => {

@@ -2,6 +2,8 @@ import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { MODAL_CONTEXT_NONE, MODAL_OPEN_USER_CONTEXT, type ModalRootState } from '@suite/modal';
 import { type DeviceRootState, deviceActions, deviceInitialState } from '@suite-common/device';
+import { type StakingRootState } from '@suite-common/earn-staking';
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import {
     act,
@@ -10,6 +12,7 @@ import {
 } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type AccountsRootState,
     type TronFlow,
     type TronStakeRootState,
     initialTronStakeTxReview,
@@ -44,16 +47,23 @@ const buildDevice = (minor_version: number) =>
         { major_version: 2, minor_version, patch_version: 2 },
     );
 
+type TestState = TronStakeRootState &
+    DeviceRootState &
+    ModalRootState &
+    AccountsRootState &
+    StakingRootState;
+
 const renderActions = (flow: TronFlow, device = buildDevice(12)) => {
-    const initialState: TronStakeRootState & DeviceRootState & ModalRootState = {
+    const initialState: TestState = {
         modal: { context: MODAL_CONTEXT_NONE },
-        wallet: { tronStake: { sessions: {}, txReview: initialTronStakeTxReview } },
+        wallet: {
+            accounts: [account],
+            tronStake: { sessions: {}, txReview: initialTronStakeTxReview },
+        },
+        earn: { staking: mockStakingState({ descriptors: [] }) },
         device: { ...deviceInitialState, devices: [device], selectedDevice: device },
     };
-    const { services } = createTestCompositionRoot<
-        WithServices<DesktopAnalyticsDep>,
-        TronStakeRootState & DeviceRootState & ModalRootState
-    >({
+    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, TestState>({
         preloadedState: initialState,
         reducer: (state = initialState, action) =>
             deviceActions.deviceDisconnect.match(action)

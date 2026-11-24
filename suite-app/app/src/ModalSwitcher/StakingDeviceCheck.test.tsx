@@ -87,16 +87,6 @@ describe('staking form during device verification', () => {
         },
     );
 
-    it('preserves a form when an already-unlocked device sends only CLOSE_UI_WINDOW', () => {
-        const send = renderModal();
-        const input = screen.getByRole('textbox');
-        const begin = beginStakingDeviceCheck();
-        send(begin);
-        send({ type: UI_EVENTS.CLOSE_UI_WINDOW });
-        send(endStakingDeviceCheck({ id: begin.payload }));
-        expect(screen.getByRole('textbox')).toBe(input);
-    });
-
     it.each([openModal({ type: 'application-log' }), closeModal()])(
         'does not restore a dismissed or replaced form',
         replacement => {

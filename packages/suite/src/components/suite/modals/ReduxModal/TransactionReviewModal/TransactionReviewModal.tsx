@@ -1,4 +1,6 @@
 import { selectFullSelectedAccount } from '@suite/account';
+import { Translation } from '@suite/intl';
+import { closeModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import {
     cancelSignSendFormTransactionThunk,
@@ -13,6 +15,7 @@ import {
     stakeActions,
 } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
+import { Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -133,6 +136,32 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
             });
         }
     };
+
+    if (
+        decision &&
+        (!precomposedForm || !txInfoState.precomposedTx || (txInfoState === stake && !stakeAccount))
+    ) {
+        // The device call has finished. The signing thunk is waiting for this decision.
+        const closeReview = () => {
+            if (txInfoState.serializedTx) cancelSignTx();
+            dispatch(closeModal());
+            decision.resolve(false);
+        };
+
+        return (
+            <Modal
+                width={400}
+                heading={<Translation id="TR_TX_REVIEW_UNAVAILABLE" />}
+                description={<Translation id="TR_TX_REVIEW_UNAVAILABLE_DESCRIPTION" />}
+                onCancel={closeReview}
+                bottomContent={
+                    <Modal.Button onClick={closeReview}>
+                        <Translation id="TR_CLOSE" />
+                    </Modal.Button>
+                }
+            />
+        );
+    }
 
     if (isExchange) {
         return (

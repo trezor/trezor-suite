@@ -8,6 +8,7 @@ import { getTxsPerPage } from '@suite-common/suite-utils';
 import { tradingActions } from '@suite-common/trading';
 import {
     type SendRootState,
+    type StakeSliceRootState,
     type SyncAccountsWithBlockchainThunkState,
     WALLET_SETTINGS,
     accountsActions,
@@ -16,6 +17,7 @@ import {
     selectAccounts,
     selectAllNetworkSymbolsOfVisibleAccounts,
     selectNetworksWithPendingTxs,
+    selectStakeAccount,
     sendFormActions,
     setCustomBackendThunk,
     stakeActions,
@@ -35,6 +37,7 @@ type WalletMiddlewareState = SyncSelectedAccountThunkState &
     SyncAccountsWithBlockchainThunkState &
     ConvertDraftsThunkState &
     SendRootState &
+    StakeSliceRootState &
     WindowRootState;
 
 const walletMiddleware =
@@ -116,7 +119,13 @@ const walletMiddleware =
             api.dispatch(accountsActions.disposeAccount());
             api.dispatch(sendFormActions.dispose());
             api.dispatch(tradingActions.setVerifiedAddress(undefined));
-            api.dispatch(stakeActions.dispose());
+            // A device selection can reselect the wallet that already owns the staking review.
+            const selectedWallet = deviceActions.selectDevice.match(action)
+                ? action.payload?.state?.staticSessionId
+                : undefined;
+            if (!selectedWallet || selectedWallet !== selectStakeAccount(prevState)?.deviceState) {
+                api.dispatch(stakeActions.dispose());
+            }
             api.dispatch(stakeActions.clearAccountVotingDelegation());
         }
 

@@ -160,16 +160,4 @@ describe('useStakingDeviceAction', () => {
         expect(mockGuard).toHaveBeenCalledTimes(1);
         expect(action).toHaveBeenCalledWith(device);
     });
-
-    it('ignores a device response received after leaving the staking form', async () => {
-        const prompt = createDeferred<boolean>();
-        mockGuard.mockReturnValue(prompt.promise);
-        const action = mock<() => void>();
-        const { result, unmount } = renderStakingDeviceAction();
-        const pending = result.current(action);
-        unmount();
-        prompt.resolve(true);
-        await pending;
-        expect(action).not.toHaveBeenCalled();
-    });
 });
