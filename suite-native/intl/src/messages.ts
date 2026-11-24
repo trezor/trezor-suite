@@ -4329,7 +4329,6 @@ export const messages = {
             providerReceiveAddressLabel: "{providerName}'s receive address",
             providerContractAddressLabel: "{providerName}'s contract address",
             confirmationAlertTitle: 'Failed to confirm offer.',
-            approvalSuccessAlert: 'Spending approval confirmed.',
             eip712Info: {
                 title: "You're swapping with {providerName}",
                 bullet1: 'Simply sign the order—no need to send transactions manually',

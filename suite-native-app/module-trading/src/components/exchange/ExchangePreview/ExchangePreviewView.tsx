@@ -10,7 +10,7 @@ import {
     selectTradingProviderKycPolicy,
 } from '@suite-common/trading';
 import { AnimatedVStack, AnimatedView, BannerInline, VStack } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { useTranslate } from '@suite-native/intl';
 import { KycPolicyWarning, hasKycPolicyWarning } from '@suite-native/trading-provider-utils';
 
 import { ExchangeEIP712Info } from './ExchangeEIP712Info';
@@ -26,7 +26,6 @@ export type ExchangePreviewViewProps = {
     txnErrorString: ReactNode | null;
     onSignTransactionNavigation: () => void;
     onSlippageConfirmed: () => Promise<void>;
-    isApproved?: boolean;
 };
 
 export const ExchangePreviewView = memo(
@@ -35,7 +34,6 @@ export const ExchangePreviewView = memo(
         txnErrorString,
         onSignTransactionNavigation,
         onSlippageConfirmed,
-        isApproved,
     }: ExchangePreviewViewProps) => {
         const { translate } = useTranslate();
 
@@ -52,14 +50,6 @@ export const ExchangePreviewView = memo(
         return (
             <VStack spacing="sp16">
                 <LastErrorMessage tradingType="exchange" />
-                {!!isApproved && (
-                    <BannerInline
-                        intent="brand"
-                        title={
-                            <Translation id="moduleTrading.tradingExchangePreviewScreen.approvalSuccessAlert" />
-                        }
-                    />
-                )}
                 {isErrorBannerVisible && (
                     <AnimatedView layout={LinearTransition} entering={FadeIn} exiting={FadeOut}>
                         <BannerInline intent="critical" title={txnErrorString} />

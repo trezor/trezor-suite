@@ -67,7 +67,6 @@ export const TradingExchangePreviewScreen = ({
                         txnErrorString={errorString}
                         onSignTransactionNavigation={onSignTransactionNavigation}
                         onSlippageConfirmed={handleConfirmTrade}
-                        isApproved
                     />
                     <Footer />
                 </VStack>
