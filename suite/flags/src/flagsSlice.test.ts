@@ -13,7 +13,6 @@ import {
     selectAssetPriceChartRange,
     selectFlags,
     selectIsNewContentIndicatorVisible,
-    selectIsReferAFriendEnabled,
     selectIsTokenYieldBannerClosed,
     setAssetPriceChartRange,
     setFlag,
@@ -43,17 +42,6 @@ describe('flagsSlice', () => {
         const store = initStore();
         store.dispatch(setFlag({ key: 'initialRun', value: false }));
         expect(store.getState().flags.initialRun).toBe(false);
-    });
-
-    it('keeps Refer-A-Friend off until its debug flag is enabled', () => {
-        const store = initStore();
-        expect(selectIsReferAFriendEnabled(store.getState())).toBe(false);
-
-        store.dispatch(setFlag({ key: 'isReferAFriendEnabled', value: true }));
-        expect(selectIsReferAFriendEnabled(store.getState())).toBe(true);
-
-        store.dispatch(setFlag({ key: 'isReferAFriendEnabled', value: false }));
-        expect(selectIsReferAFriendEnabled(store.getState())).toBe(false);
     });
 
     it('should set a flag to false', () => {
