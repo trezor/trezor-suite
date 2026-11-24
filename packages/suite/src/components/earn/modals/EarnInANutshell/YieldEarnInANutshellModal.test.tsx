@@ -2,26 +2,23 @@ import { type ComponentProps } from 'react';
 
 import { fireEvent, render } from '@testing-library/react';
 
-import { type DesktopAnalytics } from '@suite/analytics';
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { EarnProvider } from '@suite-common/suite-types/src/staking';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockYieldVault } from '@suite-common/wallet-core/mocks';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { mock } from '@trezor/dependency-injection';
+import { ServicesProvider, mock } from '@trezor/dependency-injection';
 
 import { YieldEarnInANutshellModal } from './YieldEarnInANutshellModal';
 import { type EarnInANutshellModalLayout } from './components/EarnInANutshellModalLayout';
 import { useEarnInANutshell } from './hooks/useEarnInANutshell';
 
-const mockAnalytics = mockDesktopAnalytics(mock<DesktopAnalytics['report']>());
+const mockAnalytics = mockDesktopAnalytics(mock<DesktopAnalyticsDep['analytics']['report']>());
+const services: DesktopAnalyticsDep = { analytics: mockAnalytics };
 const mockHandleAction = mock<ReturnType<typeof useEarnInANutshell>['handleAction']>();
 const mockOnCancelClick = mock<ReturnType<typeof useEarnInANutshell>['onCancelClick']>();
 
-jest.mock('@trezor/dependency-injection', () => ({
-    ...jest.requireActual('@trezor/dependency-injection'),
-    useServices: () => ({ analytics: mockAnalytics }),
-}));
 jest.mock('@suite/intl', () => ({
     ...jest.requireActual('@suite/intl'),
     Translation: () => null,
@@ -57,12 +54,14 @@ const renderYieldEducation = (
     actionType?: ComponentProps<typeof YieldEarnInANutshellModal>['actionType'],
 ) =>
     render(
-        <YieldEarnInANutshellModal
-            account={mockWalletAccount({ symbol: asNetworkSymbol('eth') })}
-            provider={EarnProvider.Morpho}
-            onCancel={jest.fn()}
-            actionType={actionType}
-        />,
+        <ServicesProvider services={services}>
+            <YieldEarnInANutshellModal
+                account={mockWalletAccount({ symbol: asNetworkSymbol('eth') })}
+                provider={EarnProvider.Morpho}
+                onCancel={jest.fn()}
+                actionType={actionType}
+            />
+        </ServicesProvider>,
     );
 
 describe('YieldEarnInANutshellModal analytics', () => {

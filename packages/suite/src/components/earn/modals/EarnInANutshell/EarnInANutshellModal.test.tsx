@@ -1,54 +1,84 @@
+import { type ComponentProps, type PropsWithChildren } from 'react';
+import { Provider } from 'react-redux';
+
 import { render } from '@testing-library/react';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type SuiteRouterHistoryDep } from '@suite/router';
+import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { getEarnOpportunityKey } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { ServicesProvider, mock } from '@trezor/dependency-injection';
-import { type Dispatch, type DispatchDep } from '@trezor/redux-utils';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { EarnInANutshellModal } from './EarnInANutshellModal';
+import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
-let mockIsConfirmed = true;
-jest.mock('#src/hooks/suite/useSelector', () => ({ useSelector: () => mockIsConfirmed }));
 jest.mock('./StakingEarnInANutshellModal', () => ({ StakingEarnInANutshellModal: () => null }));
 jest.mock('./UpdateEarnInANutshellModal', () => ({ UpdateEarnInANutshellModal: () => null }));
 jest.mock('./YieldEarnInANutshellModal', () => ({ YieldEarnInANutshellModal: () => null }));
 
-describe('EarnInANutshellModal skipped onboarding analytics', () => {
-    beforeEach(() => {
-        mockIsConfirmed = true;
-    });
+type ActionType = ComponentProps<typeof EarnInANutshellModal>['actionType'];
 
+const renderOnboarding = (isConfirmed: boolean, actionType?: ActionType) => {
+    const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+    const yieldContext = { id: 'test-vault', vaultAddress: '0xvault' };
+    const opportunity = getEarnOpportunityKey({
+        type: 'yield',
+        vaultAddress: yieldContext.vaultAddress,
+    });
+    const report = mock<DesktopAnalyticsDep['analytics']['report']>();
+    const onCancel = mock<() => void>();
+    const navigate = mock<SuiteRouterHistoryDep['suiteRouterHistory']['navigate']>();
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep & SuiteRouterHistoryDep>,
+        MockSuiteState
+    >({
+        preloadedState: {
+            ...mockInitialAppState,
+            wallet: {
+                ...mockInitialAppState.wallet,
+                earnOnboarding: isConfirmed ? { [account.key]: [opportunity] } : {},
+            },
+        },
+        services: () => ({
+            analytics: mockDesktopAnalytics(report),
+            suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate },
+        }),
+    });
+    const props = {
+        flow: EarnFlow.Yield,
+        provider: EarnProvider.Morpho,
+        account,
+        analyticsStep: 'earn-dashboard',
+        actionType,
+        yieldContext,
+        onCancel,
+    } satisfies ComponentProps<typeof EarnInANutshellModal>;
+    const wrapper = ({ children }: PropsWithChildren) => (
+        <Provider store={services.store}>
+            <ServicesProvider services={services}>{children}</ServicesProvider>
+        </Provider>
+    );
+    const view = render(<EarnInANutshellModal {...props} />, { wrapper });
+
+    return { ...view, navigate, props, report };
+};
+
+describe('EarnInANutshellModal skipped onboarding analytics', () => {
     it.each([undefined, 'continue', 'close'] as const)(
         'reports an automatic deposit transition only for a flow entry (%s)',
         actionType => {
-            const report = jest.fn();
-            const dispatch = mock<Dispatch>();
-            const onCancel = jest.fn();
-            const props = {
-                flow: EarnFlow.Yield,
-                provider: EarnProvider.Morpho,
-                account: mockWalletAccount({ symbol: asNetworkSymbol('eth') }),
-                analyticsStep: 'earn-dashboard',
-                actionType,
-                yieldContext: { id: 'test-vault', vaultAddress: '0xvault' },
-                onCancel,
-            } as const;
-            const services: DesktopAnalyticsDep & { store: DispatchDep } = {
-                analytics: mockDesktopAnalytics(report),
-                store: { dispatch },
-            };
-            const view = render(
-                <ServicesProvider services={services}>
-                    <EarnInANutshellModal {...props} />
-                </ServicesProvider>,
-            );
+            const { navigate, props, report, rerender } = renderOnboarding(true, actionType);
+            const { onCancel } = props;
 
             if (actionType === 'close') {
                 expect(report).not.toHaveBeenCalled();
-                expect(dispatch).not.toHaveBeenCalled();
+                expect(navigate).not.toHaveBeenCalled();
                 expect(onCancel).not.toHaveBeenCalled();
             } else {
                 expect(report).toHaveBeenCalledTimes(1);
@@ -62,39 +92,23 @@ describe('EarnInANutshellModal skipped onboarding analytics', () => {
                         vaultId: 'test-vault',
                     },
                 });
-                expect(dispatch).toHaveBeenCalledTimes(1);
+                expect(navigate).toHaveBeenCalledTimes(1);
                 expect(onCancel).toHaveBeenCalledTimes(1);
             }
 
-            view.rerender(
-                <ServicesProvider services={services}>
-                    <EarnInANutshellModal {...props} />
-                </ServicesProvider>,
-            );
-            expect(report).toHaveBeenCalledTimes(actionType === 'close' ? 0 : 1);
+            rerender(<EarnInANutshellModal {...props} onCancel={() => onCancel()} />);
+            const expectedTransitions = actionType === 'close' ? 0 : 1;
+            expect(report).toHaveBeenCalledTimes(expectedTransitions);
+            expect(navigate).toHaveBeenCalledTimes(expectedTransitions);
+            expect(onCancel).toHaveBeenCalledTimes(expectedTransitions);
         },
     );
 
     it('does not report an automatic transition for an unconfirmed opportunity', () => {
-        mockIsConfirmed = false;
-        const report = jest.fn();
-        const services: DesktopAnalyticsDep & { store: DispatchDep } = {
-            analytics: mockDesktopAnalytics(report),
-            store: { dispatch: mock<Dispatch>() },
-        };
-        render(
-            <ServicesProvider services={services}>
-                <EarnInANutshellModal
-                    flow={EarnFlow.Yield}
-                    provider={EarnProvider.Morpho}
-                    account={mockWalletAccount({ symbol: asNetworkSymbol('eth') })}
-                    analyticsStep="earn-dashboard"
-                    yieldContext={{ id: 'test-vault', vaultAddress: '0xvault' }}
-                    onCancel={jest.fn()}
-                />
-            </ServicesProvider>,
-        );
+        const { navigate, props, report } = renderOnboarding(false);
 
         expect(report).not.toHaveBeenCalled();
+        expect(navigate).not.toHaveBeenCalled();
+        expect(props.onCancel).not.toHaveBeenCalled();
     });
 });

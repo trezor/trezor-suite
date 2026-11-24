@@ -1,31 +1,36 @@
-import { type FormState } from '@suite-common/wallet-types';
-import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import {
+    type MessageSystemRootState,
+    messageSystemInitialState,
+} from '@suite-common/message-system';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountsRootState, type FormDraftRootState } from '@suite-common/wallet-core';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { getFormDraftKey } from '@suite-common/wallet-utils';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import {
+    act,
+    createStoreFromPreloadedState,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
 import { createDeferred } from '@trezor/utils';
 
 import { useHandleOnEarnTransactionReview } from './useHandleOnEarnTransactionReview';
 
 const mockAnalytics = mockNativeAnalytics();
-const mockDispatch = jest.fn();
-let mockForm: Pick<FormState, 'options' | 'selectedFee'> | undefined;
+const mockBroadcast = jest.fn();
+const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+const analyticsServices: NativeAnalyticsDep = { analytics: mockAnalytics };
 const mockPrecomposed = { type: 'final', outputs: [] };
 const mockHandleReviewError = jest.fn();
 
-jest.mock('@trezor/dependency-injection', () => ({
-    ...jest.requireActual('@trezor/dependency-injection'),
-    useServices: () => ({ analytics: mockAnalytics, dispatch: mockDispatch }),
-}));
-jest.mock('@suite-common/mev', () => ({ selectIsMevProtectionFeatureEnabled: () => false }));
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useNavigation: () => ({}),
 }));
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
-    selectAccountNetworkSymbol: () => 'eth',
-    selectFormDraft: () => mockForm,
-    pushStakeTransactionThunk: () => ({ type: 'test/push' }),
+    pushStakeTransactionThunk: () => () => mockBroadcast(),
 }));
 jest.mock('./useEarnReviewBackNavigation', () => ({
     useEarnReviewBackNavigation: () => ({
@@ -48,15 +53,28 @@ it.each([
 ] as const)(
     'reports confirmation with draft=%s before a %s broadcast result, once per send attempt',
     async (hasDraft, requestStatus) => {
-        mockForm = hasDraft ? { options: ['ethereumNonce'], selectedFee: 'custom' } : undefined;
         const broadcast = createDeferred<unknown>();
-        mockDispatch.mockReturnValue(broadcast.promise);
-        const { result } = await renderHookWithStoreProvider(() =>
-            useHandleOnEarnTransactionReview({
-                accountKey: mockAccountKey(),
-                stakeType: 'stake',
-                isPushing: false,
-            }),
+        mockBroadcast.mockReturnValue(broadcast.promise);
+        const formDraftKey = getFormDraftKey('stake', account.key);
+        const store = createStoreFromPreloadedState<
+            AccountsRootState & FormDraftRootState & MessageSystemRootState
+        >({
+            messageSystem: messageSystemInitialState,
+            wallet: {
+                accounts: [account],
+                formDrafts: hasDraft
+                    ? { [formDraftKey]: { options: ['ethereumNonce'], selectedFee: 'custom' } }
+                    : {},
+            },
+        });
+        const { result } = await renderHookWithStoreProvider(
+            () =>
+                useHandleOnEarnTransactionReview({
+                    accountKey: account.key,
+                    stakeType: 'stake',
+                    isPushing: false,
+                }),
+            { services: { ...analyticsServices, store } },
         );
         let send: Promise<string | undefined> | undefined;
         await act(() => {
