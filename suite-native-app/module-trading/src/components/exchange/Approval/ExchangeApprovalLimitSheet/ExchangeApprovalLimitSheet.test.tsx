@@ -1,15 +1,27 @@
 import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils';
-import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { ExchangeApprovalLimitSheet } from './ExchangeApprovalLimitSheet';
-import { renderWithTradingProvider } from '../../../../test-utils/tradingTestUtils';
+import {
+    createTradingTestStore,
+    renderWithTradingProvider,
+} from '../../../../test-utils/tradingTestUtils';
 
 const mockOnDismiss = jest.fn();
 const mockOnApprovalTypeSelect = jest.fn();
 
 const testQuote = mercuryoFixedWorstQuote;
+
+const checksummedUsdcAccount = {
+    ...eth1NormalAccount,
+    tokens: eth1NormalAccount.tokens?.map(token => ({
+        ...token,
+        contract: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    })),
+};
 
 const renderSheet = async (
     isVisible = true,
@@ -50,6 +62,29 @@ describe('ExchangeApprovalLimitSheet', () => {
         expect(
             getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel')),
         ).toBeTruthy();
+        expect(getByText('100 USDC')).toBeTruthy();
+    });
+
+    it('should show the token symbol when rendered outside the trading metadata provider and should provide its own metadata provider', async () => {
+        const { getByText } = await renderWithStoreProvider(
+            <ExchangeApprovalLimitSheet
+                isVisible
+                onDismiss={mockOnDismiss}
+                quote={testQuote}
+                onApprovalTypeSelect={mockOnApprovalTypeSelect}
+                selectedApprovalType="MINIMAL"
+            />,
+            {
+                services: {
+                    store: createTradingTestStore({
+                        tradeType: 'exchange',
+                        overrides: { wallet: { accounts: [checksummedUsdcAccount] } },
+                    }),
+                    networks: mockNetworksServices(),
+                },
+            },
+        );
+
         expect(getByText('100 USDC')).toBeTruthy();
     });
 
