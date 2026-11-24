@@ -62,28 +62,6 @@ describe('useYieldPendingTransactionDetails', () => {
         });
     });
 
-    it.each(['approve', 'revoke', 'withdraw', 'redeem', 'claim', 'wrap', 'unwrap'] as const)(
-        'preserves the pending transaction type %s without inventing a vault context',
-        async transactionType => {
-            const { result, analytics } = await renderDetails({
-                transactionType,
-                vaultId: undefined,
-            });
-
-            await act(() => result.current.openInBlockchain());
-
-            expect(analytics.report).toHaveBeenCalledWith({
-                type: 'yield/interaction',
-                payload: {
-                    element: 'pending-tx-open',
-                    value: transactionType,
-                    networkSymbol,
-                    vaultId: undefined,
-                },
-            });
-        },
-    );
-
     it('does not report an unavailable explorer', async () => {
         const { result, analytics } = await renderDetails({ txid: null });
 

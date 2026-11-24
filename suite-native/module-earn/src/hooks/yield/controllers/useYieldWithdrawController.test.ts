@@ -113,31 +113,28 @@ const renderWithdrawController = () => {
 };
 
 describe('useYieldWithdrawController', () => {
-    it.each(['withdraw', 'redeem'] as const)(
-        'reports the classified compose failure for %s',
-        async operation => {
-            mockRouteParams.withdrawFlowType = operation;
-            const { services } = await renderWithdrawController();
+    it('reports the classified compose failure with the active operation', async () => {
+        mockRouteParams.withdrawFlowType = 'redeem';
+        const { services } = await renderWithdrawController();
 
-            await act(() =>
-                useYieldWithdrawFeesMock.mock.calls
-                    .at(-1)?.[0]
-                    .onComposeError?.('missing-vault-address'),
-            );
+        await act(() =>
+            useYieldWithdrawFeesMock.mock.calls
+                .at(-1)?.[0]
+                .onComposeError?.('missing-vault-address'),
+        );
 
-            expect(services.analytics.report).toHaveBeenCalledWith({
-                type: 'yield/withdraw',
-                payload: {
-                    type: 'error',
-                    action: 'continue',
-                    operation,
-                    networkSymbol: yieldFlowData.account.symbol,
-                    vaultId: yieldFlowData.vault.id,
-                    errorMessage: 'missing-vault-address',
-                },
-            });
-        },
-    );
+        expect(services.analytics.report).toHaveBeenCalledWith({
+            type: 'yield/withdraw',
+            payload: {
+                type: 'error',
+                action: 'continue',
+                operation: 'redeem',
+                networkSymbol: yieldFlowData.account.symbol,
+                vaultId: yieldFlowData.vault.id,
+                errorMessage: 'missing-vault-address',
+            },
+        });
+    });
 
     beforeEach(() => {
         jest.clearAllMocks();

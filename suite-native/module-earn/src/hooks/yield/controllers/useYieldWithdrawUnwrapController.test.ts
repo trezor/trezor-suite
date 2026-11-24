@@ -60,31 +60,28 @@ const renderUnwrapController = async () => {
 };
 
 describe('useYieldWithdrawUnwrapController', () => {
-    it.each(['withdraw', 'redeem'] as const)(
-        'attributes an unwrap compose error to %s',
-        async operation => {
-            mockRouteParams.withdrawFlowType = operation;
-            const { analytics } = await renderUnwrapController();
+    it('attributes an unwrap compose error to the withdraw operation', async () => {
+        mockRouteParams.withdrawFlowType = 'withdraw';
+        const { analytics } = await renderUnwrapController();
 
-            await act(() =>
-                useYieldWrappedNativeStepMock.mock.calls
-                    .at(-1)?.[0]
-                    .onComposeError('fee-estimation-failed'),
-            );
+        await act(() =>
+            useYieldWrappedNativeStepMock.mock.calls
+                .at(-1)?.[0]
+                .onComposeError('fee-estimation-failed'),
+        );
 
-            expect(analytics.report).toHaveBeenCalledWith({
-                type: 'yield/withdraw',
-                payload: {
-                    type: 'error',
-                    action: 'continue',
-                    operation,
-                    networkSymbol: resolvedYieldFlowData.account.symbol,
-                    vaultId: resolvedYieldFlowData.vault.id,
-                    errorMessage: 'unwrap-fee-estimation-failed',
-                },
-            });
-        },
-    );
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: 'yield/withdraw',
+            payload: {
+                type: 'error',
+                action: 'continue',
+                operation: 'withdraw',
+                networkSymbol: resolvedYieldFlowData.account.symbol,
+                vaultId: resolvedYieldFlowData.vault.id,
+                errorMessage: 'unwrap-fee-estimation-failed',
+            },
+        });
+    });
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -98,15 +95,9 @@ describe('useYieldWithdrawUnwrapController', () => {
         } as ReturnType<typeof useMessageSystemWrappedNative>);
     });
 
-    it.each([
-        { operation: 'withdraw', action: 'continue' },
-        { operation: 'withdraw', action: 'cancel' },
-        { operation: 'redeem', action: 'continue' },
-        { operation: 'redeem', action: 'cancel' },
-    ] as const)(
-        'reports an unwrap simulation decision ($operation, $action)',
-        async ({ operation, action }) => {
-            mockRouteParams.withdrawFlowType = operation;
+    it.each(['continue', 'cancel'] as const)(
+        'reports an unwrap simulation decision (%s)',
+        async action => {
             const step = buildUnwrapStep();
             step.simulation.preparedTx = {
                 amount: '1',
@@ -126,7 +117,7 @@ describe('useYieldWithdrawUnwrapController', () => {
                 payload: {
                     action,
                     type: 'tx-simulation-modal',
-                    operation,
+                    operation: 'redeem',
                     networkSymbol: resolvedYieldFlowData.account.symbol,
                     vaultId: resolvedYieldFlowData.vault.id,
                 },

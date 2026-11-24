@@ -21,78 +21,25 @@ const renderCurrencyToggleAnalytics = async (
 };
 
 describe('useYieldCurrencyToggleAnalytics', () => {
-    it('reports a switch to the fiat input', async () => {
+    it.each(['vault-1', undefined])('reports both switches for vault %s', async vaultId => {
         const { result, analytics } = await renderCurrencyToggleAnalytics({
             networkSymbol: asNetworkSymbol('eth'),
-            vaultId: 'vault-1',
+            vaultId,
         });
 
-        await act(() => {
-            result.current('secondary');
-        });
+        await act(() => result.current('secondary'));
+        await act(() => result.current('primary'));
 
-        expect(analytics.report).toHaveBeenCalledWith({
-            type: 'yield/interaction',
-            payload: {
-                element: 'amount-currency-toggle',
-                value: 'fiat',
-                networkSymbol: 'eth',
-                vaultId: 'vault-1',
-            },
-        });
-    });
-
-    it('reports a switch back to the crypto input', async () => {
-        const { result, analytics } = await renderCurrencyToggleAnalytics({
-            networkSymbol: asNetworkSymbol('eth'),
-            vaultId: 'vault-1',
-        });
-
-        await act(() => {
-            result.current('primary');
-        });
-
-        expect(analytics.report).toHaveBeenCalledWith({
-            type: 'yield/interaction',
-            payload: {
-                element: 'amount-currency-toggle',
-                value: 'crypto',
-                networkSymbol: 'eth',
-                vaultId: 'vault-1',
-            },
-        });
-    });
-
-    it('omits vaultId for the standalone wrap/unwrap forms', async () => {
-        const { result, analytics } = await renderCurrencyToggleAnalytics({
-            networkSymbol: asNetworkSymbol('eth'),
-        });
-
-        await act(() => {
-            result.current('secondary');
-        });
-
-        expect(analytics.report).toHaveBeenCalledWith({
-            type: 'yield/interaction',
-            payload: {
-                element: 'amount-currency-toggle',
-                value: 'fiat',
-                networkSymbol: 'eth',
-                vaultId: undefined,
-            },
-        });
-    });
-
-    it('reports every switch, so a toggle back and forth is counted twice', async () => {
-        const { result, analytics } = await renderCurrencyToggleAnalytics({
-            networkSymbol: asNetworkSymbol('eth'),
-        });
-
-        await act(() => {
-            result.current('secondary');
-            result.current('primary');
-        });
-
-        expect(analytics.report).toHaveBeenCalledTimes(2);
+        expect(jest.mocked(analytics.report).mock.calls.map(([event]) => event)).toEqual(
+            ['fiat', 'crypto'].map(value => ({
+                type: 'yield/interaction',
+                payload: {
+                    element: 'amount-currency-toggle',
+                    value,
+                    networkSymbol: 'eth',
+                    vaultId,
+                },
+            })),
+        );
     });
 });
