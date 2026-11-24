@@ -2,7 +2,11 @@ import { memo, useEffect } from 'react';
 
 import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
-import { cryptoIdToNetworkSymbolAndContractAddress, useTradingUtils } from '@suite-common/trading';
+import {
+    TradingTokenMetadataProvider,
+    cryptoIdToNetworkSymbolAndContractAddress,
+    useTradingUtils,
+} from '@suite-common/trading';
 import { BottomSheetModal, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -51,47 +55,51 @@ export const ExchangeApprovalLimitSheet = memo(
                 testID="ExchangeApproval/LimitSheet"
                 isCloseDisplayed
             >
-                <VStack spacing="sp12" paddingBottom="sp12">
-                    <ExchangeApprovalLimitCard
-                        title={
-                            <TradingCoinAmountFormatter
-                                cryptoId={quote.send}
-                                amount={quote.sendStringAmount}
-                                variant="body-sm-strong"
-                                color="contentPrimary"
-                            />
-                        }
-                        description={
-                            <Translation id="moduleTrading.exchangeApprovalLimitSheet.limitedCard.info" />
-                        }
-                        symbol={networkSymbol}
-                        contractAddress={contractAddress}
-                        tokenSymbol={
-                            quote.send
-                                ? cryptoIdToCoinSymbol(quote.send) || cryptoIdToCoinName(quote.send)
-                                : undefined
-                        }
-                        isChecked={selectedApprovalType === 'MINIMAL'}
-                        onChange={() => onApprovalTypeSelect('MINIMAL')}
-                    />
-                    <ExchangeApprovalLimitCard
-                        title={<UnlimitedAllowanceLabel />}
-                        description={
-                            <Translation id="moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.info" />
-                        }
-                        symbol={networkSymbol}
-                        contractAddress={contractAddress}
-                        tokenSymbol={
-                            quote.send
-                                ? cryptoIdToCoinSymbol(quote.send) || cryptoIdToCoinName(quote.send)
-                                : undefined
-                        }
-                        isChecked={selectedApprovalType === 'INFINITE'}
-                        onChange={() => onApprovalTypeSelect('INFINITE')}
-                    >
-                        <LimitPickerUnlimitedAlert cryptoId={quote.send} />
-                    </ExchangeApprovalLimitCard>
-                </VStack>
+                <TradingTokenMetadataProvider>
+                    <VStack spacing="sp12" paddingBottom="sp12">
+                        <ExchangeApprovalLimitCard
+                            title={
+                                <TradingCoinAmountFormatter
+                                    cryptoId={quote.send}
+                                    amount={quote.sendStringAmount}
+                                    variant="body-sm-strong"
+                                    color="contentPrimary"
+                                />
+                            }
+                            description={
+                                <Translation id="moduleTrading.exchangeApprovalLimitSheet.limitedCard.info" />
+                            }
+                            symbol={networkSymbol}
+                            contractAddress={contractAddress}
+                            tokenSymbol={
+                                quote.send
+                                    ? cryptoIdToCoinSymbol(quote.send) ||
+                                      cryptoIdToCoinName(quote.send)
+                                    : undefined
+                            }
+                            isChecked={selectedApprovalType === 'MINIMAL'}
+                            onChange={() => onApprovalTypeSelect('MINIMAL')}
+                        />
+                        <ExchangeApprovalLimitCard
+                            title={<UnlimitedAllowanceLabel />}
+                            description={
+                                <Translation id="moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.info" />
+                            }
+                            symbol={networkSymbol}
+                            contractAddress={contractAddress}
+                            tokenSymbol={
+                                quote.send
+                                    ? cryptoIdToCoinSymbol(quote.send) ||
+                                      cryptoIdToCoinName(quote.send)
+                                    : undefined
+                            }
+                            isChecked={selectedApprovalType === 'INFINITE'}
+                            onChange={() => onApprovalTypeSelect('INFINITE')}
+                        >
+                            <LimitPickerUnlimitedAlert cryptoId={quote.send} />
+                        </ExchangeApprovalLimitCard>
+                    </VStack>
+                </TradingTokenMetadataProvider>
             </BottomSheetModal>
         );
     },
