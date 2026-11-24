@@ -5,14 +5,13 @@ import { MAX_LENGTH_MESSAGE } from '@suite-common/sign-verify';
 import { Switch, Textarea } from '@trezor/components';
 
 import { CopyFieldButton } from './CopyFieldButton';
-import { type SignVerifyFormFields } from './useSignVerifyForm';
 
 type SignVerifyMessageFieldProps = {
     message?: string;
     isCompleted: boolean;
     hasError: boolean;
     errorMessage?: string;
-    hexField: SignVerifyFormFields['hexField'];
+    hexField: { isChecked: boolean; onChange: (isChecked: boolean) => void };
     registration: UseFormRegisterReturn<'message'>;
     onCopy: (value: string) => void;
 };
