@@ -99,6 +99,7 @@ export const AdvancedCoinSettingsModal = ({
     const isEditable = backendsForm.type !== 'default';
     const isSubmitButtonDisabled =
         (isEditable && !!backendsForm.input.error) ||
+        (backendsForm.isBroadcastSupported && !!backendsForm.broadcastInput.error) ||
         !explorerForm.isValid ||
         (isBitcoinNetwork && isGapLimitEnabled && !!gapLimitForm.error) ||
         backendsForm.isValidating;
@@ -157,6 +158,50 @@ export const AdvancedCoinSettingsModal = ({
                         removeUrl={backendsForm.removeUrl}
                     />
                 </Card>
+
+                {backendsForm.isBroadcastSupported && (
+                    <CollapsibleBox
+                        heading={
+                            <Row gap={12}>
+                                <Translation id="TR_BROADCAST_BACKEND" />
+
+                                {backendsForm.broadcastUrls.length > 0 && (
+                                    <Badge intent="warning">
+                                        <Translation id="TR_BROADCAST_BACKEND_CUSTOM" />
+                                    </Badge>
+                                )}
+                            </Row>
+                        }
+                    >
+                        <Column gap={12}>
+                            <Paragraph
+                                intent="neutral"
+                                priority="secondary"
+                                typographyStyle="body-sm"
+                            >
+                                <Translation id="TR_BROADCAST_BACKEND_DESCRIPTION" />
+                            </Paragraph>
+                            {backendsForm.isMevProtectionActive && (
+                                <Banner
+                                    intent="warning"
+                                    data-testid="@settings/advance/broadcast/mev-warning"
+                                    description={
+                                        <Translation id="TR_BROADCAST_BACKEND_MEV_WARNING" />
+                                    }
+                                />
+                            )}
+                            <BackendUrls
+                                symbol={symbol}
+                                isEditable
+                                dataTestIdPrefix="@settings/advance/broadcast"
+                                input={backendsForm.broadcastInput}
+                                urls={backendsForm.broadcastUrls}
+                                addUrl={backendsForm.addBroadcastUrl}
+                                removeUrl={backendsForm.removeBroadcastUrl}
+                            />
+                        </Column>
+                    </CollapsibleBox>
+                )}
 
                 {backendsForm.validationError && (
                     <Banner

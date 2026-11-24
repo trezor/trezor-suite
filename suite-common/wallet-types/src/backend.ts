@@ -16,6 +16,7 @@ export type CustomBackend = {
     symbol: NetworkSymbol;
     type: BackendType;
     urls: string[];
+    broadcastUrls?: string[];
 };
 
 export type BackendSettings = Partial<{
@@ -24,6 +25,8 @@ export type BackendSettings = Partial<{
         [type in BackendType]: string[];
     }>;
     gapLimit: number;
+    // EVM only: evm-rpc endpoints that broadcast transactions, whichever backend is selected above.
+    broadcastUrls: string[];
 }>;
 
 export interface ConnectionStatus {

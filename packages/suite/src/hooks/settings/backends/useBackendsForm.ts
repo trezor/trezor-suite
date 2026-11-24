@@ -4,6 +4,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
 import { isOnionUrl } from '@suite/tor';
+import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
     type NetworkSymbol,
     type ServerType,
@@ -11,7 +12,11 @@ import {
     getServerAddressExample,
     validateServerAddress,
 } from '@suite-common/wallet-config';
-import { blockchainActions, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
+import {
+    blockchainActions,
+    selectIsMevProtectionEnabled,
+    selectNetworkBlockchainInfo,
+} from '@suite-common/wallet-core';
 import { type BackendSettings } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
@@ -78,11 +83,23 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
     const [currentValues, setCurrentValues] = useState(() =>
         getStoredState(symbol, backends.selected, backends.urls),
     );
+    const [broadcastUrls, setBroadcastUrls] = useState(() => backends.broadcastUrls ?? []);
     const [isValidating, setIsValidating] = useState(false);
     const [validationError, setValidationError] = useState<string | null>(null);
 
+    const network = getNetwork(symbol);
+    const isBroadcastSupported = network.networkType === 'ethereum';
+    // MEV protection is applied by blockbook when it broadcasts, a custom broadcast backend skips it.
+    const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
+    const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
+    const isMevProtectionActive =
+        isMevProtectionEnabled &&
+        isMevProtectionFeatureEnabled &&
+        network.features.includes('mev-protection');
+
     useEffect(() => {
         setCurrentValues(getStoredState(symbol, backends.selected, backends.urls));
+        setBroadcastUrls(backends.broadcastUrls ?? []);
         setValidationError(null);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [symbol]);
@@ -108,13 +125,24 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
         setValidationError(null);
     };
 
-    const input = useBackendUrlInput(symbol, currentValues.type, currentValues.urls);
-
-    const getUrls = () => {
-        const lastUrl = input.value && !input.error ? [input.value] : [];
-
-        return currentValues.urls.concat(lastUrl);
+    const addBroadcastUrl = (url: string) => {
+        setBroadcastUrls(urls => [...urls, url]);
+        setValidationError(null);
     };
+
+    const removeBroadcastUrl = (url: string) => {
+        setBroadcastUrls(urls => urls.filter(u => u !== url));
+        setValidationError(null);
+    };
+
+    const input = useBackendUrlInput(symbol, currentValues.type, currentValues.urls);
+    const broadcastInput = useBackendUrlInput(symbol, 'evm-rpc', broadcastUrls);
+
+    // A valid url typed into the input counts as added, the user does not have to press add first.
+    const withPendingUrl = (urls: string[], urlInput: typeof input) =>
+        urlInput.value && !urlInput.error ? [...urls, urlInput.value] : urls;
+
+    const getUrls = () => withPendingUrl(currentValues.urls, input);
 
     const hasOnlyOnions = () => {
         const urls = getUrls();
@@ -179,15 +207,19 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
     const save = async (): Promise<boolean> => {
         const { type } = currentValues;
         const urls = type === 'default' ? [] : getUrls();
+        const broadcast = isBroadcastSupported
+            ? withPendingUrl(broadcastUrls, broadcastInput)
+            : undefined;
 
-        if (type === 'evm-rpc' && urls.length > 0) {
-            const isValid = await validateEvmRpcUrls(urls);
+        const evmRpcUrls = [...(type === 'evm-rpc' ? urls : []), ...(broadcast ?? [])];
+        if (evmRpcUrls.length > 0) {
+            const isValid = await validateEvmRpcUrls(evmRpcUrls);
             if (!isValid) {
                 return false;
             }
         }
 
-        dispatch(blockchainActions.setBackend({ symbol, type, urls }));
+        dispatch(blockchainActions.setBackend({ symbol, type, urls, broadcastUrls: broadcast }));
         const totalOnion = urls.filter(isOnionUrl).length;
 
         analytics.report({
@@ -211,6 +243,12 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
         addUrl,
         removeUrl,
         changeType,
+        isBroadcastSupported,
+        isMevProtectionActive,
+        broadcastUrls,
+        broadcastInput,
+        addBroadcastUrl,
+        removeBroadcastUrl,
         save,
         isValidating,
         validationError,

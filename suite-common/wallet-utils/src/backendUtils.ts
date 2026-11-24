@@ -41,6 +41,7 @@ export const getBackendFromSettings = (
         symbol,
         type,
         urls,
+        broadcastUrls: settings?.broadcastUrls,
     };
 };
 
@@ -63,6 +64,19 @@ export const getCustomBackends = (
             urls: backends.selected && backends.urls?.[backends.selected],
         }))
         .filter(isBackend);
+
+// Unlike getCustomBackends, this includes networks that keep the default backend but broadcast
+// through a custom one, Connect has to learn about those too.
+export const getBackendsToConnect = (
+    blockchains: BlockchainNetworks,
+    supportedNetworks: readonly NetworkSymbol[],
+): CustomBackend[] =>
+    supportedNetworks
+        .filter(symbol => !!blockchains[symbol as LegacyNetworkSymbol])
+        .map(symbol =>
+            getBackendFromSettings(symbol, blockchains[symbol as LegacyNetworkSymbol].backends),
+        )
+        .filter(({ urls, broadcastUrls }) => urls.length > 0 || !!broadcastUrls?.length);
 
 export const isElectrumUrl = (value: string) => !!parseElectrumUrl(value);
 

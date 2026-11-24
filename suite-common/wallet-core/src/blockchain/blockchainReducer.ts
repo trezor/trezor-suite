@@ -8,7 +8,7 @@ import {
     networksCollection,
 } from '@suite-common/wallet-config';
 import { type Blockchain, type BlockchainNetworks } from '@suite-common/wallet-types';
-import { getCustomBackends } from '@suite-common/wallet-utils';
+import { getBackendsToConnect, getCustomBackends } from '@suite-common/wallet-utils';
 import {
     type BlockchainBlock,
     type BlockchainError,
@@ -161,7 +161,14 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
                     action.payload.timeout;
             })
             .addCase(blockchainActions.setBackend, (state, action) => {
-                const { symbol, type } = action.payload;
+                const { symbol, type, broadcastUrls } = action.payload;
+                // Only the backend form sets broadcast urls, other dispatchers leave them as they are.
+                if (broadcastUrls?.length) {
+                    state[symbol as LegacyNetworkSymbol].backends.broadcastUrls = broadcastUrls;
+                } else if (broadcastUrls) {
+                    delete state[symbol as LegacyNetworkSymbol].backends.broadcastUrls;
+                }
+
                 if (type === 'default') {
                     delete state[symbol as LegacyNetworkSymbol].backends.selected;
                 } else if (!action.payload.urls.length) {
@@ -272,6 +279,12 @@ export const selectCustomBackends = createWeakMapSelector.withTypes<
     BlockchainRootState & NetworksRootState
 >()([selectBlockchainState, selectSupportedNetworkSymbols], (blockchainState, supportedNetworks) =>
     getCustomBackends(blockchainState, supportedNetworks),
+);
+
+export const selectBackendsToConnect = createWeakMapSelector.withTypes<
+    BlockchainRootState & NetworksRootState
+>()([selectBlockchainState, selectSupportedNetworkSymbols], (blockchainState, supportedNetworks) =>
+    getBackendsToConnect(blockchainState, supportedNetworks),
 );
 
 export const selectEnabledCustomBackends = createNetworkMemoizedSelector(

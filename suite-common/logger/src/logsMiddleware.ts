@@ -113,7 +113,12 @@ export const logsMiddleware = createMiddleware((action, { next, dispatch }) => {
     }
 
     if (blockchainActions.setBackend.match(action)) {
-        dispatch(addLog({ type: action.type, payload: { ...action.payload, urls: undefined } }));
+        dispatch(
+            addLog({
+                type: action.type,
+                payload: { ...action.payload, urls: undefined, broadcastUrls: undefined },
+            }),
+        );
     }
 
     return next(action);

@@ -11,6 +11,7 @@ import { useSelector } from '#src/hooks/suite/useSelector';
 type BackendUrlsProps = {
     symbol: NetworkSymbol;
     isEditable: boolean;
+    dataTestIdPrefix?: string;
 } & Pick<BackendsForm, 'input' | 'urls' | 'addUrl' | 'removeUrl'>;
 
 export function BackendUrls({
@@ -20,6 +21,7 @@ export function BackendUrls({
     urls,
     addUrl,
     removeUrl,
+    dataTestIdPrefix = '@settings/advance',
 }: BackendUrlsProps) {
     const blockchainUrl = useSelector(state => selectBlockchainUrlBySymbol(state, symbol));
     const { data: defaultUrls } = useDefaultUrls(symbol);
@@ -34,7 +36,7 @@ export function BackendUrls({
                 <List bulletComponent={<DotIndicator />} gap={12}>
                     {(isEditable ? urls : defaultUrls).map(url => (
                         <List.Item
-                            data-testid="@settings/advance/url"
+                            data-testid={`${dataTestIdPrefix}/url`}
                             key={url}
                             bulletComponent={
                                 url === blockchainUrl ? <DotIndicator isActive /> : undefined
@@ -67,7 +69,7 @@ export function BackendUrls({
             {isEditable && (
                 <Column gap={12}>
                     <Input
-                        data-testid="@settings/advance/url"
+                        data-testid={`${dataTestIdPrefix}/url`}
                         placeholder={input.placeholder}
                         hasError={!!input.error}
                         bottomText={input.error?.message || null}
@@ -78,7 +80,7 @@ export function BackendUrls({
                                 intent="brand"
                                 size="small"
                                 iconLeft={PlusIcon}
-                                data-testid="@settings/advance/button/add"
+                                data-testid={`${dataTestIdPrefix}/button/add`}
                                 onClick={() => {
                                     addUrl(input.value);
                                     input.reset();

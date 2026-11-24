@@ -38,9 +38,9 @@ import { BigNumber, arrayDistinct, arrayToDictionary } from '@trezor/utils';
 import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions';
 import {
     type BlockchainRootState,
+    selectBackendsToConnect,
     selectBlockchainState,
     selectCardanoProtocolParameters,
-    selectCustomBackends,
     selectIsCustomBackendConfigured,
     selectNetworkBlockchainInfo,
 } from './blockchainReducer';
@@ -78,12 +78,15 @@ export const reconnectBlockchainThunk = createThunk<unknown, ReconnectBlockchain
 
 const setBackendsToConnect = (backends: CustomBackend[]) =>
     Promise.all(
-        backends.map(({ symbol, type, urls }) =>
+        backends.map(({ symbol, type, urls, broadcastUrls }) =>
             TrezorConnect.blockchainSetCustomBackend({
                 coin: asCoinSymbol(symbol),
                 blockchainLink: {
                     type,
                     url: urls,
+                    ...(broadcastUrls?.length && {
+                        broadcast: { type: 'evm-rpc', url: broadcastUrls },
+                    }),
                 },
             }),
         ),
@@ -125,7 +128,7 @@ export const initBlockchainThunk = createThunk<
     await dispatch(preloadFeeInfoThunk());
 
     // Load custom blockbook backend
-    const backends = selectCustomBackends(getState());
+    const backends = selectBackendsToConnect(getState());
     await setBackendsToConnect(backends);
 
     const accounts = selectAccounts(getState());
