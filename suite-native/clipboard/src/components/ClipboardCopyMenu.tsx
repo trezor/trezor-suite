@@ -1,4 +1,3 @@
-// This is the Android implementation selected by Metro as the unsuffixed fallback.
 import { Pressable } from 'react-native';
 
 import * as Haptics from 'expo-haptics';
