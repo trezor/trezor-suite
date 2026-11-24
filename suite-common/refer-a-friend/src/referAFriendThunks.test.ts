@@ -6,7 +6,11 @@ import { createMockDispatch } from '@trezor/redux-utils/mocks';
 import { type Result, err, ok } from '@trezor/type-utils';
 
 import { type ReferralApiFetchParams } from './api/createReferralApiFetch';
-import { type ReferralProgram } from './referAFriendSchemas';
+import {
+    type ReferralAccount,
+    type ReferralProgram,
+    type ReferralVoucher,
+} from './referAFriendSchemas';
 import {
     type ReferAFriendState,
     referAFriendActions,
@@ -20,11 +24,7 @@ import {
     joinReferralProgramThunk,
     leaveReferralProgramThunk,
 } from './referAFriendThunks';
-import {
-    type ReferralAccount,
-    type ReferralError,
-    type ReferralVoucher,
-} from './referAFriendTypes';
+import { type ReferralError } from './referAFriendTypes';
 import { getReferralKeyFromCipheredValue } from './referralKey';
 
 const DEVICE_ID = 'device-1';
@@ -280,6 +280,30 @@ describe('fetchReferralAccountThunk', () => {
                 vouchers: [{ ...availableVoucher, amount: 20.5 }],
             }),
         );
+    });
+
+    it('reports an invalid account response but still loads it', async () => {
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        const invalidAccount = { ...activeAccount, redemptionCount: '1' };
+        const { actions, dispatch, getState, extra } = setup({
+            apiResponses: {
+                'GET v1/account': ok(invalidAccount),
+                'GET v1/vouchers': ok({ vouchers }),
+            },
+        });
+
+        await fetchReferralAccountThunk({ deviceId: DEVICE_ID })(dispatch, getState, extra);
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+            'Referral API: invalid GET v1/account response (redemptionCount: invalid_type)',
+        );
+        // A plain action object, the action creator does not accept the invalid account type.
+        expect(actions).toContainEqual({
+            type: referAFriendActions.accountLoaded.type,
+            payload: { walletDescriptor: WALLET_DESCRIPTOR, account: invalidAccount, vouchers },
+        });
+
+        consoleErrorSpy.mockRestore();
     });
 
     it('forgets the link but keeps the key when the backend does not know the account', async () => {

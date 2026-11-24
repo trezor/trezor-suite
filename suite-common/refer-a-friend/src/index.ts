@@ -41,16 +41,18 @@ export {
     joinReferralProgramThunk,
     leaveReferralProgramThunk,
 } from './referAFriendThunks';
-export type { ReferralProgram } from './referAFriendSchemas';
 export type {
     ReferralAccount,
-    ReferralAccountLoadStatus,
     ReferralAccountStatus,
+    ReferralProgram,
+    ReferralVoucher,
+    ReferralVoucherStatus,
+} from './referAFriendSchemas';
+export type {
+    ReferralAccountLoadStatus,
     ReferralError,
     ReferralProgramData,
     ReferralRewards,
-    ReferralVoucher,
-    ReferralVoucherStatus,
 } from './referAFriendTypes';
 export {
     LOCAL_REFER_A_FRIEND_API_URL,

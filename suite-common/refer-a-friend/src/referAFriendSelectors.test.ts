@@ -3,7 +3,7 @@ import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asWalletDescriptor } from '@trezor/device-utils';
 
-import { type ReferralProgram } from './referAFriendSchemas';
+import { type ReferralProgram, type ReferralVoucher } from './referAFriendSchemas';
 import {
     selectDoesReferralExistOnlyForOtherWallets,
     selectReferralAccountStateByWalletDescriptor,
@@ -20,7 +20,6 @@ import {
     type ReferralWalletRecord,
     referAFriendInitialState,
 } from './referAFriendSlice';
-import { type ReferralVoucher } from './referAFriendTypes';
 import { type ReferralKey } from './referralKey';
 
 const WALLET_DESCRIPTOR = asWalletDescriptor('standard');

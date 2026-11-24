@@ -1,5 +1,5 @@
 import { getReferralRewardsSummary } from './getReferralRewardsSummary';
-import { type ReferralVoucher, type ReferralVoucherStatus } from './referAFriendTypes';
+import { type ReferralVoucher, type ReferralVoucherStatus } from './referAFriendSchemas';
 
 // The summary reads only the status, amount and dates, so the status-specific fields are left loose.
 const createVoucher = (status: ReferralVoucherStatus, amount: number) =>

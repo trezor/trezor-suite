@@ -1,13 +1,13 @@
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { asWalletDescriptor } from '@trezor/device-utils';
 
+import { type ReferralAccount } from './referAFriendSchemas';
 import {
     type ReferAFriendState,
     referAFriendActions,
     referAFriendInitialState,
     referAFriendReducer,
 } from './referAFriendSlice';
-import { type ReferralAccount } from './referAFriendTypes';
 import { type ReferralKey } from './referralKey';
 
 const WALLET_DESCRIPTOR = asWalletDescriptor('standard');
