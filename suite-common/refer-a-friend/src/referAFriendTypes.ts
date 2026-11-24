@@ -23,7 +23,8 @@ type ActiveReferralAccount = {
     shareUrl: string;
     redemptionCount: number;
     redemptionLimit: number;
-    redemptionLimitResetsAt: string | null; // TODO type unclear, confirm with trezor.io backend team.
+    // Expected to be defined only when the user is at their redemptions limit.
+    redemptionLimitResetsAt: string | null;
 };
 
 export type ReferralAccount = InactiveReferralAccount | ActiveReferralAccount;
@@ -41,7 +42,6 @@ type PendingReferralVoucher = ReferralVoucherBase & {
     expiresAt: null;
     usedAt: null;
 };
-// TODO all types below ↓ are unclear, confirm with trezor.io backend team.
 type AvailableReferralVoucher = ReferralVoucherBase & {
     status: 'available';
     code: string;
@@ -66,7 +66,6 @@ type CanceledReferralVoucher = ReferralVoucherBase & {
     expiresAt: string;
     usedAt: null;
 };
-// TODO all types above ↑ are unclear, confirm with trezor.io backend team.
 
 export type ReferralVoucher =
     | PendingReferralVoucher
