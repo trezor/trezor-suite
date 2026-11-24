@@ -68,6 +68,7 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/theme" },
+        { "path": "../../suite-common/assets" },
         { "path": "../feature-flags" },
         { "path": "../settings" },
         { "path": "../test-utils" },

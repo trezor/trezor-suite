@@ -8,9 +8,6 @@ import {
 } from '@suite-common/device';
 import {
     type StakingRootState,
-    formatStakingAmount,
-    selectIsStakingAccountActive,
-    selectStakingAccountAmount,
     selectStakingAccountAmountOutsideBalance,
 } from '@suite-common/earn-staking';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
@@ -19,19 +16,14 @@ import {
     selectAccountsWithSuiteSyncLabel,
     selectSuiteSyncAccountLabel,
 } from '@suite-common/suite-sync';
-import {
-    type TokenDefinition,
-    type TokenDefinitionsRootState,
-    selectTokenDefinitions,
-} from '@suite-common/token-definitions';
-import { type TokenAddress, type TokenInfoBranded } from '@suite-common/tokens';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
     type TransactionsRootState,
     type WalletSettingsRootState,
-    getTokens,
     selectAccountByKey,
     selectAccountTokens,
     selectBaseCurrency,
@@ -44,7 +36,6 @@ import {
     type Account,
     type AccountDescriptor,
     type AccountKey,
-    type RatesByKey,
     areBaseCurrencyAmountsEqual,
     asBaseCurrencyAmount,
     createAccountKey,
@@ -55,8 +46,6 @@ import {
     getAccountFiatBalance,
     getFiatRateKey,
     isAccountFailed,
-    isErc4626,
-    sortTokensByName,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { selectDiscoverySupportedNetworks } from '@suite-native/discovery';
@@ -72,7 +61,7 @@ import {
     weakMapMemoize,
 } from '@trezor/redux-utils';
 
-import { type AccountListSection, type NetworkFilterType } from './types';
+import { type NetworkFilterType } from './types';
 import {
     filterAccountsByLabelAndNetworkNames,
     filterAccountsByNetworkSymbols,
@@ -313,125 +302,6 @@ export const selectAccountTokenFiatBalance = createMemoizedSelector(
             // when the amount is unchanged so useSelector consumers don't rerender.
             resultEqualityCheck: areBaseCurrencyAmountsEqual,
         },
-    },
-);
-
-export type GetAccountListSectionsParams = {
-    account: Account;
-    tokenDefinitions: TokenDefinition | undefined;
-    isStakingActive: boolean;
-    stakingCryptoBalance: string;
-    groupZeroBalance?: boolean;
-    fiatRates?: RatesByKey;
-    localCurrency?: ReturnType<typeof selectBaseCurrency>;
-};
-
-export const getAccountListSections = ({
-    account,
-    tokenDefinitions,
-    isStakingActive,
-    stakingCryptoBalance,
-    groupZeroBalance = false,
-    fiatRates,
-    localCurrency,
-}: GetAccountListSectionsParams) => {
-    const sections: AccountListSection[] = [];
-    const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
-
-    const { shownWithBalance: tokensWithBalance, shownWithoutBalance } = getTokens({
-        tokens: account.tokens,
-        symbol: account.symbol,
-        tokenDefinitions,
-    });
-
-    const zeroBalanceTokens: TokenInfoBranded[] = groupZeroBalance
-        ? (shownWithoutBalance.filter(token => !isErc4626(token)) as TokenInfoBranded[])
-        : [];
-
-    const hasAnyKnownTokens =
-        isNetworkSupportingTokens && !!(tokensWithBalance.length + zeroBalanceTokens.length);
-
-    sections.push({
-        type: 'account',
-        account,
-        isLast: !hasAnyKnownTokens && !isStakingActive,
-        isFirst: true,
-        hasAnyKnownTokens,
-    });
-
-    if (isStakingActive) {
-        sections.push({
-            type: 'staking',
-            account,
-            stakingCryptoBalance,
-            isLast: !hasAnyKnownTokens,
-        });
-    }
-
-    if (hasAnyKnownTokens) {
-        const getTokenFiatValue = (token: { contract: string; balance?: string }): number => {
-            if (!fiatRates || !localCurrency) return 0;
-            const fiatRateKey = getFiatRateKey(
-                account.symbol,
-                localCurrency,
-                token.contract as TokenAddress,
-            );
-            const rate = fiatRates[fiatRateKey]?.rate;
-            if (!rate || !token.balance) return 0;
-
-            return toFiatCurrency({ amount: token.balance, rate })?.toNumber() ?? 0;
-        };
-
-        const tokensToShow = tokensWithBalance
-            .filter(token => !isErc4626(token))
-            .sort((a, b) => getTokenFiatValue(b) - getTokenFiatValue(a));
-        tokensToShow.forEach((token, index) => {
-            sections.push({
-                type: 'token',
-                account,
-                token: token as TokenInfoBranded,
-                isLast: index === tokensToShow.length - 1 && zeroBalanceTokens.length === 0,
-            });
-        });
-
-        if (zeroBalanceTokens.length > 0) {
-            sections.push({
-                type: 'zeroBalance',
-                account,
-                tokens: [...zeroBalanceTokens].sort(sortTokensByName),
-            });
-        }
-    }
-
-    return sections;
-};
-
-const EMPTY_ARRAY: AccountListSection[] = [];
-
-export const selectAccountListSectionsWithZeroBalanceGroup = createMemoizedSelector(
-    [
-        selectAccountByKey,
-        selectTokenDefinitions,
-        selectCurrentFiatRates,
-        selectBaseCurrency,
-        selectIsStakingAccountActive,
-        selectStakingAccountAmount,
-    ],
-    (account, tokenDefinitions, fiatRates, localCurrency, isStakingActive, stakingAmount) => {
-        if (!account) return EMPTY_ARRAY;
-
-        return getAccountListSections({
-            account,
-            tokenDefinitions: tokenDefinitions[account.symbol]?.coin,
-            isStakingActive,
-            stakingCryptoBalance: formatStakingAmount({
-                amount: stakingAmount,
-                networkSymbol: account.symbol,
-            }),
-            groupZeroBalance: true,
-            fiatRates,
-            localCurrency,
-        });
     },
 );
 
