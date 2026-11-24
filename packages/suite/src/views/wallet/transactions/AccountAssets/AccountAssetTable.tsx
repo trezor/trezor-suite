@@ -8,6 +8,7 @@ import {
     ASSET_TABLE_ROW_LIMIT,
     getAccountListSectionKey,
     selectAccountAssetOverview,
+    selectAccountListSectionsMatchingSearch,
     selectAccountSmallBalances,
     selectAreAssetTableSmallBalancesDisplayed,
 } from '@suite-common/assets';
@@ -17,7 +18,7 @@ import {
     selectAreTokensSupportedByAccount,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { Table } from '@trezor/components';
+import { Column, Row, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -28,6 +29,8 @@ import { useSelector } from '#src/hooks/suite/useSelector';
 import { DropdownRow } from '#src/views/wallet/tokens/DropdownRow';
 
 import { AccountAssetEmptyState } from './AccountAssetEmptyState';
+import { AccountAssetNoSearchResultsRow } from './AccountAssetNoSearchResultsRow';
+import { AccountAssetSearch } from './AccountAssetSearch';
 import { AccountAssetSectionRow } from './AccountAssetSectionRow';
 
 type AccountAssetTableProps = {
@@ -42,6 +45,7 @@ type AccountAssetTableProps = {
 export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [isZeroBalanceOpen, setIsZeroBalanceOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
     const hasTokens = useSelector(state => selectAreTokensSupportedByAccount(state, accountKey));
     const isUnused = useSelector(state => selectAccountByKey(state, accountKey)?.empty);
     const hasHiddenTokens = useSelector(
@@ -61,7 +65,20 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
     const { isExpanded, rowLimit, toggleExpanded, changeSmallBalances } = useAssetTableFolding({
         isFoldable,
     });
-    const shownRows = rowLimit === undefined ? rows : rows.slice(0, rowLimit);
+    const isSearching = hasTokens && searchQuery.trim() !== '';
+    const searchedSections = useSelector(state =>
+        isSearching
+            ? selectAccountListSectionsMatchingSearch(state, accountKey, searchQuery)
+            : undefined,
+    );
+    // A search lists every match: unfolded, with the small balances and the tokens held at zero.
+    // A coin or a stake of nothing is no match, as it is no row.
+    const listedKeys = new Set(
+        [...heldSections, ...zeroBalanceSections].map(getAccountListSectionKey),
+    );
+    const shownRows =
+        searchedSections?.filter(section => listedKeys.has(getAccountListSectionKey(section))) ??
+        (rowLimit === undefined ? rows : rows.slice(0, rowLimit));
 
     // The account's own hidden tokens, so the list stays scoped to it and Back returns here.
     const openHiddenTokens = () => {
@@ -82,56 +99,68 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
     }
 
     return (
-        <AssetTableFrame
-            assetHeader={
-                // A network without tokens has nothing to filter or to hide.
-                hasTokens ? (
-                    <AssetTableFilterHeader
-                        areSmallBalancesShown={areSmallBalancesShown}
-                        smallBalances={smallBalances.summary}
-                        onSmallBalancesChange={changeSmallBalances}
-                        onOpenHiddenTokens={openHiddenTokens}
-                    />
-                ) : (
-                    <Translation id="TR_ASSET" />
-                )
-            }
-            data-testid="@wallet/account-assets/table"
-        >
-            {rows.length === 0 && heldSections.length > 0 && (
-                <AssetTableSmallBalancesHiddenRow
-                    onShowSmallBalances={() => changeSmallBalances(true)}
-                />
+        <Column gap={12} alignItems="stretch">
+            {hasTokens && (
+                <Row justifyContent="flex-end">
+                    <AccountAssetSearch value={searchQuery} onChange={setSearchQuery} />
+                </Row>
             )}
-            {shownRows.map(section => (
-                <AccountAssetSectionRow key={getAccountListSectionKey(section)} section={section} />
-            ))}
-            {isFoldable && (
-                <AssetTableExpandRow isExpanded={isExpanded} onToggle={toggleExpanded} />
-            )}
-            {zeroBalanceSections.length > 0 && (
-                <Table.Row
-                    onClick={() => setIsZeroBalanceOpen(!isZeroBalanceOpen)}
-                    data-testid="@wallet/account-assets/zero-balance"
-                >
-                    <Table.Cell colSpan={3} padding={ASSET_TABLE_CELL_PADDING.first}>
-                        <DropdownRow
-                            isActive={isZeroBalanceOpen}
-                            text="ZERO_BALANCE_TOKENS"
-                            typographyStyle="body-sm"
-                            intent="neutral"
-                            priority="secondary"
+            <AssetTableFrame
+                assetHeader={
+                    // A network without tokens has nothing to filter or to hide.
+                    hasTokens ? (
+                        <AssetTableFilterHeader
+                            areSmallBalancesShown={areSmallBalancesShown}
+                            smallBalances={smallBalances.summary}
+                            onSmallBalancesChange={changeSmallBalances}
+                            onOpenHiddenTokens={openHiddenTokens}
                         />
-                    </Table.Cell>
-                </Table.Row>
-            )}
-            {isZeroBalanceOpen &&
-                zeroBalanceSections.map(section => (
+                    ) : (
+                        <Translation id="TR_ASSET" />
+                    )
+                }
+                data-testid="@wallet/account-assets/table"
+            >
+                {isSearching && shownRows.length === 0 && <AccountAssetNoSearchResultsRow />}
+                {!isSearching && rows.length === 0 && heldSections.length > 0 && (
+                    <AssetTableSmallBalancesHiddenRow
+                        onShowSmallBalances={() => changeSmallBalances(true)}
+                    />
+                )}
+                {shownRows.map(section => (
                     <AccountAssetSectionRow
                         key={getAccountListSectionKey(section)}
                         section={section}
                     />
                 ))}
-        </AssetTableFrame>
+                {!isSearching && isFoldable && (
+                    <AssetTableExpandRow isExpanded={isExpanded} onToggle={toggleExpanded} />
+                )}
+                {!isSearching && zeroBalanceSections.length > 0 && (
+                    <Table.Row
+                        onClick={() => setIsZeroBalanceOpen(!isZeroBalanceOpen)}
+                        data-testid="@wallet/account-assets/zero-balance"
+                    >
+                        <Table.Cell colSpan={3} padding={ASSET_TABLE_CELL_PADDING.first}>
+                            <DropdownRow
+                                isActive={isZeroBalanceOpen}
+                                text="ZERO_BALANCE_TOKENS"
+                                typographyStyle="body-sm"
+                                intent="neutral"
+                                priority="secondary"
+                            />
+                        </Table.Cell>
+                    </Table.Row>
+                )}
+                {!isSearching &&
+                    isZeroBalanceOpen &&
+                    zeroBalanceSections.map(section => (
+                        <AccountAssetSectionRow
+                            key={getAccountListSectionKey(section)}
+                            section={section}
+                        />
+                    ))}
+            </AssetTableFrame>
+        </Column>
     );
 };

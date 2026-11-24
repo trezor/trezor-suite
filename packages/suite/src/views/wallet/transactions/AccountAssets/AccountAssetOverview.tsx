@@ -17,7 +17,8 @@ export const AccountAssetOverview = ({ accountKey }: AccountAssetOverviewProps) 
             <AccountAssetBalance accountKey={accountKey} />
             <AccountAssetEarn accountKey={accountKey} />
         </Row>
-        <AccountAssetTable accountKey={accountKey} />
+        {/* Keyed so that another account opens with an empty search and a folded table. */}
+        <AccountAssetTable key={accountKey} accountKey={accountKey} />
         <Nfts accountKey={accountKey} />
     </Column>
 );

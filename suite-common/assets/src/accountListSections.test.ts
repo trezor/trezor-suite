@@ -16,6 +16,7 @@ import {
     type AccountListSectionsRootState,
     getAccountListSections,
     selectAccountAssetOverview,
+    selectAccountListSectionsMatchingSearch,
     selectAccountListSectionsWithZeroBalanceGroup,
 } from './accountListSections';
 
@@ -286,5 +287,60 @@ describe('selectAccountAssetOverview', () => {
             zeroBalanceSections: [],
             assetCount: 0,
         });
+    });
+});
+
+describe('selectAccountListSectionsMatchingSearch', () => {
+    const ETH = asNetworkSymbol('eth');
+    const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
+    const ENS = '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72' as TokenAddress;
+    const account = mockWalletAccount({
+        symbol: ETH,
+        formattedBalance: '1.2',
+        tokens: [
+            mockAccountToken({ symbol: 'USDC', contract: USDC, balance: '1000', decimals: 6 }),
+            mockAccountToken({ symbol: 'ENS', contract: ENS, balance: '0', decimals: 18 }),
+        ],
+    });
+    const baseState = mockStakeRootState({ accounts: [account] });
+    const state = {
+        ...baseState,
+        wallet: {
+            ...baseState.wallet,
+            settings: { ...initialWalletSettingsState, localCurrency: 'usd' },
+            fiat: fiatRatesInitialState,
+        },
+        earn: { staking: mockStakingState() },
+        tokenDefinitions: {
+            [ETH]: {
+                coin: { data: [USDC, ENS], hide: [], show: [], error: false, isLoading: false },
+            },
+        },
+        networks: { [ETH]: { symbol: ETH, name: 'Ethereum' } },
+    } as unknown as Parameters<typeof selectAccountListSectionsMatchingSearch>[0];
+    const search = (query: string) =>
+        selectAccountListSectionsMatchingSearch(state, account.key, query).map(section =>
+            section.type === 'token' ? section.token.symbol : section.type,
+        );
+
+    it('matches a token by its symbol, ignoring case and surrounding spaces', () => {
+        expect(search('  usdc ')).toEqual(['USDC']);
+    });
+
+    it('matches a token by part of its contract address', () => {
+        expect(search(USDC.slice(0, 8))).toEqual(['USDC']);
+    });
+
+    it('matches the coin by its symbol and by its name', () => {
+        expect(search('eth')).toEqual(['account']);
+        expect(search('ethereum')).toEqual(['account']);
+    });
+
+    it('finds a token held at zero as a token of its own, not as the group', () => {
+        expect(search('ens')).toEqual(['ENS']);
+    });
+
+    it('finds nothing for a query no asset matches', () => {
+        expect(search('doge')).toEqual([]);
     });
 });

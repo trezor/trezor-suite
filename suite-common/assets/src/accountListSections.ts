@@ -5,13 +5,14 @@ import {
     selectIsStakingAccountActive,
     selectStakingAccountAmount,
 } from '@suite-common/earn-staking';
+import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
 import {
     type TokenDefinition,
     type TokenDefinitionsRootState,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { type TokenAddress, type TokenInfoBranded } from '@suite-common/tokens';
-import { isNetworkWithTokens } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, isNetworkWithTokens } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -21,11 +22,12 @@ import {
     selectBaseCurrency,
     selectCurrentFiatRates,
 } from '@suite-common/wallet-core';
-import { type Account, type RatesByKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey, type RatesByKey } from '@suite-common/wallet-types';
 import {
     getFiatRateKey,
     isErc4626,
     isPositiveBalance,
+    isTokenMatchesSearch,
     sortTokensByName,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
@@ -269,4 +271,51 @@ export const selectAccountAssetOverview = createMemoizedSelector(
                 (heldSections.some(isCoinSectionHeld) ? 1 : 0),
         };
     },
+);
+
+const createSearchSelector = createWeakMapSelector.withTypes<
+    AccountListSectionsRootState & NetworksRootState
+>();
+
+const selectAccountNativeTokenName = (
+    state: AccountListSectionsRootState & NetworksRootState,
+    accountKey: AccountKey,
+) => {
+    const account = selectAccountByKey(state, accountKey);
+
+    return account === null ? undefined : selectNativeTokenName(state, account.symbol);
+};
+
+/**
+ * The sections whose name, symbol or contract contains the query, in the list's order. The tokens
+ * held at zero are searched too and come as token sections, so a match needs no group opened.
+ */
+export const selectAccountListSectionsMatchingSearch = createSearchSelector(
+    [
+        (state: AccountListSectionsRootState, accountKey: AccountKey) =>
+            selectAccountListSectionsWithVaultTokens(state, accountKey),
+        selectAccountNativeTokenName,
+        (_state: AccountListSectionsRootState, _accountKey: AccountKey, searchQuery: string) =>
+            searchQuery.trim().toLowerCase(),
+    ],
+    (sections, nativeTokenName, query): AccountListSection[] =>
+        sections.flatMap((section): AccountListSection[] => {
+            switch (section.type) {
+                case 'account':
+                case 'staking':
+                    return [getNetworkDisplaySymbol(section.account.symbol), nativeTokenName].some(
+                        label => label?.toLowerCase().includes(query),
+                    )
+                        ? [section]
+                        : [];
+                case 'token':
+                    return isTokenMatchesSearch(section.token, query) ? [section] : [];
+                case 'zeroBalance':
+                    return section.tokens
+                        .filter(token => isTokenMatchesSearch(token, query))
+                        .map(token => ({ type: 'token', account: section.account, token }));
+                default:
+                    return [];
+            }
+        }),
 );
