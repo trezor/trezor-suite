@@ -94,8 +94,8 @@ Project gates are in `.github/workflows/check-code-validation.yml`; target prere
 ## Setup and commands
 
 Run commands from the repository root unless stated otherwise.
-An install with `yarn --mode=skip-build` is enough only for lint and typecheck; running the app, E2E
-or tests that load native modules requires a full install.
+An install with `yarn --mode=skip-build`, as CI validation uses, is enough only for lint and typecheck;
+running the app, E2E or tests that load native modules requires a full install.
 
 - Web/desktop development: follow `README.md`.
 - Mobile development: follow `suite-native-app/app/README.md`.
@@ -110,31 +110,21 @@ changed.
 
 ## Verification and completion
 
-Choose checks from the owning package and affected consumers. For behavior changes, reproduce the
-issue or establish the expected behavior, add meaningful regression coverage where applicable, and
-confirm the fix plus relevant failure/edge cases. Run scoped lint for TypeScript changes; expand to
-affected checks for shared contracts, dependencies or configuration. Typechecks are slow even per
-package: for isolated changes rely on IDE diagnostics and focused tests; run the package typecheck at
-most once near final validation, only for integration risk or on request, and warn first. Run affected
-or repo-wide typechecks, including the CI type-check gate, only on request. Match CI by validating
-JS/TS with both rule sets: the default run and `ESLINT_RULE_SET=type-aware`, or `ESLINT_RULE_SET=all`
-for both at once. Build changed publishing/bundling surfaces;
-exercise changed UI/runtime behavior in the relevant app when available, including production headers
-for browser-permission changes. Documentation-only edits need link/command/diff and formatting checks,
-not application builds or tests.
+Typechecks are slow even per package: for isolated changes rely on focused tests, and IDE diagnostics
+when available; run the package typecheck at most once near final validation, only for integration
+risk or on request, and warn first. Run affected or repo-wide typechecks, including the CI type-check
+gate, only on request. The default lint run skips the type-aware rules that CI enforces: before
+finishing, lint the changed packages with `ESLINT_RULE_SET=all`.
+Documentation-only edits need only `yarn format:verify`,
+`yarn requirements:verify --only=docs-summary-exhaustive` and working relative links, not application
+builds or tests.
 
 Complete relevant project gates from `.github/workflows/check-code-validation.yml`. Package/dependency
 changes also require `yarn requirements:verify`, `yarn verify-project-references`,
-`yarn check-workspace-resolutions`, `yarn dedupe --check` and `yarn depcheck`; inspect the workflow for
-additional domain-specific gates (translations, message-system config, circular imports, etc.).
-`yarn validate` includes autofixes and does not include unit tests; it is not a complete substitute.
+`yarn check-workspace-resolutions`, `yarn dedupe --check` and `yarn depcheck`.
 
 After checks pass, repeat or broaden them only for subsequent edits, failures or unresolved risks.
-Inspect actual exit status and selected targets; distinguish Nx cache hits, passes, failures and checks
-not run. If prerequisites or permissions block a check, report the exact limitation and continue checks
-that remain possible. Finish by reviewing the diff for scope, correctness and accidental generated or
-formatting changes. Report the resulting behavior, verification commands/results and concrete remaining
-limitations concisely; do not describe inspected commands as executed or untested behavior as verified.
+Do not describe inspected commands as executed or untested behavior as verified.
 
 ## Pull request and issue write actions
 
