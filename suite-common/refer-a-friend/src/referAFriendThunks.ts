@@ -95,7 +95,7 @@ const parseReferralResponseTolerantly = <Schema extends z.ZodType>(
 
     if (parseResult.success) return parseResult.data;
 
-    // Only paths (property kes) + issue codes are reported (not values, they may contain codes & amounts.
+    // Only paths (property keys) + issue codes are reported (not values, they may contain codes & amounts.
     const issueSummary = parseResult.error.issues
         .map(({ path, code }) => `${path.join('.')}: ${code}`)
         .join('; ');
@@ -288,6 +288,8 @@ export const fetchReferralProgramThunk = createThunk<
     const programResult = referralProgramSchema.safeParse(result.payload);
 
     if (!programResult.success) {
+        // Program data is public, nothing sensitive, we can dump it to Sentry as is.
+        console.error('Referral API: invalid GET v1/program response', result.payload);
         dispatch(referAFriendActions.programFailed({ message: 'Invalid program response' }));
 
         return;

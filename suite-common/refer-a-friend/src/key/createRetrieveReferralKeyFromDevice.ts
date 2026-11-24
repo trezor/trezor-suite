@@ -44,5 +44,7 @@ export const createRetrieveReferralKeyFromDevice =
             return ok(getReferralKeyFromCipheredValue(result.payload.value));
         }
 
+        // Device API call can fail most likely by cancelling or transport errors, it isn't worth logging into Sentry.
+        // The underlying cipherKeyValue method is considered stable and well-tested over the years.
         return err({ message: result.error.message, code: result.error.code });
     };
