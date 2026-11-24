@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { createAssetId } from '@suite-common/asset-types';
 import {
     type AssetAccountsRootState,
     type HomeAssetTableState,
     selectWalletAssetContractAddress,
     selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
-import { buildGlobalReceiveAssetOption } from '@suite-common/receive';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 
@@ -48,7 +48,7 @@ export const AssetSendReceive = ({ assetKey }: AssetSendReceiveProps) => {
         return null;
     }
 
-    const asset = buildGlobalReceiveAssetOption({ symbol: networkSymbol, contractAddress });
+    const assetId = createAssetId({ networkSymbol, contractAddress });
 
     const handleOpen = (modal: NonNullable<GlobalSendReceiveType>) => {
         const sendTarget = modal === 'send' ? getOnlyItem(sendTargets) : undefined;
@@ -75,7 +75,7 @@ export const AssetSendReceive = ({ assetKey }: AssetSendReceiveProps) => {
             activeModal={activeModal}
             onOpen={handleOpen}
             onClose={() => setActiveModal(null)}
-            asset={asset}
+            assetId={assetId}
             sendTargets={sendTargets}
         />
     );

@@ -1,28 +1,22 @@
 import { AssetName } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { createAssetId } from '@suite-common/asset-types';
-import {
-    type TradingAssetOption,
-    cryptoIdToNetworkSymbolAndContractAddress,
-} from '@suite-common/trading';
+import { type AssetId, parseAssetId } from '@suite-common/asset-types';
+import { useFormatters } from '@suite-common/formatters';
 
 type GlobalSendReceiveAssetDescriptionProps = {
-    asset: TradingAssetOption | undefined;
+    assetId: AssetId | undefined;
 };
 
 export const GlobalSendReceiveAssetDescription = ({
-    asset,
+    assetId,
 }: GlobalSendReceiveAssetDescriptionProps) => {
-    if (!asset) {
+    const { NetworkNameFormatter } = useFormatters();
+    if (!assetId) {
         return null;
     }
 
-    const { contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(asset.id);
-    const assetName = (
-        <AssetName
-            assetId={createAssetId({ networkSymbol: asset.networkSymbol, contractAddress })}
-        />
-    );
+    const { networkSymbol, contractAddress } = parseAssetId(assetId);
+    const assetName = <AssetName assetId={assetId} />;
 
     if (!contractAddress) {
         return assetName;
@@ -31,7 +25,7 @@ export const GlobalSendReceiveAssetDescription = ({
     return (
         <Translation
             id="TR_GLOBAL_RECEIVE_ASSET_ON_NETWORK"
-            values={{ asset: assetName, network: asset.networkName }}
+            values={{ asset: assetName, network: <NetworkNameFormatter value={networkSymbol} /> }}
         />
     );
 };

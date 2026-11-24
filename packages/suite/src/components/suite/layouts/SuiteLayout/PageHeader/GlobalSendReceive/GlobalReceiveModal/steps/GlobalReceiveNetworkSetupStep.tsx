@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
-import { type TradingAssetOption } from '@suite-common/trading';
+import { type AssetId, parseAssetId } from '@suite-common/asset-types';
+import { useFormatters } from '@suite-common/formatters';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, H4, Paragraph, Spinner } from '@trezor/components';
 
@@ -10,7 +11,7 @@ import { GLOBAL_RECEIVE_MODAL_HEIGHT } from '../constants';
 import { useGlobalReceiveNetworkSetup } from '../hooks/useGlobalReceiveNetworkSetup';
 
 type GlobalReceiveNetworkSetupStepProps = {
-    asset: TradingAssetOption | undefined;
+    selectedAssetId: AssetId | undefined;
     assetAccounts: Account[];
     wasAssetNetworkInactive: boolean;
     onAccountSelectionRequired: () => void;
@@ -21,7 +22,7 @@ type GlobalReceiveNetworkSetupStepProps = {
 };
 
 export const GlobalReceiveNetworkSetupStep = ({
-    asset,
+    selectedAssetId,
     assetAccounts,
     wasAssetNetworkInactive,
     onAccountSelectionRequired,
@@ -30,8 +31,9 @@ export const GlobalReceiveNetworkSetupStep = ({
     onSetupFailure,
     onSubmit,
 }: GlobalReceiveNetworkSetupStepProps) => {
+    const { NetworkNameFormatter } = useFormatters();
     useGlobalReceiveNetworkSetup({
-        selectedAsset: asset,
+        selectedAssetId,
         selectedAssetAccounts: assetAccounts,
         wasSelectedAssetNetworkInactive: wasAssetNetworkInactive,
         onAccountSelectionRequired,
@@ -42,7 +44,7 @@ export const GlobalReceiveNetworkSetupStep = ({
     return (
         <AssetsModal
             heading={<Translation id="TR_RECEIVE" />}
-            description={<GlobalSendReceiveAssetDescription asset={asset} />}
+            description={<GlobalSendReceiveAssetDescription assetId={selectedAssetId} />}
             onBackClick={onBack}
             onClose={onCancel}
             maxHeight={GLOBAL_RECEIVE_MODAL_HEIGHT}
@@ -63,7 +65,15 @@ export const GlobalReceiveNetworkSetupStep = ({
                     >
                         <Translation
                             id="TR_GLOBAL_RECEIVE_SETUP_DESCRIPTION"
-                            values={{ network: asset?.networkName ?? '' }}
+                            values={{
+                                network: selectedAssetId ? (
+                                    <NetworkNameFormatter
+                                        value={parseAssetId(selectedAssetId).networkSymbol}
+                                    />
+                                ) : (
+                                    ''
+                                ),
+                            }}
                         />
                     </Paragraph>
                 </Column>

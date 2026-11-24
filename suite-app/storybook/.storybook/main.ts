@@ -2,6 +2,7 @@ import type { StorybookConfig } from '@storybook/react-webpack5';
 import { globSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { basename, dirname, join } from 'node:path';
+import webpack from 'webpack';
 
 const require = createRequire(import.meta.url);
 
@@ -94,8 +95,11 @@ const config: StorybookConfig = {
 
         webpackConfig.resolve!.fallback = {
             ...webpackConfig.resolve!.fallback,
-            stream: false,
+            buffer: require.resolve('buffer/'),
+            stream: require.resolve('stream-browserify'),
         };
+
+        webpackConfig.plugins!.push(new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }));
 
         // Use the same asset handling as the Suite application.
         const imageRule = webpackConfig.module!.rules!.find(

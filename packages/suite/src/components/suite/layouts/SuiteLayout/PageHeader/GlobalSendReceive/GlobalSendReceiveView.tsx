@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useDevice } from '@suite/device';
-import { type TradingAssetOption } from '@suite-common/trading';
+import { type AssetId } from '@suite-common/asset-types';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account, type GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
@@ -24,7 +24,7 @@ type GlobalSendReceiveViewProps = {
     activeModal: GlobalSendReceiveType;
     onOpen: (modal: NonNullable<GlobalSendReceiveType>) => void;
     onClose: () => void;
-    asset?: TradingAssetOption;
+    assetId?: AssetId;
     sendTargets?: readonly GlobalSendTarget[];
 };
 
@@ -32,7 +32,7 @@ export const GlobalSendReceiveView = ({
     activeModal,
     onOpen,
     onClose,
-    asset,
+    assetId,
     sendTargets,
 }: GlobalSendReceiveViewProps) => {
     const accounts = useSelector(selectAllAccountsToList);
@@ -53,7 +53,7 @@ export const GlobalSendReceiveView = ({
     const buttonIntent = shouldPromoteButtons ? 'brand' : 'neutral';
     const buttonPriority = shouldPromoteButtons ? 'primary' : 'secondary';
     const assetDescription =
-        asset === undefined ? undefined : <GlobalSendReceiveAssetDescription asset={asset} />;
+        assetId === undefined ? undefined : <GlobalSendReceiveAssetDescription assetId={assetId} />;
 
     const handleOpen = (modal: NonNullable<GlobalSendReceiveType>) => {
         dispatch(globalSendReceiveFiltersActions.resetFilters());
@@ -100,7 +100,7 @@ export const GlobalSendReceiveView = ({
             )}
             {activeModal === 'receive' && (
                 <GlobalReceiveModal
-                    initialAsset={asset}
+                    initialAssetId={assetId}
                     onCancel={handleReceiveCancel}
                     onSubmit={handleReceiveSubmit}
                 />

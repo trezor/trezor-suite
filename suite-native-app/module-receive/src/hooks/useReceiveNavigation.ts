@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { type AssetId, parseAssetId } from '@suite-common/asset-types';
 import { selectDeviceStaticSessionId, selectIsDeviceInViewOnlyMode } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { toTokenAddress } from '@suite-common/tokens';
-import type { TradingAssetOption } from '@suite-common/trading';
 import { changeCoinVisibilityThunk, selectAccounts } from '@suite-common/wallet-core';
-import { filterReceiveAccounts } from '@suite-common/wallet-utils';
+import { filterReceiveAccounts, findToken } from '@suite-common/wallet-utils';
 import { type OnSelectAccount, useAccountAlerts } from '@suite-native/accounts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
@@ -51,24 +51,28 @@ export const useReceiveNavigation = ({
     );
 
     const navigateToReceiveScreen = useCallback(
-        (asset: TradingAssetOption) => {
+        (assetId: AssetId) => {
+            const { networkSymbol, contractAddress } = parseAssetId(assetId);
             const receiveAccounts = filterReceiveAccounts({
                 accounts,
                 supportedNetworks,
                 deviceState: deviceStaticSessionId ?? undefined,
-                symbol: asset.networkSymbol,
+                symbol: networkSymbol,
                 isDebug: areDebugOnlyNetworksEnabled,
             });
             if (receiveAccounts.length > 1) {
                 navigationFn(ReceiveStackRoutes.ReceiveAccounts, {
-                    asset,
+                    assetId,
                     closeActionType,
                 });
             } else if (receiveAccounts.length === 1) {
                 navigationFn(ReceiveStackRoutes.ReceiveAddress, {
                     accountKey: receiveAccounts[0]?.key,
-                    tokenContract: asset.contractAddress
-                        ? toTokenAddress(asset.contractAddress)
+                    tokenContract: contractAddress
+                        ? toTokenAddress(
+                              findToken(receiveAccounts[0]?.tokens, contractAddress)?.contract ??
+                                  contractAddress,
+                          )
                         : undefined,
                     closeActionType,
                 });
@@ -77,12 +81,12 @@ export const useReceiveNavigation = ({
             } else {
                 dispatch(
                     changeCoinVisibilityThunk({
-                        symbol: asset.networkSymbol,
+                        symbol: networkSymbol,
                         shouldBeVisible: true,
                         discoveryTrigger: 'add-account',
                     }),
                 );
-                navigation.navigate(ReceiveStackRoutes.ReceiveDiscovery, { asset });
+                navigation.navigate(ReceiveStackRoutes.ReceiveDiscovery, { assetId });
             }
         },
         [

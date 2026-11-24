@@ -1,6 +1,6 @@
 import { AssetValue } from '@suite/assets';
-import { createAssetId } from '@suite-common/asset-types';
-import { type TradingAssetOption } from '@suite-common/trading';
+import { type AssetId, parseAssetId } from '@suite-common/asset-types';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type Account } from '@suite-common/wallet-types';
 import { asAmountUnit, findToken } from '@suite-common/wallet-utils';
 import { Column, Text } from '@trezor/components';
@@ -10,20 +10,18 @@ import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 
 type GlobalReceiveAccountAssetAmountProps = {
     account: Account;
-    asset: TradingAssetOption;
+    assetId: AssetId;
 };
 
 /** What the account holds of the asset being received, in fiat and in the asset itself. */
 export const GlobalReceiveAccountAssetAmount = ({
     account,
-    asset,
+    assetId,
 }: GlobalReceiveAccountAssetAmountProps) => {
-    const token = asset.isNativeToken
-        ? undefined
-        : findToken(account.tokens, asset.contractAddress);
-    const tokenAddress = asset.isNativeToken ? undefined : asset.contractAddress;
+    const { contractAddress } = parseAssetId(assetId);
+    const token = contractAddress ? findToken(account.tokens, contractAddress) : undefined;
     // An eligible account need not hold the token yet, which is the point of receiving it.
-    const amount = asset.isNativeToken ? account.formattedBalance : (token?.balance ?? '0');
+    const amount = contractAddress ? (token?.balance ?? '0') : account.formattedBalance;
 
     return (
         <Column alignItems="flex-end">
@@ -31,16 +29,17 @@ export const GlobalReceiveAccountAssetAmount = ({
                 <BaseCurrencyValue
                     amount={amount}
                     symbol={account.symbol}
-                    tokenAddress={tokenAddress}
+                    tokenAddress={
+                        contractAddress
+                            ? toTokenAddress(token?.contract ?? contractAddress)
+                            : undefined
+                    }
                 />
             </Text>
             <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                 <AssetValue
                     amount={asAmountUnit(new BigNumber(amount))}
-                    assetId={createAssetId({
-                        networkSymbol: account.symbol,
-                        contractAddress: tokenAddress,
-                    })}
+                    assetId={assetId}
                     isCompact
                 />
             </Text>

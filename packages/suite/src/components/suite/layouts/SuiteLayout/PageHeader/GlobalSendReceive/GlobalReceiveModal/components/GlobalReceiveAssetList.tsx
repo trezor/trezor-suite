@@ -1,18 +1,17 @@
 import { type RefObject, useCallback, useMemo } from 'react';
 
+import { ASSET_ITEM_HEIGHT, AssetItem } from '@suite/assets';
 import { Translation, type TranslationKey } from '@suite/intl';
+import { type AssetId } from '@suite-common/asset-types';
 import { type GlobalReceiveAssetListItem } from '@suite-common/receive';
-import { type TradingAssetOption } from '@suite-common/trading';
 import { TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { AssetGroupLabel } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupLabel';
 import { AssetGroupSpace } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupSpace';
-import { AssetRowAsset } from '#src/components/suite/asset-picker/components/AssetRow/AssetRowAsset/AssetRowAsset';
 import { AssetsList } from '#src/components/suite/asset-picker/components/AssetsList/AssetsList';
 import {
     ASSET_ROW_GROUP_LABEL_HEIGHT,
-    ASSET_ROW_HEIGHT,
     ASSET_ROW_HEIGHTS_BY_SIZE,
 } from '#src/components/suite/asset-picker/constants';
 
@@ -28,8 +27,8 @@ type GlobalReceiveAssetListProps = {
     otherAssets: GlobalReceiveAssetListItem[];
     disabledMessage: TranslationKey | undefined;
     listRef: RefObject<HTMLDivElement | null>;
-    isAssetDisabled: (asset: TradingAssetOption) => boolean;
-    onAssetClick: (asset: TradingAssetOption) => void;
+    isAssetDisabled: (asset: AssetId) => boolean;
+    onAssetClick: (asset: AssetId) => void;
 };
 
 const getItemHeight = (item: GlobalReceiveListItem): number => {
@@ -39,7 +38,7 @@ const getItemHeight = (item: GlobalReceiveListItem): number => {
         case 'group-space':
             return ASSET_ROW_HEIGHTS_BY_SIZE.lg;
         case 'asset':
-            return ASSET_ROW_HEIGHT;
+            return ASSET_ITEM_HEIGHT;
         default:
             return exhaustive(item);
     }
@@ -82,7 +81,7 @@ export const GlobalReceiveAssetList = ({
                 case 'group-space':
                     return <AssetGroupSpace size="lg" />;
                 case 'asset': {
-                    const isDisabled = isAssetDisabled(item.asset);
+                    const isDisabled = isAssetDisabled(item.assetId);
 
                     return (
                         <Tooltip
@@ -97,10 +96,10 @@ export const GlobalReceiveAssetList = ({
                             width="100%"
                             offset={-200}
                         >
-                            <AssetRowAsset
-                                asset={item.asset}
+                            <AssetItem
+                                assetId={item.assetId}
                                 balance={item.balance}
-                                dataTestId={`@global-receive/asset/${item.asset.id}`}
+                                data-testid={`@global-receive/asset/${item.assetId}`}
                                 isDisabled={isDisabled}
                                 onClick={onAssetClick}
                             />

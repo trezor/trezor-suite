@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { type TokenAddress } from '@suite-common/tokens';
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { findToken, isAccountFailed } from '@suite-common/wallet-utils';
@@ -51,13 +51,16 @@ export const AssetAccountListItem = ({
         selectAccountCryptoBalanceWithStaking(state, account.key),
     );
     const token = findToken(account.tokens, contractAddress);
+    const tokenAddress = contractAddress
+        ? toTokenAddress(token?.contract ?? contractAddress)
+        : undefined;
     const cryptoBalance = contractAddress ? (token?.balance ?? '0') : cryptoBalanceWithStaking;
     const isFailed = isAccountFailed(account);
 
-    const fiatValue = contractAddress ? (
+    const fiatValue = tokenAddress ? (
         <TokenToFiatAmountFormatter
             symbol={account.symbol}
-            contract={contractAddress}
+            contract={tokenAddress}
             value={cryptoBalance}
             isBalance
             numberOfLines={1}
@@ -103,7 +106,7 @@ export const AssetAccountListItem = ({
                 isFailed ? <Icon name="warning" color="contentWarning" size="medium" /> : fiatValue
             }
             secondaryValue={isFailed ? undefined : cryptoValue}
-            onPress={() => onPress({ account, tokenAddress: contractAddress, hasAnyKnownTokens })}
+            onPress={() => onPress({ account, tokenAddress, hasAnyKnownTokens })}
         />
     );
 };

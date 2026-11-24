@@ -22,7 +22,6 @@
         {
             "path": "../../suite-common/formatters"
         },
-        { "path": "../../suite-common/receive" },
         {
             "path": "../../suite-common/token-definitions"
         },

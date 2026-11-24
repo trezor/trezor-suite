@@ -1,4 +1,5 @@
-import { getCryptoId } from '@suite-common/trading';
+import { createAssetId } from '@suite-common/asset-types';
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol, getMainnets, getNetwork } from '@suite-common/wallet-config';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -37,7 +38,10 @@ describe('getGlobalReceiveAssetIdsWithHistory', () => {
         });
 
         expect(assetIds).toEqual(
-            new Set([getCryptoId(asNetworkSymbol('btc')), getCryptoId(asNetworkSymbol('xrp'))]),
+            new Set([
+                createAssetId({ networkSymbol: asNetworkSymbol('btc') }),
+                createAssetId({ networkSymbol: asNetworkSymbol('xrp') }),
+            ]),
         );
     });
 
@@ -66,7 +70,13 @@ describe('getGlobalReceiveAssetIdsWithHistory', () => {
         });
 
         expect(assetIds).toEqual(
-            new Set([getCryptoId(account.symbol), getCryptoId(account.symbol, USDC_CONTRACT)]),
+            new Set([
+                createAssetId({ networkSymbol: account.symbol }),
+                createAssetId({
+                    networkSymbol: account.symbol,
+                    contractAddress: toTokenAddress(USDC_CONTRACT),
+                }),
+            ]),
         );
     });
 
@@ -100,7 +110,13 @@ describe('getGlobalReceiveAssetIdsWithHistory', () => {
         });
 
         expect(assetIds).toEqual(
-            new Set([getCryptoId(account.symbol), getCryptoId(account.symbol, USDC_CONTRACT)]),
+            new Set([
+                createAssetId({ networkSymbol: account.symbol }),
+                createAssetId({
+                    networkSymbol: account.symbol,
+                    contractAddress: toTokenAddress(USDC_CONTRACT),
+                }),
+            ]),
         );
     });
 
@@ -116,7 +132,7 @@ describe('getGlobalReceiveAssetIdsWithHistory', () => {
             transactions: {},
         });
 
-        expect(assetIds).toEqual(new Set([getCryptoId(bitcoin.symbol)]));
+        expect(assetIds).toEqual(new Set([createAssetId({ networkSymbol: bitcoin.symbol })]));
     });
 
     it.each([
@@ -134,6 +150,6 @@ describe('getGlobalReceiveAssetIdsWithHistory', () => {
             transactions: {},
         });
 
-        expect(assetIds.has(getCryptoId(account.symbol))).toBe(true);
+        expect(assetIds.has(createAssetId({ networkSymbol: account.symbol }))).toBe(true);
     });
 });

@@ -11,10 +11,9 @@ export {
     type ReceiveState,
 } from './receiveSlice';
 export {
-    buildGlobalReceiveAssetOption,
-    buildGlobalReceiveAssetOptions,
-    buildGlobalReceiveAssetSearchIndex,
+    buildGlobalReceiveAssetCatalog,
     getGlobalReceiveAssetSections,
+    type GlobalReceiveAssetCatalog,
     type GlobalReceiveAssetListItem,
     type GlobalReceiveAssetSections,
 } from './globalReceiveAssetUtils';
