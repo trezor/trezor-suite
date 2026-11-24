@@ -84,10 +84,6 @@ export type BluetoothDep = {
     bluetooth: Bluetooth;
 };
 
-export const injectBluetooth = (services: BluetoothDep): BluetoothDep => ({
-    bluetooth: services.bluetooth,
-});
-
 export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluetooth => {
     const getAdapterStatus = toGetter(deps.getState, selectAdapterStatus);
     const getKnownDevices = toGetter(deps.getState, selectKnownDevices<DesktopBluetoothDevice>);
@@ -187,3 +183,7 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         removeStaleDevices,
     };
 };
+
+export const injectBluetooth = (services: BluetoothDep): BluetoothDep => ({
+    bluetooth: services.bluetooth,
+});
