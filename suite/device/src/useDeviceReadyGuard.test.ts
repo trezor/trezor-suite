@@ -41,7 +41,7 @@ const readyDevice = mockSuiteDevice({
     state: { staticSessionId: 'wallet@device:0', sessionId: 'session' },
 });
 
-const renderGuard = (selectedDevice: TrezorDevice | undefined) => {
+const renderGuard = (selectedDevice: TrezorDevice | undefined, expectedWallet?: string) => {
     const { services } = createTestCompositionRoot<void, State>({
         reducer: combineReducers({ device: deviceReducer, locks: locksReducer }),
         preloadedState: {
@@ -51,7 +51,7 @@ const renderGuard = (selectedDevice: TrezorDevice | undefined) => {
     });
     const onFailed = mock<(error: DeviceSessionError) => void>();
     const { result, unmount } = renderHookWithStoreProvider(
-        () => useDeviceReadyGuard({ onFailed }),
+        () => useDeviceReadyGuard({ onFailed, expectedWallet }),
         { services },
     );
 
@@ -129,6 +129,50 @@ describe('useDeviceReadyGuard', () => {
         await expect(isReady).resolves.toBe(true);
         expect(getDeviceState).toHaveBeenCalledWith({
             device: expect.objectContaining({ state: readyDevice.state }),
+        });
+    });
+
+    it('skips the PIN prompt if the connected wallet does not own the account', async () => {
+        const getDeviceState = jest.spyOn(TrezorConnect, 'getDeviceState');
+        const { result, onFailed } = renderGuard(readyDevice, 'other-wallet@device:0');
+
+        await expect(result.current()).resolves.toBe(false);
+        expect(getDeviceState).not.toHaveBeenCalled();
+        expect(onFailed).toHaveBeenCalledWith({
+            code: undefined,
+            message: 'Select the wallet for this account.',
+        });
+    });
+
+    it('ignores a successful device response after the screen is left', async () => {
+        const { result, unmount } = renderGuard(readyDevice);
+        jest.spyOn(TrezorConnect, 'getDeviceState').mockImplementationOnce(() => {
+            unmount();
+
+            return Promise.resolve({ success: true, payload: { state: {} } });
+        });
+
+        await expect(result.current()).resolves.toBe(false);
+    });
+
+    it('stops when the selected wallet changes during the PIN prompt', async () => {
+        const { store, result } = renderGuard(readyDevice);
+        jest.spyOn(TrezorConnect, 'getDeviceState').mockImplementationOnce(() => {
+            store.dispatch(
+                deviceActions.updateSelectedDevice(
+                    mockSuiteDevice({
+                        connected: true,
+                        available: true,
+                        state: { staticSessionId: 'other-wallet@device:0' },
+                    }),
+                ),
+            );
+
+            return Promise.resolve({ success: true, payload: { state: {} } });
+        });
+
+        await act(async () => {
+            await expect(result.current()).resolves.toBe(false);
         });
     });
 

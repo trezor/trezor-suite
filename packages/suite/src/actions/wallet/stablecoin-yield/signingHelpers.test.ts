@@ -19,6 +19,7 @@ import { asGetter } from '@trezor/dependency-injection';
 import {
     type SendYieldTransactionDeps,
     type SendYieldTransactionState,
+    openYieldSimulationThunk,
     sendYieldTransaction,
 } from './signingHelpers';
 
@@ -147,6 +148,22 @@ describe('sendYieldTransaction', () => {
             success: true,
             payload: { txid: '0xtxid' },
         });
+    });
+
+    it('keeps an account from another wallet out of simulation and signing', async () => {
+        const sourceAccount = { ...account, deviceState: 'another-wallet@device:0' } as const;
+        const store = createSigningStore(false);
+        const decision = await openYieldSimulationThunk(
+            { flow: 'deposit', account: sourceAccount, unsignedTx: '{}' },
+            mockDevice,
+        )(store.dispatch, store.getState);
+        expect(decision).toEqual({ value: false });
+        expect(store.getActions()).toEqual([]);
+        await expect(sendTransaction({ sourceAccount })).resolves.toEqual({
+            status: 'cancelled',
+            stage: 'signing',
+        });
+        expect(TrezorConnect.ethereumSignTransaction).not.toHaveBeenCalled();
     });
 
     it.each(['low', 'normal', 'high', 'custom'] as const)(

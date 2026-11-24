@@ -91,21 +91,29 @@ export const showYieldSubmitErrorThunk =
 export const getYieldSubmitErrorAnalyticsMessage = (error: unknown) =>
     isYieldPushError(error) ? 'push-failed' : 'submit-failed';
 
+export const isYieldSigningDevice = (
+    device: TrezorDevice | undefined,
+    account: Pick<Account, 'deviceState'>,
+): device is TrezorDevice =>
+    !!device?.connected &&
+    device.available &&
+    device.state?.staticSessionId === account.deviceState;
+
 type OpenYieldSimulationThunkState = DeviceRootState;
 
 export const openYieldSimulationThunk =
-    (data: StablecoinYieldTxSimulationParams, owner: TrezorDevice | undefined) =>
+    (
+        data: StablecoinYieldTxSimulationParams & { account: Pick<Account, 'deviceState'> },
+        owner: TrezorDevice | undefined,
+    ) =>
     (
         dispatch: ThunkDispatch<OpenYieldSimulationThunkState, unknown, UnknownAction>,
         getState: () => OpenYieldSimulationThunkState,
     ) => {
         const device = selectSelectedDevice(getState());
         if (
-            !owner?.connected ||
-            !owner.available ||
-            !owner.path ||
-            !device?.connected ||
-            !device.available ||
+            !owner?.path ||
+            !isYieldSigningDevice(device, data.account) ||
             device.path !== owner.path ||
             device.instance !== owner.instance ||
             !device.state?.staticSessionId ||
@@ -195,8 +203,8 @@ export const sendYieldTransaction = async ({
     const device = selectSelectedDevice(getState());
     const addressDisplayType = selectAddressDisplayType(getState());
 
-    if (!device) {
-        throw new Error('Device not found.');
+    if (!isYieldSigningDevice(device, account)) {
+        return { status: 'cancelled', stage: 'signing' };
     }
 
     if (account.networkType !== 'ethereum') {

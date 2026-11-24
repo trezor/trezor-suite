@@ -185,7 +185,7 @@ export const useYieldFlow = ({
         receiptToken,
     });
 
-    const ensureDeviceReady = useDeviceReadyGuardWithToast();
+    const ensureDeviceReady = useDeviceReadyGuardWithToast(account.deviceState);
 
     const isWrappedNativeVault = isWrappedNativeToken(account.symbol, vault.token.address);
     const hasWrappedTokenBalance = isAmountGreaterThan({

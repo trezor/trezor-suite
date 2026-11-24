@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
+import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 
 import { selectIsConnectionModalOpen } from './deviceSelectors';
 import { setConnectionModal, setConnectionMode } from './deviceSlice';
@@ -16,6 +17,7 @@ export type DeviceSessionError = {
 };
 
 type UseDeviceReadyGuardParams = {
+    expectedWallet?: string;
     onFailed?: (error: DeviceSessionError) => void;
 };
 
@@ -29,11 +31,15 @@ const isDeviceConnected = (device: TrezorDevice | undefined): device is TrezorDe
  * until it is connected and verifies the wallet session, so the PIN and passphrase prompts finish
  * before the action starts.
  */
-export const useDeviceReadyGuard = ({ onFailed }: UseDeviceReadyGuardParams = {}) => {
-    const { dispatch } = useServices(injectDispatch);
+export const useDeviceReadyGuard = ({
+    onFailed,
+    expectedWallet,
+}: UseDeviceReadyGuardParams = {}) => {
+    const { dispatch, getState } = useServices(injectDispatch, injectGetState);
     const { device } = useDevice();
     const isConnectionModalOpen = useSelector(selectIsConnectionModalOpen);
     const resolveConnectionRef = useRef<ResolveConnection | null>(null);
+    const mounted = useRef(false);
 
     // The connection modal closes when a device connects or when the user dismisses it.
     useEffect(() => {
@@ -43,13 +49,15 @@ export const useDeviceReadyGuard = ({ onFailed }: UseDeviceReadyGuardParams = {}
         }
     }, [isConnectionModalOpen, device]);
 
-    useEffect(
-        () => () => {
+    useEffect(() => {
+        mounted.current = true;
+
+        return () => {
+            mounted.current = false;
             resolveConnectionRef.current?.(undefined);
             resolveConnectionRef.current = null;
-        },
-        [],
-    );
+        };
+    }, []);
 
     const requestConnection = useCallback(() => {
         if (device?.descriptor?.apiType === 'bluetooth') {
@@ -67,16 +75,32 @@ export const useDeviceReadyGuard = ({ onFailed }: UseDeviceReadyGuardParams = {}
     return useCallback(async (): Promise<boolean> => {
         const connectedDevice = isDeviceConnected(device) ? device : await requestConnection();
 
-        if (!isDeviceConnected(connectedDevice)) {
+        if (!mounted.current || !isDeviceConnected(connectedDevice)) {
+            return false;
+        }
+
+        const connectedWallet = connectedDevice.state?.staticSessionId;
+        if (expectedWallet && connectedWallet && connectedWallet !== expectedWallet) {
+            onFailed?.({ code: undefined, message: 'Select the wallet for this account.' });
+
             return false;
         }
 
         const session = await verifyDeviceSession(connectedDevice);
+        if (!mounted.current) return false;
 
         if (session.status === 'failed') {
             onFailed?.({ code: session.code, message: session.message });
         }
 
-        return session.status === 'verified';
-    }, [device, requestConnection, onFailed]);
+        const selected = selectSelectedDevice(getState());
+
+        return (
+            session.status === 'verified' &&
+            isDeviceConnected(selected) &&
+            selected.path === connectedDevice.path &&
+            selected.instance === connectedDevice.instance &&
+            selected.state?.staticSessionId === (expectedWallet ?? connectedWallet)
+        );
+    }, [device, requestConnection, expectedWallet, onFailed, getState]);
 };

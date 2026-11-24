@@ -60,7 +60,7 @@ export const UnwrapNativeToken = ({
     onFlowCompleteChange,
 }: UnwrapNativeTokenProps) => {
     const { dispatch } = useServices(injectDispatch);
-    const ensureDeviceReady = useDeviceReadyGuardWithToast();
+    const ensureDeviceReady = useDeviceReadyGuardWithToast(account.deviceState);
     const {
         isDisabled,
         content: disabledContent,

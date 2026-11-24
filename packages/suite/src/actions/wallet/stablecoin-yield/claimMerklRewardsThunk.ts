@@ -32,6 +32,7 @@ import {
     PUSH_TRANSACTION_FAILED_CAUSE,
     type SendYieldTransactionState,
     getYieldSubmitErrorAnalyticsMessage,
+    isYieldSigningDevice,
     openYieldSimulationThunk,
     pushYieldTransaction,
     showYieldSubmitErrorThunk,
@@ -197,6 +198,16 @@ export const claimMerklRewardsThunk = createThunk<
                 return;
             }
 
+            const signingDevice = selectSelectedDevice(getState());
+            if (
+                !isYieldSigningDevice(signingDevice, account) ||
+                signingDevice.path !== device.path
+            ) {
+                userAcceptedTxSimulation.resolve();
+
+                return null;
+            }
+
             const { formState, precomposedTransaction, availableRewards, transactionForSigning } =
                 buildClaimTransactionReview({
                     unsignedTransaction: unsignedClaimTx,
@@ -238,10 +249,10 @@ export const claimMerklRewardsThunk = createThunk<
 
                 const signingResponse = await TrezorConnect.ethereumSignTransaction({
                     device: {
-                        path: device.path,
-                        instance: device.instance,
-                        state: device.state,
-                        useEmptyPassphrase: device.useEmptyPassphrase,
+                        path: signingDevice.path,
+                        instance: signingDevice.instance,
+                        state: signingDevice.state,
+                        useEmptyPassphrase: signingDevice.useEmptyPassphrase,
                     },
                     path: account.path,
                     transaction: transactionForSigning,
@@ -282,7 +293,7 @@ export const claimMerklRewardsThunk = createThunk<
                 const reviewDecision = dispatch(
                     openDeferredModal(
                         { type: 'review-transaction' },
-                        { devicePath: device.path, cancelWith: false },
+                        { devicePath: signingDevice.path, cancelWith: false },
                     ),
                 );
 
