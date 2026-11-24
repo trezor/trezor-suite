@@ -1,10 +1,9 @@
 import { selectIsDebugModeActive } from '@suite/debug';
-import { selectIsReferAFriendEnabled } from '@suite/flags';
 import { selectHasSetUpTrezorWallet } from '@suite-common/device';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 
+// TODO fully rolout https://github.com/trezor/trezor-suite/issues/34125
 export const selectIsReferAFriendAvailableInApp = createWeakMapSelector(
-    [selectHasSetUpTrezorWallet, selectIsDebugModeActive, selectIsReferAFriendEnabled],
-    (hasSetUpTrezorWallet, isDebugModeActive, isReferAFriendEnabled) =>
-        hasSetUpTrezorWallet && isDebugModeActive && isReferAFriendEnabled,
+    [selectHasSetUpTrezorWallet, selectIsDebugModeActive],
+    (hasSetUpTrezorWallet, isDebugModeActive) => hasSetUpTrezorWallet && isDebugModeActive,
 );
