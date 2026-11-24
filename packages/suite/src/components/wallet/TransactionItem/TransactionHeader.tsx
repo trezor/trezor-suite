@@ -150,7 +150,11 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
     const { isDiscreetMode } = useDiscreetMode();
 
     if (isPending && (transaction.ethereumSpecific || transaction.cardanoSpecific)) {
-        return <Translation id="TR_UNCONFIRMED_TX_LONG" />;
+        return (
+            <span data-testid="@wallet/transaction/unconfirmed-heading">
+                {translationString('TR_UNCONFIRMED_TX_LONG')}
+            </span>
+        );
     }
 
     if (transaction.type === 'failed') {
