@@ -51,7 +51,6 @@
         {
             "path": "../../suite-native/performance-metrics"
         },
-        { "path": "../../suite-native/tokens" },
         {
             "path": "../../packages/dependency-injection"
         },

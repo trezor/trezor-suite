@@ -3,6 +3,7 @@ import { useStore } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { type StakingRootState, selectIsStakingSupportedSymbol } from '@suite-common/earn-staking';
+import { isNetworkWithTokens } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { AccountDetailScreenHeaderContent } from '@suite-native/accounts';
 import { IconButton, useBottomSheetModal } from '@suite-native/atoms';
@@ -14,7 +15,6 @@ import {
     type StackNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { isNetworkWithTokens } from '@suite-native/tokens';
 
 type AccountDetailScreenHeaderProps = {
     account: Account;

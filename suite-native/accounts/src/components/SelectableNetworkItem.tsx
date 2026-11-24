@@ -1,9 +1,8 @@
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork, isNetworkWithTokens } from '@suite-common/wallet-config';
 import { Badge, Box, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon, type IconName, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { isNetworkWithTokens } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type SelectableAssetItemProps = {

@@ -3,6 +3,7 @@ import { useStore } from 'react-redux';
 
 import { type StakingRootState, selectIsStakingSupportedSymbol } from '@suite-common/earn-staking';
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
+import { isNetworkWithTokens } from '@suite-common/wallet-config';
 import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
@@ -17,7 +18,6 @@ import {
     type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import { ScreenPerformanceRoot, useIsAccountsScreenReady } from '@suite-native/performance-metrics';
-import { isNetworkWithTokens } from '@suite-native/tokens';
 
 type ScreenNavigationProps = StackToStackCompositeScreenProps<
     AccountsStackParamList,
