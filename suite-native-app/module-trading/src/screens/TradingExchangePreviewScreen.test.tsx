@@ -234,7 +234,7 @@ describe('TradingExchangePreviewScreen', () => {
         const { result } = await renderTradingExchangePreviewScreen();
 
         expect(
-            result.getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.title')),
+            result.getByText(getTranslation('moduleTrading.tradingExchangeFlowScreen.screenTitle')),
         ).toBeOnTheScreen();
     });
 

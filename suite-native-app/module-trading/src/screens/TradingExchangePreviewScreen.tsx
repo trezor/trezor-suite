@@ -12,6 +12,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import {
     ExchangePreviewFooter,
     ExchangePreviewScreenHeader,
+    ExchangePreviewSimulationInfo,
     ExchangePreviewView,
 } from '../components/exchange/ExchangePreview';
 import { ExchangeFlowStepsLayout } from '../components/exchange/Flow/ExchangeFlowStepsLayout';
@@ -60,6 +61,7 @@ export const TradingExchangePreviewScreen = ({
                     <Text variant="headline-sm">
                         <Translation id="moduleTrading.tradingExchangeFlowScreen.swapStep.title" />
                     </Text>
+                    <ExchangePreviewSimulationInfo />
                 </CurrentStepCardHeader>
                 <VStack spacing="sp16" paddingHorizontal="sp16" paddingBottom="sp16">
                     <ExchangePreviewView
@@ -77,6 +79,7 @@ export const TradingExchangePreviewScreen = ({
     return (
         <Screen header={<ExchangePreviewScreenHeader />} footer={footer}>
             <VStack spacing="sp16" flex={1}>
+                <ExchangePreviewSimulationInfo />
                 <ExchangePreviewView
                     quote={quote}
                     txnErrorString={errorString}

@@ -4321,7 +4321,6 @@ export const messages = {
             },
         },
         tradingExchangePreviewScreen: {
-            title: 'Swap',
             fromAccount: 'From',
             toAccount: 'To',
             details: 'Transaction details',
