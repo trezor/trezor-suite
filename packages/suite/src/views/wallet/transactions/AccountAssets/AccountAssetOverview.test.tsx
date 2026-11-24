@@ -423,6 +423,24 @@ describe('the account overview with the asset-first Home', () => {
         );
     });
 
+    it("opens the account's own hidden tokens, not the whole wallet's", () => {
+        const unrecognizedOnly = mockWalletAccount({
+            symbol: ETH,
+            deviceState: DEVICE_STATE,
+            index: 2,
+            descriptor: asAccountDescriptor('unrecognizedHolder'),
+            formattedBalance: '0',
+            tokens: [mockAccountToken({ symbol: 'SCAM', contract: UNRECOGNIZED, balance: '5' })],
+        });
+
+        const { suiteRouterHistory } = renderOverview([unrecognizedOnly]);
+        fireEvent.click(screen.getByTestId('@wallet/account-assets/empty/hidden-tokens'));
+
+        expect(suiteRouterHistory.navigate).toHaveBeenCalledWith(
+            expect.objectContaining({ pathname: getRoute('wallet-tokens-hidden')?.pattern }),
+        );
+    });
+
     it('leaves an unused account to the page, which offers the ways to fund it', () => {
         renderOverview([{ ...btcAccount, formattedBalance: '0', balance: '0', empty: true }]);
 
