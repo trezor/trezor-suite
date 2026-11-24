@@ -10,6 +10,7 @@ import {
     getMainnets,
     getNetwork,
     getTestnets,
+    isNetworkWithTokens,
     networksCollection,
 } from '@suite-common/wallet-config';
 import {
@@ -25,10 +26,7 @@ import {
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
 import { type SettingsSliceRootState, selectAreTestnetsEnabled } from '@suite-native/settings';
-import {
-    isNetworkWithTokens,
-    selectNetworkSymbolsOfAccountsWithTokensAllowed,
-} from '@suite-native/tokens';
+import { selectNetworkSymbolsOfAccountsWithTokensAllowed } from '@suite-native/tokens';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { arrayPartition, versionUtils } from '@trezor/utils';

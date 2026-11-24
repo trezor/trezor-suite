@@ -10,7 +10,12 @@ import {
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { type TokenAddress } from '@suite-common/tokens';
-import { type AccountType, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import {
+    type AccountType,
+    type NetworkSymbol,
+    getNetworkType,
+    isNetworkWithTokens,
+} from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type BlockchainRootState,
@@ -26,7 +31,6 @@ import {
     getBackendFromSettings,
     shouldUseIdentities,
 } from '@suite-common/wallet-utils';
-import { isNetworkWithTokens } from '@suite-native/tokens';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type AccountInfo } from '@trezor/connect';

@@ -5,6 +5,7 @@ import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { type StakingRootState, selectIsStakingSupportedSymbol } from '@suite-common/earn-staking';
 import { type TokenAddress } from '@suite-common/tokens';
+import { isNetworkWithTokens } from '@suite-common/wallet-config';
 import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isAccountFailed } from '@suite-common/wallet-utils';
@@ -25,7 +26,7 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { type TokensRootState, isNetworkWithTokens } from '@suite-native/tokens';
+import { type TokensRootState } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { selectAssetTabOfAccountToken } from '../selectors';

@@ -6,7 +6,7 @@ import {
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
 import { type TokenAddress, type TokenInfoBranded, type TokenSymbol } from '@suite-common/tokens';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, isNetworkWithTokens } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -26,7 +26,6 @@ import { type TokenInfo } from '@trezor/blockchain-link';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { type WalletAccountTransaction } from './types';
-import { isNetworkWithTokens } from './utils';
 
 export type TokensRootState = AccountsRootState &
     DeviceRootState &

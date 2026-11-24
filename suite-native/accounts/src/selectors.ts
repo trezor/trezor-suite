@@ -18,7 +18,7 @@ import {
 } from '@suite-common/suite-sync';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, isNetworkWithTokens } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -52,7 +52,7 @@ import { selectDiscoverySupportedNetworks } from '@suite-native/discovery';
 import type { FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { type CombinedLabelingState, selectIsLabellingAllowed } from '@suite-native/labeling';
 import type { SettingsSliceRootState } from '@suite-native/settings';
-import { isNetworkWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
+import { selectAccountTokenInfo } from '@suite-native/tokens';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import {

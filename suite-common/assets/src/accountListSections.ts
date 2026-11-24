@@ -10,7 +10,7 @@ import {
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { type TokenAddress, type TokenInfoBranded } from '@suite-common/tokens';
-import { getNetworkFeatures } from '@suite-common/wallet-config';
+import { isNetworkWithTokens } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -83,7 +83,7 @@ export const getAccountListSections = ({
     localCurrency,
 }: GetAccountListSectionsParams) => {
     const sections: AccountListSection[] = [];
-    const isNetworkSupportingTokens = getNetworkFeatures(account.symbol).includes('tokens');
+    const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
 
     const { shownWithBalance: tokensWithBalance, shownWithoutBalance } = getTokens({
         tokens: account.tokens,
