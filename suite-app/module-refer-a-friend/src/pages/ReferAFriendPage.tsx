@@ -7,6 +7,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import {
     fetchReferralAccountThunk,
     fetchReferralProgramThunk,
+    selectDoesReferralExistOnlyForOtherWallets,
     selectIsReferralWalletDescriptorAvailable,
     selectReferralAccountState,
     selectReferralProgram,
@@ -35,6 +36,7 @@ import {
     ReferralInvitation,
     ReferralJoinedContent,
     ReferralLoading,
+    ReferralOtherWalletBanner,
     ReferralUnavailable,
     selectIsReferAFriendAvailableInApp,
     useLayout,
@@ -65,6 +67,9 @@ export const ReferAFriendPage = () => {
     );
     const walletRecord = useSelector(selectReferralWalletRecord);
     const accountState = useSelector(selectReferralAccountState);
+    const doesReferralAccountExistOnlyForOtherWalletDescriptors = useSelector(
+        selectDoesReferralExistOnlyForOtherWallets,
+    );
 
     const leaveModal = useModal();
     const { dispatch } = useServices(injectDispatch);
@@ -272,14 +277,19 @@ export const ReferAFriendPage = () => {
                     program={program.data}
                 />
             ) : (
-                <ReferralInvitation
-                    rewardAmount={translationValues.rewardAmount}
-                    minimumOrderAmount={translationValues.minimumOrderAmount}
-                    friendDiscountPercentage={friendDiscountPercentage}
-                    termsUrl={termsUrl}
-                    isJoining={accountState.pendingAction === 'join'}
-                    onJoin={join}
-                />
+                <>
+                    <ReferralInvitation
+                        rewardAmount={translationValues.rewardAmount}
+                        minimumOrderAmount={translationValues.minimumOrderAmount}
+                        friendDiscountPercentage={friendDiscountPercentage}
+                        termsUrl={termsUrl}
+                        isJoining={accountState.pendingAction === 'join'}
+                        onJoin={join}
+                    />
+                    {doesReferralAccountExistOnlyForOtherWalletDescriptors && (
+                        <ReferralOtherWalletBanner />
+                    )}
+                </>
             )}
             <Card type="sunken" paddingType="none">
                 <Collapsible
