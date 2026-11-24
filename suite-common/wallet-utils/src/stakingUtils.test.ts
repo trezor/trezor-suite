@@ -9,8 +9,6 @@ import {
     getAccountEverstakeStakingPool,
     getEthAccountTotalStakingBalance,
     getTronAccountTotalStakingBalance,
-    getTronResources,
-    getTronStakingInfo,
 } from './stakingUtils';
 
 const TRX = 1_000_000;
@@ -60,14 +58,6 @@ const buildTronAccount = ({
         },
     }) as unknown as Account;
 
-const buildNonTronAccount = (): Account =>
-    ({
-        symbol: 'eth',
-        networkType: 'ethereum',
-        formattedBalance: '0',
-        misc: {},
-    }) as unknown as Account;
-
 describe('getAccountEverstakeStakingPool', () => {
     getAccountEverstakeStakingPoolFixtures.forEach(({ description, account, expected }) => {
         it(description, () => {
@@ -86,37 +76,6 @@ describe('getEthAccountTotalStakingBalance', () => {
             });
         },
     );
-});
-
-describe('getTronResources', () => {
-    it('returns undefined when no account is provided', () => {
-        expect(getTronResources()).toBeUndefined();
-    });
-
-    it('returns undefined for non-Tron accounts', () => {
-        expect(getTronResources(buildNonTronAccount())).toBeUndefined();
-    });
-
-    it('returns the tronResources for Tron accounts', () => {
-        const stakingInfo = buildStakingInfo({ stakedBalance: '1000000' });
-        const account = buildTronAccount({ stakingInfo });
-        expect(getTronResources(account)?.stakingInfo).toBe(stakingInfo);
-    });
-});
-
-describe('getTronStakingInfo', () => {
-    it('returns undefined when no account is provided', () => {
-        expect(getTronStakingInfo()).toBeUndefined();
-    });
-
-    it('returns undefined when the account has no stakingInfo', () => {
-        expect(getTronStakingInfo(buildTronAccount())).toBeUndefined();
-    });
-
-    it('returns the stakingInfo when present', () => {
-        const stakingInfo = buildStakingInfo({ stakedBalance: '1000000' });
-        expect(getTronStakingInfo(buildTronAccount({ stakingInfo }))).toBe(stakingInfo);
-    });
 });
 
 describe('getTronAccountTotalStakingBalance', () => {
