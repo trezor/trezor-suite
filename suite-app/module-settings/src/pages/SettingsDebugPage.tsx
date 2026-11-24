@@ -104,9 +104,6 @@ export const SettingsDebugPage = () => {
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="OAuth">
                 <DebugOAuthApi />
             </SettingsSection>
-            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Refer a Friend">
-                <DebugReferAFriendApi />
-            </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Coinjoin">
                 <DebugCoinjoinApi />
             </SettingsSection>
@@ -184,6 +181,7 @@ export const SettingsDebugPage = () => {
             </SettingsSection>
             <SuiteSyncSettings onError={handleWipeSuiteSyncLabelsError} />
             <DebugQuotaManagerSettings />
+            <DebugReferAFriendApi />
             <DebugPlatformEncryption />
         </SettingsLayout>
     );
