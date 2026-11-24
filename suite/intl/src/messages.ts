@@ -941,6 +941,35 @@ export const messages = defineMessages({
         defaultMessage: 'Slippage must be between 0.01% and 50%',
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_NOT_IN_RANGE',
     },
+    TR_TRADING_BRIDGE_SPEED: {
+        defaultMessage: 'Bridge speed',
+        id: 'TR_TRADING_BRIDGE_SPEED',
+    },
+    TR_TRADING_BRIDGE_SPEED_FAST: {
+        defaultMessage: 'Fast',
+        id: 'TR_TRADING_BRIDGE_SPEED_FAST',
+    },
+    TR_TRADING_BRIDGE_SPEED_FAST_DESC: {
+        defaultMessage: 'Bridge sends {symbol} sooner for a small fee.',
+        id: 'TR_TRADING_BRIDGE_SPEED_FAST_DESC',
+    },
+    TR_TRADING_BRIDGE_SPEED_STANDARD: {
+        defaultMessage: 'Standard',
+        id: 'TR_TRADING_BRIDGE_SPEED_STANDARD',
+    },
+    TR_TRADING_BRIDGE_SPEED_STANDARD_DESC: {
+        defaultMessage: 'Bridge sends {symbol} after a short wait.',
+        id: 'TR_TRADING_BRIDGE_SPEED_STANDARD_DESC',
+    },
+    TR_TRADING_BRIDGE_SPEED_FEE_FREE: {
+        defaultMessage: 'Free',
+        id: 'TR_TRADING_BRIDGE_SPEED_FEE_FREE',
+    },
+    TR_TRADING_BRIDGE_SPEED_FORWARDING_FEE_NOTE: {
+        defaultMessage:
+            "Circle also charges a {fee} forwarding fee, and it's already deducted from the amount you get.",
+        id: 'TR_TRADING_BRIDGE_SPEED_FORWARDING_FEE_NOTE',
+    },
     TR_EXCHANGE_SWAP_SLIPPAGE_ERROR: {
         defaultMessage: 'Failed to update slippage. Please try again.',
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_ERROR',

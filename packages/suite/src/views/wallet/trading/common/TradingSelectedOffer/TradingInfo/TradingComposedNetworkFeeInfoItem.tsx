@@ -13,12 +13,14 @@ import {
 } from './TradingNetworkFeeInfoItem';
 
 type TradingComposedNetworkFeeInfoItemProps = {
+    isLoading?: boolean;
     account: Account;
     fee: string | undefined;
     edit?: TradingNetworkFeeInfoItemProps['edit'];
 };
 
 export const TradingComposedNetworkFeeInfoItem = ({
+    isLoading,
     account,
     fee,
     edit,
@@ -32,6 +34,7 @@ export const TradingComposedNetworkFeeInfoItem = ({
 
     return (
         <TradingNetworkFeeInfoItem
+            isLoading={isLoading}
             amount={amount}
             symbol={account.symbol}
             tooltipTextId={getFeeTooltipTextId({

@@ -4,6 +4,8 @@ import { Translation } from '@suite/intl';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
     cryptoIdToNetwork,
+    getTradeBridgeSpeed,
+    getTradeBridgeSpeedOptions,
     selectTradingDisplayComposedFee,
     selectTradingExchangeFormStep,
     selectTradingExchangeInfo,
@@ -23,6 +25,7 @@ import { formatCryptoAmountAsAmount } from '#src/views/wallet/trading/common/for
 
 import { TradingUtilsProviderKyc } from '../../TradingUtils/TradingUtilsProviderKyc';
 import { TradingComposedNetworkFeeInfoItem } from '../TradingInfo/TradingComposedNetworkFeeInfoItem';
+import { TradingExchangeBridgeSpeedInfoItem } from '../TradingInfo/TradingExchangeBridgeSpeedInfoItem';
 import { TradingExchangeMevProtectionInfoItem } from '../TradingInfo/TradingExchangeMevProtectionInfoItem';
 import { TradingExchangeMinimumReceivedInfoItem } from '../TradingInfo/TradingExchangeMinimumReceivedInfoItem';
 import { TradingExchangeRateInfoItem } from '../TradingInfo/TradingExchangeRateInfoItem';
@@ -31,6 +34,7 @@ import { type TradingNetworkFeeInfoItemProps } from '../TradingInfo/TradingNetwo
 import { TradingProviderInfoItem } from '../TradingInfo/TradingProviderInfoItem';
 
 type TradingOfferExchangeDetailsProps = {
+    isLoading?: boolean;
     account: Account;
     exchangeQuote: ExchangeTrade;
     receiveAmount: string | undefined;
@@ -40,6 +44,7 @@ type TradingOfferExchangeDetailsProps = {
 };
 
 export const TradingOfferExchangeDetails = ({
+    isLoading = false,
     account,
     exchangeQuote,
     receiveAmount,
@@ -73,6 +78,7 @@ export const TradingOfferExchangeDetails = ({
         : undefined;
     const rateType = provider?.isFixedRate ? 'fixed' : 'floating';
     const dexSlippage = exchangeQuote.isDex ? exchangeQuote.swapSlippage : undefined;
+    const bridgeSpeed = getTradeBridgeSpeed(exchangeQuote);
 
     const quoteReceiveAmount = new BigNumber(exchangeQuote.receiveStringAmount ?? '');
     const minimumYouGetAmount = formatCryptoAmountAsAmount(
@@ -103,7 +109,19 @@ export const TradingOfferExchangeDetails = ({
 
                 {!exchangeQuote.isDex && <TradingExchangeRateInfoItem rateType={rateType} />}
 
+                {bridgeSpeed !== undefined && (
+                    <TradingExchangeBridgeSpeedInfoItem
+                        isEditable
+                        isLoading={isLoading}
+                        bridgeSpeed={bridgeSpeed}
+                        bridgeSpeedOptions={getTradeBridgeSpeedOptions(exchangeQuote)}
+                        sendCryptoId={exchangeQuote.send}
+                        receiveCryptoId={exchangeQuote.receive}
+                    />
+                )}
+
                 <TradingComposedNetworkFeeInfoItem
+                    isLoading={isLoading}
                     account={account}
                     fee={networkFee}
                     edit={networkFeeEdit}
