@@ -1,3 +1,5 @@
+// Not lazy loaded: ed25519 is sizeable on its own, but its shared @noble dependencies are already in the boot bundle,
+// so splitting would only save cca 3.2 kB gzipped, with most of the saving eaten by the chunking overhead.
 import { ed25519 } from '@noble/curves/ed25519.js';
 import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex, concatBytes, hexToBytes, utf8ToBytes } from '@noble/hashes/utils.js';
