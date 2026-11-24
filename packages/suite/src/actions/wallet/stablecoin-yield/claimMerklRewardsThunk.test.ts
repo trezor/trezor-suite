@@ -25,6 +25,7 @@ import { claimMerklRewardsThunk } from './claimMerklRewardsThunk';
 import { type SendYieldTransactionDeps, type SendYieldTransactionState } from './signingHelpers';
 
 const mockOpenSimulation = jest.fn();
+const mockSelectSelectedDevice = jest.fn();
 const mockEstimateYieldFeeLevel = jest.fn();
 const mockDevice = mockSuiteDevice({
     path: 'owner',
@@ -78,7 +79,7 @@ jest.mock('@suite-common/earn-stablecoin', () => ({
 
 jest.mock('@suite-common/device', () => ({
     ...jest.requireActual('@suite-common/device'),
-    selectSelectedDevice: () => mockDevice,
+    selectSelectedDevice: () => mockSelectSelectedDevice(),
 }));
 
 jest.mock('@suite-common/wallet-core', () => ({
@@ -155,6 +156,7 @@ describe('claimMerklRewardsThunk', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockSelectSelectedDevice.mockReset().mockReturnValue(mockDevice);
         mockEstimateYieldFeeLevel.mockResolvedValue({
             success: true,
             payload: { feeLimit: '21000', feePerUnit: '1' },
@@ -237,6 +239,28 @@ describe('claimMerklRewardsThunk', () => {
         await dispatchClaim(report);
 
         expect(report).not.toHaveBeenCalled();
+    });
+
+    it('does not sign if the wallet changes while the claim preview is open', async () => {
+        const resolve = jest.fn();
+        mockOpenSimulation.mockReturnValueOnce(() => {
+            mockSelectSelectedDevice.mockReturnValue(
+                mockSuiteDevice({ state: { staticSessionId: 'other@device:0' } }),
+            );
+
+            return Promise.resolve({
+                value: true,
+                resolve,
+                selectedFee: null,
+                selectedFeeLevel: 'normal',
+            });
+        });
+
+        const { result } = await dispatchClaim(jest.fn());
+
+        expect(result).toBeNull();
+        expect(resolve).toHaveBeenCalledTimes(1);
+        expect(TrezorConnect.ethereumSignTransaction).not.toHaveBeenCalled();
     });
 
     it('closes the approved claim review if broadcasting rejects', async () => {

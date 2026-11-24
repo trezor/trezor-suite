@@ -78,7 +78,7 @@ export const YieldApproveModal = ({
     onSuccess,
 }: YieldApproveModalProps) => {
     const { analytics } = useServices(injectDesktopAnalytics);
-    const ensureDeviceReady = useDeviceReadyGuardWithToast();
+    const ensureDeviceReady = useDeviceReadyGuardWithToast(account.deviceState);
 
     const { data: vaultName } = useYieldOpportunity(vaultId, {
         select: yieldOpportunity => yieldOpportunity.metadata.name,

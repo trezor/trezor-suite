@@ -55,7 +55,7 @@ type BroadcastWrap = {
 export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNativeTokenProps) => {
     const { dispatch } = useServices(injectDispatch);
     const { CryptoAmountFormatter } = useFormatters();
-    const ensureDeviceReady = useDeviceReadyGuardWithToast();
+    const ensureDeviceReady = useDeviceReadyGuardWithToast(account.deviceState);
     const {
         isDisabled,
         content: disabledContent,

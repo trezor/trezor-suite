@@ -7,7 +7,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { getDeviceErrorMessage } from '#src/utils/wallet/getDeviceErrorMessage';
 
-export const useDeviceReadyGuardWithToast = () => {
+export const useDeviceReadyGuardWithToast = (expectedWallet?: string) => {
     const { dispatch } = useServices(injectDispatch);
 
     const onFailed = useCallback(
@@ -22,5 +22,5 @@ export const useDeviceReadyGuardWithToast = () => {
         [dispatch],
     );
 
-    return useDeviceReadyGuard({ onFailed });
+    return useDeviceReadyGuard({ onFailed, expectedWallet });
 };

@@ -67,7 +67,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         isDisabled && !isClaimSubmitting && !hasYieldSessionTransactionActivity(claimSession);
     const isClaimFirmwareOutdated = !isYieldSupported(device, { flowType: 'claim' });
 
-    const ensureDeviceReady = useDeviceReadyGuardWithToast();
+    const ensureDeviceReady = useDeviceReadyGuardWithToast(account.deviceState);
     const { merklRewardsQuery, missingRateTickersQuery } = useMerklRewards(account);
     const accountRewards: YieldAccountRewards | undefined =
         merklRewardsQuery.data?.accountsRewards[0];
