@@ -6,19 +6,17 @@ import {
     selectStandardWalletDescriptorByDeviceId,
 } from '@suite-common/device';
 import { type TrezorDeviceWithState } from '@suite-common/suite-types';
-import { isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type WalletDescriptor } from '@trezor/device-utils';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
-import { hasProp, isWhitelistedHost } from '@trezor/utils';
 
 import { type ReferAFriendDep } from './createReferAFriendCompositionRoot';
+import { referralProgramSchema } from './referAFriendSchemas';
 import { selectDoesReferralRecordExistForWalletDescriptor } from './referAFriendSelectors';
 import { type ReferAFriendRootState, referAFriendActions } from './referAFriendSlice';
 import {
     type ReferralAccount,
     type ReferralError,
-    type ReferralProgram,
     type ReferralVouchersResponse,
 } from './referAFriendTypes';
 import { type ReferralKey } from './referralKey';
@@ -220,33 +218,6 @@ const joinWithReferralKey = async (
     return applyReferralAccount({ ...params, account: createResult.payload as ReferralAccount });
 };
 
-// The API sends uppercase ISO codes, while the supported base currencies are keyed in lowercase.
-const hasSupportedFiatCurrency = (program: unknown) =>
-    hasProp(program, 'fiatCurrency') &&
-    typeof program.fiatCurrency === 'string' &&
-    isFiatBaseCurrencyCode(program.fiatCurrency.toLowerCase());
-
-// The annual reward limit is computed from these, so they must be numbers.
-const hasNumericRewardFields = (program: unknown) =>
-    hasProp(program, 'rewardAmount') &&
-    Number.isFinite(program.rewardAmount) &&
-    hasProp(program, 'redemptionLimit') &&
-    Number.isFinite(program.redemptionLimit);
-
-const REFER_A_FRIEND_ALLOWED_HOSTS = ['localhost', 'trezor.io', 'sldev.cz'];
-
-const hasTrezorTermsUrl = (program: unknown) => {
-    if (!hasProp(program, 'termsUrl') || typeof program.termsUrl !== 'string') return false;
-
-    try {
-        const { protocol, hostname } = new URL(program.termsUrl);
-
-        return protocol === 'https:' && isWhitelistedHost(hostname, REFER_A_FRIEND_ALLOWED_HOSTS);
-    } catch {
-        return false;
-    }
-};
-
 export type FetchReferralProgramThunkDeps = ReferAFriendThunkDeps;
 
 export const fetchReferralProgramThunk = createThunk<
@@ -267,25 +238,15 @@ export const fetchReferralProgramThunk = createThunk<
         return;
     }
 
-    if (!hasSupportedFiatCurrency(result.payload)) {
-        dispatch(referAFriendActions.programFailed({ message: 'Unsupported fiat currency' }));
+    const programResult = referralProgramSchema.safeParse(result.payload);
+
+    if (!programResult.success) {
+        dispatch(referAFriendActions.programFailed({ message: 'Invalid program response' }));
 
         return;
     }
 
-    if (!hasTrezorTermsUrl(result.payload)) {
-        dispatch(referAFriendActions.programFailed({ message: 'Invalid terms URL' }));
-
-        return;
-    }
-
-    if (!hasNumericRewardFields(result.payload)) {
-        dispatch(referAFriendActions.programFailed({ message: 'Invalid reward fields' }));
-
-        return;
-    }
-
-    dispatch(referAFriendActions.programLoaded(result.payload as ReferralProgram));
+    dispatch(referAFriendActions.programLoaded(programResult.data));
 });
 
 export type FetchReferralAccountThunkState = ReferAFriendRootState & DeviceRootState;
@@ -449,6 +410,7 @@ export const leaveReferralProgramThunk = createThunk<
         );
 
         const keyResult = await obtainReferralKey({ standardWallet, referAFriend });
+        // API response is only checked for success, so payload is not validated.
         const leaveResult = keyResult.success
             ? await referAFriend.referralApiFetch({
                   method: 'POST',

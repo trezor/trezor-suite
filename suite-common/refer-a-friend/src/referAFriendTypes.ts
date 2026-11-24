@@ -1,14 +1,5 @@
 export type ReferralRequestStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
-export type ReferralProgram = {
-    fiatCurrency: string;
-    rewardAmount: number;
-    friendDiscountPercentage: number;
-    minimumOrderAmount: number;
-    redemptionLimit: number;
-    termsUrl: string;
-};
-
 export type ReferralProgramData = {
     rewardAmount: string;
     friendDiscountPercentage: number;

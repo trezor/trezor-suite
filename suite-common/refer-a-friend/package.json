@@ -27,7 +27,8 @@
         "@trezor/redux-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
-        "@trezor/utils": "workspace:*"
+        "@trezor/utils": "workspace:*",
+        "@trezor/zod": "workspace:*"
     },
     "devDependencies": {
         "@trezor/dependency-injection": "workspace:*"
