@@ -9,7 +9,7 @@ import {
 } from '@suite-common/device';
 import { createSliceWithExtraDeps } from '@trezor/redux-utils';
 
-type ConnectionMode = 'cable' | 'bluetooth';
+export type ConnectionMode = 'cable' | 'bluetooth';
 
 export type DesktopDeviceState = DeviceReducerState & {
     isConnectionModalOpen: boolean;

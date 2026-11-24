@@ -2,8 +2,7 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import {
     type DesktopBluetoothDevice,
-    bluetoothStartScanningThunk,
-    bluetoothStopScanningThunk,
+    injectBluetooth,
     removeNonResponsiveNearbyDevicesThunk,
 } from '@suite/bluetooth';
 import { bluetoothActions } from '@suite-common/bluetooth';
@@ -28,7 +27,7 @@ export const useBluetoothScanning = ({
     devices,
     setShowHints,
 }: UseBluetoothScanningProps): UseBluetoothScanningReturn => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, bluetooth } = useServices(injectDispatch, injectBluetooth);
     const scannerTimerId = useRef<TimerId | null>(null);
 
     const clearScanTimer = useCallback(() => {
@@ -41,23 +40,23 @@ export const useBluetoothScanning = ({
     const onReScanClick = useCallback(() => {
         clearScanTimer();
 
-        dispatch(bluetoothStartScanningThunk());
+        void bluetooth.startScan();
         scannerTimerId.current = setTimeout(() => {
             setShowHints(true);
             dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
         }, SCAN_TIMEOUT);
-    }, [dispatch, clearScanTimer, setShowHints]);
+    }, [bluetooth, dispatch, clearScanTimer, setShowHints]);
 
     // starts to scan for devices when connection mode is bluetooth
     useEffect(() => {
         if (bluetoothMode) {
-            dispatch(bluetoothStartScanningThunk());
+            void bluetooth.startScan();
 
             return () => {
-                dispatch(bluetoothStopScanningThunk());
+                void bluetooth.stopScan();
             };
         }
-    }, [dispatch, bluetoothMode]);
+    }, [bluetooth, bluetoothMode]);
 
     // stop scanning (visually) after 30s
     useEffect(() => {
