@@ -31,7 +31,7 @@ export { buyThunks } from './thunks/buy';
 export { tradingThunks } from './thunks/common';
 export type { LoadInitialDataThunkDeps } from './thunks/common/loadInitialDataThunk';
 export type { LoadTradingCatalogsThunkDeps } from './thunks/common/loadTradingCatalogsThunk';
-export { TRADING_SECTION_CATALOGS } from './thunks/common/tradingCatalogs';
+export { TRADING_CATALOGS, TRADING_SECTION_CATALOGS } from './thunks/common/tradingCatalogs';
 export { exchangeThunks } from './thunks/exchange';
 export { sellThunks } from './thunks/sell';
 export * from './thunks/common/buildRecomposeInputsFromTrade';

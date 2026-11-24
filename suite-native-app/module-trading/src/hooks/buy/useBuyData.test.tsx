@@ -3,6 +3,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     type LoadInitialDataThunkDeps,
+    TRADING_CATALOGS,
     tradingBuyActions,
     tradingThunks,
 } from '@suite-common/trading';
@@ -134,39 +135,34 @@ describe('useBuyData', () => {
     });
 
     it.each([
-        {
-            section: 'exchange',
-            useData: useExchangeData,
-            catalogPaths: ['/api/info', '/api/v3/exchange/list'],
-        },
-        { section: 'sell', useData: useSellData, catalogPaths: ['/api/info', '/api/v3/sell/list'] },
-        { section: 'buy', useData: useBuyData, catalogPaths: ['/api/info', '/api/v3/buy/list'] },
+        { section: 'exchange', useData: useExchangeData },
+        { section: 'sell', useData: useSellData },
+        { section: 'buy', useData: useBuyData },
     ])(
-        'reuses the catalog when remounting $section and refetches on Retry',
-        async ({ useData, catalogPaths }) => {
-            const buyCatalogPaths = ['/api/info', '/api/v3/buy/list'];
+        'loads every catalog on the first tab, reuses them in $section and refetches them on Retry',
+        async ({ useData }) => {
+            const catalogPaths = [
+                '/api/info',
+                '/api/v3/buy/list',
+                '/api/v3/sell/list',
+                '/api/v3/exchange/list',
+            ];
             const services = initServices();
             const buy = await renderUseBuyData(services);
             await buy.unmount();
-            expect(global.fetch).toHaveBeenCalledTimes(buyCatalogPaths.length);
+            expect(global.fetch).toHaveBeenCalledTimes(catalogPaths.length);
 
             const tab = await renderHookWithStoreProvider(useData, { services });
             await act(() => Promise.resolve());
             await tab.unmount();
-            // The tab reuses the coin info from the cache, and the buy tab its whole catalog set.
-            const initialPaths = [
-                ...buyCatalogPaths,
-                ...catalogPaths.filter(path => !buyCatalogPaths.includes(path)),
-            ];
-            expect(global.fetch).toHaveBeenCalledTimes(initialPaths.length);
+            expect(global.fetch).toHaveBeenCalledTimes(catalogPaths.length);
 
             const retry = await renderHookWithStoreProvider(useData, { services });
-            expect(global.fetch).toHaveBeenCalledTimes(initialPaths.length);
             await act(async () => {
                 await retry.result.current.refetch();
             });
             expect(jest.mocked(global.fetch).mock.calls.map(([url]) => url)).toEqual(
-                [...initialPaths, ...catalogPaths].map(path => expect.stringContaining(path)),
+                [...catalogPaths, ...catalogPaths].map(path => expect.stringContaining(path)),
             );
         },
     );
@@ -228,10 +224,12 @@ describe('useBuyData', () => {
         expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(2);
         expect(initialThunkLoadActionSpy).toHaveBeenNthCalledWith(1, {
             activeSection: 'buy',
+            catalogs: TRADING_CATALOGS,
             forceReload: false,
         });
         expect(initialThunkLoadActionSpy).toHaveBeenLastCalledWith({
             activeSection: 'buy',
+            catalogs: TRADING_CATALOGS,
             forceReload: true,
         });
 
@@ -240,6 +238,7 @@ describe('useBuyData', () => {
         });
         expect(initialThunkLoadActionSpy).toHaveBeenLastCalledWith({
             activeSection: 'buy',
+            catalogs: TRADING_CATALOGS,
             forceReload: false,
         });
     });
@@ -271,6 +270,7 @@ describe('useBuyData', () => {
 
             expect(initialThunkLoadActionSpy).toHaveBeenCalledWith({
                 activeSection: 'buy',
+                catalogs: TRADING_CATALOGS,
                 forceReload: false,
             });
         });
@@ -313,6 +313,7 @@ describe('useBuyData', () => {
             expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(1);
             expect(initialThunkLoadActionSpy).toHaveBeenCalledWith({
                 activeSection: 'buy',
+                catalogs: TRADING_CATALOGS,
                 forceReload: false,
             });
         });
@@ -336,6 +337,7 @@ describe('useBuyData', () => {
             expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(1);
             expect(initialThunkLoadActionSpy).toHaveBeenLastCalledWith({
                 activeSection: 'buy',
+                catalogs: TRADING_CATALOGS,
                 forceReload: false,
             });
         });

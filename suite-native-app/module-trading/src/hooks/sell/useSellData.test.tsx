@@ -3,6 +3,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     type LoadInitialDataThunkDeps,
+    TRADING_CATALOGS,
     tradingSellActions,
     tradingThunks,
 } from '@suite-common/trading';
@@ -149,10 +150,12 @@ describe('useSellData', () => {
         expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(2);
         expect(initialThunkLoadActionSpy).toHaveBeenNthCalledWith(1, {
             activeSection: 'sell',
+            catalogs: TRADING_CATALOGS,
             forceReload: false,
         });
         expect(initialThunkLoadActionSpy).toHaveBeenLastCalledWith({
             activeSection: 'sell',
+            catalogs: TRADING_CATALOGS,
             forceReload: true,
         });
 
@@ -161,6 +164,7 @@ describe('useSellData', () => {
         });
         expect(initialThunkLoadActionSpy).toHaveBeenLastCalledWith({
             activeSection: 'sell',
+            catalogs: TRADING_CATALOGS,
             forceReload: false,
         });
     });
@@ -192,6 +196,7 @@ describe('useSellData', () => {
 
             expect(initialThunkLoadActionSpy).toHaveBeenCalledWith({
                 activeSection: 'sell',
+                catalogs: TRADING_CATALOGS,
                 forceReload: false,
             });
         });
@@ -234,6 +239,7 @@ describe('useSellData', () => {
             expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(1);
             expect(initialThunkLoadActionSpy).toHaveBeenCalledWith({
                 activeSection: 'sell',
+                catalogs: TRADING_CATALOGS,
                 forceReload: false,
             });
         });
@@ -257,6 +263,7 @@ describe('useSellData', () => {
             expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(1);
             expect(initialThunkLoadActionSpy).toHaveBeenLastCalledWith({
                 activeSection: 'sell',
+                catalogs: TRADING_CATALOGS,
                 forceReload: false,
             });
         });

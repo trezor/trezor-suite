@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
+    TRADING_CATALOGS,
     TRADING_SECTION_CATALOGS,
     selectIsTradingSellFullyLoaded,
     tradingThunks,
@@ -22,6 +23,8 @@ export const useSellData = () => {
             dispatch(
                 tradingThunks.loadInitialDataThunk({
                     activeSection: 'sell',
+                    // Every catalog, so that switching the trading tabs is instant.
+                    catalogs: TRADING_CATALOGS,
                     forceReload,
                 }),
             ),
