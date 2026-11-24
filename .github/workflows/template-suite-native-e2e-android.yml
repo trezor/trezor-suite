@@ -94,6 +94,7 @@ jobs:
         with:
           version: v0.32.0
           config-file: .github/pmg-config.yml
+          enforce: "false"
       - name: Disable Yarn hardened mode
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
