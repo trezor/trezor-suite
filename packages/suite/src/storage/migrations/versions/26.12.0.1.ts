@@ -17,7 +17,7 @@ type LegacyPersistentDeviceData = Omit<PersistentDeviceData, 'descriptors'> & {
  Replace the optional `descriptor` (persisted for Bluetooth devices only) of each `persistentDeviceData` entry
  with the `descriptors` array, and add a unique `key` to every remembered device.
 */
-export default createMigration<SuiteDBSchema>('26.12.0', async (_, tx) => {
+export default createMigration<SuiteDBSchema>('26.12.0.1', async (_, tx) => {
     const store = tx.objectStore('persistentDeviceData');
     const persistentData: LegacyPersistentDeviceData[] | undefined =
         await store.get('persistentDeviceData');
