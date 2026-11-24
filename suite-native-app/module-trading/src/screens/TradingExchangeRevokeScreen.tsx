@@ -1,174 +1,121 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import type { ExchangeTrade } from 'invity-api';
-
-import {
-    type TradingRootState,
-    selectTradingCoinSymbolByCryptoId,
-    selectTradingExchangeSelectedQuote,
-    tradingExchangeActions,
-} from '@suite-common/trading';
-import { BannerInline, VStack } from '@suite-native/atoms';
+import { BannerInline, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    DEFAULT_BACK_NAVIGATION_ACTIONS,
     DynamicScreenHeader,
     Screen,
     ScreenHeader,
     type TradingStackRoutes,
-    useOnNavigationRemove,
 } from '@suite-native/navigation';
-import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
+import { CurrentStepCardHeader } from '@suite-native/step-cards';
+import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 import { type TradingStackScreenProps } from '@suite-native/trading-types';
-import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
 
 import { ApprovalButton } from '../components/exchange/Approval/ApprovalButton';
 import { ExchangeRevokeDetails } from '../components/exchange/Approval/ExchangeRevokeDetails';
-import { useApprovalFlow } from '../hooks/exchange/Approval/useApprovalFlow';
-import { useEvmApprovalFees } from '../hooks/exchange/Approval/useEvmApprovalFees';
+import { RevokeLimitInfoRow } from '../components/exchange/Approval/RevokeLimitInfoRow';
+import { ExchangeFlowApprovalFeeSelectorRow } from '../components/exchange/Flow/ExchangeFlowApprovalFeeSelectorRow';
+import { ExchangeFlowScreenHeader } from '../components/exchange/Flow/ExchangeFlowScreenHeader';
+import { ExchangeFlowStepsLayout } from '../components/exchange/Flow/ExchangeFlowStepsLayout';
+import { useExchangeRevokeStep } from '../hooks/exchange/Approval/useExchangeRevokeStep';
 
 type TradingExchangeRevokeScreenProps =
     TradingStackScreenProps<TradingStackRoutes.TradingExchangeRevoke>;
+
+const RevokeErrorScreen = () => (
+    <Screen header={<ScreenHeader closeActionType="back" />}>
+        <BannerInline
+            title={<Translation id="moduleTrading.tradingExchangeRevokeScreen.revokeErrorAlert" />}
+            intent="critical"
+        />
+    </Screen>
+);
 
 export const TradingExchangeRevokeScreen = ({
     route: { params },
 }: TradingExchangeRevokeScreenProps) => {
     const { shouldIncreaseLimit } = params;
-    const { dispatch } = useServices(injectDispatch);
-    const reportToAnalytics = useExchangeAnalyticsStepReport('revoke-preview');
-
-    const quote = useSelector(selectTradingExchangeSelectedQuote);
-
-    const { isReady, isConfirming, error: confirmError, confirmApproval } = useApprovalFlow();
-
-    const coinSymbol = useSelector((state: TradingRootState) =>
-        selectTradingCoinSymbolByCryptoId(state, quote?.send),
-    );
-
-    const {
-        fee,
-        isLoading: isComposingFees,
-        error: feeError,
-        isFeeUnavailable,
-    } = useEvmApprovalFees({
-        approvalTypeOverride: 'ZERO',
-    });
-
-    const isLoading = isConfirming || isComposingFees;
-    const error = confirmError || feeError;
-    const isRevokeReady = !isLoading && !error && fee !== undefined;
-
-    const hasConfirmedRef = useRef(false);
+    const { quote, coinSymbol, isRevokeReady, isDisabled } = useExchangeRevokeStep();
+    const account = useSelector(selectExchangeSelectedSendAccount);
 
     useEffect(() => {
-        if (hasConfirmedRef.current) {
-            return;
+        if (shouldIncreaseLimit && !account) {
+            console.error('No account selected for exchange revoke details');
         }
-
-        if (!quote) {
-            console.error('No quote to revoke approval');
-
-            return;
-        }
-
-        if (!isReady) {
-            return;
-        }
-
-        hasConfirmedRef.current = true;
-
-        const quoteWithType =
-            quote.approvalType === 'ZERO'
-                ? quote
-                : ({ ...quote, approvalType: 'ZERO' } satisfies ExchangeTrade);
-
-        if (quote.approvalType !== 'ZERO') {
-            dispatch(tradingExchangeActions.saveSelectedQuote(quoteWithType));
-        }
-
-        let isActive = true;
-
-        confirmApproval(quoteWithType).then(response => {
-            if (!isActive) {
-                return;
-            }
-
-            if (response === undefined) {
-                hasConfirmedRef.current = false;
-            }
-        });
-
-        reportToAnalytics('visit');
-
-        return () => {
-            isActive = false;
-        };
-    }, [quote, isReady, dispatch, confirmApproval, reportToAnalytics]);
-
-    useOnNavigationRemove({
-        actionTypes: DEFAULT_BACK_NAVIGATION_ACTIONS,
-        onRemoveAttempt: () => {
-            dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
-            reportToAnalytics('cancel');
-        },
-    });
+    }, [shouldIncreaseLimit, account]);
 
     if (!quote) {
-        return (
-            <Screen header={<ScreenHeader closeActionType="back" />}>
-                <BannerInline
-                    title={
-                        <Translation id="moduleTrading.tradingExchangeRevokeScreen.revokeErrorAlert" />
-                    }
-                    intent="critical"
-                />
-            </Screen>
-        );
+        return <RevokeErrorScreen />;
     }
 
-    return (
-        <Screen
-            header={
-                <DynamicScreenHeader
-                    title={
-                        <Translation
-                            id="moduleTrading.tradingExchangeRevokeScreen.revokeTitle"
-                            values={{ symbol: coinSymbol }}
-                        />
-                    }
-                    subtitle={
-                        shouldIncreaseLimit ? undefined : (
+    // A standalone revoke is not a part of the swap steps.
+    if (!shouldIncreaseLimit) {
+        return (
+            <Screen
+                header={
+                    <DynamicScreenHeader
+                        title={
+                            <Translation
+                                id="moduleTrading.tradingExchangeRevokeScreen.revokeTitle"
+                                values={{ symbol: coinSymbol }}
+                            />
+                        }
+                        subtitle={
                             <Translation
                                 id="moduleTrading.tradingExchangeRevokeScreen.revokeSubtitle"
                                 values={{ symbol: coinSymbol }}
                             />
-                        )
-                    }
-                    closeActionType="back"
-                />
-            }
+                        }
+                        closeActionType="back"
+                    />
+                }
+                footer={
+                    <ApprovalButton
+                        isReady={isRevokeReady}
+                        isDisabled={isDisabled}
+                        flowType="revoke"
+                    />
+                }
+            >
+                <VStack spacing="sp12">
+                    <ExchangeRevokeDetails exchange={quote.exchange} />
+                </VStack>
+            </Screen>
+        );
+    }
+
+    if (!account) {
+        return <RevokeErrorScreen />;
+    }
+
+    return (
+        <ExchangeFlowStepsLayout
+            approvalStatus="needs_revoke"
+            currentStep="revoke"
+            header={<ExchangeFlowScreenHeader />}
             footer={
                 <ApprovalButton
                     isReady={isRevokeReady}
-                    isDisabled={!!error || isFeeUnavailable}
-                    flowType={shouldIncreaseLimit ? 'revoke-and-approve' : 'revoke'}
+                    isDisabled={isDisabled}
+                    flowType="revoke-and-approve"
                 />
             }
         >
-            <VStack spacing="sp12">
-                {!!shouldIncreaseLimit && (
-                    <BannerInline
-                        intent="info"
-                        title={
-                            <Translation id="moduleTrading.tradingExchangeRevokeScreen.lowLimitInfoAlert" />
-                        }
+            <CurrentStepCardHeader>
+                <Text variant="headline-sm">
+                    <Translation id="moduleTrading.tradingExchangeFlowScreen.revokeStep.title" />
+                </Text>
+                <Text variant="body-sm" color="contentSecondary">
+                    <Translation
+                        id="moduleTrading.tradingExchangeFlowScreen.revokeStep.description"
+                        values={{ symbol: coinSymbol }}
                     />
-                )}
-
-                <ExchangeRevokeDetails exchange={quote.exchange} />
-            </VStack>
-        </Screen>
+                </Text>
+            </CurrentStepCardHeader>
+            <RevokeLimitInfoRow />
+            <ExchangeFlowApprovalFeeSelectorRow accountKey={account.key} />
+        </ExchangeFlowStepsLayout>
     );
 };

@@ -4378,11 +4378,6 @@ export const messages = {
         composeAllowanceError: 'Failed to estimate approval fees. Try again.',
         confirmApprovalError: 'Failed to confirm approval. Try again.',
         tradingExchangeApprovalScreen: {
-            approveTitle: 'Approve {symbol} spending',
-            approveSubtitle: 'Approve provider to spend your {symbol} to swap.',
-            revokeSuccessAlert: 'Revoke successful. Set a higher limit.',
-            lowLimitInfoAlert:
-                "You've approved this token, but the limit is too low. Increase it to continue.",
             limitLabel: 'Limit',
             currentLimitLabel: 'Current limit',
             newLimitLabel: 'New limit',
@@ -4392,9 +4387,31 @@ export const messages = {
         tradingExchangeRevokeScreen: {
             revokeTitle: 'Revoke {symbol} spending',
             revokeSubtitle: 'Revoke provider permission to spend your {symbol} to swap.',
-            lowLimitInfoAlert: 'Spending limit too low. Revoke it and approve a higher amount.',
             limitLabel: 'Limit',
             revokeErrorAlert: 'Error revoking spending limit. Try again.',
+        },
+        tradingExchangeFlowScreen: {
+            screenTitle: 'Trade',
+            approveStep: {
+                title: 'Approve spending',
+                nextStepTitle: 'Approve',
+                description: 'Let the provider use your {symbol} to process your swap.',
+            },
+            increaseStep: {
+                title: 'Increase approved limit',
+                description:
+                    'Your current limit is too low. Let the provider access more {symbol} to process your swap.',
+            },
+            revokeStep: {
+                title: 'Revoke approval spending',
+                nextStepTitle: 'Revoke',
+                description:
+                    'To swap more {symbol}, first revoke your current approval. {symbol} requires this before approving a higher limit.',
+            },
+            swapStep: {
+                title: 'Review your swap',
+                nextStepTitle: 'Swap',
+            },
         },
         tradingReviewOutputs: {
             title: 'Confirm on Trezor',

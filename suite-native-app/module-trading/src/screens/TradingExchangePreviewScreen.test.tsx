@@ -238,6 +238,38 @@ describe('TradingExchangePreviewScreen', () => {
         ).toBeOnTheScreen();
     });
 
+    it('should render the preview without the step cards when not approved', async () => {
+        const { result } = await renderTradingExchangePreviewScreen();
+
+        expect(result.queryByTestId('@step-cards/current')).toBeNull();
+        expect(
+            result.queryByText(
+                getTranslation('moduleTrading.tradingExchangeFlowScreen.swapStep.title'),
+            ),
+        ).toBeNull();
+    });
+
+    it('should render the swap as the last step with the approval as the finished step when approved', async () => {
+        const { result } = await renderTradingExchangePreviewScreen(true);
+
+        expect(
+            result.getByText(
+                getTranslation('moduleTrading.tradingExchangeFlowScreen.swapStep.title'),
+            ),
+        ).toBeOnTheScreen();
+        expect(
+            within(result.getByTestId('@step-cards/finished')).getByText(
+                getTranslation('moduleTrading.tradingExchangeFlowScreen.approveStep.nextStepTitle'),
+            ),
+        ).toBeOnTheScreen();
+        expect(result.getByTestId('@step-cards/current')).toHaveTextContent(
+            getTranslation('stepCards.stepper', { stepNumber: 2, stepCount: 2 }),
+            { exact: false },
+        );
+        expect(result.queryByTestId('@step-cards/next')).toBeNull();
+        expect(result.getByText(getTranslation('generic.buttons.continue'))).toBeOnTheScreen();
+    });
+
     it('should render from and to account labels', async () => {
         const { result } = await renderTradingExchangePreviewScreen();
 

@@ -94,6 +94,9 @@
         },
         { "path": "../../suite-native/regions" },
         { "path": "../../suite-native/settings" },
+        {
+            "path": "../../suite-native/step-cards"
+        },
         { "path": "../../suite-native/tokens" },
         {
             "path": "../../suite-native/trading-analytics"

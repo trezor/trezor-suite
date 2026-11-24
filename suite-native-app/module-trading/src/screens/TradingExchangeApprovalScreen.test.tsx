@@ -11,7 +11,7 @@ import {
     TradingStackRoutes,
     useOnNavigationRemove,
 } from '@suite-native/navigation';
-import { fireEvent } from '@suite-native/test-utils-store';
+import { fireEvent, within } from '@suite-native/test-utils-store';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { type TradingRootState } from '@suite-native/trading-state';
 
@@ -85,6 +85,9 @@ jest.mock('@suite-native/atoms', () => ({
 
 const testQuote = mercuryoFixedWorstQuote;
 
+const APPROVE_TITLE = getTranslation('moduleTrading.tradingExchangeFlowScreen.approveStep.title');
+const INCREASE_TITLE = getTranslation('moduleTrading.tradingExchangeFlowScreen.increaseStep.title');
+
 describe('TradingExchangeApprovalScreen', () => {
     let store: Store<State>;
     let unmount: (() => void) | undefined;
@@ -139,18 +142,34 @@ describe('TradingExchangeApprovalScreen', () => {
         );
     });
 
-    it('should render the approval screen with quote details', async () => {
-        const { getByText } = await renderScreen();
+    it('should render the approval as the first step with the swap as the next step', async () => {
+        const { getByText, getByTestId, queryByText, queryByTestId } = await renderScreen();
 
-        expect(getByText('ETH Account #1')).toBeOnTheScreen();
-        expect(getByText('Mercuryo')).toBeOnTheScreen();
+        expect(getByText(APPROVE_TITLE)).toBeOnTheScreen();
+        expect(queryByText(INCREASE_TITLE)).toBeNull();
+        expect(queryByText('ETH Account #1')).toBeNull();
+        expect(queryByText('Mercuryo')).toBeNull();
+        expect(queryByTestId('@step-cards/finished')).toBeNull();
+        expect(getByTestId('@step-cards/current')).toHaveTextContent(
+            getTranslation('stepCards.stepper', { stepNumber: 1, stepCount: 2 }),
+            { exact: false },
+        );
+        expect(
+            within(getByTestId('@step-cards/next')).getByText(
+                getTranslation('moduleTrading.tradingExchangeFlowScreen.swapStep.nextStepTitle'),
+            ),
+        ).toBeOnTheScreen();
         expect(errorSpy).not.toHaveBeenCalled();
     });
 
-    it('should display provider information correctly', async () => {
-        const { getByText } = await renderScreen();
+    it('should render the increase step when shouldIncreaseLimit is true', async () => {
+        const { getByText, queryByText, queryByTestId } = await renderScreen({
+            shouldIncreaseLimit: true,
+        });
 
-        expect(getByText('Mercuryo')).toBeOnTheScreen();
+        expect(getByText(INCREASE_TITLE)).toBeOnTheScreen();
+        expect(queryByText(APPROVE_TITLE)).toBeNull();
+        expect(queryByTestId('@step-cards/finished')).toBeNull();
     });
 
     it('should open bottom sheet when limit row is pressed', async () => {
@@ -215,14 +234,33 @@ describe('TradingExchangeApprovalScreen', () => {
         ]);
     });
 
-    it('should render revoke success alert when isRevoked is true', async () => {
-        const { getByText } = await renderScreen({ isRevoked: true });
+    it('should render the revoke as the finished step when isRevoked is true', async () => {
+        const { getByText, getByTestId } = await renderScreen({ isRevoked: true });
+
+        expect(getByText(APPROVE_TITLE)).toBeOnTheScreen();
+        expect(
+            within(getByTestId('@step-cards/finished')).getByText(
+                getTranslation('moduleTrading.tradingExchangeFlowScreen.revokeStep.nextStepTitle'),
+            ),
+        ).toBeOnTheScreen();
+        expect(getByTestId('@step-cards/current')).toHaveTextContent(
+            getTranslation('stepCards.stepper', { stepNumber: 2, stepCount: 3 }),
+            { exact: false },
+        );
+    });
+
+    it('should render alert when no account is selected', async () => {
+        store.dispatch(tradingExchangeActions.setTradingAccountKey(undefined));
+
+        const { getByText, queryByTestId } = await renderScreen();
 
         expect(
             getByText(
-                getTranslation('moduleTrading.tradingExchangeApprovalScreen.revokeSuccessAlert'),
+                getTranslation('moduleTrading.tradingExchangeApprovalScreen.approveErrorAlert'),
             ),
         ).toBeOnTheScreen();
+        expect(queryByTestId('@step-cards/current')).toBeNull();
+        expect(errorSpy).toHaveBeenCalledWith('No account selected for exchange approval details');
     });
 
     describe('analytics', () => {
