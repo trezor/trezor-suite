@@ -1,5 +1,5 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
-import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import {
@@ -11,7 +11,6 @@ import {
 import { Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
-import { injectDispatch } from '@trezor/redux-utils';
 
 import { earnFlowToEventTypeMap } from '#src/constants/suite/staking';
 import { useEarnDeviceStatus } from '#src/hooks/earn/useEarnDeviceStatus';
@@ -46,7 +45,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
         currency,
         isStakingDisabled: isCardanoStakingDisabled,
     } = useStakeFormContext();
-    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(network.symbol);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, network.symbol));
@@ -68,13 +67,14 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
     // there is no input for cardano. Form validation should always pass
     const isFormInputsValid = !isCardano
         ? formIsValid && hasValues
-        : !isCardanoStakingDisabled &&
-          isDrepValid &&
-          composedLevels?.[selectedFee]?.type === 'final';
+        : isDrepValid && (!isDeviceConnected || !isCardanoStakingDisabled);
     // Cardano signs straight from onSubmit without handleSubmit, so isSubmitting stays false, and
     // the device lock is taken only after the transaction plan is composed.
     const isDisabled =
-        !isFormInputsValid || isSubmitting || isSigning || (isDeviceConnected && isLocked());
+        !isFormInputsValid ||
+        isSubmitting ||
+        isSigning ||
+        (isDeviceConnected && (isLocked() || composedLevels?.[selectedFee]?.type !== 'final'));
 
     const onStakeClick = () => {
         analytics.report({
@@ -90,15 +90,6 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
                     : {}),
             },
         });
-
-        if (!isDeviceConnected) {
-            if (device?.descriptor?.apiType === 'bluetooth') {
-                dispatch(setConnectionMode('bluetooth'));
-            }
-            dispatch(setConnectionModal(true));
-
-            return;
-        }
 
         if (isCardano) {
             // direct call for cardano as there is no need to validate inputs

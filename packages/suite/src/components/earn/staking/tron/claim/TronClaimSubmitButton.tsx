@@ -84,7 +84,7 @@ export const TronClaimSubmitButton = () => {
             },
         });
 
-        submitAction();
+        void submitAction(() => openFirmwareModal('TR_EARN_TRON_CLAIM_TITLE'));
     };
 
     return (

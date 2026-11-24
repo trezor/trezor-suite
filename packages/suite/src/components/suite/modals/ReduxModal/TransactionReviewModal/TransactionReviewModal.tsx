@@ -12,7 +12,7 @@ import {
     sendFormActions,
     stakeActions,
 } from '@suite-common/wallet-core';
-import { type FormState, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type FormState } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -21,14 +21,16 @@ import {
     signAndPushSendFormTransactionThunk,
 } from '#src/actions/wallet/send/sendFormThunks';
 import { cancelSignYieldTxThunk } from '#src/actions/wallet/stablecoin-yield/cancelSignYieldTx';
-import {
-    cancelSignTxThunk as cancelSignStakingTx,
-    signTransactionThunk,
-} from '#src/actions/wallet/stakeActions';
+import { waitForSolanaStakingSignatureThunk } from '#src/actions/wallet/stake/stakeFormSolanaActions';
+import { cancelSignTxThunk as cancelSignStakingTx } from '#src/actions/wallet/stakeActions';
 import { cancelSignTronFreezeTxThunk } from '#src/actions/wallet/tron-stake/cancelSignTronFreezeTx';
+import { useSignStakingTransaction } from '#src/hooks/earn/useSignStakingTransaction';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
-import { TransactionReviewModalBody } from './TransactionReviewModalBody';
+import {
+    TransactionReviewModalBody,
+    type TransactionReviewRetry,
+} from './TransactionReviewModalBody';
 import { TransactionReviewModalExchange } from './TransactionReviewModalExchange';
 import { type TransactionReviewModalProps } from './TransactionReviewModalProps';
 import { TransactionReviewModalSell } from './TransactionReviewModalSell';
@@ -44,6 +46,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     const sendPrecomposedForm = useSelector(selectPrecomposedSendForm);
     const stakePrecomposedForm = useSelector(selectStakePrecomposedForm);
     const stakeAccount = useSelector(selectStakeAccount);
+    const signStakingTransaction = useSignStakingTransaction(stakeAccount);
     const selectedAccount = useSelector(selectFullSelectedAccount);
     const { dispatch } = useServices(injectDispatch);
 
@@ -106,26 +109,28 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
         }
     };
 
-    const handleStakeTx = async () => {
-        if (!stakeAccount) return;
-
-        dispatch(stakeActions.dispose());
-
-        await dispatch(
-            signTransactionThunk({
-                accountKey: stakeAccount.key,
-                formValues: stake.precomposedForm!,
-                transactionInfo: stake.precomposedTx as PrecomposedTransactionFinal,
-            }),
-        );
-    };
-
-    const handleTryAgainSignTx = async () => {
+    const handleTryAgainSignTx = async ({
+        cancelPendingSignature,
+        resetExpiredReview,
+    }: TransactionReviewRetry) => {
         if (send.precomposedForm && send.precomposedTx) {
+            cancelPendingSignature();
+            resetExpiredReview();
             dispatch(sendFormActions.clearSignedTransactionData());
             await handleSignAndPushSendTx();
         } else if (stake.precomposedForm && stake.precomposedTx) {
-            await handleStakeTx();
+            await signStakingTransaction({
+                formValues: stake.precomposedForm,
+                transactionInfo: stake.precomposedTx,
+                beforeDeviceCheck: async () => {
+                    cancelPendingSignature();
+                    await dispatch(waitForSolanaStakingSignatureThunk());
+                },
+                beforeSigning: () => {
+                    resetExpiredReview();
+                    dispatch(stakeActions.dispose());
+                },
+            });
         }
     };
 

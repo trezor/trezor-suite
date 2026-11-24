@@ -1,11 +1,10 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
-import { injectDispatch } from '@trezor/redux-utils';
 
 import { useEarnDeviceStatus } from '#src/hooks/earn/useEarnDeviceStatus';
 import { useWithdrawalFormContext } from '#src/hooks/earn/useWithdrawalForm';
@@ -31,11 +30,13 @@ export const UnstakeButton = () => {
         signTx,
         currency,
         isCardanoBalanceEmpty,
+        composedLevels,
+        selectedFee,
     } = useWithdrawalFormContext();
     const { isUnstakingDisabled, unstakingMessageContent } = useMessageSystemStaking(
         network.symbol,
     );
-    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const { isSubmitting, errors } = formState;
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
@@ -47,7 +48,7 @@ export const UnstakeButton = () => {
         !(formIsValid && hasValues) ||
         isSubmitting ||
         isCardanoBalanceEmpty ||
-        (isDeviceConnected && isLocked());
+        (isDeviceConnected && (isLocked() || composedLevels?.[selectedFee]?.type !== 'final'));
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, network.symbol));
 
@@ -62,15 +63,6 @@ export const UnstakeButton = () => {
                 networkSymbol: account.symbol,
             },
         });
-
-        if (!isDeviceConnected) {
-            if (device?.descriptor?.apiType === 'bluetooth') {
-                dispatch(setConnectionMode('bluetooth'));
-            }
-            dispatch(setConnectionModal(true));
-
-            return;
-        }
 
         handleSubmit(signTx)();
     };

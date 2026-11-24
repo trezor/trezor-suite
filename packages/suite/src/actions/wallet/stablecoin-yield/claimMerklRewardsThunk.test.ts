@@ -1,3 +1,5 @@
+import { type Dispatch } from '@reduxjs/toolkit';
+
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import {
     MODAL_OPEN_USER_CONTEXT,
@@ -5,6 +7,7 @@ import {
     type openDeferredModal,
     selectUserContextModalPayload,
 } from '@suite/modal';
+import { deviceActions, deviceReducerInitialState } from '@suite-common/device';
 import {
     USER_CANCELLED_ERROR_CODES,
     buildClaimTransactionReview,
@@ -26,7 +29,6 @@ import { claimMerklRewardsThunk } from './claimMerklRewardsThunk';
 import { type SendYieldTransactionDeps, type SendYieldTransactionState } from './signingHelpers';
 
 const mockOpenSimulation = jest.fn();
-const mockSelectSelectedDevice = jest.fn();
 const mockEstimateYieldFeeLevel = jest.fn();
 const mockDevice = mockSuiteDevice({
     path: 'owner',
@@ -78,11 +80,6 @@ jest.mock('@suite-common/earn-stablecoin', () => ({
     })),
 }));
 
-jest.mock('@suite-common/device', () => ({
-    ...jest.requireActual('@suite-common/device'),
-    selectSelectedDevice: () => mockSelectSelectedDevice(),
-}));
-
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     estimateYieldFeeLevel: (payload: unknown) => mockEstimateYieldFeeLevel(payload),
@@ -118,9 +115,12 @@ const dispatchClaim = (report: jest.Mock, isReviewModalConfirmed = true) => {
         ClaimMerklRewardsThunkDeps,
         ClaimMerklRewardsThunkState
     >({
-        preloadedState: {},
+        preloadedState: { device: { ...deviceReducerInitialState, selectedDevice: mockDevice } },
         reducer: (state, action) => ({
             ...state!,
+            device: deviceActions.updateSelectedDevice.match(action)
+                ? { ...state!.device, selectedDevice: action.payload }
+                : state!.device,
             modal: modalReducer(state?.modal, action),
         }),
         serializableCheck: {
@@ -157,7 +157,6 @@ describe('claimMerklRewardsThunk', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockSelectSelectedDevice.mockReset().mockReturnValue(mockDevice);
         mockEstimateYieldFeeLevel.mockResolvedValue({
             success: true,
             payload: { feeLimit: '21000', feePerUnit: '1' },
@@ -244,9 +243,11 @@ describe('claimMerklRewardsThunk', () => {
 
     it('does not sign if the wallet changes while the claim preview is open', async () => {
         const resolve = jest.fn();
-        mockOpenSimulation.mockReturnValueOnce(() => {
-            mockSelectSelectedDevice.mockReturnValue(
-                mockSuiteDevice({ state: { staticSessionId: 'other@device:0' } }),
+        mockOpenSimulation.mockReturnValueOnce((dispatch: Dispatch) => {
+            dispatch(
+                deviceActions.updateSelectedDevice(
+                    mockSuiteDevice({ state: { staticSessionId: 'other@device:0' } }),
+                ),
             );
 
             return Promise.resolve({

@@ -22,6 +22,7 @@ import {
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
 import { type QueryClientDep } from '@suite-common/react-query';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -305,25 +306,26 @@ export type SignTransactionThunkState = ModalRootState &
 export type SignTransactionThunkDeps = PushTransactionThunkDeps & WithServices<QueryClientDep>;
 
 export type SignTransactionThunkParams = {
+    device: TrezorDevice;
     accountKey: AccountKey;
     formValues: StakeFormState;
     transactionInfo: PrecomposedTransactionFinal;
 };
 
 export const signTransactionThunk =
-    ({ accountKey, formValues, transactionInfo }: SignTransactionThunkParams) =>
+    ({ accountKey, device, formValues, transactionInfo }: SignTransactionThunkParams) =>
     async (
         dispatch: ThunkDispatch<SignTransactionThunkState, SignTransactionThunkDeps, UnknownAction>,
         getState: () => SignTransactionThunkState,
         extra: SignTransactionThunkDeps,
     ) => {
-        const device = selectSelectedDevice(getState());
         const account = selectAccountByKey(getState(), accountKey);
 
-        if (!device || !account) return;
+        if (!account) return;
 
         const enhancedTxInfo: PrecomposedTransactionFinal = {
             ...transactionInfo,
+            ...(account.networkType === 'solana' ? { createdTimestamp: Date.now() } : {}),
         };
 
         // store formValues and transactionInfo in send reducer to be used by TransactionReviewModal
@@ -345,6 +347,7 @@ export const signTransactionThunk =
         if (isSupportedEthStakingNetworkSymbol(account.symbol)) {
             serializedTx = await dispatch(
                 stakeFormEthereumActions.signTransactionThunk({
+                    device,
                     account,
                     formValues,
                     transactionInfo: enhancedTxInfo,
@@ -355,6 +358,7 @@ export const signTransactionThunk =
         if (isSupportedSolStakingNetworkSymbol(account.symbol)) {
             serializedTx = await dispatch(
                 stakeFormSolanaActions.signTransactionThunk({
+                    device,
                     account,
                     formValues,
                     transactionInfo: enhancedTxInfo,
@@ -366,6 +370,7 @@ export const signTransactionThunk =
         if (isSupportedAdaStakingNetworkSymbol(account.symbol)) {
             const signResult = await dispatch(
                 stakeFormCardanoActions.signTransactionThunk({
+                    device,
                     account,
                     formValues,
                     transactionInfo: enhancedTxInfo,

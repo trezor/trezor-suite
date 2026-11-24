@@ -25,10 +25,15 @@ import { type TxInfoState, isStakeState } from './utils';
 import { ConfirmActionModal } from '../DeviceContextModal/ConfirmActionModal';
 import { ExpiredTxValidityModal } from '../UserContextModal/TxDetailModal/ExpiredTxValidityModal';
 
+export type TransactionReviewRetry = {
+    cancelPendingSignature: () => void;
+    resetExpiredReview: () => void;
+};
+
 export type TransactionReviewModalBodyProps = {
     decision: Deferred<boolean, string | number | undefined> | undefined;
     txInfoState: TxInfoState;
-    tryAgainSignTx: () => void;
+    tryAgainSignTx: (retry: TransactionReviewRetry) => void;
     cancelSignTx: () => void;
     isRbfConfirmedError?: boolean;
     precomposedForm?: FormState;
@@ -55,6 +60,9 @@ export const TransactionReviewModalBody = ({
     const { precomposedTx, serializedTx } = txInfoState;
     const [hasTxReviewExpired, setHasTxReviewExpired] = useState(false);
     const prevSerializedTxRef = useRef(serializedTx);
+    const cancelledAttempt = useRef<{ deadline: number; transaction: typeof precomposedTx }>(
+        undefined,
+    );
 
     const url = useSelector(selectRouterUrl);
 
@@ -74,6 +82,19 @@ export const TransactionReviewModalBody = ({
         precomposedForm,
     });
 
+    const cancelSignatureForDeadline = useCallback(() => {
+        if (
+            cancelledAttempt.current?.deadline === deadline &&
+            cancelledAttempt.current.transaction === precomposedTx
+        ) {
+            return;
+        }
+
+        cancelledAttempt.current = { deadline, transaction: precomposedTx };
+        dispatch(preserveModalOnTxTimeout());
+        TrezorConnect.cancel({ reason: 'tx-timeout' });
+    }, [deadline, dispatch, precomposedTx]);
+
     useEffect(() => {
         if (!shouldCheckTxTimeValidity) {
             return;
@@ -86,8 +107,7 @@ export const TransactionReviewModalBody = ({
         const timeoutId = setTimeout(() => {
             if (mounted && !isSending) {
                 setHasTxReviewExpired(true);
-                dispatch(preserveModalOnTxTimeout());
-                TrezorConnect.cancel({ reason: 'tx-timeout' });
+                cancelSignatureForDeadline();
             }
         }, timeLeft);
 
@@ -95,7 +115,7 @@ export const TransactionReviewModalBody = ({
             mounted = false;
             clearTimeout(timeoutId);
         };
-    }, [deadline, dispatch, isSending, shouldCheckTxTimeValidity]);
+    }, [cancelSignatureForDeadline, deadline, isSending, shouldCheckTxTimeValidity]);
 
     const decreaseOutputId = getDecreaseOutputId(precomposedTx, precomposedForm);
 
@@ -112,20 +132,20 @@ export const TransactionReviewModalBody = ({
 
     const handleTryAgain = useCallback(
         (cancel: boolean) => {
-            if (cancel && !serializedTx && !isSending) {
-                dispatch(preserveModalOnTxTimeout());
-                TrezorConnect.cancel({ reason: 'tx-timeout' });
-            }
-
-            setHasTxReviewExpired(false);
-            tryAgainSignTx();
-
+            tryAgainSignTx({
+                cancelPendingSignature: () => {
+                    if (cancel && !serializedTx && !isSending) {
+                        cancelSignatureForDeadline();
+                    }
+                },
+                resetExpiredReview: () => setHasTxReviewExpired(false),
+            });
             analytics.report({
                 type: events.transactionTimeoutRetryEvent.name,
                 payload: { url: redactRouterUrl(url) },
             });
         },
-        [dispatch, isSending, serializedTx, tryAgainSignTx, url, analytics],
+        [analytics, cancelSignatureForDeadline, isSending, serializedTx, tryAgainSignTx, url],
     );
 
     const onCancel = () => {
@@ -156,7 +176,6 @@ export const TransactionReviewModalBody = ({
             outputs={outputs}
             decision={decision}
             txInfoState={txInfoState}
-            tryAgainSignTx={tryAgainSignTx}
             cancelSignTx={cancelSignTx}
             precomposedForm={precomposedForm}
             vaultName={vaultName}

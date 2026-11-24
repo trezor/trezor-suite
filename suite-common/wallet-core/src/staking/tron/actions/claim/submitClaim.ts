@@ -1,4 +1,5 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
+import { type DeviceRootState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { asAmountUnit, getAccountIdentity, unitsToSubunits } from '@suite-common/wallet-utils';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
@@ -27,7 +28,7 @@ interface SubmitClaimThunkArguments extends ClaimThunkArguments {
     onSettled?: () => void;
 }
 
-type SubmitTronClaimThunkState = AddFakePendingTronTxThunkState;
+type SubmitTronClaimThunkState = AddFakePendingTronTxThunkState & DeviceRootState;
 
 type SubmitTronClaimThunkDeps = WithServices<AnalyticsDep>;
 
@@ -39,7 +40,7 @@ export const submitTronClaimThunk = createThunk<
     `${TRON_STAKE_MODULE}/submitTronClaimThunk`,
     async (
         { account, device, requestPushApproval, onSigningStart, onSettled },
-        { dispatch, extra },
+        { dispatch, extra, getState },
     ) => {
         const { key: accountKey } = account;
         const flow: TronFlow = 'claim';
@@ -101,6 +102,7 @@ export const submitTronClaimThunk = createThunk<
             onSigningStart?.();
 
             const signResult = await signTronContract({
+                getState,
                 account,
                 device,
                 contract,

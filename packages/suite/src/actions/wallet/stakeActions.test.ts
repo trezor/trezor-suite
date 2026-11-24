@@ -137,11 +137,12 @@ const createStakeFlow = (stakeAccount = account) => {
 const signStakeTransaction = async (stakeForm = formValues) => {
     const flow = createStakeFlow();
 
-    await signTransactionThunk({ accountKey: account.key, formValues: stakeForm, transactionInfo })(
-        flow.dispatch,
-        flow.getState,
-        flow.extra,
-    );
+    await signTransactionThunk({
+        accountKey: account.key,
+        device: mockSuiteDevice(),
+        formValues: stakeForm,
+        transactionInfo,
+    })(flow.dispatch, flow.getState, flow.extra);
 
     return flow;
 };
@@ -165,6 +166,7 @@ describe('signTransactionThunk', () => {
             if (openModal.match(action) && action.payload.type === 'review-transaction') resolve();
         });
         const signing = signTransactionThunk({
+            device: mockSuiteDevice(),
             accountKey: ethAccount.key,
             formValues,
             transactionInfo,

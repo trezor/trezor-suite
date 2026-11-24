@@ -86,6 +86,10 @@ export const createReduxStore = (deps: ReduxStoreDeps): ReduxStore => {
                     ignoredActions: [MODAL_OPEN_USER_CONTEXT],
                     ignoredPaths: [
                         'modal.cancelOnDisconnect',
+                        'modal.stakingDeviceCheck.background.cancelOnDisconnect',
+                        'modal.stakingDeviceCheck.background.payload.decision.promise',
+                        'modal.stakingDeviceCheck.background.payload.decision.resolve',
+                        'modal.stakingDeviceCheck.background.payload.decision.reject',
                         'modal.payload.decision.promise',
                         'modal.payload.decision.resolve',
                         'modal.payload.decision.reject',

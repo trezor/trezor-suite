@@ -1,6 +1,6 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
+import { selectAccountSigningDevice } from '@suite-common/device';
 import {
     formatStakingAmount,
     settleTronUnlocks,
@@ -8,6 +8,7 @@ import {
 } from '@suite-common/earn-staking';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import { type StakingAmount, ZERO_STAKING_AMOUNT } from '@suite-common/earn-staking-common';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     TRON_REPRESENTATIVE_TERMS_OF_SERVICE_URLS,
     type TronFlow,
@@ -16,6 +17,7 @@ import {
     type TronStakeStepId,
     type TronStakeSubmittedAmount,
     getCurrentVoteAllocations,
+    isTronClaimSupported,
     selectTronStakeSession,
     submitTronClaimThunk,
     submitTronFreezeThunk,
@@ -26,9 +28,10 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
+import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
+import { useStakingDeviceAction } from '#src/hooks/earn/useStakingDeviceAction';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
@@ -44,7 +47,7 @@ interface UseTronStakeActionsProps {
 export interface TronStakeActions {
     step: TronStakeStepId;
     goToStep: (step: TronStakeStepId) => void;
-    submitAction: () => void;
+    submitAction: (onClaimFirmwareOutdated?: () => void) => Promise<void>;
     isSubmitting: boolean;
     error: TronStakeError | null;
     pendingTxid: string | null;
@@ -57,8 +60,12 @@ export const useTronStakeActions = ({
     form,
     flow,
 }: UseTronStakeActionsProps): TronStakeActions => {
-    const { device } = useDevice();
-    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const runWithDevice = useStakingDeviceAction(account);
+    const { analytics, dispatch, getState } = useServices(
+        injectDesktopAnalytics,
+        injectDispatch,
+        injectGetState,
+    );
     const { stats } = useTronStakingStats();
     const { step, isSubmitting, error, pendingTxid, freeze, submitted } = useSelector(state =>
         selectTronStakeSession(state, account.key, flow),
@@ -80,36 +87,26 @@ export const useTronStakeActions = ({
     const goToStep = (nextStep: TronStakeStepId) =>
         dispatch(tronStakeActions.goToStep({ accountKey: account.key, flow, step: nextStep }));
 
-    const openDeviceConnectionModal = () => {
-        if (device?.descriptor?.apiType === 'bluetooth') {
-            dispatch(setConnectionMode('bluetooth'));
-        }
-        dispatch(setConnectionModal(true));
-    };
+    const submitForDevice = async (device: TrezorDevice, onClaimFirmwareOutdated?: () => void) => {
+        const requestPushApproval = () => {
+            if (!selectAccountSigningDevice(getState(), account.deviceState, device.path)) {
+                return Promise.resolve(false);
+            }
 
-    const submitAction = () => {
-        const isDeviceConnected = !!device?.connected && !!device?.available;
-
-        if (!isDeviceConnected || !device) {
-            openDeviceConnectionModal();
-
-            return;
-        }
-
-        const requestPushApproval = () =>
-            dispatch(
+            return dispatch(
                 openDeferredModal(
                     { type: 'review-transaction' },
                     { devicePath: device.path, cancelWith: false },
                 ),
             );
+        };
 
         switch (step) {
             case 'freeze': {
                 if (isStakingDisabled) break;
 
                 const { amount, resourceType } = form.methods.getValues();
-                dispatch(
+                await dispatch(
                     submitTronFreezeThunk({
                         account,
                         device,
@@ -174,7 +171,7 @@ export const useTronStakeActions = ({
                           }
                         : undefined;
 
-                dispatch(
+                await dispatch(
                     submitTronVoteThunk({
                         account,
                         device,
@@ -192,7 +189,7 @@ export const useTronStakeActions = ({
                 if (isUnstakingDisabled) break;
 
                 const { amount, resourceType } = form.methods.getValues();
-                dispatch(
+                await dispatch(
                     submitTronUnstakeThunk({
                         account,
                         device,
@@ -216,7 +213,7 @@ export const useTronStakeActions = ({
                             : settleTronUnlocks({ position, nowMs: Date.now() }).withdrawable,
                     ),
                 );
-                dispatch(
+                await dispatch(
                     submitTronWithdrawThunk({
                         account,
                         device,
@@ -228,9 +225,14 @@ export const useTronStakeActions = ({
                 break;
             case 'claim':
                 if (isClaimingDisabled) break;
+                if (!isTronClaimSupported(device)) {
+                    onClaimFirmwareOutdated?.();
+
+                    break;
+                }
 
                 form.methods.setValue('amount', formatAmount(totals.rewards));
-                dispatch(
+                await dispatch(
                     submitTronClaimThunk({
                         account,
                         device,
@@ -250,7 +252,8 @@ export const useTronStakeActions = ({
     return {
         step,
         goToStep,
-        submitAction,
+        submitAction: onClaimFirmwareOutdated =>
+            runWithDevice(device => submitForDevice(device, onClaimFirmwareOutdated)),
         isSubmitting,
         error,
         pendingTxid,

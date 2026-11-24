@@ -1,6 +1,7 @@
 import { captureException, withScope } from '@sentry/core';
 
 import { type AnalyticsDep, type AnalyticsSharedEvents } from '@suite-common/analytics';
+import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -73,6 +74,8 @@ const device = {
     useEmptyPassphrase: true,
 } as unknown as TrezorDevice;
 
+type TestState = AddFakePendingTronTxThunkState & DeviceRootState;
+
 const buildAccount = (overrides?: Partial<Account>): Account =>
     ({
         key: ACCOUNT_KEY,
@@ -92,9 +95,10 @@ const buildAccount = (overrides?: Partial<Account>): Account =>
     }) as unknown as Account;
 
 const initStore = () =>
-    createTestCompositionRoot<WithServices<AnalyticsDep>, AddFakePendingTronTxThunkState>({
+    createTestCompositionRoot<WithServices<AnalyticsDep>, TestState>({
         services: () => ({ analytics }),
         preloadedState: {
+            device: { ...deviceInitialState, selectedDevice: device },
             wallet: {
                 blockchain: { [trxSymbol]: { blockHeight: 100 } },
                 fees: { [trxSymbol]: { data: { blockTime: 3 } } },
@@ -105,7 +109,7 @@ const initStore = () =>
 const ALLOCATIONS = [{ address: REPRESENTATIVE_ADDRESS, count: 10 }];
 
 const submitVote = (
-    store: TestCompositionStore<AddFakePendingTronTxThunkState, WithServices<AnalyticsDep>>,
+    store: TestCompositionStore<TestState, WithServices<AnalyticsDep>>,
     account = buildAccount(),
     requestPushApproval = () => Promise.resolve(true),
 ) =>
@@ -120,7 +124,7 @@ const submitVote = (
     );
 
 const getSubmitFinishedActions = (
-    store: TestCompositionStore<AddFakePendingTronTxThunkState, WithServices<AnalyticsDep>>,
+    store: TestCompositionStore<TestState, WithServices<AnalyticsDep>>,
 ) => store.getActions().filter(tronStakeActions.submitFinished.match);
 
 beforeEach(() => {

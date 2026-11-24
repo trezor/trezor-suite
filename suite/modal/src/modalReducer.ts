@@ -25,14 +25,19 @@ import {
 } from './constants';
 import {
     type CancelOnDisconnect,
+    beginStakingDeviceCheck,
     closeModal,
+    endStakingDeviceCheck,
     openModal,
     preserveModal,
     preserveModalOnTxTimeout,
     removePreserveModal,
 } from './modalActions';
 
-export type State = ModalState & { preserve?: boolean; preserveOnTxTimeout?: boolean };
+type ModalContent = ModalState & { preserve?: boolean; preserveOnTxTimeout?: boolean };
+export type State = ModalContent & {
+    stakingDeviceCheck?: { id: string; background?: ModalContent };
+};
 
 type DeviceContextWindowType =
     | DeviceButtonRequestCode
@@ -70,7 +75,7 @@ export type ModalState =
       };
 
 export type ModalRootState = {
-    modal: ModalState;
+    modal: State;
 };
 
 const initialState: State = {
@@ -81,7 +86,7 @@ const initialState: State = {
 const isAutoStartBeforeQuitModal = (state: State): boolean =>
     state.context === MODAL_CONTEXT_USER && state.payload.type === 'auto-start-before-quit';
 
-export const modalReducer = (state: State = initialState, action: UnknownAction): State => {
+const reduceModal = (state: State, action: UnknownAction): State => {
     const requestId = typeof action.requestId === 'string' ? action.requestId : undefined;
 
     // device with context assigned to modal was disconnected
@@ -213,6 +218,67 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
     }
 
     return state;
+};
+
+export const modalReducer = (state: State = initialState, action: UnknownAction): State => {
+    const check = state.stakingDeviceCheck;
+
+    if (beginStakingDeviceCheck.match(action)) {
+        if (state.context === MODAL_CONTEXT_NONE || check) return state;
+
+        return { ...state, stakingDeviceCheck: { id: action.payload } };
+    }
+
+    if (endStakingDeviceCheck.match(action)) {
+        if (check?.id !== action.payload.id) return state;
+        if (action.payload.abandoned) return initialState;
+
+        const { stakingDeviceCheck: _, ...origin } = state;
+
+        return check.background ?? origin;
+    }
+
+    if (
+        check &&
+        (isUiEventOfType(action, UI_EVENTS.CLOSE_UI_WINDOW) ||
+            deviceActions.deviceDisconnect.match(action))
+    ) {
+        if (!check.background) {
+            if (
+                state.context === MODAL_CONTEXT_DEVICE &&
+                (deviceActions.deviceDisconnect.match(action) || state.preserveOnTxTimeout)
+            ) {
+                return reduceModal(state, action);
+            }
+
+            return state;
+        }
+        if (
+            deviceActions.deviceDisconnect.match(action) &&
+            (state.context !== MODAL_CONTEXT_DEVICE || state.device.path !== action.payload.path)
+        )
+            return state;
+
+        return { ...check.background, stakingDeviceCheck: { id: check.id } };
+    }
+
+    const next = reduceModal(state, action);
+    if (
+        check &&
+        next !== state &&
+        !next.stakingDeviceCheck &&
+        (next.context === MODAL_CONTEXT_DEVICE ||
+            next.context === MODAL_CONTEXT_DEVICE_CONFIRMATION)
+    ) {
+        const { stakingDeviceCheck: _, ...origin } = state;
+
+        return {
+            ...next,
+            stakingDeviceCheck: { id: check.id, background: check.background ?? origin },
+        };
+    }
+
+    return next;
 };
 
 export const selectHasActiveModal = (state: ModalRootState) =>

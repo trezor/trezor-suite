@@ -21,11 +21,9 @@ import {
     isPositiveBalance,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber, isChanged, throwError } from '@trezor/utils';
 
-import { signTransactionThunk } from '#src/actions/wallet/stakeActions';
+import { useSignStakingTransaction } from '#src/hooks/earn/useSignStakingTransaction';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from '#src/types/earn/earnFormFields';
 import type { AmountLimitProps } from '#src/utils/suite/validation';
@@ -58,7 +56,7 @@ type UseWithdrawalFormProps = {
 };
 
 export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): WithdrawalContextValues => {
-    const { dispatch } = useServices(injectDispatch);
+    const signStakingTransaction = useSignStakingTransaction(account);
     const [approximatedInstantEthAmount, setApproximatedInstantEthAmount] = useState<string | null>(
         null,
     );
@@ -300,28 +298,13 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
 
-        if (composedTx?.type === 'final') {
-            try {
-                const result = await dispatch(
-                    signTransactionThunk({
-                        accountKey: account.key,
-                        formValues: values,
-                        transactionInfo: composedTx,
-                    }),
-                );
-
-                if (result?.success) {
-                    clearForm();
-                }
-            } catch (error) {
-                // The sign thunk reaches TrezorConnect, whose rejection messages may embed the
-                // composed account payload, and `signTx` is submitted fire-and-forget. Handling the
-                // rejection here keeps it from being reported verbatim by Sentry's global
-                // unhandled-rejection handler. Only the error name, never its message, is safe to log.
-                console.warn('Stake signing failed', error instanceof Error ? error.name : error);
-            }
-        }
-    }, [getValues, composedLevels, dispatch, account.key, clearForm, selectedFee]);
+        await signStakingTransaction({
+            formValues: values,
+            transactionInfo: composedTx?.type === 'final' ? composedTx : undefined,
+            refreshComposition: composeRequest,
+            onSuccess: clearForm,
+        });
+    }, [getValues, composedLevels, signStakingTransaction, clearForm, composeRequest, selectedFee]);
 
     return {
         ...methods,

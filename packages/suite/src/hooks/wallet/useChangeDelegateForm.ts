@@ -13,11 +13,9 @@ import {
     type SelectedAccountLoaded,
 } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
-import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
-import { injectDispatch } from '@trezor/redux-utils';
 
-import { signTransactionThunk } from '#src/actions/wallet/stakeActions';
+import { useSignStakingTransaction } from '#src/hooks/earn/useSignStakingTransaction';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { CRYPTO_INPUT } from '#src/types/earn/earnFormFields';
 
@@ -35,9 +33,8 @@ type UseChangeDelegateFormsProps = {
 export const useChangeDelegateForm = ({
     selectedAccount,
 }: UseChangeDelegateFormsProps): ChangeDelegateContextValues => {
-    const { dispatch } = useServices(injectDispatch);
-
     const { account, network } = selectedAccount;
+    const signStakingTransaction = useSignStakingTransaction(account);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
@@ -122,20 +119,13 @@ export const useChangeDelegateForm = ({
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
 
-        if (composedTx?.type === 'final') {
-            const result = await dispatch(
-                signTransactionThunk({
-                    accountKey: account.key,
-                    formValues: values,
-                    transactionInfo: composedTx,
-                }),
-            );
-
-            if (result?.success) {
-                clearForm();
-            }
-        }
-    }, [getValues, composedLevels, dispatch, account.key, clearForm, selectedFee]);
+        await signStakingTransaction({
+            formValues: values,
+            transactionInfo: composedTx?.type === 'final' ? composedTx : undefined,
+            refreshComposition: composeRequest,
+            onSuccess: clearForm,
+        });
+    }, [getValues, composedLevels, signStakingTransaction, clearForm, composeRequest, selectedFee]);
 
     return {
         ...methods,

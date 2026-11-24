@@ -1,4 +1,5 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
+import { type DeviceRootState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { asAmountUnit, getAccountIdentity, unitsToSubunits } from '@suite-common/wallet-utils';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
@@ -27,7 +28,7 @@ interface SubmitWithdrawThunkArguments extends WithdrawThunkArguments {
     onSettled?: () => void;
 }
 
-type SubmitTronWithdrawThunkState = AddFakePendingTronTxThunkState;
+type SubmitTronWithdrawThunkState = AddFakePendingTronTxThunkState & DeviceRootState;
 
 type SubmitTronWithdrawThunkDeps = WithServices<AnalyticsDep>;
 
@@ -39,7 +40,7 @@ export const submitTronWithdrawThunk = createThunk<
     `${TRON_STAKE_MODULE}/submitTronWithdrawThunk`,
     async (
         { account, device, requestPushApproval, onSigningStart, onSettled },
-        { dispatch, extra },
+        { dispatch, extra, getState },
     ) => {
         const { key: accountKey } = account;
         const flow: TronFlow = 'withdraw';
@@ -101,6 +102,7 @@ export const submitTronWithdrawThunk = createThunk<
             onSigningStart?.();
 
             const signResult = await signTronContract({
+                getState,
                 account,
                 device,
                 contract,

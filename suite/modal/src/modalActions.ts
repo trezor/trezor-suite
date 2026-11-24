@@ -1,4 +1,4 @@
-import { type Dispatch, createAction } from '@reduxjs/toolkit';
+import { type Dispatch, createAction, nanoid } from '@reduxjs/toolkit';
 
 import { type UserContextPayload } from '@suite-common/suite-types';
 import TrezorConnect, { type DeviceUniquePath, UI_RESPONSE } from '@trezor/connect';
@@ -14,6 +14,13 @@ import {
 import { selectModalConfirmationRequestId } from './modalSelectors';
 
 export const closeModal = createAction(MODAL_CLOSE);
+
+export const beginStakingDeviceCheck = createAction('@modal/begin-staking-device-check', () => ({
+    payload: nanoid(),
+}));
+export const endStakingDeviceCheck = createAction<{ id: string; abandoned?: boolean }>(
+    '@modal/end-staking-device-check',
+);
 
 /**
  * Don't close modals on UI_EVENTS.CLOSE_UI_WINDOW event, but wait for explicit closing instead

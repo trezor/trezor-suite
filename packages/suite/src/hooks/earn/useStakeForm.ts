@@ -22,13 +22,11 @@ import {
     getFiatRateKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
-import { injectDispatch } from '@trezor/redux-utils';
 import { isChanged, throwError } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { signTransactionThunk } from '#src/actions/wallet/stakeActions';
+import { useSignStakingTransaction } from '#src/hooks/earn/useSignStakingTransaction';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from '#src/types/earn/earnFormFields';
 import type { AmountLimitProps } from '#src/utils/suite/validation';
@@ -46,7 +44,7 @@ type UseStakeFormProps = {
 };
 
 export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues => {
-    const { dispatch } = useServices(injectDispatch);
+    const signStakingTransaction = useSignStakingTransaction(account);
     const network = getNetwork(account.symbol);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
@@ -362,53 +360,57 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
     }, [clearErrors, composedLevels, getValues, setValue, selectedFee, currentRate]);
 
     const [isLoading, setIsLoading] = useState(false);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+    const { isStakingDisabled, calculateFeeAndDeposit } = useCardanoStaking({ account });
 
     // get response from TransactionReviewModal
     const signTx = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
 
-        if (composedTx?.type === 'final') {
-            setIsLoading(true);
-            try {
-                const result = await dispatch(
-                    signTransactionThunk({
-                        accountKey: account.key,
-                        formValues: values,
-                        transactionInfo: composedTx,
-                    }),
-                );
-
-                if (result?.success) {
-                    clearForm();
-                }
-            } catch (error) {
-                // The sign thunk reaches TrezorConnect, whose rejection messages may embed the
-                // composed account payload, and `signTx` is also called fire-and-forget from
-                // `onSubmit`. Handling the rejection here keeps it from being reported verbatim by
-                // Sentry's global unhandled-rejection handler. Only the error name, never its
-                // message, is safe to log.
-                console.warn('Stake signing failed', error instanceof Error ? error.name : error);
-            } finally {
-                setIsLoading(false);
-            }
+        setIsLoading(true);
+        try {
+            await signStakingTransaction({
+                formValues: values,
+                transactionInfo:
+                    composedTx?.type === 'final' &&
+                    (account.networkType !== 'cardano' || !isStakingDisabled)
+                        ? composedTx
+                        : undefined,
+                refreshComposition: async () => {
+                    setIsConfirmModalOpen(false);
+                    await composeRequest();
+                    if (account.networkType === 'cardano') await calculateFeeAndDeposit('delegate');
+                },
+                onSuccess: clearForm,
+            });
+        } finally {
+            setIsLoading(false);
         }
-    }, [getValues, composedLevels, dispatch, account.key, clearForm, selectedFee]);
+    }, [
+        getValues,
+        composedLevels,
+        signStakingTransaction,
+        clearForm,
+        composeRequest,
+        selectedFee,
+        account.networkType,
+        calculateFeeAndDeposit,
+        isStakingDisabled,
+    ]);
 
-    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const closeConfirmModal = () => {
         setIsConfirmModalOpen(false);
     };
 
     const onSubmit = () => {
-        if (network.networkType === 'cardano') {
+        if (network.networkType === 'cardano' || composedLevels?.[selectedFee]?.type !== 'final') {
             signTx();
         } else {
             setIsConfirmModalOpen(true);
         }
     };
-
-    const { isStakingDisabled, calculateFeeAndDeposit } = useCardanoStaking({ account });
 
     useEffect(() => {
         calculateFeeAndDeposit('delegate');
