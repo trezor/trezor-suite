@@ -16,8 +16,6 @@
         "@suite-common/device": "workspace:*",
         "@suite-common/thp": "workspace:*",
         "@suite/analytics": "workspace:*",
-        "@suite/debug": "workspace:*",
-        "@suite/intl": "workspace:*",
         "@suite/macos": "workspace:*",
         "@suite/modal": "workspace:*",
         "@suite/router": "workspace:*",

@@ -183,15 +183,7 @@ export class OnboardingPage {
 
     @step()
     async enableAutoconnect() {
-        // Onboarding exposes Settings only in debug mode.
-        const shouldEnableDebugMode = !(await this.page.getReduxObject('debug.showDebugMenu'));
-        if (shouldEnableDebugMode) {
-            await this.enableDebugMode();
-        }
         await this.settingsPage.navigateTo('device');
-        if (shouldEnableDebugMode) {
-            await this.disableDebugMode();
-        }
         await this.settingsPage.deviceTab.autoconnectSwitch.click();
         await this.devicePrompt.allowAutoconnect();
         await this.settingsPage.closeSettings();
@@ -234,15 +226,6 @@ export class OnboardingPage {
                 },
             ],
         );
-    }
-
-    @step()
-    async disableDebugMode() {
-        await this.page.ensureStoreOnDesktop();
-        await this.page.evaluate(action => window.store.dispatch(action), {
-            type: debugActions.setShowDebugMenu.type,
-            payload: false,
-        });
     }
 
     @step()

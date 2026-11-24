@@ -1,14 +1,22 @@
 import { selectRouterApp } from '@suite/router';
 import { Column, Divider } from '@trezor/components';
 import { QuestionIcon } from '@trezor/icons';
-import { OnboardingStepper, useGuide, useOnboarding, useSelector } from '@trezor/suite';
+import {
+    OnboardingStepper,
+    useGuide,
+    useOnboarding,
+    useResponsiveContext,
+    useSelector,
+} from '@trezor/suite';
 
 import { NavigationItem } from './NavigationItem';
+import { SettingsNavigationItem } from './SettingsNavigationItem';
 import { Sidebar } from './Sidebar';
 
 export const OnboardingSidebar = () => {
     const { openGuide } = useGuide();
     const { isActive } = useOnboarding();
+    const { isSidebarCollapsed } = useResponsiveContext();
     const isOnboardingRoute = useSelector(selectRouterApp) === 'onboarding';
 
     return (
@@ -17,7 +25,14 @@ export const OnboardingSidebar = () => {
                 {isActive && isOnboardingRoute && <OnboardingStepper />}
             </Column>
             <Divider margin={0} color="surfaceBorderSunken" />
-            <Column margin={8} flex="0 0 auto">
+            <Column
+                alignItems={isSidebarCollapsed ? 'center' : 'stretch'}
+                gap={4}
+                margin={8}
+                flex="0 0 auto"
+                data-testid="@suite/menu/bottom-navigation"
+            >
+                <SettingsNavigationItem />
                 <NavigationItem
                     nameId="TR_GUIDE_HELP_AND_SUPPORT"
                     icon={QuestionIcon}

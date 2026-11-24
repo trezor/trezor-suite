@@ -1,6 +1,6 @@
 import '@suite-common/test-utils/globalOverrides';
 
-import { act, fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen, within } from '@testing-library/react';
 
 import { type DesktopAnalyticsDep, events as desktopEvents } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
@@ -42,7 +42,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { isLinux } from '@trezor/env-utils';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
-import { type SuiteState, onboardingReducers } from '@trezor/suite';
+import { SIDEBAR_MIN_WIDTH, type SuiteState, onboardingReducers } from '@trezor/suite';
 import {
     type MockSuiteState,
     findByTestId,
@@ -1040,22 +1040,85 @@ describe(`${Preloader.name} component`, () => {
         unmount();
     });
 
-    it('allows Settings navigation during the onboarding manual check in debug mode', () => {
+    it.each([
+        { isDebugModeActive: false, isSidebarCollapsed: false },
+        { isDebugModeActive: false, isSidebarCollapsed: true },
+        { isDebugModeActive: true, isSidebarCollapsed: false },
+        { isDebugModeActive: true, isSidebarCollapsed: true },
+    ])(
+        'keeps Settings above Help in onboarding with debug=$isDebugModeActive and collapsed=$isSidebarCollapsed',
+        ({ isDebugModeActive, isSidebarCollapsed }) => {
+            const initialState = {
+                ...getInitialState({
+                    router: createRouterStateMockForRoute('onboarding-index'),
+                    suite: {
+                        transport: {
+                            transports: [createTransportInfo({ type: 'BridgeTransport' })],
+                        },
+                    },
+                    device: {
+                        selectedDevice: mockSuiteDevice(
+                            {
+                                mode: 'initialize',
+                                connected: true,
+                                available: true,
+                                firmware: 'valid',
+                            },
+                            { initialized: false },
+                        ),
+                    },
+                    persistentDeviceData: { devices: [] },
+                }),
+                debug: { ...mockInitialAppState.debug, showDebugMenu: isDebugModeActive },
+                suiteSettings: {
+                    ...mockInitialAppState.suiteSettings,
+                    sidebarWidth: isSidebarCollapsed ? SIDEBAR_MIN_WIDTH : 280,
+                },
+            };
+            const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
+                preloadedState: initialState,
+                reducer: (state = initialState, action) => ({
+                    ...state,
+                    router: routerReducer(state.router, action),
+                    onboarding: onboardingReducers(state.onboarding, action),
+                }),
+                services: createServices,
+            });
+            const { unmount } = renderWithProviders(
+                { ...services, networks: { networkIcon } },
+                <Index app="dashboard" />,
+            );
+
+            expect(services.store.getState().router.app).toBe('onboarding');
+            const bottomNavigation = within(screen.getByTestId('@suite/menu/bottom-navigation'));
+            const settingsButton = bottomNavigation.getByTestId('@suite/menu/settings');
+            const helpButton = bottomNavigation.getByTestId('@guide/button-open');
+
+            expect(bottomNavigation.getAllByRole('button')).toEqual([settingsButton, helpButton]);
+            expect(screen.getAllByTestId('@suite/menu/settings')).toHaveLength(1);
+            fireEvent.click(settingsButton);
+
+            expect(services.store.getState().router.route?.name).toBe('settings-index');
+            expect(screen.queryByTestId('@onboarding-layout/body')).toBeNull();
+            unmount();
+        },
+    );
+
+    it('keeps Settings accessible after the device disconnects at the end of onboarding', () => {
         const initialState = {
             ...getInitialState({
                 router: createRouterStateMockForRoute('onboarding-index'),
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
                 },
-                device: {
-                    selectedDevice: mockSuiteDevice(
-                        { mode: 'initialize', connected: true, available: true, firmware: 'valid' },
-                        { initialized: false },
-                    ),
-                },
-                persistentDeviceData: { devices: [] },
+                device: { selectedDevice: undefined },
             }),
-            debug: { ...mockInitialAppState.debug, showDebugMenu: true },
+            onboarding: {
+                ...onboardingReducers(undefined, { type: 'init' }),
+                isActive: true,
+                activeStepId: 'final' as const,
+            },
+            debug: { ...mockInitialAppState.debug, showDebugMenu: false },
         };
         const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: initialState,
@@ -1068,7 +1131,7 @@ describe(`${Preloader.name} component`, () => {
         });
         const { unmount } = renderWithProviders(
             { ...services, networks: { networkIcon } },
-            <Index app="dashboard" />,
+            <Index app="onboarding" />,
         );
 
         expect(services.store.getState().router.app).toBe('onboarding');

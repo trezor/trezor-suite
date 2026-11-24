@@ -10,8 +10,6 @@
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/thp" },
         { "path": "../../suite/analytics" },
-        { "path": "../../suite/debug" },
-        { "path": "../../suite/intl" },
         { "path": "../../suite/macos" },
         { "path": "../../suite/modal" },
         { "path": "../../suite/router" },
