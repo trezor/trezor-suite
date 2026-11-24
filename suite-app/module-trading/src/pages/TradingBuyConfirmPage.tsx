@@ -1,4 +1,5 @@
 import {
+    TradingTokenMetadataProvider,
     selectTradingBuySelectedQuote,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
@@ -27,7 +28,7 @@ export const TradingBuyConfirmPage = () => {
     }
 
     return (
-        <>
+        <TradingTokenMetadataProvider>
             {isDiscoveryRunning && (
                 <Column margin={{ bottom: 16 }}>
                     <DiscoveryWarning />
@@ -39,6 +40,6 @@ export const TradingBuyConfirmPage = () => {
                 isConfirmDisabled={isConfirmDisabled}
             />
             <TradingFooter provider={provider} />
-        </>
+        </TradingTokenMetadataProvider>
     );
 };
