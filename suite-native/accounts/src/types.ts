@@ -1,4 +1,4 @@
-import { type TokenAddress, type TokenInfoBranded, type TokenSymbol } from '@suite-common/tokens';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import { type Account } from '@suite-common/wallet-types';
 
 export type OnSelectAccount = (params: {
@@ -9,31 +9,5 @@ export type OnSelectAccount = (params: {
     tokenSymbol?: TokenSymbol;
     hasAnyKnownTokens: boolean;
 }) => void;
-
-export type AccountListSection = (
-    | {
-          type: 'account';
-          account: Account;
-          hasAnyKnownTokens: boolean;
-      }
-    | {
-          type: 'staking';
-          account: Account;
-          stakingCryptoBalance: string;
-      }
-    | {
-          type: 'token';
-          account: Account;
-          token: TokenInfoBranded;
-      }
-    | {
-          type: 'zeroBalance';
-          account: Account;
-          tokens: TokenInfoBranded[];
-      }
-) & {
-    isFirst?: boolean;
-    isLast?: boolean;
-};
 
 export type NetworkFilterType = 'all' | 'accounts' | 'send';
