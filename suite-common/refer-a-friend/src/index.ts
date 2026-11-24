@@ -41,12 +41,12 @@ export {
     joinReferralProgramThunk,
     leaveReferralProgramThunk,
 } from './referAFriendThunks';
+export type { ReferralProgram } from './referAFriendSchemas';
 export type {
     ReferralAccount,
     ReferralAccountLoadStatus,
     ReferralAccountStatus,
     ReferralError,
-    ReferralProgram,
     ReferralProgramData,
     ReferralRewards,
     ReferralVoucher,

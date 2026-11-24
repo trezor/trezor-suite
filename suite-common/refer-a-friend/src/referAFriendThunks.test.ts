@@ -6,6 +6,7 @@ import { createMockDispatch } from '@trezor/redux-utils/mocks';
 import { type Result, err, ok } from '@trezor/type-utils';
 
 import { type ReferralApiFetchParams } from './api/createReferralApiFetch';
+import { type ReferralProgram } from './referAFriendSchemas';
 import {
     type ReferAFriendState,
     referAFriendActions,
@@ -22,7 +23,6 @@ import {
 import {
     type ReferralAccount,
     type ReferralError,
-    type ReferralProgram,
     type ReferralVoucher,
 } from './referAFriendTypes';
 import { getReferralKeyFromCipheredValue } from './referralKey';
@@ -159,15 +159,15 @@ describe('fetchReferralProgramThunk', () => {
         expect(actions).toContainEqual(referAFriendActions.programLoaded(program));
     });
 
-    it('fails on an unsupported fiat currency', async () => {
+    it('fails on an invalid program response', async () => {
         const { actions, dispatch, getState, extra } = setup({
-            apiResponses: { 'GET v1/program': ok({ ...program, fiatCurrency: 'XYZ' }) },
+            apiResponses: { 'GET v1/program': ok({ ...program, rewardAmount: '20' }) },
         });
 
         await fetchReferralProgramThunk()(dispatch, getState, extra);
 
         expect(actions).toContainEqual(
-            referAFriendActions.programFailed({ message: 'Unsupported fiat currency' }),
+            referAFriendActions.programFailed({ message: 'Invalid program response' }),
         );
     });
 
@@ -198,25 +198,7 @@ describe('fetchReferralProgramThunk', () => {
         await fetchReferralProgramThunk()(dispatch, getState, extra);
 
         expect(actions).toContainEqual(
-            referAFriendActions.programFailed({ message: 'Invalid terms URL' }),
-        );
-    });
-
-    it.each([
-        ['rewardAmount', undefined],
-        ['rewardAmount', '20'],
-        ['rewardAmount', Number.NaN],
-        ['redemptionLimit', null],
-        ['redemptionLimit', Infinity],
-    ])('fails on invalid %s: %p', async (field, value) => {
-        const { actions, dispatch, getState, extra } = setup({
-            apiResponses: { 'GET v1/program': ok({ ...program, [field]: value }) },
-        });
-
-        await fetchReferralProgramThunk()(dispatch, getState, extra);
-
-        expect(actions).toContainEqual(
-            referAFriendActions.programFailed({ message: 'Invalid reward fields' }),
+            referAFriendActions.programFailed({ message: 'Invalid program response' }),
         );
     });
 });

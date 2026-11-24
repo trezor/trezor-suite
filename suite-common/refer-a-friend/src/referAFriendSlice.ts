@@ -3,11 +3,11 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { type EncryptedHex } from '@suite-common/platform-encryption';
 import { type WalletDescriptor } from '@trezor/device-utils';
 
+import { type ReferralProgram } from './referAFriendSchemas';
 import {
     type ReferralAccount,
     type ReferralAccountLoadStatus,
     type ReferralError,
-    type ReferralProgram,
     type ReferralRequestStatus,
     type ReferralVoucher,
 } from './referAFriendTypes';

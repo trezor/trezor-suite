@@ -21,6 +21,7 @@
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
+        { "path": "../../packages/zod" },
         {
             "path": "../../packages/dependency-injection"
         }
