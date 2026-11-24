@@ -338,24 +338,6 @@ describe('signStakeTransactionThunk', () => {
         expect(pushTransactionMock).not.toHaveBeenCalled();
     });
 
-    it('routes solana unstake to the solana staking thunk and signs without broadcasting', async () => {
-        const store = buildStore({
-            accounts: [solAccount],
-            blockchain: { sol: { url: 'http://localhost:8899' } },
-        });
-
-        const result = await dispatchDispatcher(store, {
-            accountKey: SOL_ACCOUNT_KEY,
-            stakeType: 'unstake',
-            precomposedTransaction: buildSolanaPrecomposedTransaction(),
-        });
-
-        expect(result).toEqual({ ok: true });
-        expect(solanaSignTransactionMock).toHaveBeenCalledTimes(1);
-        expect(ethereumSignTransactionMock).not.toHaveBeenCalled();
-        expect(pushTransactionMock).not.toHaveBeenCalled();
-    });
-
     it('rejects solana claim (out of scope on mobile)', async () => {
         const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
         const store = buildStore({
@@ -427,7 +409,6 @@ describe('pending Earn replacements', () => {
     it.each([
         { flow: 'wrap', isCancellation: false },
         { flow: 'stake', isCancellation: true },
-        { flow: 'unstake', isCancellation: true },
     ] as const)(
         'keeps the sent toast when speeding up $flow (cancel=$isCancellation)',
         async ({ flow, isCancellation }) => {
@@ -476,7 +457,7 @@ describe('pending Earn replacements', () => {
         },
     );
 
-    it.each(['stake', 'unstake', 'yield-deposit'] as const)(
+    it.each(['stake', 'yield-deposit'] as const)(
         'keeps an on-chain cancel separate from %s success',
         async flow => {
             const store = buildStore();

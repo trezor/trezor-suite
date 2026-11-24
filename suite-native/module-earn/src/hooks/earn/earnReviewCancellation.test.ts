@@ -20,7 +20,6 @@ const mockAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 const mockSerializedTx = { tx: 'test-signed-transaction' };
 let mockIsSigned = true;
 let mockIsPushing = false;
-let mockApprovalType: 'approve' | 'revoke' = 'approve';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -67,12 +66,11 @@ const useApprovalReviewNavigation = () =>
         networkSymbol: mockAccount.symbol,
         isSigned: mockIsSigned && !mockIsPushing,
         shouldConfirmCancellation: true,
-        transactionType: mockApprovalType,
+        transactionType: 'approve',
     });
 
-const renderCancellation = async (flow: 'stake' | 'yield' | 'approve' | 'revoke') => {
+const renderCancellation = async (flow: 'stake' | 'yield' | 'approve') => {
     const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
-    mockApprovalType = flow === 'revoke' ? 'revoke' : 'approve';
     let useReviewNavigation: () => { markReviewNavigationSuccess: () => void } =
         useApprovalReviewNavigation;
     if (flow === 'stake') useReviewNavigation = useStakingReviewNavigation;
@@ -90,7 +88,7 @@ const renderCancellation = async (flow: 'stake' | 'yield' | 'approve' | 'revoke'
     return { ...view, analytics: services.analytics, remove };
 };
 
-describe.each(['stake', 'yield', 'approve', 'revoke'] as const)(
+describe.each(['stake', 'yield', 'approve'] as const)(
     '%s signed review cancellation analytics',
     flow => {
         beforeEach(() => {

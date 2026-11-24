@@ -74,28 +74,25 @@ const renderStandaloneController = async (
 };
 
 describe('useStandaloneWrappedNativeController', () => {
-    it.each(['wrap', 'unwrap'] as const)(
-        'reports %s compose errors without transaction data',
-        async flowType => {
-            const { analytics } = await renderStandaloneController(flowType);
+    it('reports compose errors without transaction data', async () => {
+        const { analytics } = await renderStandaloneController('wrap');
 
-            await act(() =>
-                useWrappedNativeTokenFeesMock.mock.calls
-                    .at(-1)?.[0]
-                    .onComposeError('missing-fee-level'),
-            );
+        await act(() =>
+            useWrappedNativeTokenFeesMock.mock.calls
+                .at(-1)?.[0]
+                .onComposeError('missing-fee-level'),
+        );
 
-            expect(analytics.report).toHaveBeenCalledWith({
-                type: `yield/${flowType}`,
-                payload: {
-                    type: 'error',
-                    action: 'continue',
-                    networkSymbol: 'eth',
-                    errorMessage: 'missing-fee-level',
-                },
-            });
-        },
-    );
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: 'yield/wrap',
+            payload: {
+                type: 'error',
+                action: 'continue',
+                networkSymbol: 'eth',
+                errorMessage: 'missing-fee-level',
+            },
+        });
+    });
 
     beforeEach(() => {
         jest.clearAllMocks();

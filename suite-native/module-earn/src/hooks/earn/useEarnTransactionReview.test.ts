@@ -131,7 +131,7 @@ describe('useEarnTransactionReview', () => {
     });
 
     describe('handleSubmitted', () => {
-        it('pushes successfully and marks the navigation success before onPushSuccess', async () => {
+        it('pushes, marks the navigation success before onPushSuccess and stays in the sending status', async () => {
             const params = createParams({ isSigned: true });
             params.pushAction.mockResolvedValue(fulfilled(PUSHED_PAYLOAD));
             const { result } = await renderReview(params);
@@ -149,6 +149,9 @@ describe('useEarnTransactionReview', () => {
                 params.onPushSuccess.mock.invocationCallOrder[0] ?? Number.NEGATIVE_INFINITY;
             expect(markOrder).toBeLessThan(pushOrder);
             expect(mockShowReviewAlert).not.toHaveBeenCalled();
+            // Push thunks discard the signed transaction before resolving, so the
+            // status must not fall back to idle and unmount the submit UI.
+            expect(result.current.status).toBe('sending');
         });
 
         it('shows the pending-conflict alert on a conflicting push', async () => {
@@ -214,20 +217,6 @@ describe('useEarnTransactionReview', () => {
             expect(params.onPushSuccess).toHaveBeenCalledWith(PUSHED_PAYLOAD);
         });
 
-        it('stays in the sending status after a successful push until finalization', async () => {
-            const params = createParams({ isSigned: true });
-            params.pushAction.mockResolvedValue(fulfilled(PUSHED_PAYLOAD));
-            const { result } = await renderReview(params);
-
-            await act(async () => {
-                await result.current.handleSubmitted();
-            });
-
-            // Push thunks discard the signed transaction before resolving, so the
-            // status must not fall back to idle and unmount the submit UI.
-            expect(result.current.status).toBe('sending');
-        });
-
         it('does nothing when pushAction returns null and never switches to sending', async () => {
             const params = createParams({ isSigned: true });
             params.pushAction.mockReturnValue(null);
@@ -244,7 +233,7 @@ describe('useEarnTransactionReview', () => {
         });
     });
 
-    describe('submitReview / finalizeSubmit', () => {
+    describe('submitReview', () => {
         it('returns the pushed payload without finalizing', async () => {
             const params = createParams({ isSigned: true });
             params.pushAction.mockResolvedValue(fulfilled(PUSHED_PAYLOAD));
@@ -259,23 +248,6 @@ describe('useEarnTransactionReview', () => {
             expect(result.current.status).toBe('sending');
             expect(params.onPushSuccess).not.toHaveBeenCalled();
             expect(mockMarkReviewNavigationSuccess).not.toHaveBeenCalled();
-        });
-
-        it('marks the navigation success before onPushSuccess on finalization', async () => {
-            const params = createParams({ isSigned: true });
-            const { result } = await renderReview(params);
-
-            await act(() => {
-                result.current.finalizeSubmit(PUSHED_PAYLOAD);
-            });
-
-            expect(params.onPushSuccess).toHaveBeenCalledWith(PUSHED_PAYLOAD);
-            const markOrder =
-                mockMarkReviewNavigationSuccess.mock.invocationCallOrder[0] ??
-                Number.POSITIVE_INFINITY;
-            const pushOrder =
-                params.onPushSuccess.mock.invocationCallOrder[0] ?? Number.NEGATIVE_INFINITY;
-            expect(markOrder).toBeLessThan(pushOrder);
         });
 
         it('returns undefined and recovers the signed status on a failed push', async () => {

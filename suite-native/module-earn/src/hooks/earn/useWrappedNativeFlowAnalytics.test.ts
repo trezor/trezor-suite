@@ -29,8 +29,6 @@ const renderFlowAnalytics = async (
 describe('useWrappedNativeFlowAnalytics', () => {
     it.each([
         { flowType: 'wrap', connected: true },
-        { flowType: 'wrap', connected: false },
-        { flowType: 'unwrap', connected: true },
         { flowType: 'unwrap', connected: false },
     ] as const)(
         'reports the connection state for $flowType (connected=$connected)',

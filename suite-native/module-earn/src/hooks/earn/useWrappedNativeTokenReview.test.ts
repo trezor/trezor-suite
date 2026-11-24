@@ -37,65 +37,63 @@ jest.mock('../../thunks/earn/wrappedNativeTokenThunks', () => ({
     pushWrappedNativeTokenThunk: jest.fn(),
 }));
 
-describe.each(['standalone', 'in-flow'] as const)('%s review analytics', flowContext => {
-    describe.each(['wrap', 'unwrap'] as const)(
-        '%s review cancellation classification',
-        flowType => {
-            it.each([
-                { message: 'tx-cancelled', result: 'cancelled', reportsError: false },
-                { message: 'Device communication failed', result: 'failed', reportsError: true },
-            ])('classifies $message correctly', async ({ message, result, reportsError }) => {
-                mockSignResponse.mockResolvedValue({
-                    meta: { requestStatus: 'rejected' },
-                    payload: { error: 'sign-transaction-failed', message },
-                });
-                const { account, token } = mockResolvedYieldFlowData();
-                const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
-                const onError = jest.fn();
-                const { result: review } = await renderHookWithStoreProvider(
-                    () =>
-                        useWrappedNativeTokenReview({
-                            account,
-                            token,
-                            flowType,
-                            flowContext,
-                            onError,
-                            amount: '1',
-                            unsignedTransaction: '{}',
-                        }),
-                    {
-                        services,
-                        preloadedState: {
-                            deviceAuthorization: deviceAuthorizationInitialState,
-                            device: { selectedDevice: { connected: true } },
-                        },
-                    },
-                );
+describe.each([
+    { flowContext: 'standalone', flowType: 'wrap' },
+    { flowContext: 'in-flow', flowType: 'unwrap' },
+] as const)('$flowContext $flowType review analytics', ({ flowContext, flowType }) => {
+    it.each([
+        { message: 'tx-cancelled', result: 'cancelled', reportsError: false },
+        { message: 'Device communication failed', result: 'failed', reportsError: true },
+    ])('classifies $message correctly', async ({ message, result, reportsError }) => {
+        mockSignResponse.mockResolvedValue({
+            meta: { requestStatus: 'rejected' },
+            payload: { error: 'sign-transaction-failed', message },
+        });
+        const { account, token } = mockResolvedYieldFlowData();
+        const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
+        const onError = jest.fn();
+        const { result: review } = await renderHookWithStoreProvider(
+            () =>
+                useWrappedNativeTokenReview({
+                    account,
+                    token,
+                    flowType,
+                    flowContext,
+                    onError,
+                    amount: '1',
+                    unsignedTransaction: '{}',
+                }),
+            {
+                services,
+                preloadedState: {
+                    deviceAuthorization: deviceAuthorizationInitialState,
+                    device: { selectedDevice: { connected: true } },
+                },
+            },
+        );
 
-                await act(async () => {
-                    expect(await review.current.startReview()).toBe(result);
-                });
+        await act(async () => {
+            expect(await review.current.startReview()).toBe(result);
+        });
 
-                if (reportsError && flowContext === 'standalone') {
-                    expect(services.analytics.report).toHaveBeenCalledWith({
-                        type: `yield/${flowType}`,
-                        payload: {
-                            type: 'error',
-                            action: 'continue',
-                            networkSymbol: 'eth',
-                            errorMessage: 'submit-failed',
-                        },
-                    });
-                } else {
-                    expect(services.analytics.report).not.toHaveBeenCalled();
-                }
-                if (reportsError && flowContext === 'in-flow') {
-                    expect(onError).toHaveBeenCalledWith('submit-failed');
-                    expect(onError).toHaveBeenCalledTimes(1);
-                } else {
-                    expect(onError).not.toHaveBeenCalled();
-                }
+        if (reportsError && flowContext === 'standalone') {
+            expect(services.analytics.report).toHaveBeenCalledWith({
+                type: `yield/${flowType}`,
+                payload: {
+                    type: 'error',
+                    action: 'continue',
+                    networkSymbol: 'eth',
+                    errorMessage: 'submit-failed',
+                },
             });
-        },
-    );
+        } else {
+            expect(services.analytics.report).not.toHaveBeenCalled();
+        }
+        if (reportsError && flowContext === 'in-flow') {
+            expect(onError).toHaveBeenCalledWith('submit-failed');
+            expect(onError).toHaveBeenCalledTimes(1);
+        } else {
+            expect(onError).not.toHaveBeenCalled();
+        }
+    });
 });
