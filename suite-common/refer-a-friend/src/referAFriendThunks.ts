@@ -226,6 +226,13 @@ const hasSupportedFiatCurrency = (program: unknown) =>
     typeof program.fiatCurrency === 'string' &&
     isFiatBaseCurrencyCode(program.fiatCurrency.toLowerCase());
 
+// The annual reward limit is computed from these, so they must be numbers.
+const hasNumericRewardFields = (program: unknown) =>
+    hasProp(program, 'rewardAmount') &&
+    Number.isFinite(program.rewardAmount) &&
+    hasProp(program, 'redemptionLimit') &&
+    Number.isFinite(program.redemptionLimit);
+
 const REFER_A_FRIEND_ALLOWED_HOSTS = ['localhost', 'trezor.io', 'sldev.cz'];
 
 const hasTrezorTermsUrl = (program: unknown) => {
@@ -268,6 +275,12 @@ export const fetchReferralProgramThunk = createThunk<
 
     if (!hasTrezorTermsUrl(result.payload)) {
         dispatch(referAFriendActions.programFailed({ message: 'Invalid terms URL' }));
+
+        return;
+    }
+
+    if (!hasNumericRewardFields(result.payload)) {
+        dispatch(referAFriendActions.programFailed({ message: 'Invalid reward fields' }));
 
         return;
     }

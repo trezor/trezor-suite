@@ -27,6 +27,7 @@ export {
     selectReferAFriendWallets,
     selectReferralAccountState,
     selectReferralAccountStateByWalletDescriptor,
+    selectReferralAnnualRewardLimit,
     selectReferralProgram,
     selectReferralWalletRecord,
     selectReferralWalletRecordByWalletDescriptor,

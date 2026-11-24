@@ -165,7 +165,6 @@ export { ReferralJoinedContent } from './src/views/refer-a-friend/ReferralJoined
 export { ReferralLoading } from './src/views/refer-a-friend/ReferralLoading';
 export { ReferralOtherWalletBanner } from './src/views/refer-a-friend/ReferralOtherWalletBanner';
 export { ReferralUnavailable } from './src/views/refer-a-friend/ReferralUnavailable';
-export { ANNUAL_REWARD_LIMIT } from './src/views/refer-a-friend/referralConstants';
 export { useReferralActions } from './src/views/refer-a-friend/useReferralActions';
 export { selectIsReferAFriendAvailableInApp } from '#src/views/refer-a-friend/selectIsReferAFriendAvailableInApp';
 export { SettingsLayout } from './src/components/settings/SettingsLayout';
