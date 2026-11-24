@@ -1,4 +1,4 @@
-import { type ReferralVoucher, type ReferralVoucherStatus } from './referAFriendTypes';
+import { type ReferralVoucher, type ReferralVoucherStatus } from './referAFriendSchemas';
 
 const earnedVoucherStatuses: ReferralVoucherStatus[] = ['available', 'used', 'expired'];
 

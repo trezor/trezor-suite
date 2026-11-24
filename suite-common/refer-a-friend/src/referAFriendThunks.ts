@@ -9,16 +9,18 @@ import { type TrezorDeviceWithState } from '@suite-common/suite-types';
 import { type WalletDescriptor } from '@trezor/device-utils';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
+import { type z } from '@trezor/zod';
 
 import { type ReferAFriendDep } from './createReferAFriendCompositionRoot';
-import { referralProgramSchema } from './referAFriendSchemas';
-import { selectDoesReferralRecordExistForWalletDescriptor } from './referAFriendSelectors';
-import { type ReferAFriendRootState, referAFriendActions } from './referAFriendSlice';
 import {
     type ReferralAccount,
-    type ReferralError,
-    type ReferralVouchersResponse,
-} from './referAFriendTypes';
+    referralAccountSchema,
+    referralProgramSchema,
+    referralVouchersResponseSchema,
+} from './referAFriendSchemas';
+import { selectDoesReferralRecordExistForWalletDescriptor } from './referAFriendSelectors';
+import { type ReferAFriendRootState, referAFriendActions } from './referAFriendSlice';
+import { type ReferralError } from './referAFriendTypes';
 import { type ReferralKey } from './referralKey';
 
 const REFER_A_FRIEND_MODULE = '@suite-common/refer-a-friend';
@@ -78,6 +80,29 @@ const obtainReferralKey = async ({
     }
 
     return result;
+};
+
+/**
+ * A mismatch is reported to Sentry (via console.error), but the payload is still used as is,
+ * so a backend change degrades the page instead of blocking it completely.
+ */
+const parseReferralResponseTolerantly = <Schema extends z.ZodType>(
+    schema: Schema,
+    payload: unknown,
+    endpointLabel: string,
+): z.output<Schema> => {
+    const parseResult = schema.safeParse(payload);
+
+    if (parseResult.success) return parseResult.data;
+
+    // Only paths (property kes) + issue codes are reported (not values, they may contain codes & amounts.
+    const issueSummary = parseResult.error.issues
+        .map(({ path, code }) => `${path.join('.')}: ${code}`)
+        .join('; ');
+    console.error(`Referral API: invalid ${endpointLabel} response (${issueSummary})`);
+
+    // Intentional unsafe typecasting for non-conforming payload.
+    return payload as z.output<Schema>;
 };
 
 type ReferralAccountRequestParams = WalletDescriptorParams & {
@@ -151,11 +176,17 @@ const applyReferralAccount = async ({
         return vouchersResult;
     }
 
-    const { vouchers } = vouchersResult.payload as ReferralVouchersResponse;
+    const { vouchers } = parseReferralResponseTolerantly(
+        referralVouchersResponseSchema,
+        vouchersResult.payload,
+        'GET v1/vouchers',
+    );
     dispatch(
         referAFriendActions.accountLoaded({
             walletDescriptor,
             account,
+            // For normal payloads, zod schema takes care of string to number conversion.
+            // But if payload is invalid, zod passes it unparsed, so we need to at least convert the strings to numbers here.
             vouchers: vouchers.map(voucher => ({ ...voucher, amount: Number(voucher.amount) })),
         }),
     );
@@ -183,7 +214,13 @@ const syncReferralAccount = async (
         return accountResult;
     }
 
-    return applyReferralAccount({ ...params, account: accountResult.payload as ReferralAccount });
+    const account = parseReferralResponseTolerantly(
+        referralAccountSchema,
+        accountResult.payload,
+        'GET v1/account',
+    );
+
+    return applyReferralAccount({ ...params, account });
 };
 
 const joinWithReferralKey = async (
@@ -199,7 +236,11 @@ const joinWithReferralKey = async (
         return accountResult;
     }
 
-    const account = accountResult.payload as ReferralAccount;
+    const account = parseReferralResponseTolerantly(
+        referralAccountSchema,
+        accountResult.payload,
+        'GET v1/account',
+    );
 
     if (account.status === 'active') {
         return applyReferralAccount({ ...params, account });
@@ -215,7 +256,13 @@ const joinWithReferralKey = async (
         return createResult;
     }
 
-    return applyReferralAccount({ ...params, account: createResult.payload as ReferralAccount });
+    const createdAccount = parseReferralResponseTolerantly(
+        referralAccountSchema,
+        createResult.payload,
+        'POST v1/account',
+    );
+
+    return applyReferralAccount({ ...params, account: createdAccount });
 };
 
 export type FetchReferralProgramThunkDeps = ReferAFriendThunkDeps;
