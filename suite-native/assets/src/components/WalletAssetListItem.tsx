@@ -2,9 +2,9 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { createAssetId } from '@suite-common/asset-types';
 import {
     type HomeAssetTableState,
-    createAssetId,
     selectWalletAssetAmount,
     selectWalletAssetContractAddress,
     selectWalletAssetFiatValue,

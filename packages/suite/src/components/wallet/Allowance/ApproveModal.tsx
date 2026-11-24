@@ -2,7 +2,7 @@ import { AssetSymbol } from '@suite/assets';
 import { useDevice } from '@suite/device';
 import { Form } from '@suite/form';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { toTokenAddress } from '@suite-common/tokens';
 import { type Account, type AllowanceLimitType } from '@suite-common/wallet-types';
 import { Banner, CardList, Column, Modal } from '@trezor/components';

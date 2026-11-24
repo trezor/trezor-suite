@@ -1,6 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { StepList } from '@trezor/components';

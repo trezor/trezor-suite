@@ -1,6 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import {
     hasCardanoLiveVoteDelegation,

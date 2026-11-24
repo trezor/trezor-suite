@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { AssetIcon } from '@suite/assets';
 import { TokenName } from '@suite/token';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {

@@ -1,4 +1,4 @@
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { getMockNetworkMetadata } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { renderWithStoreProvider, screen } from '@suite-native/test-utils-store';

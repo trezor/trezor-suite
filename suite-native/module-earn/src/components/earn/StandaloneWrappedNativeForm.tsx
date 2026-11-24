@@ -1,4 +1,4 @@
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { Context } from '@suite-common/message-system';
 import { TokenMetadataProvider } from '@suite-common/token';
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';

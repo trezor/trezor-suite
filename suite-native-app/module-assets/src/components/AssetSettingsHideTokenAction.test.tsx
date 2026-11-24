@@ -30,7 +30,6 @@ jest.mock('@suite-native/toasts', () => ({
 }));
 
 jest.mock('@suite-common/assets', () => ({
-    ...jest.requireActual('@suite-common/assets'),
     selectWalletAssetKey: () => 'asset-key',
     selectWalletAssetHiddenReason: jest.fn(),
 }));

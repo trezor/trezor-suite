@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import type { DeviceRootState } from '@suite-common/device';
 import {
     type StakingRootState,

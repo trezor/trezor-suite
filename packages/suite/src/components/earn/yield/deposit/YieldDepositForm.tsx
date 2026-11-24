@@ -2,7 +2,7 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {

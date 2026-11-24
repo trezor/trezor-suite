@@ -4,8 +4,8 @@ import { closeTokenYieldBanner, selectIsTokenYieldBannerClosed } from '@suite/fl
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
+import { createAssetId } from '@suite-common/asset-types';
 import {
-    createAssetId,
     selectWalletAssetContractAddress,
     selectWalletAssetNetworkSymbol,
     selectWalletAssetTokenDecimals,

@@ -1,6 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { type ExtendedMessageDescriptor } from '@suite/intl';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FormState, type StakeFormState } from '@suite-common/wallet-types';

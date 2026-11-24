@@ -3,7 +3,7 @@ import { type ComponentProps, type ReactNode, isValidElement } from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 
 import { type AssetSymbol } from '@suite/assets';
-import { parseAssetId } from '@suite-common/assets';
+import { parseAssetId } from '@suite-common/asset-types';
 import { type Account, type PrecomposedLevels } from '@suite-common/wallet-types';
 import { mockSolanaStakingAccount } from '@suite-common/wallet-types/mocks';
 import { MAX_CLAIM_ACCOUNTS } from '@trezor/network-solana/constants';

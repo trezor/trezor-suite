@@ -1,4 +1,4 @@
-import { type AssetId, parseAssetId } from '@suite-common/assets';
+import { type AssetId, parseAssetId } from '@suite-common/asset-types';
 import { useTokenMetadata } from '@suite-common/token';
 import { TokenIcon, type TokenIconProps } from '@trezor/product-components';
 

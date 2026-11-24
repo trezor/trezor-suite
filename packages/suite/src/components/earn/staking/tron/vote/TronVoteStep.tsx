@@ -1,7 +1,7 @@
 import { AssetSymbol } from '@suite/assets';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { Banner, Column } from '@trezor/components';
 
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';

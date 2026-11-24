@@ -1,7 +1,7 @@
 import { type ReactNode, useMemo } from 'react';
 
 import { AssetSymbol } from '@suite/assets';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import {
     calculateRewards,

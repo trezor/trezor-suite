@@ -3,7 +3,7 @@ import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { selectIsRegionRestricted } from '@suite/regions';
 import { gotoThunk } from '@suite/router';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getNetwork, getNetworkFeatures } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';

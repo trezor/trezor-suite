@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { AssetSymbol } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     Card,
     Column,

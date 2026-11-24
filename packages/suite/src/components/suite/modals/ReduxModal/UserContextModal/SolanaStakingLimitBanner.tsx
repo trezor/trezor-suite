@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     type SolanaStakingLimit,
     estimateSolanaStakingLimit,

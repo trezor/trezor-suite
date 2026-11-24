@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { type AssetId, parseAssetId } from '@suite-common/assets';
+import { type AssetId, parseAssetId } from '@suite-common/asset-types';
 import { type NetworksRootState, selectNetworkDisplaySymbol } from '@suite-common/networks';
 import { getTokenDisplaySymbol, useTokenMetadata } from '@suite-common/token';
 

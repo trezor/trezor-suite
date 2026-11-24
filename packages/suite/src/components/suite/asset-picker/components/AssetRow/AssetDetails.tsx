@@ -1,5 +1,5 @@
 import { AssetName, AssetSymbol } from '@suite/assets';
-import { type AssetId, parseAssetId } from '@suite-common/assets';
+import { type AssetId, parseAssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import { selectIsNativeTokenNetworkNameRedundant } from '@suite-common/networks';
 import { Badge, Column, Row, Text } from '@trezor/components';

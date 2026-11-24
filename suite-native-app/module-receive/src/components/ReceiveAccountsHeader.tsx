@@ -1,4 +1,4 @@
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     type TradingAssetOption,
     cryptoIdToNetworkSymbolAndContractAddress,

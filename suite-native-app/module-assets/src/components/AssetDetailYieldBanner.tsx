@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     type HomeAssetTableState,
-    createAssetId,
     selectWalletAssetKey,
     selectWalletAssetTokenDecimals,
     selectWalletAssetTokenSymbol,

@@ -2,7 +2,13 @@ import { type TokenAddress, normalizeTokenAddress, toTokenAddress } from '@suite
 import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-types';
 import { type Branded } from '@trezor/type-utils';
 
-/** Identifies a network's native asset or a specific token, independently of wallets and catalogues. */
+/**
+ * Identifies a NativeToken or Token on a specific network, independently of wallets and catalogues.
+ * Native tokens use the NetworkSymbol; tokens use NetworkSymbol:TokenAddress.
+ * EVM contract addresses are lowercased; case-sensitive token identifiers retain their spelling.
+ *
+ * @see https://github.com/trezor/trezor-suite/blob/develop/docs/ubiquitous-language.md
+ */
 export type AssetId = string & Branded<'AssetId'>;
 
 type AssetReference = Readonly<{
@@ -13,9 +19,12 @@ type AssetReference = Readonly<{
 export const createAssetId = ({ networkSymbol, contractAddress }: AssetReference): AssetId =>
     (contractAddress === undefined
         ? networkSymbol
-        : `${networkSymbol}:${encodeURIComponent(normalizeTokenAddress(networkSymbol, contractAddress))}`) as AssetId;
+        : `${networkSymbol}:${normalizeTokenAddress(networkSymbol, contractAddress)}`) as AssetId;
 
-/** Decodes identities created by createAssetId, preserving complete case-sensitive token identifiers. */
+/**
+ * Decodes an identity created by createAssetId. EVM addresses remain lowercase; parsing does not
+ * recover the original address casing from account or catalogue metadata.
+ */
 export const parseAssetId = (assetId: AssetId): AssetReference => {
     const separator = assetId.indexOf(':');
     if (separator === -1) {
@@ -24,6 +33,6 @@ export const parseAssetId = (assetId: AssetId): AssetReference => {
 
     return {
         networkSymbol: asNetworkSymbol(assetId.slice(0, separator)),
-        contractAddress: toTokenAddress(decodeURIComponent(assetId.slice(separator + 1))),
+        contractAddress: toTokenAddress(assetId.slice(separator + 1)),
     };
 };

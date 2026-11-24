@@ -3,7 +3,7 @@ import { useFormState, useWatch } from 'react-hook-form';
 import { AssetSymbol } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { getNetwork } from '@suite-common/wallet-config';
 import { AMOUNT_MAX_LENGTH } from '@suite-common/wallet-core';
 import { toFiatCurrency } from '@suite-common/wallet-utils';

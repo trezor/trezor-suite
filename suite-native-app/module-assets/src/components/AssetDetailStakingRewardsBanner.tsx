@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import {
     type StakingRootState,

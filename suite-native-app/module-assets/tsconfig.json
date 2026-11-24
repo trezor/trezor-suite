@@ -5,6 +5,9 @@
         {
             "path": "../../suite-common/analytics"
         },
+        {
+            "path": "../../suite-common/asset-types"
+        },
         { "path": "../../suite-common/assets" },
         { "path": "../../suite-common/device" },
         {

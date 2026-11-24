@@ -1,5 +1,5 @@
 import { AssetIcon } from '@suite/assets';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { type Account } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 

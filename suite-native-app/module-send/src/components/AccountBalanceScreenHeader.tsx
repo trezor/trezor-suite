@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';

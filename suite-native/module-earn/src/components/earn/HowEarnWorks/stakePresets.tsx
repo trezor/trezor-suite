@@ -1,4 +1,4 @@
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { AssetSymbol } from '@suite-native/assets';

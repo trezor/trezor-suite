@@ -3,7 +3,7 @@ import { type ReactNode } from 'react';
 import { Address } from '@suite/address';
 import { AssetSymbol } from '@suite/assets';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     type AllowanceLimitType,
     type AllowanceStepState,

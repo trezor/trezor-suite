@@ -2,7 +2,7 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { AssetSymbol } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import { AMOUNT_MAX_LENGTH, getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
 import { type StakeFormState } from '@suite-common/wallet-types';

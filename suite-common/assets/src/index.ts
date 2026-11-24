@@ -11,4 +11,3 @@ export {
 export * from './homeAssetTableFeedbackThunks';
 export * from './homeAssetTableSelectors';
 export * from './homeAssetTableUtils';
-export { type AssetId, createAssetId, parseAssetId } from './AssetId';

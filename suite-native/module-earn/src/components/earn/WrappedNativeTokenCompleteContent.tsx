@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { TokenMetadataProvider } from '@suite-common/token';
 import {
     type AccountsRootState,

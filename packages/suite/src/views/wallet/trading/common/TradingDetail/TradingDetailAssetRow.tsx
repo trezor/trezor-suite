@@ -6,7 +6,7 @@ import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
 import { AssetIcon, AssetName } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import {
     type NetworksRootState,

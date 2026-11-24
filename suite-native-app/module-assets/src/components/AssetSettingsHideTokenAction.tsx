@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import { createAssetId } from '@suite-common/asset-types';
 import {
     type HomeAssetTableState,
-    createAssetId,
     selectWalletAssetHiddenReason,
     selectWalletAssetKey,
 } from '@suite-common/assets';

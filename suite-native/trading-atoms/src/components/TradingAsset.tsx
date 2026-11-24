@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { AssetName, AssetSymbol } from '@suite-native/assets';

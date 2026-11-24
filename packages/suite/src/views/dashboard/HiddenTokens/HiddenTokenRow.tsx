@@ -1,8 +1,8 @@
 import { memo } from 'react';
 
 import { gotoThunk } from '@suite/router';
+import { createAssetId } from '@suite-common/asset-types';
 import {
-    createAssetId,
     selectWalletAssetContractAddress,
     selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';

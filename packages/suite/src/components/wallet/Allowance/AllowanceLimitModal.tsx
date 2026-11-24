@@ -1,6 +1,6 @@
 import { AssetIcon, AssetSymbol } from '@suite/assets';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { type AllowanceLimitType } from '@suite-common/wallet-types';
 import { Badge, Card, Column, Modal, Paragraph, Row, Text } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';

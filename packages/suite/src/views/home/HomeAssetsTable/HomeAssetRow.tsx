@@ -2,8 +2,8 @@ import { memo } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { gotoThunk } from '@suite/router';
+import { createAssetId } from '@suite-common/asset-types';
 import {
-    createAssetId,
     selectWalletAssetContractAddress,
     selectWalletAssetNetworkSymbol,
     selectWalletAssetTokenDecimals,

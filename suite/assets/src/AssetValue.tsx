@@ -1,5 +1,5 @@
 import { HiddenPlaceholder } from '@suite/discreet-mode';
-import { type AssetId, parseAssetId } from '@suite-common/assets';
+import { type AssetId, parseAssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import { useTokenMetadata } from '@suite-common/token';
 import { type AmountUnit } from '@suite-common/wallet-utils';

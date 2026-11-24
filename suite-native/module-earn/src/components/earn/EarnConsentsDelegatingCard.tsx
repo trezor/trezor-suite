@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { AssetSymbol } from '@suite-native/assets';
 import {

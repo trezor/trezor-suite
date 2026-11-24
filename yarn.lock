@@ -12172,6 +12172,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/asset-types@workspace:*, @suite-common/asset-types@workspace:suite-common/asset-types":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/asset-types@workspace:suite-common/asset-types"
+  dependencies:
+    "@suite-common/tokens": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/assets@workspace:*, @suite-common/assets@workspace:suite-common/assets":
   version: 0.0.0-use.local
   resolution: "@suite-common/assets@workspace:suite-common/assets"
@@ -12192,9 +12202,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/device-utils": "workspace:*"
-    "@trezor/network-module-types": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
-    "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react-redux: "npm:9.3.1"
   languageName: unknown
@@ -13891,7 +13899,7 @@ __metadata:
     "@react-navigation/native": "npm:7.1.31"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.13.0"
-    "@suite-common/assets": "workspace:*"
+    "@suite-common/asset-types": "workspace:*"
     "@suite-common/bip329": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/earn-stablecoin": "workspace:*"
@@ -14118,6 +14126,7 @@ __metadata:
     "@react-navigation/native-stack": "npm:7.12.0"
     "@shopify/flash-list": "npm:2.3.2"
     "@suite-common/analytics": "workspace:*"
+    "@suite-common/asset-types": "workspace:*"
     "@suite-common/assets": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/discreet-mode": "workspace:*"
@@ -14623,7 +14632,7 @@ __metadata:
     "@shopify/react-native-skia": "npm:2.14.0"
     "@suite-common/address": "workspace:*"
     "@suite-common/analytics": "workspace:*"
-    "@suite-common/assets": "workspace:*"
+    "@suite-common/asset-types": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/networks": "workspace:*"
     "@suite-common/receive": "workspace:*"
@@ -14686,7 +14695,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.13.0"
     "@shopify/flash-list": "npm:2.3.2"
     "@suite-common/address": "workspace:*"
-    "@suite-common/assets": "workspace:*"
+    "@suite-common/asset-types": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/message-system": "workspace:*"
@@ -15386,6 +15395,7 @@ __metadata:
   dependencies:
     "@react-navigation/native": "npm:7.1.31"
     "@shopify/flash-list": "npm:2.3.2"
+    "@suite-common/asset-types": "workspace:*"
     "@suite-common/assets": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/earn-staking": "workspace:*"
@@ -16368,7 +16378,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.13.0"
     "@shopify/flash-list": "npm:2.3.2"
     "@suite-common/analytics": "workspace:*"
-    "@suite-common/assets": "workspace:*"
+    "@suite-common/asset-types": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/earn": "workspace:*"
     "@suite-common/earn-stablecoin": "workspace:*"
@@ -16940,7 +16950,7 @@ __metadata:
   resolution: "@suite-native/trading-atoms@workspace:suite-native/trading-atoms"
   dependencies:
     "@reduxjs/toolkit": "npm:2.13.0"
-    "@suite-common/assets": "workspace:*"
+    "@suite-common/asset-types": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/flags": "workspace:*"
     "@suite-common/icons": "workspace:*"
@@ -17603,7 +17613,7 @@ __metadata:
   resolution: "@suite/assets@workspace:suite/assets"
   dependencies:
     "@reduxjs/toolkit": "npm:2.13.0"
-    "@suite-common/assets": "workspace:*"
+    "@suite-common/asset-types": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/networks": "workspace:*"
     "@suite-common/token": "workspace:*"
@@ -20917,6 +20927,7 @@ __metadata:
     "@suite-common/address": "workspace:*"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/analytics-redux": "workspace:*"
+    "@suite-common/asset-types": "workspace:*"
     "@suite-common/assets": "workspace:*"
     "@suite-common/backup": "workspace:*"
     "@suite-common/bip329": "workspace:*"

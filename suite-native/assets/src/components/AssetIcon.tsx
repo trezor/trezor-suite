@@ -1,6 +1,6 @@
 import { type ComponentProps } from 'react';
 
-import { type AssetId, parseAssetId } from '@suite-common/assets';
+import { type AssetId, parseAssetId } from '@suite-common/asset-types';
 import { TokenIcon } from '@suite-native/tokens';
 
 type AssetIconProps = Omit<

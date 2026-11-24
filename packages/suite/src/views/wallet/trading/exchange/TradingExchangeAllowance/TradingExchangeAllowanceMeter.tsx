@@ -2,7 +2,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { AssetIcon } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { type ExchangeAllowanceCoverage } from '@suite-common/trading';
 import { Column, ProgressBar, Row, Text, type TextIntent } from '@trezor/components';
 

@@ -3,7 +3,7 @@ import { AssetSymbol } from '@suite/assets';
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     EarnFlow,
     type EarnProvider,

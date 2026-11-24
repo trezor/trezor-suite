@@ -73,7 +73,7 @@ describe('asset identity', () => {
         );
     });
 
-    it('keeps full token identifiers, including separators and escaped characters', () => {
+    it('keeps full token identifiers without URI encoding', () => {
         const networkSymbol = asNetworkSymbol('ada');
         const policy = 'a'.repeat(56);
         expect(
@@ -86,11 +86,11 @@ describe('asset identity', () => {
                 networkSymbol: asNetworkSymbol('xlm'),
                 contractAddress: toTokenAddress('USDC:ISSUER/asset%name'),
             }),
-        ).toBe('xlm:USDC%3AISSUER%2Fasset%25name');
-        const escaped = createAssetId({
+        ).toBe('xlm:USDC:ISSUER/asset%name');
+        const assetId = createAssetId({
             networkSymbol: asNetworkSymbol('xlm'),
             contractAddress: toTokenAddress('USDC:ISSUER/asset%name'),
         });
-        expect(parseAssetId(escaped).contractAddress).toBe('USDC:ISSUER/asset%name');
+        expect(parseAssetId(assetId).contractAddress).toBe('USDC:ISSUER/asset%name');
     });
 });

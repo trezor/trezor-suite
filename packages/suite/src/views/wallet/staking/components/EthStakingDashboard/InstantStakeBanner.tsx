@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { getChangedInternalTx, getInstantStakeType } from '@suite-common/wallet-core';
 import {
     type Account,

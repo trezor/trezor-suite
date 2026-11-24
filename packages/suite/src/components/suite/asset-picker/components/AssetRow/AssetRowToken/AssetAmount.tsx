@@ -1,6 +1,6 @@
 import { AssetValue } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { type AssetId } from '@suite-common/assets';
+import { type AssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';

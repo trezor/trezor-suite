@@ -2,7 +2,7 @@ import { AssetSymbol } from '@suite/assets';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectIsRegionRestricted } from '@suite/regions';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';

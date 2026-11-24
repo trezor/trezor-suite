@@ -1,4 +1,4 @@
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { AssetSymbol } from '@suite-native/assets';
 import { BannerFull } from '@suite-native/atoms';

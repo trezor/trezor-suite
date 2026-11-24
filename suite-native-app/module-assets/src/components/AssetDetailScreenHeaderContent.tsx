@@ -1,6 +1,6 @@
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import { AssetSymbol } from '@suite-native/assets';
 import { HStack, Text, VStack } from '@suite-native/atoms';

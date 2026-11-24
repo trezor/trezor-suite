@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { AssetSymbol } from '@suite/assets';
 import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { getPotentialStakingRewards } from '@suite-common/wallet-core';

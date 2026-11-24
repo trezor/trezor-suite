@@ -3,7 +3,7 @@ import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { openDeferredModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import { type EarnModalAction } from '@suite-common/suite-types/src/staking';
 import { type Account, supportedTronNetworkSymbols } from '@suite-common/wallet-types';

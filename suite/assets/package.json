@@ -13,7 +13,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-common/assets": "workspace:*",
+        "@suite-common/asset-types": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/token": "workspace:*",

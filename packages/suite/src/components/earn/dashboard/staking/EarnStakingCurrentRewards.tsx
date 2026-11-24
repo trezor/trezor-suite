@@ -1,7 +1,7 @@
 import { AssetSymbol } from '@suite/assets';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, Paragraph } from '@trezor/components';
 

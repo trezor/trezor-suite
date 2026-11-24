@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { AssetSymbol } from '@suite-native/assets';
 import {

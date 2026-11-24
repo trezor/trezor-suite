@@ -2,7 +2,7 @@ import { useEvent } from 'react-use';
 
 import { AssetIcon } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { Column, H3, Modal, Text } from '@trezor/components';
 

@@ -1,4 +1,4 @@
-import { type AssetId, parseAssetId } from '@suite-common/assets';
+import { type AssetId, parseAssetId } from '@suite-common/asset-types';
 import { type TextProps } from '@suite-native/atoms';
 import { TokenName } from '@suite-native/tokens';
 

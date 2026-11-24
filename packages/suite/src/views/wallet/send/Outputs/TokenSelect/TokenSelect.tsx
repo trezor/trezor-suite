@@ -5,7 +5,7 @@ import { AssetIcon, AssetName, AssetSymbol } from '@suite/assets';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { type Explorer, getNetwork } from '@suite-common/wallet-config';

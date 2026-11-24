@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { AssetSymbol } from '@suite/assets';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { type TxSimulationEVMResult } from '@suite-common/tx-simulation';
 import { type NetworkSymbol, type NetworkType, asNetworkSymbol } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';

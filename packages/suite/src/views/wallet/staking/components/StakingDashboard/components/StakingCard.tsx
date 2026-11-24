@@ -2,7 +2,7 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api/src/staking';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {

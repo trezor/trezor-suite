@@ -1,5 +1,5 @@
 import { TokenName, maskUrls } from '@suite/token';
-import { type AssetId, parseAssetId } from '@suite-common/assets';
+import { type AssetId, parseAssetId } from '@suite-common/asset-types';
 import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
 import { selectTokenByNetworkAndContract } from '@suite-common/token';
 import {

@@ -1,7 +1,7 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import {
-    createAssetId,
     selectWalletAssetContractAddress,
     selectWalletAssetHiddenReason,
     selectWalletAssetNetworkSymbol,

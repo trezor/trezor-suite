@@ -1,8 +1,8 @@
 import { AssetIcon, AssetName } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { gotoThunk, selectSettingsBackRoute } from '@suite/router';
+import { createAssetId } from '@suite-common/asset-types';
 import {
-    createAssetId,
     selectWalletAssetContractAddress,
     selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';

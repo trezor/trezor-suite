@@ -3,7 +3,7 @@ import { useWatch } from 'react-hook-form';
 import { AssetSymbol } from '@suite/assets';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { Banner, Card, Column, Divider, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 

@@ -1,6 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { type TronTxContractType } from '@suite-common/wallet-constants';

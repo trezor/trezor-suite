@@ -1,5 +1,5 @@
 import { AssetValue } from '@suite/assets';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import { asAmountUnit, findToken } from '@suite-common/wallet-utils';

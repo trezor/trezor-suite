@@ -5,7 +5,7 @@ import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouteName } from '@suite/router';
 import { isBech32AddressUppercase } from '@suite-common/address';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';

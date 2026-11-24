@@ -1,4 +1,4 @@
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { type TokenInfoBranded } from '@suite-common/tokens';
 import { type Account } from '@suite-common/wallet-types';
 import { AssetIcon, AssetName, AssetSymbol } from '@suite-native/assets';

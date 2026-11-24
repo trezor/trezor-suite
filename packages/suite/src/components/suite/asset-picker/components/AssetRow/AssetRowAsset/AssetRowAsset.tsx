@@ -1,5 +1,5 @@
 import { AssetIcon } from '@suite/assets';
-import { createAssetId } from '@suite-common/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { type TradeableAssetBalance, type TradingAssetOption } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 import { selectShouldShowNetworkIcon } from '@trezor/product-components';

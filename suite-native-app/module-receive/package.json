@@ -18,7 +18,7 @@
         "@shopify/react-native-skia": "2.14.0",
         "@suite-common/address": "workspace:*",
         "@suite-common/analytics": "workspace:*",
-        "@suite-common/assets": "workspace:*",
+        "@suite-common/asset-types": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/receive": "workspace:*",
