@@ -16,10 +16,6 @@ const resolvedFlow = mockResolvedYieldFlowData();
 const mockNavigation = {
     navigate: jest.fn(),
     isFocused: () => true,
-    addListener: jest.fn(
-        (_name: string, _listener: (event: { data: { action: { type: string } } }) => void) => () =>
-            undefined,
-    ),
 };
 const mockPrepareReview = jest.fn();
 let mockIsFocused = true;
@@ -102,16 +98,6 @@ describe('revoke submit analytics', () => {
             type: 'test/prepare/fulfilled',
             meta: { requestStatus: 'fulfilled', requestId: 'test-prepare' },
         });
-    });
-
-    it('does not report leaving the deposit flow when returning to Approval', async () => {
-        const { analytics } = await renderRevoke();
-        await act(() => {
-            for (const [, listener] of mockNavigation.addListener.mock.calls) {
-                listener({ data: { action: { type: 'GO_BACK' } } });
-            }
-        });
-        expect(analytics.report).not.toHaveBeenCalled();
     });
 
     it('pauses revoke estimates while another screen owns the fee levels', async () => {

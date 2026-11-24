@@ -1,5 +1,6 @@
 import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -13,49 +14,33 @@ import {
 const ethSymbol = asNetworkSymbol('eth');
 const USDC_ADDRESS = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
 
+const buildToken = (contractAddress: string | null): YieldFlowDisplayToken => ({
+    networkSymbol: ethSymbol,
+    symbol: 'USDC',
+    decimals: 6,
+    contractAddress,
+});
+
 const convertAtRate = (rate: number) => (amount: BigNumber) => amount.multipliedBy(rate);
 const convertToBaseCurrencyAtRate = (rate: number) => (amount: BigNumber) =>
     asBaseCurrencyAmount(amount.multipliedBy(rate));
 
 describe(getFiatFormValue.name, () => {
-    it('returns an empty string for an empty crypto amount', () => {
-        expect(
-            getFiatFormValue({
-                cryptoAmount: '',
-                convertCryptoToFiat: convertAtRate(2000),
-                decimals: 2,
-            }),
-        ).toBe('');
-    });
-
-    it('returns an empty string when no converter is available', () => {
-        expect(
-            getFiatFormValue({
-                cryptoAmount: '1',
-                convertCryptoToFiat: undefined,
-                decimals: 2,
-            }),
-        ).toBe('');
-    });
-
-    it('returns an empty string when the converter returns null', () => {
-        expect(
-            getFiatFormValue({
-                cryptoAmount: '1',
-                convertCryptoToFiat: () => null,
-                decimals: 2,
-            }),
-        ).toBe('');
-    });
-
-    it('returns an empty string when the converter returns NaN', () => {
-        expect(
-            getFiatFormValue({
-                cryptoAmount: '1',
-                convertCryptoToFiat: () => new BigNumber(NaN),
-                decimals: 2,
-            }),
-        ).toBe('');
+    it.each([
+        {
+            name: 'an empty crypto amount',
+            cryptoAmount: '',
+            convertCryptoToFiat: convertAtRate(2000),
+        },
+        { name: 'a missing converter', cryptoAmount: '1', convertCryptoToFiat: undefined },
+        { name: 'a converter returning null', cryptoAmount: '1', convertCryptoToFiat: () => null },
+        {
+            name: 'a converter returning NaN',
+            cryptoAmount: '1',
+            convertCryptoToFiat: () => new BigNumber(NaN),
+        },
+    ])('returns an empty string for $name', ({ cryptoAmount, convertCryptoToFiat }) => {
+        expect(getFiatFormValue({ cryptoAmount, convertCryptoToFiat, decimals: 2 })).toBe('');
     });
 
     it('formats to the base-currency decimals, rounding down', () => {
@@ -80,88 +65,41 @@ describe(getFiatFormValue.name, () => {
 });
 
 describe(getYieldTokenContract.name, () => {
-    it('returns undefined for a null token', () => {
-        expect(getYieldTokenContract(null)).toBeUndefined();
-    });
-
-    it('returns undefined when the contract address is null', () => {
-        expect(
-            getYieldTokenContract({
-                networkSymbol: ethSymbol,
-                symbol: 'USDC',
-                decimals: 6,
-                contractAddress: null,
-            }),
-        ).toBeUndefined();
-    });
-
-    it('returns undefined when the contract address is an empty string', () => {
-        expect(
-            getYieldTokenContract({
-                networkSymbol: ethSymbol,
-                symbol: 'USDC',
-                decimals: 6,
-                contractAddress: '',
-            }),
-        ).toBeUndefined();
-    });
-
-    it('returns the branded token address for a valid contract address', () => {
-        expect(
-            getYieldTokenContract({
-                networkSymbol: ethSymbol,
-                symbol: 'USDC',
-                decimals: 6,
-                contractAddress: USDC_ADDRESS,
-            }),
-        ).toBe(USDC_ADDRESS);
+    it.each([
+        { name: 'a null token', token: null, expected: undefined },
+        { name: 'a null contract address', token: buildToken(null), expected: undefined },
+        { name: 'an empty contract address', token: buildToken(''), expected: undefined },
+        {
+            name: 'a valid contract address',
+            token: buildToken(USDC_ADDRESS),
+            expected: USDC_ADDRESS,
+        },
+    ])('returns $expected for $name', ({ token, expected }) => {
+        expect(getYieldTokenContract(token)).toBe(expected);
     });
 });
 
 describe(getApproximateFiatAmount.name, () => {
-    it('returns null for an empty crypto amount', () => {
-        expect(
-            getApproximateFiatAmount({
-                cryptoAmount: '',
-                convertCryptoToFiat: convertToBaseCurrencyAtRate(2000),
-            }),
-        ).toBeNull();
-    });
-
-    it('returns null when no converter is available', () => {
-        expect(
-            getApproximateFiatAmount({
-                cryptoAmount: '1',
-                convertCryptoToFiat: undefined,
-            }),
-        ).toBeNull();
-    });
-
-    it('returns null when the converter returns null', () => {
-        expect(
-            getApproximateFiatAmount({
-                cryptoAmount: '1',
-                convertCryptoToFiat: () => null,
-            }),
-        ).toBeNull();
-    });
-
-    it('returns null for a zero amount', () => {
-        expect(
-            getApproximateFiatAmount({
-                cryptoAmount: '0',
-                convertCryptoToFiat: convertToBaseCurrencyAtRate(2000),
-            }),
-        ).toBeNull();
-    });
-
-    it('returns null for a non-numeric amount', () => {
-        expect(
-            getApproximateFiatAmount({
-                cryptoAmount: 'not-a-number',
-                convertCryptoToFiat: convertToBaseCurrencyAtRate(2000),
-            }),
-        ).toBeNull();
+    it.each([
+        {
+            name: 'an empty crypto amount',
+            cryptoAmount: '',
+            convertCryptoToFiat: convertToBaseCurrencyAtRate(2000),
+        },
+        { name: 'a missing converter', cryptoAmount: '1', convertCryptoToFiat: undefined },
+        { name: 'a converter returning null', cryptoAmount: '1', convertCryptoToFiat: () => null },
+        {
+            name: 'a zero amount',
+            cryptoAmount: '0',
+            convertCryptoToFiat: convertToBaseCurrencyAtRate(2000),
+        },
+        {
+            name: 'a non-numeric amount',
+            cryptoAmount: 'not-a-number',
+            convertCryptoToFiat: convertToBaseCurrencyAtRate(2000),
+        },
+    ])('returns null for $name', ({ cryptoAmount, convertCryptoToFiat }) => {
+        expect(getApproximateFiatAmount({ cryptoAmount, convertCryptoToFiat })).toBeNull();
     });
 
     it('returns the converted value for a valid amount and rate', () => {

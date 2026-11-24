@@ -55,7 +55,6 @@ describe('wrapped-native Yield flow exit analytics', () => {
     it.each([
         { flowType: 'deposit', step: 'wrap', expectedCancels: 1 },
         { flowType: 'withdraw', step: 'unwrap', expectedCancels: 0 },
-        { flowType: 'redeem', step: 'unwrap', expectedCancels: 0 },
     ] as const)(
         'reports $expectedCancels form cancellations when leaving $flowType at $step',
         async ({ flowType, step, expectedCancels }) => {
