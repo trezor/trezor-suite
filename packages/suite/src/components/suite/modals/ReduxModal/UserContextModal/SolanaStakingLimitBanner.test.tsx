@@ -1,7 +1,10 @@
 import { type ReactNode, isValidElement } from 'react';
+import { Provider } from 'react-redux';
 
 import { render, screen, waitFor } from '@testing-library/react';
 
+import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { type BlockchainRootState, blockchainInitialState } from '@suite-common/wallet-core';
 import { type Account, type PrecomposedLevels } from '@suite-common/wallet-types';
 import { mockSolanaStakingAccount } from '@suite-common/wallet-types/mocks';
 import { MAX_CLAIM_ACCOUNTS } from '@trezor/network-solana/constants';
@@ -18,9 +21,6 @@ jest.mock('@trezor/network-solana/runtime', () => ({
             unstake: jest.fn(),
             claim: claimMock,
         }),
-}));
-jest.mock('#src/hooks/suite/useSelector', () => ({
-    useSelector: () => 'https://solana.example',
 }));
 jest.mock('@suite/intl', () => ({
     Translation: ({ id, values }: { id: string; values: Record<string, unknown> }) =>
@@ -55,14 +55,28 @@ const composedLevels = {
     normal: { type: 'final', outputs: [{ amount: '1500000000' }] },
 } as unknown as PrecomposedLevels;
 
-const renderBanner = (deactivatedAccountCount: number) =>
-    render(
-        <SolanaStakingLimitBanner
-            account={mockDeactivatedAccount(deactivatedAccountCount)}
-            composedLevels={composedLevels}
-            type="claim"
-        />,
+const renderBanner = (deactivatedAccountCount: number) => {
+    const { services } = createTestCompositionRoot<void, BlockchainRootState>({
+        preloadedState: {
+            wallet: {
+                blockchain: {
+                    ...blockchainInitialState,
+                    sol: { ...blockchainInitialState.sol, url: 'https://solana.example' },
+                },
+            },
+        },
+    });
+
+    return render(
+        <Provider store={services.store}>
+            <SolanaStakingLimitBanner
+                account={mockDeactivatedAccount(deactivatedAccountCount)}
+                composedLevels={composedLevels}
+                type="claim"
+            />
+        </Provider>,
     );
+};
 
 describe('SolanaStakingLimitBanner claim', () => {
     beforeEach(() => {

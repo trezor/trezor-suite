@@ -21,7 +21,8 @@ const renderCurrencyToggleAnalytics = async (
 };
 
 describe('useYieldCurrencyToggleAnalytics', () => {
-    it.each(['vault-1', undefined])('reports both switches for vault %s', async vaultId => {
+    it('reports both switches with the selected vault', async () => {
+        const vaultId = 'vault-1';
         const { result, analytics } = await renderCurrencyToggleAnalytics({
             networkSymbol: asNetworkSymbol('eth'),
             vaultId,

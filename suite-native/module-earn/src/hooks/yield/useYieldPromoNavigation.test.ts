@@ -1,7 +1,7 @@
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldPromoListItem } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
@@ -17,24 +17,14 @@ import { useYieldPromoNavigation } from './useYieldPromoNavigation';
 
 type Navigation = StackNavigationProps<RootStackParamList, RootStackRoutes.YieldNavigator>;
 const mockNavigate = mock<Navigation['navigate']>();
-let mockAccounts: Account[] = [];
-let mockIsViewOnly = false;
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useNavigation: () => ({ navigate: mockNavigate }),
 }));
-jest.mock('@suite-common/device', () => ({
-    ...jest.requireActual('@suite-common/device'),
-    selectIsDeviceInViewOnlyMode: () => mockIsViewOnly,
-}));
 jest.mock('@suite-native/accounts', () => ({
     ...jest.requireActual('@suite-native/accounts'),
     useAccountAlerts: () => ({ showViewOnlyAddAccountAlert: jest.fn() }),
-}));
-jest.mock('@suite-common/wallet-core', () => ({
-    ...jest.requireActual('@suite-common/wallet-core'),
-    selectVisibleDeviceAccounts: () => mockAccounts,
 }));
 jest.mock('@suite-native/earn', () => ({
     ...jest.requireActual('@suite-native/earn'),
@@ -59,11 +49,23 @@ const item: YieldPromoListItem = {
     apy: null,
 };
 
-const renderNavigation = async () => {
+const renderNavigation = async (
+    accounts = [account, mockWalletAccount({ symbol: account.symbol, index: 1 })],
+    isViewOnly = false,
+) => {
+    const selectedDevice = mockSuiteDevice({
+        state: { staticSessionId: account.deviceState },
+        connected: !isViewOnly,
+        remember: isViewOnly,
+    });
+    const preloadedState = {
+        device: { devices: [selectedDevice], selectedDevice },
+        wallet: { accounts },
+    };
     const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
     const hook = await renderHookWithStoreProvider(useYieldPromoNavigation, {
         services,
-        preloadedState: { device: { devices: [], selectedDevice: undefined } },
+        preloadedState,
     });
 
     return { ...hook, analytics: services.analytics };
@@ -72,8 +74,6 @@ const renderNavigation = async () => {
 describe('Yield entry sheet analytics', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        mockIsViewOnly = false;
-        mockAccounts = [account, mockWalletAccount({ symbol: account.symbol, index: 1 })];
     });
 
     it('reports one account-selection cancellation, including another visit', async () => {
@@ -131,8 +131,7 @@ describe('Yield entry sheet analytics', () => {
     });
 
     it('reports opening and cancelling network activation without leaking the selected account', async () => {
-        mockAccounts = [];
-        const { result, analytics } = await renderNavigation();
+        const { result, analytics } = await renderNavigation([]);
         await act(() => result.current.onPromoItemPress(item));
         await act(() => result.current.onEnableNetworkDismiss());
         await act(() => result.current.onEnableNetworkDismiss());
@@ -162,9 +161,7 @@ describe('Yield entry sheet analytics', () => {
     });
 
     it('reports a cancellation when view-only mode prevents network activation', async () => {
-        mockAccounts = [];
-        mockIsViewOnly = true;
-        const { result, analytics } = await renderNavigation();
+        const { result, analytics } = await renderNavigation([], true);
         await act(() => result.current.onPromoItemPress(item));
         await act(() => result.current.onEnableNetworkPress());
         await act(() => result.current.onEnableNetworkDismiss());
@@ -183,8 +180,7 @@ describe('Yield entry sheet analytics', () => {
     });
 
     it('does not report continuing network activation as cancellation', async () => {
-        mockAccounts = [];
-        const { result, analytics } = await renderNavigation();
+        const { result, analytics } = await renderNavigation([]);
         await act(() => result.current.onPromoItemPress(item));
         await act(() => result.current.onEnableNetworkPress());
         await act(() => result.current.onEnableNetworkDismiss());

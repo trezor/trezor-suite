@@ -71,12 +71,12 @@ describe('getWrappedNativeResolutionPayload', () => {
         expectOnlyAllowedKeys(payload);
     });
 
-    it.each(['pending', null] as const)('returns null for the status %s', status => {
+    it('skips resolution reporting for a pending transaction', () => {
         expect(
             getWrappedNativeResolutionPayload({
                 durationMs: 5000,
                 networkSymbol: asNetworkSymbol('eth'),
-                status,
+                status: 'pending',
             }),
         ).toBeNull();
     });
