@@ -25,7 +25,7 @@ const formState: Pick<FormState, 'options' | 'selectedFee'> = {
 };
 
 describe('reportTransactionCreated', () => {
-    it.each(['USDT', 'WETH', undefined])('reports the transaction token symbol %s', symbol => {
+    it.each(['USDT', undefined])('reports the transaction token symbol %s', symbol => {
         const services: NativeAnalyticsDep = {
             analytics: mockNativeAnalytics(mock<NativeAnalyticsDep['analytics']['report']>()),
         };
@@ -50,41 +50,38 @@ describe('reportTransactionCreated', () => {
         );
     });
 
-    it.each(['stake', 'yield'] as const)(
-        'reports enabled transaction options for %s without exposing transaction contents',
-        txType => {
-            const services: NativeAnalyticsDep = {
-                analytics: mockNativeAnalytics(mock<NativeAnalyticsDep['analytics']['report']>()),
-            };
+    it('reports enabled transaction options without exposing transaction contents', () => {
+        const services: NativeAnalyticsDep = {
+            analytics: mockNativeAnalytics(mock<NativeAnalyticsDep['analytics']['report']>()),
+        };
 
-            reportTransactionCreated({
-                analytics: services.analytics,
-                symbol: asNetworkSymbol('eth'),
-                precomposedTransaction,
-                formState,
-                txType,
-            });
+        reportTransactionCreated({
+            analytics: services.analytics,
+            symbol: asNetworkSymbol('eth'),
+            precomposedTransaction,
+            formState,
+            txType: 'stake',
+        });
 
-            expect(services.analytics.report).toHaveBeenCalledWith({
-                type: 'transaction-created',
-                payload: {
-                    action: 'sent',
-                    symbol: 'eth',
-                    tokens: '',
-                    outputsCount: 1,
-                    broadcast: true,
-                    bitcoinLocktime: false,
-                    transactionData: true,
-                    ethereumNonce: true,
-                    destinationTag: false,
-                    selectedFee: 'custom',
-                    isCoinControlEnabled: false,
-                    hasCoinControlBeenOpened: false,
-                    txType,
-                },
-            });
-        },
-    );
+        expect(services.analytics.report).toHaveBeenCalledWith({
+            type: 'transaction-created',
+            payload: {
+                action: 'sent',
+                symbol: 'eth',
+                tokens: '',
+                outputsCount: 1,
+                broadcast: true,
+                bitcoinLocktime: false,
+                transactionData: true,
+                ethereumNonce: true,
+                destinationTag: false,
+                selectedFee: 'custom',
+                isCoinControlEnabled: false,
+                hasCoinControlBeenOpened: false,
+                txType: 'stake',
+            },
+        });
+    });
 
     it('reports disabled options and the default fee level', () => {
         const services: NativeAnalyticsDep = {

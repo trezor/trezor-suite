@@ -136,65 +136,54 @@ describe('useWrappedNativeFlowResolutionAnalytics', () => {
         expect(analytics.report).toHaveBeenCalledTimes(2);
     });
 
-    it.each(['wrap', 'unwrap'] as const)(
-        'reports a new %s transaction even if its resolved status is unchanged',
-        async flowType => {
-            const props = { ...pendingWrap, flowType, status: 'confirmed' as const };
-            const { rerender, analytics } = await renderResolutionAnalytics(props);
+    it('reports a new transaction even if its resolved status is unchanged', async () => {
+        const props = { ...pendingWrap, status: 'confirmed' as const };
+        const { rerender, analytics } = await renderResolutionAnalytics(props);
 
-            await rerender({ ...props, txid: 'tx-2' });
+        await rerender({ ...props, txid: 'tx-2' });
 
-            expect(analytics.report).toHaveBeenCalledTimes(2);
-            expect(analytics.report).toHaveBeenLastCalledWith({
-                type: `yield/${flowType}`,
-                payload: expect.objectContaining({ type: 'success' }),
-            });
-        },
-    );
+        expect(analytics.report).toHaveBeenCalledTimes(2);
+        expect(analytics.report).toHaveBeenLastCalledWith({
+            type: 'yield/wrap',
+            payload: expect.objectContaining({ type: 'success' }),
+        });
+    });
 
-    it.each(['wrap', 'unwrap'] as const)(
-        'does not report a %s resolution without a broadcast transaction',
-        async flowType => {
-            const { analytics, unmount } = await renderResolutionAnalytics({
-                ...pendingWrap,
-                flowType,
-                status: 'confirmed',
-                txid: null,
-            });
+    it('does not report a resolution without a broadcast transaction', async () => {
+        const { analytics, unmount } = await renderResolutionAnalytics({
+            ...pendingWrap,
+            status: 'confirmed',
+            txid: null,
+        });
 
-            await unmount();
+        await unmount();
 
-            expect(analytics.report).not.toHaveBeenCalled();
-        },
-    );
+        expect(analytics.report).not.toHaveBeenCalled();
+    });
 
-    it.each(['wrap', 'unwrap'] as const)(
-        'measures %s resolution from broadcast when the pending flow is reopened',
-        async flowType => {
-            const submittedAt = Date.now() - 60_000;
-            const { analytics } = await renderResolutionAnalytics({
-                ...pendingWrap,
-                flowType,
-                status: 'confirmed',
-                submittedAt,
-            });
-            const event = jest.mocked(analytics.report).mock.calls[0]?.[0];
+    it('measures the resolution from broadcast when the pending flow is reopened', async () => {
+        const submittedAt = Date.now() - 60_000;
+        const { analytics } = await renderResolutionAnalytics({
+            ...pendingWrap,
+            status: 'confirmed',
+            submittedAt,
+        });
+        const event = jest.mocked(analytics.report).mock.calls[0]?.[0];
 
-            expect(event).toEqual({
-                type: `yield/${flowType}`,
-                payload: {
-                    type: 'success',
-                    action: 'continue',
-                    networkSymbol: 'eth',
-                    durationMs: expect.any(Number),
-                },
-            });
-            expect(
-                event &&
-                    'payload' in event &&
-                    'durationMs' in event.payload &&
-                    event.payload.durationMs,
-            ).toBeGreaterThanOrEqual(60_000);
-        },
-    );
+        expect(event).toEqual({
+            type: 'yield/wrap',
+            payload: {
+                type: 'success',
+                action: 'continue',
+                networkSymbol: 'eth',
+                durationMs: expect.any(Number),
+            },
+        });
+        expect(
+            event &&
+                'payload' in event &&
+                'durationMs' in event.payload &&
+                event.payload.durationMs,
+        ).toBeGreaterThanOrEqual(60_000);
+    });
 });

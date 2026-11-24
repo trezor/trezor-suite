@@ -238,7 +238,7 @@ describe('signSolanaStakingTransactionThunk', () => {
         errorSpy.mockRestore();
     });
 
-    it('signs and stores the transaction without broadcasting', async () => {
+    it('signs and stores the transaction with its createdTimestamp (powers the validity timer)', async () => {
         const store = buildStore();
 
         const result = await dispatchSign(store, {
@@ -253,18 +253,6 @@ describe('signSolanaStakingTransactionThunk', () => {
             solAccount.descriptor,
             'ed25519signature',
         );
-    });
-
-    it('stamps createdTimestamp on the stored precomposed transaction (powers the validity timer)', async () => {
-        const store = buildStore();
-
-        const result = await dispatchSign(store, {
-            accountKey: SOL_ACCOUNT_KEY,
-            stakeType: 'stake',
-            precomposedTransaction: buildSolanaPrecomposedTransaction(),
-        });
-
-        expect(result).toEqual({ ok: true });
         expect(store.getState().wallet.send.precomposedTx?.createdTimestamp).toEqual(
             expect.any(Number),
         );
@@ -372,26 +360,6 @@ describe('signSolanaStakingTransactionThunk', () => {
         expect(prepareClaimSolTxMock).not.toHaveBeenCalled();
     });
 
-    it('signs and serializes a solana claim transaction', async () => {
-        const store = buildStore();
-
-        const result = await dispatchSign(store, {
-            accountKey: SOL_ACCOUNT_KEY,
-            stakeType: 'claim',
-            precomposedTransaction: buildSolanaPrecomposedTransaction(),
-        });
-
-        expect(result).toEqual({ ok: true });
-        // Claim must route through prepareClaimSolTx, never the stake builder.
-        expect(prepareClaimSolTxMock).toHaveBeenCalledTimes(1);
-        expect(prepareStakeSolTxMock).not.toHaveBeenCalled();
-        expect(solanaSignTransactionMock).toHaveBeenCalledTimes(1);
-        expect(solanaTxShim.addSignature).toHaveBeenCalledWith(
-            solAccount.descriptor,
-            'ed25519signature',
-        );
-    });
-
     it('rejects a stake whose composed amount is zero', async () => {
         // A zero amount would sign a stake that moves nothing, so it must be rejected upfront
         const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -418,7 +386,7 @@ describe('signSolanaStakingTransactionThunk', () => {
         errorSpy.mockRestore();
     });
 
-    it('signs a claim and ignores the composed amount', async () => {
+    it('signs and serializes a solana claim, ignoring the composed amount', async () => {
         const store = buildStore();
         const precomposedTransaction = {
             ...buildSolanaPrecomposedTransaction(),
@@ -432,7 +400,14 @@ describe('signSolanaStakingTransactionThunk', () => {
         });
 
         expect(result).toEqual({ ok: true });
+        // Claim must route through prepareClaimSolTx, never the stake builder.
         expect(prepareClaimSolTxMock).toHaveBeenCalledTimes(1);
         expect(prepareClaimSolTxMock.mock.calls[0][0]).not.toHaveProperty('amount');
+        expect(prepareStakeSolTxMock).not.toHaveBeenCalled();
+        expect(solanaSignTransactionMock).toHaveBeenCalledTimes(1);
+        expect(solanaTxShim.addSignature).toHaveBeenCalledWith(
+            solAccount.descriptor,
+            'ed25519signature',
+        );
     });
 });

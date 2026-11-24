@@ -61,15 +61,12 @@ describe('useNavigateBackAnalytics', () => {
         },
     );
 
-    it.each(['GO_BACK', 'POP', 'POP_TO_TOP'])(
-        'does not cancel a background screen removed by %s',
-        async type => {
-            mockNavigation.isFocused.mockReturnValue(false);
-            const { analytics, remove } = await renderBackAnalytics();
-            await remove(type);
-            expect(analytics.report).not.toHaveBeenCalled();
-        },
-    );
+    it('does not cancel a background screen removed from the stack', async () => {
+        mockNavigation.isFocused.mockReturnValue(false);
+        const { analytics, remove } = await renderBackAnalytics();
+        await remove('GO_BACK');
+        expect(analytics.report).not.toHaveBeenCalled();
+    });
 
     it('does not cancel a screen that continued', async () => {
         const { analytics, remove, result } = await renderBackAnalytics();

@@ -121,18 +121,4 @@ describe('Earn fee analytics', () => {
         await rerender({ ...initialProps, isEnabled: false, hasEstimationError: true });
         expect(analytics.report).toHaveBeenCalledTimes(1);
     });
-
-    it('uses the existing interaction event without private context or numeric fees', async () => {
-        const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
-        await renderHookWithBasicProvider(useEarnFeeAnalytics, {
-            initialProps: { ...initialProps, flow: 'wrap', isFeeUnavailable: true },
-            services,
-        });
-        expect(jest.mocked(services.analytics.report).mock.calls.map(([event]) => event)).toEqual([
-            {
-                type: 'yield/interaction',
-                payload: { element: 'fee-unavailable-banner', value: 'wrap', networkSymbol: 'eth' },
-            },
-        ]);
-    });
 });

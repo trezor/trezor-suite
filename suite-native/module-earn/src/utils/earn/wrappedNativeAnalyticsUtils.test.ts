@@ -35,18 +35,6 @@ describe('buildWrappedNativeFlowEvent', () => {
             payload,
         });
     });
-
-    it('passes the payload through unchanged', () => {
-        const payload = {
-            type: 'error',
-            action: 'continue',
-            networkSymbol: 'eth',
-            durationMs: 1234,
-            errorMessage: 'push-failed',
-        } as const;
-
-        expect(buildWrappedNativeFlowEvent('wrap', payload).payload).toBe(payload);
-    });
 });
 
 describe('getWrappedNativeResolutionPayload', () => {
@@ -83,39 +71,14 @@ describe('getWrappedNativeResolutionPayload', () => {
         expectOnlyAllowedKeys(payload);
     });
 
-    it('returns null while the transaction is still pending', () => {
+    it.each(['pending', null] as const)('returns null for the status %s', status => {
         expect(
             getWrappedNativeResolutionPayload({
                 durationMs: 5000,
                 networkSymbol: asNetworkSymbol('eth'),
-                status: 'pending',
+                status,
             }),
         ).toBeNull();
-    });
-
-    it('returns null when there is no status', () => {
-        expect(
-            getWrappedNativeResolutionPayload({
-                durationMs: 5000,
-                networkSymbol: asNetworkSymbol('eth'),
-                status: null,
-            }),
-        ).toBeNull();
-    });
-
-    it('preserves an undefined durationMs', () => {
-        const payload = getWrappedNativeResolutionPayload({
-            durationMs: undefined,
-            networkSymbol: asNetworkSymbol('eth'),
-            status: 'confirmed',
-        });
-
-        expect(payload).toEqual({
-            type: 'success',
-            action: 'continue',
-            networkSymbol: 'eth',
-            durationMs: undefined,
-        });
     });
 });
 

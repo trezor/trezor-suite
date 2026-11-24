@@ -231,77 +231,38 @@ beforeEach(() => {
 });
 
 describe('signEthereumStakingTransactionThunk', () => {
-    it('reads the stake variant from the compose form draft and forwards it to ethereumSignTransaction', async () => {
-        const store = buildStore({
-            formDrafts: {
-                [getFormDraftKey('stake', ETH_ACCOUNT_KEY)]: buildComposeFormDraft('stake', '1.5'),
-            },
-        });
-
-        const result = await dispatchFlow(store, {
-            accountKey: ETH_ACCOUNT_KEY,
-            stakeType: 'stake',
-            precomposedTransaction: buildPrecomposedTransaction(),
-        });
-
-        expect(result).toEqual({ ok: true });
-        expect(pushTransactionMock).not.toHaveBeenCalled();
-
-        const signCall = ethereumSignTransactionMock.mock.calls[0][0];
-        expect(signCall.transaction.to).toBe(POOL_ADDRESS);
+    it.each([
         // 1.5 ETH = 1.5 * 10^18 wei = 1500000000000000000 = 0x14d1120d7b160000
-        expect(signCall.transaction.value).toBe('0x14d1120d7b160000');
-        expect(signCall.transaction.data).toBe(buildStakeData(WALLET_SDK_SOURCE_MOBILE));
-    });
+        { stakeType: 'stake', to: POOL_ADDRESS, value: '0x14d1120d7b160000' },
+        { stakeType: 'unstake', to: POOL_ADDRESS, value: '0x0' },
+        { stakeType: 'claim', to: ACCOUNTING_ADDRESS, value: '0x0' },
+    ] as const)(
+        'forwards the $stakeType variant of the compose form draft to ethereumSignTransaction',
+        async ({ stakeType, to, value }) => {
+            const store = buildStore({
+                formDrafts: {
+                    [getFormDraftKey(stakeType, ETH_ACCOUNT_KEY)]: buildComposeFormDraft(
+                        stakeType,
+                        '1.5',
+                    ),
+                },
+            });
 
-    it('passes value=0 and unstake calldata for an unstake variant', async () => {
-        const store = buildStore({
-            formDrafts: {
-                [getFormDraftKey('unstake', ETH_ACCOUNT_KEY)]: buildComposeFormDraft(
-                    'unstake',
-                    '1.5',
-                ),
-            },
-        });
+            const result = await dispatchFlow(store, {
+                accountKey: ETH_ACCOUNT_KEY,
+                stakeType,
+                precomposedTransaction: buildPrecomposedTransaction(),
+            });
 
-        const result = await dispatchFlow(store, {
-            accountKey: ETH_ACCOUNT_KEY,
-            stakeType: 'unstake',
-            precomposedTransaction: buildPrecomposedTransaction(),
-        });
+            expect(result).toEqual({ ok: true });
+            expect(pushTransactionMock).not.toHaveBeenCalled();
 
-        expect(result).toEqual({ ok: true });
-        expect(pushTransactionMock).not.toHaveBeenCalled();
-
-        const signCall = ethereumSignTransactionMock.mock.calls[0][0];
-        expect(signCall.transaction.to).toBe(POOL_ADDRESS);
-        expect(signCall.transaction.value).toBe('0x0');
-        expect(signCall.transaction.data).toBe(
-            buildUnstakeData('1500000000000000000', UNSTAKE_INTERCHANGES, WALLET_SDK_SOURCE_MOBILE),
-        );
-    });
-
-    it('uses the accounting contract address for a claim variant', async () => {
-        const store = buildStore({
-            formDrafts: {
-                [getFormDraftKey('claim', ETH_ACCOUNT_KEY)]: buildComposeFormDraft('claim', '0'),
-            },
-        });
-
-        const result = await dispatchFlow(store, {
-            accountKey: ETH_ACCOUNT_KEY,
-            stakeType: 'claim',
-            precomposedTransaction: buildPrecomposedTransaction(),
-        });
-
-        expect(result).toEqual({ ok: true });
-        expect(pushTransactionMock).not.toHaveBeenCalled();
-
-        const signCall = ethereumSignTransactionMock.mock.calls[0][0];
-        expect(signCall.transaction.to).toBe(ACCOUNTING_ADDRESS);
-        expect(signCall.transaction.value).toBe('0x0');
-        expect(signCall.transaction.data).toBe(buildClaimWithdrawRequestData());
-    });
+            const signCall = ethereumSignTransactionMock.mock.calls[0][0];
+            expect(signCall.transaction.to).toBe(to);
+            expect(signCall.transaction.value).toBe(value);
+            expect(signCall.transaction.data).toBe(buildCalldataForKind(stakeType));
+        },
+    );
 
     it('rejects an unstake when the live staked balance dropped below the requested amount', async () => {
         const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});

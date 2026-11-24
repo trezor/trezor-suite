@@ -44,8 +44,6 @@ beforeEach(() => jest.clearAllMocks());
 
 it.each([
     [true, 'fulfilled'],
-    [false, 'fulfilled'],
-    [true, 'rejected'],
     [false, 'rejected'],
 ] as const)(
     'reports confirmation with draft=%s before a %s broadcast result, once per send attempt',

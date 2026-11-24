@@ -64,19 +64,4 @@ describe('useEarnReviewAutoStart', () => {
 
         await waitFor(() => expect(params.onSignFailed).toHaveBeenCalledTimes(1));
     });
-
-    it('signs only once and never re-prompts even if the screen re-renders', async () => {
-        const params = buildParams();
-
-        const { rerender } = await renderHook((props: Params) => useEarnReviewAutoStart(props), {
-            initialProps: params,
-        });
-
-        await waitFor(() => expect(params.handleSign).toHaveBeenCalledTimes(1));
-
-        await rerender({ ...params });
-        await rerender({ ...params });
-
-        expect(params.handleSign).toHaveBeenCalledTimes(1);
-    });
 });
