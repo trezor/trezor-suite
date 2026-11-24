@@ -3,6 +3,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     type LoadInitialDataThunkDeps,
+    TRADING_CATALOGS,
     tradingExchangeActions,
     tradingThunks,
 } from '@suite-common/trading';
@@ -149,10 +150,12 @@ describe('useExchangeData', () => {
         expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(2);
         expect(initialThunkLoadActionSpy).toHaveBeenNthCalledWith(1, {
             activeSection: 'exchange',
+            catalogs: TRADING_CATALOGS,
             forceReload: false,
         });
         expect(initialThunkLoadActionSpy).toHaveBeenLastCalledWith({
             activeSection: 'exchange',
+            catalogs: TRADING_CATALOGS,
             forceReload: true,
         });
 
@@ -161,6 +164,7 @@ describe('useExchangeData', () => {
         });
         expect(initialThunkLoadActionSpy).toHaveBeenLastCalledWith({
             activeSection: 'exchange',
+            catalogs: TRADING_CATALOGS,
             forceReload: false,
         });
     });
@@ -194,6 +198,7 @@ describe('useExchangeData', () => {
 
             expect(initialThunkLoadActionSpy).toHaveBeenCalledWith({
                 activeSection: 'exchange',
+                catalogs: TRADING_CATALOGS,
                 forceReload: false,
             });
         });
@@ -240,6 +245,7 @@ describe('useExchangeData', () => {
             expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(1);
             expect(initialThunkLoadActionSpy).toHaveBeenCalledWith({
                 activeSection: 'exchange',
+                catalogs: TRADING_CATALOGS,
                 forceReload: false,
             });
         });
@@ -263,6 +269,7 @@ describe('useExchangeData', () => {
             expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(1);
             expect(initialThunkLoadActionSpy).toHaveBeenLastCalledWith({
                 activeSection: 'exchange',
+                catalogs: TRADING_CATALOGS,
                 forceReload: false,
             });
         });
