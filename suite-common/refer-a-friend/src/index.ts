@@ -19,6 +19,7 @@ export {
     referAFriendReducer,
 } from './referAFriendSlice';
 export {
+    selectDoesReferralExistOnlyForOtherWallets,
     selectIsReferralWalletDescriptorAvailable,
     selectReferAFriendApiCustomUrl,
     selectReferAFriendApiUrl,
