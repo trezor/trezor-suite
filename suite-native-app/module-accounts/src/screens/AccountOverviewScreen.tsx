@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { selectAccountListSectionsWithZeroBalanceGroup } from '@suite-common/assets';
 import {
     type AccountsRootState,
     type TokensRootState,
@@ -13,7 +14,6 @@ import {
 import {
     AccountDiscoveryFailedBanner,
     type NativeAccountsRootState,
-    selectAccountListSectionsWithZeroBalanceGroup,
     selectAreTokensSupportedByAccount,
     selectIsAccountDiscoveryFailed,
     useResolvedAccountKey,

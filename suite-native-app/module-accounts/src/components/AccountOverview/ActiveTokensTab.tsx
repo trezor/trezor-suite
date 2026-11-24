@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { FlashList } from '@shopify/flash-list';
 
+import { selectAccountListSectionsWithZeroBalanceGroup } from '@suite-common/assets';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
     AccountsListItem,
@@ -10,7 +11,6 @@ import {
     AccountsListTokenItem,
     type NativeAccountsRootState,
     type OnSelectAccount,
-    selectAccountListSectionsWithZeroBalanceGroup,
 } from '@suite-native/accounts';
 import {
     StakingApyBadge,
