@@ -110,8 +110,7 @@ export const useAppShortcuts = () => {
             altOnly &&
             e.code === KEYBOARD_CODE.KEY_W &&
             isDeviceSelected &&
-            !isOnboardingRoute &&
-            !isOnboardingSettings
+            (!selectedDevice?.connected || (!isOnboardingRoute && !isOnboardingSettings))
         ) {
             e.preventDefault();
             if (!discoveryInProgress) {

@@ -19,10 +19,14 @@ export const OnboardingSidebar = () => {
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const { isSidebarCollapsed } = useResponsiveContext();
 
+    if (!isDeviceConnected) {
+        return <Sidebar />;
+    }
+
     return (
         <Sidebar isDeviceSelectorInteractive={false}>
             <Column flex="1" overflow="auto">
-                {isActive && isDeviceConnected && <OnboardingStepper />}
+                {isActive && <OnboardingStepper />}
             </Column>
             <Divider margin={0} color="surfaceBorderSunken" />
             <Column

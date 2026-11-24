@@ -3,15 +3,19 @@ import { type ReactNode, useRef } from 'react';
 import { TRAFFIC_LIGHT_DEFAULT_OFFSET } from '@suite/macos';
 import { MODAL_CONTEXT_USER } from '@suite/modal';
 import { ReduxModal } from '@suite-app/app-modal';
+import { selectIsDeviceConnected } from '@suite-common/device';
 import { Box, Column, Row } from '@trezor/components';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
 import {
+    AboveTabletOnly,
     ConnectionGlobalModalManager,
+    GuideButton,
     GuideRouter,
     MAX_CONTENT_WIDTH_NUMERIC,
     SuiteBanners,
     useFilteredModal,
     useResponsiveContextOnChange,
+    useSelector,
 } from '@trezor/suite';
 
 type OnboardingLayoutProps = {
@@ -21,6 +25,7 @@ type OnboardingLayoutProps = {
 
 export const OnboardingLayout = ({ children, sidebar }: OnboardingLayoutProps) => {
     const contentRef = useRef<HTMLDivElement>(null);
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const isMac = isMacOs();
     const isDesktopApp = isDesktop();
     useResponsiveContextOnChange(contentRef);
@@ -64,6 +69,11 @@ export const OnboardingLayout = ({ children, sidebar }: OnboardingLayoutProps) =
                 </Column>
                 <GuideRouter />
             </Row>
+            {!isDeviceConnected && (
+                <AboveTabletOnly>
+                    <GuideButton />
+                </AboveTabletOnly>
+            )}
         </>
     );
 };

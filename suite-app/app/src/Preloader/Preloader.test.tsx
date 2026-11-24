@@ -827,6 +827,8 @@ describe(`${Preloader.name} component`, () => {
             });
             expect(screen.queryByTestId('@onboarding/stepper')).toBeNull();
             expect(deviceStep).not.toBeInTheDocument();
+            expect(screen.getByTestId('@suite/menu/suite-index')).toBeVisible();
+            expect(screen.getAllByTestId('@guide/button-open')).toHaveLength(1);
 
             const bootloaderDevice = mockSuiteDevice(
                 { mode: 'bootloader', connected: true, available: true },
@@ -840,6 +842,7 @@ describe(`${Preloader.name} component`, () => {
             act(() => {
                 services.store.dispatch(deviceActions.updateSelectedDevice(bootloaderDevice));
             });
+            expect(screen.queryByTestId('@suite/menu/suite-index')).toBeNull();
             expect(
                 screen.getByTestId('@onboarding/stepper/device').getAttribute('aria-label'),
             ).toMatch(/67%$/);
@@ -1090,7 +1093,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it.each(['security-check', 'firmware', 'create-or-recover', 'set-pin', 'final'] as const)(
-        'hides the stepper for a disconnected remembered device at %s',
+        'shows the normal sidebar for a disconnected remembered device at %s',
         activeStepId => {
             const initialState = getInitialState({
                 router: createRouterStateMockForRoute('onboarding-index'),
@@ -1110,8 +1113,60 @@ describe(`${Preloader.name} component`, () => {
             );
 
             expect(screen.queryByTestId('@onboarding/stepper')).toBeNull();
+            expect(screen.getByTestId('@suite/menu/suite-index')).toBeVisible();
+            expect(screen.getByTestId('@menu/switch-device')).toHaveAttribute('tabindex', '0');
             expect(screen.getByTestId('@suite/menu/settings')).toBeVisible();
             expect(screen.getByTestId('@guide/button-open')).toBeVisible();
+            unmount();
+        },
+    );
+
+    it.each([
+        ['onboarding-index', 'click'],
+        ['onboarding-index', 'shortcut'],
+        ['settings-index', 'click'],
+        ['settings-index', 'shortcut'],
+    ] as const)(
+        'opens the device switcher from %s using %s while disconnected',
+        (routeName, trigger) => {
+            const initialState = getInitialState({
+                router: {
+                    ...createRouterStateMockForRoute(routeName),
+                    settingsBackRoute: { name: 'onboarding-index' },
+                },
+                suite: {
+                    transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
+                },
+                device: { selectedDevice: mockSuiteDevice({ connected: false, available: false }) },
+            });
+            initialState.onboarding = {
+                ...initialState.onboarding,
+                isActive: true,
+                activeStepId: 'set-pin',
+            };
+            const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
+                preloadedState: initialState,
+                reducer: (state = initialState, action) => ({
+                    ...state,
+                    router: routerReducer(state.router, action),
+                    onboarding: onboardingReducers(state.onboarding, action),
+                }),
+                services: createServices,
+            });
+            const { unmount } = renderWithProviders(
+                { ...services, networks: { networkIcon } },
+                <Index app="onboarding" />,
+            );
+
+            expect(screen.getByTestId('@suite/menu/suite-index')).toBeVisible();
+            if (trigger === 'click') {
+                fireEvent.click(screen.getByTestId('@menu/switch-device'));
+            } else {
+                fireEvent.keyDown(window, { code: 'KeyW', altKey: true });
+            }
+
+            expect(services.store.getState().router.route?.name).toBe('suite-switch-device');
+            expect(services.store.getState().onboarding.activeStepId).toBe('set-pin');
             unmount();
         },
     );
@@ -1338,6 +1393,8 @@ describe(`${Preloader.name} component`, () => {
         expect(services.store.getState().router.route?.name).toBe('settings-index');
         expect(screen.queryByTestId('@onboarding-layout/body')).toBeNull();
         expect(screen.queryByTestId('@onboarding/stepper')).toBeNull();
+        expect(screen.getByTestId('@suite/menu/suite-index')).toBeVisible();
+        expect(screen.getAllByTestId('@guide/button-open')).toHaveLength(1);
         fireEvent.click(screen.getByTestId('@settings/back'));
         expect(services.store.getState().router.route?.name).toBe('onboarding-index');
         expect(services.store.getState().onboarding.activeStepId).toBe('final');

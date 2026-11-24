@@ -150,7 +150,7 @@ export const Preloader = memo(({ children }: PropsWithChildren) => {
 
     if (isOnboardingSettings) {
         return (
-            <SuiteLayout sidebar={<OnboardingSidebar />} showGuideButton={false}>
+            <SuiteLayout sidebar={<OnboardingSidebar />} showGuideButton={!device?.connected}>
                 {children}
             </SuiteLayout>
         );
