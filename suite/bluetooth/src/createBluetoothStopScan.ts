@@ -2,10 +2,11 @@ import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type ConnectionMode } from '@suite/device';
 import { bluetoothActions } from '@suite-common/bluetooth';
-import { bluetoothIpc } from '@trezor/transport-bluetooth';
+import { type BluetoothIpcApi } from '@trezor/transport-bluetooth';
 
-type BluetoothStopScanDeps = {
+export type BluetoothStopScanDeps = {
     dispatch: Dispatch;
+    bluetoothIpc: Pick<BluetoothIpcApi, 'stopScan'>;
     getDefaultConnectionMode: () => ConnectionMode;
     getIsConnectionModalOpen: () => boolean;
 };
@@ -24,5 +25,5 @@ export const createBluetoothStopScan =
 
         deps.dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
         // This can fail, but there is nothing we can do about it.
-        await bluetoothIpc.stopScan('ui');
+        await deps.bluetoothIpc.stopScan('ui');
     };

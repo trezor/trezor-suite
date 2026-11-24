@@ -3,7 +3,7 @@ import { type Device } from '@trezor/connect';
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { type BluetoothDisconnectDevice } from './createBluetoothDisconnectDevice';
 
-type BluetoothOnDeviceConnectedDeps = {
+export type BluetoothOnDeviceConnectedDeps = {
     getKnownDeviceByDeviceId: (deviceId?: string) => DesktopBluetoothDevice | undefined;
     disconnectDevice: BluetoothDisconnectDevice;
 };

@@ -1,7 +1,9 @@
+import { mock } from '@trezor/dependency-injection';
+
 import { type BackgroundScan } from '../src/bluetoothBackgroundScan';
 
-export const mockBackgroundScan = (): jest.Mocked<BackgroundScan> => ({
-    start: jest.fn(),
-    stop: jest.fn(),
-    restartIfNeeded: jest.fn(),
+export const mockBackgroundScan = () => ({
+    start: mock<BackgroundScan['start']>(),
+    stop: mock<BackgroundScan['stop']>(),
+    restartIfNeeded: mock<BackgroundScan['restartIfNeeded']>(),
 });

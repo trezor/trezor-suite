@@ -1,8 +1,12 @@
+import { mockConnectDevice } from '@suite-common/suite-types/mocks';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import { createMockDeps } from '@trezor/dependency-injection';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
-import { createBluetoothOnDeviceConnected } from './createBluetoothOnDeviceConnected';
+import {
+    type BluetoothOnDeviceConnectedDeps,
+    createBluetoothOnDeviceConnected,
+} from './createBluetoothOnDeviceConnected';
 import { mockDesktopBluetoothDevice } from '../mocks/mockDesktopBluetoothDevice';
 
 const knownDevice = (type: 'connected' | 'connecting' | 'disconnected') =>
@@ -11,18 +15,22 @@ const knownDevice = (type: 'connected' | 'connecting' | 'disconnected') =>
         connectionStatus: { type },
     });
 
-const usbDevice = { id: 'dev', descriptor: { apiType: 'usb' } } as any;
-const btDevice = { id: 'dev', descriptor: { apiType: 'bluetooth' } } as any;
+const usbDevice = mockConnectDevice({ id: 'dev', descriptor: { apiType: 'usb', id: 'dev' } });
+const otherUsbDevice = mockConnectDevice({
+    id: 'other-dev',
+    descriptor: { apiType: 'usb', id: 'other-dev' },
+});
+const btDevice = mockConnectDevice({ id: 'dev', descriptor: { apiType: 'bluetooth', id: 'dev' } });
 
 describe('createBluetoothOnDeviceConnected', () => {
     const setup = (known: DesktopBluetoothDevice | undefined) => {
-        const disconnectDevice = jest.fn().mockResolvedValue(undefined);
         jest.spyOn(console, 'warn').mockImplementation(() => {});
-        const onDeviceConnected = createBluetoothOnDeviceConnected(
-            createMockDeps({ getKnownDeviceByDeviceId: () => known, disconnectDevice }),
-        );
+        const deps = createMockDeps<BluetoothOnDeviceConnectedDeps>({
+            getKnownDeviceByDeviceId: deviceId => (deviceId === 'dev' ? known : undefined),
+            disconnectDevice: () => Promise.resolve(),
+        });
 
-        return { onDeviceConnected, disconnectDevice };
+        return { onDeviceConnected: createBluetoothOnDeviceConnected(deps), deps };
     };
 
     afterEach(() => jest.restoreAllMocks());
@@ -30,27 +38,35 @@ describe('createBluetoothOnDeviceConnected', () => {
     it.each(['connected', 'connecting'] as const)(
         'disconnects BT when the same device connects over USB while BT is %s',
         type => {
-            const { onDeviceConnected, disconnectDevice } = setup(knownDevice(type));
+            const { onDeviceConnected, deps } = setup(knownDevice(type));
             onDeviceConnected(usbDevice);
-            expect(disconnectDevice).toHaveBeenCalledWith('bt-id');
+            expect(deps.getKnownDeviceByDeviceId).toHaveBeenCalledWith('dev');
+            expect(deps.disconnectDevice).toHaveBeenCalledWith('bt-id');
         },
     );
 
+    it('does nothing when a different device connects over USB', () => {
+        const { onDeviceConnected, deps } = setup(knownDevice('connected'));
+        onDeviceConnected(otherUsbDevice);
+        expect(deps.getKnownDeviceByDeviceId).toHaveBeenCalledWith('other-dev');
+        expect(deps.disconnectDevice).not.toHaveBeenCalled();
+    });
+
     it('does nothing when the known BT device is disconnected', () => {
-        const { onDeviceConnected, disconnectDevice } = setup(knownDevice('disconnected'));
+        const { onDeviceConnected, deps } = setup(knownDevice('disconnected'));
         onDeviceConnected(usbDevice);
-        expect(disconnectDevice).not.toHaveBeenCalled();
+        expect(deps.disconnectDevice).not.toHaveBeenCalled();
     });
 
     it('does nothing when there is no known BT device', () => {
-        const { onDeviceConnected, disconnectDevice } = setup(undefined);
+        const { onDeviceConnected, deps } = setup(undefined);
         onDeviceConnected(usbDevice);
-        expect(disconnectDevice).not.toHaveBeenCalled();
+        expect(deps.disconnectDevice).not.toHaveBeenCalled();
     });
 
     it('does nothing when the connected device is itself over bluetooth', () => {
-        const { onDeviceConnected, disconnectDevice } = setup(knownDevice('connected'));
+        const { onDeviceConnected, deps } = setup(knownDevice('connected'));
         onDeviceConnected(btDevice);
-        expect(disconnectDevice).not.toHaveBeenCalled();
+        expect(deps.disconnectDevice).not.toHaveBeenCalled();
     });
 });

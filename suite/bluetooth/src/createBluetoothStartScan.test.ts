@@ -1,35 +1,37 @@
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { createMockDeps } from '@trezor/dependency-injection';
-import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
-import { createBluetoothStartScan } from './createBluetoothStartScan';
+import { type BluetoothStartScanDeps, createBluetoothStartScan } from './createBluetoothStartScan';
 
 describe('createBluetoothStartScan', () => {
     const setup = (success: boolean) => {
-        const dispatch = jest.fn();
-        const startScan = jest
-            .spyOn(bluetoothIpc, 'startScan')
-            .mockResolvedValue(
-                success ? { success: true } : ({ success: false, error: 'x' } as any),
-            );
+        const deps = createMockDeps<BluetoothStartScanDeps>({
+            dispatch: action => action,
+            bluetoothIpc: {
+                startScan: () =>
+                    Promise.resolve(
+                        success
+                            ? { success: true }
+                            : { success: false, error: { message: 'x', code: 'x' } },
+                    ),
+            },
+        });
 
-        return { run: createBluetoothStartScan(createMockDeps({ dispatch })), dispatch, startScan };
+        return { run: createBluetoothStartScan(deps), deps };
     };
 
-    afterEach(() => jest.restoreAllMocks());
-
     it('sets scan status to running after successful IPC start', async () => {
-        const { run, dispatch, startScan } = setup(true);
+        const { run, deps } = setup(true);
         await run();
-        expect(startScan).toHaveBeenCalledWith('ui');
-        expect(dispatch).toHaveBeenCalledWith(
+        expect(deps.bluetoothIpc.startScan).toHaveBeenCalledWith('ui');
+        expect(deps.dispatch).toHaveBeenCalledWith(
             bluetoothActions.scanStatusAction({ status: 'running' }),
         );
     });
 
     it('does not change scan status when IPC start fails', async () => {
-        const { run, dispatch } = setup(false);
+        const { run, deps } = setup(false);
         await run();
-        expect(dispatch).not.toHaveBeenCalled();
+        expect(deps.dispatch).not.toHaveBeenCalled();
     });
 });

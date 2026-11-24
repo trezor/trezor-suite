@@ -2,7 +2,7 @@ import { bluetoothActions } from '@suite-common/bluetooth';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import { createMockDeps } from '@trezor/dependency-injection';
 
-import { createOnPowerSuspend } from './createOnPowerSuspend';
+import { type OnPowerSuspendDeps, createOnPowerSuspend } from './createOnPowerSuspend';
 import { mockBackgroundScan } from '../mocks/mockBackgroundScan';
 import { mockDesktopBluetoothDevice } from '../mocks/mockDesktopBluetoothDevice';
 
@@ -13,28 +13,24 @@ const device = (
 
 describe('createOnPowerSuspend', () => {
     it('dispatches power-suspending, stops scan and disconnects only reachable devices', () => {
-        const dispatch = jest.fn();
-        const disconnectDevice = jest.fn().mockResolvedValue(undefined);
-        const backgroundScan = mockBackgroundScan();
-        const onPowerSuspend = createOnPowerSuspend(
-            createMockDeps({
-                dispatch,
-                disconnectDevice,
-                backgroundScan,
-                getKnownDevices: () => [
-                    device('a', 'connected'),
-                    device('b', 'disconnected'),
-                    device('c', 'connecting'),
-                ],
-            }),
-        );
+        const deps = createMockDeps<OnPowerSuspendDeps>({
+            dispatch: action => action,
+            disconnectDevice: () => Promise.resolve(),
+            backgroundScan: mockBackgroundScan(),
+            getKnownDevices: () => [
+                device('a', 'connected'),
+                device('b', 'disconnected'),
+                device('c', 'connecting'),
+            ],
+        });
+        const onPowerSuspend = createOnPowerSuspend(deps);
 
         onPowerSuspend();
 
-        expect(dispatch).toHaveBeenCalledWith(
+        expect(deps.dispatch).toHaveBeenCalledWith(
             bluetoothActions.adapterEventAction({ status: 'power-suspending' }),
         );
-        expect(backgroundScan.stop).toHaveBeenCalledTimes(1);
-        expect(disconnectDevice.mock.calls).toEqual([['a'], ['c']]);
+        expect(deps.backgroundScan.stop).toHaveBeenCalledTimes(1);
+        expect(deps.disconnectDevice.mock.calls).toEqual([['a'], ['c']]);
     });
 });

@@ -118,6 +118,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
         getState: deps.getState,
         desktopApi: deps.desktopApi,
+        getTrezorConnect: deps.getTrezorConnect,
     });
 
     const getCurrentAccountLabels = toGetter(deps.getState, selectAllLabelsForAccount);

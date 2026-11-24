@@ -1,31 +1,28 @@
+import { type ConnectionMode } from '@suite/device';
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { createMockDeps } from '@trezor/dependency-injection';
-import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
-import { createBluetoothStopScan } from './createBluetoothStopScan';
+import { type BluetoothStopScanDeps, createBluetoothStopScan } from './createBluetoothStopScan';
 
 describe('createBluetoothStopScan', () => {
-    const setup = (mode: 'cable' | 'bluetooth', isModalOpen: boolean) => {
-        const dispatch = jest.fn();
-        const stopScan = jest.spyOn(bluetoothIpc, 'stopScan').mockResolvedValue({ success: true });
-        const run = createBluetoothStopScan(
-            createMockDeps({
-                dispatch,
-                getDefaultConnectionMode: () => mode,
-                getIsConnectionModalOpen: () => isModalOpen,
-            }),
-        );
+    const setup = (mode: ConnectionMode, isModalOpen: boolean) => {
+        const deps = createMockDeps<BluetoothStopScanDeps>({
+            dispatch: action => action,
+            bluetoothIpc: {
+                stopScan: () => Promise.resolve({ success: true }),
+            },
+            getDefaultConnectionMode: () => mode,
+            getIsConnectionModalOpen: () => isModalOpen,
+        });
 
-        return { run, dispatch, stopScan };
+        return { run: createBluetoothStopScan(deps), deps };
     };
 
-    afterEach(() => jest.restoreAllMocks());
-
     it('keeps scanning when bluetooth mode and connection modal is open', async () => {
-        const { run, dispatch, stopScan } = setup('bluetooth', true);
+        const { run, deps } = setup('bluetooth', true);
         await run();
-        expect(dispatch).not.toHaveBeenCalled();
-        expect(stopScan).not.toHaveBeenCalled();
+        expect(deps.dispatch).not.toHaveBeenCalled();
+        expect(deps.bluetoothIpc.stopScan).not.toHaveBeenCalled();
     });
 
     it.each([
@@ -33,11 +30,11 @@ describe('createBluetoothStopScan', () => {
         ['cable', true],
         ['cable', false],
     ] as const)('stops scanning for mode=%s modalOpen=%s', async (mode, isModalOpen) => {
-        const { run, dispatch, stopScan } = setup(mode, isModalOpen);
+        const { run, deps } = setup(mode, isModalOpen);
         await run();
-        expect(dispatch).toHaveBeenCalledWith(
+        expect(deps.dispatch).toHaveBeenCalledWith(
             bluetoothActions.scanStatusAction({ status: 'idle' }),
         );
-        expect(stopScan).toHaveBeenCalledWith('ui');
+        expect(deps.bluetoothIpc.stopScan).toHaveBeenCalledWith('ui');
     });
 });

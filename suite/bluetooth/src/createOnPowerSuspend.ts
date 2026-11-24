@@ -7,7 +7,7 @@ import { type BackgroundScan } from './bluetoothBackgroundScan';
 import { type BluetoothDisconnectDevice } from './createBluetoothDisconnectDevice';
 import { isBluetoothDeviceReachable } from './isBluetoothDeviceReachable';
 
-type OnPowerSuspendDeps = {
+export type OnPowerSuspendDeps = {
     getKnownDevices: () => DesktopBluetoothDevice[];
     dispatch: Dispatch;
     backgroundScan: BackgroundScan;
