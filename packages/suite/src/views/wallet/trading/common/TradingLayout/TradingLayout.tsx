@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { selectRouteName } from '@suite/router';
 import { selectIsAllTradingDisabled } from '@suite-common/message-system';
-import { TradingTokenMetadataProvider } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Column, Row } from '@trezor/components';
 
@@ -19,16 +18,14 @@ export const TradingLayout = ({ children }: PropsWithChildren) => {
     useTradingPageHeader();
 
     return (
-        <TradingTokenMetadataProvider>
-            <Column data-testid="@trading" gap={16}>
-                {isDiscoveryRunning && <DiscoveryWarning />}
-                {!isAllTradingDisabled && (
-                    <Row justifyContent="center">
-                        <TradingLayoutNavigation route={routeName} />
-                    </Row>
-                )}
-                {children}
-            </Column>
-        </TradingTokenMetadataProvider>
+        <Column data-testid="@trading" gap={16}>
+            {isDiscoveryRunning && <DiscoveryWarning />}
+            {!isAllTradingDisabled && (
+                <Row justifyContent="center">
+                    <TradingLayoutNavigation route={routeName} />
+                </Row>
+            )}
+            {children}
+        </Column>
     );
 };

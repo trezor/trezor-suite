@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import {
+    TradingTokenMetadataProvider,
     selectTradingExchangeApprovalFlow,
     selectTradingExchangeSelectedQuote,
     selectTradingProviderByNameAndTradeType,
@@ -33,7 +34,7 @@ export const TradingExchangeConfirmPage = () => {
     useTradingPageHeader();
 
     return (
-        <>
+        <TradingTokenMetadataProvider>
             {isDiscoveryRunning && (
                 <Column margin={{ bottom: 16 }}>
                     <DiscoveryWarning />
@@ -53,6 +54,6 @@ export const TradingExchangeConfirmPage = () => {
                 </FlowStepList>
             </Column>
             <TradingFooter provider={provider} />
-        </>
+        </TradingTokenMetadataProvider>
     );
 };

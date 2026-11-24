@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import {
     type TradingRootState,
+    TradingTokenMetadataProvider,
     selectTradingProviderByNameAndTradeType,
     selectTradingSellSelectedQuote,
 } from '@suite-common/trading';
@@ -25,7 +26,7 @@ export const TradingSellConfirmPage = () => {
     useTradingPageHeader();
 
     return (
-        <>
+        <TradingTokenMetadataProvider>
             {isDiscoveryRunning && (
                 <Column margin={{ bottom: 16 }}>
                     <DiscoveryWarning />
@@ -33,6 +34,6 @@ export const TradingSellConfirmPage = () => {
             )}
             <TradingOfferSell requestTrade={requestTrade} isRequestDisabled={isRequestDisabled} />
             <TradingFooter provider={provider} />
-        </>
+        </TradingTokenMetadataProvider>
     );
 };
