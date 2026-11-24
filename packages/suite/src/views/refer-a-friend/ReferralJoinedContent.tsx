@@ -15,19 +15,20 @@ import { ReferralLinkCard } from './ReferralLinkCard';
 import { ReferralLoading } from './ReferralLoading';
 import { ReferralRewards } from './ReferralRewards';
 import { ReferralRewardsKeyMissing } from './ReferralRewardsKeyMissing';
-import { ANNUAL_REWARD_LIMIT } from './referralConstants';
 import { useReferralActions } from './useReferralActions';
 
 type ReferralJoinedContentProps = {
     deviceId: string;
     shareUrl: string;
     program: ReferralProgram;
+    annualRewardLimit: number;
 };
 
 export const ReferralJoinedContent = ({
     deviceId,
     shareUrl,
     program,
+    annualRewardLimit,
 }: ReferralJoinedContentProps) => {
     const accountState = useSelector(selectReferralAccountState);
 
@@ -45,7 +46,7 @@ export const ReferralJoinedContent = ({
             maximumFractionDigits: 0,
         });
     const { totalEarned } = getReferralRewardsSummary(vouchers ?? []);
-    const isLimitReached = totalEarned >= ANNUAL_REWARD_LIMIT || redemptionCount >= redemptionLimit;
+    const isLimitReached = totalEarned >= annualRewardLimit || redemptionCount >= redemptionLimit;
     const nextResetDate = account?.redemptionLimitResetsAt
         ? formatDate(account.redemptionLimitResetsAt, { dateStyle: 'long', timeZone: 'UTC' })
         : // TODO: The backend may not reset the limit, the copy needs a variant without the date.
@@ -59,7 +60,7 @@ export const ReferralJoinedContent = ({
                 minimumOrderAmount={formatAmount(program.minimumOrderAmount)}
                 friendDiscountPercentage={program.friendDiscountPercentage}
                 annualReferralLimit={redemptionLimit}
-                annualRewardLimit={formatAmount(ANNUAL_REWARD_LIMIT)}
+                annualRewardLimit={formatAmount(annualRewardLimit)}
                 nextResetDate={nextResetDate}
                 isLimitReached={accountState.status === 'loaded' && isLimitReached}
             />
@@ -68,7 +69,7 @@ export const ReferralJoinedContent = ({
                     vouchers={vouchers}
                     redemptionCount={redemptionCount}
                     fiatCurrency={program.fiatCurrency}
-                    annualRewardLimit={ANNUAL_REWARD_LIMIT}
+                    annualRewardLimit={annualRewardLimit}
                     annualReferralLimit={redemptionLimit}
                 />
             )}

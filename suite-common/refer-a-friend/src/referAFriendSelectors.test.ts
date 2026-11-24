@@ -6,6 +6,7 @@ import { asWalletDescriptor } from '@trezor/device-utils';
 import {
     selectDoesReferralExistOnlyForOtherWallets,
     selectReferralAccountStateByWalletDescriptor,
+    selectReferralAnnualRewardLimit,
     selectReferralWalletRecordByWalletDescriptor,
 } from './referAFriendSelectors';
 import {
@@ -14,6 +15,7 @@ import {
     type ReferralWalletRecord,
     referAFriendInitialState,
 } from './referAFriendSlice';
+import { type ReferralProgram } from './referAFriendTypes';
 import { type ReferralKey } from './referralKey';
 
 const WALLET_DESCRIPTOR = asWalletDescriptor('standard');
@@ -76,6 +78,38 @@ describe(selectReferralAccountStateByWalletDescriptor.name, () => {
             selectReferralAccountStateByWalletDescriptor(state, UNKNOWN_WALLET_DESCRIPTOR).status,
         ).toBe('idle');
         expect(selectReferralAccountStateByWalletDescriptor(state, null).status).toBe('idle');
+    });
+});
+
+describe(selectReferralAnnualRewardLimit.name, () => {
+    const program: ReferralProgram = {
+        fiatCurrency: 'USD',
+        rewardAmount: 20,
+        friendDiscountPercentage: 10,
+        minimumOrderAmount: 49,
+        redemptionLimit: 50,
+        termsUrl: 'https://trezor.io/refer-a-friend/terms',
+    };
+
+    const createState = (data: ReferralProgram | null): ReferAFriendRootState => ({
+        referAFriend: {
+            ...referAFriendInitialState,
+            program: { status: data === null ? 'idle' : 'loaded', data, error: null },
+        },
+    });
+
+    it('multiplies the reward amount by the redemption limit', () => {
+        expect(selectReferralAnnualRewardLimit(createState(program))).toBe(1000);
+    });
+
+    it('returns null when the program is not loaded', () => {
+        expect(selectReferralAnnualRewardLimit(createState(null))).toBeNull();
+    });
+
+    it('returns null when the result would be NaN', () => {
+        expect(
+            selectReferralAnnualRewardLimit(createState({ ...program, rewardAmount: Number.NaN })),
+        ).toBeNull();
     });
 });
 

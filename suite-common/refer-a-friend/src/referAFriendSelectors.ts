@@ -26,6 +26,17 @@ export const selectReferAFriendWallets = (state: ReferAFriendRootState) =>
 
 export const selectReferralProgram = (state: ReferAFriendRootState) => state.referAFriend.program;
 
+export const selectReferralAnnualRewardLimit = createMemoizedSelector(
+    [selectReferralProgram],
+    (program): number | null => {
+        if (program.data === null) return null;
+
+        const limit = program.data.rewardAmount * program.data.redemptionLimit;
+
+        return Number.isNaN(limit) ? null : limit;
+    },
+);
+
 const selectReferAFriendAccounts = (state: ReferAFriendRootState) => state.referAFriend.accounts;
 
 const getWalletRecord = (

@@ -201,6 +201,24 @@ describe('fetchReferralProgramThunk', () => {
             referAFriendActions.programFailed({ message: 'Invalid terms URL' }),
         );
     });
+
+    it.each([
+        ['rewardAmount', undefined],
+        ['rewardAmount', '20'],
+        ['rewardAmount', Number.NaN],
+        ['redemptionLimit', null],
+        ['redemptionLimit', Infinity],
+    ])('fails on invalid %s: %p', async (field, value) => {
+        const { actions, dispatch, getState, extra } = setup({
+            apiResponses: { 'GET v1/program': ok({ ...program, [field]: value }) },
+        });
+
+        await fetchReferralProgramThunk()(dispatch, getState, extra);
+
+        expect(actions).toContainEqual(
+            referAFriendActions.programFailed({ message: 'Invalid reward fields' }),
+        );
+    });
 });
 
 describe('fetchReferralAccountThunk', () => {

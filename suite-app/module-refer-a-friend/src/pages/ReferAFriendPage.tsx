@@ -9,6 +9,7 @@ import {
     fetchReferralProgramThunk,
     selectIsReferralWalletDescriptorAvailable,
     selectReferralAccountState,
+    selectReferralAnnualRewardLimit,
     selectReferralProgram,
     selectReferralWalletRecord,
 } from '@suite-common/refer-a-friend';
@@ -27,7 +28,6 @@ import { useServices } from '@trezor/dependency-injection';
 import { CaretDownIcon, CaretUpDownIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import {
-    ANNUAL_REWARD_LIMIT,
     LeaveProgramModal,
     PageHeader,
     ReferralDisconnected,
@@ -60,6 +60,7 @@ export const ReferAFriendPage = () => {
     const deviceId = device?.id ?? undefined;
     const isReferralAvailable = useSelector(selectIsReferAFriendAvailableInApp);
     const program = useSelector(selectReferralProgram);
+    const annualRewardLimit = useSelector(selectReferralAnnualRewardLimit);
     const isReferralWalletDescriptorAvailable = useSelector(
         selectIsReferralWalletDescriptorAvailable,
     );
@@ -122,7 +123,8 @@ export const ReferAFriendPage = () => {
         );
     }
 
-    if (program.data === null) {
+    // annualRewardLimit is guaranteed to be defined if program.data is valid, see fetchReferralProgramThunk.
+    if (program.data === null || annualRewardLimit === null) {
         return <ReferralLoading />;
     }
 
@@ -149,7 +151,7 @@ export const ReferAFriendPage = () => {
             currency: fiatCurrency,
             maximumFractionDigits: 0,
         }),
-        annualRewardLimit: formatNumber(ANNUAL_REWARD_LIMIT, {
+        annualRewardLimit: formatNumber(annualRewardLimit, {
             style: 'currency',
             currency: fiatCurrency,
             maximumFractionDigits: 0,
@@ -270,6 +272,7 @@ export const ReferAFriendPage = () => {
                     deviceId={deviceId}
                     shareUrl={shareUrl}
                     program={program.data}
+                    annualRewardLimit={annualRewardLimit}
                 />
             ) : (
                 <ReferralInvitation
