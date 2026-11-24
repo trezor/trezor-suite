@@ -1,28 +1,28 @@
 import { type PropsWithChildren } from 'react';
+import { Provider } from 'react-redux';
 
 import { fireEvent, render } from '@testing-library/react';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { setConnectionModal } from '@suite/device';
-import { MODAL_CONTEXT_NONE } from '@suite/modal';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { ServicesProvider, mock } from '@trezor/dependency-injection';
-import { type Dispatch, type DispatchDep } from '@trezor/redux-utils';
+import { type WithServices } from '@trezor/redux-utils';
+import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
 import { StakeButton } from './StakeButton';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../mocks/mockInitialAppState';
 
-const mockReport = jest.fn();
-const mockDispatch = mock<Dispatch>();
+const mockReport = mock<DesktopAnalyticsDep['analytics']['report']>();
 const mockSubmit = jest.fn();
-let mockDevice = { connected: true, available: true };
-
-jest.mock('@suite/device', () => ({
-    ...jest.requireActual('@suite/device'),
-    useDevice: () => ({ device: mockDevice, isLocked: () => false }),
-}));
 jest.mock('@suite/intl', () => ({ Translation: () => null }));
 jest.mock('@trezor/components', () => ({
     Tooltip: ({ children }: PropsWithChildren) => children,
@@ -33,16 +33,6 @@ jest.mock('@trezor/components', () => ({
             </button>
         ),
     },
-}));
-jest.mock('#src/hooks/suite/useSelector', () => ({
-    useSelector: (selector: (state: object) => unknown) =>
-        selector({ modal: { context: MODAL_CONTEXT_NONE } }),
-}));
-jest.mock('@suite-common/wallet-core', () => ({
-    ...jest.requireActual('@suite-common/wallet-core'),
-    selectHasRunningDiscovery: () => false,
-    selectAreFeesLoading: () => false,
-    selectVotingDelegationOption: () => ({ type: 'abstain' }),
 }));
 jest.mock('#src/hooks/suite/useMessageSystemStaking', () => ({
     useMessageSystemStaking: () => ({ isStakingDisabled: false }),
@@ -67,15 +57,29 @@ describe('StakeButton device connection analytics', () => {
         { connected: false, available: false, expectedStatus: 'disconnected' },
         { connected: true, available: false, expectedStatus: 'unavailable' },
     ])('reports one submit attempt before the connection guard ($connected/$available)', device => {
-        mockDevice = device;
-        const services: DesktopAnalyticsDep & { store: DispatchDep } = {
-            analytics: mockDesktopAnalytics(mockReport),
-            store: { dispatch: mockDispatch },
-        };
+        const { services } = createTestCompositionRoot<
+            WithServices<DesktopAnalyticsDep>,
+            MockSuiteState
+        >({
+            preloadedState: {
+                ...mockInitialAppState,
+                device: {
+                    ...mockInitialAppState.device,
+                    selectedDevice: mockSuiteDevice(device),
+                },
+            },
+            services: () => ({ analytics: mockDesktopAnalytics(mockReport) }),
+        });
+        const mockDispatch = createMockDispatch({ getState: services.store.getState });
+        const dispatch = mock(mockDispatch.dispatch);
         const { getByRole } = render(
-            <ServicesProvider services={services}>
-                <StakeButton flow={EarnFlow.Stake} />
-            </ServicesProvider>,
+            <Provider store={services.store}>
+                <ServicesProvider
+                    services={{ ...services, store: { ...services.store, dispatch } }}
+                >
+                    <StakeButton flow={EarnFlow.Stake} />
+                </ServicesProvider>
+            </Provider>,
         );
 
         expect(mockReport).not.toHaveBeenCalled();
@@ -94,17 +98,17 @@ describe('StakeButton device connection analytics', () => {
             },
         });
         if (isConnectionBlocked) {
-            expect(mockDispatch).toHaveBeenCalledWith(setConnectionModal(true));
+            expect(dispatch).toHaveBeenCalledWith(setConnectionModal(true));
             expect(mockSubmit).not.toHaveBeenCalled();
             const [reportOrder] = mockReport.mock.invocationCallOrder;
-            const [dispatchOrder] = mockDispatch.mock.invocationCallOrder;
+            const [dispatchOrder] = dispatch.mock.invocationCallOrder;
             if (reportOrder === undefined || dispatchOrder === undefined) {
                 throw new Error('Missing analytics report or connection guard call');
             }
             expect(reportOrder).toBeLessThan(dispatchOrder);
         } else {
             expect(mockSubmit).toHaveBeenCalledTimes(1);
-            expect(mockDispatch).not.toHaveBeenCalled();
+            expect(dispatch).not.toHaveBeenCalled();
         }
     });
 });

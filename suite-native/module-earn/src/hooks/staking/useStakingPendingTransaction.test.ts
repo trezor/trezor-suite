@@ -1,29 +1,33 @@
+import { testMocks } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type FeesRootState,
+    type TransactionsRootState,
+    transactionsInitialState,
+} from '@suite-common/wallet-core';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
-import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import {
     AppTabsRoutes,
     RootStackRoutes,
     type StakingPendingTxParams,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
-import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import {
+    act,
+    createStoreFromPreloadedState,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
+import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
 import { useStakingPendingTransaction } from './useStakingPendingTransaction';
 import { type EarnFormDraftPrefix } from '../../types';
 
 type MockTransaction = Pick<WalletAccountTransaction, 'txid' | 'blockHeight' | 'type'>;
 
-const mockDispatch = jest.fn();
 const mockNavigation = { dispatch: jest.fn() };
 const mockOpenInBlockchain = jest.fn();
 const mockBottomSheetRef = { current: null };
-const mockFeeInfo = { blockTime: 12 };
-let mockTransaction: MockTransaction | null = null;
-
-jest.mock('@trezor/dependency-injection', () => ({
-    ...jest.requireActual('@trezor/dependency-injection'),
-    useServices: () => ({ dispatch: mockDispatch }),
-}));
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useNavigation: () => mockNavigation,
@@ -31,9 +35,6 @@ jest.mock('@react-navigation/native', () => ({
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     fetchAndUpdateAccountThunk: (payload: unknown) => ({ type: 'test/fetch-account', payload }),
-    selectAccountNetworkSymbol: () => 'eth',
-    selectConvertedNetworkFeeInfo: () => mockFeeInfo,
-    selectTransactionByAccountKeyAndTxid: () => mockTransaction,
 }));
 jest.mock('../earn/useEarnPendingTransactionSheet', () => ({
     useEarnPendingTransactionSheet: () => ({
@@ -43,7 +44,8 @@ jest.mock('../earn/useEarnPendingTransactionSheet', () => ({
     }),
 }));
 
-const accountKey = mockAccountKey({ descriptor: 'testAccountKey' });
+const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+const accountKey = account.key;
 const pendingTransaction: StakingPendingTxParams = {
     amountInBaseUnits: '1000000000000000000',
     fee: '21000',
@@ -52,13 +54,63 @@ const pendingTransaction: StakingPendingTxParams = {
 };
 const POLL_INTERVAL_MS = 6_000;
 
-const renderPendingTransaction = (
-    routeParam: StakingPendingTxParams | undefined,
-    stakeType: EarnFormDraftPrefix = 'stake',
-) =>
-    renderHookWithStoreProvider(() =>
-        useStakingPendingTransaction({ accountKey, pendingTransaction: routeParam, stakeType }),
+type RenderPendingTransactionParams = {
+    pendingTransaction?: StakingPendingTxParams;
+    stakeType?: EarnFormDraftPrefix;
+    transaction?: MockTransaction | null;
+};
+
+const renderPendingTransaction = async ({
+    pendingTransaction: routeTransaction,
+    stakeType = 'stake',
+    transaction,
+}: RenderPendingTransactionParams = {}) => {
+    const store = createStoreFromPreloadedState<FeesRootState & TransactionsRootState>({
+        wallet: {
+            accounts: [account],
+            fees: {
+                eth: {
+                    status: 'loaded',
+                    data: {
+                        blockTime: 12,
+                        blockHeight: 0,
+                        minFee: 0,
+                        maxFee: 0,
+                        minPriorityFee: 0,
+                        levels: [],
+                    },
+                },
+            },
+            transactions: {
+                ...transactionsInitialState,
+                transactions: transaction
+                    ? {
+                          [accountKey]: [
+                              testMocks.getWalletTransaction({
+                                  descriptor: account.descriptor,
+                                  deviceState: account.deviceState,
+                                  symbol: account.symbol,
+                                  ...transaction,
+                              }),
+                          ],
+                      }
+                    : {},
+            },
+        },
+    });
+    const { actions, dispatch } = createMockDispatch({ getState: store.getState });
+    const rendered = await renderHookWithStoreProvider(
+        () =>
+            useStakingPendingTransaction({
+                accountKey,
+                pendingTransaction: routeTransaction,
+                stakeType,
+            }),
+        { services: { store: { ...store, dispatch } } },
     );
+
+    return { ...rendered, actions };
+};
 
 const homeRoutes = [
     { name: RootStackRoutes.AppTabs, params: { screen: AppTabsRoutes.EarnStack } },
@@ -69,7 +121,6 @@ describe('useStakingPendingTransaction', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         jest.useFakeTimers();
-        mockTransaction = null;
     });
 
     afterEach(() => {
@@ -77,11 +128,11 @@ describe('useStakingPendingTransaction', () => {
     });
 
     it('is idle without a pushed transaction', async () => {
-        const { result } = await renderPendingTransaction(undefined);
+        const { result, actions } = await renderPendingTransaction();
         await act(() => jest.advanceTimersByTime(POLL_INTERVAL_MS));
 
         expect(result.current).toEqual({ isPending: false, pendingModal: null });
-        expect(mockDispatch).not.toHaveBeenCalled();
+        expect(actions).toEqual([]);
         expect(mockNavigation.dispatch).not.toHaveBeenCalled();
     });
 
@@ -91,8 +142,10 @@ describe('useStakingPendingTransaction', () => {
     ] as const)(
         'polls the account and exposes the sheet while the transaction %s',
         async (_, transaction) => {
-            mockTransaction = transaction;
-            const { result } = await renderPendingTransaction(pendingTransaction);
+            const { result, actions } = await renderPendingTransaction({
+                pendingTransaction,
+                transaction,
+            });
 
             expect(result.current).toEqual({
                 isPending: true,
@@ -106,22 +159,23 @@ describe('useStakingPendingTransaction', () => {
 
             await act(() => jest.advanceTimersByTime(POLL_INTERVAL_MS * 2));
 
-            expect(mockDispatch).toHaveBeenCalledTimes(2);
-            expect(mockDispatch).toHaveBeenCalledWith({
-                type: 'test/fetch-account',
-                payload: { accountKey },
-            });
+            const refreshAccount = { type: 'test/fetch-account', payload: { accountKey } };
+
+            expect(actions).toEqual([refreshAccount, refreshAccount]);
             expect(mockNavigation.dispatch).not.toHaveBeenCalled();
         },
     );
 
     it('resets to the complete screen once the transaction confirms', async () => {
-        mockTransaction = { txid: '0xabc', blockHeight: 100, type: 'sent' };
-        const { result } = await renderPendingTransaction(pendingTransaction, 'unstake');
+        const { result, actions } = await renderPendingTransaction({
+            pendingTransaction,
+            stakeType: 'unstake',
+            transaction: { txid: '0xabc', blockHeight: 100, type: 'sent' },
+        });
         await act(() => jest.advanceTimersByTime(POLL_INTERVAL_MS));
 
         expect(result.current).toEqual({ isPending: false, pendingModal: null });
-        expect(mockDispatch).not.toHaveBeenCalled();
+        expect(actions).toEqual([]);
         expect(mockNavigation.dispatch).toHaveBeenCalledTimes(1);
         expect(mockNavigation.dispatch).toHaveBeenCalledWith({
             type: 'RESET',
@@ -143,8 +197,10 @@ describe('useStakingPendingTransaction', () => {
     });
 
     it('opens the transaction detail when the confirmed transaction failed on-chain', async () => {
-        mockTransaction = { txid: '0xabc', blockHeight: 100, type: 'failed' };
-        await renderPendingTransaction(pendingTransaction);
+        await renderPendingTransaction({
+            pendingTransaction,
+            transaction: { txid: '0xabc', blockHeight: 100, type: 'failed' },
+        });
 
         expect(mockNavigation.dispatch).toHaveBeenCalledTimes(1);
         expect(mockNavigation.dispatch).toHaveBeenCalledWith({

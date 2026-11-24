@@ -2,11 +2,11 @@ import { type PropsWithChildren } from 'react';
 
 import { fireEvent, render } from '@testing-library/react';
 
-import { type DesktopAnalytics } from '@suite/analytics';
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { mock } from '@trezor/dependency-injection';
+import { ServicesProvider, mock } from '@trezor/dependency-injection';
 
 import { YieldDepositForm } from './YieldDepositForm';
 import { type YieldApproveStepProps } from '../common/YieldApproveStep';
@@ -15,15 +15,12 @@ import { type YieldFlowContextValues } from '../hooks/useYieldFlow';
 
 type MockStepListProps = { steps: { approve: YieldFlowStepDefinition } };
 
-const mockAnalytics = mockDesktopAnalytics(mock<DesktopAnalytics['report']>());
+const mockAnalytics = mockDesktopAnalytics(mock<DesktopAnalyticsDep['analytics']['report']>());
+const services: DesktopAnalyticsDep = { analytics: mockAnalytics };
 const mockSkipApprove = mock<YieldFlowContextValues['skipApprove']>();
 const mockSubmitApprovalAction = mock<YieldFlowContextValues['submitApprovalAction']>();
 let mockApprovalAction: YieldFlowContextValues['approvalAction'] = 'increase';
 
-jest.mock('@trezor/dependency-injection', () => ({
-    ...jest.requireActual('@trezor/dependency-injection'),
-    useServices: () => ({ analytics: mockAnalytics }),
-}));
 jest.mock('@trezor/components', () => ({
     ...jest.requireActual('@trezor/components'),
     Column: ({ children }: PropsWithChildren) => <div>{children}</div>,
@@ -83,6 +80,13 @@ jest.mock('../common/YieldApproveStep', () => ({
     ),
 }));
 
+const renderDepositForm = () =>
+    render(
+        <ServicesProvider services={services}>
+            <YieldDepositForm />
+        </ServicesProvider>,
+    );
+
 describe('YieldDepositForm analytics', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -90,7 +94,7 @@ describe('YieldDepositForm analytics', () => {
     });
 
     it('continues with an existing allowance without reporting an approval cancellation', () => {
-        const { getByRole } = render(<YieldDepositForm />);
+        const { getByRole } = renderDepositForm();
 
         fireEvent.click(getByRole('button', { name: 'Skip approval' }));
 
@@ -108,7 +112,7 @@ describe('YieldDepositForm analytics', () => {
 
     it('reports reusing allowance as a skip while keeping live validation', () => {
         mockApprovalAction = 'continue';
-        const { getByRole } = render(<YieldDepositForm />);
+        const { getByRole } = renderDepositForm();
 
         fireEvent.click(getByRole('button', { name: 'Continue approval' }));
 
@@ -130,7 +134,7 @@ describe('YieldDepositForm analytics', () => {
         'keeps the device snapshot for an actual %s submit',
         action => {
             mockApprovalAction = action;
-            const { getByRole } = render(<YieldDepositForm />);
+            const { getByRole } = renderDepositForm();
 
             fireEvent.click(getByRole('button', { name: 'Continue approval' }));
 

@@ -1,21 +1,23 @@
 import { type PropsWithChildren } from 'react';
+import { Provider } from 'react-redux';
 
 import { render } from '@testing-library/react';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { useGetMerklRewards } from '@suite-common/earn-stablecoin-api';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { ServicesProvider, mock } from '@trezor/dependency-injection';
-import { type Dispatch, type DispatchDep } from '@trezor/redux-utils';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { EarnYieldTable } from './EarnYieldTable';
 import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 import { type YieldDashboardReadyPayload } from '../useReportEarnDashboardReadyEvent';
 
-let mockVisibleAccounts: Account[] = [];
 const mockRewardsQueryState: ReturnType<typeof useGetMerklRewards> = {
     data: undefined,
     error: null,
@@ -27,17 +29,32 @@ const mockRewardsQueryState: ReturnType<typeof useGetMerklRewards> = {
         mock<ReturnType<typeof useGetMerklRewards>['waitForMerklToResolveClaim']>(),
 };
 
-const renderYieldTable = () => {
-    const services: DesktopAnalyticsDep & { store: DispatchDep } = {
-        analytics: mockDesktopAnalytics(mock<DesktopAnalyticsDep['analytics']['report']>()),
-        store: { dispatch: mock<Dispatch>() },
-    };
+const renderYieldTable = (accounts: Account[]) => {
+    const [account] = accounts;
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep>,
+        MockSuiteState
+    >({
+        preloadedState: {
+            ...mockInitialAppState,
+            device: {
+                ...mockInitialAppState.device,
+                selectedDevice: account
+                    ? mockSuiteDevice({ state: { staticSessionId: account.deviceState } })
+                    : undefined,
+            },
+            wallet: { ...mockInitialAppState.wallet, accounts },
+        },
+        services: () => ({ analytics: mockDesktopAnalytics() }),
+    });
     const onReady = mock<(payload: YieldDashboardReadyPayload) => void>();
 
     render(
-        <ServicesProvider services={services}>
-            <EarnYieldTable onReady={onReady} />
-        </ServicesProvider>,
+        <Provider store={services.store}>
+            <ServicesProvider services={services}>
+                <EarnYieldTable onReady={onReady} />
+            </ServicesProvider>
+        </Provider>,
     );
 
     return onReady;
@@ -49,13 +66,9 @@ jest.mock('@suite/message-system', () => ({ ContextMessage: () => null }));
 jest.mock('@suite/router', () => ({
     ...jest.requireActual('@suite/router'),
     useAnchor: () => ({ anchorRef: undefined }),
-    selectRouterAnchor: () => undefined,
 }));
 jest.mock('#src/components/dashboard/DashboardSection', () => ({
     DashboardSection: ({ children }: PropsWithChildren) => children,
-}));
-jest.mock('#src/hooks/suite/useSelector', () => ({
-    useSelector: (selector: (state: MockSuiteState) => unknown) => selector(mockInitialAppState),
 }));
 jest.mock('#src/hooks/suite/useLayoutSize', () => ({
     useLayoutSize: () => ({ isBelowLaptop: true }),
@@ -70,9 +83,6 @@ jest.mock('@suite-common/earn-stablecoin-api', () => ({
 }));
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
-    selectVisibleDeviceAccounts: () => mockVisibleAccounts,
-    selectBaseCurrency: () => 'usd',
-    selectCurrentFiatRates: () => ({}),
     useMissingRateTickersQuery: () => ({ isLoading: false }),
 }));
 jest.mock('./hooks/useYieldTableData', () => ({
@@ -102,14 +112,13 @@ jest.mock('../../providers/PoweredByBadge', () => ({ PoweredByBadge: () => null 
 describe('yield dashboard rewards and readiness', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        mockVisibleAccounts = [];
         jest.mocked(useGetMerklRewards).mockReturnValue(mockRewardsQueryState);
     });
 
     it.each(['no-account', 'btc-only', 'fresh-eth'] as const)(
         'reports a ready empty yield section for %s',
         kind => {
-            mockVisibleAccounts =
+            const accounts =
                 kind === 'no-account'
                     ? []
                     : [
@@ -118,7 +127,7 @@ describe('yield dashboard rewards and readiness', () => {
                               kind === 'fresh-eth' ? { misc: { nonce: '1' } } : undefined,
                           ),
                       ];
-            const onReady = renderYieldTable();
+            const onReady = renderYieldTable(accounts);
 
             expect(useGetMerklRewards).toHaveBeenCalledWith([]);
             expect(onReady).toHaveBeenCalledWith({
@@ -137,9 +146,7 @@ describe('yield dashboard rewards and readiness', () => {
         ['op', 10],
     ] as const)('queries %s rewards when no vaults are offered', (symbol, chainId) => {
         const account = mockWalletAccount({ symbol: asNetworkSymbol(symbol), tokens: [] });
-        mockVisibleAccounts = [account, mockWalletAccount({ symbol: asNetworkSymbol('pol') })];
-
-        renderYieldTable();
+        renderYieldTable([account, mockWalletAccount({ symbol: asNetworkSymbol('pol') })]);
 
         expect(useGetMerklRewards).toHaveBeenCalledWith([{ chainId, address: account.descriptor }]);
     });
@@ -148,10 +155,10 @@ describe('yield dashboard rewards and readiness', () => {
         { isLoading: true, isError: false },
         { isLoading: false, isError: true },
     ])('still waits for an enabled rewards query ($isLoading, $isError)', status => {
-        mockVisibleAccounts = [mockWalletAccount({ symbol: asNetworkSymbol('eth') })];
+        const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
         jest.mocked(useGetMerklRewards).mockReturnValue({ ...mockRewardsQueryState, ...status });
 
-        const onReady = renderYieldTable();
+        const onReady = renderYieldTable([account]);
 
         expect(useGetMerklRewards).toHaveBeenCalledWith(
             expect.arrayContaining([expect.objectContaining({ chainId: 1 })]),
