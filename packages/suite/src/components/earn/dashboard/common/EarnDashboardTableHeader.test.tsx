@@ -36,31 +36,22 @@ describe('EarnDashboardTableHeader', () => {
         expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_POTENTIAL_REWARDS')).toBeInTheDocument();
     });
 
-    it('should not render reward column headers when showRewardsColumns is false', () => {
-        renderHeader({ showRewardsColumns: false });
+    it.each([
+        'TR_EARN_DASHBOARD_TABLE_ACCOUNT_VAULT',
+        'TR_EARN_DASHBOARD_TABLE_ACCOUNT_BALANCE',
+    ] as const)(
+        'renders the %s and APY headers without reward columns',
+        accountColumnTranslationId => {
+            renderHeader({ accountColumnTranslationId, showRewardsColumns: false });
 
-        expect(
-            screen.queryByText('TR_EARN_DASHBOARD_TABLE_YEARLY_REWARDS'),
-        ).not.toBeInTheDocument();
-        expect(
-            screen.queryByText('TR_EARN_DASHBOARD_TABLE_POTENTIAL_REWARDS'),
-        ).not.toBeInTheDocument();
-    });
-
-    it('should render configured account and APY column headers', () => {
-        renderHeader({ showRewardsColumns: false });
-
-        expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_ACCOUNT_VAULT')).toBeInTheDocument();
-        expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_RATE')).toBeInTheDocument();
-    });
-
-    it('should render account balance column header when configured', () => {
-        renderHeader({
-            accountColumnTranslationId: 'TR_EARN_DASHBOARD_TABLE_ACCOUNT_BALANCE',
-            showRewardsColumns: false,
-        });
-
-        expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_ACCOUNT_BALANCE')).toBeInTheDocument();
-        expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_RATE')).toBeInTheDocument();
-    });
+            expect(screen.getByText(accountColumnTranslationId)).toBeInTheDocument();
+            expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_RATE')).toBeInTheDocument();
+            expect(
+                screen.queryByText('TR_EARN_DASHBOARD_TABLE_YEARLY_REWARDS'),
+            ).not.toBeInTheDocument();
+            expect(
+                screen.queryByText('TR_EARN_DASHBOARD_TABLE_POTENTIAL_REWARDS'),
+            ).not.toBeInTheDocument();
+        },
+    );
 });
