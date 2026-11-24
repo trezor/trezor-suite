@@ -93,49 +93,20 @@ Project gates are in `.github/workflows/check-code-validation.yml`; target prere
 
 ## Setup and commands
 
-Run commands from the repository root unless stated otherwise. Use Node from `.nvmrc` (Node 24) and
-Yarn pinned by `package.json` / `.yarnrc.yml` (4.18.0); do not substitute npm or pnpm. macOS/Linux are the
-primary development platforms; see `README.md` for Windows and Nix setup.
-
-For a fresh checkout, follow `README.md`: initialize submodules with
-`git submodule update --init --recursive`, install Git LFS once with `git lfs install`, run `git lfs pull`,
-then `nvm install`, `yarn` and `yarn build:essential`. Reuse an already prepared environment.
-Use `yarn --immutable` when installing without intended lockfile changes, as validation CI does.
-Preserve `.yarnrc.yml` install-script allowlisting and dependency age gates. `yarn --mode=skip-build`
-skips allowlisted install scripts (Playwright browsers, native modules). Use it only for lint/typecheck;
+Run commands from the repository root unless stated otherwise.
+An install with `yarn --mode=skip-build`, as CI validation uses, is enough only for lint and typecheck;
 running the app, E2E or tests that load native modules requires a full install.
 
-- Web development: `yarn suite:dev` at `http://localhost:8000`; `yarn suite:dev:vite` is
-  experimental and development-only.
-- Electron development: `yarn suite:dev:desktop`; requires a graphical environment.
-- Mobile development: Follow `suite-native-app/app/README.md` for Android SDK/emulator or macOS/Xcode
-  setup and `yarn native:prebuild`; run `yarn native:start` and `yarn native:android` or `yarn native:ios`. Android localhost services use `yarn native:reverse-ports`.
-- Focused unit test: `yarn workspace <package-name> test:unit --coverage=0 path/to/file.test.ts`
-  (path relative to that workspace); also supports `.test.tsx`. Direct workspace scripts bypass Nx
-  prerequisites: prepare generated dependencies first, including `yarn workspace @suite-common/message-system build:lib` when needed.
-- Package typecheck: `yarn nx run <package-name>:type-check --no-tui`; can also check dependencies
-  and fetch guide content per `nx.json`.
-- Package lint: `yarn workspace <package-name> lint:js` runs the basic rules in parallel threads;
-  `ESLINT_RULE_SET=type-aware` runs the type-aware rules instead and `ESLINT_RULE_SET=all` runs both.
-  CI runs the two sets as separate jobs. Use the package's `lint:styles` script for styles where present.
-- Formatting changed files: `yarn prettier --check <files>`; use `--write` only on intended files.
-- Affected checks: `yarn test:unit --no-tui`, `yarn type-check --no-tui` (only on user's request),
-  `yarn lint:js --no-tui` plus `ESLINT_RULE_SET=type-aware yarn lint:js --no-tui`, `yarn lint:styles --no-tui`, `yarn format:verify`. Styles also runs local Stylelint rule tests.
-- Library build validation: `yarn build:libs:verify --no-tui` builds affected libraries; `yarn build:libs` rebuilds all libraries without Nx cache, so reserve it for a demonstrated need.
-- Production web behavior: `yarn suite:build:web`; `yarn suite:build:web:preview` builds and serves
-  with production security headers. For an existing build: `yarn workspace @suite-app/web-app preview`.
-- Web/desktop E2E: `yarn workspace @trezor/suite-e2e test:e2e:web <test-file> --project=<project>`
-  or `test:e2e:desktop`; inspect `suite/e2e/playwright-config` for projects. Requires Playwright
-  browsers/system dependencies, a running web app or built Electron app, and scenario
-  services/emulators (Trezor User Env/Docker). Setup reference:
-  `.github/workflows/template-suite-run-e2e.yml`.
+- Web/desktop development: follow `README.md`.
+- Mobile development: follow `suite-native-app/app/README.md`.
+- Web/desktop E2E: follow `suite/e2e/docs/e2e-playwright-suite.md`.
+- Workspace `test:unit` and `type-check` scripts bypass Nx prerequisites: on a fresh checkout run
+  `yarn workspace @suite-common/message-system build:lib` first.
 
-Nx affected commands default to `origin/develop` but `NX_BASE` / `NX_HEAD` or `--base` / `--head` can
-override the comparison; CI sets SHAs in `.github/actions/nx-checkout/action.yml`. Ensure the comparison
-covers the intended changes and the base/history exist. A successful run with zero selected projects
-is not verification of changed code. Use an explicit package target when appropriate. Repo-wide
-variants exist for `test:unit:all`, `type-check:all`, `lint:js:all` and `lint:styles:all`;
-`lint:js:all` excludes the root and scripts workspaces. Do not assume every command has an `:all` alias.
+Root `test:unit`, `type-check`, `lint:js`, `lint:styles` and `build:libs:verify` run `nx affected`
+against `origin/develop`. A run that selects zero projects verified nothing: run the targets
+explicitly, e.g. `yarn nx run <package-name>:<target>`, including dependents when a shared contract
+changed.
 
 ## Verification and completion
 
