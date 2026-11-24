@@ -4,24 +4,30 @@ import { isNotNull, urlToOnion } from '@trezor/utils';
 
 import { type ReferAFriendRootState } from './referAFriendSlice';
 
-export type ReferAFriendApiEnvironment = 'local' | 'prod';
+export type ReferAFriendApiEnvironment = 'local' | 'dev' | 'prod';
 
 type TorVariant = 'clearnet' | 'onion';
 
 type ReferAFriendApiUrlMap = Record<ReferAFriendApiEnvironment, Record<TorVariant, string>>;
 
 export const LOCAL_REFER_A_FRIEND_API_URL = 'http://127.0.0.1:4010/';
+export const DEV_REFER_A_FRIEND_API_URL = 'https://dev.trezorio.sldev.cz/api/public/suite/';
+export const PRODUCTION_REFER_A_FRIEND_API_URL = 'https://trezor.io/api/public/suite/';
 
-// TODO: Replace with the production backend once it exists.
-const PRODUCTION_REFER_A_FRIEND_API_URL = 'https://trezor.io/api/refer-a-friend/';
-
+// Onion URLs are available for bith trezor.io and sldev.cz, if they weren't, fallback to clearnet via tor.
 const PRODUCTION_REFER_A_FRIEND_API_URL_ONION =
     urlToOnion(PRODUCTION_REFER_A_FRIEND_API_URL, TOR_URLS) ?? PRODUCTION_REFER_A_FRIEND_API_URL;
+const DEV_REFER_A_FRIEND_API_URL_ONION =
+    urlToOnion(DEV_REFER_A_FRIEND_API_URL, TOR_URLS) ?? DEV_REFER_A_FRIEND_API_URL;
 
 const REFER_A_FRIEND_API_URL: ReferAFriendApiUrlMap = {
     local: {
         clearnet: LOCAL_REFER_A_FRIEND_API_URL,
         onion: LOCAL_REFER_A_FRIEND_API_URL,
+    },
+    dev: {
+        clearnet: DEV_REFER_A_FRIEND_API_URL,
+        onion: DEV_REFER_A_FRIEND_API_URL_ONION,
     },
     prod: {
         clearnet: PRODUCTION_REFER_A_FRIEND_API_URL,
@@ -43,9 +49,9 @@ type GetReferAFriendApiUrlParams = {
 export const getReferAFriendApiUrl = ({ env, isTorEnabled }: GetReferAFriendApiUrlParams) =>
     REFER_A_FRIEND_API_URL[env][isTorEnabled ? 'onion' : 'clearnet'];
 
-// TODO: when the backend is ready, switch to it even on dev builds
+// TODO: when Access control headers allow it, make production backend default even on local or dev Suite builds.
 const getReferAFriendApiDefaultEnvironment = (): ReferAFriendApiEnvironment =>
-    isCodesignBuild() ? 'prod' : 'local';
+    isCodesignBuild() ? 'prod' : 'dev';
 
 type GetReferAFriendApiDefaultUrlParams = {
     isTorEnabled: boolean;
