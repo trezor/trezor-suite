@@ -2,7 +2,6 @@ import { bluetoothActions } from '@suite-common/bluetooth';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import { createMockDeps } from '@trezor/dependency-injection';
-import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import {
     type BluetoothDisconnectDeviceDeps,
@@ -15,13 +14,17 @@ const deviceId = asBluetoothDeviceId('bt-id');
 
 describe('createBluetoothDisconnectDevice', () => {
     const setup = (success: boolean) => {
-        jest.spyOn(bluetoothIpc, 'disconnectDevice').mockResolvedValue(
-            success ? { success: true } : ({ success: false, error: { message: 'boom' } } as any),
-        );
-
         const deps = createMockDeps<BluetoothDisconnectDeviceDeps>({
             dispatch: action => action,
             backgroundScan: mockBackgroundScan(),
+            bluetoothIpc: {
+                disconnectDevice: () =>
+                    Promise.resolve(
+                        success
+                            ? { success: true }
+                            : { success: false, error: { message: 'boom', code: 'boom' } },
+                    ),
+            },
         });
 
         return { run: createBluetoothDisconnectDevice(deps), deps };

@@ -1,7 +1,6 @@
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import { createMockDeps } from '@trezor/dependency-injection';
-import { bluetoothIpc } from '@trezor/transport-bluetooth';
 import { createDeferred } from '@trezor/utils';
 
 import {
@@ -17,12 +16,17 @@ describe('createBluetoothForgetDevice', () => {
         forgetSuccess: boolean,
         disconnectDevice: BluetoothForgetDeviceDeps['disconnectDevice'] = () => Promise.resolve(),
     ) => {
-        jest.spyOn(bluetoothIpc, 'forgetDevice').mockResolvedValue(
-            forgetSuccess ? { success: true } : ({ success: false, error: 'x' } as any),
-        );
         const deps = createMockDeps<BluetoothForgetDeviceDeps>({
             dispatch: action => action,
             disconnectDevice,
+            bluetoothIpc: {
+                forgetDevice: () =>
+                    Promise.resolve(
+                        forgetSuccess
+                            ? { success: true }
+                            : { success: false, error: { message: 'x', code: 'x' } },
+                    ),
+            },
         });
 
         return { forget: createBluetoothForgetDevice(deps), deps };
@@ -34,16 +38,16 @@ describe('createBluetoothForgetDevice', () => {
         const pendingForget = a.forget({ bluetoothId });
 
         expect(a.deps.disconnectDevice).toHaveBeenCalledWith(bluetoothId);
-        expect(bluetoothIpc.forgetDevice).not.toHaveBeenCalled();
+        expect(a.deps.bluetoothIpc.forgetDevice).not.toHaveBeenCalled();
 
         disconnect.resolve();
         await pendingForget;
-        expect(bluetoothIpc.forgetDevice).toHaveBeenCalledWith(bluetoothId);
+        expect(a.deps.bluetoothIpc.forgetDevice).toHaveBeenCalledWith(bluetoothId);
 
         const b = setup(true);
         await b.forget({ bluetoothId, skipDisconnect: true });
         expect(b.deps.disconnectDevice).not.toHaveBeenCalled();
-        expect(bluetoothIpc.forgetDevice).toHaveBeenCalledWith(bluetoothId);
+        expect(b.deps.bluetoothIpc.forgetDevice).toHaveBeenCalledWith(bluetoothId);
     });
 
     it('toggles unpairing flag and removes the known device on success', async () => {

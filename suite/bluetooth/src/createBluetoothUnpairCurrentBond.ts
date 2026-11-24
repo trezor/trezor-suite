@@ -1,7 +1,7 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
-import TrezorConnect from '@trezor/connect';
+import { type GetTrezorConnectDep } from '@trezor/connect';
 
-type BluetoothUnpairCurrentBondDeps = {
+type BluetoothUnpairCurrentBondDeps = GetTrezorConnectDep<'bleUnpair'> & {
     getSelectedDevice: () => TrezorDevice | undefined;
 };
 
@@ -22,7 +22,7 @@ export const createBluetoothUnpairCurrentBond =
             return { success: false };
         }
 
-        const result = await TrezorConnect.bleUnpair({
+        const result = await deps.getTrezorConnect().bleUnpair({
             device: {
                 path: device.path,
                 // bleUnpair does not need state
