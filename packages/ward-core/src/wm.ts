@@ -1,18 +1,28 @@
 /**
  * The WARD Manager: the external freshness authority. A port of the firmware tests' `MockWM`
- * (`tests/ward_wm.py`) and the WM half of `tests/ward_keys.py`, speaking attestation v6.
+ * (`tests/ward_wm.py`) and the WM half of `tests/ward_keys.py`, speaking attestation v7.
  *
  * `DevWm` signs with the DEBUG WM key, which ONLY emulator and debug firmware trust -- a release
  * build rejects every WM signature until a real key is provisioned. It stands in, behind the
- * `WmClient` interface, until the real WM (trezor-suite-sync) speaks v6.
+ * `WmClient` interface, until the real WM (trezor-suite-sync) speaks v7.
  *
- * What a WM is: it holds each wallet's head `(counter, root)` and a HEAD NONCE rotated by every
- * transition it accepts; it compare-and-swaps an advance and verifies the device's `wm_sig` over
- * it; and on request it signs the step that reached the head, bound to the device's round nonce.
- * It is an authority on FRESHNESS and ORDERING only -- the device never takes a root on its word.
+ * What a WM is: it holds each wallet's head `(counter, root)`; it compare-and-swaps an advance and
+ * verifies the device's `wm_sig` over it; and on request it signs the step that reached the head,
+ * bound to the device's round nonce. It is an authority on FRESHNESS and ORDERING only -- the
+ * device never takes a root on its word.
+ *
+ * SESSIONS. A device's `wm_sig` is bound to the round nonce it picked for its latest sync -- the
+ * WM never picks one. The WM keeps the nonce of each wallet's latest sync, replaces it on the next
+ * sync, and accepts an authorisation only when it is bound to that nonce and its predecessor is the
+ * head; one session can carry several transitions. The session nonce is volatile: a restore drops
+ * it, so a restored WM takes none of the device signatures minted before. What it had accepted
+ * comes back by ROLL-FORWARD THROUGH A TREZOR: wardd feeds a device the transitions with the WM's
+ * signed record of each (`WardRollForward`); the device verifies both its own `auth_commit` and
+ * the WM's record, and signs each step again for the current session. They then arrive here as
+ * ordinary advances -- the WM accepts nothing but device-signed advances
+ * (docs/ward/ward_transitions.md in the firmware).
  */
 import { ed25519 } from '@noble/curves/ed25519.js';
-import { randomBytes } from '@noble/hashes/utils.js';
 
 import { type BytesLike, concatBytes, equalBytes, toBytes, toHex, u32 } from './bytes';
 import { EMPTY_ROOT } from './trie';
@@ -21,15 +31,13 @@ const ascii = (s: string) => new TextEncoder().encode(s);
 
 export const TAG_COMMIT = ascii('WARD COMMIT v3');
 export const TAG_REVERT = ascii('WARD REVERT v3');
-export const TAG_WM_HEAD = ascii('WARD WM COMMIT v3');
-export const TAG_WM_INIT = ascii('WARD WM INIT v3');
-export const TAG_WM_REVERT = ascii('WARD WM REVERT v3');
-/** Without a WM (firmware built `--ward-without-wm`): the step signed for the HOST, over NO_HEAD_NONCE. */
-export const TAG_STEP = ascii('WARD STEP v1');
+export const TAG_WM_HEAD = ascii('WARD WM COMMIT v5');
+export const TAG_WM_INIT = ascii('WARD WM INIT v4');
+export const TAG_WM_REVERT = ascii('WARD WM REVERT v5');
+/** Without a WM (firmware built `--ward-without-wm`): the step signed for the HOST. */
+export const TAG_STEP = ascii('WARD STEP v2');
 const ATTEST_DOMAIN = ascii('WARD ATTEST v1');
-const ATTEST_VERSION = 6;
-/** The value `head_init_sig` is minted under -- NEVER a live head nonce. */
-export const NO_HEAD_NONCE = new Uint8Array(32);
+const ATTEST_VERSION = 7;
 /** The well-known debug WM key the emulator and debug firmware trust. */
 export const DEBUG_WM_SEED = ascii('AUTHDB QM DEBUG KEY SEED v1 ....');
 /** Mirrors the firmware's `apps.ward.cas.MAX_BATCH`. */
@@ -63,36 +71,28 @@ export const transitionPreimage = (
         rootOrEmpty(toRoot),
     );
 
-/** `transitionPreimage` plus the WM's current head nonce: what `wm_sig` covers. */
-export const wmPreimage = (
-    tag: Uint8Array,
-    wardId: Uint8Array,
-    fromCounter: number,
-    fromRoot: Uint8Array | null | undefined,
-    toCounter: number,
-    toRoot: Uint8Array | null | undefined,
-    headNonce: Uint8Array,
-): Uint8Array =>
-    concatBytes(
-        transitionPreimage(tag, wardId, fromCounter, fromRoot, toCounter, toRoot),
-        headNonce,
-    );
-
-/** Verify a device's `wm_sig` with `ward_id` alone -- which IS the Ed25519 public key. */
+/**
+ * Verify a device's `wm_sig` with `ward_id` alone -- which IS the Ed25519 public key -- against the
+ * session nonce it is bound to. Enrolment (TAG_WM_INIT) and the MVP's host step (TAG_STEP) carry
+ * none.
+ */
 export const verifyWmSig = (
     wardId: Uint8Array,
     fromCounter: number,
     fromRoot: Uint8Array | null | undefined,
     toCounter: number,
     toRoot: Uint8Array | null | undefined,
-    headNonce: Uint8Array,
     sig: Uint8Array,
     tag: Uint8Array = TAG_WM_HEAD,
+    sessionNonce: Uint8Array = new Uint8Array(0),
 ): boolean => {
     try {
         return ed25519.verify(
             sig,
-            wmPreimage(tag, wardId, fromCounter, fromRoot, toCounter, toRoot, headNonce),
+            concatBytes(
+                transitionPreimage(tag, wardId, fromCounter, fromRoot, toCounter, toRoot),
+                sessionNonce,
+            ),
             wardId,
         );
     } catch {
@@ -103,15 +103,13 @@ export const verifyWmSig = (
 export interface Attestation {
     fromCounter: number;
     fromRoot: Uint8Array;
-    fromHeadNonce: Uint8Array;
     toCounter: number;
     toRoot: Uint8Array;
-    toHeadNonce: Uint8Array;
     timestamp: number;
     signature: Uint8Array;
 }
 
-/** The v6 attestation preimage: the transition OCCURRENCE, bound to the round nonce. */
+/** The v7 attestation preimage: the transition, bound to the round nonce. */
 export const attestationPreimage = (
     nonce: Uint8Array,
     wardId: Uint8Array,
@@ -124,21 +122,33 @@ export const attestationPreimage = (
         wardId,
         u32(a.fromCounter),
         rootOrEmpty(a.fromRoot),
-        a.fromHeadNonce,
         u32(a.toCounter),
         rootOrEmpty(a.toRoot),
-        a.toHeadNonce,
         u64(a.timestamp),
     );
+
+/**
+ * The WM's own signed record that it accepted a transition: an attestation of the step, under the
+ * session nonce the device's authorisation was bound to. What roll-forward feeds a Trezor.
+ */
+export interface Acceptance extends Attestation {
+    nonce: Uint8Array;
+}
 
 /** What wardd needs from a WM, whichever one it is. */
 export interface WmClient {
     readonly pubkey: Uint8Array;
     /** Enrol a wallet at genesis (counter 0), authorised by the device's `head_init_sig`. */
     enrol(wardId: Uint8Array, root: Uint8Array | null, headInitSig: Uint8Array): Promise<void>;
-    /** Sign the step that reached the current head, bound to the device's round nonce. */
+    /**
+     * Sign the step that reached the current head, bound to the device's round nonce, which
+     * becomes the wallet's session nonce.
+     */
     attest(wardId: Uint8Array, nonce: Uint8Array): Promise<Attestation>;
-    /** Compare-and-swap a signed advance, timestamp it at the WM, and report whether it was a revert. */
+    /**
+     * Compare-and-swap an advance whose `wm_sig` is bound to the session nonce, timestamp it at the
+     * WM, and return whether it was a revert with the WM's signed record of it.
+     */
     advance(step: {
         wardId: Uint8Array;
         fromCounter: number;
@@ -146,8 +156,12 @@ export interface WmClient {
         toCounter: number;
         toRoot: Uint8Array | null;
         wmSig: Uint8Array;
-    }): Promise<boolean>;
-    headNonce(wardId: Uint8Array): Promise<Uint8Array | null>;
+        /**
+         * The session nonce the host believes is current. DIAGNOSTICS ONLY: the WM verifies
+         * against the nonce it holds, and this only explains a refusal.
+         */
+        session?: Uint8Array;
+    }): Promise<{ revert: boolean; acceptance: Acceptance }>;
     /** The head it holds, or null if the wallet is not enrolled. A null root is the empty tree. */
     head(wardId: Uint8Array): Promise<{ counter: number; root: Uint8Array | null } | null>;
 }
@@ -166,37 +180,20 @@ interface HeadRecord {
     counter: number;
     root: Uint8Array;
     timestamp: number;
-    fromHeadNonce: Uint8Array;
-    headNonce: Uint8Array;
 }
 
-/**
- * The in-process development WM. A head nonce that has ever been current is NEVER made current
- * again -- the one obligation a real WM carries -- and the ledger here enforces it.
- */
+/** The in-process development WM. */
 export class DevWm implements WmClient {
     readonly pubkey: Uint8Array;
     private heads = new Map<string, HeadRecord>();
-    private retired = new Map<string, Set<string>>();
+    /** the round nonce of each wallet's latest sync; volatile, never in a snapshot */
+    private sessions = new Map<string, Uint8Array>();
 
     constructor(
         private readonly seed: Uint8Array = DEBUG_WM_SEED,
         private readonly now: () => number = () => Math.floor(Date.now() / 1000),
     ) {
         this.pubkey = ed25519.getPublicKey(seed);
-    }
-
-    private draw(wardId: Uint8Array): Uint8Array {
-        const ledger = this.retired.get(toHex(wardId)) ?? new Set<string>();
-        this.retired.set(toHex(wardId), ledger);
-        for (;;) {
-            const nonce = randomBytes(32);
-            if (!equalBytes(nonce, NO_HEAD_NONCE) && !ledger.has(toHex(nonce))) {
-                ledger.add(toHex(nonce));
-
-                return nonce;
-            }
-        }
     }
 
     record(wardId: BytesLike): HeadRecord | undefined {
@@ -206,20 +203,16 @@ export class DevWm implements WmClient {
     enrol(wardId: Uint8Array, root: Uint8Array | null, headInitSig: Uint8Array): Promise<void> {
         const known = this.heads.get(toHex(wardId));
         if (known) return Promise.resolve();
-        const preimage = wmPreimage(TAG_WM_INIT, wardId, 0, root, 0, root, NO_HEAD_NONCE);
-        if (!ed25519.verify(headInitSig, preimage, wardId)) {
+        if (!verifyWmSig(wardId, 0, root, 0, root, headInitSig, TAG_WM_INIT)) {
             return Promise.reject(new Error('head-init authorisation does not verify'));
         }
-        // THE WM DRAWS N0 HERE: both ends of the genesis step carry it, since nothing was consumed.
-        const n0 = this.draw(wardId);
+        // Genesis attests itself: both ends are the enrolled head.
         this.heads.set(toHex(wardId), {
             fromCounter: 0,
             fromRoot: rootOrEmpty(root),
             counter: 0,
             root: rootOrEmpty(root),
             timestamp: this.now(),
-            fromHeadNonce: n0,
-            headNonce: n0,
         });
 
         return Promise.resolve();
@@ -233,20 +226,24 @@ export class DevWm implements WmClient {
     attest(wardId: Uint8Array, nonce: Uint8Array): Promise<Attestation> {
         const h = this.heads.get(toHex(wardId));
         if (!h) return Promise.reject(new Error('wallet is not enrolled with this WM'));
+        this.sessions.set(toHex(wardId), nonce);
+
+        return Promise.resolve(this.signHead(wardId, h, nonce));
+    }
+
+    private signHead(wardId: Uint8Array, h: HeadRecord, nonce: Uint8Array): Acceptance {
         const body = {
             fromCounter: h.fromCounter,
             fromRoot: h.fromRoot,
-            fromHeadNonce: h.fromHeadNonce,
             toCounter: h.counter,
             toRoot: h.root,
-            toHeadNonce: h.headNonce,
             timestamp: h.timestamp,
         };
 
-        return Promise.resolve({ ...body, signature: this.sign(nonce, wardId, body) });
+        return { ...body, signature: this.sign(nonce, wardId, body), nonce };
     }
 
-    advance(step: Parameters<WmClient['advance']>[0]): Promise<boolean> {
+    advance(step: Parameters<WmClient['advance']>[0]): ReturnType<WmClient['advance']> {
         const h = this.heads.get(toHex(step.wardId));
         if (!h) return Promise.reject(new Error('wallet is not enrolled with this WM; sync first'));
         // COMPARE-AND-SWAP on the head it holds.
@@ -258,35 +255,37 @@ export class DevWm implements WmClient {
         )) {
             return Promise.reject(new Error('a head advances by 1 to MAX_BATCH'));
         }
+        const session = this.sessions.get(toHex(step.wardId));
+        if (!session) return Promise.reject(new Error('no session for this wallet; sync first'));
         const args = [
             step.wardId,
             step.fromCounter,
             step.fromRoot,
             step.toCounter,
             step.toRoot,
-            h.headNonce,
             step.wmSig,
         ] as const;
-        let isRevert: boolean;
-        if (verifyWmSig(...args, TAG_WM_HEAD)) isRevert = false;
-        else if (verifyWmSig(...args, TAG_WM_REVERT)) isRevert = true;
-        else return Promise.reject(new Error('transition is not authorised by this wallet'));
+        let revert: boolean;
+        if (verifyWmSig(...args, TAG_WM_HEAD, session)) revert = false;
+        else if (verifyWmSig(...args, TAG_WM_REVERT, session)) revert = true;
+        else if (step.session && !equalBytes(step.session, session)) {
+            return Promise.reject(
+                new Error(
+                    'transition is not authorised by this wallet: the session it names has ended',
+                ),
+            );
+        } else return Promise.reject(new Error('transition is not authorised by this wallet'));
 
-        this.heads.set(toHex(step.wardId), {
+        const head = {
             fromCounter: step.fromCounter,
             fromRoot: rootOrEmpty(step.fromRoot),
             counter: step.toCounter,
             root: rootOrEmpty(step.toRoot),
             timestamp: this.now(),
-            fromHeadNonce: h.headNonce,
-            headNonce: this.draw(step.wardId),
-        });
+        };
+        this.heads.set(toHex(step.wardId), head);
 
-        return Promise.resolve(isRevert);
-    }
-
-    headNonce(wardId: Uint8Array): Promise<Uint8Array | null> {
-        return Promise.resolve(this.heads.get(toHex(wardId))?.headNonce ?? null);
+        return Promise.resolve({ revert, acceptance: this.signHead(step.wardId, head, session) });
     }
 
     head(wardId: Uint8Array): Promise<{ counter: number; root: Uint8Array | null } | null> {
@@ -298,39 +297,39 @@ export class DevWm implements WmClient {
     }
 
     /**
-     * The WM's whole state, for a daemon to persist. A restart that forgot it would be a WM SWAP to
-     * every device that synced against it -- the head nonce they hold would no longer be current.
-     * The ledger goes too: a retired nonce must stay retired across restarts.
+     * The WM's whole state, for a daemon to persist. A restart that forgot it would put every
+     * wallet's register back, which is the one thing a WM must never do.
      */
     snapshot(): DevWmSnapshot {
         const hex = (r: HeadRecord) => ({
-            ...r,
+            fromCounter: r.fromCounter,
             fromRoot: toHex(r.fromRoot),
+            counter: r.counter,
             root: toHex(r.root),
-            fromHeadNonce: toHex(r.fromHeadNonce),
-            headNonce: toHex(r.headNonce),
+            timestamp: r.timestamp,
         });
 
-        return {
-            heads: Object.fromEntries([...this.heads].map(([id, r]) => [id, hex(r)])),
-            retired: Object.fromEntries([...this.retired].map(([id, set]) => [id, [...set]])),
-        };
+        return { heads: Object.fromEntries([...this.heads].map(([id, r]) => [id, hex(r)])) };
     }
 
+    /**
+     * Load a snapshot. Sessions are volatile and end here. Fields older snapshots carried (head
+     * nonces, a nonce ledger) are ignored.
+     */
     restore(snap: DevWmSnapshot): this {
+        this.sessions = new Map();
         this.heads = new Map(
             Object.entries(snap.heads).map(([id, r]) => [
                 id,
                 {
-                    ...r,
+                    fromCounter: r.fromCounter,
                     fromRoot: toBytes(r.fromRoot),
+                    counter: r.counter,
                     root: toBytes(r.root),
-                    fromHeadNonce: toBytes(r.fromHeadNonce),
-                    headNonce: toBytes(r.headNonce),
+                    timestamp: r.timestamp,
                 },
             ]),
         );
-        this.retired = new Map(Object.entries(snap.retired).map(([id, l]) => [id, new Set(l)]));
 
         return this;
     }
@@ -345,9 +344,6 @@ export interface DevWmSnapshot {
             counter: number;
             root: string;
             timestamp: number;
-            fromHeadNonce: string;
-            headNonce: string;
         }
     >;
-    retired: Record<string, string[]>;
 }

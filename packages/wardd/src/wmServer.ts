@@ -3,7 +3,7 @@
  * state persisted after every change. Run as its own process by `wmCli.ts`.
  *
  *   GET  /v1/info                       -> { pubkey }
- *   GET  /v1/wards/<wardId>/head        -> { head: { counter, root, headNonce } | null }
+ *   GET  /v1/wards/<wardId>/head        -> { head: { counter, root } | null }
  *   POST /v1/wards/<wardId>/enrol       { root, headInitSig }
  *   POST /v1/wards/<wardId>/attest      { nonce }               -> attestation
  *   POST /v1/wards/<wardId>/advance     { fromCounter, fromRoot, toCounter, toRoot, wmSig }
@@ -21,6 +21,7 @@ import {
     type DevWmSnapshot,
     EMPTY_ROOT,
     WmConflict,
+    acceptanceToJson,
     attestationToJson,
     equalBytes,
     toBytes,
@@ -115,7 +116,7 @@ export const startWmServer = async (opts: WmServerOptions) => {
         } catch (e) {
             if ((e as NodeJS.ErrnoException).code !== 'ENOENT') throw e;
         }
-        // write-then-rename: a crash mid-write must not leave a WM that forgot its retired nonces
+        // write-then-rename: a crash mid-write must not leave a WM whose register went back
         persist = async () => {
             await fs.writeFile(`${file}.tmp`, JSON.stringify(wm.snapshot()), { mode: 0o600 });
             await fs.rename(`${file}.tmp`, file);
@@ -153,7 +154,6 @@ export const startWmServer = async (opts: WmServerOptions) => {
                     ? {
                           counter: h.counter,
                           root: equalBytes(h.root, EMPTY_ROOT) ? null : toHex(h.root),
-                          headNonce: toHex(h.headNonce),
                       }
                     : null,
             };
@@ -202,17 +202,21 @@ export const startWmServer = async (opts: WmServerOptions) => {
                 toCounter: counterField(body.toCounter, 'toCounter'),
                 toRoot: rootField(body.toRoot, 'toRoot'),
                 wmSig: sigField(body.wmSig, 'wmSig'),
+                // the session the host believes is current: diagnostics only, never verified
+                ...(body.session === undefined || body.session === null
+                    ? {}
+                    : { session: hex32(body.session, 'session') }),
             };
             const what = `#${step.fromCounter} -> #${step.toCounter}`;
             try {
-                const revert = await wm.advance(step);
+                const { revert, acceptance } = await wm.advance(step);
                 await persist();
                 log(
                     `[advance] ${ward} ${what} ${revert ? 'REVERT ' : ''}accepted,` +
-                        ` root=${shortRoot(step.toRoot)}, head nonce rotated`,
+                        ` root=${shortRoot(step.toRoot)}`,
                 );
 
-                return { revert };
+                return { revert, acceptance: acceptanceToJson(acceptance) };
             } catch (e) {
                 if (e instanceof WmConflict) {
                     log(`[advance] ${ward} ${what} CONFLICT: the head is at #${e.headCounter}`);

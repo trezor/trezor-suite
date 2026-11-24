@@ -17,15 +17,16 @@ import {
     DevWm,
     EMPTY_ROOT,
     MAX_BATCH,
-    NO_HEAD_NONCE,
     type RelayMessage,
     TAG_COMMIT,
     TAG_REVERT,
     TAG_STEP,
     TAG_WM_HEAD,
     TAG_WM_INIT,
+    TAG_WM_REVERT,
     type WardLeaf,
     attestationPreimage,
+    concatBytes,
     deleteRoot,
     equalBytes,
     insertRoot,
@@ -34,7 +35,6 @@ import {
     transitionPreimage,
     updateRoot,
     valueDigest,
-    wmPreimage,
 } from '@trezor/ward-core';
 
 type Json = Record<string, any>;
@@ -75,8 +75,11 @@ export class FakeDevice {
     /** the head `WardCatchUp` reached, for this session only; never `head` */
     provisional: (Head & { timestamp: number }) | null = null;
     queue: { entryKey: Uint8Array; leaf: WardLeaf | null }[] = [];
-    private headNonce: Uint8Array = NO_HEAD_NONCE;
     private nonce: Uint8Array | null = null;
+    /** the round nonce of the latest attestation this device verified: its WM session */
+    private session: Uint8Array | null = null;
+    /** a restored WM detected by ingest in the round `nonce`; the roll-forward stands at `cursor` */
+    private rolling: { nonce: Uint8Array; cursor: Head } | null = null;
     private att: (Json & { from: Head; to: Head }) | null = null;
     private inflight: { to: Head; count: number } | null = null;
     private wf: Workflow | null = null;
@@ -139,6 +142,19 @@ export class FakeDevice {
         );
     }
 
+    /** The WM authorisation, bound to this device's session: the nonce of its latest sync. */
+    private wmSig(from: Head, to: Head, tag = TAG_WM_HEAD) {
+        if (!this.session) throw new Error('WARD: no WM session; sync first');
+
+        return ed25519.sign(
+            concatBytes(
+                transitionPreimage(tag, this.wardId, from.counter, from.root, to.counter, to.root),
+                this.session,
+            ),
+            this.keys.kSig,
+        );
+    }
+
     private checkLink(from: Head, to: Head, ac: Uint8Array) {
         if (
             !equalBytes(ac, this.authCommit(from, to)) &&
@@ -151,7 +167,6 @@ export class FakeDevice {
     private adopt(to: Head) {
         this.head = to;
         this.headTime = this.att!.timestamp ?? 0;
-        this.headNonce = toBytes(this.att!.to_head_nonce);
         this.online = true;
         // the in-flight change took effect only if THIS head is the one it made
         if (this.inflight && same(this.inflight.to, to)) this.queue.splice(0, this.inflight.count);
@@ -197,19 +212,97 @@ export class FakeDevice {
             ...(counter === 0 ? wireRoot('root', root) : {}),
             head_init_sig: toHex(
                 ed25519.sign(
-                    wmPreimage(
-                        TAG_WM_INIT,
-                        this.wardId,
-                        counter,
-                        root,
-                        counter,
-                        root,
-                        NO_HEAD_NONCE,
-                    ),
+                    transitionPreimage(TAG_WM_INIT, this.wardId, counter, root, counter, root),
                     this.keys.kSig,
                 ),
             ),
         });
+    }
+
+    /**
+     * WardRollForward, as `apps/ward/roll_forward.py`: verify the WM's live attestation against the
+     * open round (which stays open, and becomes the session), then sign each accepted transition
+     * again for it -- after checking the chain from the attested head, this wallet's own
+     * `auth_commit`, the WM's record of exactly that step, and agreement with the stored head.
+     */
+    onWardRollForward(m: Json): RelayMessage {
+        if (this.opts.wm === false) {
+            throw new Error('WARD: this firmware has no WARD Manager to roll forward');
+        }
+        if (!this.nonce) throw new Error('no sync round is open');
+        if (!this.rolling || !equalBytes(this.rolling.nonce, this.nonce)) {
+            throw new Error('WARD: no restored WM detected in this round; sync first');
+        }
+        const links = (m.links ?? []) as Json[];
+        if (!links.length) throw new Error('WARD: no transitions to roll forward');
+        if (links.length > 16) throw new Error('WARD: too many transitions in one roll-forward');
+        const body = {
+            fromCounter: m.from_counter,
+            fromRoot: fromWire(m.from_root),
+            toCounter: m.to_counter,
+            toRoot: fromWire(m.to_root),
+            timestamp: m.timestamp ?? 0,
+        };
+        const live = attestationPreimage(this.nonce, this.wardId, body);
+        if (!ed25519.verify(toBytes(m.wm_signature), live, this.wmPubkey)) {
+            throw new Error('attestation does not verify');
+        }
+        this.session = this.nonce;
+        let cursor: Head = { counter: body.toCounter, root: body.toRoot };
+        if (!same(cursor, this.rolling.cursor)) {
+            throw new Error('WARD: the WM head is not where the roll-forward stands');
+        }
+        const sigs: string[] = [];
+        let lastTimestamp = 0;
+        for (const l of links) {
+            const from: Head = { counter: l.from_counter, root: fromWire(l.from_root) };
+            const to: Head = { counter: l.to_counter, root: fromWire(l.to_root) };
+            if (!same(from, cursor)) throw new Error('WARD: chain link does not follow the head');
+            const span = to.counter - from.counter;
+            if (!(span >= 1 && span <= MAX_BATCH)) {
+                throw new Error('WARD: chain link must advance the counter by 1 to MAX_BATCH');
+            }
+            const ac = toBytes(l.auth_commit);
+            const revert = equalBytes(ac, this.authCommit(from, to, TAG_REVERT));
+            if (!revert && !equalBytes(ac, this.authCommit(from, to))) {
+                throw new Error('link is not authorised by this wallet');
+            }
+            const a = l.acceptance as Json | undefined;
+            const record = a && {
+                fromCounter: from.counter,
+                fromRoot: from.root,
+                toCounter: to.counter,
+                toRoot: to.root,
+                timestamp: a.timestamp ?? 0,
+            };
+            if (
+                !a?.nonce ||
+                !a.wm_signature ||
+                a.timestamp === undefined ||
+                !ed25519.verify(
+                    toBytes(a.wm_signature),
+                    attestationPreimage(toBytes(a.nonce), this.wardId, record!),
+                    this.wmPubkey,
+                )
+            ) {
+                throw new Error('WARD: no WM record that this transition was accepted');
+            }
+            const stored = this.head;
+            if (
+                (from.counter < stored.counter && stored.counter < to.counter) ||
+                (from.counter === stored.counter && !equalBytes(from.root, stored.root)) ||
+                (to.counter === stored.counter && !equalBytes(to.root, stored.root))
+            ) {
+                throw new Error("WARD: the transitions are not on this device's history");
+            }
+            sigs.push(toHex(this.wmSig(from, to, revert ? TAG_WM_REVERT : TAG_WM_HEAD)));
+            cursor = to;
+            lastTimestamp = a.timestamp;
+        }
+        // approval is implicit here; the firmware asks on the first page
+        this.rolling = m.final ? null : { nonce: this.nonce, cursor };
+
+        return msg('WardRollForwardAck', { wm_sigs: sigs, last_timestamp: lastTimestamp });
     }
 
     onWardIngestAttestation(m: Json): RelayMessage {
@@ -217,15 +310,29 @@ export class FakeDevice {
         const body = {
             fromCounter: m.from_counter,
             fromRoot: fromWire(m.from_root),
-            fromHeadNonce: toBytes(m.from_head_nonce),
             toCounter: m.to_counter,
             toRoot: fromWire(m.to_root),
-            toHeadNonce: toBytes(m.to_head_nonce),
             timestamp: m.timestamp ?? 0,
         };
         const preimage = attestationPreimage(this.nonce, this.wardId, body);
         if (!ed25519.verify(toBytes(m.wm_signature), preimage, this.wmPubkey)) {
             throw new Error('attestation does not verify');
+        }
+        this.session = this.nonce;
+        // A HEAD BELOW THIS DEVICE'S: the WM's register went back. Not adopted, not refused: the
+        // round stays open for WardRollForward, as `apps/ward/ingest.py`.
+        if (body.toCounter < this.head.counter) {
+            this.rolling = {
+                nonce: this.nonce,
+                cursor: { counter: body.toCounter, root: body.toRoot },
+            };
+            this.att = null;
+
+            return msg('WardIngestAttestationAck', {
+                counter: body.toCounter,
+                wm_behind: true,
+                stored_counter: this.head.counter,
+            });
         }
         this.nonce = null;
         this.att = {
@@ -305,10 +412,8 @@ export class FakeDevice {
         const body = {
             fromCounter: m.from_counter,
             fromRoot: fromWire(m.from_root),
-            fromHeadNonce: toBytes(m.from_head_nonce),
             toCounter: to.counter,
             toRoot: to.root,
-            toHeadNonce: toBytes(m.to_head_nonce),
             timestamp: m.timestamp,
         };
         const preimage = attestationPreimage(toBytes(m.nonce), this.wardId, body);
@@ -398,20 +503,21 @@ export class FakeDevice {
         const authorisation = {
             counter: to.counter,
             auth_commit: toHex(this.authCommit(this.head, to)),
-            // without a WM the step is signed for the HOST: TAG_STEP, over NO_HEAD_NONCE
+            // without a WM the step is signed for the HOST, under TAG_STEP
             wm_sig: toHex(
-                ed25519.sign(
-                    wmPreimage(
-                        this.opts.wm === false ? TAG_STEP : TAG_WM_HEAD,
-                        this.wardId,
-                        this.head.counter,
-                        this.head.root,
-                        to.counter,
-                        to.root,
-                        this.opts.wm === false ? NO_HEAD_NONCE : this.headNonce,
-                    ),
-                    this.keys.kSig,
-                ),
+                this.opts.wm === false
+                    ? ed25519.sign(
+                          transitionPreimage(
+                              TAG_STEP,
+                              this.wardId,
+                              this.head.counter,
+                              this.head.root,
+                              to.counter,
+                              to.root,
+                          ),
+                          this.keys.kSig,
+                      )
+                    : this.wmSig(this.head, to),
             ),
             remaining: this.queue.length - n,
         };
@@ -441,15 +547,7 @@ export class FakeDevice {
             ...wireRoot('current_root', root),
             head_init_sig: toHex(
                 ed25519.sign(
-                    wmPreimage(
-                        TAG_WM_INIT,
-                        this.wardId,
-                        counter,
-                        root,
-                        counter,
-                        root,
-                        NO_HEAD_NONCE,
-                    ),
+                    transitionPreimage(TAG_WM_INIT, this.wardId, counter, root, counter, root),
                     this.keys.kSig,
                 ),
             ),
@@ -460,10 +558,8 @@ export class FakeDevice {
         const body = {
             fromCounter: from.counter,
             fromRoot: from.root,
-            fromHeadNonce: toBytes(m.from_head_nonce),
             toCounter: to.counter,
             toRoot: to.root,
-            toHeadNonce: toBytes(m.to_head_nonce),
             timestamp: m.timestamp ?? 0,
         };
         if (
@@ -475,6 +571,7 @@ export class FakeDevice {
         ) {
             throw new Error('attestation does not verify');
         }
+        this.session = nonce;
     }
 
     /** Verify the attested step, then pull pages back to this device's head. */
@@ -511,7 +608,6 @@ export class FakeDevice {
         }
         if (!same(cursor, this.head)) throw new Error('the links do not reach the stored head');
         this.head = to;
-        this.headNonce = toBytes(m.to_head_nonce);
         this.online = true;
     }
 
@@ -558,20 +654,7 @@ export class FakeDevice {
             sealed_content: change.leaf?.content ?? '',
             counter: to.counter,
             auth_commit: toHex(this.authCommit(this.head, to)),
-            wm_sig: toHex(
-                ed25519.sign(
-                    wmPreimage(
-                        TAG_WM_HEAD,
-                        this.wardId,
-                        this.head.counter,
-                        this.head.root,
-                        to.counter,
-                        to.root,
-                        this.headNonce,
-                    ),
-                    this.keys.kSig,
-                ),
-            ),
+            wm_sig: toHex(this.wmSig(this.head, to)),
             nonce: toHex(nonce),
             ...wireRoot('from_root', this.head.root),
             ...wireRoot('new_root', to.root),
@@ -583,11 +666,7 @@ export class FakeDevice {
         const pending = this.servicePending;
         if (!pending) throw new Error('no publish in flight');
         this.verifyAttestation(pending.nonce, m, this.head, pending.to);
-        if (!equalBytes(toBytes(m.from_head_nonce), this.headNonce)) {
-            throw new Error('the attested step consumed another head nonce');
-        }
         this.head = pending.to;
-        this.headNonce = toBytes(m.to_head_nonce);
         this.queue.shift();
         this.servicePending = null;
     }

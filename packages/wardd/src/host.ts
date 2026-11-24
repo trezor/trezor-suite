@@ -15,10 +15,12 @@ import { ed25519 } from '@noble/curves/ed25519.js';
 import {
     type Attestation,
     EMPTY_ROOT,
-    NO_HEAD_NONCE,
+    type Link,
     type RelayErrorCode,
     type RelayMessage,
     TAG_STEP,
+    TAG_WM_HEAD,
+    TAG_WM_REVERT,
     type WardEntryRequestJson,
     type WardResultJson,
     type WardTrie,
@@ -37,7 +39,13 @@ import {
     verifyWmSig,
 } from '@trezor/ward-core';
 
-import { type StoredAttestation, type StoredLink, type WardBackend, hexOrNull } from './backend';
+import {
+    type StoredAttestation,
+    type StoredLink,
+    type WardBackend,
+    attestationStepKey,
+    hexOrNull,
+} from './backend';
 import { type Head, type Replica, materialize } from './replica';
 
 /** Send one message to the device on the client's session; resolves to its answer. */
@@ -63,6 +71,23 @@ export interface ServiceSyncRound {
 // A 32-byte MAC, two 32-byte roots, two uint32 counters and protobuf framing cost
 // at most 116 bytes per link. A full page fits the firmware's 8704-byte buffer.
 const SERVICE_CHAIN_PAGE_SIZE = 64;
+// With a WM attestation each link carries ~110 bytes more; 16 keep a page well inside the buffer.
+const ACCEPTANCE_PAGE_SIZE = 16;
+// The device signs at most this many transitions per WardRollForward.
+const ROLL_FORWARD_PAGE_SIZE = 16;
+
+/** A step's identity on the wire, the empty tree as an absent root. */
+const stepKeyOf = (link: {
+    from_counter: number;
+    from_root?: string;
+    to_counter: number;
+    to_root?: string;
+}) => {
+    const root = (r?: string) =>
+        !r || r.toLowerCase() === toHex(EMPTY_ROOT) ? '' : r.toLowerCase();
+
+    return `${link.from_counter}:${root(link.from_root)}:${link.to_counter}:${root(link.to_root)}`;
+};
 
 const expectReply = (reply: RelayMessage, ...names: string[]): Json => {
     if (reply.name === 'Failure') {
@@ -101,6 +126,17 @@ export interface HostSyncResult {
     /** `catchUp` is the only route without a WM (`--without-wm`) */
     how: 'reconcile' | 'verifyChain' | 'rejoin' | 'catchUp';
     discarded?: number;
+    /** the device found the WM restored below its head, and signed its accepted history again */
+    rolledForward?: RollForwardResult;
+}
+
+export interface RollForwardResult {
+    /** transitions the WM accepted again */
+    steps: number;
+    /** the WM's head afterwards */
+    toCounter: number;
+    /** the WM's acceptance time of the last transition rolled forward, as the device showed it */
+    lastTimestamp: number;
 }
 
 export interface HostFlushResult {
@@ -112,6 +148,15 @@ export interface HostFlushResult {
 
 /** A guard against a device that keeps offering changes without its queue shrinking. */
 const MAX_FLUSH_ROUNDS = 1000;
+
+export interface WardHostOptions {
+    /**
+     * Roll a WM found below the newest head this host holds an attestation for forward, by having
+     * the device sign the accepted transitions again (`rollForward`). On unless turned off
+     * (`--no-roll-forward`), which models a host that does not hold the newer history.
+     */
+    rollForward?: boolean;
+}
 
 export class WardHost {
     private queue: Promise<unknown> = Promise.resolve();
@@ -128,10 +173,27 @@ export class WardHost {
         private readonly onWmChange: () => void | Promise<void> = () => {},
         /** narrate replica rebuilds (`--verbose`) */
         private readonly log?: (line: string) => void,
+        private readonly opts: WardHostOptions = {},
     ) {}
 
     /** What the last narrated rebuild was built from, so an unchanged replica is not retold. */
     private rebuilt = '';
+
+    /**
+     * The round nonce of the latest attestation this host obtained from the WM. The WM keeps the
+     * nonce of the wallet's latest sync as its session and accepts only a `wm_sig` bound to it;
+     * when this host ran that sync, this is it.
+     */
+    private session: Uint8Array | null = null;
+
+    /** Attest for a round nonce the device picked, which becomes the wallet's WM session. */
+    private async attestSession(wm: WmClient, wardId: Uint8Array, nonce: Uint8Array) {
+        const att = await wm.attest(wardId, nonce);
+        this.session = nonce;
+        await this.keepAttestation(att, nonce);
+
+        return att;
+    }
 
     /**
      * Run `fn` with this wallet to itself. A WM that cannot be reached fails the call as
@@ -249,8 +311,6 @@ export class WardHost {
                   nonce: a.nonce,
                   from_counter: a.fromCounter,
                   ...opt('from_root', rootOf(a.fromRoot)),
-                  from_head_nonce: a.fromHeadNonce,
-                  to_head_nonce: a.toHeadNonce,
                   timestamp: a.timestamp,
                   wm_signature: a.signature,
               }
@@ -278,6 +338,153 @@ export class WardHost {
             replicaCounter: head.counter,
             reverts: ack.reverts_crossed ?? 0,
             persisted: ack.persisted ?? false,
+        };
+    }
+
+    /**
+     * ROLL A RESTORED WM FORWARD, THROUGH THE TREZOR. Run when the device's WardIngestAttestation
+     * reported `wm_behind`: the WM's register went back (a backup restore, a failover onto a stale
+     * replica) and holds a head below the device's. The device signatures stored with the links cannot bring it back: each
+     * is bound to the session nonce of the sync it was minted in, and a restore ends every session.
+     * So the device signs them again for THIS round's session (`WardRollForward`): this host feeds
+     * it the transitions from the WM's attested head, each with the WM's own signed record that it
+     * accepted that step; the device checks its own `auth_commit` and the WM's record, and returns
+     * one `wm_sig` per step, which go to the WM as ordinary advances. The WM accepts nothing else.
+     *
+     * ONLY ALONG ACCEPTED HISTORY. The target is the newest head a kept, verified WM attestation
+     * names, and the WM's head must lie on the chain walking back from it; otherwise this is a
+     * fork (rejoin), not a restore, and nothing is replayed. A step with no kept record ends the
+     * path there; a device or WM refusal ends the roll-forward there. Pages of 16, each anchored
+     * on a fresh attestation under the SAME round nonce -- the device's round is still open. The
+     * device asks the user on the first page; the last page is `final`, on which it shows the head
+     * restored and when the WM accepted its last change.
+     *
+     * Returns the attestation the sync continues with, and what was rolled forward (null: nothing).
+     */
+    private async rollForward(
+        device: Device,
+        wm: WmClient,
+        nonce: Uint8Array,
+        att: Attestation,
+    ): Promise<{ att: Attestation; result: RollForwardResult | null }> {
+        if (this.opts.rollForward === false) return { att, result: null };
+        const current: Head = { counter: att.toCounter, root: rootOf(toHex(att.toRoot)) };
+        const records = await this.receiptsByStep();
+        const { trie } = await this.replica();
+        const targets = [...records.values()]
+            .filter(a => a.toCounter > current.counter)
+            .sort((a, b) => b.toCounter - a.toCounter || b.timestamp - a.timestamp);
+        let path: Link[] | null = null;
+        for (const target of targets) {
+            // bounded by the counter distance: every step raises the counter by at least one
+            const back = trie.linksEndingAt(
+                target.toCounter,
+                rootOf(target.toRoot),
+                target.toCounter - current.counter,
+            );
+            const at = back.findIndex(
+                l => l.fromCounter === current.counter && sameRoot(l.fromRoot, current.root),
+            );
+            if (at >= 0) {
+                path = back.slice(0, at + 1).reverse();
+                break;
+            }
+        }
+        const steps: { link: Link; record: StoredAttestation }[] = [];
+        for (const link of path ?? []) {
+            const record = records.get(
+                stepKeyOf({
+                    from_counter: link.fromCounter,
+                    from_root: hexOrNull(link.fromRoot) ?? undefined,
+                    to_counter: link.toCounter,
+                    to_root: hexOrNull(link.toRoot) ?? undefined,
+                }),
+            );
+            if (!record) break;
+            steps.push({ link, record });
+        }
+        if (!steps.length) return { att, result: null };
+
+        let anchor = att;
+        let advanced = 0;
+        let lastTimestamp = 0;
+        for (let first = 0; first < steps.length; first += ROLL_FORWARD_PAGE_SIZE) {
+            const page = steps.slice(first, first + ROLL_FORWARD_PAGE_SIZE);
+            const final = first + ROLL_FORWARD_PAGE_SIZE >= steps.length;
+            const reply = await device({
+                name: 'WardRollForward',
+                message: {
+                    from_counter: anchor.fromCounter,
+                    ...opt('from_root', rootOf(toHex(anchor.fromRoot))),
+                    to_counter: anchor.toCounter,
+                    ...opt('to_root', rootOf(toHex(anchor.toRoot))),
+                    timestamp: anchor.timestamp,
+                    wm_signature: toHex(anchor.signature),
+                    links: page.map(({ link, record }) => ({
+                        from_counter: link.fromCounter,
+                        ...opt('from_root', link.fromRoot),
+                        to_counter: link.toCounter,
+                        ...opt('to_root', link.toRoot),
+                        auth_commit: toHex(link.authCommit),
+                        acceptance: {
+                            nonce: record.nonce,
+                            timestamp: record.timestamp,
+                            wm_signature: record.signature,
+                        },
+                    })),
+                    ...(final ? { final: true } : {}),
+                },
+            });
+            if (reply.name !== 'WardRollForwardAck') {
+                this.log?.(
+                    `roll-forward: the device refused: ${(reply.message as Json)?.message ?? reply.name}`,
+                );
+                break;
+            }
+            const sigs = ((reply.message as Json).wm_sigs ?? []) as string[];
+            let complete = sigs.length === page.length;
+            for (const [index, { link, record }] of page.entries()) {
+                if (!sigs[index]) break;
+                try {
+                    const { acceptance } = await wm.advance({
+                        wardId: this.wardId,
+                        fromCounter: link.fromCounter,
+                        fromRoot: link.fromRoot,
+                        toCounter: link.toCounter,
+                        toRoot: link.toRoot,
+                        wmSig: toBytes(sigs[index]),
+                        session: nonce,
+                    });
+                    await this.keepAttestation(acceptance, acceptance.nonce);
+                    advanced++;
+                    lastTimestamp = record.timestamp;
+                } catch (e) {
+                    if (e instanceof WmUnavailable) throw e;
+                    this.log?.(
+                        `roll-forward: the WM refused #${link.fromCounter} -> #${link.toCounter}: ` +
+                            String(e),
+                    );
+                    complete = false;
+                    break;
+                }
+            }
+            // the next page, or the rest of the sync, is anchored on where the WM is now
+            anchor = await this.attestSession(wm, this.wardId, nonce);
+            if (!complete) break;
+        }
+        if (advanced) {
+            this.log?.(
+                `roll-forward: the WM was at #${current.counter}; the device signed ${advanced} ` +
+                    `accepted transition(s) again, to #${anchor.toCounter}`,
+            );
+            await this.onWmChange();
+        }
+
+        return {
+            att: anchor,
+            result: advanced
+                ? { steps: advanced, toCounter: anchor.toCounter, lastTimestamp }
+                : null,
         };
     }
 
@@ -335,16 +542,8 @@ export class WardHost {
                 ...a,
                 fromRoot: rootOf(a.fromRoot) ?? EMPTY_ROOT,
                 toRoot: rootOf(a.toRoot) ?? EMPTY_ROOT,
-                fromHeadNonce: toBytes(a.fromHeadNonce),
-                toHeadNonce: toBytes(a.toHeadNonce),
             };
-            const widths = [
-                nonce,
-                body.fromRoot,
-                body.toRoot,
-                body.fromHeadNonce,
-                body.toHeadNonce,
-            ];
+            const widths = [nonce, body.fromRoot, body.toRoot];
 
             return (
                 widths.every(field => field instanceof Uint8Array && field.length === 32) &&
@@ -368,17 +567,24 @@ export class WardHost {
             const proof = {
                 fromCounter: att.fromCounter,
                 fromRoot: hexOrNull(rootOf(toHex(att.fromRoot))),
-                fromHeadNonce: toHex(att.fromHeadNonce),
                 toCounter: att.toCounter,
                 toRoot: hexOrNull(rootOf(toHex(att.toRoot))),
-                toHeadNonce: toHex(att.toHeadNonce),
                 timestamp: att.timestamp,
                 nonce: toHex(nonce),
                 signature: toHex(att.signature),
             };
+            // One per step. A newer one replaces it: a WM restored from a backup re-accepts a
+            // step later, and catch-up's timestamp floor wants the latest acceptance.
+            const key = attestationStepKey(proof);
             const kept = await this.backend.loadAttestations();
             if (
-                kept.some(a => a?.toHeadNonce === proof.toHeadNonce && this.verifiesAttestation(a))
+                kept.some(
+                    a =>
+                        a &&
+                        attestationStepKey(a) === key &&
+                        a.timestamp >= proof.timestamp &&
+                        this.verifiesAttestation(a),
+                )
             ) {
                 return;
             }
@@ -417,11 +623,10 @@ export class WardHost {
         // MINTED ON THIS HEAD, OR NOT AT ALL. A single-leaf result does not name its `from` state,
         // so applying it to whatever head the replica is at now would build a tree the device never
         // built. The counter must follow on from the head, and the device's `wm_sig` -- which covers
-        // both ends and the WM's current nonce -- must verify over exactly this step: then the row
-        // stored below is the step the device authorised, and nothing else ever is. WITHOUT A WM
-        // the same signature comes under TAG_STEP over NO_HEAD_NONCE, and is checked the same way:
-        // it is all that stops anyone holding this wardd's token from storing a step no device of
-        // this wallet made.
+        // both ends -- must verify over exactly this step: then the row stored below is the step
+        // the device authorised, and nothing else ever is. WITHOUT A WM the same signature comes
+        // under TAG_STEP, and is checked the same way: it is all that stops anyone holding this
+        // wardd's token from storing a step no device of this wallet made.
         const fromCounter = result.leaves?.length ? result.from_counter : (result.counter ?? 0) - 1;
         if (fromCounter !== head.counter || !result.wm_sig) {
             throw new RelayFailure(
@@ -449,20 +654,26 @@ export class WardHost {
         const { wm } = this;
         const step = [this.wardId, head.counter, head.root, result.counter!, toRoot] as const;
         if (!wm) {
-            if (!verifyWmSig(...step, NO_HEAD_NONCE, toBytes(result.wm_sig), TAG_STEP)) {
+            if (!verifyWmSig(...step, toBytes(result.wm_sig), TAG_STEP)) {
                 throw new RelayFailure(
                     'bad_request',
                     "this step is not signed by this wallet's device; it is not stored",
                 );
             }
-        } else {
-            const headNonce = await wm.headNonce(this.wardId);
-            if (!headNonce || !verifyWmSig(...step, headNonce, toBytes(result.wm_sig))) {
-                throw new RelayFailure(
-                    'wm_conflict',
-                    'this result was not minted on the current head; sync and flush again',
-                );
-            }
+        } else if (
+            !this.session ||
+            !(
+                verifyWmSig(...step, toBytes(result.wm_sig), TAG_WM_HEAD, this.session) ||
+                verifyWmSig(...step, toBytes(result.wm_sig), TAG_WM_REVERT, this.session)
+            )
+        ) {
+            // BOUND TO THE SESSION: the WM takes it only under the nonce of the wallet's latest
+            // sync, which this host ran -- or another host has synced since, and it is stale
+            throw new RelayFailure(
+                'wm_conflict',
+                'this result was not minted on the current head in the current session; sync ' +
+                    'and flush again',
+            );
         }
         const changes = result.leaves?.length
             ? result.leaves.map(leaf => ({
@@ -488,14 +699,18 @@ export class WardHost {
         await this.backend.append(link);
         if (!wm) return { counter: link.toCounter, root: link.toRoot, published: true };
         try {
-            await wm.advance({
+            const { acceptance } = await wm.advance({
                 wardId: this.wardId,
                 fromCounter: link.fromCounter,
                 fromRoot: head.root,
                 toCounter: link.toCounter,
                 toRoot,
                 wmSig: toBytes(result.wm_sig),
+                // what this host believes the session is: the WM uses it to explain a refusal
+                ...(this.session ? { session: this.session } : {}),
             });
+            // THE WM'S OWN RECORD of the transition: what a roll-forward presents after a restore
+            await this.keepAttestation(acceptance, acceptance.nonce);
         } catch (e) {
             if (e instanceof WmConflict) {
                 throw new RelayFailure(
@@ -528,7 +743,7 @@ export class WardHost {
                 counter: req.current_counter ?? 0,
                 root: rootOf(req.current_root),
             };
-            if (!(await wm.headNonce(wardId))) {
+            if (!(await wm.head(wardId))) {
                 // first contact: enrol from the device's opening head (genesis only -- see syncInner)
                 if (current.counter !== 0) {
                     throw new Error(
@@ -538,8 +753,8 @@ export class WardHost {
                 await wm.enrol(wardId, current.root, toBytes(req.head_init_sig ?? ''));
                 await this.onWmChange();
             }
-            const att = await wm.attest(wardId, toBytes(req.nonce ?? ''));
-            await this.keepAttestation(att, toBytes(req.nonce ?? ''));
+            // no roll-forward on the deprecated service channel: it has no WardRollForward
+            const att = await this.attestSession(wm, wardId, toBytes(req.nonce ?? ''));
             const anchor = { counter: att.toCounter, root: rootOf(toHex(att.toRoot)) };
             let cursor = anchor;
             const snapshot =
@@ -558,8 +773,6 @@ export class WardHost {
                         ...opt('to_root', anchor.root),
                         timestamp: att.timestamp,
                         wm_signature: toHex(att.signature),
-                        from_head_nonce: toHex(att.fromHeadNonce),
-                        to_head_nonce: toHex(att.toHeadNonce),
                     },
                 },
                 chainPage(request) {
@@ -657,16 +870,13 @@ export class WardHost {
                 }
                 throw e;
             }
-            const att = await wm.attest(this.wardId, toBytes(req.nonce ?? ''));
-            await this.keepAttestation(att, toBytes(req.nonce ?? ''));
+            const att = await this.attestSession(wm, this.wardId, toBytes(req.nonce ?? ''));
 
             return {
                 name: 'WardPublishAck',
                 message: {
                     timestamp: att.timestamp,
                     wm_signature: toHex(att.signature),
-                    from_head_nonce: toHex(att.fromHeadNonce),
-                    to_head_nonce: toHex(att.toHeadNonce),
                 },
             };
         });
@@ -689,17 +899,58 @@ export class WardHost {
         return this.backend.load();
     }
 
-    /** Answer the device's `WardChainRequest`s from `trie` until it sends something else. */
+    /**
+     * Answer the device's `WardChainRequest`s from `trie` until it sends something else. A request
+     * with `with_acceptance` (WardRollback) also gets each link's kept WM attestation, found by the
+     * link's step, in smaller pages so they fit the device's buffer.
+     */
     async answerChain(device: Device, trie: WardTrie, reply: RelayMessage) {
+        let receipts: Map<string, StoredAttestation> | undefined;
         while (reply.name === 'WardChainRequest') {
             const req = reply.message as Json;
-            reply = await device({
-                name: 'WardChainLinkAck',
-                message: { links: serveChain(trie, req.to_counter ?? 0, req.to_root ?? null) },
+            const withAcceptance = !!req.with_acceptance;
+            if (withAcceptance && !receipts) receipts = await this.receiptsByStep();
+            const links = serveChain(
+                trie,
+                req.to_counter ?? 0,
+                req.to_root ?? null,
+                withAcceptance ? ACCEPTANCE_PAGE_SIZE : undefined,
+            ).map(link => {
+                const a = withAcceptance ? receipts?.get(stepKeyOf(link)) : undefined;
+
+                return a
+                    ? {
+                          ...link,
+                          acceptance: {
+                              nonce: a.nonce,
+                              timestamp: a.timestamp,
+                              wm_signature: a.signature,
+                          },
+                      }
+                    : link;
             });
+            reply = await device({ name: 'WardChainLinkAck', message: { links } });
         }
 
         return reply;
+    }
+
+    /** The newest verified kept attestation of each step. */
+    private async receiptsByStep() {
+        const byStep = new Map<string, StoredAttestation>();
+        for (const a of await this.backend.loadAttestations()) {
+            if (!a || !this.verifiesAttestation(a)) continue;
+            const key = stepKeyOf({
+                from_counter: a.fromCounter,
+                from_root: a.fromRoot ?? undefined,
+                to_counter: a.toCounter,
+                to_root: a.toRoot ?? undefined,
+            });
+            const held = byStep.get(key);
+            if (!held || held.timestamp < a.timestamp) byStep.set(key, a);
+        }
+
+        return byStep;
     }
 
     /**
@@ -733,7 +984,7 @@ export class WardHost {
         // absent and means "not said", NOT the empty tree -- see `forkOf`
         const dev: Head = { counter: ack.counter ?? 0, root: rootOf(ack.root) };
 
-        if (!(await wm.headNonce(wardId))) {
+        if (!(await wm.head(wardId))) {
             // ENROLMENT IS GENESIS ONLY: see MockWM.attest_head for why a WM must not be seeded
             // from whatever head the first device to reach it happens to hold.
             if (dev.counter !== 0) {
@@ -745,25 +996,41 @@ export class WardHost {
             await wm.enrol(wardId, dev.root, toBytes(ack.head_init_sig ?? ''));
             await this.onWmChange();
         }
-
-        const att = await wm.attest(wardId, toBytes(ack.nonce ?? ''));
-        await this.keepAttestation(att, toBytes(ack.nonce ?? ''));
-        expectReply(
-            await device({
-                name: 'WardIngestAttestation',
-                message: {
-                    from_counter: att.fromCounter,
-                    ...opt('from_root', rootOf(toHex(att.fromRoot))),
-                    to_counter: att.toCounter,
-                    ...opt('to_root', rootOf(toHex(att.toRoot))),
-                    wm_signature: toHex(att.signature),
-                    from_head_nonce: toHex(att.fromHeadNonce),
-                    to_head_nonce: toHex(att.toHeadNonce),
-                    timestamp: att.timestamp,
-                },
-            }),
-            'WardIngestAttestationAck',
-        );
+        const nonce = toBytes(ack.nonce ?? '');
+        const ingest = async (a: Attestation) =>
+            expectReply(
+                await device({
+                    name: 'WardIngestAttestation',
+                    message: {
+                        from_counter: a.fromCounter,
+                        ...opt('from_root', rootOf(toHex(a.fromRoot))),
+                        to_counter: a.toCounter,
+                        ...opt('to_root', rootOf(toHex(a.toRoot))),
+                        wm_signature: toHex(a.signature),
+                        timestamp: a.timestamp,
+                    },
+                }),
+                'WardIngestAttestationAck',
+            );
+        let att = await this.attestSession(wm, wardId, nonce);
+        let ingested = await ingest(att);
+        // THE DEVICE DETECTS a WM restored below its head; the round stays open for the roll-forward
+        let rolledForward: RollForwardResult | undefined;
+        if (ingested.wm_behind) {
+            const r = await this.rollForward(device, wm, nonce, att);
+            if (r.result) {
+                ({ att } = r);
+                rolledForward = r.result;
+                ingested = await ingest(att);
+            }
+            if (ingested.wm_behind) {
+                throw new RelayFailure(
+                    'wm_behind',
+                    `the device is at ${ingested.stored_counter ?? dev.counter} but the WM holds ` +
+                        `${att.toCounter}`,
+                );
+            }
+        }
 
         const to: Head = { counter: att.toCounter, root: rootOf(toHex(att.toRoot)) };
         const from: Head = { counter: att.fromCounter, root: rootOf(toHex(att.fromRoot)) };
@@ -815,7 +1082,12 @@ export class WardHost {
                     'WardReconcileAck',
                 );
 
-                return { counter: r.counter ?? 0, root: r.new_root || null, how: 'reconcile' };
+                return {
+                    counter: r.counter ?? 0,
+                    root: r.new_root || null,
+                    how: 'reconcile',
+                    ...(rolledForward ? { rolledForward } : {}),
+                };
             }
             // FURTHER BELOW: the device walks the chain back to its own head, and is the judge
             // of whether it gets there.
@@ -828,7 +1100,12 @@ export class WardHost {
                 'WardVerifyChainAck',
             );
 
-            return { counter: r.counter ?? 0, root: r.new_root || null, how: 'verifyChain' };
+            return {
+                counter: r.counter ?? 0,
+                root: r.new_root || null,
+                how: 'verifyChain',
+                ...(rolledForward ? { rolledForward } : {}),
+            };
         } catch (e) {
             // A REFUSAL THAT A FORK EXPLAINS is reported as one: the user can then choose to rejoin.
             const forked =

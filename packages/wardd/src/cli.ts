@@ -11,6 +11,9 @@
  *                     NO WARD Manager at all, for firmware built `--ward-without-wm` (the MVP):
  *                     a sync is a catch-up the device persists, a write is stored without a WM's
  *                     say. Cannot be combined with --wm.
+ *       [--no-roll-forward]
+ *                     do not have the device sign accepted transitions again for a WM whose register
+ *                     went back (a restored backup); models a host that does not hold them.
  *
  * With no --token-file, a token is generated into `<data-dir>/token` (mode 0600) and reused.
  *
@@ -92,6 +95,7 @@ const main = async () => {
         wm: value('wm') ? new HttpWm(value('wm')!) : undefined,
         withoutWm,
         log: verbose ? log : undefined,
+        rollForward: !flag('no-roll-forward'),
     });
     const origins = values('origin');
     const server = await startServer({

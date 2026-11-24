@@ -45,8 +45,6 @@ export const WardPublishAck = Type.Object(
     {
         timestamp: Type.Optional(Type.Number()),
         wm_signature: Type.Optional(Type.String()),
-        from_head_nonce: Type.Optional(Type.String()),
-        to_head_nonce: Type.Optional(Type.String()),
     },
     { $id: 'WardPublishAck' },
 );
@@ -126,8 +124,6 @@ export const WardSyncResponse = Type.Object(
         to_root: Type.Optional(Type.String()),
         from_counter: Type.Optional(Type.Number()),
         from_root: Type.Optional(Type.String()),
-        from_head_nonce: Type.Optional(Type.String()),
-        to_head_nonce: Type.Optional(Type.String()),
     },
     { $id: 'WardSyncResponse' },
 );

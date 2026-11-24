@@ -26,6 +26,8 @@ export interface WarddOptions {
     withoutWm?: boolean;
     /** say what each replica stores (`--verbose`) */
     log?: (line: string) => void;
+    /** roll a WM whose register went back forward, through the device; on unless false */
+    rollForward?: boolean;
 }
 
 const DEV_WM_FILE = 'dev-wm.json';
@@ -75,7 +77,9 @@ export class Wardd {
                 const backend = log ? loggingBackend(opened, log) : opened;
                 this.backends.push(backend);
 
-                return new WardHost(toBytes(key), backend, this.wm, this.persistWm, log);
+                return new WardHost(toBytes(key), backend, this.wm, this.persistWm, log, {
+                    rollForward: this.opts.rollForward,
+                });
             });
             this.hosts.set(key, host);
             host.catch(() => this.hosts.delete(key));

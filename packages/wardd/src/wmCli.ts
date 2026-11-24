@@ -4,8 +4,7 @@
  *
  * THE DEVELOPMENT WARD MANAGER as its own process: wardd reaches it with `--wm http://127.0.0.1:21330`.
  * It signs with the debug WM key, which only emulator and debug firmware trust. Its state -- each
- * ward's head and every head nonce it ever issued -- is kept in DIR/wm.json, so a restart is not a
- * WM swap. It logs every enrolment, attestation and advance; stopping it shows what a device sees
+ * ward's head -- is kept in DIR/wm.json, so a restart does not put a register back. It logs every enrolment, attestation and advance; stopping it shows what a device sees
  * when no WM can be reached.
  */
 import { toHex } from '@trezor/ward-core';

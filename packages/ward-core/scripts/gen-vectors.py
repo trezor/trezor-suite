@@ -102,14 +102,14 @@ def wm_vectors() -> dict:
 
     ward_id = _ed25519.publickey_unsafe(k_sig)
     r1, r2 = hashlib.sha256(b"r1").digest(), hashlib.sha256(b"r2").digest()
-    n1, n2, rn = bytes([1]) * 32, bytes([2]) * 32, bytes([9]) * 32
+    rn = bytes([9]) * 32
     attest = {
-        "nonce": H(rn), "ward_id": H(ward_id), "from_counter": 1, "from_root": H(r1), "from_head_nonce": H(n1),
-        "to_counter": 2, "to_root": H(r2), "to_head_nonce": H(n2), "timestamp": 1700000002,
+        "nonce": H(rn), "ward_id": H(ward_id), "from_counter": 1, "from_root": H(r1),
+        "to_counter": 2, "to_root": H(r2), "timestamp": 1700000002,
     }
-    attest["signature"] = H(wm.sign(ward_id, rn, 1, r1, n1, 2, r2, n2, 1700000002))
-    genesis = dict(attest, from_counter=0, from_root=None, to_counter=0, to_root=None, to_head_nonce=H(n1))
-    genesis["signature"] = H(wm.sign(ward_id, rn, 0, None, n1, 0, None, n1, 1700000002))
+    attest["signature"] = H(wm.sign(ward_id, rn, 1, r1, 2, r2, 1700000002))
+    genesis = dict(attest, from_counter=0, from_root=None, to_counter=0, to_root=None)
+    genesis["signature"] = H(wm.sign(ward_id, rn, 0, None, 0, None, 1700000002))
     return {
         "debug_seed": H(DEBUG_WM_SEED),
         "debug_pubkey": H(wm.pubkey),
@@ -117,10 +117,12 @@ def wm_vectors() -> dict:
         "ward_id": H(ward_id),
         "attest": attest,
         "attest_genesis": genesis,
-        "wm_sig_commit": {"from_counter": 1, "from_root": H(r1), "to_counter": 2, "to_root": H(r2), "head_nonce": H(n1),
-                          "sig": H(wk.wm_sig(k_sig, ward_id, 1, r1, 2, r2, n1))},
-        "wm_sig_revert": {"from_counter": 2, "from_root": H(r2), "to_counter": 3, "to_root": H(r1), "head_nonce": H(n2),
-                          "sig": H(wk.wm_sig(k_sig, ward_id, 2, r2, 3, r1, n2, wk.TAG_WM_REVERT))},
+        # bound to the session nonce: the round nonce of the device's latest sync
+        "session": H(rn),
+        "wm_sig_commit": {"from_counter": 1, "from_root": H(r1), "to_counter": 2, "to_root": H(r2),
+                          "sig": H(wk.wm_sig(k_sig, ward_id, 1, r1, 2, r2, wk.TAG_WM_HEAD, rn))},
+        "wm_sig_revert": {"from_counter": 2, "from_root": H(r2), "to_counter": 3, "to_root": H(r1),
+                          "sig": H(wk.wm_sig(k_sig, ward_id, 2, r2, 3, r1, wk.TAG_WM_REVERT, rn))},
         "head_init": {"counter": 0, "root": None, "sig": H(wk.head_init_sig(k_sig, ward_id, 0, None))},
         "empty_root": H(wk._root_or_empty(None)) if hasattr(wk, "_root_or_empty") else None,
     }

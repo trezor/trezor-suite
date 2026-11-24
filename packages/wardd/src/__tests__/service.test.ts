@@ -82,11 +82,12 @@ describe('the service responder', () => {
         const b = new FakeDevice(keys);
         const { state, wm } = await fresh();
         const host = new WardHost(a.wardId, state, wm);
-        // both sync at genesis, both fetch; a publishes first
+        // both sync at genesis, both fetch; a publishes first. a syncs last: the WM's session is
+        // the wallet's latest sync, so b's sync before it has already ended b's session
         a.enqueue('a', '1');
         b.enqueue('b', '2');
-        await syncDevice(a, host);
         await syncDevice(b, host);
+        await syncDevice(a, host);
         const fa = await host.serviceFetch(a.serviceFetchRequest().message);
         const fb = await host.serviceFetch(b.serviceFetchRequest().message);
         const pb = b.servicePublishRequest(fb.message);
@@ -100,6 +101,25 @@ describe('the service responder', () => {
         // b syncs and its change goes through on top
         expect((await publishNext(b, host)).name).toBe('WardPublishAck');
         expect(b.head.counter).toBe(2);
+    });
+
+    it('ADVERSARIAL: refuses a publish whose session a later sync ended', async () => {
+        const device = new FakeDevice();
+        const { state, wm } = await fresh();
+        const host = new WardHost(device.wardId, state, wm);
+        device.enqueue('one', '1');
+        expect((await publishNext(device, host)).name).toBe('WardPublishAck');
+        // the device syncs and builds its next publication in that session...
+        device.enqueue('two', '2');
+        await syncDevice(device, host);
+        const fetched = await host.serviceFetch(device.serviceFetchRequest().message);
+        const held = device.servicePublishRequest(fetched.message);
+        // ...the host holds it back and runs another sync first
+        await syncDevice(device, host);
+        const conflict = await host.servicePublish(held.message);
+        expect(conflict.name).toBe('WardPublishConflict');
+        expect(wm.record(device.wardId)?.counter).toBe(1);
+        expect((await host.storedLinks()).length).toBe(1);
     });
 
     it('pages history larger than the wire buffer against a single attestation', async () => {
@@ -138,7 +158,7 @@ describe('the service responder', () => {
         expect(writer.head.counter).toBe(131);
     });
 
-    it('resumes from its state file: the same replica, the same WM head nonce', async () => {
+    it('resumes from its state file: the same replica, the same WM head', async () => {
         const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'wardd-service-'));
         const file = path.join(dir, 'state');
         const device = new FakeDevice();
@@ -150,9 +170,7 @@ describe('the service responder', () => {
         await publishNext(device, host);
 
         const second = await fresh(file);
-        expect(await second.wm.headNonce(device.wardId)).toEqual(
-            await first.wm.headNonce(device.wardId),
-        );
+        expect(await second.wm.head(device.wardId)).toEqual(await first.wm.head(device.wardId));
         const resumed = new WardHost(device.wardId, second.state, second.wm);
         device.enqueue('bob', '2');
         // the device, at 1, syncs against the restarted daemon and publishes 2

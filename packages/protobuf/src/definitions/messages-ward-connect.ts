@@ -23,8 +23,6 @@ export const WardCatchUp = Type.Object(
         nonce: Type.Optional(Type.String()),
         from_counter: Type.Optional(Type.Number()),
         from_root: Type.Optional(Type.String()),
-        from_head_nonce: Type.Optional(Type.String()),
-        to_head_nonce: Type.Optional(Type.String()),
         timestamp: Type.Optional(Type.Number()),
         wm_signature: Type.Optional(Type.String()),
     },
@@ -54,7 +52,7 @@ export const WardChainRequest = Type.Object(
     {
         to_counter: Type.Optional(Type.Number()),
         to_root: Type.Optional(Type.String()),
-        to_head_nonce: Type.Optional(Type.String()),
+        with_acceptance: Type.Optional(Type.Boolean()),
     },
     { $id: 'WardChainRequest' },
 );
@@ -102,8 +100,6 @@ export const WardIngestAttestation = Type.Object(
         to_root: Type.Optional(Type.String()),
         from_counter: Type.Optional(Type.Number()),
         from_root: Type.Optional(Type.String()),
-        from_head_nonce: Type.Optional(Type.String()),
-        to_head_nonce: Type.Optional(Type.String()),
     },
     { $id: 'WardIngestAttestation' },
 );
@@ -112,6 +108,8 @@ export type WardIngestAttestationAck = Static<typeof WardIngestAttestationAck>;
 export const WardIngestAttestationAck = Type.Object(
     {
         counter: Type.Optional(Type.Number()),
+        wm_behind: Type.Optional(Type.Boolean()),
+        stored_counter: Type.Optional(Type.Number()),
     },
     { $id: 'WardIngestAttestationAck' },
 );
@@ -174,8 +172,6 @@ export const WardRollback = Type.Object(
         to_root: Type.Optional(Type.String()),
         wm_signature: Type.Optional(Type.String()),
         timestamp: Type.Optional(Type.Number()),
-        from_head_nonce: Type.Optional(Type.String()),
-        to_head_nonce: Type.Optional(Type.String()),
         recovered_root: Type.Optional(Type.String()),
         recovered_counter: Type.Optional(Type.Number()),
     },
@@ -191,6 +187,30 @@ export const WardRollbackAck = Type.Object(
         wm_sig: Type.Optional(Type.String()),
     },
     { $id: 'WardRollbackAck' },
+);
+
+export type WardRollForward = Static<typeof WardRollForward>;
+export const WardRollForward = Type.Object(
+    {
+        from_counter: Type.Optional(Type.Number()),
+        from_root: Type.Optional(Type.String()),
+        to_counter: Type.Optional(Type.Number()),
+        to_root: Type.Optional(Type.String()),
+        timestamp: Type.Optional(Type.Number()),
+        wm_signature: Type.Optional(Type.String()),
+        links: Type.Array(WardChainLink),
+        final: Type.Optional(Type.Boolean()),
+    },
+    { $id: 'WardRollForward' },
+);
+
+export type WardRollForwardAck = Static<typeof WardRollForwardAck>;
+export const WardRollForwardAck = Type.Object(
+    {
+        wm_sigs: Type.Array(Type.String()),
+        last_timestamp: Type.Optional(Type.Number()),
+    },
+    { $id: 'WardRollForwardAck' },
 );
 
 export type WardSetPersistWithoutWm = Static<typeof WardSetPersistWithoutWm>;

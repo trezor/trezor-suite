@@ -10,7 +10,13 @@ import { promises as fs } from 'fs';
 
 import { type DevWmSnapshot } from '@trezor/ward-core';
 
-import { type StoredAttestation, type StoredLink, type WardBackend, linkId } from '../backend';
+import {
+    type StoredAttestation,
+    type StoredLink,
+    type WardBackend,
+    attestationId,
+    linkId,
+} from '../backend';
 
 interface State {
     wardId: string | null;
@@ -79,7 +85,7 @@ export class ServiceStateFile implements WardBackend {
         const state = {
             ...this.state,
             attestations: [
-                ...held.filter(a => a.toHeadNonce !== attestation.toHeadNonce),
+                ...held.filter(a => attestationId(a) !== attestationId(attestation)),
                 { ...attestation },
             ],
         };

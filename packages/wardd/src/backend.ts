@@ -60,18 +60,16 @@ export const linkId = (link: StoredLink): string =>
  * A WM attestation this host relayed, kept with the round nonce it was signed over: proof that the
  * WM held `to` at `timestamp`. While the WM is down, `catchUp` names the newest head on the
  * replica's chain that one of these vouches for, and the device verifies the signature itself.
- * Hosts keep one verified proof per head occurrence and replicate it with the links, so a host
- * that never talked to the WM can catch a device up too.
+ * Hosts keep one verified proof per step and replicate it with the links, so a host that never
+ * talked to the WM can catch a device up too. WardRollback asks for them by the same step.
  */
 export interface StoredAttestation {
     fromCounter: number;
     /** hex; null is the empty tree */
     fromRoot: string | null;
-    fromHeadNonce: string;
     toCounter: number;
     /** hex; null is the empty tree */
     toRoot: string | null;
-    toHeadNonce: string;
     /** the WM's clock, seconds: when it reached `to` */
     timestamp: number;
     /** the round nonce the signature covers */
@@ -79,9 +77,19 @@ export interface StoredAttestation {
     signature: string;
 }
 
-/** The WM assigns each head occurrence a nonce, shared by all attestations of that occurrence. */
+/**
+ * One id per step `(from, to)`, shared by every attestation of it: the WM's counter only rises, so
+ * within one register history a step is accepted once. The newest attestation of a step wins.
+ */
+export const attestationStepKey = (a: {
+    fromCounter: number;
+    fromRoot: string | null;
+    toCounter: number;
+    toRoot: string | null;
+}): string => `${a.fromCounter}:${a.fromRoot ?? ''}:${a.toCounter}:${a.toRoot ?? ''}`;
+
 export const attestationId = (a: StoredAttestation): string =>
-    toHex(sha256(toBytes(a.toHeadNonce))).slice(0, 32);
+    toHex(sha256(new TextEncoder().encode(attestationStepKey(a)))).slice(0, 32);
 
 export interface WardBackend {
     /** Every link this replica holds, in the order they were appended where known. */
@@ -90,7 +98,7 @@ export interface WardBackend {
     append(link: StoredLink): Promise<void>;
     /** Every WM attestation this replica holds. */
     loadAttestations(): Promise<StoredAttestation[]>;
-    /** Persist a verified attestation under its head occurrence. */
+    /** Persist a verified attestation under its step. */
     appendAttestation(attestation: StoredAttestation): Promise<void>;
     close(): Promise<void>;
 }

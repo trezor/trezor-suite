@@ -7,7 +7,6 @@ export type WardChainAcceptance = Static<typeof WardChainAcceptance>;
 export const WardChainAcceptance = Type.Object(
     {
         nonce: Type.Optional(Type.String()),
-        from_head_nonce: Type.Optional(Type.String()),
         timestamp: Type.Optional(Type.Number()),
         wm_signature: Type.Optional(Type.String()),
     },

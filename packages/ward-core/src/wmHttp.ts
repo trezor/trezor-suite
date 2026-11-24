@@ -9,7 +9,7 @@
 import { ed25519 } from '@noble/curves/ed25519.js';
 
 import { toBytes, toHex } from './bytes';
-import { type Attestation, DEBUG_WM_SEED, type WmClient, WmConflict } from './wm';
+import { type Acceptance, type Attestation, DEBUG_WM_SEED, type WmClient, WmConflict } from './wm';
 
 /** The WM did not answer: down, unreachable, or not speaking this API. */
 export class WmUnavailable extends Error {
@@ -23,10 +23,8 @@ export class WmUnavailable extends Error {
 export interface AttestationJson {
     fromCounter: number;
     fromRoot: string;
-    fromHeadNonce: string;
     toCounter: number;
     toRoot: string;
-    toHeadNonce: string;
     timestamp: number;
     signature: string;
 }
@@ -34,10 +32,8 @@ export interface AttestationJson {
 export const attestationToJson = (a: Attestation): AttestationJson => ({
     fromCounter: a.fromCounter,
     fromRoot: toHex(a.fromRoot),
-    fromHeadNonce: toHex(a.fromHeadNonce),
     toCounter: a.toCounter,
     toRoot: toHex(a.toRoot),
-    toHeadNonce: toHex(a.toHeadNonce),
     timestamp: a.timestamp,
     signature: toHex(a.signature),
 });
@@ -45,12 +41,25 @@ export const attestationToJson = (a: Attestation): AttestationJson => ({
 const attestationFromJson = (a: AttestationJson): Attestation => ({
     fromCounter: a.fromCounter,
     fromRoot: toBytes(a.fromRoot),
-    fromHeadNonce: toBytes(a.fromHeadNonce),
     toCounter: a.toCounter,
     toRoot: toBytes(a.toRoot),
-    toHeadNonce: toBytes(a.toHeadNonce),
     timestamp: a.timestamp,
     signature: toBytes(a.signature),
+});
+
+/** The WM's signed record of an accepted transition: an attestation and the nonce it is under. */
+export interface AcceptanceJson extends AttestationJson {
+    nonce: string;
+}
+
+export const acceptanceToJson = (a: Acceptance): AcceptanceJson => ({
+    ...attestationToJson(a),
+    nonce: toHex(a.nonce),
+});
+
+export const acceptanceFromJson = (a: AcceptanceJson): Acceptance => ({
+    ...attestationFromJson(a),
+    nonce: toBytes(a.nonce),
 });
 
 const hexOrNull = (v: Uint8Array | null | undefined) => (v ? toHex(v) : null);
@@ -119,33 +128,27 @@ export class HttpWm implements WmClient {
     }
 
     async advance(step: Parameters<WmClient['advance']>[0]) {
-        const { revert } = await this.call<{ revert: boolean }>(
-            'POST',
-            this.path(step.wardId, 'advance'),
-            {
-                fromCounter: step.fromCounter,
-                fromRoot: hexOrNull(step.fromRoot),
-                toCounter: step.toCounter,
-                toRoot: hexOrNull(step.toRoot),
-                wmSig: toHex(step.wmSig),
-            },
-        );
+        const { revert, acceptance } = await this.call<{
+            revert: boolean;
+            acceptance: AcceptanceJson;
+        }>('POST', this.path(step.wardId, 'advance'), {
+            fromCounter: step.fromCounter,
+            fromRoot: hexOrNull(step.fromRoot),
+            toCounter: step.toCounter,
+            toRoot: hexOrNull(step.toRoot),
+            wmSig: toHex(step.wmSig),
+            ...(step.session ? { session: toHex(step.session) } : {}),
+        });
 
-        return revert;
+        return { revert, acceptance: acceptanceFromJson(acceptance) };
     }
 
     private async headRecord(wardId: Uint8Array) {
         return (
             await this.call<{
-                head: { counter: number; root: string | null; headNonce: string } | null;
+                head: { counter: number; root: string | null } | null;
             }>('GET', this.path(wardId, 'head'))
         ).head;
-    }
-
-    async headNonce(wardId: Uint8Array) {
-        const head = await this.headRecord(wardId);
-
-        return head ? toBytes(head.headNonce) : null;
     }
 
     async head(wardId: Uint8Array) {

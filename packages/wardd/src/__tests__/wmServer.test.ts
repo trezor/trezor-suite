@@ -83,18 +83,19 @@ describe('the WARD Manager over HTTP', () => {
         }
     });
 
-    it('keeps its heads and retired nonces across a restart', async () => {
+    it('keeps its heads across a restart', async () => {
         const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'ward-wm-'));
         try {
             const first = await withWm(dir);
             const { a, host } = await setup(first.wm);
             await host.sync(a.call);
-            const nonce = await first.wm.headNonce(a.wardId);
+            const head = await first.wm.head(a.wardId);
+            expect(head).toBeTruthy();
             await first.server.close();
 
             const second = await withWm(dir);
             try {
-                expect(await second.wm.headNonce(a.wardId)).toEqual(nonce);
+                expect(await second.wm.head(a.wardId)).toEqual(head);
                 expect(second.lines.some(l => l.includes('restored 1 ward'))).toBe(true);
             } finally {
                 await second.server.close();

@@ -4,17 +4,17 @@
  */
 import { ed25519 } from '@noble/curves/ed25519.js';
 
-import { toBytes, toHex } from '../bytes';
+import { concatBytes, toBytes, toHex } from '../bytes';
 import {
     DEBUG_WM_SEED,
     DevWm,
-    NO_HEAD_NONCE,
+    TAG_WM_HEAD,
     TAG_WM_INIT,
     TAG_WM_REVERT,
     WmConflict,
     attestationPreimage,
+    transitionPreimage,
     verifyWmSig,
-    wmPreimage,
 } from '../wm';
 import vectors from './fixtures/vectors.json';
 
@@ -34,10 +34,8 @@ describe('DevWm conformance with MockWM', () => {
         const body = {
             fromCounter: a.from_counter,
             fromRoot: b(a.from_root)!,
-            fromHeadNonce: toBytes(a.from_head_nonce),
             toCounter: a.to_counter,
             toRoot: b(a.to_root)!,
-            toHeadNonce: toBytes(a.to_head_nonce),
             timestamp: a.timestamp,
         };
         expect(toHex(new DevWm().sign(toBytes(a.nonce), toBytes(a.ward_id), body))).toBe(
@@ -54,11 +52,14 @@ describe('DevWm conformance with MockWM', () => {
             b(c.from_root),
             c.to_counter,
             b(c.to_root),
-            toBytes(c.head_nonce),
             toBytes(c.sig),
         ] as const;
-        expect(verifyWmSig(...commitArgs)).toBe(true);
-        expect(verifyWmSig(...commitArgs, TAG_WM_REVERT)).toBe(false);
+        const session = toBytes(wm.session);
+        expect(verifyWmSig(...commitArgs, TAG_WM_HEAD, session)).toBe(true);
+        // bound to the session: without it, or under another, it does not verify
+        expect(verifyWmSig(...commitArgs)).toBe(false);
+        expect(verifyWmSig(...commitArgs, TAG_WM_HEAD, new Uint8Array(32))).toBe(false);
+        expect(verifyWmSig(...commitArgs, TAG_WM_REVERT, session)).toBe(false);
         const r = wm.wm_sig_revert;
         const revertArgs = [
             id,
@@ -66,16 +67,15 @@ describe('DevWm conformance with MockWM', () => {
             b(r.from_root),
             r.to_counter,
             b(r.to_root),
-            toBytes(r.head_nonce),
             toBytes(r.sig),
         ] as const;
-        expect(verifyWmSig(...revertArgs, TAG_WM_REVERT)).toBe(true);
-        expect(verifyWmSig(...revertArgs)).toBe(false);
+        expect(verifyWmSig(...revertArgs, TAG_WM_REVERT, session)).toBe(true);
+        expect(verifyWmSig(...revertArgs, TAG_WM_HEAD, session)).toBe(false);
     });
 
     it('accepts the head_init_sig ward_keys mints', () => {
         const id = toBytes(wm.ward_id);
-        const pre = wmPreimage(TAG_WM_INIT, id, 0, null, 0, null, NO_HEAD_NONCE);
+        const pre = transitionPreimage(TAG_WM_INIT, id, 0, null, 0, null);
         expect(ed25519.verify(toBytes(wm.head_init.sig), pre, id)).toBe(true);
     });
 });
@@ -85,43 +85,31 @@ describe('DevWm as a WM', () => {
     const wardId = toBytes(wm.ward_id);
     const r1 = new Uint8Array(32).fill(1);
     const r2 = new Uint8Array(32).fill(2);
-    const headInit = ed25519.sign(
-        wmPreimage(TAG_WM_INIT, wardId, 0, null, 0, null, NO_HEAD_NONCE),
-        kSig,
-    );
+    const headInit = ed25519.sign(transitionPreimage(TAG_WM_INIT, wardId, 0, null, 0, null), kSig);
+    // the round nonce the device picked for its latest sync: its WM session
+    const session = new Uint8Array(32).fill(7);
     const wmSig = (
         fc: number,
         fr: Uint8Array | null,
         tc: number,
         tr: Uint8Array,
-        nonce: Uint8Array,
-        tag?: Uint8Array,
-    ) =>
-        ed25519.sign(
-            wmPreimage(
-                tag ?? new TextEncoder().encode('WARD WM COMMIT v3'),
-                wardId,
-                fc,
-                fr,
-                tc,
-                tr,
-                nonce,
-            ),
-            kSig,
-        );
+        tag: Uint8Array = TAG_WM_HEAD,
+        nonce: Uint8Array = session,
+    ) => ed25519.sign(concatBytes(transitionPreimage(tag, wardId, fc, fr, tc, tr), nonce), kSig);
 
     const enrolled = async () => {
         const dev = new DevWm(DEBUG_WM_SEED, () => 1_700_000_000);
         await dev.enrol(wardId, null, headInit);
+        await dev.attest(wardId, session);
 
         return dev;
     };
 
-    it('enrols at genesis with one nonce at both ends, and attests against the round nonce', async () => {
+    it('enrols at genesis, and attests against the round nonce', async () => {
         const dev = await enrolled();
         const a = await dev.attest(wardId, new Uint8Array(32).fill(7));
         expect([a.fromCounter, a.toCounter]).toEqual([0, 0]);
-        expect(a.fromHeadNonce).toEqual(a.toHeadNonce);
+        expect(a.fromRoot).toEqual(a.toRoot);
         expect(
             ed25519.verify(
                 a.signature,
@@ -131,10 +119,9 @@ describe('DevWm as a WM', () => {
         ).toBe(true);
     });
 
-    it('advances on a genuine wm_sig, rotates the nonce, and refuses a replay', async () => {
+    it('advances on a genuine wm_sig, and refuses a replay', async () => {
         const dev = await enrolled();
-        const n0 = (await dev.headNonce(wardId))!;
-        const sig = wmSig(0, null, 1, r1, n0);
+        const sig = wmSig(0, null, 1, r1);
         await expect(
             dev.advance({
                 wardId,
@@ -144,9 +131,8 @@ describe('DevWm as a WM', () => {
                 toRoot: r1,
                 wmSig: sig,
             }),
-        ).resolves.toBe(false);
-        const n1 = (await dev.headNonce(wardId))!;
-        expect(n1).not.toEqual(n0);
+        ).resolves.toMatchObject({ revert: false });
+        expect(await dev.head(wardId)).toEqual({ counter: 1, root: r1 });
         // the same authorisation again: the head moved, so compare-and-swap refuses it
         await expect(
             dev.advance({
@@ -160,18 +146,86 @@ describe('DevWm as a WM', () => {
         ).rejects.toBeInstanceOf(WmConflict);
     });
 
+    it('carries several transitions in one session, and a new sync ends it', async () => {
+        const dev = await enrolled();
+        await dev.advance({
+            wardId,
+            fromCounter: 0,
+            fromRoot: null,
+            toCounter: 1,
+            toRoot: r1,
+            wmSig: wmSig(0, null, 1, r1),
+        });
+        const heldBack = wmSig(1, r1, 2, r2);
+        await dev.attest(wardId, new Uint8Array(32).fill(8)); // another sync
+        await expect(
+            dev.advance({
+                wardId,
+                fromCounter: 1,
+                fromRoot: r1,
+                toCounter: 2,
+                toRoot: r2,
+                wmSig: heldBack,
+            }),
+        ).rejects.toThrow('not authorised');
+    });
+
+    it('after a restore, refuses a stored wm_sig and takes the step signed again in a new session', async () => {
+        const dev = await enrolled();
+        const step = {
+            wardId,
+            fromCounter: 0,
+            fromRoot: null,
+            toCounter: 1,
+            toRoot: r1,
+            wmSig: wmSig(0, null, 1, r1),
+        };
+        const backup = dev.snapshot();
+        await dev.advance(step);
+        dev.restore(backup);
+
+        // the session ended with the restore: the stored device signature is refused
+        await expect(dev.advance(step)).rejects.toThrow('no session');
+        // the device syncs again, and signs the same step again under its new nonce
+        const fresh = new Uint8Array(32).fill(9);
+        await dev.attest(wardId, fresh);
+        await expect(dev.advance(step)).rejects.toThrow('not authorised');
+        await expect(
+            dev.advance({ ...step, wmSig: wmSig(0, null, 1, r1, TAG_WM_HEAD, fresh) }),
+        ).resolves.toMatchObject({ revert: false });
+        expect(await dev.head(wardId)).toEqual({ counter: 1, root: r1 });
+    });
+
+    it('says when a refused advance names a session that has ended (diagnostics only)', async () => {
+        const dev = await enrolled();
+        const step = {
+            wardId,
+            fromCounter: 0,
+            fromRoot: null,
+            toCounter: 1,
+            toRoot: r1,
+            wmSig: wmSig(0, null, 1, r1),
+        };
+        await dev.attest(wardId, new Uint8Array(32).fill(8)); // another sync
+        await expect(dev.advance({ ...step, session })).rejects.toThrow(
+            'the session it names has ended',
+        );
+        // a claimed session is never trusted: naming the current one does not help
+        await expect(dev.advance({ ...step, session: new Uint8Array(32).fill(8) })).rejects.toThrow(
+            /^transition is not authorised by this wallet$/,
+        );
+    });
+
     it('accepts a batch of up to MAX_BATCH and a revert, and refuses a forged step', async () => {
         const dev = await enrolled();
-        let nonce = (await dev.headNonce(wardId))!;
         await dev.advance({
             wardId,
             fromCounter: 0,
             fromRoot: null,
             toCounter: 8,
             toRoot: r1,
-            wmSig: wmSig(0, null, 8, r1, nonce),
+            wmSig: wmSig(0, null, 8, r1),
         });
-        nonce = (await dev.headNonce(wardId))!;
         await expect(
             dev.advance({
                 wardId,
@@ -179,10 +233,9 @@ describe('DevWm as a WM', () => {
                 fromRoot: r1,
                 toCounter: 9,
                 toRoot: r2,
-                wmSig: wmSig(8, r1, 9, r2, nonce, TAG_WM_REVERT),
+                wmSig: wmSig(8, r1, 9, r2, TAG_WM_REVERT),
             }),
-        ).resolves.toBe(true);
-        nonce = (await dev.headNonce(wardId))!;
+        ).resolves.toMatchObject({ revert: true });
         await expect(
             dev.advance({
                 wardId,
@@ -190,7 +243,7 @@ describe('DevWm as a WM', () => {
                 fromRoot: r2,
                 toCounter: 18,
                 toRoot: r1,
-                wmSig: wmSig(9, r2, 18, r1, nonce),
+                wmSig: wmSig(9, r2, 18, r1),
             }),
         ).rejects.toThrow('1 to MAX_BATCH');
         await expect(

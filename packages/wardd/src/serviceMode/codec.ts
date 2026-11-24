@@ -19,7 +19,7 @@ import * as optionsProto from '@trezor/protobuf/src/definitions/options_pb';
 
 /** Where the interface is on the emulator: 21324 + 7 (4 and 5 are BLE's, 6 the Tropic model's). */
 export const WARD_PORT_OFFSET = 7;
-export const SERVICE_PROTOCOL_VERSION = 3;
+export const SERVICE_PROTOCOL_VERSION = 4;
 
 const CHUNK = 64;
 const PROBE_WIRE_TYPE = 0xfefe;

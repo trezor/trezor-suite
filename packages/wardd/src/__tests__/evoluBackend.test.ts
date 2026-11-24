@@ -39,10 +39,8 @@ const link = (toCounter: number): StoredLink => ({
 const attestation = (toCounter: number): StoredAttestation => ({
     fromCounter: toCounter - 1,
     fromRoot: null,
-    fromHeadNonce: toHex(randomBytes(32)),
     toCounter,
     toRoot: toHex(randomBytes(32)),
-    toHeadNonce: toHex(randomBytes(32)),
     timestamp: 1_700_000_000 + toCounter,
     nonce: toHex(randomBytes(32)),
     signature: toHex(randomBytes(64)),
@@ -92,7 +90,7 @@ describe('EvoluWardBackend', () => {
         }
     });
 
-    it('keeps a WM attestation whole, once, apart from the links', async () => {
+    it('keeps one WM attestation per step, the latest, apart from the links', async () => {
         const backend = await EvoluWardBackend.open({
             wardId: randomBytes(32),
             wardOwnerSecret: toHex(randomBytes(32)),
@@ -102,12 +100,15 @@ describe('EvoluWardBackend', () => {
             const one = attestation(1);
             await backend.appendAttestation(one);
             await backend.appendAttestation(one);
-            const revisited = { ...one, toHeadNonce: toHex(randomBytes(32)) };
-            await backend.appendAttestation(revisited);
+            // the same step attested again (a restored WM re-accepting it) replaces the row
+            const again = { ...one, timestamp: one.timestamp + 5, nonce: toHex(randomBytes(32)) };
+            await backend.appendAttestation(again);
+            const other = attestation(2);
+            await backend.appendAttestation(other);
             await backend.append(link(1));
             expect(await backend.loadAttestations()).toHaveLength(2);
             expect(await backend.loadAttestations()).toEqual(
-                expect.arrayContaining([one, revisited]),
+                expect.arrayContaining([again, other]),
             );
             expect(await backend.load()).toHaveLength(1);
         } finally {
