@@ -7,9 +7,11 @@ import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import { mockGetIsWindowVisible } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type SerializedTx,
     type SignTransactionError,
     type SignTransactionTimeoutError,
     type pushSendFormTransactionThunk,
+    sendFormActions,
     transactionsActions,
 } from '@suite-common/wallet-core';
 import { type FormState, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
@@ -29,6 +31,8 @@ const mockOpenReview = jest.fn();
 let mockIsYieldTransaction = true;
 let mockApprovalType: 'approve' | 'revoke' = 'approve';
 let mockPushSuccess = false;
+let mockDevicePath = 'test-device';
+let mockSignedTransaction: SerializedTx | undefined;
 const mockPushTransaction =
     mock<(params: Parameters<typeof pushSendFormTransactionThunk>[0]) => void>();
 
@@ -42,13 +46,14 @@ jest.mock('@suite-common/suite-sync', () => ({
 }));
 jest.mock('@suite-common/device', () => ({
     ...jest.requireActual('@suite-common/device'),
-    selectSelectedDevice: () => ({ path: 'test-device' }),
+    selectSelectedDevice: () => ({ path: mockDevicePath }),
 }));
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     selectYieldApprovalInReview: () =>
         mockIsYieldTransaction ? { txType: mockApprovalType } : null,
     selectIsMevProtectionEnabled: () => false,
+    selectSendSerializedTx: () => mockSignedTransaction,
     cancelSignSendFormTransactionThunk: () => ({ type: 'test/clear-send' }),
     pushSendFormTransactionThunk: (params: Parameters<typeof pushSendFormTransactionThunk>[0]) => {
         mockPushTransaction(params);
@@ -71,6 +76,7 @@ jest.mock('@suite-common/wallet-core', () => ({
 jest.mock('@suite/modal', () => ({
     ...jest.requireActual('@suite/modal'),
     openDeferredModal: () => mockOpenReview(),
+    selectIsTransactionReviewActive: () => false,
 }));
 
 const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
@@ -306,6 +312,38 @@ describe('signAndPushSendFormTransactionThunk result', () => {
         const { result } = await signAndPush();
 
         expect(result).toEqual({ success: false, error: timeoutError });
+    });
+
+    it('does not start signing with a device selected during composition', async () => {
+        mockEnhanceTransaction.mockImplementationOnce(() => () => {
+            mockDevicePath = 'different-device';
+            const result = Promise.resolve(precomposedTransaction);
+
+            return Object.assign(result, { unwrap: () => result });
+        });
+
+        try {
+            await signAndPush();
+            expect(mockSignTransaction).not.toHaveBeenCalled();
+            expect(mockOpenReview).not.toHaveBeenCalled();
+        } finally {
+            mockDevicePath = 'test-device';
+        }
+    });
+
+    it('does not clear a newer Send signature when an earlier push fails', async () => {
+        mockSignedTransaction = { tx: 'earlier-signature', symbol: asNetworkSymbol('eth') };
+        mockPushTransaction.mockImplementationOnce(() => {
+            mockSignedTransaction = { tx: 'newer-signature', symbol: asNetworkSymbol('eth') };
+        });
+
+        try {
+            const { actions } = await signAndPush();
+
+            expect(actions).not.toContainEqual(sendFormActions.clearSignedTransactionData());
+        } finally {
+            mockSignedTransaction = undefined;
+        }
     });
 
     it('returns the original push error when pushing fails', async () => {

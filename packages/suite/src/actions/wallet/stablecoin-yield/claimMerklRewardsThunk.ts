@@ -1,22 +1,17 @@
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
-import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { selectSelectedDevice } from '@suite-common/device';
 import {
-    type StablecoinYieldTxSimulationParams,
     buildClaimCalldata,
     buildClaimTransactionReview,
     buildUnsignedClaimTransaction,
 } from '@suite-common/earn-stablecoin';
 import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
-import { type MessageSystemRootState } from '@suite-common/message-system';
-import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { getEarnYieldClaimContractAddress, getNetwork } from '@suite-common/wallet-config';
 import {
     type EthereumGetCurrentNonceThunkState,
     type SynchronizeSentTransactionThunkDeps,
-    type SynchronizeSentTransactionThunkState,
-    type WalletSettingsRootState,
     YIELD_PREFIX,
     type YieldEstimatedFeeLevel,
     estimateYieldFeeLevel,
@@ -24,22 +19,21 @@ import {
     isEarnSigningCancelled,
     notifyEarnTransactionBroadcastThunk,
     selectAddressDisplayType,
-    selectIsMevProtectionEnabled,
     synchronizeSentTransactionThunk,
     transactionsActions,
     yieldActions,
 } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
-import { getAccountIdentity } from '@suite-common/wallet-utils';
-import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
-import { asCoinSymbol } from '@trezor/connect-common';
 import { createThunk } from '@trezor/redux-utils';
 
 import {
     PUSH_TRANSACTION_FAILED_CAUSE,
+    type SendYieldTransactionState,
     getYieldSubmitErrorAnalyticsMessage,
+    openYieldSimulationThunk,
+    pushYieldTransaction,
     showYieldSubmitErrorThunk,
 } from './signingHelpers';
 
@@ -71,11 +65,7 @@ type ClaimMerklRewardsParams = {
     rewards: ClaimMerklReward[];
 };
 
-type ClaimMerklRewardsThunkState = DeviceRootState &
-    EthereumGetCurrentNonceThunkState &
-    MessageSystemRootState &
-    SynchronizeSentTransactionThunkState &
-    WalletSettingsRootState;
+type ClaimMerklRewardsThunkState = EthereumGetCurrentNonceThunkState & SendYieldTransactionState;
 
 type ClaimMerklRewardsThunkDeps = SynchronizeSentTransactionThunkDeps & {
     services: DesktopAnalyticsDep;
@@ -179,14 +169,14 @@ export const claimMerklRewardsThunk = createThunk<
             });
 
             const userAcceptedTxSimulation = await dispatch(
-                openDeferredModal({
-                    type: 'earn-yield-tx-simulation',
-                    data: {
+                openYieldSimulationThunk(
+                    {
                         flow: 'claim',
                         account,
                         unsignedTx: unsignedClaimTx,
-                    } satisfies StablecoinYieldTxSimulationParams,
-                }),
+                    },
+                    device,
+                ),
             );
 
             if (userAcceptedTxSimulation === undefined) {
@@ -289,11 +279,14 @@ export const claimMerklRewardsThunk = createThunk<
                     }),
                 );
 
-                const isPushConfirmed = await dispatch(
-                    openDeferredModal({ type: 'review-transaction' }),
+                const reviewDecision = dispatch(
+                    openDeferredModal(
+                        { type: 'review-transaction' },
+                        { devicePath: device.path, cancelWith: false },
+                    ),
                 );
 
-                if (!isPushConfirmed) {
+                if (!(await reviewDecision)) {
                     extra.services.analytics.report({
                         type: events.transactionCancelEvent.name,
                         payload: {
@@ -306,19 +299,11 @@ export const claimMerklRewardsThunk = createThunk<
                     return null;
                 }
 
-                const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
-                const isMevProtectionFeatureEnabled =
-                    selectIsMevProtectionFeatureEnabled(getState());
-
-                const pushResponse = await TrezorBlockchain.pushTransaction({
-                    tx: signingResponse.payload.serializedTx,
-                    coin: asCoinSymbol(account.symbol),
-                    identity: getAccountIdentity(account),
-                    disableAlternativeRPC:
-                        !isMevProtectionEnabled || !isMevProtectionFeatureEnabled,
-                });
-
-                dispatch(closeModal());
+                const pushResponse = await pushYieldTransaction(
+                    { account, serializedTx: signingResponse.payload.serializedTx, reviewDecision },
+                    dispatch,
+                    getState,
+                );
 
                 if (!pushResponse.success) {
                     dispatch(

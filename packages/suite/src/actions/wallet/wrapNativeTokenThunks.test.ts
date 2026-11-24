@@ -1,5 +1,7 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
+import { deviceActions, deviceInitialState } from '@suite-common/device';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { asNetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -15,6 +17,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { asGetter } from '@trezor/dependency-injection';
 import { type WithServices } from '@trezor/redux-utils';
+import { createDeferred } from '@trezor/utils';
 
 import {
     PUSH_TRANSACTION_FAILED_CAUSE,
@@ -64,9 +67,17 @@ const token: YieldFlowDisplayToken & { contractAddress: string } = {
     contractAddress: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
 };
 
+const owner = mockSuiteDevice({
+    connected: true,
+    available: true,
+    path: 'owner',
+    instance: 0,
+    state: { staticSessionId: account.deviceState },
+});
+
 const buildStore = (report: jest.Mock) =>
     createTestCompositionRoot<WrapNativeTokenThunkDeps, WrapNativeTokenThunkState>({
-        preloadedState: {},
+        preloadedState: { device: { ...deviceInitialState, selectedDevice: owner } },
         services: () => ({
             analytics: mockAnalytics(report),
             networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
@@ -100,6 +111,56 @@ describe('submitWrapNativeTokenThunk', () => {
         });
         expect(JSON.stringify(report.mock.calls)).not.toContain('private-compose-details');
     });
+
+    it.each([
+        ['no original owner', undefined, owner],
+        ['disconnected', owner, undefined],
+        ['unavailable', owner, { ...owner, available: false }],
+        [
+            'reconnected on a new path',
+            owner,
+            mockSuiteDevice({ connected: true, available: true, path: 'new-path' }),
+        ],
+        ['switched wallet instance', owner, { ...owner, instance: 1 }],
+    ] as const)(
+        'cancels before showing simulation if the owner is %s during composition',
+        async (_, initial, current) => {
+            const report = jest.fn();
+            const store = buildStore(report);
+            const initialState = store.getState();
+            store.replaceReducer((state = initialState, action) =>
+                deviceActions.selectDevice.match(action)
+                    ? { ...state, device: { ...state.device, selectedDevice: action.payload } }
+                    : state,
+            );
+            store.dispatch(deviceActions.selectDevice(initial));
+            const composition = createDeferred<{
+                type: 'action-ready';
+                unsignedTransaction: string;
+            }>();
+            mockComposeYieldWrapTransactionThunk.mockReturnValue(() => ({
+                unwrap: () => composition.promise,
+            }));
+
+            const submit = store.dispatch(
+                submitWrapNativeTokenThunk({ account, token, wrapAmount: '1' }),
+            );
+            store.dispatch(deviceActions.selectDevice(current));
+            composition.resolve({ type: 'action-ready', unsignedTransaction: '{}' });
+            await submit.unwrap();
+
+            expect(mockOpenDeferredModal).not.toHaveBeenCalled();
+            expect(mockSendYieldTransaction).not.toHaveBeenCalled();
+            expect(report).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    payload: expect.objectContaining({
+                        type: 'tx-simulation-modal',
+                        action: 'cancel',
+                    }),
+                }),
+            );
+        },
+    );
 
     it('passes the selected fee level from simulation to signing', async () => {
         mockOpenDeferredModal.mockImplementation(

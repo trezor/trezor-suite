@@ -1,13 +1,23 @@
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import {
+    MODAL_OPEN_USER_CONTEXT,
+    modalReducer,
+    openDeferredModal,
+    selectUserContextModalPayload,
+} from '@suite/modal';
 import { USER_CANCELLED_ERROR_CODES } from '@suite-common/earn-stablecoin';
+import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type EvmSelectedFee, type FeeLevelLabel } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { asDeviceUniquePath } from '@trezor/connect';
+import { asGetter } from '@trezor/dependency-injection';
 
 import {
-    type SendYieldTransactionParams,
+    type SendYieldTransactionDeps,
     type SendYieldTransactionState,
     sendYieldTransaction,
 } from './signingHelpers';
@@ -18,17 +28,6 @@ const mockDevice = mockSuiteDevice({
     available: true,
     state: { staticSessionId: 'wallet@device:0' },
 });
-const OPEN_DEFERRED_MODAL_ACTION_TYPE = 'mock/openDeferredModal';
-
-jest.mock('@suite/modal', () => ({
-    preserveModal: () => ({ type: 'mock/preserveModal' }),
-    closeModal: () => ({ type: 'mock/closeModal' }),
-    openDeferredModal: (payload: unknown) => ({
-        type: 'mock/openDeferredModal',
-        payload,
-    }),
-}));
-
 jest.mock('@suite-common/earn-stablecoin', () => ({
     ...jest.requireActual('@suite-common/earn-stablecoin'),
     buildStablecoinYieldTransactionReview: (payload: unknown) =>
@@ -44,31 +43,58 @@ jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     selectAddressDisplayType: () => 'original',
     selectIsMevProtectionEnabled: () => false,
+    synchronizeSentTransactionThunk: () => () => Promise.resolve(),
 }));
 
 jest.mock('@suite-common/mev', () => ({
     selectIsMevProtectionFeatureEnabled: () => false,
 }));
 
-const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') }) as Account;
+const account = mockWalletAccount({
+    symbol: asNetworkSymbol('eth'),
+    deviceState: 'wallet@device:0',
+}) as Account;
 
-// Only openDeferredModal needs a real return value; every other dispatched action is recorded
-// and ignored (thunks are intentionally not executed).
-const createDispatch = (isReviewModalConfirmed: boolean) =>
-    jest.fn((action: { type?: string }) => {
-        if (action?.type === OPEN_DEFERRED_MODAL_ACTION_TYPE) {
-            return Promise.resolve(isReviewModalConfirmed);
+const createSigningStore = (isReviewModalConfirmed: boolean) => {
+    const { store } = createTestCompositionRoot<
+        SendYieldTransactionDeps,
+        SendYieldTransactionState
+    >({
+        preloadedState: {},
+        reducer: (state, action) => ({
+            ...state!,
+            modal: modalReducer(state?.modal, action),
+        }),
+        services: () => ({
+            analytics: mockDesktopAnalytics(),
+            networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
+            getIsWindowVisible: asGetter(() => true),
+            getTradedAccountKeys: asGetter(() => []),
+        }),
+        serializableCheck: {
+            ignoredActions: [MODAL_OPEN_USER_CONTEXT],
+            ignoredPaths: ['modal'],
+        },
+    }).services;
+
+    const unsubscribe = store.subscribe(() => {
+        const modal = selectUserContextModalPayload(store.getState());
+        if (modal?.type === 'review-transaction') {
+            unsubscribe();
+            modal.decision.resolve(isReviewModalConfirmed);
         }
+    });
 
-        return action;
-    }) as unknown as SendYieldTransactionParams['dispatch'];
+    return store;
+};
 
 type SendTransactionParams = {
     isReviewModalConfirmed?: boolean;
     selectedFee?: EvmSelectedFee | null;
     selectedFeeLevel?: FeeLevelLabel;
     unsignedTransaction?: string;
-    dispatch?: ReturnType<typeof createDispatch>;
+    store?: ReturnType<typeof createSigningStore>;
+    sourceAccount?: Account;
 };
 
 const sendTransaction = ({
@@ -76,10 +102,11 @@ const sendTransaction = ({
     selectedFee = null,
     selectedFeeLevel = 'normal',
     unsignedTransaction = '{}',
-    dispatch = createDispatch(isReviewModalConfirmed),
+    store = createSigningStore(isReviewModalConfirmed),
+    sourceAccount = account,
 }: SendTransactionParams = {}) =>
     sendYieldTransaction({
-        account,
+        account: sourceAccount,
         amount: '100',
         token: {
             networkSymbol: asNetworkSymbol('eth'),
@@ -90,8 +117,8 @@ const sendTransaction = ({
         unsignedTransaction,
         flowKey: 'flow-1',
         flowType: 'deposit',
-        dispatch,
-        getState: () => ({}) as unknown as SendYieldTransactionState,
+        dispatch: store.dispatch,
+        getState: store.getState,
         selectedFee,
         selectedFeeLevel,
     });
@@ -129,10 +156,10 @@ describe('sendYieldTransaction', () => {
                 jest.requireActual('@suite-common/earn-stablecoin')
                     .buildStablecoinYieldTransactionReview,
             );
-            const dispatch = createDispatch(false);
+            const store = createSigningStore(false);
 
             await sendTransaction({
-                dispatch,
+                store,
                 selectedFeeLevel,
                 selectedFee: {
                     type: 'legacy',
@@ -150,7 +177,7 @@ describe('sendYieldTransaction', () => {
                 }),
             });
 
-            expect(dispatch).toHaveBeenCalledWith(
+            expect(store.getActions()).toContainEqual(
                 expect.objectContaining({
                     payload: expect.objectContaining({
                         precomposedForm: expect.objectContaining({ selectedFee: selectedFeeLevel }),
@@ -194,6 +221,42 @@ describe('sendYieldTransaction', () => {
         await expect(sendTransaction()).rejects.toMatchObject({
             cause: 'Failure_FirmwareError',
         });
+    });
+
+    it('closes the approved review if broadcasting rejects', async () => {
+        jest.spyOn(console, 'error').mockImplementation();
+        const store = createSigningStore(true);
+        const error = new Error('Transport unavailable');
+        jest.spyOn(TrezorBlockchain, 'pushTransaction').mockRejectedValueOnce(error);
+
+        await expect(sendTransaction({ store })).rejects.toBe(error);
+
+        expect(selectUserContextModalPayload(store.getState())).toBeUndefined();
+    });
+
+    it('leaves a replacement review open if the original broadcast rejects', async () => {
+        jest.spyOn(console, 'error').mockImplementation();
+        const store = createSigningStore(true);
+        const error = new Error('Transport unavailable');
+        let replacementDecision: Promise<boolean> | undefined;
+        jest.spyOn(TrezorBlockchain, 'pushTransaction').mockImplementationOnce(() => {
+            replacementDecision = store.dispatch(
+                openDeferredModal(
+                    { type: 'review-transaction' },
+                    { devicePath: asDeviceUniquePath('another-device'), cancelWith: false },
+                ),
+            );
+
+            return Promise.reject(error);
+        });
+
+        await expect(sendTransaction({ store })).rejects.toBe(error);
+
+        const activeModal = selectUserContextModalPayload(store.getState());
+        expect(replacementDecision).toBeDefined();
+        expect(activeModal?.type === 'review-transaction' && activeModal.decision.promise).toBe(
+            replacementDecision,
+        );
     });
 
     it('returns sent with the txid and the precomposed fee after broadcast', async () => {

@@ -24,6 +24,7 @@ import {
     MODAL_CONTEXT_USER,
 } from './constants';
 import {
+    type CancelOnDisconnect,
     closeModal,
     openModal,
     preserveModal,
@@ -65,6 +66,7 @@ export type ModalState =
     | {
           context: typeof MODAL_CONTEXT_USER;
           payload: UserContextPayload;
+          cancelOnDisconnect?: CancelOnDisconnect;
       };
 
 export type ModalRootState = {
@@ -86,7 +88,9 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
     if (deviceActions.deviceDisconnect.match(action)) {
         if (
             (state.context === MODAL_CONTEXT_DEVICE && action.payload.path === state.device.path) ||
-            (state.context === MODAL_CONTEXT_USER && !isAutoStartBeforeQuitModal(state))
+            (state.context === MODAL_CONTEXT_USER &&
+                !state.cancelOnDisconnect &&
+                !isAutoStartBeforeQuitModal(state))
         ) {
             return initialState;
         }
@@ -163,6 +167,7 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
         return {
             context: MODAL_CONTEXT_USER,
             payload: action.payload,
+            cancelOnDisconnect: action.meta?.cancelOnDisconnect,
             preserve: state.preserve,
         };
     }
@@ -221,6 +226,15 @@ export const selectIsDeviceInteractionModalActive = (state: ModalRootState) =>
 
 export const selectUserContextModalPayload = (state: ModalRootState) =>
     state.modal.context === MODAL_CONTEXT_USER ? state.modal.payload : undefined;
+
+export const selectIsTransactionReviewActive = (
+    state: ModalRootState,
+    decision: Promise<boolean>,
+) => {
+    const modal = selectUserContextModalPayload(state);
+
+    return modal?.type === 'review-transaction' && modal.decision.promise === decision;
+};
 
 export const selectModalRequestId = (state: ModalRootState) =>
     state.modal.context === MODAL_CONTEXT_DEVICE ? state.modal.requestId : undefined;

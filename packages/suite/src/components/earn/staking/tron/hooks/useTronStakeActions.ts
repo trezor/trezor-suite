@@ -96,6 +96,14 @@ export const useTronStakeActions = ({
             return;
         }
 
+        const requestPushApproval = () =>
+            dispatch(
+                openDeferredModal(
+                    { type: 'review-transaction' },
+                    { devicePath: device.path, cancelWith: false },
+                ),
+            );
+
         switch (step) {
             case 'freeze': {
                 if (isStakingDisabled) break;
@@ -107,10 +115,7 @@ export const useTronStakeActions = ({
                         device,
                         amount,
                         resourceType,
-                        requestPushApproval: async () =>
-                            Boolean(
-                                await dispatch(openDeferredModal({ type: 'review-transaction' })),
-                            ),
+                        requestPushApproval,
                         onSigningStart: () => dispatch(preserveModal()),
                         onSettled: () => dispatch(closeModal()),
                     }),
@@ -143,10 +148,13 @@ export const useTronStakeActions = ({
                         ? async () => {
                               const isConsentGiven = Boolean(
                                   await dispatch(
-                                      openDeferredModal({
-                                          type: 'tron-vote-consent',
-                                          representatives: newRepresentatives,
-                                      }),
+                                      openDeferredModal(
+                                          {
+                                              type: 'tron-vote-consent',
+                                              representatives: newRepresentatives,
+                                          },
+                                          { devicePath: device.path, cancelWith: false },
+                                      ),
                                   ),
                               );
 
@@ -173,10 +181,7 @@ export const useTronStakeActions = ({
                         flow,
                         allocations,
                         requestVoteConsent,
-                        requestPushApproval: async () =>
-                            Boolean(
-                                await dispatch(openDeferredModal({ type: 'review-transaction' })),
-                            ),
+                        requestPushApproval,
                         onSigningStart: () => dispatch(preserveModal()),
                         onSettled: () => dispatch(closeModal()),
                     }),
@@ -193,10 +198,7 @@ export const useTronStakeActions = ({
                         device,
                         amount,
                         resourceType,
-                        requestPushApproval: async () =>
-                            Boolean(
-                                await dispatch(openDeferredModal({ type: 'review-transaction' })),
-                            ),
+                        requestPushApproval,
                         onSigningStart: () => dispatch(preserveModal()),
                         onSettled: () => dispatch(closeModal()),
                     }),
@@ -218,10 +220,7 @@ export const useTronStakeActions = ({
                     submitTronWithdrawThunk({
                         account,
                         device,
-                        requestPushApproval: async () =>
-                            Boolean(
-                                await dispatch(openDeferredModal({ type: 'review-transaction' })),
-                            ),
+                        requestPushApproval,
                         onSigningStart: () => dispatch(preserveModal()),
                         onSettled: () => dispatch(closeModal()),
                     }),
@@ -235,10 +234,7 @@ export const useTronStakeActions = ({
                     submitTronClaimThunk({
                         account,
                         device,
-                        requestPushApproval: async () =>
-                            Boolean(
-                                await dispatch(openDeferredModal({ type: 'review-transaction' })),
-                            ),
+                        requestPushApproval,
                         onSigningStart: () => dispatch(preserveModal()),
                         onSettled: () => dispatch(closeModal()),
                     }),

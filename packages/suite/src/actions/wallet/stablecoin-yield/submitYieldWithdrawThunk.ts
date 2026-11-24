@@ -1,7 +1,6 @@
 import { type DesktopAnalyticsDep } from '@suite/analytics';
-import { openDeferredModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
-import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     type ComposeYieldWithdrawTransactionThunkState,
     YIELD_PREFIX,
@@ -21,6 +20,7 @@ import {
     type SendYieldTransactionState,
     getYieldSubmitErrorAnalyticsMessage,
     isYieldPushError,
+    openYieldSimulationThunk,
     sendYieldTransaction,
     showYieldSubmitErrorThunk,
 } from './signingHelpers';
@@ -46,6 +46,7 @@ export const submitYieldWithdrawThunk = createThunk<
 >(
     `${YIELD_PREFIX}/thunk/submitWithdraw`,
     async ({ flowKey, flowData, amount, flowType }, { dispatch, getState, extra }) => {
+        const device = selectSelectedDevice(getState());
         const reportSubmitError = (errorMessage = 'submit-failed') =>
             extra.services.analytics.report({
                 type: events.yieldWithdrawEvent.name,
@@ -92,14 +93,14 @@ export const submitYieldWithdrawThunk = createThunk<
             const { unsignedTransaction } = composeResult;
 
             const userAcceptedTxSimulation = await dispatch(
-                openDeferredModal({
-                    type: 'earn-yield-tx-simulation',
-                    data: {
+                openYieldSimulationThunk(
+                    {
                         flow: flowType,
                         unsignedTx: unsignedTransaction,
                         account,
-                    } satisfies StablecoinYieldTxSimulationParams,
-                }),
+                    },
+                    device,
+                ),
             );
 
             if (userAcceptedTxSimulation === undefined) {

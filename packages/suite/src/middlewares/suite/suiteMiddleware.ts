@@ -96,7 +96,7 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
             // eslint-disable-next-line no-restricted-syntax
             const state = getState();
             const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(state);
-            dispatch(cancelSigningModalOnDisconnectThunk());
+            dispatch(cancelSigningModalOnDisconnectThunk(action.payload.path));
             // A run that never reached Connect would otherwise never report an outcome.
             dispatch(
                 endUnfinishedDiscoveryThunk({

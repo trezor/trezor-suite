@@ -1,7 +1,7 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { openModal } from '@suite/modal';
+import { modalReducer, openModal } from '@suite/modal';
 import { deviceInitialState } from '@suite-common/device';
 import { mockStakingQueryClient } from '@suite-common/earn-staking/mocks';
 import { messageSystemInitialState } from '@suite-common/message-system';
@@ -14,6 +14,7 @@ import {
     prepareStakeReducer,
     selectStake,
     selectStakeAccountKey,
+    sendFormActions,
     stakeActions,
     stakeInitialState,
     transactionsInitialState,
@@ -34,6 +35,7 @@ import {
     type SignTransactionThunkState,
     signTransactionThunk,
 } from './stakeActions';
+import { cancelSigningModalOnDisconnectThunk } from '../suite/cancelSigningModalOnDisconnectThunk';
 
 const mockCardanoSignTransactionThunk = jest.fn();
 const mockNotifyEarnTransactionBroadcastThunk = jest.fn();
@@ -47,6 +49,10 @@ jest.mock('@suite-common/wallet-core', () => ({
     addFakePendingCardanoTxThunk: (params: unknown) => mockAddFakePendingCardanoTxThunk(params),
     syncAccountsWithBlockchainThunk: (symbol: unknown) =>
         mockSyncAccountsWithBlockchainThunk(symbol),
+}));
+
+jest.mock('./stake/stakeFormEthereumActions', () => ({
+    signTransactionThunk: () => () => Promise.resolve('signed-eth-tx'),
 }));
 
 jest.mock('./stake/stakeFormCardanoActions', () => ({
@@ -94,7 +100,7 @@ const transactionInfo: PrecomposedTransactionFinal = {
     outputsPermutation: [],
 };
 
-const createStakeFlow = () => {
+const createStakeFlow = (stakeAccount = account) => {
     const stakeReducer = prepareStakeReducer(undefined);
     let actions: unknown[] = [];
 
@@ -105,7 +111,7 @@ const createStakeFlow = () => {
             device: { ...deviceInitialState, selectedDevice: mockSuiteDevice() },
             messageSystem: messageSystemInitialState,
             wallet: {
-                accounts: [account],
+                accounts: [stakeAccount],
                 settings: initialWalletSettingsState,
                 stake: (actions as UnknownAction[]).reduce(stakeReducer, stakeInitialState),
                 transactions: transactionsInitialState,
@@ -150,6 +156,34 @@ describe('signTransactionThunk', () => {
         mockAddFakePendingCardanoTxThunk.mockReturnValue({ type: 'mock/addFakePendingTx' });
         mockSyncAccountsWithBlockchainThunk.mockReturnValue({ type: 'mock/sync' });
         pushTransactionMock.mockResolvedValue({ success: true, payload: { txid: TXID } });
+    });
+
+    it('clears only the staking review when its device disconnects before push', async () => {
+        const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+        const { dispatch, getState, extra, onDispatch, actions } = createStakeFlow(ethAccount);
+        const opened = onDispatch((action, resolve) => {
+            if (openModal.match(action) && action.payload.type === 'review-transaction') resolve();
+        });
+        const signing = signTransactionThunk({
+            accountKey: ethAccount.key,
+            formValues,
+            transactionInfo,
+        })(dispatch, getState, extra);
+        await opened;
+        expect(selectStake(getState()).serializedTx?.tx).toBe('signed-eth-tx');
+
+        cancelSigningModalOnDisconnectThunk(mockSuiteDevice().path)(dispatch, () => ({
+            modal: (actions as UnknownAction[]).reduce(
+                modalReducer,
+                modalReducer(undefined, { type: 'init' }),
+            ),
+        }));
+        await signing;
+
+        expect(selectStake(getState()).serializedTx).toBeUndefined();
+        expect(selectStakeAccountKey(getState())).toBeUndefined();
+        expect(actions).not.toContainEqual(sendFormActions.discardTransaction());
+        expect(pushTransactionMock).not.toHaveBeenCalled();
     });
 
     it('stores the account the transaction is reviewed for', async () => {

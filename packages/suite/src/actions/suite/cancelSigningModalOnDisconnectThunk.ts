@@ -1,31 +1,27 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
-import { type ModalRootState, selectUserContextModalPayload } from '@suite/modal';
+import { MODAL_CONTEXT_USER, type ModalRootState, closeModal, selectModal } from '@suite/modal';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { sendFormActions } from '@suite-common/wallet-core';
+import { type DeviceUniquePath } from '@trezor/connect';
 
 type CancelSigningModalOnDisconnectThunkState = ModalRootState;
 
 export const cancelSigningModalOnDisconnectThunk =
-    () => (dispatch: Dispatch, getState: () => CancelSigningModalOnDisconnectThunkState) => {
-        const modal = selectUserContextModalPayload(getState());
+    (devicePath: DeviceUniquePath) =>
+    (dispatch: Dispatch, getState: () => CancelSigningModalOnDisconnectThunkState) => {
+        const modal = selectModal(getState());
+        if (modal.context !== MODAL_CONTEXT_USER) return;
 
-        switch (modal?.type) {
-            case 'review-transaction':
-                modal.decision.resolve(false);
-                dispatch(sendFormActions.discardTransaction());
-                break;
-            case 'earn-yield-tx-simulation':
-                modal.decision.resolve({ value: false });
-                break;
-            case 'tron-vote-consent':
-                modal.decision.resolve(false);
-                break;
-            default:
-                return;
+        const result = modal.cancelOnDisconnect?.(devicePath);
+        if (!result) return;
+
+        dispatch(closeModal());
+        if (result === 'cancelled') {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'sign-tx-error',
+                    error: 'Device disconnected',
+                }),
+            );
         }
-
-        dispatch(
-            notificationsActions.addToast({ type: 'sign-tx-error', error: 'Device disconnected' }),
-        );
     };

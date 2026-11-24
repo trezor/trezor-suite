@@ -85,6 +85,7 @@ export const createReduxStore = (deps: ReduxStoreDeps): ReduxStore => {
                 serializableCheck: {
                     ignoredActions: [MODAL_OPEN_USER_CONTEXT],
                     ignoredPaths: [
+                        'modal.cancelOnDisconnect',
                         'modal.payload.decision.promise',
                         'modal.payload.decision.resolve',
                         'modal.payload.decision.reject',

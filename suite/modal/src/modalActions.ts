@@ -1,7 +1,7 @@
 import { type Dispatch, createAction } from '@reduxjs/toolkit';
 
 import { type UserContextPayload } from '@suite-common/suite-types';
-import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
+import TrezorConnect, { type DeviceUniquePath, UI_RESPONSE } from '@trezor/connect';
 import { type DeferredResponse, createDeferred } from '@trezor/utils';
 
 import {
@@ -53,9 +53,17 @@ export const onReceiveConfirmationThunk =
         dispatch(closeModal());
     };
 
-export const openModal = createAction(MODAL_OPEN_USER_CONTEXT, (payload: UserContextPayload) => ({
-    payload,
-}));
+export type CancelOnDisconnect = (
+    devicePath: DeviceUniquePath,
+) => 'cancelled' | 'close' | undefined;
+
+export const openModal = createAction(
+    MODAL_OPEN_USER_CONTEXT,
+    (payload: UserContextPayload, cancelOnDisconnect?: CancelOnDisconnect) => ({
+        payload,
+        meta: cancelOnDisconnect && { cancelOnDisconnect },
+    }),
+);
 
 // declare all modals with promises
 type DeferredModals = Extract<
@@ -81,21 +89,63 @@ type DeferredRest<T extends DeferredModals['type']> = Omit<DeferredModal<T>, 'ty
 // openDeferredModal params (without `decision` field)
 type DeferredPayload<T extends DeferredModals['type']> = { type: T } & DeferredRest<T>;
 
-// this overload doesn't work when wrapped by `bindActionCreators` (returns union, TODO: investigate...)
-export const openDeferredModal =
-    <T extends DeferredModals['type']>(payload: DeferredPayload<T>) =>
+type DisconnectOptions<T extends DeferredModals['type']> = {
+    devicePath: DeviceUniquePath;
+    cancelWith: DeferredResponse<DeferredModal<T>['decision']>;
+    onDisconnect?: () => void;
+};
+
+type SigningModalType = 'review-transaction' | 'earn-yield-tx-simulation' | 'tron-vote-consent';
+type DeferredModalThunk<T extends DeferredModals['type']> = (
+    dispatch: Dispatch,
+) => Promise<DeferredResponse<DeferredModal<T>['decision']>>;
+
+interface OpenDeferredModal {
+    <T extends SigningModalType>(
+        payload: DeferredPayload<T>,
+        disconnect: DisconnectOptions<T>,
+    ): DeferredModalThunk<T>;
+    <T extends Exclude<DeferredModals['type'], SigningModalType>>(
+        payload: DeferredPayload<T>,
+    ): DeferredModalThunk<T>;
+}
+
+export const openDeferredModal: OpenDeferredModal =
+    <T extends DeferredModals['type']>(
+        payload: DeferredPayload<T>,
+        disconnect?: DisconnectOptions<T>,
+    ) =>
     (dispatch: Dispatch) => {
-        const dfd = createDeferred<DeferredResponse<DeferredModal<T>['decision']>>();
+        const decision = createDeferred<DeferredResponse<DeferredModal<T>['decision']>>();
+        let cancelOnDisconnect: CancelOnDisconnect | undefined;
+
+        if (disconnect) {
+            let pending = true;
+            const { resolve, reject } = decision;
+            decision.resolve = value => {
+                pending = false;
+                resolve(value);
+            };
+            decision.reject = error => {
+                pending = false;
+                reject(error);
+            };
+            cancelOnDisconnect = path => {
+                if (disconnect.devicePath !== path) return;
+                if (!pending) return 'close';
+
+                decision.resolve(disconnect.cancelWith);
+                disconnect.onDisconnect?.();
+
+                return 'cancelled';
+            };
+        }
+
         dispatch({
             type: MODAL_OPEN_USER_CONTEXT,
-            payload: {
-                ...payload,
-                decision: dfd,
-            },
+            payload: { ...payload, decision },
+            meta: cancelOnDisconnect && { cancelOnDisconnect },
         });
-        try {
-            return dfd.promise;
-        } catch {
-            // do nothing, return void
-        }
+
+        return decision.promise;
     };

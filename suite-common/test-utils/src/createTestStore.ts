@@ -2,6 +2,7 @@ import {
     type Middleware as RTKMiddleware,
     type Reducer,
     type ReducersMapObject,
+    type SerializableStateInvariantMiddlewareOptions,
     type Store,
     type UnknownAction,
     configureStore,
@@ -58,7 +59,10 @@ export type CreateTestStoreParams<S, A extends UnknownAction, Extra> = {
     // `combineReducers` reducers, which also accept a partial state, still fit.
     reducer?: Reducer<S, A, S> | ReducersMapObject<S, A, S>;
     preloadedState?: any;
-    serializableCheck?: { ignoredActions?: string[] };
+    serializableCheck?: Pick<
+        SerializableStateInvariantMiddlewareOptions,
+        'ignoredActions' | 'ignoredPaths'
+    >;
 } & (Record<never, never> extends TestStoreExtraDependencies<Extra>
     ? { extra?: TestStoreExtraDependencies<Extra> }
     : { extra: TestStoreExtraDependencies<Extra> });
