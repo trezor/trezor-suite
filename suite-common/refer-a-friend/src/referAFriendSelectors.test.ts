@@ -1,7 +1,10 @@
+import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asWalletDescriptor } from '@trezor/device-utils';
 
 import {
+    selectDoesReferralExistOnlyForOtherWallets,
     selectReferralAccountStateByWalletDescriptor,
     selectReferralWalletRecordByWalletDescriptor,
 } from './referAFriendSelectors';
@@ -73,5 +76,93 @@ describe(selectReferralAccountStateByWalletDescriptor.name, () => {
             selectReferralAccountStateByWalletDescriptor(state, UNKNOWN_WALLET_DESCRIPTOR).status,
         ).toBe('idle');
         expect(selectReferralAccountStateByWalletDescriptor(state, null).status).toBe('idle');
+    });
+});
+
+describe(selectDoesReferralExistOnlyForOtherWallets.name, () => {
+    const OTHER_WALLET_DESCRIPTOR = asWalletDescriptor('other');
+
+    const standardWallet = mockSuiteDevice({
+        instance: 1,
+        state: { staticSessionId: `${WALLET_DESCRIPTOR}@device-id:1` },
+    });
+
+    const joinedRecord: ReferralWalletRecord = walletRecord;
+    const notJoinedRecord: ReferralWalletRecord = { ...walletRecord, code: null, shareUrl: null };
+
+    type CreateStateParams = {
+        wallets: ReferAFriendRootState['referAFriend']['wallets'];
+        isStandardWalletAvailable?: boolean;
+    };
+
+    const createState = ({
+        wallets,
+        isStandardWalletAvailable = true,
+    }: CreateStateParams): ReferAFriendRootState & DeviceRootState => ({
+        referAFriend: { ...referAFriendInitialState, wallets },
+        device: {
+            ...deviceInitialState,
+            devices: isStandardWalletAvailable ? [standardWallet] : [],
+            selectedDevice: standardWallet,
+        },
+    });
+
+    it('returns true when another wallet descriptor has joined', () => {
+        const stateWithDevice = createState({
+            wallets: { [OTHER_WALLET_DESCRIPTOR]: joinedRecord },
+        });
+
+        expect(selectDoesReferralExistOnlyForOtherWallets(stateWithDevice)).toBe(true);
+    });
+
+    it('returns true when another wallet descriptor has joined and the standard one has a record but has not joined', () => {
+        const stateWithDevice = createState({
+            wallets: {
+                [WALLET_DESCRIPTOR]: notJoinedRecord,
+                [OTHER_WALLET_DESCRIPTOR]: joinedRecord,
+            },
+        });
+
+        expect(selectDoesReferralExistOnlyForOtherWallets(stateWithDevice)).toBe(true);
+    });
+
+    it('returns false when both the standard and another wallet descriptor have joined', () => {
+        const stateWithDevice = createState({
+            wallets: {
+                [WALLET_DESCRIPTOR]: joinedRecord,
+                [OTHER_WALLET_DESCRIPTOR]: joinedRecord,
+            },
+        });
+
+        expect(selectDoesReferralExistOnlyForOtherWallets(stateWithDevice)).toBe(false);
+    });
+
+    it('returns false when only the standard wallet descriptor has joined', () => {
+        const stateWithDevice = createState({ wallets: { [WALLET_DESCRIPTOR]: joinedRecord } });
+
+        expect(selectDoesReferralExistOnlyForOtherWallets(stateWithDevice)).toBe(false);
+    });
+
+    it('returns false when another wallet descriptor has a record but has not joined', () => {
+        const stateWithDevice = createState({
+            wallets: { [OTHER_WALLET_DESCRIPTOR]: notJoinedRecord },
+        });
+
+        expect(selectDoesReferralExistOnlyForOtherWallets(stateWithDevice)).toBe(false);
+    });
+
+    it('returns false when there are no records', () => {
+        const stateWithDevice = createState({ wallets: {} });
+
+        expect(selectDoesReferralExistOnlyForOtherWallets(stateWithDevice)).toBe(false);
+    });
+
+    it('returns false when the standard wallet descriptor is not available', () => {
+        const stateWithDevice = createState({
+            wallets: { [OTHER_WALLET_DESCRIPTOR]: joinedRecord },
+            isStandardWalletAvailable: false,
+        });
+
+        expect(selectDoesReferralExistOnlyForOtherWallets(stateWithDevice)).toBe(false);
     });
 });
