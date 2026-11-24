@@ -1,10 +1,20 @@
 import { type Dispatch, type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
-import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
+import {
+    type ModalRootState,
+    closeModal,
+    openDeferredModal,
+    preserveModal,
+    selectIsTransactionReviewActive,
+} from '@suite/modal';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
+import {
+    type StablecoinYieldTxSimulationParams,
+    buildStablecoinYieldTransactionReview,
+} from '@suite-common/earn-stablecoin';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type SynchronizeSentTransactionThunkDeps,
@@ -81,10 +91,70 @@ export const showYieldSubmitErrorThunk =
 export const getYieldSubmitErrorAnalyticsMessage = (error: unknown) =>
     isYieldPushError(error) ? 'push-failed' : 'submit-failed';
 
+type OpenYieldSimulationThunkState = DeviceRootState;
+
+export const openYieldSimulationThunk =
+    (data: StablecoinYieldTxSimulationParams, owner: TrezorDevice | undefined) =>
+    (
+        dispatch: ThunkDispatch<OpenYieldSimulationThunkState, unknown, UnknownAction>,
+        getState: () => OpenYieldSimulationThunkState,
+    ) => {
+        const device = selectSelectedDevice(getState());
+        if (
+            !owner?.connected ||
+            !owner.available ||
+            !owner.path ||
+            !device?.connected ||
+            !device.available ||
+            device.path !== owner.path ||
+            device.instance !== owner.instance ||
+            !device.state?.staticSessionId ||
+            device.state.staticSessionId !== owner.state?.staticSessionId
+        ) {
+            return Promise.resolve({ value: false } as const);
+        }
+
+        return dispatch(
+            openDeferredModal(
+                { type: 'earn-yield-tx-simulation', data },
+                { devicePath: device.path, cancelWith: { value: false } },
+            ),
+        );
+    };
+
+type PushYieldTransactionState = ModalRootState & MessageSystemRootState & WalletSettingsRootState;
+
+type PushYieldTransactionParams = {
+    account: Account;
+    serializedTx: string;
+    reviewDecision: Promise<boolean>;
+};
+
+export const pushYieldTransaction = async (
+    { account, serializedTx, reviewDecision }: PushYieldTransactionParams,
+    dispatch: Dispatch,
+    getState: () => PushYieldTransactionState,
+) => {
+    try {
+        const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
+        const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
+
+        return await TrezorBlockchain.pushTransaction({
+            tx: serializedTx,
+            coin: asCoinSymbol(account.symbol),
+            identity: getAccountIdentity(account),
+            disableAlternativeRPC: !isMevProtectionEnabled || !isMevProtectionFeatureEnabled,
+        });
+    } finally {
+        if (selectIsTransactionReviewActive(getState(), reviewDecision)) {
+            dispatch(closeModal());
+        }
+    }
+};
+
 export type SendYieldTransactionState = DeviceRootState &
-    MessageSystemRootState &
     SynchronizeSentTransactionThunkState &
-    WalletSettingsRootState;
+    PushYieldTransactionState;
 export type SendYieldTransactionDeps = SynchronizeSentTransactionThunkDeps;
 type SendYieldTransactionDispatch = ThunkDispatch<
     SendYieldTransactionState,
@@ -194,23 +264,22 @@ export const sendYieldTransaction = async ({
             }),
         );
 
-        const isPushConfirmed = await dispatch(openDeferredModal({ type: 'review-transaction' }));
+        const reviewDecision = dispatch(
+            openDeferredModal(
+                { type: 'review-transaction' },
+                { devicePath: device.path, cancelWith: false },
+            ),
+        );
 
-        if (!isPushConfirmed) {
+        if (!(await reviewDecision)) {
             return { status: 'cancelled', stage: 'review' };
         }
 
-        const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
-        const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
-
-        const pushResponse = await TrezorBlockchain.pushTransaction({
-            tx: signingResponse.payload.serializedTx,
-            coin: asCoinSymbol(account.symbol),
-            identity: getAccountIdentity(account),
-            disableAlternativeRPC: !isMevProtectionEnabled || !isMevProtectionFeatureEnabled,
-        });
-
-        dispatch(closeModal());
+        const pushResponse = await pushYieldTransaction(
+            { account, serializedTx: signingResponse.payload.serializedTx, reviewDecision },
+            dispatch,
+            getState,
+        );
 
         if (!pushResponse.success) {
             throw new Error(`${pushResponse.error.code}: ${pushResponse.error.message}`, {

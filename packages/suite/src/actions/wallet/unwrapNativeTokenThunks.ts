@@ -1,6 +1,5 @@
-import { openDeferredModal } from '@suite/modal';
 import { type AnalyticsDep, events } from '@suite-common/analytics';
-import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
+import { selectSelectedDevice } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -19,6 +18,7 @@ import {
     getYieldDeviceErrorMessage,
     getYieldSubmitErrorAnalyticsMessage,
     isYieldPushError,
+    openYieldSimulationThunk,
     sendYieldTransaction,
 } from './stablecoin-yield/signingHelpers';
 
@@ -49,6 +49,7 @@ export const submitUnwrapNativeTokenThunk = createThunk<
 >(
     `${UNWRAP_NATIVE_TOKEN_PREFIX}/submit`,
     async ({ account, token, unwrapAmount, yieldFlow }, { dispatch, getState, extra }) => {
+        const device = selectSelectedDevice(getState());
         // An in-flow unwrap belongs to the withdraw funnel, so its failures are reported there
         // rather than as a standalone yield/unwrap. Only the broadcast unwrap transaction is
         // resolved by `useYieldPendingTransactionTracking`, so these pre-broadcast failures are the
@@ -100,14 +101,14 @@ export const submitUnwrapNativeTokenThunk = createThunk<
             }
 
             const userAcceptedTxSimulation = await dispatch(
-                openDeferredModal({
-                    type: 'earn-yield-tx-simulation',
-                    data: {
+                openYieldSimulationThunk(
+                    {
                         flow: 'unwrap',
                         unsignedTx: result.unsignedTransaction,
                         account,
-                    } satisfies StablecoinYieldTxSimulationParams,
-                }),
+                    },
+                    device,
+                ),
             );
 
             if (userAcceptedTxSimulation === undefined) {

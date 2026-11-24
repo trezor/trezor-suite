@@ -1,5 +1,7 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
+import { deviceInitialState } from '@suite-common/device';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { asNetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -59,7 +61,17 @@ const token: YieldFlowDisplayToken & { contractAddress: string } = {
 
 const buildStore = (report?: jest.Mock) =>
     createTestCompositionRoot<UnwrapNativeTokenThunkDeps, UnwrapNativeTokenThunkState>({
-        preloadedState: {},
+        preloadedState: {
+            device: {
+                ...deviceInitialState,
+                selectedDevice: mockSuiteDevice({
+                    path: 'owner',
+                    state: { staticSessionId: account.deviceState },
+                    connected: true,
+                    available: true,
+                }),
+            },
+        },
         services: () => ({
             analytics: mockAnalytics(report),
             networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },

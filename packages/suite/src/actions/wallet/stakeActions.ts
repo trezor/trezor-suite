@@ -6,7 +6,14 @@ import {
     type StakingCardanoPoolDelegationPayload,
     events,
 } from '@suite/analytics';
-import { closeModal, openDeferredModal, openModal, preserveModal } from '@suite/modal';
+import {
+    type ModalRootState,
+    closeModal,
+    openDeferredModal,
+    openModal,
+    preserveModal,
+    selectIsTransactionReviewActive,
+} from '@suite/modal';
 import { getTransactionCreatedEventPayload } from '@suite-common/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type StakingRootState } from '@suite-common/earn-staking';
@@ -285,7 +292,8 @@ const pushTransactionThunk =
         return sentTx;
     };
 
-export type SignTransactionThunkState = DeviceRootState &
+export type SignTransactionThunkState = ModalRootState &
+    DeviceRootState &
     EthereumGetCurrentNonceThunkState &
     MevProtectionRootState &
     ReplaceTransactionThunkState &
@@ -412,10 +420,25 @@ export const signTransactionThunk =
         }
 
         // Open a deferred modal and get the decision
-        const decision = await dispatch(openDeferredModal({ type: 'review-transaction' }));
-        if (decision) {
-            // push tx to the network
-            return dispatch(pushTransactionThunk(formValues.stakeType));
+        const reviewDecision = dispatch(
+            openDeferredModal(
+                { type: 'review-transaction' },
+                {
+                    devicePath: device.path,
+                    cancelWith: false,
+                    onDisconnect: () => dispatch(stakeActions.dispose()),
+                },
+            ),
+        );
+        if (await reviewDecision) {
+            try {
+                return await dispatch(pushTransactionThunk(formValues.stakeType));
+            } finally {
+                // A rejected transport or a wallet forgotten before push can leave this review open.
+                if (selectIsTransactionReviewActive(getState(), reviewDecision)) {
+                    dispatch(closeModal());
+                }
+            }
         }
 
         extra.services.analytics.report({

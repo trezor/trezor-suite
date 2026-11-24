@@ -13,7 +13,13 @@ import {
     metadataLabelingActions,
     selectMetadataEnabled,
 } from '@suite/metadata';
-import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
+import {
+    type ModalRootState,
+    closeModal,
+    openDeferredModal,
+    preserveModal,
+    selectIsTransactionReviewActive,
+} from '@suite/modal';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
@@ -38,6 +44,7 @@ import {
     selectIsMevProtectionEnabled,
     selectPrecomposedSendForm,
     selectSendFormDrafts,
+    selectSendSerializedTx,
     selectYieldApprovalInReview,
     sendFormActions,
     signTransactionThunk,
@@ -257,6 +264,7 @@ type SignAndPushSendFormTransactionThunkParams = {
 export type SignAndPushSendFormTransactionThunkState = ApplySendFormMetadataLabelsThunkState &
     CancelSignSendFormTransactionThunkState &
     EnhancePrecomposedTransactionThunkState &
+    ModalRootState &
     MessageSystemRootState &
     PushSendFormTransactionThunkState &
     SignTransactionThunkState &
@@ -308,6 +316,15 @@ export const signAndPushSendFormTransactionThunk = createThunk<
                 selectedAccount,
             }),
         ).unwrap();
+
+        const signingDevice = selectSelectedDevice(getState());
+        if (
+            signingDevice?.path !== device.path ||
+            signingDevice.instance !== device.instance ||
+            signingDevice.state?.staticSessionId !== device.state?.staticSessionId
+        ) {
+            return;
+        }
 
         // TransactionReviewModal has 2 steps: signing and pushing
         // TrezorConnect emits UI_EVENTS.CLOSE_UI_WINDOW after the signing process
@@ -365,9 +382,18 @@ export const signAndPushSendFormTransactionThunk = createThunk<
         });
 
         // Open a deferred modal and get the decision
-        const isPushConfirmed = await dispatch(openDeferredModal({ type: 'review-transaction' }));
+        const reviewDecision = dispatch(
+            openDeferredModal(
+                { type: 'review-transaction' },
+                {
+                    devicePath: device.path,
+                    cancelWith: false,
+                    onDisconnect: () => dispatch(sendFormActions.discardTransaction()),
+                },
+            ),
+        );
 
-        if (!isPushConfirmed) {
+        if (!(await reviewDecision)) {
             reportYieldCancellation('review');
 
             return;
@@ -382,7 +408,7 @@ export const signAndPushSendFormTransactionThunk = createThunk<
         // NOTE: due to need of the gathering state of the transaction before push, we need to cache the state here and pass it on
         const stateBeforePush = asStateBeforePush(getState());
 
-        // push tx to the network
+        const signedTransaction = selectSendSerializedTx(getState());
         const pushResponse = await dispatch(
             pushSendFormTransactionThunk({
                 selectedAccount,
@@ -407,7 +433,14 @@ export const signAndPushSendFormTransactionThunk = createThunk<
         }
 
         if (isRejected(pushResponse)) {
-            dispatch(sendFormActions.clearSignedTransactionData());
+            // Connect responses close the review in the push thunk. A missing signed transaction
+            // or a rejected transport promise can exit earlier, while this review is still open.
+            if (selectIsTransactionReviewActive(getState(), reviewDecision)) {
+                dispatch(closeModal());
+            }
+            if (selectSendSerializedTx(getState()) === signedTransaction) {
+                dispatch(sendFormActions.clearSignedTransactionData());
+            }
 
             return pushResponse.payload && { success: false, error: pushResponse.payload };
         }
