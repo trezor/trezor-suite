@@ -13,7 +13,7 @@ export type BluetoothOnDeviceConnected = (device: Device) => void;
 // called on TrezorConnect DEVICE.CONNECT event
 export const createBluetoothOnDeviceConnected =
     (deps: BluetoothOnDeviceConnectedDeps): BluetoothOnDeviceConnected =>
-    (device: Device) => {
+    device => {
         const knownDevice = deps.getKnownDeviceByDeviceId(device.id ?? undefined);
 
         // device is re-connected over USB, but the same device is already connected over BT
