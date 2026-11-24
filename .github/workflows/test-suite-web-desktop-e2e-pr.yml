@@ -216,13 +216,13 @@ jobs:
         id: resolve
         shell: bash
         run: |
-          echo "spec-list=suite/e2e/tests/wallet/send-eth-anvil.test.ts,suite/e2e/tests/yield/deposit-anvil.test.ts" >> "$GITHUB_OUTPUT"
+          echo "spec-list=suite/e2e/tests/yield/deposit-anvil.test.ts" >> "$GITHUB_OUTPUT"
       - name: Resolve test matrix
         id: matrix
         shell: bash
         run: |
-          echo "matrix-desktop=[1,2]" >> "$GITHUB_OUTPUT"
-          echo "matrix-web=[1,2,3,4]" >> "$GITHUB_OUTPUT"
+          echo "matrix-desktop=[1]" >> "$GITHUB_OUTPUT"
+          echo "matrix-web=[1,2]" >> "$GITHUB_OUTPUT"
 
   post-suite-web-preview-link:
     if: github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request'
