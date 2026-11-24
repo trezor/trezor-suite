@@ -61,6 +61,10 @@ const getLinearGradient = (progress: number, theme: DefaultTheme, disabled?: boo
 const StyledRange = styled.div<{ $fill?: boolean }>`
     position: relative;
 
+    /* Keeps the z-index of the input, which lifts it above the segments, inside the range, so the
+       range scrolls beneath sticky bars of the page. */
+    isolation: isolate;
+
     ${({ $fill }) =>
         $fill &&
         css`
