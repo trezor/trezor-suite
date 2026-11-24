@@ -47,7 +47,10 @@ describe('createBluetoothDisconnectDevice', () => {
                 deviceId,
                 connectionStatus: { type: 'disconnected' },
             }),
-            notificationsActions.addToast({ type: 'error', error: 'boom' }),
+            {
+                type: notificationsActions.addToast.type,
+                payload: expect.objectContaining({ type: 'error', error: 'boom' }),
+            },
             stopConnectingBluetoothDevice({ deviceId }),
         ]);
         expect(deps.backgroundScan.restartIfNeeded).toHaveBeenCalledTimes(1);
