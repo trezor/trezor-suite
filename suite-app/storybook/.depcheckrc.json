@@ -9,6 +9,7 @@
         "@storybook/addon-docs",
         "@suite/feature-feedback",
         "@trezor/product-components",
+        "buffer",
         "react-dom"
     ]
 }

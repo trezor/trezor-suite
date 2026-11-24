@@ -1,4 +1,5 @@
-import { getCryptoId } from '@suite-common/trading';
+import { type AssetId, createAssetId } from '@suite-common/asset-types';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type Network } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -23,17 +24,17 @@ export const getGlobalReceiveAssetIdsWithHistory = ({
     accounts,
     networks,
     transactions,
-}: GetGlobalReceiveAssetIdsWithHistoryParams): ReadonlySet<string> => {
-    const assetIds = new Set<string>();
+}: GetGlobalReceiveAssetIdsWithHistoryParams): ReadonlySet<AssetId> => {
+    const assetIds = new Set<AssetId>();
     const networksBySymbol = new Map(networks.map(network => [network.symbol, network]));
 
     accounts.forEach(account => {
         const network = networksBySymbol.get(account.symbol);
-        if (!network?.tradeCryptoId || network.testnet) {
+        if (!network || network.testnet) {
             return;
         }
 
-        const nativeAssetId = network.tradeCryptoId;
+        const nativeAssetId = createAssetId({ networkSymbol: network.symbol });
         const { history } = account;
         // XRP and Stellar report an unknown total; their empty flag distinguishes unfunded accounts.
         const hasAccountHistory =
@@ -54,7 +55,12 @@ export const getGlobalReceiveAssetIdsWithHistory = ({
                 new BigNumber(token.totalSent ?? '0').gt(0);
 
             if (token.contract && hasTokenHistory) {
-                assetIds.add(getCryptoId(account.symbol, token.contract));
+                assetIds.add(
+                    createAssetId({
+                        networkSymbol: account.symbol,
+                        contractAddress: toTokenAddress(token.contract),
+                    }),
+                );
             }
         });
 
@@ -67,7 +73,12 @@ export const getGlobalReceiveAssetIdsWithHistory = ({
             assetIds.add(nativeAssetId);
             transaction.tokens.forEach(token => {
                 if (token.contract) {
-                    assetIds.add(getCryptoId(account.symbol, token.contract));
+                    assetIds.add(
+                        createAssetId({
+                            networkSymbol: account.symbol,
+                            contractAddress: toTokenAddress(token.contract),
+                        }),
+                    );
                 }
             });
         });

@@ -1,5 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import { parseAssetId } from '@suite-common/asset-types';
+import { useTokenMetadata } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { AccountsList } from '@suite-native/accounts';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import {
@@ -16,7 +19,9 @@ import { useReceiveNavigation } from '../hooks/useReceiveNavigation';
 export const ReceiveAccountsScreen = ({
     route,
 }: StackProps<ReceiveStackParamList, ReceiveStackRoutes.ReceiveAccounts>) => {
-    const { asset, closeActionType } = route.params;
+    const { assetId, closeActionType } = route.params;
+    const { networkSymbol, contractAddress } = parseAssetId(assetId);
+    const token = useTokenMetadata(networkSymbol, contractAddress);
 
     const { navigateToReceiveAddressScreen } = useReceiveNavigation();
 
@@ -28,11 +33,9 @@ export const ReceiveAccountsScreen = ({
         return <ReceiveBlockedDeviceCompromisedScreen />;
     }
 
-    const tokenContract = asset.isNativeToken ? undefined : asset.contractAddress;
-
     return (
         <Screen
-            header={<ReceiveAccountsHeader asset={asset} closeActionType={closeActionType} />}
+            header={<ReceiveAccountsHeader assetId={assetId} closeActionType={closeActionType} />}
             isScrollable={false}
             noHorizontalPadding
             noBottomPadding
@@ -40,8 +43,12 @@ export const ReceiveAccountsScreen = ({
         >
             <AccountsList
                 onSelectAccount={navigateToReceiveAddressScreen}
-                networkFilter={[asset.networkSymbol]}
-                tokenContract={tokenContract}
+                networkFilter={[networkSymbol]}
+                tokenContract={
+                    contractAddress
+                        ? (token?.contract ?? toTokenAddress(contractAddress))
+                        : undefined
+                }
             />
         </Screen>
     );

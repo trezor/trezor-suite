@@ -2,13 +2,13 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { createAssetId } from '@suite-common/asset-types';
 import {
     type HomeAssetTableState,
     selectWalletAssetAccounts,
     selectWalletAssetKey,
 } from '@suite-common/assets';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
-import { buildGlobalReceiveAssetOption } from '@suite-common/receive';
 import {
     type NativeAccountsWithNetworksRootState,
     selectFilteredDeviceAccountListRows,
@@ -75,8 +75,8 @@ export const AssetDetailActions = () => {
         navigation.navigate(RootStackRoutes.ReceiveStack, {
             screen: ReceiveStackRoutes.ReceiveAccounts,
             params: {
-                asset: buildGlobalReceiveAssetOption({
-                    symbol: networkSymbol,
+                assetId: createAssetId({
+                    networkSymbol,
                     contractAddress: tokenContract,
                 }),
                 closeActionType: 'back',

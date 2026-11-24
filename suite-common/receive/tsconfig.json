@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../asset-types" },
         { "path": "../device" },
         { "path": "../networks" },
         { "path": "../react-query" },
@@ -11,10 +12,10 @@
         { "path": "../token" },
         { "path": "../token-definitions" },
         { "path": "../tokens" },
-        { "path": "../trading" },
         { "path": "../wallet-config" },
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
+        { "path": "../wallet-utils" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/redux-utils" },
         { "path": "../../packages/utils" }

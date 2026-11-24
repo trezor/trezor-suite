@@ -1,3 +1,4 @@
+import { createAssetId } from '@suite-common/asset-types';
 import { selectWalletAssetAccounts } from '@suite-common/assets';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { type TokenAddress } from '@suite-common/tokens';
@@ -29,7 +30,7 @@ const mockSecondAccount = mockWalletAccount({
     symbol: mockNetworkSymbol,
 });
 const mockAccountKey = mockAccount.key;
-const mockReceiveAsset = { networkSymbol: mockNetworkSymbol };
+
 const getAccountRow = (accountKey: AccountKey) => ({
     accountKey,
     isFirst: true,
@@ -49,6 +50,7 @@ jest.mock('@react-navigation/native', () => ({
 // Mocking the selectors rather than the `useSelector` calls keeps the test free of the order
 // the component happens to read them in.
 jest.mock('@suite-common/assets', () => ({
+    ...jest.requireActual('@suite-common/assets'),
     selectWalletAssetKey: () => 'asset-key',
     selectWalletAssetAccounts: jest.fn(),
 }));
@@ -65,10 +67,6 @@ jest.mock('@suite-common/device', () => ({
 jest.mock('@suite-native/device', () => ({
     ...jest.requireActual('@suite-native/device'),
     selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice: jest.fn(),
-}));
-
-jest.mock('@suite-common/receive', () => ({
-    buildGlobalReceiveAssetOption: () => mockReceiveAsset,
 }));
 
 const mockAssetAccounts = jest.mocked(selectWalletAssetAccounts);
@@ -95,7 +93,10 @@ describe('AssetDetailActions', () => {
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.ReceiveStack, {
             screen: ReceiveStackRoutes.ReceiveAccounts,
             params: {
-                asset: mockReceiveAsset,
+                assetId: createAssetId({
+                    networkSymbol: mockNetworkSymbol,
+                    contractAddress: mockTokenContract,
+                }),
                 closeActionType: 'back',
             },
         });

@@ -1,8 +1,5 @@
-import { createAssetId } from '@suite-common/asset-types';
-import {
-    type TradingAssetOption,
-    cryptoIdToNetworkSymbolAndContractAddress,
-} from '@suite-common/trading';
+import { type AssetId, parseAssetId } from '@suite-common/asset-types';
+import { getNetwork } from '@suite-common/wallet-config';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { AssetName } from '@suite-native/assets';
 import { Text } from '@suite-native/atoms';
@@ -15,20 +12,17 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 
 type ReceiveAccountsHeaderProps = {
-    asset: TradingAssetOption;
+    assetId: AssetId;
     closeActionType: CloseActionType;
 };
 
-export const ReceiveAccountsHeader = ({ asset, closeActionType }: ReceiveAccountsHeaderProps) => {
+export const ReceiveAccountsHeader = ({ assetId, closeActionType }: ReceiveAccountsHeaderProps) => {
     const { analytics } = useServices(injectNativeAnalytics);
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
-    const { contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(asset.id);
-    const assetName = (
-        <AssetName
-            assetId={createAssetId({ networkSymbol: asset.networkSymbol, contractAddress })}
-        />
-    );
+    const { networkSymbol, contractAddress } = parseAssetId(assetId);
+    const networkName = contractAddress ? getNetwork(networkSymbol).name : undefined;
+    const assetName = <AssetName assetId={assetId} />;
 
     const closeAction = () => {
         analytics.report({
@@ -46,10 +40,10 @@ export const ReceiveAccountsHeader = ({ asset, closeActionType }: ReceiveAccount
                         <Translation id="moduleReceive.receiveTitle" />
                     </Text>
                     <Text numberOfLines={1}>
-                        {contractAddress ? (
+                        {networkName ? (
                             <Translation
                                 id="moduleReceive.receiveDescription"
-                                values={{ assetName, networkName: asset.networkName }}
+                                values={{ assetName, networkName }}
                             />
                         ) : (
                             assetName

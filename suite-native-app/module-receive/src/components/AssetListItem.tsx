@@ -1,12 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { createAssetId } from '@suite-common/asset-types';
+import { parseAssetId } from '@suite-common/asset-types';
 import {
     type NetworksRootState,
     selectIsNativeTokenNetworkNameRedundant,
 } from '@suite-common/networks';
 import type { GlobalReceiveAssetListItem } from '@suite-common/receive';
+import { getNetwork } from '@suite-common/wallet-config';
 import { AccountsListItemBase } from '@suite-native/accounts';
 import { AssetIcon, AssetName, AssetSymbol } from '@suite-native/assets';
 import { Badge, Box, HStack, Text } from '@suite-native/atoms';
@@ -53,19 +54,15 @@ const rowStyle = prepareNativeStyle<{
 }));
 
 export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
-    const { asset, balance, isFirst, isLast } = item;
+    const { assetId, balance, isFirst, isLast } = item;
+    const { networkSymbol, contractAddress } = parseAssetId(assetId);
 
     const { applyStyle } = useNativeStyles();
 
     const isNetworkNameRedundant = useSelector((state: NetworksRootState) =>
-        selectIsNativeTokenNetworkNameRedundant(state, asset.networkSymbol),
+        selectIsNativeTokenNetworkNameRedundant(state, networkSymbol),
     );
-    const shouldShowNetworkBadge = !asset.isNativeToken || !isNetworkNameRedundant;
-    const tokenContract = asset.isNativeToken ? undefined : asset.contractAddress;
-    const assetId = createAssetId({
-        networkSymbol: asset.networkSymbol,
-        contractAddress: tokenContract,
-    });
+    const shouldShowNetworkBadge = !!contractAddress || !isNetworkNameRedundant;
 
     return (
         <Box style={applyStyle(rowStyle, { isFirst, isLast })}>
@@ -78,7 +75,7 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                         <Text variant="body-sm" priority="secondary">
                             <AssetSymbol assetId={assetId} variant="body-sm" priority="secondary" />
                         </Text>
-                        {shouldShowNetworkBadge && <Badge label={asset.networkName} />}
+                        {shouldShowNetworkBadge && <Badge label={getNetwork(networkSymbol).name} />}
                     </HStack>
                 }
                 mainValue={
@@ -92,17 +89,17 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                 }
                 secondaryValue={
                     balance &&
-                    (asset.isNativeToken ? (
+                    (!contractAddress ? (
                         <CompactCryptoAmountFormatter
                             value={balance.cryptoAmount}
-                            symbol={asset.networkSymbol}
+                            symbol={networkSymbol}
                             numberOfLines={1}
                             adjustsFontSizeToFit
                         />
                     ) : (
                         <CompactTokenAmountFormatter
-                            networkSymbol={asset.networkSymbol}
-                            contractAddress={asset.contractAddress}
+                            networkSymbol={networkSymbol}
+                            contractAddress={contractAddress}
                             value={asDecimalTokenAmount(balance.cryptoAmount)}
                             numberOfLines={1}
                             adjustsFontSizeToFit

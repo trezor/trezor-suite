@@ -52,7 +52,7 @@ export const AssetList = ({
                 contentContainerStyle={applyStyle(contentStyle)}
                 data={items}
                 renderItem={renderItem}
-                keyExtractor={item => (typeof item === 'string' ? item : item.asset.id)}
+                keyExtractor={item => (typeof item === 'string' ? item : item.assetId)}
                 getItemType={item => (typeof item === 'string' ? 'header' : 'asset')}
                 ListEmptyComponent={ListEmptyComponent}
                 keyboardShouldPersistTaps="handled"

@@ -43,7 +43,7 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
                 await expect(
                     tradingPage.assetPicker.selectedNetworkFilterIcon('eth'),
                 ).toBeVisible();
-                await page.getByTestId('@global-receive/asset/ethereum').click();
+                await page.getByTestId('@global-receive/asset/eth').click();
                 await page.discoveryShouldFinish();
             });
 

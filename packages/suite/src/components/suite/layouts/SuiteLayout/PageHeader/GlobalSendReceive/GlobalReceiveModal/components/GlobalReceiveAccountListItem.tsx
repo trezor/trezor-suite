@@ -1,6 +1,7 @@
 import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
-import { type TradingAssetOption, getUnusedAddressFromAccount } from '@suite-common/trading';
+import { type AssetId } from '@suite-common/asset-types';
+import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import { CardList, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
@@ -12,8 +13,8 @@ import { GlobalReceiveAccountTotalAmount } from './GlobalReceiveAccountTotalAmou
 
 type GlobalReceiveAccountListItemProps = {
     account: Account;
-    /** The asset being received; without one the row sums up the whole account. */
-    asset?: TradingAssetOption;
+    /** The assetId being received; without one the row sums up the whole account. */
+    assetId?: AssetId;
     iconSize: 24 | 40;
     onClick: (account: Account) => void;
     variant: 'card' | 'plain';
@@ -21,7 +22,7 @@ type GlobalReceiveAccountListItemProps = {
 
 export const GlobalReceiveAccountListItem = ({
     account,
-    asset,
+    assetId,
     iconSize,
     onClick,
     variant,
@@ -52,10 +53,10 @@ export const GlobalReceiveAccountListItem = ({
                     )}
                 </Column>
             </Row>
-            {asset === undefined ? (
+            {assetId === undefined ? (
                 <GlobalReceiveAccountTotalAmount account={account} />
             ) : (
-                <GlobalReceiveAccountAssetAmount account={account} asset={asset} />
+                <GlobalReceiveAccountAssetAmount account={account} assetId={assetId} />
             )}
         </>
     );

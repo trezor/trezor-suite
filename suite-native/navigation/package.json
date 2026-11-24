@@ -18,6 +18,7 @@
         "@react-navigation/routers": "^7.5.3",
         "@rozenite/react-navigation-plugin": "^2.1.0",
         "@storybook/react-native": "^10.6.2",
+        "@suite-common/asset-types": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/tokens": "workspace:*",

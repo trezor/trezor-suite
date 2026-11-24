@@ -98,7 +98,7 @@ export const ReceiveCrossroadsScreen = () => {
     };
 
     const handleAssetSelect = useCallback(
-        ({ asset }: GlobalReceiveAssetListItem) => navigateToReceiveScreen(asset),
+        ({ assetId }: GlobalReceiveAssetListItem) => navigateToReceiveScreen(assetId),
         [navigateToReceiveScreen],
     );
 
