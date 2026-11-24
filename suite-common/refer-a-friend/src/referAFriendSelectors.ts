@@ -75,6 +75,22 @@ export const selectReferralAccountState = createMemoizedSelectorWithDevice(
     getAccountState,
 );
 
+/**
+ * Whether a referral account is confirmed to exist for a different wallet descriptor (i.e. another wallet backup,
+ * typically another Trezor), but not for the standard wallet of the selected device.
+ * False when the standard wallet descriptor is not available, since the comparison is not possible.
+ */
+export const selectDoesReferralExistOnlyForOtherWallets = createMemoizedSelectorWithDevice(
+    [selectReferAFriendWallets, selectStandardWalletDescriptor],
+    (wallets, standardWalletDescriptor) =>
+        standardWalletDescriptor !== null &&
+        !wallets[standardWalletDescriptor]?.shareUrl &&
+        Object.entries(wallets).some(
+            ([walletDescriptor, walletRecord]) =>
+                walletDescriptor !== standardWalletDescriptor && !!walletRecord.shareUrl,
+        ),
+);
+
 export const selectReferAFriendApiCustomUrl = (state: ReferAFriendRootState) => {
     const { baseUrl } = state.referAFriend.settings;
 
