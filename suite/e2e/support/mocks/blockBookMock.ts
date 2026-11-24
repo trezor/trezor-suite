@@ -1,3 +1,4 @@
+import type { Eip1559Fees } from '@trezor/blockchain-link-types';
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 import { BackendType } from '@trezor/e2e-utils/src/mocks/backendServer';
 
@@ -16,12 +17,20 @@ type SupportedSymbols = 'ltc' | 'doge' | 'eth' | 'ada' | 'trx';
 
 type SendNewBlockNotificationParams = { height: number; hash: string };
 
+type EstimateFeeResponse = {
+    feePerTx: string;
+    feePerUnit: string;
+    feeLimit: string;
+    eip1559?: Eip1559Fees;
+};
+
 export class BlockbookMock {
     private _mockServer: BackendWebsocketServerMock | undefined;
     private accountState: any = null;
     private mockType: SupportedSymbols | null = null;
     private readonly newBlockSubscriptionIds = new Set<string>();
     private _lastBroadcastTxid: string | undefined;
+    private _lastBroadcastHex: string | undefined;
 
     get mockServer() {
         if (!this._mockServer) {
@@ -42,6 +51,14 @@ export class BlockbookMock {
         }
 
         return this._lastBroadcastTxid;
+    }
+
+    get lastBroadcastHex(): string {
+        if (!this._lastBroadcastHex) {
+            throw new Error('No transaction has been broadcast to the mock yet');
+        }
+
+        return this._lastBroadcastHex;
     }
 
     private selectFixture(type: SupportedSymbols) {
@@ -78,6 +95,7 @@ export class BlockbookMock {
         // The trx fixtures answer a broadcast with the txid of the broadcast transaction, as a real
         // backend does; remember it for post-send assertions.
         this.mockServer.on('blockbook_sendTransaction', (request: { params: { hex: string } }) => {
+            this._lastBroadcastHex = request.params.hex;
             if (mockType === 'trx') {
                 this._lastBroadcastTxid = deriveTrxTxid(request.params.hex);
             }
@@ -225,6 +243,14 @@ export class BlockbookMock {
         });
 
         this.mockServer.setFixtures(updatedFixtures);
+    }
+
+    @step()
+    setEstimateFeeResponse(fee: EstimateFeeResponse) {
+        this.mockServer.setFixtures([
+            { method: 'estimateFee', default: true, response: { data: [fee] } },
+            ...this.mockServer.getFixtures().filter(fixture => fixture.method !== 'estimateFee'),
+        ]);
     }
 
     @step()

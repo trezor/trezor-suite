@@ -1,0 +1,62 @@
+{
+    "txid": "0x78343eec684abcd4cda8b158a53d0e0dcda31357f88834c0263fc7bce5f975dc",
+    "vin": [
+        {
+            "n": 0,
+            "addresses": ["0xcb6139253d4fa49712C08BF0Cb4F6ea6c2007bF5"],
+            "isAddress": true,
+            "isOwn": true
+        }
+    ],
+    "vout": [
+        {
+            "value": "0",
+            "n": 0,
+            "addresses": ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"],
+            "isAddress": true
+        }
+    ],
+    "blockHeight": -1,
+    "confirmations": 0,
+    "blockTime": 1752168560,
+    "value": "0",
+    "fees": "65000000000000",
+    "rbf": true,
+    "tokenTransfers": [
+        {
+            "type": "ERC20",
+            "standard": "ERC20",
+            "from": "0xcb6139253d4fa49712C08BF0Cb4F6ea6c2007bF5",
+            "to": "0xdcaB74E62b9D08a9f8Fa4A3Ccb5c46AE039C9d7C",
+            "contract": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "name": "USD Coin",
+            "symbol": "USDC",
+            "decimals": 6,
+            "value": "10000000"
+        }
+    ],
+    "ethereumSpecific": {
+        "status": -1,
+        "nonce": 1,
+        "gasLimit": 65000,
+        "gasPrice": "1000000000",
+        "maxPriorityFeePerGas": "1000000000",
+        "maxFeePerGas": "1000000000",
+        "data": "0xa9059cbb000000000000000000000000dcab74e62b9d08a9f8fa4a3ccb5c46ae039c9d7c0000000000000000000000000000000000000000000000000000000000989680",
+        "parsedData": {
+            "methodId": "0xa9059cbb",
+            "name": "Transfer",
+            "function": "transfer(address,uint256)",
+            "params": [
+                {
+                    "type": "address",
+                    "values": ["0xdcaB74E62b9D08a9f8Fa4A3Ccb5c46AE039C9d7C"]
+                },
+                {
+                    "type": "uint256",
+                    "values": ["10000000"]
+                }
+            ]
+        }
+    }
+}
