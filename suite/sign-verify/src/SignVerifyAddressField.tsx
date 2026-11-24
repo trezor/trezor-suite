@@ -1,3 +1,4 @@
+import { type ChangeEvent } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
@@ -12,7 +13,6 @@ import { getStakingPath } from '@trezor/network-cardano-suite-common';
 
 import { CopyFieldButton } from './CopyFieldButton';
 import { SignAddressInput } from './SignAddressInput';
-import { type SignVerifyFormFields } from './useSignVerifyForm';
 
 const getAccountAddressGroups = (
     account: Account,
@@ -42,8 +42,17 @@ type SignVerifyAddressFieldProps = {
     isSignPage: boolean;
     isCompleted: boolean;
     address?: string;
-    pathField: SignVerifyFormFields['pathField'];
-    addressField: SignVerifyFormFields['addressField'];
+    pathField: {
+        value?: string;
+        onBlur: () => void;
+        onChange: (address: { path: string; address: string } | null) => void;
+        isDisabled: boolean;
+    };
+    addressField: {
+        value: string;
+        onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+        onBlur: () => void;
+    };
     pathError?: string;
     addressError?: string;
     hasPathError: boolean;
