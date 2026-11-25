@@ -40,6 +40,7 @@ interface GetLinesParams {
     nativeToken?: TokenInfo;
     isClearSignedTradingSwap: boolean;
     isClearSignedWrapUnwrap: boolean;
+    isLidoClearSigning: boolean;
     isTronStakeFreeze: boolean;
     tronResourceLabel: string;
 }
@@ -54,6 +55,7 @@ const getLines = ({
     nativeToken,
     isClearSignedTradingSwap,
     isClearSignedWrapUnwrap,
+    isLidoClearSigning,
     isTronStakeFreeze,
     tronResourceLabel,
 }: GetLinesParams): OutputElementLine[] => {
@@ -137,7 +139,8 @@ const getLines = ({
             isYieldOrClaimOperation ||
             // A clear-signed wrap/unwrap already confirms the amount on its own row, and the
             // device leaves it off its summary screen for the same reason.
-            isClearSignedWrapUnwrap;
+            isClearSignedWrapUnwrap ||
+            isLidoClearSigning;
 
         return isFeeOnly ? [feeLine] : [amountLine, feeLine];
     }
@@ -191,6 +194,7 @@ export type TransactionReviewTotalOutputProps = {
     account: Account;
     isRbf: boolean;
     stakeType?: StakeType;
+    isLidoClearSigning?: boolean;
 };
 
 export const TransactionReviewTotalOutput = ({
@@ -200,6 +204,7 @@ export const TransactionReviewTotalOutput = ({
     precomposedForm,
     stakeType,
     isRbf,
+    isLidoClearSigning = false,
 }: TransactionReviewTotalOutputProps) => {
     const device = useSelector(selectSelectedDevice);
     const { translationString } = useTranslation();
@@ -246,13 +251,15 @@ export const TransactionReviewTotalOutput = ({
         nativeToken,
         isClearSignedTradingSwap,
         isClearSignedWrapUnwrap,
+        isLidoClearSigning,
         isTronStakeFreeze,
         tronResourceLabel,
     });
 
     const titleId = (() => {
         // Both list the fee alone, so "Total including fee" would be misleading.
-        if (isClearSignedTradingSwap || isClearSignedWrapUnwrap) return 'TR_NETWORK_FEE';
+        if (isClearSignedTradingSwap || isClearSignedWrapUnwrap || isLidoClearSigning)
+            return 'TR_NETWORK_FEE';
         if (precomposedForm.trading?.isSlip24Active) return 'TR_SUMMARY';
         if (isTronStakeFreeze) return 'TR_SUMMARY';
 

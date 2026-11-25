@@ -103,10 +103,20 @@ type ValueProps = {
     isFiatVisible: boolean;
     state: TransactionReviewOutputElementProps['state'];
     token?: TokenInfo;
+    knownTokenSymbol?: string;
     isChunked?: boolean;
 };
 
-const Value = ({ value, type, symbol, token, isFiatVisible, state, isChunked }: ValueProps) => {
+const Value = ({
+    value,
+    type,
+    symbol,
+    token,
+    knownTokenSymbol,
+    isFiatVisible,
+    state,
+    isChunked,
+}: ValueProps) => {
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
     switch (type) {
@@ -137,6 +147,8 @@ const Value = ({ value, type, symbol, token, isFiatVisible, state, isChunked }: 
                         value={formattedValue}
                         networkSymbol={symbol}
                         contractAddress={token?.contract}
+                        tokenSymbol={knownTokenSymbol}
+                        tokenDecimals={token?.decimals}
                         isTabular={false}
                     />
                     {shallDisplayBaseCurrency && isFiatVisible && (
@@ -167,6 +179,7 @@ export type OutputElementLine = {
     id: string;
     value: string;
     token?: TokenInfo;
+    knownTokenSymbol?: string;
     type: 'default' | 'address' | 'safe-address' | 'note' | 'data' | 'amount';
     label?: ReactNode;
     isChunked?: boolean;
@@ -213,6 +226,7 @@ export const TransactionReviewOutputElement = ({
                             type={line.type}
                             symbol={symbol}
                             token={line.token}
+                            knownTokenSymbol={line.knownTokenSymbol}
                             isFiatVisible={fiatVisible}
                             state={state}
                             isChunked={line.isChunked}

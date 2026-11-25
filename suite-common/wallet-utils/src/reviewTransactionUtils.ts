@@ -1,3 +1,4 @@
+import { toChecksumAddress } from '@suite-common/address';
 import { EVM_SPENDER_LABELS } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { EARN_YIELD_CLAIM_PROVIDER, getNetwork } from '@suite-common/wallet-config';
@@ -7,6 +8,7 @@ import {
     type FormState,
     type GeneralPrecomposedTransaction,
     type GeneralPrecomposedTransactionFinal,
+    type LidoReviewDetails,
     type StakeFormState,
     type StakeType,
     type TransactionReviewOutput,
@@ -19,6 +21,7 @@ import {
     Calldata,
     type ClearSigningCoverage,
     getEvmClearSignedSwapCoverage,
+    getLidoDeployment,
     getWrappedNativeSymbol,
     isEvmClearSigningTx,
 } from '@trezor/network-ethereum-suite-common';
@@ -40,6 +43,7 @@ import {
 } from './ethUtils';
 import { isCompleteTradingForm, isExchangeTradingForm } from './sendFormUtils';
 import { getStakeType } from './stakingUtils';
+import { getContractAddressForNetworkSymbol } from './tokenUtils';
 import { isRbfBumpFeeTransaction } from './transactionUtils';
 
 /**
@@ -438,6 +442,65 @@ const constructOldFlow = ({
     return outputs;
 };
 
+const getLidoReviewDetails = ({
+    account: { symbol },
+    precomposedTx,
+    precomposedForm: { transactionData },
+}: ConstructOutputsParams):
+    { contract: string; contractName: string; details: LidoReviewDetails } | undefined => {
+    const deployment = getLidoDeployment(symbol);
+    const output = precomposedTx.outputs.find(
+        candidate => 'address' in candidate && typeof candidate.address === 'string',
+    );
+
+    if (!deployment || !output?.address) return undefined;
+
+    const contract = output.address;
+    const to = contract.toLowerCase();
+    const { stakeETH, requestWithdrawalsWstETH, claimWithdrawals } = Calldata.evm.lido;
+
+    if (to === deployment.wstETHReferralStaker && stakeETH.decode(transactionData)) {
+        return {
+            contract,
+            contractName: 'Lido DAO: wstETH-referral-staker',
+            details: { kind: 'stake', amount: output.amount.toString() },
+        };
+    }
+
+    if (to !== deployment.withdrawalQueue) return undefined;
+
+    const contractName = 'Lido DAO: WithdrawalQueueERC721';
+    const request = requestWithdrawalsWstETH.decode(transactionData);
+    if (request) {
+        return {
+            contract,
+            contractName,
+            details: {
+                kind: 'request-withdrawal',
+                amounts: request.amounts.map(amount => amount.toString()),
+                beneficiary: toChecksumAddress(request.owner),
+                token: {
+                    contract: getContractAddressForNetworkSymbol(symbol, deployment.wstETH),
+                    decimals: 18,
+                    symbol: 'wstETH',
+                    standard: 'ERC20',
+                },
+            },
+        };
+    }
+
+    const claim = claimWithdrawals.decode(transactionData);
+    if (claim) {
+        return {
+            contract,
+            contractName,
+            details: { kind: 'claim', requestIds: claim.requestIds.map(id => id.toString()) },
+        };
+    }
+
+    return undefined;
+};
+
 const constructNewFlow = ({
     precomposedTx,
     decreaseOutputId,
@@ -450,6 +513,7 @@ const constructNewFlow = ({
     isClearSignedWrapUnwrap,
     isApprovalFlowSupported,
     isClearSignedEvmClaimFlow,
+    lidoReview,
     isUpdatedEthereumSendFlow,
     isUpdatedStellarSendFlow,
 }: ConstructOutputsParams & {
@@ -458,6 +522,7 @@ const constructNewFlow = ({
     isUpdatedStellarSendFlow: boolean;
     isApprovalFlowSupported: boolean;
     isClearSignedEvmClaimFlow: boolean;
+    lidoReview: ReturnType<typeof getLidoReviewDetails>;
 }): TransactionReviewOutput[] => {
     const isClearSignedTradingSwap = clearSignedSwapCoverage !== undefined;
     const outputs: TransactionReviewOutput[] = [];
@@ -469,6 +534,11 @@ const constructNewFlow = ({
     const isTron = account.networkType === 'tron';
     const tronStaking = isTron ? precomposedForm.tronStaking : undefined;
     const isTronStakeFreeze = tronStaking?.kind === 'freeze' || tronStaking?.kind === 'unstake';
+    const lidoDeployment = getLidoDeployment(account.symbol);
+    const contractOutput = precomposedTx.outputs.find(
+        output => 'address' in output && typeof output.address === 'string',
+    );
+    const target = contractOutput?.address?.toLowerCase();
     const evmApprovalTxData = Calldata.evm.erc20.approve.decode(precomposedForm.transactionData);
     const isEvmApproval = isEvmApprovalTx(precomposedForm.transactionData);
     const stakeType = getStakeType(precomposedForm);
@@ -482,8 +552,7 @@ const constructNewFlow = ({
     // deposit()/withdraw() selectors classify as wrap/unwrap instead of 'unknown'.
     const evmTxType = getEvmTransactionPurpose({
         networkSymbol: symbol,
-        to: precomposedTx.outputs.find(o => 'address' in o && typeof o.address === 'string')
-            ?.address,
+        to: contractOutput?.address,
         data: precomposedForm.transactionData,
     });
     const isClaimOp = evmTxType === 'claim';
@@ -499,6 +568,16 @@ const constructNewFlow = ({
         });
 
         return outputs;
+    }
+
+    if (lidoReview) {
+        const { contract, contractName, details } = lidoReview;
+
+        return [
+            { type: 'contract', value: contract, value2: contractName },
+            { type: 'lido_intent', value: details.kind },
+            { type: 'lido_details', value: '', details },
+        ];
     }
 
     if (isClearSignedWrapUnwrap) {
@@ -607,6 +686,7 @@ const constructNewFlow = ({
         isValidTx &&
         ((!precomposedTx.token && !isEvmApproval) ||
             isSolana ||
+            (lidoDeployment !== null && target === lidoDeployment.withdrawalQueue) ||
             (isEvmApproval && !isApprovalFlowSupported) ||
             (isYieldOp && !isUpdatedEthereumSendFlow) ||
             (isClaimOp && !isClearSignedEvmClaimFlow)) &&
@@ -777,7 +857,10 @@ const constructNewFlow = ({
         const { spender } = evmApprovalTxData;
         outputs.push({
             type: 'contract',
-            value: vaultName ?? EVM_SPENDER_LABELS[spender] ?? spender,
+            value:
+                target === lidoDeployment?.wstETH && spender === lidoDeployment?.withdrawalQueue
+                    ? spender
+                    : (vaultName ?? EVM_SPENDER_LABELS[spender] ?? spender),
         });
 
         if (precomposedTx.token) {
@@ -868,6 +951,18 @@ export const constructTransactionReviewOutputs = ({
         return constructOldFlow({ ...params, clearSignedSwapCoverage });
     }
 
+    const isClearSignedEvmClaimFlow = getIsClearSignedEvmClaimFlow(
+        device,
+        params.account.networkType,
+    );
+    // Lido's signed display definitions use the updated clear-signing flow on Core firmware.
+    const lidoReview =
+        isClearSignedEvmClaimFlow &&
+        versionUtils.isNewerOrEqual(getFirmwareVersion(device), '2.13.0') &&
+        !isRbfBumpFeeTransaction(params.precomposedTx)
+            ? getLidoReviewDetails({ ...params, clearSignedSwapCoverage })
+            : undefined;
+
     return constructNewFlow({
         ...params,
         clearSignedSwapCoverage,
@@ -881,7 +976,8 @@ export const constructTransactionReviewOutputs = ({
         }),
         isUpdatedEthereumSendFlow,
         isApprovalFlowSupported: isApprovalSupported(device),
-        isClearSignedEvmClaimFlow: getIsClearSignedEvmClaimFlow(device, params.account.networkType),
+        isClearSignedEvmClaimFlow,
+        lidoReview,
         isUpdatedStellarSendFlow,
     });
 };

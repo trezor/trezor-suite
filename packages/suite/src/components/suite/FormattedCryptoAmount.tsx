@@ -29,6 +29,7 @@ export type FormattedCryptoAmountProps = {
     networkSymbol?: NetworkSymbolExtended;
     contractAddress?: string | null;
     tokenDecimals?: number;
+    tokenSymbol?: string;
     /** Compact formatting, for a balance shown next to its fiat value. */
     isCompact?: boolean;
     showApproximation?: boolean;
@@ -51,6 +52,7 @@ export const FormattedCryptoAmount = ({
     contractAddress, // include contractAddress whenever the symbol is an token
     isCompact = false,
     tokenDecimals,
+    tokenSymbol,
     showApproximation = false,
     signValue,
     signGrayscale,
@@ -90,7 +92,8 @@ export const FormattedCryptoAmount = ({
 
     const areSatsSupported = !!network?.features.includes('amount-unit');
 
-    let formattedSymbol = networkSymbol && getDisplaySymbol(networkSymbol, contractAddress);
+    let formattedSymbol =
+        tokenSymbol ?? (networkSymbol && getDisplaySymbol(networkSymbol, contractAddress));
 
     const isSatoshis = areSatsSupported && areSatsDisplayed;
 
@@ -134,7 +137,7 @@ export const FormattedCryptoAmount = ({
 
         if (network) return <AssetSymbol networkSymbol={network.symbol} />;
 
-        if (tokenNetworkSymbol && tokenContract) {
+        if (tokenNetworkSymbol && tokenContract && tokenSymbol === undefined) {
             return (
                 <AssetSymbol
                     networkSymbol={tokenNetworkSymbol}

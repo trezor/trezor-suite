@@ -1,11 +1,22 @@
 import { AssetSymbol } from '@suite/assets';
-import { type ExtendedMessageDescriptor } from '@suite/intl';
+import { type ExtendedMessageDescriptor, type TranslationKey } from '@suite/intl';
 import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type FormState, type StakeFormState } from '@suite-common/wallet-types';
+import { getLidoTransactionKind } from '@suite-common/wallet-core';
+import {
+    type FormState,
+    type LidoReviewDetails,
+    type StakeFormState,
+} from '@suite-common/wallet-types';
 import { getEvmTransactionPurpose } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
-import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
+import { getLidoDeployment, getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
+
+export const lidoIntentLabels: Record<LidoReviewDetails['kind'], TranslationKey> = {
+    stake: 'TR_EARN_LIDO_REVIEW_STAKE',
+    'request-withdrawal': 'TR_EARN_LIDO_REVIEW_REQUEST',
+    claim: 'TR_EARN_LIDO_REVIEW_CLAIM',
+};
 
 type GetTransactionReviewModalActionTranslationParams = {
     symbol: NetworkSymbol;
@@ -85,6 +96,16 @@ export const getTransactionReviewModalActionTranslation = ({
                 ),
             },
         };
+    }
+
+    const lidoDeployment = getLidoDeployment(symbol);
+    if (lidoDeployment && !isSending) {
+        const kind = getLidoTransactionKind({
+            deployment: lidoDeployment,
+            to: precomposedForm.outputs?.[0]?.address,
+            data: precomposedForm.transactionData,
+        });
+        if (kind && kind !== 'approve') return { id: lidoIntentLabels[kind] };
     }
 
     if (precomposedForm?.trading?.activeSection === 'sell') {

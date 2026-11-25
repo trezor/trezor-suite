@@ -3,6 +3,16 @@ import { type TokenInfo } from '@trezor/connect';
 import { type FormStateTradingCryptoCurrency, type FormStateTradingFiatCurrency } from './sendForm';
 import { type YieldClaimReward } from './stablecoinYield';
 
+export type LidoReviewDetails =
+    | { kind: 'stake'; amount: string }
+    | {
+          kind: 'request-withdrawal';
+          amounts: readonly string[];
+          beneficiary: string;
+          token: TokenInfo;
+      }
+    | { kind: 'claim'; requestIds: readonly string[] };
+
 export type TransactionReviewOutput =
     | {
           type:
@@ -67,6 +77,17 @@ export type TransactionReviewOutput =
           receive?: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
           receiveAddress?: string;
       }
+    | ({
+          label?: undefined;
+          value2?: undefined;
+          token?: undefined;
+          send?: undefined;
+          receive?: undefined;
+          receiveAddress?: undefined;
+      } & (
+          | { type: 'lido_intent'; value: LidoReviewDetails['kind'] }
+          | { type: 'lido_details'; value: ''; details: LidoReviewDetails }
+      ))
     | {
           type: 'rewards';
           rewards: YieldClaimReward[];

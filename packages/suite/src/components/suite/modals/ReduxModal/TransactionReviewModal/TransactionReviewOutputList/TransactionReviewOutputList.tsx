@@ -246,6 +246,9 @@ export const TransactionReviewOutputList = ({
                                 precomposedForm={precomposedForm}
                                 stakeType={stakeType}
                                 isRbf={isRbfAction}
+                                isLidoClearSigning={outputs.some(
+                                    ({ type }) => type === 'lido_details',
+                                )}
                             />
                         </Column>
                     </Wrapper>
