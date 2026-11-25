@@ -4,6 +4,7 @@
     "references": [
         { "path": "../earn-staking-api" },
         { "path": "../earn-staking-common" },
+        { "path": "../react-query" },
         {
             "path": "../../networks/network-module/network-module-types"
         },

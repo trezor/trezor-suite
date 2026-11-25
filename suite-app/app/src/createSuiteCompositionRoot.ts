@@ -187,17 +187,17 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
     });
 
+    const queryClient = createQueryClient({ shouldRefetchOnEvents: true });
+
     const staking = createStakingCompositionRoot({
         platform: 'desktop',
-        adapters: createStakingProductsCompositionRoot(),
+        adapters: createStakingProductsCompositionRoot({ queryClient }),
         deviceAccess: createStakingDeviceAccess({
             getTrezorConnect: deps.getTrezorConnect,
             runStakingDeviceCall: callback => callback(),
         }),
         dispatch: deps.dispatch,
     });
-
-    const queryClient = createQueryClient({ shouldRefetchOnEvents: true });
 
     const createTransports: CreateTransports = transports => {
         const factories = deps.getTransportsFactories();

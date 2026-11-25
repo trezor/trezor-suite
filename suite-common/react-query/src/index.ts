@@ -7,6 +7,7 @@ export {
     useQueryClient,
     queryOptions,
     type MutationOptions,
+    type QueryExecuteOptions,
     type QueryOptions,
     type UseQueryOptions,
     type UseQueryResult,
@@ -22,6 +23,13 @@ export {
     type CreateQueryClientParams,
     type QueryClientDep,
 } from './createQueryClient';
+export {
+    createAbortableQuery,
+    type AbortableQuery,
+    type AbortableQueryDefaultOptions,
+    type AbortableQueryDeps,
+    type AbortableQueryOptions,
+} from './createAbortableQuery';
 export * from './constants/queryKeys';
 export * from './constants/mutationKeys';
 // The query client providers are platform-specific React components, so they live in the

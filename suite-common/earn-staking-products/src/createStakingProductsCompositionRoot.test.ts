@@ -1,5 +1,10 @@
-import { type EthOrSolStats } from '@suite-common/earn-staking-api';
+import {
+    type EthOrSolStats,
+    defaultEarnStakingWorkerBaseUrl,
+    earnStakingWorkerBaseUrl,
+} from '@suite-common/earn-staking-api';
 import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
+import { createQueryClient } from '@suite-common/react-query';
 import {
     type CardanoStakingScenario,
     mockCardanoStakingAccount,
@@ -17,8 +22,11 @@ import {
 import { createSolanaExternalNativeProduct } from './products/solana/external-native/product';
 import { everstakeProvider } from './providers/everstake';
 
+const createAdapters = (queryClient = createQueryClient({ shouldRefetchOnEvents: false })) =>
+    createStakingProductsCompositionRoot({ queryClient });
+
 describe('createStakingProductsCompositionRoot', () => {
-    const adapters = createStakingProductsCompositionRoot();
+    const adapters = createAdapters();
 
     it('registers the Ethereum, Solana, Cardano and Tron products for mainnet testnet networks', () => {
         expect(adapters.map(adapter => adapter.descriptor.id)).toEqual([
@@ -50,6 +58,35 @@ describe('createStakingProductsCompositionRoot', () => {
         adapters.forEach(adapter => {
             expect(stakingProductDescriptorSchema.safeParse(adapter.descriptor).success).toBe(true);
         });
+    });
+});
+
+describe('product info requests', () => {
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it('fetches each staking endpoint once while every product refreshes its info', async () => {
+        earnStakingWorkerBaseUrl.set(defaultEarnStakingWorkerBaseUrl);
+        const fetchSpy = jest
+            .spyOn(globalThis, 'fetch')
+            .mockImplementation(() => Promise.resolve(Response.json({})));
+
+        await Promise.allSettled(createAdapters().map(adapter => adapter.fetchProductInfo({})));
+
+        expect(
+            fetchSpy.mock.calls
+                .map(([input]) =>
+                    new Request(input).url.replace(defaultEarnStakingWorkerBaseUrl, ''),
+                )
+                .toSorted(),
+        ).toEqual([
+            '/ada/pools?limit=1000',
+            '/eth/stats',
+            '/eth/validators-queue',
+            '/sol/stats',
+            '/trx/stats',
+        ]);
     });
 });
 
@@ -116,7 +153,7 @@ describe('Solana products', () => {
 });
 
 describe('Cardano products', () => {
-    const cardanoProducts = createStakingProductsCompositionRoot().filter(
+    const cardanoProducts = createAdapters().filter(
         product => product.descriptor.networkSymbol === 'ada',
     );
 
@@ -170,7 +207,7 @@ describe('Cardano products', () => {
 describe('mobile platform support', () => {
     it('manages the Everstake Ethereum and Solana products and shows every other one read-only', () => {
         const supportByProduct = Object.fromEntries(
-            createStakingProductsCompositionRoot().map(
+            createAdapters().map(
                 ({ descriptor }) => [descriptor.id, descriptor.platforms.mobile] as const,
             ),
         );
