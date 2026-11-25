@@ -100,10 +100,6 @@ export const createDesktopApp =
         // establish ipc connection with TrezorConnect living in main process
         await TrezorConnect.initIpcProxy();
 
-        // init bluetooth module
-        // TODO should it really be here instead of initAction.ts?
-        await deps.services.bluetooth.init();
-
         // finally render whole app
         root.render(
             <ServicesProvider services={deps.services}>

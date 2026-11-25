@@ -1,6 +1,11 @@
 import type { HandshakeClient } from '@suite/desktop-app-api';
 import type { TorStatus } from '@suite/tor-types';
-import type { DeviceEvent, FirmwareStoreEvent, LocalFirmwares } from '@trezor/connect';
+import type {
+    ConnectSettingsTransport,
+    DeviceEvent,
+    FirmwareStoreEvent,
+    LocalFirmwares,
+} from '@trezor/connect';
 import { type InterceptedEvent } from '@trezor/request-manager';
 import { TypedEmitter } from '@trezor/utils';
 
@@ -19,6 +24,7 @@ interface MainThreadMessages {
     'module/reset-tor-circuits': Extract<InterceptedEvent, { type: 'CIRCUIT_MISBEHAVING' }>;
     'module/tor-status-update': TorStatus;
     'module/trezor-connect/device-event': DeviceEvent;
+    'module/trezor-connect/set-bluetooth-transport': ConnectSettingsTransport;
     'module/bridge/toggle': void;
     'module/bridge/start-hid': void;
     'module/bridge/status': {
