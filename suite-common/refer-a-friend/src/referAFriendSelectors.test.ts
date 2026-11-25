@@ -7,15 +7,19 @@ import {
     selectDoesReferralExistOnlyForOtherWallets,
     selectReferralAccountStateByWalletDescriptor,
     selectReferralAnnualRewardLimit,
+    selectReferralLink,
+    selectReferralProgramData,
+    selectReferralRewards,
     selectReferralWalletRecordByWalletDescriptor,
 } from './referAFriendSelectors';
 import {
     type ReferAFriendRootState,
     type ReferralAccountState,
+    type ReferralProgramState,
     type ReferralWalletRecord,
     referAFriendInitialState,
 } from './referAFriendSlice';
-import { type ReferralProgram } from './referAFriendTypes';
+import { type ReferralProgram, type ReferralVoucher } from './referAFriendTypes';
 import { type ReferralKey } from './referralKey';
 
 const WALLET_DESCRIPTOR = asWalletDescriptor('standard');
@@ -51,6 +55,101 @@ const state: ReferAFriendRootState = {
     },
 };
 
+const program: ReferralProgram = {
+    fiatCurrency: 'USD',
+    rewardAmount: 20,
+    friendDiscountPercentage: 10,
+    minimumOrderAmount: 49,
+    redemptionLimit: 50,
+    termsUrl: 'https://trezor.io/refer-a-friend/terms',
+};
+
+const availableVoucher: ReferralVoucher = {
+    code: 'TREF-8K2M-X9P4',
+    status: 'available',
+    amount: 20,
+    fiatCurrency: 'USD',
+    orderPaidAt: '2026-09-15T15:30:00Z',
+    availableAt: '2026-10-15T00:00:00Z',
+    expiresAt: '2027-10-15T00:00:00Z',
+    usedAt: null,
+};
+
+const standardWalletDevice = mockSuiteDevice({
+    instance: 1,
+    state: { staticSessionId: `${WALLET_DESCRIPTOR}@device-id:1` },
+});
+
+type CreateStateWithDeviceParams = {
+    wallets: ReferAFriendRootState['referAFriend']['wallets'];
+    accounts?: ReferAFriendRootState['referAFriend']['accounts'];
+    program?: ReferralProgramState;
+    isStandardWalletAvailable?: boolean;
+};
+
+const createStateWithDevice = ({
+    wallets,
+    accounts,
+    program: programState,
+    isStandardWalletAvailable = true,
+}: CreateStateWithDeviceParams): ReferAFriendRootState & DeviceRootState => ({
+    referAFriend: {
+        ...referAFriendInitialState,
+        wallets,
+        accounts: accounts ?? {},
+        program: programState ?? referAFriendInitialState.program,
+    },
+    device: {
+        ...deviceInitialState,
+        devices: isStandardWalletAvailable ? [standardWalletDevice] : [],
+        selectedDevice: standardWalletDevice,
+    },
+});
+
+describe(selectReferralProgramData.name, () => {
+    it('returns null when the program data is not loaded', () => {
+        expect(selectReferralProgramData(state)).toBeNull();
+    });
+
+    it('returns null when the program failed', () => {
+        const stateWithError = {
+            ...state,
+            referAFriend: {
+                ...state.referAFriend,
+                program: {
+                    ...referAFriendInitialState.program,
+                    status: 'error' as const,
+                    data: null,
+                },
+            },
+        };
+
+        expect(selectReferralProgramData(stateWithError)).toBeNull();
+    });
+
+    it('returns formatted program data', () => {
+        const stateWithProgram = {
+            ...state,
+            referAFriend: {
+                ...state.referAFriend,
+                program: {
+                    ...referAFriendInitialState.program,
+                    status: 'loaded' as const,
+                    data: program,
+                },
+            },
+        };
+
+        expect(selectReferralProgramData(stateWithProgram)).toEqual({
+            rewardAmount: '$20',
+            friendDiscountPercentage: 10,
+            minimumOrderAmount: '$49',
+            periodReferralLimit: 50,
+            periodRewardAmountLimit: '$1,000',
+        });
+    });
+});
+
 describe(selectReferralWalletRecordByWalletDescriptor.name, () => {
     it('returns the wallet record of the given wallet', () => {
         expect(selectReferralWalletRecordByWalletDescriptor(state, WALLET_DESCRIPTOR)).toEqual(
@@ -63,6 +162,30 @@ describe(selectReferralWalletRecordByWalletDescriptor.name, () => {
             selectReferralWalletRecordByWalletDescriptor(state, UNKNOWN_WALLET_DESCRIPTOR),
         ).toBeNull();
         expect(selectReferralWalletRecordByWalletDescriptor(state, null)).toBeNull();
+    });
+});
+
+describe(selectReferralLink.name, () => {
+    it('returns the share URL of the standard wallet record', () => {
+        const stateWithDevice = createStateWithDevice({
+            wallets: { [WALLET_DESCRIPTOR]: walletRecord },
+        });
+
+        expect(selectReferralLink(stateWithDevice)).toBe('https://trezor.io/ref/K7M2Q9WX');
+    });
+
+    it('returns null when the standard wallet record has no share URL', () => {
+        const stateWithDevice = createStateWithDevice({
+            wallets: { [WALLET_DESCRIPTOR]: { ...walletRecord, shareUrl: null } },
+        });
+
+        expect(selectReferralLink(stateWithDevice)).toBeNull();
+    });
+
+    it('returns undefined when there is no wallet record for the standard wallet', () => {
+        const stateWithDevice = createStateWithDevice({ wallets: {} });
+
+        expect(selectReferralLink(stateWithDevice)).toBeUndefined();
     });
 });
 
@@ -82,15 +205,6 @@ describe(selectReferralAccountStateByWalletDescriptor.name, () => {
 });
 
 describe(selectReferralAnnualRewardLimit.name, () => {
-    const program: ReferralProgram = {
-        fiatCurrency: 'USD',
-        rewardAmount: 20,
-        friendDiscountPercentage: 10,
-        minimumOrderAmount: 49,
-        redemptionLimit: 50,
-        termsUrl: 'https://trezor.io/refer-a-friend/terms',
-    };
-
     const createState = (data: ReferralProgram | null): ReferAFriendRootState => ({
         referAFriend: {
             ...referAFriendInitialState,
@@ -198,5 +312,62 @@ describe(selectDoesReferralExistOnlyForOtherWallets.name, () => {
         });
 
         expect(selectDoesReferralExistOnlyForOtherWallets(stateWithDevice)).toBe(false);
+    });
+});
+
+describe(selectReferralRewards.name, () => {
+    it('returns rewards computed from program and account state', () => {
+        const vouchers: ReferralVoucher[] = [
+            { ...availableVoucher, status: 'available', amount: 20 },
+            { ...availableVoucher, status: 'used', usedAt: '2026-10-20T00:00:00Z', amount: 30 },
+            { ...availableVoucher, status: 'expired', amount: 10 },
+            { ...availableVoucher, status: 'pending', code: null, expiresAt: null, amount: 15 },
+            { ...availableVoucher, status: 'canceled', amount: 5 },
+        ];
+
+        const accountStateWithVouchers: ReferralAccountState = {
+            ...accountState,
+            status: 'loaded',
+            vouchers,
+        };
+
+        const stateWithDevice = createStateWithDevice({
+            wallets: { [WALLET_DESCRIPTOR]: walletRecord },
+            accounts: { [WALLET_DESCRIPTOR]: accountStateWithVouchers },
+            program: { ...referAFriendInitialState.program, status: 'loaded', data: program },
+        });
+
+        expect(selectReferralRewards(stateWithDevice)).toEqual({
+            status: 'loaded',
+            fiatCurrency: 'USD',
+            totalEarnedAmount: 60,
+            availableVoucherCount: 1,
+            vouchers,
+        });
+    });
+
+    it('returns an idle account state when there is no account for the standard wallet', () => {
+        const stateWithDevice = createStateWithDevice({
+            wallets: { [WALLET_DESCRIPTOR]: walletRecord },
+            accounts: {},
+            program: { ...referAFriendInitialState.program, status: 'loaded', data: program },
+        });
+
+        expect(selectReferralRewards(stateWithDevice)).toEqual({
+            status: 'idle',
+            fiatCurrency: 'USD',
+            totalEarnedAmount: 0,
+            availableVoucherCount: 0,
+            vouchers: [],
+        });
+    });
+
+    it('returns null when the program has no data', () => {
+        const stateWithDevice = createStateWithDevice({
+            wallets: { [WALLET_DESCRIPTOR]: walletRecord },
+            accounts: { [WALLET_DESCRIPTOR]: accountState },
+        });
+
+        expect(selectReferralRewards(stateWithDevice)).toBeNull();
     });
 });

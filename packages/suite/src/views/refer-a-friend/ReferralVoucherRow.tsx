@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { type ReferralVoucher } from '@suite-common/refer-a-friend';
+import { type ReferralVoucher, getDaysUntil } from '@suite-common/refer-a-friend';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     Badge,
@@ -50,11 +50,6 @@ const voucherStates = {
         label: 'TR_REFERRAL_VOUCHER_EXPIRED',
     },
 } as const satisfies Record<ReferralVoucher['status'], VoucherState>;
-
-const DAY_MS = 24 * 60 * 60 * 1000;
-
-const getDaysUntil = (date: string) =>
-    Math.max(0, Math.ceil((new Date(date).getTime() - Date.now()) / DAY_MS));
 
 const getVoucherTooltip = (voucher: ReferralVoucher, formatExpiry: (date: string) => string) => {
     switch (voucher.status) {

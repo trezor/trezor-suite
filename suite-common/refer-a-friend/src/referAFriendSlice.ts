@@ -5,8 +5,10 @@ import { type WalletDescriptor } from '@trezor/device-utils';
 
 import {
     type ReferralAccount,
+    type ReferralAccountLoadStatus,
     type ReferralError,
     type ReferralProgram,
+    type ReferralRequestStatus,
     type ReferralVoucher,
 } from './referAFriendTypes';
 import { type ReferralKey } from './referralKey';
@@ -28,15 +30,11 @@ export type ReferralWalletRecord = {
     shareUrl: string | null;
 };
 
-export type ReferralRequestStatus = 'idle' | 'loading' | 'loaded' | 'error';
-
 export type ReferralProgramState = {
     status: ReferralRequestStatus;
     data: ReferralProgram | null;
     error: ReferralError | null;
 };
-
-export type ReferralAccountLoadStatus = ReferralRequestStatus | 'keyMissing';
 
 export type ReferralPendingAction = 'join' | 'deriveKey' | 'leave';
 
