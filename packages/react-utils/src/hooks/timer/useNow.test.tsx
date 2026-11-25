@@ -42,6 +42,26 @@ describe('useNow', () => {
         expect(result.current).toBe(start + 1_000);
     });
 
+    it('reads the time once and never ticks with a null interval', () => {
+        const start = Date.now();
+        const { result, rerender } = renderHook(({ intervalMs }) => useNow(intervalMs), {
+            initialProps: { intervalMs: null as number | null },
+        });
+
+        act(() => {
+            jest.advanceTimersByTime(60_000);
+        });
+        expect(result.current).toBe(start);
+        expect(jest.getTimerCount()).toBe(0);
+
+        rerender({ intervalMs: 1_000 });
+
+        act(() => {
+            jest.advanceTimersByTime(1_000);
+        });
+        expect(result.current).toBe(start + 61_000);
+    });
+
     it('stops ticking after unmount', () => {
         const { result, unmount } = renderHook(() => useNow(1_000));
         const last = result.current;
