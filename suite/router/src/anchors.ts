@@ -55,6 +55,7 @@ export const SettingsAnchor = {
     Homescreen: '@device-settings/homescreen',
     DisplayRotation: '@device-settings/display-rotation',
     Autolock: '@device-settings/autolock',
+    AutolockBattery: '@device-settings/autolock-battery',
     WipeDevice: '@device-settings/wipe-device',
     CustomFirmware: '@device-settings/custom-firmware',
 
