@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
 
-import { Text, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { VStack } from '@suite-native/atoms';
 import { Screen, TradingStackRoutes } from '@suite-native/navigation';
-import { CurrentStepCardHeader } from '@suite-native/step-cards';
 import { Footer } from '@suite-native/trading-provider-utils';
 import { type TradingStackScreenProps } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
@@ -16,6 +14,7 @@ import {
     ExchangePreviewView,
 } from '../components/exchange/ExchangePreview';
 import { ExchangeFlowStepsLayout } from '../components/exchange/Flow/ExchangeFlowStepsLayout';
+import { ExchangeFlowSwapStepContent } from '../components/exchange/Flow/ExchangeFlowSwapStepContent';
 import { useExchangePreviewStep } from '../hooks/exchange/useExchangePreviewStep';
 import { clearTradingStateThunk } from '../thunks';
 
@@ -57,21 +56,12 @@ export const TradingExchangePreviewScreen = ({
                 header={<ExchangePreviewScreenHeader />}
                 footer={footer}
             >
-                <CurrentStepCardHeader>
-                    <Text variant="headline-sm">
-                        <Translation id="moduleTrading.tradingExchangeFlowScreen.swapStep.title" />
-                    </Text>
-                    <ExchangePreviewSimulationInfo />
-                </CurrentStepCardHeader>
-                <VStack spacing="sp16" paddingHorizontal="sp16" paddingBottom="sp16">
-                    <ExchangePreviewView
-                        quote={quote}
-                        txnErrorString={errorString}
-                        onSignTransactionNavigation={onSignTransactionNavigation}
-                        onSlippageConfirmed={handleConfirmTrade}
-                    />
-                    <Footer />
-                </VStack>
+                <ExchangeFlowSwapStepContent
+                    quote={quote}
+                    txnErrorString={errorString}
+                    onSignTransactionNavigation={onSignTransactionNavigation}
+                    onSlippageConfirmed={handleConfirmTrade}
+                />
             </ExchangeFlowStepsLayout>
         );
     }
