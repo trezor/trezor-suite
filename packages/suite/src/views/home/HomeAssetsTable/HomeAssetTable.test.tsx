@@ -217,10 +217,10 @@ const vaultsQuery = (vaults?: YieldDtoV2[]) =>
     ({ data: vaults }) as ReturnType<typeof useAllYieldOpportunities>;
 
 const intl = createIntl({ locale: 'en' });
-const upToApyMessage: MessageDescriptor = messages.TR_EARN_YIELD_BADGE_UP_TO_RATE_APY;
+const upToApyMessage: MessageDescriptor = messages.TR_EARN_YIELD_BADGE_UP_TO_RATE;
 
 /** What the badge says for a rate, as the user reads it. */
-const upToApy = (rate: string) => intl.formatMessage(upToApyMessage, { rate });
+const upToApy = (apy: string) => intl.formatMessage(upToApyMessage, { apy });
 
 type RenderTableOptions = {
     /** What the staking API says Ethereum staking pays, as a percentage; nothing by default. */
