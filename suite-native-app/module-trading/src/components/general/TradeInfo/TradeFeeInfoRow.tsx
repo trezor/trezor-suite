@@ -25,9 +25,15 @@ export type TradeFeeInfoRowProps = {
     trade: ExchangeTrade | SellFiatTrade | undefined;
     accountKey: AccountKey;
     tradingType: TradingSellType | TradingExchangeType;
+    baseValueOnly?: boolean;
 };
 
-export const TradeFeeInfoRow = ({ trade, accountKey, tradingType }: TradeFeeInfoRowProps) => {
+export const TradeFeeInfoRow = ({
+    trade,
+    accountKey,
+    tradingType,
+    baseValueOnly = false,
+}: TradeFeeInfoRowProps) => {
     const { composeTradingTransaction } = useComposeTradingTransaction({ tradeType: tradingType });
     const formDraftKey = getFormDraftKeyByTradeType(tradingType);
     const formDraft = useSelector((state: FormDraftRootState) =>
@@ -49,6 +55,7 @@ export const TradeFeeInfoRow = ({ trade, accountKey, tradingType }: TradeFeeInfo
             formDraftKey={formDraftKey}
             onFeeConfirmed={composeTradingTransaction}
             isReadOnly={isFeeFixed}
+            baseValueOnly={baseValueOnly}
         />
     );
 };
