@@ -1,4 +1,4 @@
-import { getNetworkType } from '@suite-common/wallet-config';
+import { isStakeInsideAccountBalance } from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
 
 import { AdaAccountsListStakingItem } from './AdaAccountsListStakingItem';
@@ -18,7 +18,8 @@ type AccountsListStakingItemProps = {
 export const AccountsListStakingItem = (props: AccountsListStakingItemProps) => {
     const { account } = props;
 
-    if (getNetworkType(account.symbol) === 'cardano') {
+    // A stake inside the balance repeats no amount: the coin's row already holds it.
+    if (isStakeInsideAccountBalance(account.symbol)) {
         return <AdaAccountsListStakingItem {...props} />;
     }
 

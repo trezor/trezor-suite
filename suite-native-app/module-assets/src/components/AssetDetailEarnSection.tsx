@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import {
-    type HomeAssetTableState,
+    type AssetTableState,
     selectWalletAssetAvailableAmount,
     selectWalletAssetKey,
     selectWalletAssetStakingAmount,
 } from '@suite-common/assets';
-import { getNetworkType } from '@suite-common/wallet-config';
+import { isStakeInsideAccountBalance } from '@suite-common/earn-staking';
 import { Divider, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import type { AssetsStackParamList, AssetsStackRoutes } from '@suite-native/navigation';
@@ -23,16 +23,16 @@ import { selectShouldShowWalletAssetEarnSection } from '../assetDetailEarnSelect
 export const AssetDetailEarnSection = () => {
     const { networkSymbol, tokenContract } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
-    const assetKey = useSelector((state: HomeAssetTableState) =>
+    const assetKey = useSelector((state: AssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
     );
-    const availableAmount = useSelector((state: HomeAssetTableState) =>
+    const availableAmount = useSelector((state: AssetTableState) =>
         selectWalletAssetAvailableAmount(state, assetKey),
     );
-    const stakingAmount = useSelector((state: HomeAssetTableState) =>
+    const stakingAmount = useSelector((state: AssetTableState) =>
         selectWalletAssetStakingAmount(state, assetKey),
     );
-    const isEarnAvailable = useSelector((state: HomeAssetTableState) =>
+    const isEarnAvailable = useSelector((state: AssetTableState) =>
         selectShouldShowWalletAssetEarnSection(state, assetKey),
     );
     const navigateToEarn = useNavigateToEarn();
@@ -41,9 +41,9 @@ export const AssetDetailEarnSection = () => {
         return null;
     }
 
-    // A Cardano delegation leaves the whole balance spendable, so the rest is unstaked, not the
-    // only part available.
-    const unstakedType = getNetworkType(networkSymbol) === 'cardano' ? 'unstaked' : 'available';
+    // A stake inside the balance (a Cardano delegation) leaves the whole balance spendable, so the
+    // rest is unstaked, not the only part available.
+    const unstakedType = isStakeInsideAccountBalance(networkSymbol) ? 'unstaked' : 'available';
 
     return (
         <>

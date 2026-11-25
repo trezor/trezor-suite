@@ -4,12 +4,12 @@ import { getTokenExplorerUrl } from '@suite-common/wallet-utils';
 
 import { type AssetsRootState, selectAssetTokenInfo } from './assetSelectors';
 import {
-    type HomeAssetTableState,
+    type AssetTableState,
     selectWalletAssetContractAddress,
     selectWalletAssetNetworkSymbol,
 } from './homeAssetTableSelectors';
 
-type AssetTokenInfoState = AssetsRootState & HomeAssetTableState;
+type AssetTokenInfoState = AssetsRootState & AssetTableState;
 
 export type AssetExplorerState = AssetTokenInfoState & ExplorerState;
 

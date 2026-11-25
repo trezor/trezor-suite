@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import {
     type AssetExplorerState,
-    type HomeAssetTableState,
+    type AssetTableState,
     selectWalletAssetExplorerUrl,
     selectWalletAssetKey,
 } from '@suite-common/assets';
@@ -25,7 +25,7 @@ export const AssetSettingsExplorerAction = ({
     tokenContract,
     onClose,
 }: AssetSettingsExplorerActionProps) => {
-    const assetKey = useSelector((state: HomeAssetTableState) =>
+    const assetKey = useSelector((state: AssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
     );
     const explorerUrl = useSelector((state: AssetExplorerState) =>

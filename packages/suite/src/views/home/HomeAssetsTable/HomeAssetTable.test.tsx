@@ -2,9 +2,11 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { type MessageDescriptor, createIntl } from 'react-intl';
 
-import { screen, within } from '@testing-library/react';
+import { fireEvent, screen, within } from '@testing-library/react';
 
 import { initialState as selectedAccountInitialState } from '@suite/account';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { messages } from '@suite/intl';
 import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import {
@@ -219,6 +221,19 @@ const renderTable = (state: MockSuiteState) => {
     return services;
 };
 
+/** Renders the table with analytics to read back what it reported. */
+const renderTableWithAnalytics = (state: MockSuiteState) => {
+    const analytics = mockDesktopAnalytics();
+    const { services } = createTestCompositionRoot<
+        { services: DesktopAnalyticsDep },
+        MockSuiteState
+    >({ preloadedState: state, services: () => ({ analytics }) });
+
+    renderWithProviders({ ...services, networks: { networkIcon } }, <HomeAssetTable />);
+
+    return { analytics };
+};
+
 /** The badge in the row of a coin (`eth/coin`) or a token (`eth/<contract>`), if it has one. */
 const badgeIn = (row: string) =>
     within(screen.getByTestId(`@dashboard/home-asset-item/${row}`)).queryByTestId(
@@ -329,6 +344,38 @@ describe('the home-asset table', () => {
                 homeAssetsTableGrouping: 'networks',
                 areHomeAssetSmallBalancesShown: false,
             });
+        });
+    });
+
+    describe('what the small-balance controls report', () => {
+        // Worth 10c: the only asset, so with the switch off every row is hidden.
+        const smallBitcoinAccount = mockWalletAccount({
+            symbol: BTC,
+            formattedBalance: '0.000001',
+        });
+        const smallBalancesHidden = () =>
+            getInitialState({ accounts: [smallBitcoinAccount], areSmallBalancesShown: false });
+        const smallBalancesEvent = (value: boolean) => ({
+            type: events.dashboardAssetListMenuEvent.name,
+            payload: { type: 'show-small-balances', value },
+        });
+
+        it('reports the switch in the menu', () => {
+            const { analytics } = renderTableWithAnalytics(smallBalancesHidden());
+
+            fireEvent.click(screen.getByTestId('@dashboard/home-asset/grouping'));
+            fireEvent.click(screen.getByTestId('@dashboard/home-asset/small-balances-toggle'));
+
+            expect(analytics.report).toHaveBeenCalledTimes(1);
+            expect(analytics.report).toHaveBeenCalledWith(smallBalancesEvent(true));
+        });
+
+        it('does not report the row that brings the small balances back', () => {
+            const { analytics } = renderTableWithAnalytics(smallBalancesHidden());
+
+            fireEvent.click(screen.getByTestId('@dashboard/home-asset/show-small-balances'));
+
+            expect(analytics.report).not.toHaveBeenCalled();
         });
     });
 });

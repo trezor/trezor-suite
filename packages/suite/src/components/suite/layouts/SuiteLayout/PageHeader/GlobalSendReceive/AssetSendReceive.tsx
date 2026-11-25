@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import {
     type AssetAccountsRootState,
-    type HomeAssetTableState,
+    type AssetTableState,
     selectWalletAssetContractAddress,
     selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
@@ -28,10 +28,10 @@ type AssetSendReceiveProps = {
 };
 
 export const AssetSendReceive = ({ assetKey }: AssetSendReceiveProps) => {
-    const networkSymbol = useSelector((state: HomeAssetTableState) =>
+    const networkSymbol = useSelector((state: AssetTableState) =>
         selectWalletAssetNetworkSymbol(state, assetKey),
     );
-    const contractAddress = useSelector((state: HomeAssetTableState) =>
+    const contractAddress = useSelector((state: AssetTableState) =>
         selectWalletAssetContractAddress(state, assetKey),
     );
     const sendTargets = useSelector((state: AssetAccountsRootState) =>

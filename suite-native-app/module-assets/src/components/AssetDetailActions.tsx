@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import {
-    type HomeAssetTableState,
+    type AssetTableState,
     selectWalletAssetAccounts,
     selectWalletAssetKey,
 } from '@suite-common/assets';
@@ -36,10 +36,10 @@ export const AssetDetailActions = () => {
     const navigation = useNavigation<NavigationProps>();
     const { networkSymbol, tokenContract } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
-    const assetKey = useSelector((state: HomeAssetTableState) =>
+    const assetKey = useSelector((state: AssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
     );
-    const assetAccounts = useSelector((state: HomeAssetTableState) =>
+    const assetAccounts = useSelector((state: AssetTableState) =>
         selectWalletAssetAccounts(state, assetKey),
     );
     const sendableAccountRows = useSelector((state: NativeAccountsWithNetworksRootState) =>

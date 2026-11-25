@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    type HomeAssetTableState,
+    type AssetTableState,
     selectWalletAssetAmount,
     selectWalletAssetContractAddress,
     selectWalletAssetFiatValue,
@@ -47,25 +47,25 @@ type WalletAssetListItemProps = {
 };
 
 export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
-    const networkSymbol = useSelector((state: HomeAssetTableState) =>
+    const networkSymbol = useSelector((state: AssetTableState) =>
         selectWalletAssetNetworkSymbol(state, assetKey),
     );
-    const contractAddress = useSelector((state: HomeAssetTableState) =>
+    const contractAddress = useSelector((state: AssetTableState) =>
         selectWalletAssetContractAddress(state, assetKey),
     );
 
-    const tokenSymbol = useSelector((state: HomeAssetTableState) =>
+    const tokenSymbol = useSelector((state: AssetTableState) =>
         selectWalletAssetTokenSymbol(state, assetKey),
     );
-    const tokenDecimals = useSelector((state: HomeAssetTableState) =>
+    const tokenDecimals = useSelector((state: AssetTableState) =>
         selectWalletAssetTokenDecimals(state, assetKey),
     );
-    const amount = useSelector((state: HomeAssetTableState) =>
+    const amount = useSelector((state: AssetTableState) =>
         selectWalletAssetAmount(state, assetKey),
     );
     // Compared by value: one selector serves every row, so it can't keep each amount referentially stable.
     const fiatValue = useSelector(
-        (state: HomeAssetTableState) => selectWalletAssetFiatValue(state, assetKey),
+        (state: AssetTableState) => selectWalletAssetFiatValue(state, assetKey),
         areBaseCurrencyAmountsEqual,
     );
 

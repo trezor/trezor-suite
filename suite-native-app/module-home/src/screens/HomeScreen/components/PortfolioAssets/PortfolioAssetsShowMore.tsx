@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
 import {
-    HOME_ASSET_ROW_LIMIT,
-    type HomeAssetTableState,
+    ASSET_TABLE_ROW_LIMIT,
+    type AssetTableState,
     selectIsHomeAssetTableFoldable,
 } from '@suite-common/assets';
 import { WalletAssetCardSegment, selectIsAssetListLoading } from '@suite-native/assets';
@@ -16,8 +16,8 @@ type PortfolioAssetsShowMoreProps = {
 };
 
 export const PortfolioAssetsShowMore = ({ isExpanded, onPress }: PortfolioAssetsShowMoreProps) => {
-    const isFoldable = useSelector((state: HomeAssetTableState) =>
-        selectIsHomeAssetTableFoldable(state, HOME_ASSET_ROW_LIMIT),
+    const isFoldable = useSelector((state: AssetTableState) =>
+        selectIsHomeAssetTableFoldable(state, ASSET_TABLE_ROW_LIMIT),
     );
     const isAssetListLoading = useSelector(selectIsAssetListLoading);
 

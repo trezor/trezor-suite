@@ -1,7 +1,12 @@
 import { A, F, G, pipe } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { type AccountType, type Network, type NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type AccountType,
+    type Network,
+    type NetworkSymbol,
+    isNetworkWithTokens,
+} from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
 import { type DeviceState, type StaticSessionId } from '@trezor/connect';
@@ -145,6 +150,12 @@ export const selectAccountByKey = createMemoizedSelector(
 
         return accounts.find(account => account.key === accountKey) ?? null;
     },
+);
+
+/** Whether the account's network has tokens at all; Bitcoin and the like do not. */
+export const selectAreTokensSupportedByAccount = createMemoizedSelector(
+    [selectAccountByKey],
+    account => !!account && isNetworkWithTokens(account.symbol),
 );
 
 // CAUTION!: This selector does not work for XRP accounts! It should be used only for Bitcoin-like accounts.

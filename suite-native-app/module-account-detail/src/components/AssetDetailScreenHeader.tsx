@@ -3,17 +3,14 @@ import { useSelector, useStore } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { selectAccountFiatBalance } from '@suite-common/assets';
 import { type StakingRootState, selectIsStakingSupportedSymbol } from '@suite-common/earn-staking';
 import { type TokenAddress } from '@suite-common/tokens';
 import { isNetworkWithTokens } from '@suite-common/wallet-config';
 import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isAccountFailed } from '@suite-common/wallet-utils';
-import {
-    AccountLabel,
-    type NativeAccountsRootState,
-    selectAccountFiatBalance,
-} from '@suite-native/accounts';
+import { AccountLabel, type NativeAccountsRootState } from '@suite-native/accounts';
 import { HStack, IconButton, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { TokenSettingsBottomSheet } from '@suite-native/earn';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';

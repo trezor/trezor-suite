@@ -21,9 +21,13 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../discreet-mode" },
+        { "path": "../intl" },
+        { "path": "../settings" },
         { "path": "../token" },
+        { "path": "../../packages/components" },
         {
             "path": "../../packages/product-components"
-        }
+        },
+        { "path": "../../packages/utils" }
     ]
 }

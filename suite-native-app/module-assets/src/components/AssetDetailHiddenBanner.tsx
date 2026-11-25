@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import {
-    type HomeAssetTableState,
+    type AssetTableState,
     selectWalletAssetHiddenReason,
     selectWalletAssetKey,
 } from '@suite-common/assets';
@@ -24,10 +24,10 @@ import { injectDispatch } from '@trezor/redux-utils';
 export const AssetDetailHiddenBanner = () => {
     const { networkSymbol, tokenContract } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
-    const assetKey = useSelector((state: HomeAssetTableState) =>
+    const assetKey = useSelector((state: AssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
     );
-    const hiddenReason = useSelector((state: HomeAssetTableState) =>
+    const hiddenReason = useSelector((state: AssetTableState) =>
         selectWalletAssetHiddenReason(state, assetKey),
     );
     const areCoinDefinitionsLoaded = useSelector((state: TokenDefinitionsRootState) =>

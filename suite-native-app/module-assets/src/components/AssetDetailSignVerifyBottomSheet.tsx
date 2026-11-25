@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import {
-    type HomeAssetTableState,
+    type AssetTableState,
     selectWalletAssetKey,
     selectWalletAssetSignVerifyAccounts,
 } from '@suite-common/assets';
@@ -38,10 +38,10 @@ export const AssetDetailSignVerifyBottomSheet = ({
 }: AssetDetailSignVerifyBottomSheetProps) => {
     const { networkSymbol, tokenContract } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
-    const assetKey = useSelector((state: HomeAssetTableState) =>
+    const assetKey = useSelector((state: AssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
     );
-    const signVerifyAccounts = useSelector((state: HomeAssetTableState) =>
+    const signVerifyAccounts = useSelector((state: AssetTableState) =>
         selectWalletAssetSignVerifyAccounts(state, assetKey),
     );
     const navigation = useNavigation<NavigationProps>();

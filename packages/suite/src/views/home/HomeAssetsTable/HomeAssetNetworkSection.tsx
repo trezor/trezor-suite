@@ -1,5 +1,6 @@
 import { memo } from 'react';
 
+import { ASSET_TABLE_CELL_PADDING } from '@suite/assets';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import {
     selectDisplayedWalletAssetKeysOfNetwork,
@@ -14,8 +15,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
 
-import { HomeAssetRow } from './HomeAssetRow';
-import { HOME_ASSET_CELL_PADDING } from './homeAssetTableLayout';
+import { HomeAssetRowContainer } from './HomeAssetRowContainer';
 
 type HomeAssetNetworkSectionProps = {
     symbol: NetworkSymbol;
@@ -37,12 +37,12 @@ export const HomeAssetNetworkSection = memo(
                     isHighlightedOnHover={false}
                     data-testid={`@dashboard/home-asset-group/${symbol}`}
                 >
-                    <Table.Cell colSpan={2} padding={HOME_ASSET_CELL_PADDING.first}>
+                    <Table.Cell colSpan={2} padding={ASSET_TABLE_CELL_PADDING.first}>
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                             {name ?? symbol.toUpperCase()}
                         </Text>
                     </Table.Cell>
-                    <Table.Cell align="end" padding={HOME_ASSET_CELL_PADDING.last}>
+                    <Table.Cell align="end" padding={ASSET_TABLE_CELL_PADDING.last}>
                         {fiatValue !== undefined && (
                             <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                                 <HiddenPlaceholder>
@@ -55,7 +55,7 @@ export const HomeAssetNetworkSection = memo(
                     </Table.Cell>
                 </Table.Row>
                 {assetKeys.map(assetKey => (
-                    <HomeAssetRow
+                    <HomeAssetRowContainer
                         key={assetKey}
                         assetKey={assetKey}
                         hasBorderTop={false}

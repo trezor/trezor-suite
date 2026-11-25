@@ -4,7 +4,7 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
 import {
-    type HomeAssetTableState,
+    type AssetTableState,
     selectWalletAssetKey,
     selectWalletAssetTokenDecimals,
     selectWalletAssetTokenSymbol,
@@ -31,13 +31,13 @@ import { useResetToEarn } from './useResetToEarn';
 export const AssetDetailYieldBanner = () => {
     const { networkSymbol, tokenContract } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
-    const assetKey = useSelector((state: HomeAssetTableState) =>
+    const assetKey = useSelector((state: AssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
     );
-    const tokenSymbol = useSelector((state: HomeAssetTableState) =>
+    const tokenSymbol = useSelector((state: AssetTableState) =>
         selectWalletAssetTokenSymbol(state, assetKey),
     );
-    const tokenDecimals = useSelector((state: HomeAssetTableState) =>
+    const tokenDecimals = useSelector((state: AssetTableState) =>
         selectWalletAssetTokenDecimals(state, assetKey),
     );
     const bannerKey = `${networkSymbol}-${tokenContract?.toLowerCase()}`;

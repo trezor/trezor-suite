@@ -1,4 +1,4 @@
-import { HOME_ASSET_ROW_LIMIT } from '@suite-common/assets';
+import { ASSET_TABLE_ROW_LIMIT } from '@suite-common/assets';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
@@ -33,20 +33,20 @@ test.describe('Asset home', { tag: ['@noDevice'] }, () => {
 
             await test.step('Expand and collapse the asset table', async () => {
                 await expect(homeAssetsSection.expandButton).toHaveTranslation('TR_SHOW_MORE');
-                await expect(homeAssetsSection.assetRows).toHaveCount(HOME_ASSET_ROW_LIMIT);
+                await expect(homeAssetsSection.assetRows).toHaveCount(ASSET_TABLE_ROW_LIMIT);
                 await homeAssetsSection.expandButton.click();
                 await expect(homeAssetsSection.expandButton).toHaveTranslation('TR_SHOW_LESS');
                 await expect
                     .poll(() => homeAssetsSection.assetRows.count())
-                    .toBeGreaterThan(HOME_ASSET_ROW_LIMIT);
+                    .toBeGreaterThan(ASSET_TABLE_ROW_LIMIT);
                 await homeAssetsSection.expandButton.click();
                 await expect(homeAssetsSection.expandButton).toHaveTranslation('TR_SHOW_MORE');
-                await expect(homeAssetsSection.assetRows).toHaveCount(HOME_ASSET_ROW_LIMIT);
+                await expect(homeAssetsSection.assetRows).toHaveCount(ASSET_TABLE_ROW_LIMIT);
                 await homeAssetsSection.expandButton.click();
                 await expect(homeAssetsSection.expandButton).toHaveTranslation('TR_SHOW_LESS');
                 await expect
                     .poll(() => homeAssetsSection.assetRows.count())
-                    .toBeGreaterThan(HOME_ASSET_ROW_LIMIT);
+                    .toBeGreaterThan(ASSET_TABLE_ROW_LIMIT);
             });
 
             await test.step('Check the asset home overview', async () => {

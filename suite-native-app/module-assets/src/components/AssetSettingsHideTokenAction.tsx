@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import {
-    type HomeAssetTableState,
+    type AssetTableState,
     selectWalletAssetHiddenReason,
     selectWalletAssetKey,
 } from '@suite-common/assets';
@@ -35,10 +35,10 @@ export const AssetSettingsHideTokenAction = ({
     tokenContract,
     onClose,
 }: AssetSettingsHideTokenActionProps) => {
-    const assetKey = useSelector((state: HomeAssetTableState) =>
+    const assetKey = useSelector((state: AssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
     );
-    const hiddenReason = useSelector((state: HomeAssetTableState) =>
+    const hiddenReason = useSelector((state: AssetTableState) =>
         selectWalletAssetHiddenReason(state, assetKey),
     );
     const areCoinDefinitionsLoaded = useSelector((state: TokenDefinitionsRootState) =>

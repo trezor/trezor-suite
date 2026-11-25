@@ -6,14 +6,14 @@ import { isApyAvailable } from '@suite-common/wallet-utils';
 import { YieldBadge } from '#src/components/earn/YieldBadge/YieldBadge';
 import { useStakingRate } from '#src/hooks/earn/useStakingRate';
 
-type HomeAssetApyBadgeProps = {
+type AssetApyBadgeProps = {
     symbol: NetworkSymbol;
     contractAddress: TokenAddress | undefined;
     tokenSymbol: TokenSymbol | null;
     tokenDecimals: number | undefined;
 };
 
-export const HomeAssetApyBadge = (props: HomeAssetApyBadgeProps) => {
+export const AssetApyBadge = (props: AssetApyBadgeProps) => {
     const isToken = props.contractAddress !== undefined;
     const vaultApy = useYieldVaultApy(props);
     const { rate: stakingRate } = useStakingRate({ symbol: props.symbol });

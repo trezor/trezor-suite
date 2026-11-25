@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { selectAccountCryptoBalanceWithStaking } from '@suite-common/earn-staking';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -15,11 +16,7 @@ import {
 import { Icon } from '@suite-native/icons';
 import { TokenIcon } from '@suite-native/tokens';
 
-import {
-    type NativeAccountsRootState,
-    selectAccountCryptoBalanceWithStaking,
-    selectAccountHasAnyKnownTokens,
-} from '../../selectors';
+import { type NativeAccountsRootState, selectAccountHasAnyKnownTokens } from '../../selectors';
 import { type OnSelectAccount } from '../../types';
 import { AccountLabel } from '../AccountLabel';
 import { AccountsListItemBase } from './AccountsListItemBase';

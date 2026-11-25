@@ -9,7 +9,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
-import { HomeAssetIdentity } from './HomeAssetIdentity';
+import { AssetIdentity } from './AssetIdentity';
 import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 global.ResizeObserver = class MockedResizeObserver {
@@ -38,7 +38,7 @@ const renderIdentity = (contractAddress: TokenAddress) => {
 
     renderWithProviders(
         { ...services, networks: { networkIcon: mockNetworkIcon() } },
-        <HomeAssetIdentity symbol={ETH} contractAddress={contractAddress} />,
+        <AssetIdentity symbol={ETH} contractAddress={contractAddress} />,
     );
 };
 

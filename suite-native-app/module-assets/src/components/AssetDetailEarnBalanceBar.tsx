@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { type HomeAssetTableState, selectWalletAssetStakingRatio } from '@suite-common/assets';
+import { type AssetTableState, selectWalletAssetStakingRatio } from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Box, HStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -26,7 +26,7 @@ export const AssetDetailEarnBalanceBar = ({
     assetKey,
     unstakedType,
 }: AssetDetailEarnBalanceBarProps) => {
-    const stakingRatio = useSelector((state: HomeAssetTableState) =>
+    const stakingRatio = useSelector((state: AssetTableState) =>
         selectWalletAssetStakingRatio(state, assetKey),
     );
     const { applyStyle } = useNativeStyles();

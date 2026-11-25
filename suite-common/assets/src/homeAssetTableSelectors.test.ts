@@ -23,8 +23,8 @@ import { FirmwareType, type StaticSessionId } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
 import {
-    type HomeAssetTableState,
-    selectAreHomeAssetSmallBalancesDisplayed,
+    type AssetTableState,
+    selectAreAssetTableSmallBalancesDisplayed,
     selectDisplayedNetworkSymbols,
     selectDisplayedWalletAssetKeys,
     selectDisplayedWalletAssetKeysOfNetwork,
@@ -153,7 +153,7 @@ const createState = ({
     shownTokens = [],
     localCurrency = 'usd',
     stakingPositions = {},
-}: MockStateParams): HomeAssetTableState => {
+}: MockStateParams): AssetTableState => {
     const definitions = {
         coin: { data: knownTokens, hide: hiddenTokens, show: shownTokens },
     };
@@ -192,10 +192,10 @@ const createState = ({
             [DSOL]: { symbol: DSOL, name: 'Solana Devnet' },
             [ADA]: { symbol: ADA, name: 'Cardano' },
         },
-    } as unknown as HomeAssetTableState;
+    } as unknown as AssetTableState;
 };
 
-const selectHomeAssetRowKeys = (state: HomeAssetTableState) => selectShownWalletAssetKeys(state);
+const selectHomeAssetRowKeys = (state: AssetTableState) => selectShownWalletAssetKeys(state);
 
 describe('the rows the table is given', () => {
     it('lists one key per asset and network', () => {
@@ -520,7 +520,7 @@ describe('the work a rate write costs', () => {
                     },
                 },
             },
-        } as unknown as HomeAssetTableState;
+        } as unknown as AssetTableState;
         const times = jest.spyOn(BigNumber.prototype, 'times');
 
         selectDisplayedWalletAssetKeys(touched);
@@ -1290,7 +1290,7 @@ describe('the menu over the table', () => {
 
         expect(selectIsHomeAssetTableMenuAvailable(state)).toBe(true);
         expect(selectHomeAssetGrouping(state)).toBe('networks');
-        expect(selectAreHomeAssetSmallBalancesDisplayed(state)).toBe(false);
+        expect(selectAreAssetTableSmallBalancesDisplayed(state)).toBe(false);
         expect(selectDisplayedWalletAssetKeys(state)).toEqual([]);
     });
 
@@ -1299,7 +1299,7 @@ describe('the menu over the table', () => {
 
         expect(selectIsHomeAssetTableMenuAvailable(state)).toBe(false);
         expect(selectHomeAssetGrouping(state)).toBe('default');
-        expect(selectAreHomeAssetSmallBalancesDisplayed(state)).toBe(true);
+        expect(selectAreAssetTableSmallBalancesDisplayed(state)).toBe(true);
         expect(selectDisplayedWalletAssetKeys(state)).toEqual([`${ALICE}/btc/`]);
     });
 });

@@ -20,7 +20,11 @@ import {
     selectCurrentFiatRateByKey,
 } from '@suite-common/wallet-core';
 import type { AccountKey, BaseCurrencyAmount } from '@suite-common/wallet-types';
-import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import {
+    getAccountBalanceWithStaking,
+    getFiatRateKey,
+    toFiatCurrency,
+} from '@suite-common/wallet-utils';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 import {
     createWeakMapSelector,
@@ -196,4 +200,15 @@ export const selectStakingAccountFiatAmount = createWeakMapSelector(
 
         return toFiatCurrency({ amount, rate });
     },
+);
+
+/** The account's coin balance with what is staked outside of it counted in. */
+export const selectAccountCryptoBalanceWithStaking = createWeakMapSelector(
+    [
+        (state: StakingRootState & AccountsRootState, accountKey: AccountKey) =>
+            selectAccountByKey(state, accountKey),
+        selectStakingAccountAmountOutsideBalance,
+    ],
+    (account, stakingBalance): string =>
+        account ? getAccountBalanceWithStaking({ account, stakingBalance }) : '0',
 );

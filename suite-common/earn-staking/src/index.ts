@@ -107,6 +107,7 @@ export {
     type StakingPromotionScope,
 } from './state/stakingAccessSelectors';
 export {
+    selectAccountCryptoBalanceWithStaking,
     selectCountedStakingPositionEntriesByAccount,
     selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
@@ -232,6 +233,7 @@ export {
     type GetStakingOperationAvailabilityParams,
     type StakingOperationAvailability,
 } from './utils/getStakingOperationAvailability';
+export { isStakeInsideAccountBalance } from './utils/isStakeInsideAccountBalance';
 export {
     isStakingOperationAvailable,
     type IsStakingOperationAvailableParams,
