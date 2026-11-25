@@ -27,7 +27,8 @@ export const CARDANO_EVERSTAKE_POOL_ID = 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrs
 
 // Mocks the staking API behind every rate and period: the per-product endpoints the product info is
 // fetched from, and the batch endpoint the legacy slice keeps polling until the read side is removed.
-// A spec sets the fields it asserts before the app loads; the routes read them on each request.
+// A spec sets the fields it asserts before it enables its networks, which refreshes the product
+// info; the routes read them on each request.
 export class EarnStakingApiMock {
     ethStats: EthStats = { symbol: 'eth', apy: 1, nextRewardPayout: 1 };
     ethValidatorsQueue: EthValidatorsQueue = {
@@ -54,6 +55,12 @@ export class EarnStakingApiMock {
         );
         await this.page.route(TRX_STATS_URL, route => route.fulfill({ json: this.trxStats }));
         await this.page.route(BATCH_URL, route => route.fulfill({ json: this.getBatch() }));
+
+        // The app fetched the product info when its products registered, before these routes
+        // existed: the page fixture loads it before any other fixture runs. Reloading on the
+        // initial screen repeats that start with the routes in place and discards whatever the
+        // first load got from the real API.
+        await this.page.reload();
     }
 
     private getBatch(): StakingBatch {
