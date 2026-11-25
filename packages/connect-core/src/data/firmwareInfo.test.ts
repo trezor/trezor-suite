@@ -1,4 +1,4 @@
-import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
+import { parseConnectSettings } from '@trezor/connect-common/data/connectSettings';
 import { firmwareReleaseConfigAssets } from '@trezor/connect-data';
 import type { ConditionalRelease } from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/device-utils';

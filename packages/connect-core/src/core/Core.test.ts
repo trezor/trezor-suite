@@ -1,5 +1,5 @@
-import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
-import type { ConnectSettings } from '@trezor/connect-common/src/types/settings';
+import { parseConnectSettings } from '@trezor/connect-common/data/connectSettings';
+import type { ConnectSettings } from '@trezor/connect-common/types/settings';
 
 import * as firmwareReleaseStore from '../data/firmwareReleaseStore';
 

@@ -5,8 +5,8 @@ import {
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import { getAvailableAccountTypes } from '@suite-common/wallet-utils';
-import { TypedError } from '@trezor/connect-common/src/constants/errors';
-import { type SelectionType } from '@trezor/connect-common/src/types/api/selectAccount';
+import { TypedError } from '@trezor/connect-common/constants/errors';
+import { type SelectionType } from '@trezor/connect-common/types/api/selectAccount';
 
 import {
     CommonPopupFlow,

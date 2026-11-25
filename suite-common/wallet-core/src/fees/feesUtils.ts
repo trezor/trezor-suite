@@ -2,7 +2,7 @@ import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wall
 import { isEip1559 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
-import { type BlockchainEstimatedFeeLevel } from '@trezor/connect-common/src/types/api/blockchain/blockchainEstimateFee';
+import { type BlockchainEstimatedFeeLevel } from '@trezor/connect-common/types/api/blockchain/blockchainEstimateFee';
 import { BigNumber } from '@trezor/utils';
 
 const NETWORK_FEE_OVERRIDES: Record<

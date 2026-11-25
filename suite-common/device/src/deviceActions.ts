@@ -9,7 +9,7 @@ import {
     type DeviceUniquePath,
     type StaticSessionId,
 } from '@trezor/connect';
-import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type SerializedError } from '@trezor/connect-common/constants/errors';
 import { type Err } from '@trezor/type-utils';
 
 import { DEVICE_MODULE_PREFIX } from './deviceConstants';

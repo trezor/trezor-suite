@@ -1,14 +1,11 @@
 // note: at the moment, there is something in the root of @trezor/connect-common that pulls entire PROTO runtime, thus
 // these targeted imports
-import { CORE_CALL_CANCEL, POPUP } from '@trezor/connect-common/src/events';
-import { factoryPublic } from '@trezor/connect-common/src/factory';
-import { TrezorConnectDynamic } from '@trezor/connect-common/src/impl/dynamic';
+import { CORE_CALL_CANCEL, POPUP } from '@trezor/connect-common/events';
+import { factoryPublic } from '@trezor/connect-common/factory';
+import { TrezorConnectDynamic } from '@trezor/connect-common/impl/dynamic';
 // Import as src not lib due to webpack issues with inlining content script later
-import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
-import type {
-    ConnectDynamicSettings,
-    TrezorConnectPublicAPI,
-} from '@trezor/connect-common/src/types';
+import { ServiceWorkerWindowChannel } from '@trezor/connect-common/messageChannel/serviceworker-window';
+import type { ConnectDynamicSettings, TrezorConnectPublicAPI } from '@trezor/connect-common/types';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- intra-tier wiring: connect-webextension composes implementations from connect-web (see #27376)
 import { CoreInSuiteDesktop } from '@trezor/connect-web/src/impl/core-in-suite-desktop';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- intra-tier wiring: connect-webextension composes implementations from connect-web (see #27376)
@@ -106,6 +103,6 @@ initProxyChannel();
 
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;
-export * from '@trezor/connect-common/src/constants';
-export * from '@trezor/connect-common/src/events';
-export type * from '@trezor/connect-common/src/types';
+export * from '@trezor/connect-common/constants';
+export * from '@trezor/connect-common/events';
+export type * from '@trezor/connect-common/types';

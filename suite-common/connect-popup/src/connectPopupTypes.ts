@@ -6,8 +6,8 @@ import {
     type FeeLevel,
     type PermissionRequest,
 } from '@trezor/connect';
-import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { type AddressSelection } from '@trezor/connect-common/src/types/api/selectAccount';
+import { type SerializedError } from '@trezor/connect-common/constants/errors';
+import { type AddressSelection } from '@trezor/connect-common/types/api/selectAccount';
 
 // UTXO coins have accounts with many addresses (mirrors `isUtxoBased` in
 // wallet-utils/accountUtils, which operates on an already-loaded `Account` instead of a symbol) —

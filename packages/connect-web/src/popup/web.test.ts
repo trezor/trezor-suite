@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { initLog } from '@trezor/connect-common/src/utils/debug';
+import { initLog } from '@trezor/connect-common/utils/debug';
 
 import { WebPopup } from './web';
 

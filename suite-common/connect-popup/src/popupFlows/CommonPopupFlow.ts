@@ -13,7 +13,7 @@ import TrezorConnect, {
     type PermissionRequest,
 } from '@trezor/connect';
 import { connectCallableMethods } from '@trezor/connect-common';
-import { type SerializedError, TypedError } from '@trezor/connect-common/src/constants/errors';
+import { type SerializedError, TypedError } from '@trezor/connect-common/constants/errors';
 import { type Err, type Ok } from '@trezor/type-utils';
 import { resolveAfter } from '@trezor/utils';
 

@@ -1,6 +1,6 @@
 import type { PermissionRequest } from '@trezor/connect-common';
 import { SolanaComposeTransaction as SolanaComposeTransactionSchema } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import { SYSTEM_PROGRAM_PUBLIC_KEY, tokenProgramsInfo } from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
 import { Assert } from '@trezor/schema-utils';

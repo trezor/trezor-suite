@@ -16,8 +16,8 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type CallMethodKeys } from '@trezor/connect';
 import { sanitizeName } from '@trezor/connect-common';
-import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
-import { DEEPLINK_VERSION } from '@trezor/connect-common/src/data/version';
+import { TypedError, serializeError } from '@trezor/connect-common/constants/errors';
+import { DEEPLINK_VERSION } from '@trezor/connect-common/data/version';
 import type { Bip43PathTemplate } from '@trezor/crypto-utils';
 import {
     getAddressParameters,

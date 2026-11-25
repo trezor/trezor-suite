@@ -8,8 +8,8 @@ import {
     type PermissionRequest,
 } from '@trezor/connect-common';
 import { UI_EVENTS, createUiEventMessage } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import { GetAddress as GetAddressSchema } from '@trezor/connect-common/src/types/api/account/getAddress';
+import { ERRORS } from '@trezor/connect-common/constants';
+import { GetAddress as GetAddressSchema } from '@trezor/connect-common/types/api/account/getAddress';
 import { Assert } from '@trezor/schema-utils';
 
 import { bundlify, validateCoinPath } from './common/paramsValidator';
