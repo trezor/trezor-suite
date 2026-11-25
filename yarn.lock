@@ -12931,6 +12931,7 @@ __metadata:
   dependencies:
     "@tanstack/react-query": "npm:5.105.0"
     "@tanstack/react-query-devtools": "npm:5.105.0"
+    "@trezor/utils": "workspace:*"
     react: "npm:19.3.0"
   languageName: unknown
   linkType: soft
