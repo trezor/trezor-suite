@@ -7,13 +7,16 @@ import { createDeferred } from '@trezor/utils';
 
 import { rejectMessage } from './connect-popup-messages';
 import {
-    IDLE_CONNECTION_TIMEOUT_MS,
     MAX_CONCURRENT_CONNECTIONS,
     MAX_CONNECTIONS_PER_ORIGIN,
-    PROCESS_LOOKUP_RETRY_INTERVAL_MS,
-    PROCESS_LOOKUP_TIMEOUT_MS,
     exposeConnectWs,
 } from './connect-ws';
+import {
+    HANDSHAKE_BURST,
+    IDLE_CONNECTION_TIMEOUT_MS,
+    PROCESS_LOOKUP_RETRY_INTERVAL_MS,
+    PROCESS_LOOKUP_TIMEOUT_MS,
+} from './createConnectionSession';
 import { createHttpReceiver } from './http-receiver';
 import { Logger } from './logger';
 
@@ -178,6 +181,73 @@ describe('connect-ws', () => {
         expect(findProcessFromIncomingPort).not.toHaveBeenCalled();
     });
 
+    it('drops a call that arrives before the handshake, without a reply', async () => {
+        const rendererCall = jest.fn();
+        const warnings = jest.spyOn(logger, 'warn');
+        const port = await startServer({
+            mainWindowProxy: {
+                getInstance: () => ({ webContents: { send: rendererCall } }),
+            } as unknown as ExposeConnectWsParams['mainWindowProxy'],
+            store: {
+                setConnectSettings: () => {},
+            } as unknown as ExposeConnectWsParams['store'],
+        });
+        const client = await openClient(port, 'https://app.test');
+        const replies: string[] = [];
+        client.on('message', data => replies.push(data.toString()));
+
+        client.send(
+            JSON.stringify({ id: '1', type: CORE_CALL, payload: { method: 'getFeatures' } }),
+        );
+        // The pong of a message that follows comes after the call has been dealt with.
+        expect(await request(client, { type: 'ping' })).toMatchObject({ type: 'pong' });
+
+        // A later check would stop such a call as well, for want of a manifest, so what shows that
+        // the call was turned away at the door is the reason that is logged.
+        expect(warnings).toHaveBeenCalledWith(
+            'connect-ws',
+            `${CORE_CALL} rejected: handshake not completed`,
+        );
+        expect(rendererCall).not.toHaveBeenCalled();
+        expect(replies.filter(reply => !reply.includes('pong'))).toEqual([]);
+        warnings.mockRestore();
+    });
+
+    it('tells the popup who the caller is, however many handshakes come before the call', async () => {
+        const rendererCall = createDeferred<unknown>();
+        const send = jest.fn((_channel: string, call: unknown) => rendererCall.resolve(call));
+        const port = await startServer({
+            mainWindowProxy: {
+                getInstance: () => ({ webContents: { send } }),
+            } as unknown as ExposeConnectWsParams['mainWindowProxy'],
+            store: {
+                setConnectSettings: () => {},
+            } as unknown as ExposeConnectWsParams['store'],
+        });
+        const client = await openClient(port, 'https://app.test');
+        // Only the first handshake looks the process up, and the ones that follow must keep it.
+        const appProcess = { name: 'app', pid: '1', fullPath: '/Applications/App.app/' };
+        jest.mocked(findProcessFromIncomingPort).mockResolvedValueOnce(appProcess);
+        expect(await request(client, handshake)).toMatchObject({ payload: 'ok' });
+        expect(await request(client, handshake)).toMatchObject({ payload: 'ok' });
+
+        void request(client, { type: CORE_CALL, payload: { method: 'getFeatures' } });
+        await rendererCall.promise;
+
+        expect(send).toHaveBeenCalledWith(
+            'connect-popup/call',
+            expect.objectContaining({
+                method: 'getFeatures',
+                process: expect.objectContaining({
+                    name: 'app',
+                    fullPath: '/Applications/App.app/',
+                    warning: false,
+                }),
+                manifest: expect.objectContaining({ appName: 'App' }),
+            }),
+        );
+    });
+
     describe('idle timeout', () => {
         beforeEach(() => {
             jest.useFakeTimers({ doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
@@ -250,7 +320,8 @@ describe('connect-ws', () => {
             expect(await request(client, { type: 'ping' })).toBeUndefined();
         });
 
-        it('does not expire a connection while a call is pending', async () => {
+        // A client that has handshaken and has a call that waits for the user.
+        const startPendingCall = async () => {
             const rendererCall = createDeferred<{ id: string }>();
             const send = (_channel: string, call: { id: string }) => rendererCall.resolve(call);
             const port = await startServer({
@@ -267,7 +338,25 @@ describe('connect-ws', () => {
             jest.mocked(findProcessFromIncomingPort).mockResolvedValueOnce(appProcess);
             expect(await request(client, handshake)).toMatchObject({ payload: 'ok' });
             void request(client, { type: CORE_CALL, payload: { method: 'getFeatures' } });
-            const { id } = await rendererCall.promise;
+            const { id: callId } = await rendererCall.promise;
+
+            return { client, callId };
+        };
+
+        it('does not expire a connection while a call waits for the user', async () => {
+            const { client, callId } = await startPendingCall();
+
+            // Nothing else is sent, so only the start of the call keeps the connection open.
+            await jest.advanceTimersByTimeAsync(IDLE_CONNECTION_TIMEOUT_MS * 2);
+            expect(await request(client, { type: 'ping' })).toMatchObject({ type: 'pong' });
+
+            rejectMessage(callId, new Error('Call failed'));
+            await jest.advanceTimersByTimeAsync(IDLE_CONNECTION_TIMEOUT_MS);
+            expect(await request(client, { type: 'ping' })).toBeUndefined();
+        });
+
+        it('does not expire a connection while a call is pending, whatever a handshake for another call does', async () => {
+            const { client, callId } = await startPendingCall();
             // A handshake for a second call must not re-arm the timer either. No call follows it
             // here, because the call would clear the timer again and hide a missing check.
             expect(await request(client, handshake)).toMatchObject({ payload: 'ok' });
@@ -275,9 +364,125 @@ describe('connect-ws', () => {
             await jest.advanceTimersByTimeAsync(IDLE_CONNECTION_TIMEOUT_MS * 2);
             expect(await request(client, { type: 'ping' })).toMatchObject({ type: 'pong' });
 
-            rejectMessage(id, new Error('Call failed'));
+            rejectMessage(callId, new Error('Call failed'));
             await jest.advanceTimersByTimeAsync(IDLE_CONNECTION_TIMEOUT_MS);
             expect(await request(client, { type: 'ping' })).toBeUndefined();
+        });
+    });
+
+    describe('handshake flood', () => {
+        const appProcess = { name: 'app', pid: '1', fullPath: '/app' };
+
+        // Every lookup stays running until the test settles it.
+        const holdLookups = () => {
+            const lookups: {
+                signal?: AbortSignal;
+                settle: (process: typeof appProcess | undefined) => void;
+            }[] = [];
+            jest.mocked(findProcessFromIncomingPort).mockImplementation(
+                (_port, _filterSelf, _connection, signal) => {
+                    const lookup = createDeferred<typeof appProcess | undefined>();
+                    lookups.push({ signal, settle: lookup.resolve });
+
+                    return lookup.promise;
+                },
+            );
+
+            return lookups;
+        };
+
+        const waitUntil = async (condition: () => boolean) => {
+            for (let attempt = 0; attempt < 1000 && !condition(); attempt++) {
+                await new Promise(resolve => setImmediate(resolve));
+            }
+
+            expect(condition()).toBe(true);
+        };
+
+        beforeEach(() => {
+            jest.useFakeTimers({ doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
+        });
+
+        afterEach(() => {
+            jest.useRealTimers();
+            jest.restoreAllMocks();
+            jest.mocked(findProcessFromIncomingPort).mockImplementation(() =>
+                Promise.resolve(undefined),
+            );
+        });
+
+        it('looks the process up once for all the handshakes of a connection', async () => {
+            const lookups = holdLookups();
+            const client = await openClient(await startServer(), 'https://app.test');
+
+            // The rest of the handshakes arrive while the first lookup still runs.
+            const acks = Array.from({ length: 5 }, () => request(client, handshake));
+            await waitUntil(() => lookups.length === 1);
+            lookups[0]?.settle(appProcess);
+
+            expect(await Promise.all(acks)).toEqual(
+                acks.map(() => expect.objectContaining({ payload: 'ok' })),
+            );
+
+            // A process that was found stays the caller for as long as the connection lasts.
+            await jest.advanceTimersByTimeAsync(PROCESS_LOOKUP_RETRY_INTERVAL_MS * 2);
+            expect(await request(client, handshake)).toMatchObject({ payload: 'ok' });
+            expect(findProcessFromIncomingPort).toHaveBeenCalledTimes(1);
+        });
+
+        it('aborts the lookup of a connection that closes while it runs', async () => {
+            const lookups = holdLookups();
+            const client = await openClient(await startServer(), 'https://app.test');
+
+            void request(client, handshake);
+            await waitUntil(() => lookups.length === 1);
+            expect(lookups[0]?.signal?.aborted).toBe(false);
+
+            client.terminate();
+
+            await waitUntil(() => lookups[0]?.signal?.aborted === true);
+        });
+
+        // The acknowledgements, by id, of the handshakes a test sends by hand.
+        const collectAcks = (client: WebSocket) => {
+            const acks: string[] = [];
+            client.on('message', data => {
+                const message = JSON.parse(data.toString());
+                if (message.type === POPUP.HANDSHAKE) {
+                    acks.push(message.id);
+                }
+            });
+
+            return acks;
+        };
+
+        const sendHandshakes = (client: WebSocket, count: number, firstId = 1) => {
+            for (let i = 0; i < count; i++) {
+                client.send(JSON.stringify({ id: `${firstId + i}`, ...handshake }));
+            }
+        };
+
+        // Long enough for an answer that was going to come to have come.
+        const settle = async () => {
+            for (let i = 0; i < 3; i++) {
+                await new Promise(resolve => setImmediate(resolve));
+            }
+        };
+
+        it('serves a burst of handshakes up to the budget and drops the rest, without closing the connection', async () => {
+            const client = await openClient(await startServer(), 'https://app.test');
+            const acks = collectAcks(client);
+
+            sendHandshakes(client, HANDSHAKE_BURST + 5);
+            await waitUntil(() => acks.length === HANDSHAKE_BURST);
+            await settle();
+
+            expect(acks).toHaveLength(HANDSHAKE_BURST);
+            // The ones over the budget were never answered, and the server left the connection open:
+            // it is the client that closes it, once its own timeout has run out.
+            expect(await request(client, { type: 'ping' })).toMatchObject({ type: 'pong' });
+            // They started no lookup of their own either.
+            expect(findProcessFromIncomingPort).toHaveBeenCalledTimes(1);
         });
     });
 });
