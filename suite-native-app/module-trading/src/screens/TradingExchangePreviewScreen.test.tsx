@@ -238,15 +238,16 @@ describe('TradingExchangePreviewScreen', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should render the preview without the step cards when not approved', async () => {
+    it('should render the swap review without the step cards when not approved', async () => {
         const { result } = await renderTradingExchangePreviewScreen();
 
-        expect(result.queryByTestId('@step-cards/current')).toBeNull();
         expect(
-            result.queryByText(
+            result.getByText(
                 getTranslation('moduleTrading.tradingExchangeFlowScreen.swapStep.title'),
             ),
-        ).toBeNull();
+        ).toBeOnTheScreen();
+        expect(result.queryByTestId('@step-cards/current')).toBeNull();
+        expect(result.queryByTestId('@step-cards/finished')).toBeNull();
     });
 
     it('should render the swap as the last step with the approval as the finished step when approved', async () => {
@@ -270,37 +271,25 @@ describe('TradingExchangePreviewScreen', () => {
         expect(result.getByText(getTranslation('generic.buttons.continue'))).toBeOnTheScreen();
     });
 
-    it('should render the you pay and you get rows instead of the account cards when approved', async () => {
-        const { result } = await renderTradingExchangePreviewScreen(true);
+    it.each([false, true])(
+        'should render the you pay and you get rows instead of the account cards when isApproved is %s',
+        async isApproved => {
+            const { result } = await renderTradingExchangePreviewScreen(isApproved);
 
-        expect(result.getByTestId('@trading/history/detail/info/pay')).toBeOnTheScreen();
-        expect(result.getByTestId('@trading/history/detail/info/get')).toBeOnTheScreen();
-        expect(
-            result.queryByText(
-                getTranslation('moduleTrading.tradingExchangePreviewScreen.fromAccount'),
-            ),
-        ).toBeNull();
-        expect(
-            result.queryByText(
-                getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount'),
-            ),
-        ).toBeNull();
-    });
-
-    it('should render from and to account labels', async () => {
-        const { result } = await renderTradingExchangePreviewScreen();
-
-        expect(
-            result.getByText(
-                getTranslation('moduleTrading.tradingExchangePreviewScreen.fromAccount'),
-            ),
-        ).toBeOnTheScreen();
-        expect(
-            result.getByText(
-                getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount'),
-            ),
-        ).toBeOnTheScreen();
-    });
+            expect(result.getByTestId('@trading/history/detail/info/pay')).toBeOnTheScreen();
+            expect(result.getByTestId('@trading/history/detail/info/get')).toBeOnTheScreen();
+            expect(
+                result.queryByText(
+                    getTranslation('moduleTrading.tradingExchangePreviewScreen.fromAccount'),
+                ),
+            ).toBeNull();
+            expect(
+                result.queryByText(
+                    getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount'),
+                ),
+            ).toBeNull();
+        },
+    );
 
     it('should render transaction details section', async () => {
         const {

@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 
-import { VStack } from '@suite-native/atoms';
+import { Box, Card } from '@suite-native/atoms';
 import { Screen, TradingStackRoutes } from '@suite-native/navigation';
-import { Footer } from '@suite-native/trading-provider-utils';
 import { type TradingStackScreenProps } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -10,8 +9,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 import {
     ExchangePreviewFooter,
     ExchangePreviewScreenHeader,
-    ExchangePreviewSimulationInfo,
-    ExchangePreviewView,
 } from '../components/exchange/ExchangePreview';
 import { ExchangeFlowStepsLayout } from '../components/exchange/Flow/ExchangeFlowStepsLayout';
 import { ExchangeFlowSwapStepContent } from '../components/exchange/Flow/ExchangeFlowSwapStepContent';
@@ -47,6 +44,15 @@ export const TradingExchangePreviewScreen = ({
         />
     );
 
+    const content = (
+        <ExchangeFlowSwapStepContent
+            quote={quote}
+            txnErrorString={errorString}
+            onSignTransactionNavigation={onSignTransactionNavigation}
+            onSlippageConfirmed={handleConfirmTrade}
+        />
+    );
+
     // TradingConfirmingScreen passes only isApproved, so a preceding revoke step is not shown yet.
     if (isApproved) {
         return (
@@ -56,28 +62,17 @@ export const TradingExchangePreviewScreen = ({
                 header={<ExchangePreviewScreenHeader />}
                 footer={footer}
             >
-                <ExchangeFlowSwapStepContent
-                    quote={quote}
-                    txnErrorString={errorString}
-                    onSignTransactionNavigation={onSignTransactionNavigation}
-                    onSlippageConfirmed={handleConfirmTrade}
-                />
+                {content}
             </ExchangeFlowStepsLayout>
         );
     }
 
     return (
         <Screen header={<ExchangePreviewScreenHeader />} footer={footer}>
-            <VStack spacing="sp16" flex={1}>
-                <ExchangePreviewSimulationInfo />
-                <ExchangePreviewView
-                    quote={quote}
-                    txnErrorString={errorString}
-                    onSignTransactionNavigation={onSignTransactionNavigation}
-                    onSlippageConfirmed={handleConfirmTrade}
-                />
-                <Footer />
-            </VStack>
+            {/* A swap without an approval is a single step, so it has no stepper. */}
+            <Card noPadding>
+                <Box paddingTop="sp16">{content}</Box>
+            </Card>
         </Screen>
     );
 };
