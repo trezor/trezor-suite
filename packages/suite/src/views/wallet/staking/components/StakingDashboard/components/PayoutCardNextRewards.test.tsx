@@ -78,13 +78,22 @@ describe('PayoutCardNextRewards', () => {
         expect(screen.getByTestId(DAYS)).toHaveTextContent('N/A');
     });
 
-    it('waits for the activation before the first payout of a deposit', () => {
+    it('dates the first payout after the activation of a deposit', () => {
         renderCard(
             pendingPosition(inDays(10)),
-            mockStakingProductInfo({ nextRewardAt: inDays(2) }),
+            mockStakingProductInfo({ nextRewardAt: inDays(2), rewardPeriodDays: 7 }),
         );
 
-        expect(screen.getByTestId(DAYS)).toHaveTextContent('12 days');
+        expect(screen.getByTestId(DAYS)).toHaveTextContent('16 days');
+    });
+
+    it('says N/A for a deposit activating after the next payout without a reward period', () => {
+        renderCard(
+            pendingPosition(inDays(10)),
+            mockStakingProductInfo({ nextRewardAt: inDays(2), rewardPeriodDays: null }),
+        );
+
+        expect(screen.getByTestId(DAYS)).toHaveTextContent('N/A');
     });
 
     it('takes the next payout when the deposit activates before it', () => {

@@ -241,6 +241,10 @@ export {
 export { getStakeableBalance, type GetStakeableBalanceParams } from './utils/getStakeableBalance';
 export { getStakingDaysUntil } from './utils/getStakingDaysUntil';
 export {
+    getStakingNextPayoutInDays,
+    type GetStakingNextPayoutInDaysParams,
+} from './utils/getStakingNextPayoutInDays';
+export {
     getStakingOperationAvailability,
     STAKING_OPERATION_AVAILABILITIES,
     type GetStakingOperationAvailabilityParams,
