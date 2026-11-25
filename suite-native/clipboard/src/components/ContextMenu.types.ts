@@ -3,19 +3,15 @@ import type { StyleProp, ViewStyle } from 'react-native';
 
 import type { ButtonProps } from '@expo/ui/swift-ui';
 
-export type ClipboardCopyMenuAction = {
+export type ContextMenuAction = {
     label: string;
+    // SF Symbol name, shown on iOS only.
     systemImage?: ButtonProps['systemImage'];
     onPress: () => void | Promise<void>;
 };
 
-export type ClipboardCopyMenuProps = {
-    value?: string;
+export type ContextMenuProps = {
+    actions: ContextMenuAction[];
     children: ReactElement;
-    copyMessage?: string;
-    copyLabel?: string;
-    menuActions?: ClipboardCopyMenuAction[];
-    additionalActions?: ClipboardCopyMenuAction[];
-    onCopy?: () => void | Promise<void>;
     style?: StyleProp<ViewStyle>;
 };

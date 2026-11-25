@@ -1,7 +1,7 @@
 import ViewShot from 'react-native-view-shot';
 
 import { Card } from '@suite-native/atoms';
-import { ClipboardCopyMenu } from '@suite-native/clipboard';
+import { ContextMenu } from '@suite-native/clipboard';
 import { useTranslate } from '@suite-native/intl';
 import { useNativeStyles } from '@trezor/styles-native';
 
@@ -28,8 +28,8 @@ export const ReceiveQRCodeCard = ({
     const qrCodePadding = spacings[RECEIVE_QR_CODE_PADDING] * 2;
 
     return (
-        <ClipboardCopyMenu
-            menuActions={[
+        <ContextMenu
+            actions={[
                 {
                     label: translate('moduleReceive.addressActions.shareQRCodeImage'),
                     systemImage: 'square.and.arrow.up',
@@ -65,6 +65,6 @@ export const ReceiveQRCodeCard = ({
                     <ReceiveQRCodeContent {...qrCodeContentProps} />
                 </ViewShot>
             </Card>
-        </ClipboardCopyMenu>
+        </ContextMenu>
     );
 };
