@@ -25,9 +25,14 @@ import { fivebinariesProvider } from './providers/fivebinaries';
 import { luganodesProvider } from './providers/luganodes';
 import { p2pProvider } from './providers/p2p';
 import { getStakingProvider } from './providers/stakingProviders';
+import { shareInFlightRequest } from './utils/shareInFlightRequest';
 
 const createEthereumStakingProducts = (): readonly StakingProductAdapter[] => {
-    const ethereumStakingApi = { getStakingStats, getEthereumValidatorsQueue };
+    // Hoodi reads the mainnet endpoints, so it shares the mainnet product's pending requests.
+    const ethereumStakingApi = {
+        getStakingStats: shareInFlightRequest(getStakingStats),
+        getEthereumValidatorsQueue: shareInFlightRequest(getEthereumValidatorsQueue),
+    };
 
     return [
         createEthereumEverstakePooledProduct({
@@ -42,7 +47,8 @@ const createEthereumStakingProducts = (): readonly StakingProductAdapter[] => {
 };
 
 const createSolanaStakingProducts = (): readonly StakingProductAdapter[] => {
-    const solanaStakingApi = { getStakingStats };
+    // Devnet reads the mainnet stats, so it shares the mainnet product's pending request.
+    const solanaStakingApi = { getStakingStats: shareInFlightRequest(getStakingStats) };
 
     return [
         createSolanaEverstakeNativeProduct({

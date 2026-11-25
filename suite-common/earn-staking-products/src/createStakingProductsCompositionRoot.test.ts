@@ -1,4 +1,8 @@
-import { type EthOrSolStats } from '@suite-common/earn-staking-api';
+import {
+    type EthOrSolStats,
+    defaultEarnStakingWorkerBaseUrl,
+    earnStakingWorkerBaseUrl,
+} from '@suite-common/earn-staking-api';
 import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
 import {
     type CardanoStakingScenario,
@@ -43,6 +47,28 @@ describe('createStakingProductsCompositionRoot', () => {
         ).toEqual([
             ['eth:eth:everstake:pooled', '10000000000000000'],
             ['thod:thod:everstake:pooled', '100000000000000000'],
+        ]);
+    });
+
+    it('fetches each staking endpoint once while every product refreshes its info', async () => {
+        earnStakingWorkerBaseUrl.set(defaultEarnStakingWorkerBaseUrl);
+        const fetchSpy = jest
+            .spyOn(globalThis, 'fetch')
+            .mockImplementation(() => Promise.resolve(new Response('{}')));
+
+        await Promise.allSettled(adapters.map(adapter => adapter.fetchProductInfo({})));
+
+        const requestedPaths = fetchSpy.mock.calls.map(([input]) =>
+            new Request(input).url.replace(defaultEarnStakingWorkerBaseUrl, ''),
+        );
+        fetchSpy.mockRestore();
+
+        expect(requestedPaths.toSorted()).toEqual([
+            '/ada/pools?limit=1000',
+            '/eth/stats',
+            '/eth/validators-queue',
+            '/sol/stats',
+            '/trx/stats',
         ]);
     });
 
