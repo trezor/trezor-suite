@@ -10,6 +10,7 @@ import {
     IDLE_CONNECTION_TIMEOUT_MS,
     MAX_CONCURRENT_CONNECTIONS,
     MAX_CONNECTIONS_PER_ORIGIN,
+    PROCESS_LOOKUP_RETRY_INTERVAL_MS,
     PROCESS_LOOKUP_TIMEOUT_MS,
     exposeConnectWs,
 } from './connect-ws';
@@ -227,7 +228,9 @@ describe('connect-ws', () => {
             expect(await request(client, handshake)).toMatchObject({ payload: 'ok' });
 
             // The handshake timeout is already cleared on an established connection, so only the
-            // bound on the lookup itself can re-arm the idle timeout of a hung handshake.
+            // bound on the lookup itself can re-arm the idle timeout of a hung handshake. The
+            // first lookup found nothing, so a lookup runs again once the retry interval passes.
+            await jest.advanceTimersByTimeAsync(PROCESS_LOOKUP_RETRY_INTERVAL_MS);
             const lookupStarted = createDeferred();
             const hungLookup = createDeferred<undefined>();
             jest.mocked(findProcessFromIncomingPort).mockImplementationOnce(() => {

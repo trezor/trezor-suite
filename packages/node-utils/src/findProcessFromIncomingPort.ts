@@ -1,6 +1,8 @@
 import { spawn } from 'child_process';
 import { promises as fs } from 'fs';
 
+import { createDeferredManager } from '@trezor/utils';
+
 function spawnAndCollectStdout(
     command: string,
     args: string[],
@@ -128,24 +130,12 @@ const getEndpoints = (
           }
         : undefined;
 
-/**
- * Finds the process holding a socket on `port`. When `connection` is given, only the socket at the
- * client end of that connection counts, so that another process using the same port number on
- * a different address is never reported instead; `port` then only selects what to ask lsof or
- * netstat about.
- */
-export async function findProcessFromIncomingPort(
+async function lookUpProcess(
     port: number,
-    filterSelf: boolean = false,
-    connection?: IncomingConnection,
-    signal?: AbortSignal,
+    filterSelf: boolean,
+    endpoints: ReturnType<typeof getEndpoints>,
+    signal: AbortSignal,
 ): Promise<ProcessInfo | undefined> {
-    const endpoints = connection && getEndpoints(port, connection);
-    if (connection && !endpoints) {
-        // Without both of its endpoints the connection cannot be attributed to a socket.
-        return undefined;
-    }
-
     switch (process.platform) {
         case 'darwin':
         case 'linux': {
@@ -300,5 +290,59 @@ export async function findProcessFromIncomingPort(
 
             return undefined;
         }
+    }
+}
+
+// Every lookup spawns external commands, so the process runs only this many at once, whoever
+// asks. A lookup over the cap waits for its turn.
+export const MAX_CONCURRENT_PROCESS_LOOKUPS = 2;
+// Bounds a lookup as a whole, the wait for its turn included, so that a command that never exits
+// cannot hold a slot for good, nor can a caller that passes no `signal`. It is longer than the
+// deadline connect-ws sets on its own lookups, so that deadline reports first.
+export const PROCESS_LOOKUP_SAFETY_TIMEOUT_MS = 15000;
+
+// A running lookup holds one pending promise, so the manager's concurrency is the cap.
+const lookupSlots = createDeferredManager<void>();
+
+/**
+ * Finds the process holding a socket on `port`. When `connection` is given, only the socket at the
+ * client end of that connection counts, so that another process using the same port number on
+ * a different address is never reported instead; `port` then only selects what to ask lsof or
+ * netstat about.
+ *
+ * No more than `MAX_CONCURRENT_PROCESS_LOOKUPS` lookups run at once in the process, and the others
+ * wait. `signal` stops a lookup that waits as well as one that runs, killing its commands, and
+ * `PROCESS_LOOKUP_SAFETY_TIMEOUT_MS` does the same for a lookup that takes too long, so either
+ * rejects.
+ */
+export async function findProcessFromIncomingPort(
+    port: number,
+    filterSelf: boolean = false,
+    connection?: IncomingConnection,
+    signal?: AbortSignal,
+): Promise<ProcessInfo | undefined> {
+    const endpoints = connection && getEndpoints(port, connection);
+    if (connection && !endpoints) {
+        // Without both of its endpoints the connection cannot be attributed to a socket.
+        return undefined;
+    }
+
+    const safetyTimeout = AbortSignal.timeout(PROCESS_LOOKUP_SAFETY_TIMEOUT_MS);
+    const lookupSignal = signal ? AbortSignal.any([signal, safetyTimeout]) : safetyTimeout;
+
+    const { promiseId } = await lookupSlots.createConcurrent(
+        MAX_CONCURRENT_PROCESS_LOOKUPS,
+        undefined,
+        lookupSignal,
+    );
+
+    try {
+        // The slot is taken after a wait, in which the signal may have aborted. A command spawned
+        // now would only be killed.
+        lookupSignal.throwIfAborted();
+
+        return await lookUpProcess(port, filterSelf, endpoints, lookupSignal);
+    } finally {
+        lookupSlots.resolve(promiseId);
     }
 }

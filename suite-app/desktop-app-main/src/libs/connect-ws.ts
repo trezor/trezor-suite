@@ -18,6 +18,7 @@ import { type ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-util
 import { createDeferred, resolveAfter } from '@trezor/utils';
 
 import { addMessage, deleteMessage, rejectMessage, setAppInit } from './connect-popup-messages';
+import { createProcessLookup } from './createProcessLookup';
 import { type createHttpReceiver } from './http-receiver';
 import { getProcessIcon } from './process-icon';
 import { type Dependencies } from '../modules';
@@ -29,6 +30,10 @@ export const HANDSHAKE_TIMEOUT_MS = 10000;
 // failed the call. This deadline only guarantees that the idle timeout is re-armed and that the
 // child process of an abandoned lookup is killed.
 export const PROCESS_LOOKUP_TIMEOUT_MS = 10000;
+// A connection whose lookup ran and found no process looks again only after this pause. Such a
+// client is never found when it runs sandboxed on Linux, so a retry on every handshake would only
+// be work. A lookup that failed or timed out is not covered: it looks again on the next handshake.
+export const PROCESS_LOOKUP_RETRY_INTERVAL_MS = 5000;
 export const IDLE_CONNECTION_TIMEOUT_MS = 60000;
 export const MAX_CONCURRENT_CONNECTIONS = 50;
 export const MAX_CONNECTIONS_PER_ORIGIN = 5;
@@ -110,6 +115,7 @@ export const exposeConnectWs = ({
     const connectionsByOrigin = new Map<string, number>();
     const getActiveConnections = () =>
         Array.from(connectionsByOrigin.values()).reduce((acc, val) => acc + val, 0);
+    const processLookup = createProcessLookup({ findProcessFromIncomingPort, logger });
 
     const wss = new WebSocketServer({
         noServer: true,
@@ -182,6 +188,14 @@ export const exposeConnectWs = ({
             }
         }, HANDSHAKE_TIMEOUT_MS);
 
+        const connectionProcessLookup = processLookup({
+            port,
+            connection: req.socket,
+            shouldFilterSelf: !process.env.PLAYWRIGHT_RUN, // Ignore own process, unless testing.
+            timeoutMs: PROCESS_LOOKUP_TIMEOUT_MS,
+            retryIntervalMs: PROCESS_LOOKUP_RETRY_INTERVAL_MS,
+        });
+
         logger.info(LOG_PREFIX, `origin: ${origin}`);
 
         ws.on('message', async data => {
@@ -227,44 +241,10 @@ export const exposeConnectWs = ({
                     return;
                 }
 
-                const filterSelf = !process.env.PLAYWRIGHT_RUN; // ignore own process, unless testing
                 // The client handshakes before every call, so expiring the connection during the
                 // lookup would fail that call and make the client fall back to the web popup.
                 clearTimeout(idleTimeout);
-                const lookupDeadline = new AbortController();
-                processOnPort = await Promise.race([
-                    findProcessFromIncomingPort(port, filterSelf, req.socket, lookupDeadline.signal)
-                        .catch(error => {
-                            // An abort is reported by the deadline branch below.
-                            if (!lookupDeadline.signal.aborted) {
-                                logger.error(
-                                    LOG_PREFIX,
-                                    `findProcessFromIncomingPort failed: ${error}`,
-                                );
-                            }
-
-                            return undefined;
-                        })
-                        .finally(() => lookupDeadline.abort()),
-                    // The lookup spawns a child process and has no deadline of its own. Without
-                    // this bound a hung spawn would leave the idle timeout disarmed for good,
-                    // because the handshake timeout is already cleared on an established
-                    // connection, and the connection would hold its slot forever.
-                    resolveAfter<ProcessInfo | undefined>(
-                        PROCESS_LOOKUP_TIMEOUT_MS,
-                        lookupDeadline.signal,
-                    ).then(
-                        value => {
-                            logger.error(LOG_PREFIX, 'findProcessFromIncomingPort timed out');
-                            // Kills the child of the abandoned lookup, which would otherwise
-                            // survive together with the promise and the closure it captures.
-                            lookupDeadline.abort();
-
-                            return value;
-                        },
-                        () => undefined, // aborted: the lookup won, nothing to report
-                    ),
-                ]);
+                processOnPort = await connectionProcessLookup.lookUp();
                 manifest = handshakeManifest;
                 version = parseVersion(message.payload.settings.version);
                 requestedPermissions = message.payload.settings.requestedPermissions;
@@ -435,6 +415,7 @@ export const exposeConnectWs = ({
         ws.on('close', () => {
             clearTimeout(handshakeTimeout);
             clearTimeout(idleTimeout);
+            connectionProcessLookup.abort();
             const currentOriginCount = connectionsByOrigin.get(originKey) ?? 1;
             if (currentOriginCount <= 1) {
                 connectionsByOrigin.delete(originKey);

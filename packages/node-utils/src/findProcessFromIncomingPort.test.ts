@@ -3,7 +3,11 @@ import { EventEmitter } from 'events';
 import { promises as fs, statSync } from 'fs';
 import net from 'net';
 
-import { findProcessFromIncomingPort } from './findProcessFromIncomingPort';
+import {
+    MAX_CONCURRENT_PROCESS_LOOKUPS,
+    PROCESS_LOOKUP_SAFETY_TIMEOUT_MS,
+    findProcessFromIncomingPort,
+} from './findProcessFromIncomingPort';
 import { getFreePort } from './getFreePort';
 
 describe('findProcessFromIncomingPort', () => {
@@ -60,11 +64,15 @@ describe('findProcessFromIncomingPort', () => {
         const [port]: [number] = ports;
         const controller = new AbortController();
 
-        // The command is spawned synchronously, so the abort reaches a running child.
+        // The lookup takes its slot before it spawns, so this abort comes first and no command is
+        // spawned for it.
+        const spawn = jest.spyOn(childProcess, 'spawn');
         const lookup = findProcessFromIncomingPort(port, false, undefined, controller.signal);
         controller.abort();
 
         await expect(lookup).rejects.toMatchObject({ name: 'AbortError' });
+        expect(spawn).not.toHaveBeenCalled();
+        spawn.mockRestore();
     });
 });
 
@@ -496,5 +504,169 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
         mockCommands([['netstat', netstatOutput]]);
 
         await expect(findProcessFromIncomingPort(40001)).resolves.toBeUndefined();
+    });
+
+    describe('under load', () => {
+        const flushPendingPromises = () => new Promise(resolve => setImmediate(resolve));
+
+        // Every command stays running until the test finishes it, and dies when its `signal`
+        // aborts, as a real child process does.
+        const holdCommands = () => {
+            const commands: { signal?: AbortSignal; finish: () => void }[] = [];
+            jest.spyOn(childProcess, 'spawn').mockImplementation((...args: unknown[]) => {
+                const { signal } = (args[2] ?? {}) as { signal?: AbortSignal };
+                const child = Object.assign(new EventEmitter(), {
+                    stdout: new EventEmitter(),
+                    stderr: new EventEmitter(),
+                });
+                signal?.addEventListener(
+                    'abort',
+                    () =>
+                        child.emit(
+                            'error',
+                            Object.assign(new Error('The operation was aborted'), {
+                                name: 'AbortError',
+                            }),
+                        ),
+                    { once: true },
+                );
+                commands.push({ signal, finish: () => child.emit('close', 0) });
+
+                return child as unknown as ChildProcess;
+            });
+
+            return commands;
+        };
+
+        const startLookups = (count: number, signal?: AbortSignal) =>
+            Array.from({ length: count }, (_, index) =>
+                findProcessFromIncomingPort(40000 + index, false, undefined, signal),
+            );
+
+        beforeEach(() => {
+            setPlatform('linux');
+        });
+
+        test('runs only so many lookups at once, and starts the next as one finishes', async () => {
+            const commands = holdCommands();
+            const lookups = startLookups(MAX_CONCURRENT_PROCESS_LOOKUPS + 1);
+            await flushPendingPromises();
+
+            expect(commands).toHaveLength(MAX_CONCURRENT_PROCESS_LOOKUPS);
+
+            commands[0]?.finish();
+            await flushPendingPromises();
+
+            expect(commands).toHaveLength(MAX_CONCURRENT_PROCESS_LOOKUPS + 1);
+
+            commands.forEach(command => command.finish());
+            await expect(Promise.all(lookups)).resolves.toEqual(lookups.map(() => undefined));
+        });
+
+        test('never spawns for a lookup whose signal aborts while it waits', async () => {
+            const commands = holdCommands();
+            const running = startLookups(MAX_CONCURRENT_PROCESS_LOOKUPS);
+            const controller = new AbortController();
+            const [waiting] = startLookups(1, controller.signal);
+            await flushPendingPromises();
+
+            controller.abort();
+
+            await expect(waiting).rejects.toMatchObject({ name: 'AbortError' });
+
+            // The slot that frees up has no one waiting for it.
+            commands.forEach(command => command.finish());
+            await Promise.all(running);
+            await flushPendingPromises();
+
+            expect(commands).toHaveLength(MAX_CONCURRENT_PROCESS_LOOKUPS);
+        });
+
+        test('kills the command of a running lookup when its signal aborts, and frees the slot', async () => {
+            const commands = holdCommands();
+            const controller = new AbortController();
+            const [aborted] = startLookups(1, controller.signal);
+            const others = startLookups(MAX_CONCURRENT_PROCESS_LOOKUPS);
+            await flushPendingPromises();
+
+            expect(commands).toHaveLength(MAX_CONCURRENT_PROCESS_LOOKUPS);
+            expect(commands[0]?.signal?.aborted).toBe(false);
+
+            controller.abort();
+
+            await expect(aborted).rejects.toMatchObject({ name: 'AbortError' });
+            expect(commands[0]?.signal?.aborted).toBe(true);
+
+            // The lookup that waited takes the slot of the killed one.
+            await flushPendingPromises();
+
+            expect(commands).toHaveLength(MAX_CONCURRENT_PROCESS_LOOKUPS + 1);
+
+            commands.forEach(command => command.finish());
+            await Promise.all(others);
+        });
+
+        describe('safety timeout', () => {
+            // Every lookup gets a timeout signal of its own, which a test aborts to let it expire.
+            const holdTimeouts = () => {
+                const timeouts: AbortController[] = [];
+                const timeoutSpy = jest.spyOn(AbortSignal, 'timeout').mockImplementation(() => {
+                    const timeout = new AbortController();
+                    timeouts.push(timeout);
+
+                    return timeout.signal;
+                });
+
+                return { timeouts, timeoutSpy };
+            };
+
+            const expire = (timeout?: AbortController) =>
+                timeout?.abort(new DOMException('The operation timed out', 'TimeoutError'));
+
+            test('kills a command that never exits for a caller without a signal, and frees its slot', async () => {
+                const commands = holdCommands();
+                const { timeouts, timeoutSpy } = holdTimeouts();
+                const hung = startLookups(MAX_CONCURRENT_PROCESS_LOOKUPS).map(lookup =>
+                    expect(lookup).rejects.toMatchObject({ name: 'AbortError' }),
+                );
+                await flushPendingPromises();
+
+                expect(timeoutSpy).toHaveBeenCalledWith(PROCESS_LOOKUP_SAFETY_TIMEOUT_MS);
+                expect(commands).toHaveLength(MAX_CONCURRENT_PROCESS_LOOKUPS);
+
+                timeouts.forEach(timeout => expire(timeout));
+                await Promise.all(hung);
+
+                expect(commands.every(command => command.signal?.aborted)).toBe(true);
+
+                // Both slots are free again.
+                const [next] = startLookups(1);
+                await flushPendingPromises();
+
+                expect(commands).toHaveLength(MAX_CONCURRENT_PROCESS_LOOKUPS + 1);
+
+                commands[MAX_CONCURRENT_PROCESS_LOOKUPS]?.finish();
+                await expect(next).resolves.toBeUndefined();
+            });
+
+            test('rejects a lookup that still waits for its turn when its timeout passes', async () => {
+                const commands = holdCommands();
+                const { timeouts } = holdTimeouts();
+                const running = startLookups(MAX_CONCURRENT_PROCESS_LOOKUPS);
+                const [waiting] = startLookups(1);
+                await flushPendingPromises();
+
+                expire(timeouts[MAX_CONCURRENT_PROCESS_LOOKUPS]);
+
+                await expect(waiting).rejects.toMatchObject({ name: 'TimeoutError' });
+
+                // The running lookups are not affected, and the one that gave up never spawns.
+                commands.forEach(command => command.finish());
+                await Promise.all(running);
+                await flushPendingPromises();
+
+                expect(commands).toHaveLength(MAX_CONCURRENT_PROCESS_LOOKUPS);
+            });
+        });
     });
 });
