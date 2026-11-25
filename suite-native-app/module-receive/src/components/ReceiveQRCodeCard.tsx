@@ -1,7 +1,6 @@
 import ViewShot from 'react-native-view-shot';
 
-import { Card } from '@suite-native/atoms';
-import { ContextMenu } from '@suite-native/clipboard';
+import { Card, ContextMenu } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { useNativeStyles } from '@trezor/styles-native';
 

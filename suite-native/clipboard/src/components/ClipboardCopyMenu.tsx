@@ -3,9 +3,9 @@ import type { StyleProp, ViewStyle } from 'react-native';
 
 import * as Haptics from 'expo-haptics';
 
+import { ContextMenu } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
-import { ContextMenu } from './ContextMenu';
 import { useCopyToClipboard } from '../hooks/useCopyToClipboard';
 
 export type ClipboardCopyMenuProps = {

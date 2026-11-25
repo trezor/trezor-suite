@@ -15603,7 +15603,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/clipboard@workspace:suite-native/clipboard"
   dependencies:
-    "@expo/ui": "npm:58.0.25"
+    "@suite-native/atoms": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     expo-clipboard: "npm:~58.0.4"
