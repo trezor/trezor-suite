@@ -10,7 +10,9 @@ import {
     type ReferralWalletRecord,
     initialAccountState,
 } from './referAFriendSlice';
+import { type ReferralProgramData, type ReferralRewards } from './referAFriendTypes';
 import { getReferAFriendApiDefaultUrl } from './referAFriendUrl';
+import { createFormatAmount } from './utils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<ReferAFriendRootState>();
 
@@ -37,6 +39,32 @@ export const selectReferralAnnualRewardLimit = createMemoizedSelector(
     },
 );
 
+export const selectReferralProgramData = createMemoizedSelector(
+    [selectReferralProgram],
+    ({ data }): ReferralProgramData | null => {
+        if (!data) {
+            return null;
+        }
+
+        const {
+            fiatCurrency,
+            rewardAmount,
+            friendDiscountPercentage,
+            minimumOrderAmount,
+            redemptionLimit,
+        } = data;
+        const formatAmount = createFormatAmount(fiatCurrency);
+
+        return {
+            rewardAmount: formatAmount(rewardAmount),
+            friendDiscountPercentage,
+            minimumOrderAmount: formatAmount(minimumOrderAmount),
+            periodReferralLimit: redemptionLimit,
+            periodRewardAmountLimit: formatAmount(redemptionLimit * rewardAmount),
+        };
+    },
+);
+
 const selectReferAFriendAccounts = (state: ReferAFriendRootState) => state.referAFriend.accounts;
 
 const getWalletRecord = (
@@ -58,12 +86,18 @@ export const selectReferralWalletRecordByWalletDescriptor = createMemoizedSelect
     ],
     getWalletRecord,
 );
+
 export const selectReferralWalletRecord = createMemoizedSelectorWithDevice(
     [selectReferAFriendWallets, selectStandardWalletDescriptor],
     getWalletRecord,
 );
 
-// The share link is stored only once the account exists on the backend (it is an indicator that the account exists).
+export const selectReferralLink = createMemoizedSelectorWithDevice(
+    [selectReferralWalletRecord],
+    walletRecord => walletRecord?.shareUrl,
+);
+
+// The share link is stored only once the account exists on the backend (it is an indicater that the account exists).
 export const selectDoesReferralRecordExistForWalletDescriptor = createMemoizedSelector(
     [selectReferralWalletRecordByWalletDescriptor],
     walletRecord => !!walletRecord?.shareUrl,
@@ -81,6 +115,7 @@ export const selectReferralAccountStateByWalletDescriptor = createMemoizedSelect
     ],
     getAccountState,
 );
+
 export const selectReferralAccountState = createMemoizedSelectorWithDevice(
     [selectReferAFriendAccounts, selectStandardWalletDescriptor],
     getAccountState,
@@ -100,6 +135,27 @@ export const selectDoesReferralExistOnlyForOtherWallets = createMemoizedSelector
             ([walletDescriptor, walletRecord]) =>
                 walletDescriptor !== standardWalletDescriptor && !!walletRecord.shareUrl,
         ),
+);
+
+export const selectReferralRewards = createMemoizedSelectorWithDevice(
+    [selectReferralProgram, selectReferralAccountState],
+    (programState, accountState): ReferralRewards | null => {
+        if (!programState.data) {
+            return null;
+        }
+
+        const vouchers = accountState.vouchers ?? [];
+
+        return {
+            status: accountState.status,
+            fiatCurrency: programState.data.fiatCurrency,
+            totalEarnedAmount: vouchers
+                .filter(({ status }) => status !== 'pending' && status !== 'canceled')
+                .reduce((totalAmount, voucher) => totalAmount + voucher.amount, 0),
+            availableVoucherCount: vouchers.filter(({ status }) => status === 'available').length,
+            vouchers,
+        };
+    },
 );
 
 export const selectReferAFriendApiCustomUrl = (state: ReferAFriendRootState) => {

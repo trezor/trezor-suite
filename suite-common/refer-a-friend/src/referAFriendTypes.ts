@@ -1,3 +1,5 @@
+export type ReferralRequestStatus = 'idle' | 'loading' | 'loaded' | 'error';
+
 export type ReferralProgram = {
     fiatCurrency: string;
     rewardAmount: number;
@@ -5,6 +7,14 @@ export type ReferralProgram = {
     minimumOrderAmount: number;
     redemptionLimit: number;
     termsUrl: string;
+};
+
+export type ReferralProgramData = {
+    rewardAmount: string;
+    friendDiscountPercentage: number;
+    minimumOrderAmount: string;
+    periodReferralLimit: number;
+    periodRewardAmountLimit: string;
 };
 
 type InactiveReferralAccount = {
@@ -29,6 +39,7 @@ type ActiveReferralAccount = {
 
 export type ReferralAccount = InactiveReferralAccount | ActiveReferralAccount;
 export type ReferralAccountStatus = ReferralAccount['status'];
+export type ReferralAccountLoadStatus = ReferralRequestStatus | 'keyMissing';
 
 type ReferralVoucherBase = {
     amount: number;
@@ -83,6 +94,14 @@ type WithLooseAmount<Voucher> = Voucher extends unknown
 export type ReferralVouchersResponse = {
     // The API may send the amount as a decimal string, e.g. "20.00".
     vouchers: Array<WithLooseAmount<ReferralVoucher>>;
+};
+
+export type ReferralRewards = {
+    status: ReferralAccountLoadStatus;
+    fiatCurrency: string;
+    totalEarnedAmount: number;
+    availableVoucherCount: number;
+    vouchers: ReferralVoucher[];
 };
 
 export type ReferralError = {
