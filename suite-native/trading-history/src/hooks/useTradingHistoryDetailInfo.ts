@@ -70,6 +70,31 @@ const getTradingHistoryDetailRateType = ({
     return isFixedRate ? 'fixed' : 'floating';
 };
 
+type GetTradingHistoryDetailCryptoAssetParams = {
+    accountLabel?: string;
+    amount: string;
+    createAssetOptionFromCryptoId: (cryptoId?: CryptoId) => TradingAssetOption;
+    cryptoId: CryptoId;
+};
+
+const getTradingHistoryDetailCryptoAsset = ({
+    accountLabel,
+    amount,
+    createAssetOptionFromCryptoId,
+    cryptoId,
+}: GetTradingHistoryDetailCryptoAssetParams): TradingHistoryDetailCryptoAsset => {
+    const cryptoAsset = createAssetOptionFromCryptoId(cryptoId);
+
+    return {
+        type: 'crypto',
+        accountLabel: accountLabel ?? cryptoAsset.networkName,
+        amount,
+        contractAddress: cryptoAsset.isNativeToken ? undefined : cryptoAsset.contractAddress,
+        cryptoId,
+        networkSymbol: cryptoAsset.networkSymbol,
+    };
+};
+
 type GetTradingHistoryDetailAssetParams = {
     accountLabel?: string;
     amount?: string;
@@ -97,17 +122,12 @@ const getTradingHistoryDetailAsset = ({
         };
     }
 
-    const cryptoId = currency as CryptoId;
-    const cryptoAsset = createAssetOptionFromCryptoId(cryptoId);
-
-    return {
-        type: 'crypto',
-        accountLabel: accountLabel ?? cryptoAsset.networkName,
+    return getTradingHistoryDetailCryptoAsset({
+        accountLabel,
         amount,
-        contractAddress: cryptoAsset.isNativeToken ? undefined : cryptoAsset.contractAddress,
-        cryptoId,
-        networkSymbol: cryptoAsset.networkSymbol,
-    };
+        createAssetOptionFromCryptoId,
+        cryptoId: currency as CryptoId,
+    });
 };
 
 export const useTradingHistoryDetailInfo = (orderId: string) => {

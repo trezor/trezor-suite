@@ -7,3 +7,8 @@ export {
 } from './components/TradingHistoryDetail/TradingHistoryDetailHeader';
 export { TradeHistoryListItem } from './components/TradeHistoryListItem/TradeHistoryListItem';
 export { TradingDetailFeedback } from './components/TradeHistoryListItem/TradingDetailFeedback';
+export { TradingHistoryDetailAssetRow } from './components/TradingHistoryDetail/TradingHistoryDetailAssetRow';
+export {
+    type TradingHistoryDetailAsset,
+    type TradingHistoryDetailCryptoAsset,
+} from './hooks/useTradingHistoryDetailInfo';
