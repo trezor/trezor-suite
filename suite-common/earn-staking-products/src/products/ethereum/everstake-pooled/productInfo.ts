@@ -1,4 +1,8 @@
-import type { getEthereumValidatorsQueue, getStakingStats } from '@suite-common/earn-staking-api';
+import type {
+    EthValidatorsQueue,
+    getEthereumValidatorsQueue,
+    getStakingStats,
+} from '@suite-common/earn-staking-api';
 import {
     type FetchProductInfoParams,
     type StakingProductInfo,
@@ -9,15 +13,17 @@ import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-type
 const SECONDS_IN_DAY = 24 * 60 * 60;
 
 // Exact, so a period end is not rounded twice: here and again where the days left are shown. The
-// queue marks each part optional, so a period sums the parts it reports and is unknown only
-// without any.
-const getPeriodDays = (...partsInSeconds: (number | undefined)[]): number | null => {
-    const reportedParts = partsInSeconds.filter(part => part !== undefined);
+// entry period needs both of its parts; the exit period needs the withdraw time and adds the exit
+// time when the queue reports it, as the legacy helpers read them.
+const getEntryPeriodDays = (queue: EthValidatorsQueue | null): number | null =>
+    queue?.addingDelay === undefined || queue.activationTime === undefined
+        ? null
+        : (queue.addingDelay + queue.activationTime) / SECONDS_IN_DAY;
 
-    if (reportedParts.length === 0) return null;
-
-    return reportedParts.reduce((sum, part) => sum + part, 0) / SECONDS_IN_DAY;
-};
+const getExitPeriodDays = (queue: EthValidatorsQueue | null): number | null =>
+    queue?.withdrawTime === undefined
+        ? null
+        : (queue.withdrawTime + (queue.exitTime ?? 0)) / SECONDS_IN_DAY;
 
 const HOUR_MS = 60 * 60 * 1000;
 
@@ -55,8 +61,8 @@ export const fetchEthereumEverstakePooledProductInfo = async (
     // the legacy selectors left it.
     const rate = networkSymbol === asNetworkSymbol(stats.symbol) ? stats.apy : null;
 
-    const entryPeriodDays = getPeriodDays(queue?.addingDelay, queue?.activationTime);
-    const exitPeriodDays = getPeriodDays(queue?.withdrawTime, queue?.exitTime);
+    const entryPeriodDays = getEntryPeriodDays(queue);
+    const exitPeriodDays = getExitPeriodDays(queue);
 
     const nextRewardAt =
         stats.nextRewardPayout > 0 ? getNextRewardAt(stats.nextRewardPayout) : null;

@@ -9,13 +9,13 @@ export type StakingPeriods = {
     nextRewardAt: number | null;
 };
 
-const toWholeDays = (days: number | null) => (days === null ? null : Math.round(days));
+// A period shows at least one day, as the legacy helpers did.
+const toWholeDays = (days: number | null) => (days === null ? null : Math.max(1, Math.round(days)));
 
 export const useStakingPeriods = (productId: StakingProductId | null): StakingPeriods => {
     const { productInfo } = useStakingProductInfo(productId);
 
-    const entryDays = toWholeDays(productInfo?.entryPeriodDays ?? null);
-    const entryPeriodDays = entryDays === null ? null : Math.max(1, entryDays);
+    const entryPeriodDays = toWholeDays(productInfo?.entryPeriodDays ?? null);
     const exitPeriodDays = toWholeDays(productInfo?.exitPeriodDays ?? null);
     const rewardPeriodDays = productInfo?.rewardPeriodDays ?? null;
     const nextRewardAt = productInfo?.nextRewardAt ?? null;
