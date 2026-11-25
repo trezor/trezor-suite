@@ -7,8 +7,9 @@ import {
     useNetworkStakingRate,
     useStakingAccountPosition,
 } from '@suite-common/earn-staking';
-import { calculateGains } from '@suite-common/wallet-core';
+import { estimateStakingRewards } from '@suite-common/earn-staking-common';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
+import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
@@ -62,18 +63,24 @@ export const EstimatedGains = () => {
 
     const { rate: apy } = useNetworkStakingRate({ networkSymbol: account.symbol });
 
+    const getGains = (days: number) =>
+        new BigNumber(estimateStakingRewards({ amount: cryptoInput, rate: apy, days })).toFixed(
+            5,
+            BigNumber.ROUND_DOWN,
+        );
+
     const gains = [
         {
             label: <Translation id="TR_STAKE_WEEKLY" />,
-            value: calculateGains(cryptoInput, apy, 365 / 52),
+            value: getGains(365 / 52),
         },
         {
             label: <Translation id="TR_STAKE_MONTHLY" />,
-            value: calculateGains(cryptoInput, apy, 365 / 12),
+            value: getGains(365 / 12),
         },
         {
             label: <Translation id="TR_STAKE_YEARLY" />,
-            value: calculateGains(cryptoInput, apy, 365),
+            value: getGains(365),
         },
     ];
 

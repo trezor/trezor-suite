@@ -16,11 +16,14 @@ import {
     useStakingAccess,
     useStakingAccountPosition,
 } from '@suite-common/earn-staking';
-import { type StakingOperation, getStakingEarningAmount } from '@suite-common/earn-staking-common';
+import {
+    type StakingOperation,
+    estimateStakingRewards,
+    getStakingEarningAmount,
+} from '@suite-common/earn-staking-common';
 import { useFormatters } from '@suite-common/formatters';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
-import { calculateRewards } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, Icon, Paragraph, Row, Table, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -274,7 +277,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         amount: getStakingEarningAmount(totals),
         networkSymbol: account.symbol,
     });
-    const currentRewards = calculateRewards(earningBalance, rate);
+    const currentRewards = estimateStakingRewards({ amount: earningBalance, rate });
 
     const potentialRewards = getEarnStakingPotentialRewards({
         currentRewards,

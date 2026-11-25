@@ -1,6 +1,6 @@
 import { selectAccountStakingSplit } from '@suite-common/assets';
-import { useNetworkStakingRate } from '@suite-common/earn-staking';
-import { isSupportedStakingNetworkSymbol, selectAccountByKey } from '@suite-common/wallet-core';
+import { selectIsStakingSupportedSymbol, useNetworkStakingRate } from '@suite-common/earn-staking';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 
@@ -19,13 +19,13 @@ export const AccountAssetEarn = ({ accountKey }: AccountAssetEarnProps) => {
     const { totalAmount, availableAmount, stakingAmount, stakingRatio } = useSelector(state =>
         selectAccountStakingSplit(state, accountKey),
     );
+    const isStakingSupported = useSelector(
+        state =>
+            networkSymbol !== undefined && selectIsStakingSupportedSymbol(state, networkSymbol),
+    );
     const stakingRate = useNetworkStakingRate({ networkSymbol: networkSymbol ?? null, accountKey });
 
-    if (
-        networkSymbol === undefined ||
-        !isSupportedStakingNetworkSymbol(networkSymbol) ||
-        !isPositiveBalance(totalAmount)
-    ) {
+    if (networkSymbol === undefined || !isStakingSupported || !isPositiveBalance(totalAmount)) {
         return null;
     }
 

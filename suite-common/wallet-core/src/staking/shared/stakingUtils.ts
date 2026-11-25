@@ -324,22 +324,6 @@ export const getOutputTxAmount = (composedLevels?: PrecomposedLevels) => {
     return precomposedTx?.outputs?.[0]?.amount ?? null;
 };
 
-export const calculateRewards = (amount: string, apyPercent: number | null, days = 365) => {
-    if (apyPercent === null) return '0';
-
-    const apy = apyPercent / 100;
-    const factor = Math.pow(1 + apy, days / 365) - 1;
-    const currentRewards = new BigNumber(amount).multipliedBy(factor).toString();
-
-    return currentRewards;
-};
-
-export const calculateGains = (amount: string, apy: number | null, days: number) => {
-    const rewards = calculateRewards(amount, apy, days);
-
-    return new BigNumber(rewards).toFixed(5, 1);
-};
-
 export const getNetworkAdjustedStakingBalance = (amount: string, account?: Account) => {
     if (account?.networkType === 'cardano') {
         const adjusted = new BigNumber(amount).minus(CARDANO_STAKING_REGISTRATION_DEPOSIT);

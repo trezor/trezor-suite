@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react';
 
+import { estimateStakingRewards } from '@suite-common/earn-staking-common';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { calculateRewards } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Text, VStack } from '@suite-native/atoms';
 import {
@@ -27,7 +27,7 @@ export const EarnEstimatedRewards = ({
     symbol,
     tokenContract,
 }: EarnEstimatedRewardsProps) => {
-    const rewards = calculateRewards(amountValue, apy);
+    const rewards = estimateStakingRewards({ amount: amountValue, rate: apy });
 
     return (
         <VStack spacing="sp4" paddingHorizontal="sp16">
