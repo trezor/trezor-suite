@@ -13,6 +13,10 @@ class Probe extends CoreInModuleNative {
 }
 
 describe('CoreInModuleNative', () => {
+    it('allows cancellation before Connect is initialized', () => {
+        expect(() => new CoreInModuleNative().cancel()).not.toThrow();
+    });
+
     // Native must not reach for the node `usb` binding.
     it('defaults to bridge only', () => {
         const transports = new Probe().getDefaultTransports({ id: 'Test App' });

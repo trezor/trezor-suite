@@ -36,6 +36,7 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../app-init" },
         { "path": "../../suite-native/accounts" },
         { "path": "../../suite-native/alerts" },
         {

@@ -45,6 +45,7 @@ import {
     yieldReducer,
 } from '@suite-common/wallet-core';
 import { prepareWalletConnectReducer } from '@suite-common/walletconnect';
+import { appInitReducer } from '@suite-native-app/app-init';
 import { bannerFlagsPersistWhitelist, bannerFlagsReducer } from '@suite-native/banners';
 import { biometricsPersistWhitelist, biometricsSlice } from '@suite-native/biometrics';
 import { prepareBluetoothReducer } from '@suite-native/bluetooth';
@@ -92,7 +93,6 @@ import {
 } from '@suite-native/trading-shared';
 import { prepareSendFormReducer } from '@suite-native/transaction-management';
 
-import { appReducer } from './appSlice';
 import { extraDependencies } from './createNativeExtraDependencies';
 import { receivePersistTransform } from './receivePersistTransform';
 
@@ -555,7 +555,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         reducer: combineReducers({
             networks: networksReducer,
             analytics: analyticsPersistedReducer,
-            app: appReducer,
+            appInit: appInitReducer,
             appSettings: appSettingsPersistedReducer,
             biometrics: biometricsPersistedReducer,
             bannerFlags: bannerFlagsPersistedReducer,

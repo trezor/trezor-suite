@@ -32,6 +32,7 @@
         "@suite-native/accounts": "workspace:*",
         "@suite-native/alerts": "workspace:*",
         "@suite-native/analytics": "workspace:*",
+        "@suite-native-app/app-init": "workspace:*",
         "@suite-native/assets": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/banners": "workspace:*",
