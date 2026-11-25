@@ -25,9 +25,9 @@ import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { CountdownTimer } from '#src/components/suite/CountdownTimer';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useTronFirmwareUpgradeModal } from '#src/hooks/earn/useTronFirmwareUpgradeModal';
+import { useTronRewardsClaimCoolDown } from '#src/hooks/earn/useTronRewardsClaimCoolDown';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
-import { useTronRewardsClaimCoolDown } from './hooks/useTronRewardsClaimCoolDown';
 import { useTronStakingOperation } from './hooks/useTronStakingOperation';
 
 interface TronVotingRewardsCardProps {
