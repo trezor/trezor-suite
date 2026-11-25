@@ -253,8 +253,16 @@ export const startServer = async (opts: ServerOptions) => {
             switch (call.method) {
                 case 'serveEntry':
                     return { ...(await host.serveEntry(p.request ?? {}, p.staged ?? [])) };
-                case 'applyResult':
-                    return host.applyResult(p);
+                case 'applyResult': {
+                    // `sync`: the caller relays the device, so sync it at once. The device signed
+                    // a step the WM has now accepted, and it treats its head as unconfirmed until a
+                    // sync adopts it; syncing here closes that window in normal use.
+                    const { sync, ...result } = p;
+                    const applied = await host.applyResult(result);
+                    if (!sync || !applied.published) return applied;
+
+                    return { ...applied, synced: { ...(await host.sync(device)) } };
+                }
                 case 'sync':
                     return { ...(await host.sync(device, { rejoin: !!p.rejoin })) };
                 case 'catchUp':

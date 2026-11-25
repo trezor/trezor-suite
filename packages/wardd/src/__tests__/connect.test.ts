@@ -11,7 +11,7 @@ import WardRelay from '@trezor/connect/src/api/ward/wardRelay';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- the wardd binding is not public API yet: the barrel takes no code exports (#27376)
 import { createWarddProvider } from '@trezor/connect/src/ward/createWarddProvider';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- the wardd binding is not public API yet: the barrel takes no code exports (#27376)
-import { stripAbsent } from '@trezor/connect/src/ward/warddClient';
+import { WarddClient, stripAbsent } from '@trezor/connect/src/ward/warddClient';
 import { MessagesSchema, protobufManager } from '@trezor/protobuf';
 import * as commonProto from '@trezor/protobuf/src/definitions/messages-common_pb';
 import * as wardConnectProto from '@trezor/protobuf/src/definitions/messages-ward-connect_pb';
@@ -177,6 +177,40 @@ describe('Connect wardRelay against wardd', () => {
 });
 
 describe('createWarddProvider against wardd', () => {
+    it('applies a write and, asked to, syncs the device in the same call', async () => {
+        const wardd = await Wardd.create({ dataDir: null, memory: true });
+        const server = await startServer({ wardd, token: TOKEN, port: 0 });
+        const url = `ws://127.0.0.1:${server.port}`;
+        const device = new FakeDevice();
+        await relay(device, url, { op: 'sync' }).run();
+        device.enqueue('alice', 'bc1q-alice');
+
+        const client = await WarddClient.connect({ url, token: TOKEN });
+        try {
+            await client.call('openStore', { wardId: toHex(device.wardId) });
+            // the device forms the change, its pulls answered from wardd's replica
+            let reply = await device.call({ name: 'WardFlushQueue', message: {} });
+            while (reply.name === 'WardEntryRequest') {
+                const ack = await client.call('serveEntry', { request: reply.message });
+                reply = await device.call({ name: 'WardEntryAck', message: ack });
+            }
+            expect(reply.name).toBe('WardFlushQueueAck');
+
+            const out = await client.call(
+                'applyResult',
+                { ...(reply.message as Record<string, unknown>), sync: true },
+                m => device.call(m),
+            );
+            // published, then the device adopted it in the same call
+            expect(out).toMatchObject({ published: true, counter: 1, synced: { counter: 1 } });
+            expect(device.head.counter).toBe(1);
+            expect(device.online).toBe(true);
+        } finally {
+            client.close();
+            await server.close();
+        }
+    });
+
     it("answers a device's pulls from wardd's replica", async () => {
         const wardd = await Wardd.create({ dataDir: null, memory: true });
         const server = await startServer({ wardd, token: TOKEN, port: 0 });
