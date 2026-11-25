@@ -222,6 +222,7 @@
 !/suite-native/price-chart
 !/suite-native/qr-code
 !/suite-native/react-native-graph
+!/suite-native/refer-a-friend
 !/suite-native/regions
 !/suite-native/scrollview
 !/suite-native/search
@@ -280,6 +281,7 @@
 !/suite-native-app/module-onboarding
 !/suite-native-app/module-passphrase
 !/suite-native-app/module-receive
+!/suite-native-app/module-refer-a-friend
 !/suite-native-app/module-send
 !/suite-native-app/module-settings
 !/suite-native-app/module-sign-verify

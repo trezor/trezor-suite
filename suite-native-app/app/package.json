@@ -85,6 +85,7 @@
         "@suite-native-app/module-onboarding": "workspace:*",
         "@suite-native-app/module-passphrase": "workspace:*",
         "@suite-native-app/module-receive": "workspace:*",
+        "@suite-native-app/module-refer-a-friend": "workspace:*",
         "@suite-native-app/module-send": "workspace:*",
         "@suite-native-app/module-settings": "workspace:*",
         "@suite-native-app/module-sign-verify": "workspace:*",

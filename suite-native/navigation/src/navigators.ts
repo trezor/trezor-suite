@@ -40,11 +40,13 @@ import {
     type FirmwareUpdateStackRoutes,
     type ForgetDeviceStackRoutes,
     type HomeStackRoutes,
+    type JoinReferAFriendStackRoutes,
     type OnboardingStackRoutes,
     type PassphraseStackRoutes,
     type ReceiveAddressVerificationSource,
     type ReceiveAddressVerificationStackRoutes,
     type ReceiveStackRoutes,
+    type ReferAFriendStackRoutes,
     type RootStackRoutes,
     type SendStackRoutes,
     type SettingsStackRoutes,
@@ -621,6 +623,7 @@ export type RootStackParamList = {
     [RootStackRoutes.StellarManageTokenStack]: NavigatorScreenParams<StellarManageTokenStackParamList>;
     [RootStackRoutes.FeatureFeedbackModal]: { feature: ExperimentalFeature };
     [RootStackRoutes.ActivityCenterStack]: NavigatorScreenParams<ActivityCenterStackParamList>;
+    [RootStackRoutes.ReferAFriendStack]: NavigatorScreenParams<ReferAFriendStackParamList>;
 };
 
 export type ActivityCenterStackParamList = {
@@ -710,4 +713,14 @@ export type StellarManageTokenStackParamList = {
         accountKey: AccountKey;
         tokenContract: TokenAddress;
     };
+};
+
+export type ReferAFriendStackParamList = {
+    [ReferAFriendStackRoutes.ReferAFriend]: undefined;
+    [ReferAFriendStackRoutes.JoinReferAFriendStack]: undefined;
+};
+
+export type JoinReferAFriendStackParamList = {
+    [JoinReferAFriendStackRoutes.DeviceConnectionGuard]: undefined;
+    [JoinReferAFriendStackRoutes.ContinueOnTrezor]: undefined;
 };
