@@ -1,27 +1,22 @@
 import { Translation } from '@suite/intl';
-import { Paragraph, Skeleton } from '@trezor/components';
+import { useStakingPeriods, useStakingProductInfo } from '@suite-common/earn-staking';
+import { type StakingProductId } from '@suite-common/earn-staking-common';
 
 import { PayoutCard } from './PayoutCard';
 
 interface PayoutCardFrequencyRewardsProps {
-    rewardFrequency: number | null;
+    productId: StakingProductId | null;
 }
 
-export const PayoutCardFrequencyRewards = ({
-    rewardFrequency,
-}: PayoutCardFrequencyRewardsProps) => (
-    <PayoutCard>
-        <>
-            {rewardFrequency === null ? (
-                <Skeleton width={80} height={32} animate />
-            ) : (
-                <Paragraph typographyStyle="headline-md">
-                    <Translation id="TR_STAKE_DAYS" values={{ count: rewardFrequency }} />
-                </Paragraph>
-            )}
-            <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
-                <Translation id="TR_STAKE_NEXT_PAYOUT_FREQUENCY" />
-            </Paragraph>
-        </>
-    </PayoutCard>
-);
+export const PayoutCardFrequencyRewards = ({ productId }: PayoutCardFrequencyRewardsProps) => {
+    const { isPending } = useStakingProductInfo(productId);
+    const { rewardPeriodDays } = useStakingPeriods(productId);
+
+    return (
+        <PayoutCard
+            days={rewardPeriodDays}
+            isPending={isPending}
+            label={<Translation id="TR_STAKE_NEXT_PAYOUT_FREQUENCY" />}
+        />
+    );
+};
