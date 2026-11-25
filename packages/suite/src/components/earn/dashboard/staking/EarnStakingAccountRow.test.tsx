@@ -306,7 +306,7 @@ describe('EarnStakingAccountRow', () => {
             expect(claimButton).toBeEnabled();
         });
 
-        it('keeps the claim of the Cardano rewards visible and disabled while a deregistration is pending', () => {
+        it('keeps the claim of the Cardano rewards visible and disabled while a deregistration is pending, and says so', async () => {
             renderRow({
                 account: adaAccount,
                 position: cardanoPosition({
@@ -319,6 +319,31 @@ describe('EarnStakingAccountRow', () => {
             expect(claimButton).toHaveTextContent(messages.TR_EARN_CLAIM_REWARDS.defaultMessage);
             expect(claimButton).toBeDisabled();
             expect(screen.queryByTestId(BUY_BUTTON)).not.toBeInTheDocument();
+
+            await userEvent.hover(claimButton);
+
+            expect(
+                await screen.findByText(messages.TR_STAKE_CLAIM_TRANSACTION_PENDING.defaultMessage),
+            ).toBeInTheDocument();
+        });
+
+        it('names the pending claim on the disabled Cardano claim button', async () => {
+            renderRow({
+                account: adaAccount,
+                position: cardanoPosition({
+                    operations: ['vote'],
+                    pendingTransactions: [{ txid: 'claim-txid', operation: 'claim' }],
+                }),
+            });
+
+            const claimButton = screen.getByTestId(CLAIM_BUTTON);
+            expect(claimButton).toBeDisabled();
+
+            await userEvent.hover(claimButton);
+
+            expect(
+                await screen.findByText(messages.TR_STAKE_CLAIM_PENDING.defaultMessage),
+            ).toBeInTheDocument();
         });
     });
 
