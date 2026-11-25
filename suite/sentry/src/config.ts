@@ -5,7 +5,7 @@ import {
     captureConsoleIntegration,
     elementTimingIntegration,
 } from '@sentry/browser';
-import type { Options } from '@sentry/core';
+import type { Options, SpanJSON } from '@sentry/core';
 
 import {
     COINJOIN_NETWORK_TAG,
@@ -140,6 +140,22 @@ export const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
     return breadcrumb;
 };
 
+const VERSION = process.env.VERSION || 'undefined';
+
+/**
+ * Standalone spans (the INP `ui.interaction.*` web vitals) are sent on their own, outside of any transaction,
+ * so they don't get the scope tags and Sentry shows them without the `version` tag set in `initialScope`.
+ * Span data is stored as span attributes under the same name as tags, so setting it here makes them match
+ * `version` filters and group-bys like the rest. Transactions are segments too and already carry the tag.
+ */
+export const addVersionToSegmentSpan = (span: SpanJSON): SpanJSON => {
+    if (span.is_segment && span.data.version === undefined) {
+        span.data.version = VERSION;
+    }
+
+    return span;
+};
+
 const isProd = isCodesignBuild();
 
 // Common Sentry config for all Suite Desktop & Web envs
@@ -157,7 +173,7 @@ export const SENTRY_CONFIG = {
     ignoreErrors,
     initialScope: {
         tags: {
-            version: process.env.VERSION || 'undefined',
+            version: VERSION,
         },
     },
 } satisfies Options;
@@ -168,6 +184,7 @@ export const SENTRY_BROWSER_CONFIG = {
     profileSessionSampleRate: isProd ? 0.1 : 1,
     tracesSampleRate: isProd ? 0.1 : 1,
     profileLifecycle: 'trace',
+    beforeSendSpan: addVersionToSegmentSpan,
 } satisfies BrowserOptions;
 
 // Get Sentry integrations common for Suite browser-based envs, that should be added on top of the default ones.
