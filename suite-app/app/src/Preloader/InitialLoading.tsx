@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import styled from 'styled-components';
+import { LoadingWithMessage } from './LoadingWithMessage';
+import { SlowLoadingMessage } from './SlowLoadingMessage';
 
-import { Loading } from '@trezor/suite';
-
-const StyledLoading = styled(Loading)`
-    height: 100%;
-`;
+const SLOW_LOADING_DELAY_MS = 10_000;
 
 interface InitialLoadingProps {
     timeout: number;
@@ -14,6 +11,13 @@ interface InitialLoadingProps {
 
 export const InitialLoading = ({ timeout }: InitialLoadingProps) => {
     const [tooLong, setTooLong] = useState(false);
+    const [isSlow, setIsSlow] = useState(false);
+
+    useEffect(() => {
+        const slowTimeout = setTimeout(() => setIsSlow(true), SLOW_LOADING_DELAY_MS);
+
+        return () => clearTimeout(slowTimeout);
+    }, []);
 
     useEffect(() => {
         const interval = setTimeout(() => {
@@ -31,5 +35,5 @@ export const InitialLoading = ({ timeout }: InitialLoadingProps) => {
         throw Error('Loading takes too long');
     }
 
-    return <StyledLoading />;
+    return <LoadingWithMessage message={isSlow && <SlowLoadingMessage />} />;
 };
