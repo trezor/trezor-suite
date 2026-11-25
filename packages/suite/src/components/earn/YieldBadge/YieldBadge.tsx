@@ -54,22 +54,20 @@ const getVariantConfig = ({ variant, rateKind }: GetVariantConfigParams) => {
         inactive: {
             translationId:
                 rateKind === 'apy'
-                    ? 'TR_EARN_YIELD_BADGE_UP_TO_RATE_APY'
+                    ? 'TR_EARN_YIELD_BADGE_UP_TO_RATE'
                     : 'TR_EARN_YIELD_BADGE_UP_TO_RATE_APR',
             priority: 'secondary',
             shouldAnchorAtVaultRow: true,
         },
         active: {
             translationId:
-                rateKind === 'apy'
-                    ? 'TR_EARN_YIELD_BADGE_RATE_APY'
-                    : 'TR_EARN_YIELD_BADGE_RATE_APR',
+                rateKind === 'apy' ? 'TR_EARN_YIELD_BADGE_RATE' : 'TR_EARN_YIELD_BADGE_RATE_APR',
             shouldAnchorAtVaultRow: true,
         },
         promo: {
             translationId:
                 rateKind === 'apy'
-                    ? 'TR_EARN_YIELD_BADGE_UP_TO_RATE_APY'
+                    ? 'TR_EARN_YIELD_BADGE_UP_TO_RATE'
                     : 'TR_EARN_YIELD_BADGE_UP_TO_RATE_APR',
             iconLeft: TrendUpIcon,
             shouldAnchorAtVaultRow: false,
@@ -120,7 +118,8 @@ export const YieldBadge = ({
             // Tests reach the badge by this id: the button around it carries it when there is one.
             data-testid={account === undefined ? YIELD_BADGE_TEST_ID : undefined}
         >
-            <Translation id={translationId} values={{ rate: formatApyValue(rate) }} />
+            {/* The placeholder is named after the rate kind, as the translated APY keys were. */}
+            <Translation id={translationId} values={{ [rateKind]: formatApyValue(rate) }} />
         </Badge>
     );
 
