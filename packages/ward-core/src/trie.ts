@@ -6,7 +6,7 @@
  * vectors in `__tests__/fixtures/vectors.json` are generated from the Python reference.
  *
  *     leaf     = sha256(0x00 || entry_key || commit)
- *     commit   = value_digest = sha256(0x03 || sealed_content)    -- docs/ward/ward-leaf.md
+ *     commit   = value_digest = sha256(0x03 || sealed_content)    -- docs/ward/ward_leaf_encryption.md
  *     internal = sha256(0x01 || u8(split_bit) || left || right)
  *     empty    = sha256(0x02)
  *
