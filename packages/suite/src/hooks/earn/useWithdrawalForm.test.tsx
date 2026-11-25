@@ -64,6 +64,46 @@ const renderForm = (account: Account, position: StakingPosition | null) => {
     });
 };
 
+const stakedEthPosition = (staked: string) =>
+    mockPosition(ethProduct.id, {
+        balances: { ...zeroBalances, staked: amount(staked) },
+        operations: ['stake', 'unstake'],
+    });
+
+// The position syncs must reach the staking slice; the rest of the state stays.
+const renderFormWithPositionSync = (staked: string) => {
+    const initialState = createStakingDashboardState({
+        accounts: [ethAccount],
+        positions: { [ethAccount.key]: [stakedEthPosition(staked)] },
+    });
+    const reducer: Reducer<MockSuiteState> = (state = initialState, action) => ({
+        ...state,
+        earn: { ...state.earn, staking: stakingReducer(state.earn.staking, action) },
+    });
+    const { services } = createTestCompositionRoot<{ services: StakingDep }, MockSuiteState>({
+        preloadedState: initialState,
+        reducer,
+        services: () => ({ staking: mockStakingServices() }),
+    });
+    const rendered = renderHookWithProviders(
+        services,
+        () => useWithdrawalForm({ account: ethAccount }),
+        { queryClient: mockStakingQueryClient() },
+    );
+
+    const syncStakedBalance = (nextStaked: string) =>
+        act(() => {
+            services.store.dispatch(
+                stakingActions.positionsSynced({
+                    accountKey: ethAccount.key,
+                    positions: [stakedEthPosition(nextStaked)],
+                }),
+            );
+        });
+
+    return { ...rendered, syncStakedBalance };
+};
+
 describe('useWithdrawalForm', () => {
     it('lets an Ethereum position unstake its staked balance, restaked rewards included', () => {
         const { result } = renderForm(
@@ -165,45 +205,26 @@ describe('useWithdrawalForm', () => {
         expect(result.current.getValues('cryptoInput')).toBe('0.5');
     });
 
-    it('resets the amount when the staked balance changes', async () => {
-        const stakedPosition = (staked: string) =>
-            mockPosition(ethProduct.id, {
-                balances: { ...zeroBalances, staked: amount(staked) },
-                operations: ['stake', 'unstake'],
-            });
-        const initialState = createStakingDashboardState({
-            accounts: [ethAccount],
-            positions: { [ethAccount.key]: [stakedPosition('2000000000000000000')] },
-        });
-        // The position sync below must reach the staking slice; the rest of the state stays.
-        const reducer: Reducer<MockSuiteState> = (state = initialState, action) => ({
-            ...state,
-            earn: { ...state.earn, staking: stakingReducer(state.earn.staking, action) },
-        });
-        const { services } = createTestCompositionRoot<{ services: StakingDep }, MockSuiteState>({
-            preloadedState: initialState,
-            reducer,
-            services: () => ({ staking: mockStakingServices() }),
-        });
-        const { result } = renderHookWithProviders(
-            services,
-            () => useWithdrawalForm({ account: ethAccount }),
-            { queryClient: mockStakingQueryClient() },
-        );
+    it('keeps a typed amount when the staked balance changes', async () => {
+        const { result, syncStakedBalance } = renderFormWithPositionSync('2000000000000000000');
 
         await act(() => result.current.setRatioAmount(4));
         expect(result.current.getValues('cryptoInput')).toBe('0.5');
 
-        await act(() => {
-            services.store.dispatch(
-                stakingActions.positionsSynced({
-                    accountKey: ethAccount.key,
-                    positions: [stakedPosition('3000000000000000000')],
-                }),
-            );
-        });
+        await syncStakedBalance('2010000000000000000');
+
+        expect(result.current.unstakableBalance).toBe('2.01');
+        expect(result.current.getValues('cryptoInput')).toBe('0.5');
+        expect(result.current.getValues('outputs.0.amount')).toBe('0.5');
+    });
+
+    it('follows the staked balance while nothing was typed', async () => {
+        const { result, syncStakedBalance } = renderFormWithPositionSync('2000000000000000000');
+
+        await syncStakedBalance('3000000000000000000');
 
         expect(result.current.getValues('cryptoInput')).toBe('3');
+        expect(result.current.getValues('outputs.0.amount')).toBe('3');
     });
 
     it('sets a ratio of the staked balance', async () => {

@@ -99,7 +99,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
     const stakingContractAddress = getStakingContractAddress(account, 'unstake');
 
     // Keyed on strings: the modal passes a fresh account object on every account update, and new
-    // default values reset a form that has no draft yet.
+    // default values reset the untouched fields of a form that has no draft yet.
     const defaultValues = useMemo(
         () =>
             getStakeFormsDefaultValues({
@@ -172,10 +172,11 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         register('outputs');
     }, [register]);
 
-    // react-hook-form reset, set default values
+    // A typed amount survives a balance change; the revalidation below checks it against the new
+    // balance.
     useEffect(() => {
         if (!isDraft && defaultValues) {
-            reset(defaultValues);
+            reset(defaultValues, { keepDirtyValues: true, keepDirty: true });
         }
     }, [reset, isDraft, defaultValues]);
 
