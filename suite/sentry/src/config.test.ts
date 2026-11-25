@@ -1,8 +1,11 @@
-import type { Breadcrumb, ErrorEvent } from '@sentry/core';
+import type { Breadcrumb, ErrorEvent, SpanJSON } from '@sentry/core';
 
 import { COINJOIN_NETWORK_TAG, COINJOIN_REPORT_TAG } from '@suite-common/sentry';
 
 import {
+    SENTRY_BROWSER_CONFIG,
+    SENTRY_CONFIG,
+    addVersionToSegmentSpan,
     beforeBreadcrumb,
     redactCoinjoinData,
     redactEventUrlParams,
@@ -158,5 +161,44 @@ describe('beforeBreadcrumb', () => {
         };
 
         expect(beforeBreadcrumb?.(breadcrumb)).toBe(breadcrumb);
+    });
+});
+
+describe('addVersionToSegmentSpan', () => {
+    const getSpan = (overrides: Partial<SpanJSON> = {}): SpanJSON => ({
+        data: { release: '26.12.0.web.abc', transaction: '/suite-web/develop/web/earn' },
+        op: 'ui.interaction.click',
+        span_id: 'b1f9e1a8c0e13e64',
+        start_timestamp: 1795614738.9,
+        trace_id: 'e4e5b40f3a1545738b50576406c82a14',
+        ...overrides,
+    });
+
+    it('is the beforeSendSpan hook of the browser config', () => {
+        expect(SENTRY_BROWSER_CONFIG.beforeSendSpan).toBe(addVersionToSegmentSpan);
+    });
+
+    it('adds the version tag value to a standalone segment span', () => {
+        const span = getSpan({ is_segment: true, segment_id: 'b1f9e1a8c0e13e64' });
+
+        expect(addVersionToSegmentSpan(span).data).toEqual({
+            release: '26.12.0.web.abc',
+            transaction: '/suite-web/develop/web/earn',
+            version: SENTRY_CONFIG.initialScope.tags.version,
+        });
+    });
+
+    it('keeps a version the segment span already has', () => {
+        const span = getSpan({ is_segment: true, data: { version: '26.11.2' } });
+
+        expect(addVersionToSegmentSpan(span).data).toEqual({ version: '26.11.2' });
+    });
+
+    it('leaves child spans of a transaction unchanged', () => {
+        const span = getSpan({ op: 'http.client', parent_span_id: 'a47d91ed2adc4c3b' });
+
+        expect(addVersionToSegmentSpan(span)).toEqual(
+            getSpan({ op: 'http.client', parent_span_id: 'a47d91ed2adc4c3b' }),
+        );
     });
 });
