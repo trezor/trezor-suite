@@ -397,7 +397,7 @@ describe('ADVERSARIAL: a transition is invalidated by a new sync', () => {
             wmSig: toBytes(result.wm_sig as string),
         };
 
-        await wm.attest(a.wardId, new Uint8Array(32).fill(0x5a)); // any later sync
+        await host.sync(a.call);
         await expect(wm.advance(step)).rejects.toThrow('not authorised');
         expect((await wm.head(a.wardId))?.counter).toBe(1);
     });
@@ -476,12 +476,9 @@ describe('a WM whose register went back', () => {
         await host.flush(a.call);
         wm.restore(atOne);
 
-        const round = await host.serviceSync({
-            ward_id: toHex(a.wardId),
-            current_counter: a.head.counter,
-            current_root: toHex(a.head.root!),
-            nonce: toHex(new Uint8Array(32).fill(7)),
-        });
+        const round = await host.serviceSync(
+            a.serviceSyncRequest(toHex(await wm.challenge(a.wardId))).message,
+        );
         expect(round.response.message).toMatchObject({ to_counter: 1 });
         expect(wm.record(a.wardId)?.counter).toBe(1);
     });

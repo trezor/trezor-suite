@@ -100,6 +100,8 @@ export const WardServiceOpenAck = Type.Record(Type.Never(), Type.Never(), {
 export type WardSyncRequest = Static<typeof WardSyncRequest>;
 export const WardSyncRequest = Type.Object(
     {
+        challenge_only: Type.Optional(Type.Boolean()),
+        session_proof: Type.Optional(Type.String()),
         nonce: Type.Optional(Type.String()),
         ward_id: Type.Optional(Type.String()),
         current_counter: Type.Optional(Type.Number()),
@@ -117,6 +119,7 @@ export const WardSyncRequired = Type.Record(Type.Never(), Type.Never(), {
 export type WardSyncResponse = Static<typeof WardSyncResponse>;
 export const WardSyncResponse = Type.Object(
     {
+        wm_challenge: Type.Optional(Type.String()),
         timestamp: Type.Optional(Type.Number()),
         wm_signature: Type.Optional(Type.String()),
         links: Type.Array(WardChainLink),

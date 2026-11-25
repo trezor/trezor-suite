@@ -153,10 +153,13 @@ export const runServiceDaemon = async (opts: ServiceDaemonOptions): Promise<numb
             try {
                 if (request.name !== 'WardChainRequest') syncRound = undefined;
                 if (request.name === 'WardSyncRequest') {
-                    syncRound = await (
-                        await hostFor(String(request.message.ward_id ?? ''))
-                    ).serviceSync(request.message);
-                    reply = syncRound.response;
+                    const wallet = await hostFor(String(request.message.ward_id ?? ''));
+                    if (request.message.challenge_only) {
+                        reply = await wallet.serviceChallenge();
+                    } else {
+                        syncRound = await wallet.serviceSync(request.message);
+                        reply = syncRound.response;
+                    }
                 } else if (request.name === 'WardChainRequest' && syncRound) {
                     reply = syncRound.chainPage(request.message);
                 } else if (!host) {

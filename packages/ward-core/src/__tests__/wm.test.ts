@@ -13,6 +13,7 @@ import {
     TAG_WM_REVERT,
     WmConflict,
     attestationPreimage,
+    sessionOpenPreimage,
     transitionPreimage,
     verifyWmSig,
 } from '../wm';
@@ -97,13 +98,46 @@ describe('DevWm as a WM', () => {
         nonce: Uint8Array = session,
     ) => ed25519.sign(concatBytes(transitionPreimage(tag, wardId, fc, fr, tc, tr), nonce), kSig);
 
+    const open = async (dev: DevWm, nonce: Uint8Array) => {
+        const proof = ed25519.sign(
+            sessionOpenPreimage(wardId, await dev.challenge(wardId), nonce),
+            kSig,
+        );
+        await dev.openSession(wardId, nonce, proof);
+
+        return proof;
+    };
+
     const enrolled = async () => {
         const dev = new DevWm(DEBUG_WM_SEED, () => 1_700_000_000);
         await dev.enrol(wardId, null, headInit);
-        await dev.attest(wardId, session);
+        await open(dev, session);
 
         return dev;
     };
+
+    it('consumes a session challenge once and keeps head reads independent of writes', async () => {
+        const dev = await enrolled();
+        const next = new Uint8Array(32).fill(8);
+        const challenge = await dev.challenge(wardId);
+        const proof = ed25519.sign(sessionOpenPreimage(wardId, challenge, next), kSig);
+        await expect(dev.openSession(wardId, session, proof)).rejects.toThrow('invalid');
+        const wrongKey = ed25519.sign(sessionOpenPreimage(wardId, challenge, next), r2);
+        await expect(dev.openSession(wardId, next, wrongKey)).rejects.toThrow('invalid');
+        await dev.openSession(wardId, next, proof);
+        const before = await dev.challenge(wardId);
+        await dev.attest(wardId, session);
+        await expect(dev.openSession(wardId, next, proof)).rejects.toThrow('expired');
+        expect(await dev.challenge(wardId)).toEqual(before);
+        const step = { wardId, fromCounter: 0, fromRoot: null, toCounter: 1, toRoot: r1 };
+        await expect(dev.advance({ ...step, wmSig: wmSig(0, null, 1, r1) })).rejects.toThrow(
+            'not authorised',
+        );
+        await dev.advance({ ...step, wmSig: wmSig(0, null, 1, r1, TAG_WM_HEAD, next) });
+        const pending = ed25519.sign(sessionOpenPreimage(wardId, before, session), kSig);
+        dev.restore(dev.snapshot());
+        await expect(dev.openSession(wardId, session, pending)).rejects.toThrow('expired');
+    });
 
     it('enrols at genesis, and attests against the round nonce', async () => {
         const dev = await enrolled();
@@ -157,7 +191,7 @@ describe('DevWm as a WM', () => {
             wmSig: wmSig(0, null, 1, r1),
         });
         const heldBack = wmSig(1, r1, 2, r2);
-        await dev.attest(wardId, new Uint8Array(32).fill(8)); // another sync
+        await open(dev, new Uint8Array(32).fill(8)); // another sync
         await expect(
             dev.advance({
                 wardId,
@@ -188,7 +222,7 @@ describe('DevWm as a WM', () => {
         await expect(dev.advance(step)).rejects.toThrow('no session');
         // the device syncs again, and signs the same step again under its new nonce
         const fresh = new Uint8Array(32).fill(9);
-        await dev.attest(wardId, fresh);
+        await open(dev, fresh);
         await expect(dev.advance(step)).rejects.toThrow('not authorised');
         await expect(
             dev.advance({ ...step, wmSig: wmSig(0, null, 1, r1, TAG_WM_HEAD, fresh) }),
@@ -206,7 +240,7 @@ describe('DevWm as a WM', () => {
             toRoot: r1,
             wmSig: wmSig(0, null, 1, r1),
         };
-        await dev.attest(wardId, new Uint8Array(32).fill(8)); // another sync
+        await open(dev, new Uint8Array(32).fill(8)); // another sync
         await expect(dev.advance({ ...step, session })).rejects.toThrow(
             'the session it names has ended',
         );

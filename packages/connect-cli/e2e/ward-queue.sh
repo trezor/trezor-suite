@@ -635,7 +635,7 @@ if [ "$VARIANT" = service ]; then
     # asserting the whole line at once is what makes that an assertion about order. Two exchanges and
     # no more: a read is one fetch, and a second one would mean the first came back unusable.
     check "sync, then fetch, and nothing else" \
-        "^WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck$" \
+        "^WardSyncRequest -> WardSyncResponse,WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck$" \
         "$(served_since "$MARK")"
 
     # ---------------------------------------------------------------------------------------------
@@ -667,7 +667,7 @@ if [ "$VARIANT" = service ]; then
     # WardLeafAck would have erased the entry it just wrote.
     check_not "and handed back no leaf to store" "identity:|content:|mac:" "$WROTE"
     check "sync, fetch the current leaf, publish -- exactly that" \
-        "^WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck,WardPublish -> WardPublishAck$" \
+        "^WardSyncRequest -> WardSyncResponse,WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck,WardPublish -> WardPublishAck$" \
         "$(served_since "$MARK")"
 
     echo "26. write, then read the entry just written -- back to back, one daemon"
@@ -695,7 +695,7 @@ if [ "$VARIANT" = service ]; then
     # A daemon serving the entry it was handed a moment ago is the only way this proof exists at all.
     check "and the read that followed it went through" "onDevice: true" "$PAIR"
     check "sync, fetch, publish -- then the read, which syncs again because its session is new" \
-        "^WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck,WardPublish -> WardPublishAck,WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck$" \
+        "^WardSyncRequest -> WardSyncResponse,WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck,WardPublish -> WardPublishAck,WardSyncRequest -> WardSyncResponse,WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck$" \
         "$(served_since "$MARK")"
 
     echo "27. a LATER session syncs again -- from the head the device kept"
@@ -747,7 +747,7 @@ if [ "$VARIANT" = service ]; then
     # queued change after the first -- silently, since the first one really was published.
     check "and one is still waiting" "remaining: 1" "$FLUSH1"
     check "re-derived against current state, then published" \
-        "^WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck,WardPublish -> WardPublishAck$" \
+        "^WardSyncRequest -> WardSyncResponse,WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck,WardPublish -> WardPublishAck$" \
         "$(served_since "$MARK")"
 
     MARK="$(mark_log)"
@@ -755,8 +755,8 @@ if [ "$VARIANT" = service ]; then
     check "the second was published too" "published: true" "$FLUSH2"
     check "at the counter after that" "counter: 4" "$FLUSH2"
     check "and the queue is drained" "remaining: 0" "$FLUSH2"
-    check "the same three exchanges again -- one change per round trip" \
-        "^WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck,WardPublish -> WardPublishAck$" \
+    check "the next challenge, sync, fetch and publish" \
+        "^WardSyncRequest -> WardSyncResponse,WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck,WardPublish -> WardPublishAck$" \
         "$(served_since "$MARK")"
 
     refresh_daemon
@@ -768,7 +768,7 @@ if [ "$VARIANT" = service ]; then
     check "an empty queue is an answer" "empty: true" \
         "$(timeout 150 $CLI --method=ward_flush --service 2>&1)"
     check "and it touched neither the replica nor the WM" \
-        "^WardSyncRequest -> WardSyncResponse$" "$(served_since "$MARK")"
+        "^WardSyncRequest -> WardSyncResponse,WardSyncRequest -> WardSyncResponse$" "$(served_since "$MARK")"
 
     echo "29. the published records were SETTLED, not deleted"
     # WHERE A QUEUE INTEGRATION QUIETLY BREAKS. Publication does not remove the record -- nothing in

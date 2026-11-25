@@ -222,11 +222,17 @@ export const WardSetPersistWithoutWm = Type.Object(
 );
 
 export type WardSync = Static<typeof WardSync>;
-export const WardSync = Type.Record(Type.Never(), Type.Never(), { $id: 'WardSync' });
+export const WardSync = Type.Object(
+    {
+        wm_challenge: Type.Optional(Type.String()),
+    },
+    { $id: 'WardSync' },
+);
 
 export type WardSyncAck = Static<typeof WardSyncAck>;
 export const WardSyncAck = Type.Object(
     {
+        session_proof: Type.Optional(Type.String()),
         nonce: Type.Optional(Type.String()),
         ward_id: Type.Optional(Type.String()),
         counter: Type.Optional(Type.Number()),

@@ -179,17 +179,20 @@ export class WardHost {
     /** What the last narrated rebuild was built from, so an unchanged replica is not retold. */
     private rebuilt = '';
 
-    /**
-     * The round nonce of the latest attestation this host obtained from the WM. The WM keeps the
-     * nonce of the wallet's latest sync as its session and accepts only a `wm_sig` bound to it;
-     * when this host ran that sync, this is it.
-     */
+    /** The write session this host last activated with a device proof. */
     private session: Uint8Array | null = null;
 
-    /** Attest for a round nonce the device picked, which becomes the wallet's WM session. */
-    private async attestSession(wm: WmClient, wardId: Uint8Array, nonce: Uint8Array) {
-        const att = await wm.attest(wardId, nonce);
-        this.session = nonce;
+    /** An opening proof activates a session. Page and publication attestations only read the head. */
+    private async attestSession(
+        wm: WmClient,
+        wardId: Uint8Array,
+        nonce: Uint8Array,
+        proof?: Uint8Array,
+    ) {
+        const att = proof
+            ? await wm.openSession(wardId, nonce, proof)
+            : await wm.attest(wardId, nonce);
+        if (proof) this.session = nonce;
         await this.keepAttestation(att, nonce);
 
         return att;
@@ -731,6 +734,15 @@ export class WardHost {
     // service build the device talks to wardd over its own interface and pulls what it needs. A
     // port of tests/ward_service.py `MockWardService`, minus its failure-mode knobs.
 
+    async serviceChallenge() {
+        const wm = this.requireWm('the service channel');
+
+        return {
+            name: 'WardSyncResponse',
+            message: { wm_challenge: toHex(await wm.challenge(this.wardId)) },
+        };
+    }
+
     /** Attest once, then serve backwards from a snapshot of that history. */
     serviceSync(req: Json): Promise<ServiceSyncRound> {
         return this.exclusive(async () => {
@@ -754,7 +766,12 @@ export class WardHost {
                 await this.onWmChange();
             }
             // no roll-forward on the deprecated service channel: it has no WardRollForward
-            const att = await this.attestSession(wm, wardId, toBytes(req.nonce ?? ''));
+            const att = await this.attestSession(
+                wm,
+                wardId,
+                toBytes(req.nonce ?? ''),
+                toBytes(req.session_proof ?? ''),
+            );
             const anchor = { counter: att.toCounter, root: rootOf(toHex(att.toRoot)) };
             let cursor = anchor;
             const snapshot =
@@ -972,7 +989,11 @@ export class WardHost {
 
             return { counter: r.counter, root: r.root, how: 'catchUp' };
         }
-        const ack = expectReply(await device({ name: 'WardSync', message: {} }), 'WardSyncAck');
+        const challenge = await wm.challenge(this.wardId);
+        const ack = expectReply(
+            await device({ name: 'WardSync', message: { wm_challenge: toHex(challenge) } }),
+            'WardSyncAck',
+        );
         const wardId = toBytes(ack.ward_id ?? '');
         if (!equalBytes(wardId, this.wardId)) {
             throw new RelayFailure(
@@ -1012,7 +1033,7 @@ export class WardHost {
                 }),
                 'WardIngestAttestationAck',
             );
-        let att = await this.attestSession(wm, wardId, nonce);
+        let att = await this.attestSession(wm, wardId, nonce, toBytes(ack.session_proof ?? ''));
         let ingested = await ingest(att);
         // THE DEVICE DETECTS a WM restored below its head; the round stays open for the roll-forward
         let rolledForward: RollForwardResult | undefined;

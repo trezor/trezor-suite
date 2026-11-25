@@ -6,7 +6,15 @@ import { promises as fs } from 'fs';
 import os from 'os';
 import path from 'path';
 
-import { DEBUG_WM_SEED, DevWm, HttpWm, WmConflict, WmUnavailable, toHex } from '@trezor/ward-core';
+import {
+    DEBUG_WM_SEED,
+    DevWm,
+    HttpWm,
+    WmConflict,
+    WmUnavailable,
+    toBytes,
+    toHex,
+} from '@trezor/ward-core';
 
 import { InMemoryWardBackend, type StoredAttestation } from '../backend';
 import { RelayFailure, WardHost } from '../host';
@@ -56,6 +64,25 @@ describe('the WARD Manager over HTTP', () => {
             expect(lines.some(l => l.startsWith('[enrol]'))).toBe(true);
             expect(lines.some(l => /\[advance\].*#0 -> #1 accepted/.test(l))).toBe(true);
             expect(lines.join('\n')).not.toContain('alice');
+        } finally {
+            await server.close();
+        }
+    });
+
+    it('only opens a write session with the proof for the outstanding challenge', async () => {
+        const { server, wm } = await withWm();
+        try {
+            const { a, host } = await setup(wm);
+            await host.sync(a.call);
+            const challenge = await wm.challenge(a.wardId);
+            const { message } = a.onWardSync({ wm_challenge: toHex(challenge) });
+            const nonce = toBytes(String(message.nonce));
+            const proof = toBytes(String(message.session_proof));
+            await wm.openSession(a.wardId, nonce, proof);
+            const activeChallenge = await wm.challenge(a.wardId);
+            await wm.attest(a.wardId, nonce);
+            await expect(wm.openSession(a.wardId, nonce, proof)).rejects.toThrow('expired');
+            expect(await wm.challenge(a.wardId)).toEqual(activeChallenge);
         } finally {
             await server.close();
         }

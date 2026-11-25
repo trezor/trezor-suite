@@ -72,8 +72,10 @@ reading the result. The header of that script explains how to run it.
 ## Not yet
 
 - **The production WM** (`trezor-suite-sync`) still speaks attestation v1. wardd uses the
-  development WM behind `WmClient` until the production WM speaks v6.
-- **Rollback:** a WM below the device is reported (`wm_behind`) but not repaired.
+  development WM behind `WmClient`. Deploying the WM build requires v7 head attestations,
+  authenticated write-session activation, and read-only head attestation.
+- **A WM below the device** is reported (`wm_behind`). Roll-forward repairs it on the wallet
+  channel only; the deprecated service channel does not.
 - **THP service interfaces:** `wardd --service` serves the codec interface, which every service
   build has by default. A `ward_service_thp` build still needs `ward-service-daemon.py`.
 - **Suite desktop:** wardd isn't bundled with Suite desktop yet.

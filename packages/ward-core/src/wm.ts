@@ -12,8 +12,8 @@
  * device never takes a root on its word.
  *
  * SESSIONS. A device's `wm_sig` is bound to the round nonce it picked for its latest sync -- the
- * WM never picks one. The WM keeps the nonce of each wallet's latest sync, replaces it on the next
- * sync, and accepts an authorisation only when it is bound to that nonce and its predecessor is the
+ * WM never picks one. The WM installs it when a device signs the current opening challenge,
+ * and accepts an authorisation only when it is bound to that nonce and its predecessor is the
  * head; one session can carry several transitions. The session nonce is volatile: a restore drops
  * it, so a restored WM takes none of the device signatures minted before. What it had accepted
  * comes back by ROLL-FORWARD THROUGH A TREZOR: wardd feeds a device the transitions with the WM's
@@ -100,6 +100,9 @@ export const verifyWmSig = (
     }
 };
 
+export const sessionOpenPreimage = (wardId: Uint8Array, challenge: Uint8Array, nonce: Uint8Array) =>
+    concatBytes(ascii('WARD SESSION OPEN v1'), wardId, challenge, nonce);
+
 export interface Attestation {
     fromCounter: number;
     fromRoot: Uint8Array;
@@ -140,10 +143,9 @@ export interface WmClient {
     readonly pubkey: Uint8Array;
     /** Enrol a wallet at genesis (counter 0), authorised by the device's `head_init_sig`. */
     enrol(wardId: Uint8Array, root: Uint8Array | null, headInitSig: Uint8Array): Promise<void>;
-    /**
-     * Sign the step that reached the current head, bound to the device's round nonce, which
-     * becomes the wallet's session nonce.
-     */
+    challenge(wardId: Uint8Array): Promise<Uint8Array>;
+    openSession(wardId: Uint8Array, nonce: Uint8Array, proof: Uint8Array): Promise<Attestation>;
+    /** Sign the current head for a freshness check, preserving the active write session. */
     attest(wardId: Uint8Array, nonce: Uint8Array): Promise<Attestation>;
     /**
      * Compare-and-swap an advance whose `wm_sig` is bound to the session nonce, timestamp it at the
@@ -189,6 +191,10 @@ export class DevWm implements WmClient {
     /** the round nonce of each wallet's latest sync; volatile, never in a snapshot */
     private sessions = new Map<string, Uint8Array>();
 
+    // An unenrolled wallet needs a challenge too. Reads allocate no per-wallet state.
+    private initialChallenge = crypto.getRandomValues(new Uint8Array(32));
+    private challenges = new Map<string, Uint8Array>();
+
     constructor(
         private readonly seed: Uint8Array = DEBUG_WM_SEED,
         private readonly now: () => number = () => Math.floor(Date.now() / 1000),
@@ -223,10 +229,36 @@ export class DevWm implements WmClient {
         return ed25519.sign(attestationPreimage(nonce, wardId, a), this.seed);
     }
 
+    challenge(wardId: Uint8Array): Promise<Uint8Array> {
+        return Promise.resolve(
+            (this.challenges.get(toHex(wardId)) ?? this.initialChallenge).slice(),
+        );
+    }
+
+    openSession(wardId: Uint8Array, nonce: Uint8Array, proof: Uint8Array): Promise<Attestation> {
+        const id = toHex(wardId);
+        const head = this.heads.get(id);
+        if (!head) return Promise.reject(new Error('wallet is not enrolled with this WM'));
+        const challenge = this.challenges.get(id) ?? this.initialChallenge;
+        if (
+            nonce.length !== 32 ||
+            proof.length !== 64 ||
+            !ed25519.verify(proof, sessionOpenPreimage(wardId, challenge, nonce), wardId)
+        ) {
+            return Promise.reject(new Error('invalid or expired session proof; sync again'));
+        }
+        // No await between proof verification, consuming the challenge and replacing the session.
+        const att = this.signHead(wardId, head, nonce);
+        this.challenges.set(id, crypto.getRandomValues(new Uint8Array(32)));
+        this.sessions.set(id, nonce.slice());
+
+        return Promise.resolve(att);
+    }
+
     attest(wardId: Uint8Array, nonce: Uint8Array): Promise<Attestation> {
         const h = this.heads.get(toHex(wardId));
         if (!h) return Promise.reject(new Error('wallet is not enrolled with this WM'));
-        this.sessions.set(toHex(wardId), nonce);
+        if (nonce.length !== 32) return Promise.reject(new Error('invalid attestation nonce'));
 
         return Promise.resolve(this.signHead(wardId, h, nonce));
     }
@@ -317,7 +349,9 @@ export class DevWm implements WmClient {
      * nonces, a nonce ledger) are ignored.
      */
     restore(snap: DevWmSnapshot): this {
-        this.sessions = new Map();
+        this.initialChallenge = crypto.getRandomValues(new Uint8Array(32));
+        this.challenges.clear();
+        this.sessions.clear();
         this.heads = new Map(
             Object.entries(snap.heads).map(([id, r]) => [
                 id,

@@ -5,6 +5,8 @@
  *   GET  /v1/info                       -> { pubkey }
  *   GET  /v1/wards/<wardId>/head        -> { head: { counter, root } | null }
  *   POST /v1/wards/<wardId>/enrol       { root, headInitSig }
+ *   GET  /v1/wards/<wardId>/challenge  -> { challenge }
+ *   POST /v1/wards/<wardId>/open       { nonce, proof } -> attestation
  *   POST /v1/wards/<wardId>/attest      { nonce }               -> attestation
  *   POST /v1/wards/<wardId>/advance     { fromCounter, fromRoot, toCounter, toRoot, wmSig }
  *                                       -> { revert }, or 409 { error: 'conflict', headCounter }
@@ -136,15 +138,21 @@ export const startWmServer = async (opts: WmServerOptions) => {
         if (req.method === 'GET' && url.pathname === '/v1/info') {
             return { pubkey: toHex(wm.pubkey) };
         }
-        const match = /^\/v1\/wards\/([0-9a-fA-F]{64})\/(head|enrol|attest|advance)$/.exec(
-            url.pathname,
-        );
+        const match =
+            /^\/v1\/wards\/([0-9a-fA-F]{64})\/(head|challenge|enrol|open|attest|advance)$/.exec(
+                url.pathname,
+            );
         if (!match) throw new HttpError(404, 'no such endpoint');
         const wardHex = match[1]!.toLowerCase();
         const wardId = toBytes(wardHex);
         const op = match[2]!;
         const ward = `ward=${short(wardHex)}`;
 
+        if (op === 'challenge') {
+            if (req.method !== 'GET') throw new HttpError(405, 'GET only');
+
+            return { challenge: toHex(await wm.challenge(wardId)) };
+        }
         if (op === 'head') {
             if (req.method !== 'GET') throw new HttpError(405, 'GET only');
             const h = wm.record(wardId);
@@ -161,6 +169,18 @@ export const startWmServer = async (opts: WmServerOptions) => {
         if (req.method !== 'POST') throw new HttpError(405, 'POST only');
         const body = await readBody(req);
 
+        if (op === 'open') {
+            const nonce = hex32(body.nonce, 'nonce');
+            const proof = sigField(body.proof, 'proof');
+
+            return serial(async () => {
+                const att = await wm.openSession(wardId, nonce, proof).catch((e: Error) => {
+                    throw new HttpError(403, e.message);
+                });
+
+                return attestationToJson(att);
+            });
+        }
         if (op === 'attest') {
             const nonce = hex32(body.nonce, 'nonce');
             const att = await wm.attest(wardId, nonce).catch((e: Error) => {

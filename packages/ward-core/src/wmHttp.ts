@@ -119,6 +119,24 @@ export class HttpWm implements WmClient {
         });
     }
 
+    async challenge(wardId: Uint8Array) {
+        const { challenge } = await this.call<{ challenge: string }>(
+            'GET',
+            this.path(wardId, 'challenge'),
+        );
+
+        return toBytes(challenge);
+    }
+
+    async openSession(wardId: Uint8Array, nonce: Uint8Array, proof: Uint8Array) {
+        return attestationFromJson(
+            await this.call<AttestationJson>('POST', this.path(wardId, 'open'), {
+                nonce: toHex(nonce),
+                proof: toHex(proof),
+            }),
+        );
+    }
+
     async attest(wardId: Uint8Array, nonce: Uint8Array) {
         return attestationFromJson(
             await this.call<AttestationJson>('POST', this.path(wardId, 'attest'), {

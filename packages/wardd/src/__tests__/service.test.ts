@@ -23,7 +23,9 @@ import { runServiceDaemon } from '../serviceMode/daemon';
 import { ServiceStateFile } from '../serviceMode/stateFile';
 
 const syncDevice = async (device: FakeDevice, host: WardHost) => {
-    const round = await host.serviceSync(device.serviceSyncRequest().message);
+    const round = await host.serviceSync(
+        device.serviceSyncRequest((await host.serviceChallenge()).message.wm_challenge).message,
+    );
     await device.onServiceSyncResponse(round.response.message, request =>
         Promise.resolve(round.chainPage(request.message)),
     );
@@ -133,7 +135,9 @@ describe('the service responder', () => {
             await publishNext(writer, host);
         }
         const anchor = writer.head;
-        const round = await host.serviceSync(reader.serviceSyncRequest().message);
+        const round = await host.serviceSync(
+            reader.serviceSyncRequest((await host.serviceChallenge()).message.wm_challenge).message,
+        );
         expect(round.response.message).not.toHaveProperty('links');
         const pageSizes: number[] = [];
         let unpagedSize = 0;
@@ -286,7 +290,15 @@ describe('wardd --service over UDP', () => {
 
         expect((await receive()).name).toBe('WardServiceOpen');
         await send({ name: 'WardServiceOpenAck', message: {} });
-        await send(device.serviceSyncRequest());
+        const open = async (d: FakeDevice) => {
+            await send({
+                name: 'WardSyncRequest',
+                message: { ward_id: toHex(d.wardId), challenge_only: true },
+            });
+            const challenge = await receive();
+            await send(d.serviceSyncRequest(String(challenge.message.wm_challenge)));
+        };
+        await open(device);
         const sync = await receive();
         expect(sync.name).toBe('WardSyncResponse');
         await device.onServiceSyncResponse(sync.message, async request => {
@@ -304,7 +316,7 @@ describe('wardd --service over UDP', () => {
         expect(device.head.counter).toBe(1);
 
         const restored = new FakeDevice(keys);
-        await send(restored.serviceSyncRequest());
+        await open(restored);
         const attested = await receive();
         expect(attested.name).toBe('WardSyncResponse');
         await expect(
@@ -321,7 +333,7 @@ describe('wardd --service over UDP', () => {
             }),
         ).rejects.toThrow('service exchange timed out');
         expect(restored.head.counter).toBe(0);
-        await send(restored.serviceSyncRequest());
+        await open(restored);
         const retried = await receive();
         expect(retried.name).toBe('WardSyncResponse');
         await restored.onServiceSyncResponse(retried.message, async request => {
@@ -339,14 +351,19 @@ describe('wardd --service over UDP', () => {
             lines.filter(l => l.startsWith('SERVED ')).map(l => l.split(' ').slice(1, 5).join(' ')),
         ).toEqual([
             '1 WardSyncRequest -> WardSyncResponse',
-            '2 WardServiceFetch -> WardEntryAck',
-            '3 WardPublish -> WardPublishAck',
-            '4 WardSyncRequest -> WardSyncResponse',
-            '5 WardChainRequest -> WardChainLinkAck',
+            '2 WardSyncRequest -> WardSyncResponse',
+            '3 WardServiceFetch -> WardEntryAck',
+            '4 WardPublish -> WardPublishAck',
+            '5 WardSyncRequest -> WardSyncResponse',
             '6 WardSyncRequest -> WardSyncResponse',
             '7 WardChainRequest -> WardChainLinkAck',
+            '8 WardSyncRequest -> WardSyncResponse',
+            '9 WardSyncRequest -> WardSyncResponse',
+            '10 WardChainRequest -> WardChainLinkAck',
         ]);
-        expect(lines).toContain('STOPPED 7');
-        expect(lines.find(l => l.includes('WardSyncRequest'))).toMatch(/from counter=0$/);
+        expect(lines).toContain('STOPPED 10');
+        expect(lines.find(l => l.startsWith('SERVED 2 WardSyncRequest'))).toMatch(
+            /from counter=0$/,
+        );
     });
 });

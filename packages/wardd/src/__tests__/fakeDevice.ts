@@ -30,6 +30,7 @@ import {
     deleteRoot,
     equalBytes,
     insertRoot,
+    sessionOpenPreimage,
     toBytes,
     toHex,
     transitionPreimage,
@@ -197,7 +198,16 @@ export class FakeDevice {
         return cursor;
     }
 
-    onWardSync(): RelayMessage {
+    private sessionProof(challenge: string, nonce: Uint8Array) {
+        return toHex(
+            ed25519.sign(
+                sessionOpenPreimage(this.wardId, toBytes(challenge), nonce),
+                this.keys.kSig,
+            ),
+        );
+    }
+
+    onWardSync(m: Json = {}): RelayMessage {
         if (this.opts.wm === false) {
             throw new Error('WARD: this firmware has no WARD Manager; catch up with WardCatchUp');
         }
@@ -206,6 +216,9 @@ export class FakeDevice {
 
         return msg('WardSyncAck', {
             nonce: toHex(this.nonce),
+            ...(m.wm_challenge
+                ? { session_proof: this.sessionProof(m.wm_challenge, this.nonce) }
+                : {}),
             ward_id: toHex(this.wardId),
             counter,
             // as the firmware: the root only at genesis (apps/ward/sync.py)
@@ -536,12 +549,13 @@ export class FakeDevice {
     private servicePending: { to: Head; nonce: Uint8Array } | null = null;
 
     /** WardSyncRequest: this device's head, a fresh nonce, the opening-head authorisation. */
-    serviceSyncRequest(): RelayMessage {
+    serviceSyncRequest(challenge: string): RelayMessage {
         this.serviceNonce = randomBytes(32);
         const { counter, root } = this.head;
 
         return msg('WardSyncRequest', {
             nonce: toHex(this.serviceNonce),
+            session_proof: this.sessionProof(challenge, this.serviceNonce),
             ward_id: toHex(this.wardId),
             current_counter: counter,
             ...wireRoot('current_root', root),
@@ -571,7 +585,6 @@ export class FakeDevice {
         ) {
             throw new Error('attestation does not verify');
         }
-        this.session = nonce;
     }
 
     /** Verify the attested step, then pull pages back to this device's head. */
@@ -580,6 +593,7 @@ export class FakeDevice {
         const from = { counter: m.from_counter ?? 0, root: fromWire(m.from_root) };
         const to = { counter: m.to_counter ?? 0, root: fromWire(m.to_root) };
         this.verifyAttestation(this.serviceNonce, m, from, to);
+        this.session = this.serviceNonce;
         this.serviceNonce = null;
         let cursor = to;
         let first = true;
