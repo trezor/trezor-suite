@@ -96,17 +96,19 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
             undefined,
     };
 
-    const defaultValues = useMemo(() => {
-        const stakingContractAddress = getStakingContractAddress(account, 'unstake');
+    const stakingContractAddress = getStakingContractAddress(account, 'unstake');
 
-        return {
-            ...getStakeFormsDefaultValues({
+    // Keyed on strings: the modal passes a fresh account object on every account update, and new
+    // default values reset a form that has no draft yet.
+    const defaultValues = useMemo(
+        () =>
+            getStakeFormsDefaultValues({
                 address: stakingContractAddress,
                 stakeType: 'unstake',
                 amount: unstakableBalance,
-            }),
-        } as WithdrawalFormState;
-    }, [account, unstakableBalance]);
+            }) as WithdrawalFormState,
+        [stakingContractAddress, unstakableBalance],
+    );
 
     const { saveDraft, draft, removeDraft } = useFormDraft<WithdrawalFormState>(
         'unstake',
