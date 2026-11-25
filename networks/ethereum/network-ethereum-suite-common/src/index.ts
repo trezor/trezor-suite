@@ -33,6 +33,16 @@ export {
     type ClearSignedSwapLeg,
 } from './calldata/clearSigningSwap';
 
+export { LidoContractReads, type LidoWithdrawalRequestStatus } from './lido/lidoContractReads';
+export {
+    getLidoDeployment,
+    LIDO_MAX_STETH_WITHDRAWAL_AMOUNT,
+    LIDO_MIN_STETH_WITHDRAWAL_AMOUNT,
+    LIDO_REFERRAL_ADDRESS,
+    LIDO_WITHDRAWAL_NFT,
+    type LidoDeployment,
+} from './lido/lidoDeployments';
+
 export {
     createSignEthereumMessage,
     injectSignEthereumMessage,
