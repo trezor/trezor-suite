@@ -1,4 +1,4 @@
-import { parseEther, parseUnits } from 'viem';
+import { erc20Abi, erc4626Abi, parseEther, parseUnits } from 'viem';
 
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
@@ -17,6 +17,7 @@ const ethSymbol = asNetworkSymbol('eth');
 const mnemonic = 'depart coconut stage worth exact secret swap dose sheriff lizard mercy aware';
 // Ethereum #1 of the mnemonic above (m/44'/60'/0'/0/0)
 const ownerAddress = '0x55B55c9480f8bA8a848d14b395f9147260aa7e2b';
+const warmUpAddress = '0x000000000000000000000000000000000000d3a1';
 const usdcDecimals = 6;
 const fundedUsdc = parseUnits('1000', usdcDecimals);
 const depositAmount = '10';
@@ -35,6 +36,23 @@ test.describe('stablecoin yield on a mainnet fork', { tag: ['@webOnly', '@T3W1',
     test.beforeEach(async ({ anvil, onboardingPage, settingsPage, walletPage, yieldMock }) => {
         // Native balance before discovery, so Suite finds the account.
         await anvil.setBalance(ownerAddress, parseEther('1'));
+
+        await test.step('Warm up the fork with the vault deposit state', async () => {
+            await anvil.fundErc20(USDC_CONTRACT, warmUpAddress, depositSubunits);
+            await anvil.writeContractAs(warmUpAddress, {
+                address: USDC_CONTRACT,
+                abi: erc20Abi,
+                functionName: 'approve',
+                args: [YIELD_USDC_VAULT_ADDRESS, depositSubunits],
+            });
+            await anvil.estimateContractGasAs(warmUpAddress, {
+                address: YIELD_USDC_VAULT_ADDRESS,
+                abi: erc4626Abi,
+                functionName: 'deposit',
+                args: [depositSubunits, warmUpAddress],
+            });
+        });
+
         await onboardingPage.completeOnboarding();
         // Vault metadata and the Blockaid simulation stay mocked; the transactions are real.
         await yieldMock.start();

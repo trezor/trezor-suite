@@ -392,6 +392,26 @@ export class AnvilFork {
         });
     }
 
+    // No @step: it would print the whole ABI.
+    estimateContractGasAs<
+        const TAbi extends Abi | readonly unknown[],
+        TFunctionName extends ContractFunctionName<TAbi>,
+    >(
+        from: Address,
+        {
+            address,
+            value,
+            ...call
+        }: EncodeFunctionDataParameters<TAbi, TFunctionName> & { address: Address; value?: bigint },
+    ) {
+        return this.rpc.estimateGas({
+            account: from,
+            to: address,
+            value,
+            data: encodeFunctionData(call as EncodeFunctionDataParameters),
+        });
+    }
+
     // Mining and time
 
     /**
