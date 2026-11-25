@@ -19,6 +19,7 @@
         "@suite-common/firmware": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/persistent-device-data": "workspace:*",
+        "@suite-common/refer-a-friend": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-quota-manager": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
