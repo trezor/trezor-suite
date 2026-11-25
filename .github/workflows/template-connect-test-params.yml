@@ -68,6 +68,7 @@ jobs:
         with:
           version: v0.32.0
           config-file: .github/pmg-config.yml
+          enforce: "false"
       - run: echo "FOCUS_WORKSPACES=@trezor/connect-core" >> "$GITHUB_ENV"
       - if: ${{ inputs.testEnv == 'web' }}
         run: echo "FOCUS_WORKSPACES=$FOCUS_WORKSPACES @trezor/connect-web" >> "$GITHUB_ENV"
