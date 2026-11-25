@@ -30,46 +30,72 @@ const fivebinaries = mockStakingProductDescriptor({
     consentKey: null,
     platforms: { desktop: { access: 'manage' }, mobile: { access: 'read-only' } },
 });
-const account = mockWalletAccount({ symbol: ada, deviceState });
 const zero = stakingAmountSchema.parse('0');
+const ONE_ADA = stakingAmountSchema.parse('1000000');
 
-const createPreloadedState = (staked: StakingAmount) => ({
-    device: { devices: [selectedDevice], selectedDevice },
-    wallet: { accounts: [account] },
-    networks: mockNetworksState([ada]),
-    earn: {
-        staking: mockStakingState({
-            platform: 'mobile',
-            descriptors: [fivebinaries],
-            positions: {
-                [account.key]: [
-                    mockStakingPosition({
-                        productId: fivebinaries.id,
-                        lockup: 'liquid',
-                        balances: {
-                            staked,
-                            pending: zero,
-                            unstaking: zero,
-                            withdrawable: zero,
-                            rewards: zero,
-                        },
-                        unlocks: [],
-                        targets: [],
-                        operations: ['unstake', 'claim', 'vote'],
-                        warnings: [
-                            { code: 'outdated-provider', providerId: fivebinaries.providerId },
-                        ],
-                    }),
-                ],
-            },
-        }),
-    },
-});
+type CreatePreloadedStateParams = {
+    staked: StakingAmount;
+    rewards?: StakingAmount;
+    availableBalance?: string;
+};
+
+const createPreloadedState = ({
+    staked,
+    rewards = zero,
+    availableBalance = ONE_ADA,
+}: CreatePreloadedStateParams) => {
+    const account = mockWalletAccount({ symbol: ada, deviceState, availableBalance });
+
+    return {
+        device: { devices: [selectedDevice], selectedDevice },
+        wallet: { accounts: [account] },
+        networks: mockNetworksState([ada]),
+        earn: {
+            staking: mockStakingState({
+                platform: 'mobile',
+                descriptors: [fivebinaries],
+                positions: {
+                    [account.key]: [
+                        mockStakingPosition({
+                            productId: fivebinaries.id,
+                            lockup: 'liquid',
+                            balances: {
+                                staked,
+                                pending: zero,
+                                unstaking: zero,
+                                withdrawable: zero,
+                                rewards,
+                            },
+                            unlocks: [],
+                            targets: [],
+                            operations: ['unstake', 'claim', 'vote'],
+                            warnings: [
+                                { code: 'outdated-provider', providerId: fivebinaries.providerId },
+                            ],
+                        }),
+                    ],
+                },
+            }),
+        },
+    };
+};
 
 describe('FiveBinariesHomeBanner', () => {
     it('does not render for an empty Five Binaries account', async () => {
         const { toJSON } = await renderWithStoreProvider(<FiveBinariesHomeBanner />, {
-            preloadedState: createPreloadedState(zero),
+            preloadedState: createPreloadedState({ staked: zero, availableBalance: '0' }),
+        });
+
+        expect(toJSON()).toBeNull();
+    });
+
+    it('does not render for a delegation that holds rewards alone', async () => {
+        const { toJSON } = await renderWithStoreProvider(<FiveBinariesHomeBanner />, {
+            preloadedState: createPreloadedState({
+                staked: ONE_ADA,
+                rewards: ONE_ADA,
+                availableBalance: '0',
+            }),
         });
 
         expect(toJSON()).toBeNull();
@@ -77,7 +103,7 @@ describe('FiveBinariesHomeBanner', () => {
 
     it('renders for a funded Five Binaries account', async () => {
         const { getByText } = await renderWithStoreProvider(<FiveBinariesHomeBanner />, {
-            preloadedState: createPreloadedState(stakingAmountSchema.parse('1000000')),
+            preloadedState: createPreloadedState({ staked: ONE_ADA }),
         });
 
         expect(

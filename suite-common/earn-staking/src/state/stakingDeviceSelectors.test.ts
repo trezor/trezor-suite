@@ -19,6 +19,7 @@ import {
     type StakingDeviceRootState,
     selectDeviceActiveStakingPositionEntries,
     selectDeviceActiveStakingPositionEntriesBySymbol,
+    selectDeviceStakingEntriesByWarning,
     selectDeviceStakingEntryByWarning,
     selectDeviceStakingPositionEntries,
     selectDeviceStakingPositionEntriesBySymbol,
@@ -367,20 +368,28 @@ describe('selectDeviceStakingPositionsCount', () => {
 });
 
 describe('selectDeviceStakingEntryByWarning', () => {
-    const fundedState = () =>
+    const spendableFiveBinariesAccount = { ...adaFiveBinariesAccount, availableBalance: '4000000' };
+    const otherAccounts = ACCOUNTS.filter(account => account !== adaFiveBinariesAccount);
+
+    const fundedState = (account = spendableFiveBinariesAccount) =>
         createState({
-            positions: {
-                ...POSITIONS,
-                [adaFiveBinariesAccount.key]: [fundedFiveBinariesPosition],
-            },
+            accounts: [...otherAccounts, account],
+            positions: { ...POSITIONS, [account.key]: [fundedFiveBinariesPosition] },
         });
 
-    it('finds the first funded entry with the warning', () => {
-        expect(selectDeviceStakingEntryByWarning(fundedState(), 'outdated-provider')).toEqual({
+    it('finds the first funded entry with the warning whose account holds a spendable balance', () => {
+        const entry = {
             accountKey: adaFiveBinariesAccount.key,
             position: fundedFiveBinariesPosition,
             descriptor: adaFiveBinaries,
-        });
+        };
+
+        expect(selectDeviceStakingEntryByWarning(fundedState(), 'outdated-provider')).toEqual(
+            entry,
+        );
+        expect(selectDeviceStakingEntriesByWarning(fundedState(), 'outdated-provider')).toEqual([
+            entry,
+        ]);
         expect(selectDeviceStakingEntryByWarning(fundedState(), 'outdated-provider')).toBe(
             selectDeviceStakingEntryByWarning(fundedState(), 'outdated-provider'),
         );
@@ -390,6 +399,15 @@ describe('selectDeviceStakingEntryByWarning', () => {
         expect(selectDeviceStakingEntryByWarning(createState(), 'outdated-provider')).toBeNull();
     });
 
+    it('skips an entry with the warning whose account holds rewards alone', () => {
+        const state = fundedState(adaFiveBinariesAccount);
+
+        expect(selectDeviceStakingEntryByWarning(state, 'outdated-provider')).toBeNull();
+        expect(selectDeviceStakingEntriesByWarning(state, 'outdated-provider')).toBe(
+            selectDeviceStakingEntriesByWarning(state, 'missing-drep'),
+        );
+    });
+
     it('is null without the warning', () => {
         expect(selectDeviceStakingEntryByWarning(fundedState(), 'missing-drep')).toBeNull();
     });
@@ -397,8 +415,8 @@ describe('selectDeviceStakingEntryByWarning', () => {
     it('ignores hidden accounts and other devices', () => {
         const state = createState({
             accounts: [
-                { ...adaFiveBinariesAccount, visible: false },
-                { ...adaFiveBinariesAccount, deviceState: OTHER_DEVICE_STATIC_SESSION_ID },
+                { ...spendableFiveBinariesAccount, visible: false },
+                { ...spendableFiveBinariesAccount, deviceState: OTHER_DEVICE_STATIC_SESSION_ID },
             ],
             positions: { [adaFiveBinariesAccount.key]: [fundedFiveBinariesPosition] },
         });

@@ -6,9 +6,13 @@ import {
     isStakingPositionActive,
 } from '@suite-common/earn-staking-common';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { type AccountsRootState, selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    selectAccountByKey,
+    selectVisibleDeviceAccounts,
+} from '@suite-common/wallet-core';
 import type { Account } from '@suite-common/wallet-types';
-import { sortByCoin } from '@suite-common/wallet-utils';
+import { isPositiveBalance, sortByCoin } from '@suite-common/wallet-utils';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 import {
     createWeakMapSelector,
@@ -118,11 +122,31 @@ export const selectDeviceStakingSymbols = createWeakMapSelector(
 export const selectDeviceStakingPositionsCount = (state: StakingDeviceRootState): number =>
     selectDeviceStakingPositionEntries(state).length;
 
-// The first funded entry with the warning, as the legacy banners required a balance.
+const selectWarningCodeParam = (
+    _state: StakingDeviceRootState,
+    code: StakingPositionWarningCode,
+): StakingPositionWarningCode => code;
+
+// The funded entries with the warning whose account holds a spendable balance: a banner that
+// shows a warning asks for a transaction, which a position that holds rewards alone cannot pay
+// for, so the legacy desktop banner wanted an available balance.
+export const selectDeviceStakingEntriesByWarning = createWeakMapSelector(
+    [selectState, selectDeviceStakingPositionEntries, selectWarningCodeParam],
+    (state, entries, code): readonly StakingPositionEntry[] =>
+        returnStableArrayIfEmpty(
+            createStableEntries(
+                ...entries.filter(
+                    ({ accountKey, position }) =>
+                        hasStakingPositionWarning(position, code) &&
+                        isPositiveBalance(
+                            selectAccountByKey(state, accountKey)?.availableBalance ?? '0',
+                        ),
+                ),
+            ),
+        ),
+);
+
 export const selectDeviceStakingEntryByWarning = (
     state: StakingDeviceRootState,
     code: StakingPositionWarningCode,
-): StakingPositionEntry | null =>
-    selectDeviceStakingPositionEntries(state).find(({ position }) =>
-        hasStakingPositionWarning(position, code),
-    ) ?? null;
+): StakingPositionEntry | null => selectDeviceStakingEntriesByWarning(state, code)[0] ?? null;
