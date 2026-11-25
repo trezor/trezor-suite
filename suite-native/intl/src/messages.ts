@@ -4321,20 +4321,11 @@ export const messages = {
             },
         },
         tradingExchangePreviewScreen: {
-            fromAccount: 'From',
-            toAccount: 'To',
             details: 'Transaction details',
             providerNamePlaceholder: 'Provider',
             providerReceiveAddressLabel: "{providerName}'s receive address",
             providerContractAddressLabel: "{providerName}'s contract address",
             confirmationAlertTitle: 'Failed to confirm offer.',
-            eip712Info: {
-                title: "You're swapping with {providerName}",
-                bullet1: 'Simply sign the order—no need to send transactions manually',
-                bullet2: 'No gas fees—the smart contract covers everything automatically',
-                bullet3:
-                    'Your swap may be completed in multiple parts, depending on market conditions',
-            },
             fiatDeviationWarning: 'Receiving {percent} less in estimated value.',
         },
         tradingSellPreviewScreen: {

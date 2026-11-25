@@ -272,22 +272,12 @@ describe('TradingExchangePreviewScreen', () => {
     });
 
     it.each([false, true])(
-        'should render the you pay and you get rows instead of the account cards when isApproved is %s',
+        'should render the you pay and you get rows when isApproved is %s',
         async isApproved => {
             const { result } = await renderTradingExchangePreviewScreen(isApproved);
 
             expect(result.getByTestId('@trading/history/detail/info/pay')).toBeOnTheScreen();
             expect(result.getByTestId('@trading/history/detail/info/get')).toBeOnTheScreen();
-            expect(
-                result.queryByText(
-                    getTranslation('moduleTrading.tradingExchangePreviewScreen.fromAccount'),
-                ),
-            ).toBeNull();
-            expect(
-                result.queryByText(
-                    getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount'),
-                ),
-            ).toBeNull();
         },
     );
 
