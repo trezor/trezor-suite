@@ -25,7 +25,7 @@ class TradingBuyActions extends TradingFormActions {
     async expectValidBuyForm() {
         await detoxExpect(element(by.text('Payment method'))).toBeVisible();
         await detoxExpect(element(by.text('Provider'))).toBeVisible();
-        await detoxExpect(this.getElementById('continue-button')).toBeVisible();
+        await waitForVisible(this.getElementById('continue-button'));
     }
 }
 
