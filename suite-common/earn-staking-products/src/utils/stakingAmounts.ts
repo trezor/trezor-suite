@@ -1,11 +1,12 @@
 import {
     type StakingAmount,
     type StakingAmountBounds,
+    ZERO_STAKING_AMOUNT,
     stakingAmountSchema,
 } from '@suite-common/earn-staking-common';
 import { BigNumber, type BigNumberValue } from '@trezor/utils';
 
-export const ZERO_STAKING_AMOUNT = stakingAmountSchema.parse('0');
+export { ZERO_STAKING_AMOUNT };
 
 export const SMALLEST_STAKING_AMOUNT = stakingAmountSchema.parse('1');
 

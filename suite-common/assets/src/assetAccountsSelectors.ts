@@ -3,7 +3,7 @@ import {
     type StakingRootState,
     selectStakingAmountsOutsideBalance,
 } from '@suite-common/earn-staking';
-import { type StakingAmount, stakingAmountSchema } from '@suite-common/earn-staking-common';
+import { type StakingAmount, ZERO_STAKING_AMOUNT } from '@suite-common/earn-staking-common';
 import {
     type TokenDefinitionsRootState,
     selectTokenDefinitions,
@@ -48,8 +48,6 @@ export type AssetAccountsRootState = AccountsRootState &
     StakingRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<AssetAccountsRootState>();
-
-const ZERO_STAKING_AMOUNT = stakingAmountSchema.parse('0');
 
 const createAssetAccount = weakMapMemoize(
     (

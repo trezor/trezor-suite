@@ -15,7 +15,7 @@ export {
     type StakingOperationErrorCode,
     type StakingSigningErrorCode,
 } from './stakingAdapterError';
-export { stakingAmountSchema, type StakingAmount } from './stakingAmount';
+export { stakingAmountSchema, ZERO_STAKING_AMOUNT, type StakingAmount } from './stakingAmount';
 export {
     assertComposedStakingStep,
     assertSignedStakingStep,

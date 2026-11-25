@@ -3,9 +3,8 @@ import {
     selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
     selectIsStakingAccountDelegatedOutside,
-    selectStakingAccountPositionEntry,
+    selectIsStakingOperationPending,
 } from '@suite-common/earn-staking';
-import { hasPendingStakingOperation } from '@suite-common/earn-staking-common';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { type Account } from '@suite-common/wallet-types';
 
@@ -22,11 +21,9 @@ export function CardanoNewProviderCard({ account }: CardanoNewProviderCardProps)
 
     const isStakingRoute = routeName?.includes('staking');
 
-    const hasPendingOperation = useSelector(state => {
-        const positionEntry = selectStakingAccountPositionEntry(state, account.key);
-
-        return positionEntry !== null && hasPendingStakingOperation(positionEntry.position);
-    });
+    const hasPendingOperation = useSelector(state =>
+        selectIsStakingOperationPending(state, account.key),
+    );
 
     const isDelegatedOutside = useSelector(state =>
         selectIsStakingAccountDelegatedOutside(state, account.key),

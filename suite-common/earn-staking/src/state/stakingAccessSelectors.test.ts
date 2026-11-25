@@ -24,6 +24,7 @@ import type { VersionArray } from '@trezor/utils';
 
 import {
     selectIsStakingAccountDelegatedOutside,
+    selectIsStakingAccountStakedWithOfferedProvider,
     selectIsStakingManageableSymbol,
     selectIsStakingOperationDisabled,
     selectIsStakingPromotedSymbol,
@@ -601,6 +602,28 @@ describe('selectStakingAccountProductDescriptor', () => {
 
         expect(selectStakingAccountProductDescriptor(state, btcAccount.key)).toBeNull();
         expect(selectStakingAccountProductDescriptor(state, unknownAccountKey)).toBeNull();
+    });
+});
+
+describe('selectIsStakingAccountStakedWithOfferedProvider', () => {
+    it('is true for a position that targets a provider of a product that offers stake', () => {
+        const state = createAccountState();
+
+        expect(selectIsStakingAccountStakedWithOfferedProvider(state, everstakeAccount.key)).toBe(
+            true,
+        );
+        expect(selectIsStakingAccountStakedWithOfferedProvider(state, ethAccount.key)).toBe(true);
+    });
+
+    it.each([
+        ['a delegation outside the offered providers', () => fivebinariesAccount.key],
+        ['an external delegation', () => externalAccount.key],
+        ['a registered stake key without a pool', () => undelegatedAdaAccount.key],
+        ['an account without a position', () => unstakedAdaAccount.key],
+    ])('is false for %s', (_name, getAccountKey) => {
+        expect(
+            selectIsStakingAccountStakedWithOfferedProvider(createAccountState(), getAccountKey()),
+        ).toBe(false);
     });
 });
 

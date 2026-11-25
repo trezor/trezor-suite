@@ -1,12 +1,11 @@
 import { useCallback, useState } from 'react';
 
 import {
+    selectIsStakingOperationPending,
     selectStakeableStakingProductDescriptorBySymbol,
-    selectStakingAccountPositionEntry,
     selectStakingAccountTotals,
     useStakingProductTargets,
 } from '@suite-common/earn-staking';
-import { hasPendingStakingOperation } from '@suite-common/earn-staking-common';
 import {
     isCardanoWithdrawalBlockedByMissingDrep,
     selectCardanoProtocolParameters,
@@ -66,11 +65,7 @@ export const useCardanoStaking = ({ account }: UseCardanoStakingParams): Cardano
     const protocolParameters = useSelector(state =>
         selectCardanoProtocolParameters(state, account.symbol),
     );
-    const hasPendingTx = useSelector(state => {
-        const positionEntry = selectStakingAccountPositionEntry(state, account.key);
-
-        return positionEntry !== null && hasPendingStakingOperation(positionEntry.position);
-    });
+    const hasPendingTx = useSelector(state => selectIsStakingOperationPending(state, account.key));
     // The reward balance Blockfrost reports, in lovelace, which the withdrawal composes with.
     const rewards = useSelector(state => selectStakingAccountTotals(state, account.key).rewards);
 

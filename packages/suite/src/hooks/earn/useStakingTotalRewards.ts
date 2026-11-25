@@ -1,5 +1,5 @@
 import { formatStakingAmount, selectStakingAccountTotals } from '@suite-common/earn-staking';
-import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api/src/staking';
+import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';

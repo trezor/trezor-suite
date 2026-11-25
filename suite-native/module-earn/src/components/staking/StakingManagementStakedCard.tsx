@@ -12,8 +12,8 @@ import {
     useStakingPeriods,
 } from '@suite-common/earn-staking';
 import {
+    ZERO_STAKING_AMOUNT,
     getStakingPositionPrincipal,
-    stakingAmountSchema,
 } from '@suite-common/earn-staking-common';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -76,8 +76,6 @@ const buttonsRowStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
     gap: utils.spacings.sp12,
 }));
-
-const ZERO_STAKING_AMOUNT = stakingAmountSchema.parse('0');
 
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>;
 

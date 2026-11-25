@@ -3,11 +3,11 @@ import { useEffect } from 'react';
 import {
     selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
-    selectIsStakingAccountDelegatedOutside,
+    selectIsStakingAccountStakedWithOfferedProvider,
+    selectIsStakingOperationPending,
     useNetworkStakingRate,
     useStakingAccountPosition,
 } from '@suite-common/earn-staking';
-import { hasPendingStakingOperation } from '@suite-common/earn-staking-common';
 import {
     fetchAllTransactionsForAccountThunk,
     selectHasRunningDiscovery,
@@ -53,24 +53,24 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
         }
     }, [accountKey, dispatch]);
 
-    const { productId, position } = useStakingAccountPosition(accountKey);
+    const { productId } = useStakingAccountPosition(accountKey);
     const { rate } = useNetworkStakingRate({ networkSymbol: account.symbol, accountKey });
 
     const isStakingActive = useSelector(state => selectIsStakingAccountActive(state, accountKey));
 
-    const isDelegatedOutside = useSelector(state =>
-        selectIsStakingAccountDelegatedOutside(state, accountKey),
+    const isStakedWithProvider = useSelector(state =>
+        selectIsStakingAccountStakedWithOfferedProvider(state, accountKey),
     );
     // A retired provider pays nothing, which reads as a zero rate, as on mobile.
     const hasOutdatedProvider = useSelector(state =>
         selectHasStakingAccountWarning(state, accountKey, 'outdated-provider'),
     );
-    const hasPendingOperation = position !== null && hasPendingStakingOperation(position);
+    const hasPendingOperation = useSelector(state =>
+        selectIsStakingOperationPending(state, accountKey),
+    );
 
     // The rate belongs to a delegation Suite offers; a registered key without a pool has none to
     // show until a transaction that may delegate it is pending.
-    const isStakedWithProvider =
-        position !== null && position.targets.length > 0 && !isDelegatedOutside;
     const shownRate = isStakedWithProvider || hasPendingOperation ? rate : null;
 
     const shouldShowStakingDashboard = isStakingActive || hasPendingOperation;
