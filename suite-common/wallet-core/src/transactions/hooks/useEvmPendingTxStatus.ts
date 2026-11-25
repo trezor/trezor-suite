@@ -3,9 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { type Account, type EvmTransactionPurpose } from '@suite-common/wallet-types';
 import {
+    type EvmOperation,
     type EvmPendingTxStatus,
     findTrackedEvmTransaction,
     getEvmPendingTxStatus,
+    getEvmReplacementTxid,
     getPollIntervalMs,
 } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
@@ -26,6 +28,8 @@ interface TrackedNonce {
 export interface EvmPendingTxTracking {
     status: EvmPendingTxStatus | null;
     nonce: number | undefined;
+    // The hash that replaced the tracked one while making the expected call; the caller follows it.
+    replacementTxid: string | undefined;
 }
 
 export const useEvmPendingTxStatus = (
@@ -33,6 +37,8 @@ export const useEvmPendingTxStatus = (
     txid: string | null,
     expectedPurpose: EvmTransactionPurpose,
     persistedNonce?: number,
+    // When given, a same-nonce replacement has to make exactly this call to complete the flow.
+    expectedOperation?: EvmOperation,
 ): EvmPendingTxTracking => {
     const { dispatch } = useServices(injectDispatch);
 
@@ -70,8 +76,12 @@ export const useEvmPendingTxStatus = (
     const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);
 
     const status = account
-        ? getEvmPendingTxStatus({ txid, trackedTransaction, expectedPurpose })
+        ? getEvmPendingTxStatus({ txid, trackedTransaction, expectedPurpose, expectedOperation })
         : null;
+    const replacementTxid =
+        expectedOperation === undefined
+            ? undefined
+            : getEvmReplacementTxid({ trackedTransaction, expectedOperation });
 
     useEffect(() => {
         if (status !== 'pending' || !account?.key) {
@@ -85,5 +95,5 @@ export const useEvmPendingTxStatus = (
         return () => clearInterval(interval);
     }, [status, account?.key, dispatch, pollIntervalMs]);
 
-    return { status, nonce: originalNonce ?? knownNonce };
+    return { status, nonce: originalNonce ?? knownNonce, replacementTxid };
 };

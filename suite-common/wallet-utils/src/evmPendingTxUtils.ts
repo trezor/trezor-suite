@@ -2,11 +2,45 @@ import {
     type EvmTransactionPurpose,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
+import { BigNumber } from '@trezor/utils';
 
 import { getEvmTransactionPurpose, getWrappedNativeTxTarget } from './ethUtils';
 import { isPending, isSignedByAccount } from './transactionUtils';
 
 export type EvmPendingTxStatus = 'pending' | 'confirmed' | 'failed';
+
+/** The call an EVM transaction makes: where it goes, with what calldata and what native value. */
+export interface EvmOperation {
+    to: string;
+    data?: string;
+    // In wei, as a decimal or a hex quantity.
+    value?: string;
+}
+
+const normalizeCalldata = (data: string | undefined) => {
+    const hex = (data ?? '').toLowerCase();
+
+    return hex.startsWith('0x') ? hex.slice(2) : hex;
+};
+
+export const getEvmTransactionOperation = (
+    transaction: Pick<WalletAccountTransaction, 'targets' | 'details' | 'ethereumSpecific'>,
+): EvmOperation | null => {
+    const [output] = transaction.details.vout;
+    // A pending token transfer the app records itself has no target, only the raw output.
+    const to = transaction.targets[0]?.addresses?.[0] ?? output?.addresses?.[0];
+
+    if (to === undefined) {
+        return null;
+    }
+
+    return { to, data: transaction.ethereumSpecific?.data, value: output?.value };
+};
+
+export const isSameEvmOperation = (operation: EvmOperation, other: EvmOperation): boolean =>
+    operation.to.toLowerCase() === other.to.toLowerCase() &&
+    normalizeCalldata(operation.data) === normalizeCalldata(other.data) &&
+    new BigNumber(operation.value || 0).eq(other.value || 0);
 
 export interface TrackedEvmTransaction {
     transaction: WalletAccountTransaction;
@@ -63,12 +97,56 @@ type GetEvmPendingTxStatusParams = {
     txid: string | null;
     trackedTransaction?: TrackedEvmTransaction;
     expectedPurpose: EvmTransactionPurpose;
+    // When given, a replacement has to make exactly this call, not just one of the same purpose.
+    expectedOperation?: EvmOperation;
+};
+
+type IsExpectedEvmOperationParams = {
+    transaction: WalletAccountTransaction;
+    expectedPurpose: EvmTransactionPurpose;
+    expectedOperation?: EvmOperation;
+};
+
+const isExpectedEvmOperation = ({
+    transaction,
+    expectedPurpose,
+    expectedOperation,
+}: IsExpectedEvmOperationParams) => {
+    if (expectedOperation === undefined) {
+        return getConfirmedEvmTransactionPurpose(transaction) === expectedPurpose;
+    }
+
+    const operation = getEvmTransactionOperation(transaction);
+
+    return operation !== null && isSameEvmOperation(operation, expectedOperation);
+};
+
+type GetEvmReplacementTxidParams = {
+    trackedTransaction?: TrackedEvmTransaction;
+    expectedOperation: EvmOperation;
+};
+
+/** The hash to follow once a replacement is known to make the very call that was submitted. */
+export const getEvmReplacementTxid = ({
+    trackedTransaction,
+    expectedOperation,
+}: GetEvmReplacementTxidParams): string | undefined => {
+    if (!trackedTransaction?.isReplacement) {
+        return undefined;
+    }
+
+    const operation = getEvmTransactionOperation(trackedTransaction.transaction);
+
+    return operation !== null && isSameEvmOperation(operation, expectedOperation)
+        ? trackedTransaction.transaction.txid
+        : undefined;
 };
 
 export const getEvmPendingTxStatus = ({
     txid,
     trackedTransaction,
     expectedPurpose,
+    expectedOperation,
 }: GetEvmPendingTxStatusParams): EvmPendingTxStatus | null => {
     if (!txid) return null;
 
@@ -81,7 +159,11 @@ export const getEvmPendingTxStatus = ({
     // merely reuses the nonce.
     const didOperationChange =
         trackedTransaction.isReplacement &&
-        getConfirmedEvmTransactionPurpose(trackedTransaction.transaction) !== expectedPurpose;
+        !isExpectedEvmOperation({
+            transaction: trackedTransaction.transaction,
+            expectedPurpose,
+            expectedOperation,
+        });
 
     if (trackedTransaction.transaction.type === 'failed' || didOperationChange) {
         return 'failed';

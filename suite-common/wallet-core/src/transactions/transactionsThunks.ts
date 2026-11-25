@@ -36,6 +36,7 @@ import { blockbookUtils } from '@trezor/blockchain-link-utils';
 import { type AccountInfo, type AccountTransaction, type TokenTransfer } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { LOVELACE_UNIT } from '@trezor/network-cardano/constants';
+import { getLidoDeployment } from '@trezor/network-ethereum-suite-common';
 import {
     SOLANA_BLOCKHASH_VALIDITY_BLOCKS,
     SOLANA_SLOT_TIME_MS,
@@ -65,6 +66,7 @@ import { type FeesRootState, selectRawNetworkFeeInfo } from '../fees/feesReducer
 import { ethereumGetCurrentNonceThunk } from '../send/sendFormEthereumThunks';
 import { type SendRootState } from '../send/sendFormReducer';
 import { selectSendSignedTx } from '../send/sendFormSelectors';
+import { getLidoTransactionKind } from '../staking/lido/lidoStakingUtils';
 import {
     type StellarContractTokensRootState,
     selectStellarContractTokens,
@@ -439,10 +441,24 @@ export const addFakePendingEvmTxThunk = createThunk<
         const deadline = FAKE_TX_TTL_SECONDS / rawFeeInfo!.blockTime;
 
         const sig = getEvmTransactionTextSignature(precomposedForm.transactionData);
+        // A Lido withdrawal request hands the queue the wstETH it names.
+        const lidoDeployment = getLidoDeployment(account.symbol);
+        const [firstOutput] = precomposedTransaction.outputs;
+        const isLidoWithdrawalRequest =
+            lidoDeployment !== null &&
+            getLidoTransactionKind({
+                deployment: lidoDeployment,
+                to:
+                    firstOutput !== undefined && 'address' in firstOutput
+                        ? firstOutput.address
+                        : undefined,
+                data: precomposedForm.transactionData,
+            }) === 'request-withdrawal';
         const transfersToken =
             !precomposedForm.transactionData ||
             sig === 'transfer' ||
-            isEvmYieldTxByTextSignature(sig);
+            isEvmYieldTxByTextSignature(sig) ||
+            isLidoWithdrawalRequest;
 
         const fakeTx = buildFakePendingEvmTx({
             precomposedTransaction,
