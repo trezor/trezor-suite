@@ -31,13 +31,18 @@ async function isCdpPortInUse(): Promise<boolean> {
 }
 
 async function waitForProcessGroupExit(runnerPid: number): Promise<void> {
-    const deadline = Date.now() + 5_000;
+    const killAfter = Date.now() + 5_000;
+    let sentKill = false;
 
-    while (Date.now() < deadline) {
+    while (Date.now() < killAfter + 5_000) {
         try {
             // Node calls its signal-sending function "kill". Here, 0 means "just check":
             // is any process in the runner's group still there? Nothing gets stopped.
             process.kill(-runnerPid, 0);
+            if (!sentKill && Date.now() >= killAfter) {
+                process.kill(-runnerPid, 'SIGKILL');
+                sentKill = true;
+            }
         } catch (processError) {
             // ESRCH means the process group no longer exists: shutdown is complete.
             if (processError.code === 'ESRCH') {
@@ -50,7 +55,7 @@ async function waitForProcessGroupExit(runnerPid: number): Promise<void> {
         await new Promise(resolve => setTimeout(resolve, 200));
     }
 
-    throw new Error(`Browser runner process group ${runnerPid} did not exit within 5 seconds`);
+    throw new Error(`Browser runner process group ${runnerPid} did not exit within 10 seconds`);
 }
 
 // Stop the harness-owned browser (if any) and remove its state file. Setup
