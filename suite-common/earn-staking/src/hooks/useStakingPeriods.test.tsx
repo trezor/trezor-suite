@@ -76,13 +76,13 @@ describe('useStakingPeriods', () => {
         });
     });
 
-    it('rounds the periods once for display, with at least a day to enter', () => {
+    it('rounds the periods once for display, with at least a day to enter and to exit', () => {
         const fractional = mockStakingProductInfo({ entryPeriodDays: 3.4, exitPeriodDays: 0.4 });
         const tiny = mockStakingProductInfo({ entryPeriodDays: 0.2, exitPeriodDays: 2.6 });
 
         expect(renderStakingPeriods(fractional).result.current).toMatchObject({
             entryPeriodDays: 3,
-            exitPeriodDays: 0,
+            exitPeriodDays: 1,
         });
         expect(renderStakingPeriods(tiny).result.current).toMatchObject({
             entryPeriodDays: 1,

@@ -64,14 +64,14 @@ describe('fetchEthereumEverstakePooledProductInfo', () => {
         expect(deps.getEthereumValidatorsQueue).toHaveBeenCalledWith({ signal: abortSignal });
     });
 
-    it('reads a period from the parts the queue reports when it lacks the other', async () => {
+    it('leaves a period unknown when the queue lacks a part it needs', async () => {
         const deps = createDeps(ethStats, { activationTime: 3 * SECONDS_IN_DAY, exitTime: 0 });
 
         await expect(
             fetchEthereumEverstakePooledProductInfo(deps, { networkSymbol: eth }),
         ).resolves.toMatchObject({
-            entryPeriodDays: 3,
-            exitPeriodDays: 0,
+            entryPeriodDays: null,
+            exitPeriodDays: null,
         });
     });
 
