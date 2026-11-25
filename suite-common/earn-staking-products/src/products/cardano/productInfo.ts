@@ -26,11 +26,12 @@ export type CardanoProductInfoDeps = {
 
 export type FetchCardanoProductInfoParams = FetchProductInfoParams & {
     provider: StakingProvider;
+    poolIds: readonly string[];
 };
 
 export const fetchCardanoProductInfo = async (
     deps: CardanoProductInfoDeps,
-    { abortSignal, provider }: FetchCardanoProductInfoParams,
+    { abortSignal, provider, poolIds }: FetchCardanoProductInfoParams,
 ): Promise<StakingProductInfo> => {
     // The endpoint returns ten pools by default, most saturated first, which would cut off the
     // least saturated pool Suite promotes.
@@ -39,13 +40,12 @@ export const fetchCardanoProductInfo = async (
         params: { limit: stakingCardanoPoolsQueryLimitMax },
     });
 
-    // Every pool the endpoint lists is the provider's, so a delegation to a pool the bundled
-    // identities predate is kept where the bundled list alone would move it.
+    // Only the bundled pools are targets: the position owns those alone, so the pool
+    // a delegation is composed to is one the read model reads as the provider's.
     const targets = pools
         .map(pool => ({ ...pool, id: pool.id.toLowerCase() }))
-        .filter(
-            ({ id }, index, listedPools) => listedPools.findIndex(pool => pool.id === id) === index,
-        )
+        .filter(({ id }) => poolIds.includes(id))
+        .filter(({ id }, index, ownPools) => ownPools.findIndex(pool => pool.id === id) === index)
         .map(({ id, apy, saturation }) => ({
             address: id,
             providerId: provider.id,
