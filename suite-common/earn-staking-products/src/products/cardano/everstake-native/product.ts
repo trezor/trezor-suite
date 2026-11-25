@@ -41,7 +41,7 @@ export const createCardanoEverstakeNativeProduct = ({
     });
 
     const fetchProductInfo = (params: FetchProductInfoParams) =>
-        fetchCardanoProductInfo(deps, { ...params, provider });
+        fetchCardanoProductInfo(deps, { ...params, provider, poolIds });
 
     const getPosition = (params: GetPositionParams) =>
         getCardanoProductPosition({
