@@ -1,6 +1,7 @@
 export { EarnClaimPage } from './pages/EarnClaimPage';
 export { EarnDepositPage } from './pages/EarnDepositPage';
 export { EarnPage } from './pages/EarnPage';
+export { EarnPositionsPage } from './pages/EarnPositionsPage';
 export { EarnTronClaimPage } from './pages/EarnTronClaimPage';
 export { EarnTronRedirectPage } from './pages/EarnTronRedirectPage';
 export { EarnTronStakePage } from './pages/EarnTronStakePage';

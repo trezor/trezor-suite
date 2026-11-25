@@ -31,7 +31,6 @@ import {
     compareEarnByApyDesc,
     compareEarnByNetworkTokenOrder,
     getAccountTotalStakingBalance,
-    getContractAddressForNetworkSymbol,
     getFiatRateKey,
     isStakingSymbol,
     sortByCoin,
@@ -63,6 +62,7 @@ import {
     type EarnFiatPosition,
     type EarnFiatValuation,
     getEarnPositionFiatAmount,
+    getYieldPositionFiatTokenAddress,
     sumEarnFiatValuations,
 } from './earnDepositsFiatUtils';
 import { type AccountsRootState } from '../accounts/accountsReducer';
@@ -85,7 +85,10 @@ import {
     getTotalFiatAmountFromClaimableRewards,
     sumBaseCurrencyAmounts,
 } from '../yield/utils/yieldClaimSummaryUtils';
-import { getConvertedOutputTokenBalanceToInputTokenAmount } from '../yield/utils/yieldUtils';
+import {
+    canConvertOutputTokenBalanceToInputTokenAmount,
+    getConvertedOutputTokenBalanceToInputTokenAmount,
+} from '../yield/utils/yieldUtils';
 
 export type EarnListRootState = AccountsRootState &
     DeviceRootState &
@@ -186,7 +189,7 @@ const createYieldListItem = weakMapMemoize(
         receiptTokenContract: TokenAddress,
         accountKey: AccountKey,
         contractAddress: TokenAddress,
-        tokenBalance: string,
+        tokenBalance: string | null,
     ): YieldListItem => ({
         id: `${vault.id}-${accountKey}`,
         yieldId: vault.id,
@@ -252,6 +255,13 @@ export const selectYieldListItems = createMemoizedSelector(
             const receiptTokenContract = toTokenAddress(vault.outputToken.address);
             const outputTokenAddress = receiptTokenContract.toLowerCase();
 
+            const isTokenBalanceAvailable = canConvertOutputTokenBalanceToInputTokenAmount({
+                networkSymbol: network.symbol,
+                token: vault.token,
+                outputToken: vault.outputToken,
+                pricePerShareState: vault.state?.pricePerShareState,
+            });
+
             for (const account of accounts) {
                 if (
                     account.symbol !== network.symbol ||
@@ -274,13 +284,15 @@ export const selectYieldListItems = createMemoizedSelector(
                         receiptTokenContract,
                         account.key,
                         toTokenAddress(outputToken.contract),
-                        getConvertedOutputTokenBalanceToInputTokenAmount({
-                            networkSymbol: network.symbol,
-                            token: vault.token,
-                            outputToken: vault.outputToken,
-                            outputTokenBalance: outputToken.balance,
-                            pricePerShareState: vault.state?.pricePerShareState,
-                        }),
+                        isTokenBalanceAvailable
+                            ? getConvertedOutputTokenBalanceToInputTokenAmount({
+                                  networkSymbol: network.symbol,
+                                  token: vault.token,
+                                  outputToken: vault.outputToken,
+                                  outputTokenBalance: outputToken.balance,
+                                  pricePerShareState: vault.state?.pricePerShareState,
+                              })
+                            : null,
                     ),
                     account,
                 });
@@ -606,21 +618,47 @@ export const selectStakingFiatPositions = createMemoizedSelector(
         ),
 );
 
+const createYieldFiatPosition = (
+    { networkSymbol, tokenContractAddress, tokenBalance }: YieldListItem,
+    baseCurrency: BaseCurrencyCode,
+): EarnFiatPosition | null =>
+    tokenBalance === null
+        ? null
+        : createEarnFiatPosition({
+              symbol: networkSymbol,
+              contractAddress: getYieldPositionFiatTokenAddress(
+                  networkSymbol,
+                  tokenContractAddress,
+              ),
+              balance: tokenBalance,
+              baseCurrency,
+          });
+
 export const selectYieldFiatPositions = createMemoizedSelector(
     [selectYieldListItems, selectBaseCurrency],
     (yieldPositions, baseCurrency): EarnFiatPosition[] =>
         createStableEarnFiatPositions(
-            yieldPositions.map(({ networkSymbol, tokenContractAddress, tokenBalance }) =>
-                createEarnFiatPosition({
-                    symbol: networkSymbol,
-                    contractAddress: toTokenAddress(
-                        getContractAddressForNetworkSymbol(networkSymbol, tokenContractAddress),
-                    ),
-                    balance: tokenBalance,
-                    baseCurrency,
-                }),
-            ),
+            yieldPositions.map(position => createYieldFiatPosition(position, baseCurrency)),
         ),
+);
+
+const selectYieldListItemFiatPosition = (state: EarnListRootState, item: YieldListItem) =>
+    createYieldFiatPosition(item, selectBaseCurrency(state));
+
+const selectYieldListItemCurrentFiatRates = (state: EarnListRootState, item: YieldListItem) => {
+    const position = selectYieldListItemFiatPosition(state, item);
+
+    if (!position) return undefined;
+
+    const fiatRateKeys = createStableFiatRateKeys(position.fiatRateKey);
+
+    return selectCurrentFiatRatesByFiatRateKeys(state, fiatRateKeys);
+};
+
+export const selectYieldListItemFiatAmount = createMemoizedSelector(
+    [selectYieldListItemFiatPosition, selectYieldListItemCurrentFiatRates],
+    (position, currentFiatRates): BaseCurrencyAmount | null =>
+        position ? getEarnPositionFiatAmount(position, currentFiatRates) : null,
 );
 
 const getStableEarnFiatRateKeys = (positions: readonly EarnFiatPosition[]) =>
@@ -679,6 +717,11 @@ export const selectYieldTotalFiatAmount = createMemoizedSelector(
 export const selectStakingPositionsCount = createMemoizedSelector(
     [selectStakingListItems],
     stakingPositions => stakingPositions.length,
+);
+
+export const selectHasUnavailableYieldBalance = createMemoizedSelector(
+    [selectYieldListItems],
+    (yieldPositions): boolean => yieldPositions.some(({ tokenBalance }) => tokenBalance === null),
 );
 
 export const selectYieldPositionsCount = createMemoizedSelector(

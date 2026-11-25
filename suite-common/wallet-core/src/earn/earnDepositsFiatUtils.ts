@@ -1,5 +1,7 @@
 import { A, F } from '@mobily/ts-belt';
 
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BaseCurrencyAmount,
     type CryptoBaseCurrencyPair,
@@ -7,7 +9,11 @@ import {
     type TickerId,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
-import { isTestnet, toFiatCurrency } from '@suite-common/wallet-utils';
+import {
+    getContractAddressForNetworkSymbol,
+    isTestnet,
+    toFiatCurrency,
+} from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 export type EarnFiatPosition = {
@@ -20,6 +26,12 @@ export type EarnFiatValuation = {
     tickerId: TickerId;
     fiatAmount: BaseCurrencyAmount | null;
 };
+
+export const getYieldPositionFiatTokenAddress = (
+    networkSymbol: NetworkSymbol,
+    tokenContractAddress: TokenAddress,
+): TokenAddress =>
+    toTokenAddress(getContractAddressForNetworkSymbol(networkSymbol, tokenContractAddress));
 
 export const getUniqueTickers = (tickers: TickerId[]): TickerId[] =>
     F.toMutable(

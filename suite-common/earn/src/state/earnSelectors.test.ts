@@ -281,6 +281,13 @@ describe('selectIsEarnFiatTotalIncomplete', () => {
         expect(selectIsEarnFiatTotalIncomplete(missingState, vaults, true)).toBe(false);
         expect(selectIsEarnFiatTotalIncomplete(completeState, vaults, false)).toBe(false);
     });
+
+    it('is true while a vault has no share price, whatever the rates', () => {
+        const state = createState({ rates: completeRates });
+
+        expect(selectIsEarnFiatTotalIncomplete(state, [vault], false)).toBe(true);
+        expect(selectIsEarnFiatTotalIncomplete(state, [vault], true)).toBe(true);
+    });
 });
 
 describe('selectIsEarnFiatTotalUnavailable', () => {
@@ -291,6 +298,23 @@ describe('selectIsEarnFiatTotalUnavailable', () => {
         expect(selectIsEarnFiatTotalUnavailable(partialState, vaults, false)).toBe(false);
         expect(selectIsEarnFiatTotalUnavailable(unratedState, vaults, false)).toBe(true);
         expect(selectIsEarnFiatTotalUnavailable(unratedState, vaults, true)).toBe(false);
+    });
+
+    it('is true when the only position is a vault without a share price', () => {
+        expect(
+            selectIsEarnFiatTotalUnavailable(
+                createState({ stakingPositions: [], rates: completeRates }),
+                [vault],
+                false,
+            ),
+        ).toBe(true);
+    });
+
+    it('is false when another position is valued next to a vault without a share price', () => {
+        const state = createState({ rates: completeRates });
+
+        expect(selectIsEarnFiatTotalUnavailable(state, [vault], false)).toBe(false);
+        expect(selectEarnTotalFiatAmount(state, [vault])).toBe('2.5');
     });
 });
 

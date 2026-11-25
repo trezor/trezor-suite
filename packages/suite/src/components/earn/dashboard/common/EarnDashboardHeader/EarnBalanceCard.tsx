@@ -1,20 +1,28 @@
 import { TotalBalanceCard, TotalBalanceHeadline } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { gotoThunk } from '@suite/router';
 import {
-    selectEarnPositionsCount,
     selectEarnTotalFiatAmount,
     selectIsEarnFiatTotalIncomplete,
     selectIsEarnFiatTotalUnavailable,
     useEarnMissingRateTickersQuery,
 } from '@suite-common/earn';
 import { useYieldOpportunities } from '@suite-common/wallet-core';
-import { Text } from '@trezor/components';
+import { Button, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { CaretRightIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useDiscovery } from '#src/hooks/suite/useDiscovery';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
-export const EarnBalanceCard = () => {
+type EarnBalanceCardProps = {
+    positionsCount: number;
+};
+
+export const EarnBalanceCard = ({ positionsCount }: EarnBalanceCardProps) => {
+    const { dispatch } = useServices(injectDispatch);
     const { isDiscoveryRunning } = useDiscovery();
     const { yieldOpportunities } = useYieldOpportunities();
     const { isFiatRatesLoading } = useEarnMissingRateTickersQuery();
@@ -31,17 +39,22 @@ export const EarnBalanceCard = () => {
         selectIsEarnFiatTotalUnavailable(state, yieldOpportunities, isFiatRatesLoading),
     );
 
-    const earnPositionsCount = useSelector(state =>
-        selectEarnPositionsCount(state, yieldOpportunities),
-    );
+    const onMyPositionsClick = () => dispatch(gotoThunk({ routeName: 'earn-positions' }));
 
     const isLoading = isDiscoveryRunning || isFiatRatesLoading;
     const fiatValue = isFiatTotalUnavailable ? undefined : new BigNumber(totalEarnFiatAmount);
+
+    const actions = (
+        <Button intent="neutral" iconRight={CaretRightIcon} onClick={onMyPositionsClick}>
+            <Translation id="TR_EARN_MY_POSITIONS" />
+        </Button>
+    );
 
     return (
         <TotalBalanceCard
             label={<Translation id="TR_EARN_EARNING_BALANCE" />}
             isLoading={isLoading}
+            actions={actions}
         >
             <TotalBalanceHeadline
                 fiatValue={fiatValue}
@@ -50,14 +63,7 @@ export const EarnBalanceCard = () => {
                 data-testid="@earn/dashboard/total-balance"
             />
             <Text typographyStyle="body-md" intent="neutral" priority="secondary">
-                <Translation
-                    id={
-                        earnPositionsCount === 0
-                            ? 'TR_EARN_NO_POSITIONS'
-                            : 'TR_EARN_ACTIVE_POSITIONS'
-                    }
-                    values={{ count: earnPositionsCount }}
-                />
+                <Translation id="TR_EARN_ACTIVE_POSITIONS" values={{ count: positionsCount }} />
             </Text>
         </TotalBalanceCard>
     );

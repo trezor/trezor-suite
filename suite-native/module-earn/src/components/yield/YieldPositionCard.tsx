@@ -88,7 +88,7 @@ export const YieldPositionCard = ({ item, onClose }: YieldPositionCardProps) => 
             value={
                 isWrappedNativeToken(item.networkSymbol, item.tokenContractAddress) ? (
                     <CompactCryptoAmountFormatter
-                        value={item.tokenBalance}
+                        value={item.tokenBalance ?? '0'}
                         symbol={item.networkSymbol}
                         isBalance={true}
                         numberOfLines={1}
@@ -100,7 +100,7 @@ export const YieldPositionCard = ({ item, onClose }: YieldPositionCardProps) => 
                     <CompactTokenAmountFormatter
                         networkSymbol={item.networkSymbol}
                         contractAddress={item.tokenContractAddress}
-                        value={asDecimalTokenAmount(item.tokenBalance)}
+                        value={asDecimalTokenAmount(item.tokenBalance ?? '0')}
                         numberOfLines={1}
                         adjustsFontSizeToFit
                         variant="body-md"

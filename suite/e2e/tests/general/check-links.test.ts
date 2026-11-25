@@ -177,6 +177,7 @@ const SECTIONS = {
     ],
     earn: [
         '/earn',
+        '/earn/positions',
         '/earn/yield/deposit',
         '/earn/yield/withdraw',
         '/earn/yield/claim',

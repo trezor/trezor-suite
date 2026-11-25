@@ -9518,6 +9518,26 @@ export const messages = defineMessages({
         id: 'TR_EARN_POSITIONS_BREAKDOWN',
         defaultMessage: 'Positions breakdown',
     },
+    TR_EARN_MY_POSITIONS: {
+        id: 'TR_EARN_MY_POSITIONS',
+        defaultMessage: 'My positions',
+    },
+    TR_EARN_MY_POSITIONS_EMPTY_DESCRIPTION: {
+        id: 'TR_EARN_MY_POSITIONS_EMPTY_DESCRIPTION',
+        defaultMessage: 'Stake or deposit into a vault to see your positions here.',
+    },
+    TR_EARN_MY_POSITIONS_GO_TO_EARN: {
+        id: 'TR_EARN_MY_POSITIONS_GO_TO_EARN',
+        defaultMessage: 'Go to Earn',
+    },
+    TR_EARN_MY_POSITIONS_FAILED_TO_LOAD: {
+        id: 'TR_EARN_MY_POSITIONS_FAILED_TO_LOAD',
+        defaultMessage: 'Failed to load positions',
+    },
+    TR_EARN_MY_POSITIONS_FAILED_TO_REFRESH: {
+        id: 'TR_EARN_MY_POSITIONS_FAILED_TO_REFRESH',
+        defaultMessage: "Couldn't refresh positions. The amounts shown may be out of date.",
+    },
     TR_EARN_AMOUNT_STAKED_INSTANTLY: {
         id: 'TR_EARN_AMOUNT_STAKED_INSTANTLY',
         defaultMessage: '{amount} {symbol} staked instantly',
@@ -11616,6 +11636,10 @@ export const messages = defineMessages({
         id: 'TR_STAKING_DIFFERENT_PROVIDER',
         defaultMessage: 'Staked with a different provider',
     },
+    TR_STAKING_EXTERNAL_POOL: {
+        id: 'TR_STAKING_EXTERNAL_POOL',
+        defaultMessage: 'External pool',
+    },
     TR_STAKING_REWARDS_REDUCED: {
         id: 'TR_STAKING_REWARDS_REDUCED',
         defaultMessage: 'No rewards',
@@ -12288,6 +12312,22 @@ export const messages = defineMessages({
     TR_EARN_TRON_VOTES_TO_ALLOCATE: {
         id: 'TR_EARN_TRON_VOTES_TO_ALLOCATE',
         defaultMessage: '{count, plural, one {1 unassigned vote} other {# unassigned votes}}',
+    },
+    TR_EARN_TRON_VOTES_LEFT_BADGE: {
+        id: 'TR_EARN_TRON_VOTES_LEFT_BADGE',
+        defaultMessage: '{count, plural, one {# vote left} other {# votes left}}',
+    },
+    TR_EARN_READY_TO_WITHDRAW: {
+        id: 'TR_EARN_READY_TO_WITHDRAW',
+        defaultMessage: 'Ready to withdraw',
+    },
+    TR_EARN_TRON_NO_VOTES_BADGE: {
+        id: 'TR_EARN_TRON_NO_VOTES_BADGE',
+        defaultMessage: 'Assign votes to earn rewards',
+    },
+    TR_EARN_TRON_APR_ON_ASSIGNED_VOTES_BADGE: {
+        id: 'TR_EARN_TRON_APR_ON_ASSIGNED_VOTES_BADGE',
+        defaultMessage: '{apr}% APR on assigned votes',
     },
     TR_EARN_TRON_ASSIGN_VOTES_TOOLTIP: {
         id: 'TR_EARN_TRON_ASSIGN_VOTES_TOOLTIP',

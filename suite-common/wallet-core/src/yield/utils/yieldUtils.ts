@@ -565,6 +565,38 @@ export const getWithdrawRequestAmount = ({
         .toString();
 };
 
+export const canConvertOutputTokenBalanceToInputTokenAmount = ({
+    networkSymbol,
+    token,
+    outputToken,
+    pricePerShareState,
+}: Omit<ConvertOutputTokenBalanceParams, 'outputTokenBalance'>): boolean => {
+    if (doTokensMatch({ networkSymbol, firstToken: outputToken, secondToken: token })) {
+        return true;
+    }
+
+    if (pricePerShareState === undefined) {
+        return false;
+    }
+
+    const price = new BigNumber(pricePerShareState.price);
+
+    return (
+        price.isFinite() &&
+        price.gt(0) &&
+        doTokensMatch({
+            networkSymbol,
+            firstToken: pricePerShareState.shareToken,
+            secondToken: outputToken,
+        }) &&
+        doTokensMatch({
+            networkSymbol,
+            firstToken: pricePerShareState.quoteToken,
+            secondToken: token,
+        })
+    );
+};
+
 export const getConvertedOutputTokenBalanceToInputTokenAmount = ({
     networkSymbol,
     token,
@@ -582,15 +614,11 @@ export const getConvertedOutputTokenBalanceToInputTokenAmount = ({
 
     if (
         !pricePerShareState ||
-        !doTokensMatch({
+        !canConvertOutputTokenBalanceToInputTokenAmount({
             networkSymbol,
-            firstToken: pricePerShareState.shareToken,
-            secondToken: outputToken,
-        }) ||
-        !doTokensMatch({
-            networkSymbol,
-            firstToken: pricePerShareState.quoteToken,
-            secondToken: token,
+            token,
+            outputToken,
+            pricePerShareState,
         })
     ) {
         return '0';

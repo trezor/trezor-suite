@@ -171,6 +171,18 @@ describe('router', () => {
             });
         });
 
+        it('resolves the Earn positions page without wallet parameters', () => {
+            expect(getAppWithParams({ pathname: '/earn/positions' })).toEqual({
+                app: 'earn',
+                route: {
+                    name: 'earn-positions',
+                    pattern: '/earn/positions',
+                    app: 'earn',
+                },
+                params: undefined,
+            });
+        });
+
         it('wallet params validation', () => {
             const resp = {
                 app: 'wallet',
