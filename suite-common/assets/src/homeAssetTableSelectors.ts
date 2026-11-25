@@ -29,6 +29,7 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import {
+    type AccountKey,
     type BaseCurrencyAmount,
     type CryptoBaseCurrencyPair,
     type Rate,
@@ -141,6 +142,20 @@ const selectHiddenWalletAssets = createMemoizedSelector(
     ({ hidden }) => groupWalletAssets(hidden),
 );
 
+const selectAccountHiddenAssets = createMemoizedSelector(
+    [
+        (state: AssetTableState) => selectPartitionedAssetAccounts(state),
+        (_state: AssetTableState, accountKey: AccountKey) => accountKey,
+    ],
+    ({ hidden }, accountKey) =>
+        groupWalletAssets(hidden.filter(assetAccount => assetAccount.accountKey === accountKey)),
+);
+
+const selectHiddenAssets = (state: AssetTableState, accountKey?: AccountKey) =>
+    accountKey === undefined
+        ? selectHiddenWalletAssets(state)
+        : selectAccountHiddenAssets(state, accountKey);
+
 /**
  * The rate of each asset, as a plain number. The fiat state is rewritten on every fetch — a batch of
  * a few tickers, a loading flag flipped — so whatever reads it reruns often. This pass is the cheap
@@ -190,8 +205,12 @@ const selectWalletAssetWeekAgoRates = createMemoizedSelector(
     pickedOnce,
 );
 
-const selectHiddenWalletAssetRates = createMemoizedSelector(
-    [selectHiddenWalletAssets, selectCurrentFiatRates, selectBaseCurrency],
+const selectHiddenAssetRates = createMemoizedSelector(
+    [
+        selectHiddenAssets,
+        (state: AssetTableState) => selectCurrentFiatRates(state),
+        (state: AssetTableState) => selectBaseCurrency(state),
+    ],
     pickRates,
     pickedOnce,
 );
@@ -236,8 +255,8 @@ const selectWalletAssetWeekAgoValues = createMemoizedSelector(
     pricedOnce,
 );
 
-const selectHiddenWalletAssetValues = createMemoizedSelector(
-    [selectHiddenWalletAssets, selectHiddenWalletAssetRates],
+const selectHiddenAssetValues = createMemoizedSelector(
+    [selectHiddenAssets, selectHiddenAssetRates],
     priceAssets,
     pricedOnce,
 );
@@ -711,67 +730,68 @@ const byFiatThenCryptoBalance = (
         byFiat(left, right) || byCrypto(left, right);
 };
 
-const selectHiddenWalletAssetKeysByReason = createMemoizedSelector(
+const groupHiddenAssetKeysByReason = (
+    assets: ReadonlyMap<WalletAssetKey, WalletAsset>,
+    values: ReadonlyMap<WalletAssetKey, BigNumber>,
+    reasons: ReturnType<typeof selectHiddenTokenReasons>,
+    allowedNetworks: readonly NetworkSymbol[],
+): ReadonlyMap<HiddenTokenReason, readonly WalletAssetKey[]> => {
+    const byReason = new Map<HiddenTokenReason, WalletAssetKey[]>();
+
+    assets.forEach((asset, assetKey) => {
+        if (asset.contractAddress === undefined || !allowedNetworks.includes(asset.networkSymbol)) {
+            return;
+        }
+
+        const reason = reasons.get(asset.networkSymbol)?.get(asset.contractAddress);
+
+        if (reason === undefined) {
+            return;
+        }
+
+        const grouped = byReason.get(reason) ?? [];
+
+        grouped.push(assetKey);
+        byReason.set(reason, grouped);
+    });
+
+    byReason.forEach(assetKeys => assetKeys.sort(byFiatThenCryptoBalance(assets, values)));
+
+    return byReason;
+};
+
+const selectHiddenAssetKeysByReason = createMemoizedSelector(
     [
-        selectHiddenWalletAssets,
-        selectHiddenWalletAssetValues,
-        selectHiddenTokenReasons,
-        selectAllowedNetworkSymbols,
+        selectHiddenAssets,
+        selectHiddenAssetValues,
+        (state: AssetTableState) => selectHiddenTokenReasons(state),
+        (state: AssetTableState) => selectAllowedNetworkSymbols(state),
     ],
-    (
-        assets,
-        values,
-        reasons,
-        allowedNetworks,
-    ): ReadonlyMap<HiddenTokenReason, readonly WalletAssetKey[]> => {
-        const byReason = new Map<HiddenTokenReason, WalletAssetKey[]>();
-
-        assets.forEach((asset, assetKey) => {
-            if (
-                asset.contractAddress === undefined ||
-                !allowedNetworks.includes(asset.networkSymbol)
-            ) {
-                return;
-            }
-
-            const reason = reasons.get(asset.networkSymbol)?.get(asset.contractAddress);
-
-            if (reason === undefined) {
-                return;
-            }
-
-            const grouped = byReason.get(reason) ?? [];
-
-            grouped.push(assetKey);
-            byReason.set(reason, grouped);
-        });
-
-        byReason.forEach(assetKeys => assetKeys.sort(byFiatThenCryptoBalance(assets, values)));
-
-        return byReason;
-    },
+    groupHiddenAssetKeysByReason,
     // Rebuilt on every account write, so a rebuild that lands on the same lists is thrown away and
     // each group keeps the array it was handed; the per-reason selector below must stay unchecked.
     { memoizeOptions: { resultEqualityCheck: haveSameGrouping } },
 );
 
-export const selectHiddenWalletAssetKeys = createMemoizedSelector(
-    [
-        selectHiddenWalletAssetKeysByReason,
-        (_state: AssetTableState, reason: HiddenTokenReason) => reason,
-    ],
-    (byReason, reason): readonly WalletAssetKey[] =>
-        returnStableArrayIfEmpty(byReason.get(reason) ?? []),
-);
+export const selectHiddenAssetKeys = (
+    state: AssetTableState,
+    reason: HiddenTokenReason,
+    accountKey?: AccountKey,
+): readonly WalletAssetKey[] =>
+    returnStableArrayIfEmpty(selectHiddenAssetKeysByReason(state, accountKey).get(reason) ?? []);
+
+export const selectHasHiddenAssets = (state: AssetTableState, accountKey?: AccountKey): boolean =>
+    selectHiddenAssetKeysByReason(state, accountKey).size > 0;
+
+export const selectHiddenAssetAmount = (
+    state: AssetTableState,
+    assetKey: WalletAssetKey,
+    accountKey?: AccountKey,
+) => selectHiddenAssets(state, accountKey).get(assetKey)?.amount;
 
 export const selectHiddenWalletAssetCount = createMemoizedSelector(
-    [selectHiddenWalletAssetKeysByReason],
+    [(state: AssetTableState) => selectHiddenAssetKeysByReason(state, undefined)],
     byReason => [...byReason.values()].reduce((count, assetKeys) => count + assetKeys.length, 0),
-);
-
-export const selectHasHiddenWalletAssets = createMemoizedSelector(
-    [selectHiddenWalletAssetKeysByReason],
-    byReason => byReason.size > 0,
 );
 
 export const selectWalletAssetHiddenReason = (
@@ -789,7 +809,7 @@ export const selectWalletAssetHiddenReason = (
 export const selectWalletAssetFiatValue = createMemoizedSelector(
     [
         selectWalletAssetValues,
-        selectHiddenWalletAssetValues,
+        (state: AssetTableState) => selectHiddenAssetValues(state, undefined),
         (_state: AssetTableState, assetKey: WalletAssetKey | undefined) => assetKey,
     ],
     (values, hiddenValues, assetKey): BaseCurrencyAmount | undefined => {

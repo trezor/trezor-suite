@@ -1,8 +1,9 @@
-import { type ReactNode, useCallback, useMemo, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { type HiddenTokenReason, selectHiddenWalletAssetKeys } from '@suite-common/assets';
+import { type HiddenTokenReason, selectHiddenAssetKeys } from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, Column, Divider, Row, Text, VirtualizedList } from '@trezor/components';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
@@ -31,29 +32,29 @@ type HiddenTokenItem = {
 type HiddenTokensCardProps = {
     heading: ReactNode;
     reason: HiddenTokenReason;
+    accountKey?: AccountKey;
     'data-testid': string;
 };
 
 export const HiddenTokensCard = ({
     heading,
     reason,
+    accountKey,
     'data-testid': dataTestId,
 }: HiddenTokensCardProps) => {
-    const assetKeys = useSelector(state => selectHiddenWalletAssetKeys(state, reason));
+    const assetKeys = useSelector(state => selectHiddenAssetKeys(state, reason, accountKey));
     const [assetKeyToUnhide, setAssetKeyToUnhide] = useState<WalletAssetKey>();
-    const items = useMemo(
-        () => assetKeys.map(assetKey => ({ assetKey, height: ITEM_HEIGHT })),
-        [assetKeys],
-    );
-    const getItemKey = useCallback((item: HiddenTokenItem) => item.assetKey, []);
-    const renderItem = useCallback(
-        ({ assetKey }: HiddenTokenItem) => (
-            <>
-                <Divider margin={0} strokeWidth={SEPARATOR_HEIGHT} />
-                <HiddenTokenRow assetKey={assetKey} onSelect={setAssetKeyToUnhide} />
-            </>
-        ),
-        [],
+    const items = assetKeys.map(assetKey => ({ assetKey, height: ITEM_HEIGHT }));
+    const getItemKey = (item: HiddenTokenItem) => item.assetKey;
+    const renderItem = ({ assetKey }: HiddenTokenItem) => (
+        <>
+            <Divider margin={0} strokeWidth={SEPARATOR_HEIGHT} />
+            <HiddenTokenRow
+                assetKey={assetKey}
+                accountKey={accountKey}
+                onSelect={setAssetKeyToUnhide}
+            />
+        </>
     );
 
     if (assetKeys.length === 0) {

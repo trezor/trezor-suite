@@ -53,7 +53,7 @@ export const AccountNavigation = ({ account }: AccountNavigationProps) => {
                 goToWithAnalytics({ routeName: 'wallet-tokens', preserveParams: true });
             },
             title: <Translation id="TR_NAV_TOKENS" />,
-            isHidden: !hasNetworkFeatures(account, 'tokens'),
+            isHidden: isAssetFirstHome || !hasNetworkFeatures(account, 'tokens'),
             activeRoutes: [
                 'wallet-tokens',
                 'wallet-tokens-hidden',
