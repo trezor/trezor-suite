@@ -3,9 +3,9 @@ import React, { useMemo } from 'react';
 import { Translation } from '@suite/intl';
 import {
     formatStakingAmount,
-    getStakeableBalance,
     selectStakeableStakingProductDescriptorBySymbol,
     useNetworkStakingRate,
+    useStakingAccountPosition,
 } from '@suite-common/earn-staking';
 import { calculateGains } from '@suite-common/wallet-core';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
@@ -16,6 +16,8 @@ import { useFormatApy } from '#src/hooks/earn/useFormatApy';
 import { useStakeFormContext } from '#src/hooks/earn/useStakeForm';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { CRYPTO_INPUT } from '#src/types/earn/earnFormFields';
+
+import { getCardanoEstimatedGainsBalance } from './getCardanoEstimatedGainsBalance';
 
 export const EstimatedGains = () => {
     // React Compiler: `getValues` keeps one identity for the form's whole life, so a compiled
@@ -29,6 +31,7 @@ export const EstimatedGains = () => {
         state =>
             selectStakeableStakingProductDescriptorBySymbol(state, account.symbol)?.limits ?? null,
     );
+    const { totals } = useStakingAccountPosition(account.key);
 
     const value = getValues(CRYPTO_INPUT);
     const hasInvalidFormState =
@@ -36,12 +39,13 @@ export const EstimatedGains = () => {
         formState.errors[CRYPTO_INPUT]?.type !== 'reserveOrBalance'; // provide gains calculation even if the user has not enough balance
 
     const cryptoInput = useMemo(() => {
-        // Cardano stakes the whole balance, less the registration deposit the product asks for.
+        // A Cardano delegation is the whole balance, not the amount typed.
         if (account.networkType === 'cardano') {
             return stakeableLimits === null
                 ? '0'
                 : formatStakingAmount({
-                      amount: getStakeableBalance({
+                      amount: getCardanoEstimatedGainsBalance({
+                          staked: totals.staked,
                           availableBalance: account.availableBalance,
                           limits: stakeableLimits,
                       }),
@@ -54,7 +58,7 @@ export const EstimatedGains = () => {
         }
 
         return '0';
-    }, [hasInvalidFormState, value, account, stakeableLimits]);
+    }, [hasInvalidFormState, value, account, stakeableLimits, totals.staked]);
 
     const { rate: apy } = useNetworkStakingRate({ networkSymbol: account.symbol });
 
