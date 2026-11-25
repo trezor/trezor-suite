@@ -11,6 +11,8 @@ import { useTranslate } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { useTokenAddressCopyWarning } from './useTokenAddressCopyWarning';
+
 type AssetDetailAddressFieldProps = {
     label: ReactNode;
     value: string;
@@ -33,6 +35,7 @@ export const AssetDetailAddressField = ({
     const { translate } = useTranslate();
     const copyToClipboard = useCopyToClipboard();
     const { analytics } = useServices(injectNativeAnalytics);
+    const confirmTokenAddressCopy = useTokenAddressCopyWarning();
 
     const copyAddress = () => {
         void copyToClipboard(value);
@@ -67,7 +70,7 @@ export const AssetDetailAddressField = ({
                 <PressableOpacity
                     accessibilityRole="button"
                     accessibilityLabel={translate('generic.buttons.copy')}
-                    onPress={copyAddress}
+                    onPress={() => confirmTokenAddressCopy({ addressType, onConfirm: copyAddress })}
                     testID={`${testID}/copy`}
                 >
                     <Icon name="copy" color="contentSecondary" size="mediumLarge" />
