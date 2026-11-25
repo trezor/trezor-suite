@@ -13,6 +13,10 @@ type Params = {
     blockchainLink?: {
         type: string;
         url: string[];
+        broadcast?: {
+            type: string;
+            url: string[];
+        };
     };
 };
 

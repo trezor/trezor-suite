@@ -165,11 +165,12 @@ export const initBackground: ModuleInitBackground = ({
                 }
 
                 if (method === 'blockchainSetCustomBackend') {
-                    const { coin, blockchainLink: { url: urls } = {} } = params[0];
-                    if (urls) {
-                        const domains = urls.map(
-                            url => parseElectrumUrl(url)?.host ?? new URL(url).hostname,
-                        );
+                    const { coin, blockchainLink } = params[0];
+                    if (blockchainLink) {
+                        const domains = [
+                            ...blockchainLink.url,
+                            ...(blockchainLink.broadcast?.url ?? []),
+                        ].map(url => parseElectrumUrl(url)?.host ?? new URL(url).hostname);
 
                         mainThreadEmitter.emit('module/request-interceptor', {
                             type: 'SET_WHITELISTED_DOMAINS_FOR_CUSTOM_BACKENDS',

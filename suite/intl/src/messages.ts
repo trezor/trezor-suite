@@ -7690,6 +7690,24 @@ export const messages = defineMessages({
         id: 'TR_CUSTOM_BACKEND_NETWORK_MISSING_CHAIN_ID',
         defaultMessage: "Network doesn't have a chain ID configured",
     },
+    TR_BROADCAST_BACKEND: {
+        id: 'TR_BROADCAST_BACKEND',
+        defaultMessage: 'Broadcast backend',
+    },
+    TR_BROADCAST_BACKEND_CUSTOM: {
+        id: 'TR_BROADCAST_BACKEND_CUSTOM',
+        defaultMessage: 'Custom',
+    },
+    TR_BROADCAST_BACKEND_MEV_WARNING: {
+        id: 'TR_BROADCAST_BACKEND_MEV_WARNING',
+        defaultMessage:
+            'MEV protection is on for this network. Setting a broadcast backend turns it off for transactions sent through it.',
+    },
+    TR_BROADCAST_BACKEND_DESCRIPTION: {
+        id: 'TR_BROADCAST_BACKEND_DESCRIPTION',
+        defaultMessage:
+            'Send transactions through your own RPC endpoint, for example a sequencer. It also provides the nonce and the status of transactions sent through it. Balances and history still load from the backend above.',
+    },
     TR_VALIDATING: {
         id: 'TR_VALIDATING',
         defaultMessage: 'Validating...',

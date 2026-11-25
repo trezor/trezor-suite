@@ -343,4 +343,26 @@ describe('walletMiddleware', () => {
             },
         );
     });
+
+    it('applies a broadcast backend next to the default backend in Connect', async () => {
+        const store = mockStore(getInitialState());
+
+        store.dispatch(
+            blockchainActions.setBackend({
+                symbol: asNetworkSymbol('eth'),
+                type: 'default',
+                broadcastUrls: ['https://sequencer.example'],
+            }),
+        );
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        expect(TrezorConnect.blockchainSetCustomBackend).toHaveBeenCalledWith({
+            coin: 'eth',
+            blockchainLink: {
+                type: 'blockbook',
+                url: [],
+                broadcast: { type: 'evm-rpc', url: ['https://sequencer.example'] },
+            },
+        });
+    });
 });

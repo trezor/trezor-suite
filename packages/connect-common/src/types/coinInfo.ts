@@ -39,6 +39,15 @@ export type BlockchainLink = Static<typeof BlockchainLink>;
 export const BlockchainLink = Type.Object({
     type: Type.String(),
     url: Type.Array(Type.String()),
+    // Optional dedicated backend for transactions the primary backend above does not know yet:
+    // it broadcasts them and answers lookups until the primary one indexes them. Account info
+    // and subscriptions always stay on the primary backend.
+    broadcast: Type.Optional(
+        Type.Object({
+            type: Type.String(),
+            url: Type.Array(Type.String()),
+        }),
+    ),
 });
 
 type Common = Static<typeof Common>;

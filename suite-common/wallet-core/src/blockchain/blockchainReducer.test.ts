@@ -42,6 +42,24 @@ const fixtures: BlockchainFixture[] = [
         { symbol: btcSymbol, type: 'electrum', urls: [] },
         { urls: { blockbook: urls } },
     ],
+    [
+        'set broadcast with the default backend',
+        {},
+        { symbol: btcSymbol, type: 'default', broadcastUrls: urls },
+        { broadcastUrls: urls },
+    ],
+    [
+        'keep broadcast when the payload does not mention it',
+        { selected: 'electrum', urls: { electrum: urls }, broadcastUrls: urls },
+        { symbol: btcSymbol, type: 'default' },
+        { urls: { electrum: urls }, broadcastUrls: urls },
+    ],
+    [
+        'remove broadcast',
+        { selected: 'electrum', urls: { electrum: urls }, broadcastUrls: urls },
+        { symbol: btcSymbol, type: 'electrum', urls, broadcastUrls: [] },
+        { selected: 'electrum', urls: { electrum: urls } },
+    ],
 ];
 
 describe('blockchain reducer', () => {
