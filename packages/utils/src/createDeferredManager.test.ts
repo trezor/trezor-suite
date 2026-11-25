@@ -189,4 +189,81 @@ describe('createDeferredManager', () => {
 
         expect(manager.length()).toBe(0);
     });
+
+    describe('createConcurrent with a signal', () => {
+        it('stops waiting when the signal aborts and creates nothing', async () => {
+            const manager = createDeferredManager<void>();
+            const abort = new AbortController();
+
+            const first = manager.create();
+            const waiting = manager.createConcurrent(1, undefined, abort.signal);
+            abort.abort(new Error('gave up'));
+
+            await expect(waiting).rejects.toThrow('gave up');
+            expect(manager.length()).toBe(1);
+
+            // The abandoned wait took no slot: the one that frees up is free for the next caller.
+            const next = manager.createConcurrent(1);
+            manager.resolve(first.promiseId);
+            const { promiseId } = await next;
+
+            expect(manager.length()).toBe(1);
+            manager.resolve(promiseId);
+        });
+
+        it('hands the freed slot to the callers still waiting, in the order they came', async () => {
+            const manager = createDeferredManager<void>();
+            const abort = new AbortController();
+            const order: string[] = [];
+
+            const first = manager.create();
+            const gaveUp = manager.createConcurrent(1, undefined, abort.signal);
+            const second = manager.createConcurrent(1).then(({ promiseId }) => {
+                order.push('second');
+                manager.resolve(promiseId);
+            });
+            const third = manager.createConcurrent(1).then(({ promiseId }) => {
+                order.push('third');
+                manager.resolve(promiseId);
+            });
+            abort.abort(new Error('gave up'));
+            manager.resolve(first.promiseId);
+
+            await expect(gaveUp).rejects.toThrow('gave up');
+            await Promise.all([second, third]);
+
+            expect(order).toEqual(['second', 'third']);
+            expect(manager.length()).toBe(0);
+        });
+
+        it('rejects without creating anything when the signal is aborted already', async () => {
+            const manager = createDeferredManager<void>();
+
+            // With a free slot, and with none.
+            await expect(
+                manager.createConcurrent(1, undefined, AbortSignal.abort(new Error('aborted'))),
+            ).rejects.toThrow('aborted');
+            manager.create();
+            await expect(
+                manager.createConcurrent(1, undefined, AbortSignal.abort(new Error('aborted'))),
+            ).rejects.toThrow('aborted');
+
+            expect(manager.length()).toBe(1);
+        });
+
+        it('does not take the freed slot for a signal that aborted after the wait had settled', async () => {
+            const manager = createDeferredManager<void>();
+            const abort = new AbortController();
+
+            const first = manager.create();
+            const waiting = manager.createConcurrent(1, undefined, abort.signal);
+            manager.resolve(first.promiseId);
+            // Runs after the wait has settled and before the waiting caller resumes, which is
+            // when only a check after the wait can still stop it.
+            void Promise.resolve().then(() => abort.abort(new Error('gave up')));
+
+            await expect(waiting).rejects.toThrow('gave up');
+            expect(manager.length()).toBe(0);
+        });
+    });
 });

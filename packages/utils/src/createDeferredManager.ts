@@ -1,6 +1,7 @@
 import { type TimerId } from '@trezor/type-utils';
 
 import { type Deferred, createDeferred } from './createDeferred';
+import { promiseRaceWithSignal } from './promiseRaceWithSignal';
 
 type ManagedDeferred<T, ID extends string | number> = Deferred<T, ID> & { deadline: number };
 
@@ -22,8 +23,16 @@ export type DeferredManager<T, ID extends string | number = number> = {
     length: () => number;
     /** Creates new pending promise (with optional timeout) and returns it and its unique id */
     create: (timeout?: number) => IdPromise<ID, T>;
-    /** Waits until there is less than `concurrency` promises and then creates a new one */
-    createConcurrent: (concurrency: number, timeout?: number) => Promise<IdPromise<ID, T>>;
+    /**
+     * Waits until there is less than `concurrency` promises and then creates a new one. When
+     * `signal` aborts first, rejects with `signal.reason` and creates nothing, so a caller that
+     * gave up never takes a slot.
+     */
+    createConcurrent: (
+        concurrency: number,
+        timeout?: number,
+        signal?: AbortSignal,
+    ) => Promise<IdPromise<ID, T>>;
     /** Resolves (and removes) promise with given id by given value and returns whether it was present or not */
     resolve: (promiseId: ID, value: T) => boolean;
     /** Resolves (and removes) all pending promises by given value */
@@ -97,10 +106,17 @@ export const createDeferredManager = <T = any, ID extends string | number = numb
         return { promiseId, promise: deferred.promise };
     };
 
-    const createConcurrent = async (concurrency: number, timeout?: number) => {
+    const createConcurrent = async (
+        concurrency: number,
+        timeout?: number,
+        signal?: AbortSignal,
+    ) => {
         while (promises.length >= concurrency) {
-            await onRemovePromise.promise;
+            await promiseRaceWithSignal(onRemovePromise.promise, signal);
         }
+        // Also covers a signal that aborted while the slot was being freed, after the wait above
+        // had already settled.
+        signal?.throwIfAborted();
 
         return create(timeout);
     };
