@@ -82,7 +82,7 @@ export const parseConnectSettings = (
         );
     }
 
-    const knownHost = getHostLabel(settings.extension || settings.origin || '');
+    const knownHost = getHostLabel((settings.origin || '').replace(/^chrome-extension:\/\//, ''));
     if (knownHost) {
         settings.hostLabel = knownHost.label;
     }

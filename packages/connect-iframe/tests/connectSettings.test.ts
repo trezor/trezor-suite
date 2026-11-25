@@ -97,4 +97,24 @@ describe('connect-iframe parseConnectSettings', () => {
             priority: 2,
         });
     });
+
+    it('hostLabel of a known extension from the origin', () => {
+        const metamask = 'nkbihfbeogaeaoehlefnkodbefgpgknn';
+
+        expect(parseConnectSettings({}, `chrome-extension://${metamask}`)).toMatchObject({
+            hostLabel: 'MetaMask',
+        });
+        expect(parseConnectSettings({}, metamask)).toMatchObject({ hostLabel: 'MetaMask' });
+
+        expect(
+            parseConnectSettings({ extension: metamask }, 'https://3rdparty.site').hostLabel,
+        ).toBeUndefined();
+        expect(
+            parseConnectSettings({ extension: metamask }, 'chrome-extension://other').hostLabel,
+        ).toBeUndefined();
+        expect(
+            parseConnectSettings({ extension: 'webextension@metamask.io' }, 'moz-extension://uuid')
+                .hostLabel,
+        ).toBeUndefined();
+    });
 });
