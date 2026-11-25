@@ -44,6 +44,8 @@ export type TradingInfo = {
 export type TradingPrefilledFromAccount = {
     cryptoId: CryptoId | undefined;
     key: AccountKey | undefined;
+    // The asset an exchange offers to receive, for a caller that knows what the swap is for.
+    receiveCryptoId?: CryptoId;
 };
 
 // Maximum number of refetch attempts before the interval automatically stops
@@ -163,13 +165,11 @@ const tradingCommonSlice = createSlice({
         },
         setTradingFromPrefilledAccount(
             state: TradingState,
-            action: PayloadAction<{
-                cryptoId: CryptoId | undefined;
-                key: AccountKey | undefined;
-            }>,
+            action: PayloadAction<TradingPrefilledFromAccount>,
         ) {
             state.prefilledFromAccount.cryptoId = action.payload.cryptoId;
             state.prefilledFromAccount.key = action.payload.key;
+            state.prefilledFromAccount.receiveCryptoId = action.payload.receiveCryptoId;
         },
         setVerifiedAddress(state: TradingState, action: PayloadAction<TradingVerifiedAddress>) {
             state.verifiedAddress = action.payload;
