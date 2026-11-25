@@ -63,6 +63,7 @@
         { "path": "../module-onboarding" },
         { "path": "../module-passphrase" },
         { "path": "../module-receive" },
+        { "path": "../module-refer-a-friend" },
         { "path": "../module-send" },
         { "path": "../module-settings" },
         { "path": "../module-sign-verify" },

@@ -4,6 +4,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/device';
 import { stakingInitialState } from '@suite-common/earn-staking';
+import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -164,6 +165,7 @@ const createStore = ({
                     lastWeek: {},
                 }),
             }),
+            messageSystem: createStaticReducer(messageSystemInitialState),
         },
         preloadedState: {
             wallet: {

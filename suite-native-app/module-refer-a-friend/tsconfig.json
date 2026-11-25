@@ -1,0 +1,21 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/refer-a-friend"
+        },
+        { "path": "../../suite-native/device" },
+        {
+            "path": "../../suite-native/device-authorization"
+        },
+        { "path": "../../suite-native/intl" },
+        {
+            "path": "../../suite-native/navigation"
+        },
+        {
+            "path": "../../suite-native/refer-a-friend"
+        }
+    ],
+    "include": [".", "**/*.json"]
+}
