@@ -57,6 +57,8 @@ export default class WardSetEntry extends AbstractMethod<'wardSetEntry', PROTO.W
             app_id: payload.app_id,
             identifier: payload.identifier,
             value: payload.value,
+            // this same write lost a race: the device resolves it (see WardWriteRetry)
+            retry: payload.retry,
         };
 
         super(message, params);

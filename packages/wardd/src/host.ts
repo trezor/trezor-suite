@@ -718,7 +718,8 @@ export class WardHost {
             if (e instanceof WmConflict) {
                 throw new RelayFailure(
                     'wm_conflict',
-                    `another writer moved the WM head to ${e.headCounter}; sync and retry`,
+                    `another writer moved the WM head to ${e.headCounter}; sync, then send the ` +
+                        'same request with the retry token from its WardLeafAck',
                 );
             }
             throw e;

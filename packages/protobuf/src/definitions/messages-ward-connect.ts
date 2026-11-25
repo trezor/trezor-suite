@@ -3,7 +3,7 @@
 // DO NOT EDIT
 import { type Static, Type } from '@trezor/schema-utils';
 
-import { WardChainLink } from './messages-ward';
+import { WardChainLink, WardWriteRetry } from './messages-ward';
 
 export type WardBatchedLeaf = Static<typeof WardBatchedLeaf>;
 export const WardBatchedLeaf = Type.Object(
@@ -123,6 +123,7 @@ export const WardLeafAck = Type.Object(
         counter: Type.Optional(Type.Number()),
         auth_commit: Type.Optional(Type.String()),
         wm_sig: Type.Optional(Type.String()),
+        retry: Type.Optional(WardWriteRetry),
     },
     { $id: 'WardLeafAck' },
 );

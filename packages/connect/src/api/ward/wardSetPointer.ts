@@ -22,6 +22,7 @@ export default class WardSetPointer extends AbstractMethod<'wardSetPointer', PRO
             app_id: payload.app_id,
             identifier: payload.identifier,
             target_identifier: payload.target_identifier,
+            retry: payload.retry,
         };
 
         super(message, params);

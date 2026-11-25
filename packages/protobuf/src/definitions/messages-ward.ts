@@ -26,11 +26,22 @@ export const WardChainLink = Type.Object(
     { $id: 'WardChainLink' },
 );
 
+export type WardWriteRetry = Static<typeof WardWriteRetry>;
+export const WardWriteRetry = Type.Object(
+    {
+        base: Type.Optional(Type.Number()),
+        seen: Type.Optional(Type.Number()),
+        mac: Type.Optional(Type.String()),
+    },
+    { $id: 'WardWriteRetry' },
+);
+
 export type WardDeleteEntry = Static<typeof WardDeleteEntry>;
 export const WardDeleteEntry = Type.Object(
     {
         app_id: Type.Optional(Type.String()),
         identifier: Type.Optional(Type.String()),
+        retry: Type.Optional(WardWriteRetry),
     },
     { $id: 'WardDeleteEntry' },
 );
@@ -155,6 +166,7 @@ export const WardSetEntry = Type.Object(
         app_id: Type.Optional(Type.String()),
         identifier: Type.Optional(Type.String()),
         value: Type.Optional(Type.String()),
+        retry: Type.Optional(WardWriteRetry),
     },
     { $id: 'WardSetEntry' },
 );
@@ -165,6 +177,7 @@ export const WardSetPointer = Type.Object(
         app_id: Type.Optional(Type.String()),
         identifier: Type.Optional(Type.String()),
         target_identifier: Type.Optional(Type.String()),
+        retry: Type.Optional(WardWriteRetry),
     },
     { $id: 'WardSetPointer' },
 );

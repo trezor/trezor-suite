@@ -22,6 +22,24 @@ const makeMethod = (
 const PARAMS = { app_id: 'example.com', identifier: 'aabb', value: 'ccdd' };
 
 describe('WardSetEntry', () => {
+    it('forwards the retry token of a write that lost a race', async () => {
+        const retry = { base: 4, seen: 2, mac: 'ee'.repeat(32) };
+        const { method, typedCall } = makeMethod(
+            WardSetEntry,
+            'wardSetEntry',
+            { ...PARAMS, retry },
+            { entry_key: '00'.repeat(32), counter: 6 },
+        );
+
+        await method.run();
+
+        expect(typedCall).toHaveBeenCalledWith(
+            'WardSetEntry',
+            ['WardLeafAck', 'WardMutationApplied'],
+            { ...PARAMS, retry },
+        );
+    });
+
     it("sends exactly app_id, identifier and value, accepting either build's ack", async () => {
         const { method, typedCall } = makeMethod(WardSetEntry, 'wardSetEntry', PARAMS, {
             entry_key: '00'.repeat(32),
