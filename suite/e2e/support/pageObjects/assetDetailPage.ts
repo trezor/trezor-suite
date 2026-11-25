@@ -1,5 +1,16 @@
 import { type Locator, type Page } from '@playwright/test';
 
+import { step } from '../common';
+import { expect } from '../testExtends/customMatchers';
+
+const readBackgroundColor = (locator: Locator) =>
+    locator.evaluate(element => {
+        // Read the color after the browser applies the current theme.
+        const style = window.getComputedStyle(element);
+
+        return style.backgroundColor;
+    });
+
 export class AssetDetailPage {
     readonly backButton: Locator;
     readonly marketPrice: Locator;
@@ -80,5 +91,57 @@ export class AssetDetailPage {
         this.menuWalletConnect = page.getByTestId('@asset-detail/menu/walletconnect');
         this.menuHideToken = page.getByTestId('@asset-detail/menu/hide-token');
         this.menuShowToken = page.getByTestId('@asset-detail/menu/show-token');
+    }
+
+    @step()
+    async expectAvailableSegmentToFillBar() {
+        await expect(this.allocationSegments).toBeVisible();
+
+        const legendColor = await readBackgroundColor(this.availableLegendSquare);
+        await expect(this.allocationSegments).toHaveCSS('background-color', legendColor);
+
+        const barWidth = await this.allocationBar.evaluate(bar => bar.clientWidth);
+        await expect(this.allocationSegments).toHaveJSProperty('clientWidth', barWidth);
+    }
+
+    @step()
+    async expectGraphRendered() {
+        await expect(this.graphLine).toBeVisible({ timeout: 30_000 });
+        await expect(this.graphSkeleton).toBeHidden();
+
+        // A solid line has no dash pattern; an animated line finishes with a zero-pixel gap.
+        const fullyDrawnStroke = /^(none|.+, 0px)$/;
+        await expect(this.graphLine).toHaveCSS('stroke-dasharray', fullyDrawnStroke);
+    }
+
+    private async readTooltipTimestamp(x: number) {
+        await this.graph.hover({ position: { x, y: 50 } });
+        await expect(this.graphTooltip).toBeVisible();
+
+        // The tooltip displays the price followed by the local date and time.
+        const tooltipText = await this.graphTooltip.innerText();
+        const dateText = tooltipText.split('\n').at(-1) ?? '';
+
+        return Date.parse(dateText.replaceAll('\u202f', ' '));
+    }
+
+    @step()
+    async expectGraphTimeSpan(minDays: number, maxDays?: number) {
+        const width = await this.graph.evaluate(graph => graph.clientWidth);
+
+        await expect(async () => {
+            const start = await this.readTooltipTimestamp(1);
+            const end = await this.readTooltipTimestamp(width - 1);
+            const daysShown = (end - start) / (24 * 60 * 60 * 1000);
+
+            expect(daysShown, 'Days between the first and last tooltip').toBeGreaterThanOrEqual(
+                minDays,
+            );
+            if (maxDays !== undefined) {
+                expect(daysShown, 'Days between the first and last tooltip').toBeLessThanOrEqual(
+                    maxDays,
+                );
+            }
+        }).toPass({ timeout: 10_000 });
     }
 }
