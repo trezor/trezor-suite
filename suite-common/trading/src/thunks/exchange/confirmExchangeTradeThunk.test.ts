@@ -246,7 +246,7 @@ describe('confirmExchangeTradeThunk', () => {
         expect(!!response).toBeFalsy();
     });
 
-    it('should return false from confirmation when response is undefined ', async () => {
+    it('should reject the confirmation when response is undefined', async () => {
         const {
             store,
             returnUrl,
@@ -260,35 +260,35 @@ describe('confirmExchangeTradeThunk', () => {
 
         tradeApi.doExchangeTrade = () => Promise.resolve(undefined as unknown as ExchangeTrade);
 
-        const response = await store
-            .dispatch(
-                exchangeThunks.confirmTradeThunk({
-                    returnUrl,
-                    receiveAddress,
-                    account,
-                    trade,
-                    nextStep: mockNextStep,
-                    triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
-                    processResponseData: mockProcessResponseData,
-                }),
-            )
-            .unwrap();
+        const action = await store.dispatch(
+            exchangeThunks.confirmTradeThunk({
+                returnUrl,
+                receiveAddress,
+                account,
+                trade,
+                nextStep: mockNextStep,
+                triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                processResponseData: mockProcessResponseData,
+            }),
+        );
 
         const { exchange } = store.getState().wallet.trading;
         const actionToast = store
             .getActions()
-            .find(action => action.type === 'mockedLogErrorThunk');
+            .find(storeAction => storeAction.type === 'mockedLogErrorThunk');
 
         expect(actionToast?.payload).toEqual({
             errorMessage: 'No response from the server',
             tradingType: 'exchange',
+            shouldSetLastErrorMessage: false,
         });
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
         expect(store.getActions().length).toEqual(5);
         expect(exchange.transactionId).toBeUndefined();
         expect(exchange.isLoading).toBeFalsy();
-        expect(!!response).toBeFalsy();
+        expect(exchange.selectedQuote).toEqual(MIN_MAX_QUOTES_OK[1]);
+        expect(action.payload).toEqual({ type: 'error', code: 'no-response' });
     });
 
     describe('receive address network guard', () => {
@@ -464,16 +464,36 @@ describe('confirmExchangeTradeThunk', () => {
         expect(action.payload).toBeUndefined();
     });
 
-    describe('should return false from confirmation', () => {
+    describe('should reject the confirmation without changing the selected quote', () => {
         it.each([
             [
                 'when response.error is defined',
                 { error: 'Server error' },
                 { code: 'unknown', message: 'Server error' },
+                {
+                    type: 'error',
+                    code: 'invalid-response',
+                    cause: { source: 'invity', message: 'Server error' },
+                },
             ],
-            ['when response.state is undefined', { status: undefined }, { code: 'unknown' }],
-            ['when response.orderId is undefined', { orderId: undefined }, { code: 'unknown' }],
-            ['when response.status is ERROR', { status: 'ERROR' }, { code: 'unknown' }],
+            [
+                'when response.state is undefined',
+                { status: undefined },
+                { code: 'unknown' },
+                { type: 'error', code: 'invalid-response' },
+            ],
+            [
+                'when response.orderId is undefined',
+                { orderId: undefined },
+                { code: 'unknown' },
+                { type: 'error', code: 'invalid-response' },
+            ],
+            [
+                'when response.status is ERROR',
+                { status: 'ERROR' },
+                { code: 'unknown' },
+                { type: 'error', code: 'invalid-response' },
+            ],
             [
                 'when response has errorDetails but no error string',
                 {
@@ -490,8 +510,13 @@ describe('confirmExchangeTradeThunk', () => {
                     message: '-100',
                     values: { min: '0.001', max: '5' },
                 },
+                {
+                    type: 'error',
+                    code: 'invalid-response',
+                    cause: { source: 'invity', message: '-100' },
+                },
             ],
-        ])(`%s`, async (_, mockResponse, expectedErrorMessage) => {
+        ])(`%s`, async (_, mockResponse, expectedErrorMessage, expectedRejectValue) => {
             const {
                 store,
                 returnUrl,
@@ -506,37 +531,77 @@ describe('confirmExchangeTradeThunk', () => {
 
             tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
-            const response = await store
-                .dispatch(
-                    exchangeThunks.confirmTradeThunk({
-                        returnUrl,
-                        receiveAddress,
-                        account,
-                        trade,
-                        nextStep: mockNextStep,
-                        triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
-                        processResponseData: mockProcessResponseData,
-                    }),
-                )
-                .unwrap();
+            const action = await store.dispatch(
+                exchangeThunks.confirmTradeThunk({
+                    returnUrl,
+                    receiveAddress,
+                    account,
+                    trade,
+                    nextStep: mockNextStep,
+                    triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                    processResponseData: mockProcessResponseData,
+                }),
+            );
 
             const { exchange } = store.getState().wallet.trading;
             const actionToast = store
                 .getActions()
-                .find(action => action.type === 'mockedLogErrorThunk');
+                .find(storeAction => storeAction.type === 'mockedLogErrorThunk');
 
             expect(actionToast?.payload).toEqual({
                 tradingType: 'exchange',
                 errorMessage: expectedErrorMessage,
+                shouldSetLastErrorMessage: false,
             });
 
             expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-            expect(store.getActions().length).toEqual(6);
+            expect(store.getActions().length).toEqual(5);
             expect(exchange.transactionId).toBeUndefined();
 
             expect(exchange.isLoading).toBeFalsy();
-            expect(exchange.selectedQuote).toEqual(tradeResponse);
-            expect(!!response).toBeFalsy();
+            expect(exchange.selectedQuote).toEqual(MIN_MAX_QUOTES_OK[1]);
+            expect(exchangeThunks.confirmTradeThunk.rejected.match(action)).toBe(true);
+            expect(action.payload).toEqual(expectedRejectValue);
+        });
+    });
+
+    it('should reject the confirmation and keep the selected quote when the trade request fails', async () => {
+        const {
+            store,
+            returnUrl,
+            receiveAddress,
+            account,
+            trade,
+            mockProcessResponseData,
+            mockNextStep,
+            mockTriggerAnalyticsTradeConfirmation,
+        } = getMocks();
+        const errorResponse: ExchangeTrade = {
+            error: 'Error: Request rejected with status 500',
+            exchange: 'changelly',
+        };
+
+        tradeApi.doExchangeTrade = () => Promise.resolve(errorResponse);
+
+        const action = await store.dispatch(
+            exchangeThunks.confirmTradeThunk({
+                returnUrl,
+                receiveAddress,
+                account,
+                trade,
+                nextStep: mockNextStep,
+                triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                processResponseData: mockProcessResponseData,
+            }),
+        );
+
+        const { exchange } = store.getState().wallet.trading;
+
+        expect(exchange.selectedQuote).toEqual(MIN_MAX_QUOTES_OK[1]);
+        expect(action.payload).toEqual({
+            type: 'error',
+            code: 'invalid-response',
+            cause: { source: 'invity', message: 'Error: Request rejected with status 500' },
         });
     });
 

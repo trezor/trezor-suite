@@ -219,7 +219,9 @@ export const useTradingExchangeTradeActions = () => {
                     processResponseData,
                     nextStep,
                 }),
-            ).unwrap();
+            )
+                .unwrap()
+                .catch(() => undefined); // TODO: #34979 will remove toasts from thunks and this catch will be removed as well
 
             isConfirmed = !!confirmedTrade;
         } catch (e) {

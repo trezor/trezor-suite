@@ -18,8 +18,10 @@ import {
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
+import { type TradingError } from '../../types';
 import { getUnusedAddressFromAccount } from '../../utils';
 import { resolveExchangeTradeError } from '../../utils/exchange/resolveExchangeTradeError';
+import { getInvityErrorCause } from '../../utils/tradingErrorUtils';
 import { logErrorThunk } from '../common/logErrorThunk';
 
 export type ConfirmExchangeTradeThunkProps = {
@@ -42,7 +44,11 @@ export type ConfirmExchangeTradeThunkDeps = ValidateExchangeReceiveAddressThunkD
 export const confirmExchangeTradeThunk = createThunk<
     ExchangeTrade | undefined,
     ConfirmExchangeTradeThunkProps,
-    { state: ConfirmExchangeTradeThunkState; extra: ConfirmExchangeTradeThunkDeps }
+    {
+        rejectValue: TradingError;
+        state: ConfirmExchangeTradeThunkState;
+        extra: ConfirmExchangeTradeThunkDeps;
+    }
 >(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/confirmTrade`,
     async (
@@ -57,7 +63,7 @@ export const confirmExchangeTradeThunk = createThunk<
             processResponseData,
             nextStep,
         },
-        { dispatch, getState, signal },
+        { dispatch, getState, signal, rejectWithValue },
     ) => {
         const getCoinSymbol = (cryptoId: CryptoId) =>
             selectTradingCoinSymbolByCryptoId(getState(), cryptoId);
@@ -133,10 +139,11 @@ export const confirmExchangeTradeThunk = createThunk<
                 logErrorThunk({
                     errorMessage: 'No response from the server',
                     tradingType: 'exchange',
+                    shouldSetLastErrorMessage: false,
                 }),
             );
 
-            return undefined;
+            return rejectWithValue({ type: 'error', code: 'no-response' });
         }
 
         if (
@@ -145,10 +152,26 @@ export const confirmExchangeTradeThunk = createThunk<
             !response.orderId ||
             response.status === 'ERROR'
         ) {
+            if (!response.orderId) {
+                const tradeError = resolveExchangeTradeError(response, { getCoinSymbol });
+                const cause = tradeError.message
+                    ? getInvityErrorCause(tradeError.message)
+                    : undefined;
+
+                dispatch(
+                    logErrorThunk({
+                        errorMessage: tradeError,
+                        tradingType: 'exchange',
+                        shouldSetLastErrorMessage: false,
+                    }),
+                );
+
+                return rejectWithValue({ type: 'error', code: 'invalid-response', cause });
+            }
+
             dispatch(tradingExchangeActions.saveSelectedQuote(response));
 
-            const shouldRouteFailedTradeToDetail =
-                isTradeSubmitted && response.status === 'ERROR' && !!response.orderId;
+            const shouldRouteFailedTradeToDetail = isTradeSubmitted && response.status === 'ERROR';
 
             if (shouldRouteFailedTradeToDetail) {
                 dispatch(

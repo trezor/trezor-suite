@@ -189,6 +189,31 @@ describe('useExchangeFlow', () => {
             expect(confirmResult).toBe(false);
         });
 
+        it('should reject when confirmTradeThunk rejects', async () => {
+            const store = getInitializedStore();
+            const confirmTradeError = { type: 'error', code: 'invalid-response' };
+
+            mockConfirmTradeThunk.mockImplementation(() => ({
+                type: 'confirmTradeThunkMock',
+                payload: undefined,
+                unwrap: () => Promise.reject(confirmTradeError),
+            }));
+
+            const { result } = await renderUseExchangeFlow({ store });
+
+            await expect(
+                result.current.confirmTrade({
+                    receiveAddress: 'test-address',
+                    trade: {
+                        exchange: 'test-exchange',
+                        orderId: 'test-order',
+                    },
+                    approvalFlow: false,
+                    nextStep: jest.fn(),
+                }),
+            ).rejects.toBe(confirmTradeError);
+        });
+
         it('should return false when trade is missing', async () => {
             const store = getInitializedStore();
             const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});

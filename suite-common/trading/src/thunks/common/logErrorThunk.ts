@@ -13,11 +13,15 @@ export type LogErrorThunkProps = {
     errorMessage: string | ResolvedTradeError;
     toastType?: ErrorToastPayload['type'];
     tradingType: TradingType;
+    shouldSetLastErrorMessage?: boolean;
 };
 
 export const logErrorThunk = createThunk<void, LogErrorThunkProps, void>(
     `${TRADING_THUNK_PREFIX}/logError`,
-    ({ errorMessage, tradingType, toastType = 'error' }, { dispatch }) => {
+    (
+        { errorMessage, tradingType, toastType = 'error', shouldSetLastErrorMessage = true },
+        { dispatch },
+    ) => {
         if (isResolvedTradeError(errorMessage)) {
             dispatch(
                 notificationsActions.addToast({
@@ -27,17 +31,21 @@ export const logErrorThunk = createThunk<void, LogErrorThunkProps, void>(
                     message: errorMessage.message,
                 }),
             );
-            dispatch(
-                setLastErrorMessageByTradingTypeThunk({
-                    tradingType,
-                    errorMessage: errorMessage.message ?? '',
-                }),
-            );
+            if (shouldSetLastErrorMessage) {
+                dispatch(
+                    setLastErrorMessageByTradingTypeThunk({
+                        tradingType,
+                        errorMessage: errorMessage.message ?? '',
+                    }),
+                );
+            }
 
             return;
         }
 
         dispatch(notificationsActions.addToast({ type: toastType, error: errorMessage }));
-        dispatch(setLastErrorMessageByTradingTypeThunk({ tradingType, errorMessage }));
+        if (shouldSetLastErrorMessage) {
+            dispatch(setLastErrorMessageByTradingTypeThunk({ tradingType, errorMessage }));
+        }
     },
 );
