@@ -1,8 +1,9 @@
 import '@suite-common/test-utils/globalOverrides';
 
+import { type Reducer } from '@reduxjs/toolkit';
 import { act } from '@testing-library/react';
 
-import { type StakingDep } from '@suite-common/earn-staking';
+import { type StakingDep, stakingActions, stakingReducer } from '@suite-common/earn-staking';
 import { mockStakingQueryClient, mockStakingServices } from '@suite-common/earn-staking/mocks';
 import { type StakingPosition } from '@suite-common/earn-staking-common';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -136,6 +137,73 @@ describe('useWithdrawalForm', () => {
 
         expect(result.current.unstakableBalance).toBe('0');
         expect(result.current.amountLimits.maxCrypto).toBe('0');
+    });
+
+    it('keeps a typed amount when the account object updates with the same values', async () => {
+        const position = mockPosition(ethProduct.id, {
+            balances: { ...zeroBalances, staked: amount('2000000000000000000') },
+            operations: ['stake', 'unstake'],
+        });
+        const { services } = createTestCompositionRoot<{ services: StakingDep }, MockSuiteState>({
+            preloadedState: createStakingDashboardState({
+                accounts: [ethAccount],
+                positions: { [ethAccount.key]: [position] },
+            }),
+            services: () => ({ staking: mockStakingServices() }),
+        });
+        const { result, rerender } = renderHookWithProviders(
+            services,
+            ({ account }: { account: Account }) => useWithdrawalForm({ account }),
+            { queryClient: mockStakingQueryClient(), initialProps: { account: ethAccount } },
+        );
+
+        await act(() => result.current.setRatioAmount(4));
+        expect(result.current.getValues('cryptoInput')).toBe('0.5');
+
+        rerender({ account: { ...ethAccount } });
+
+        expect(result.current.getValues('cryptoInput')).toBe('0.5');
+    });
+
+    it('resets the amount when the staked balance changes', async () => {
+        const stakedPosition = (staked: string) =>
+            mockPosition(ethProduct.id, {
+                balances: { ...zeroBalances, staked: amount(staked) },
+                operations: ['stake', 'unstake'],
+            });
+        const initialState = createStakingDashboardState({
+            accounts: [ethAccount],
+            positions: { [ethAccount.key]: [stakedPosition('2000000000000000000')] },
+        });
+        // The position sync below must reach the staking slice; the rest of the state stays.
+        const reducer: Reducer<MockSuiteState> = (state = initialState, action) => ({
+            ...state,
+            earn: { ...state.earn, staking: stakingReducer(state.earn.staking, action) },
+        });
+        const { services } = createTestCompositionRoot<{ services: StakingDep }, MockSuiteState>({
+            preloadedState: initialState,
+            reducer,
+            services: () => ({ staking: mockStakingServices() }),
+        });
+        const { result } = renderHookWithProviders(
+            services,
+            () => useWithdrawalForm({ account: ethAccount }),
+            { queryClient: mockStakingQueryClient() },
+        );
+
+        await act(() => result.current.setRatioAmount(4));
+        expect(result.current.getValues('cryptoInput')).toBe('0.5');
+
+        await act(() => {
+            services.store.dispatch(
+                stakingActions.positionsSynced({
+                    accountKey: ethAccount.key,
+                    positions: [stakedPosition('3000000000000000000')],
+                }),
+            );
+        });
+
+        expect(result.current.getValues('cryptoInput')).toBe('3');
     });
 
     it('sets a ratio of the staked balance', async () => {
