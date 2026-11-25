@@ -20,7 +20,7 @@
  * signed record of each (`WardRollForward`); the device verifies both its own `auth_commit` and
  * the WM's record, and signs each step again for the current session. They then arrive here as
  * ordinary advances -- the WM accepts nothing but device-signed advances
- * (docs/ward/ward_transitions.md in the firmware).
+ * (docs/ward/ward_roll_forward.md in the firmware).
  */
 import { ed25519 } from '@noble/curves/ed25519.js';
 
