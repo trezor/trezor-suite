@@ -35,6 +35,7 @@ import { ErrorViewProps } from '@trezor/connect-ui/src/views/Error';
 import type { TimerId } from '@trezor/type-utils';
 
 import { isPhishingDomain } from './utils/isPhishingDomain';
+import { isFromContentScript, isFromOpener } from './utils/messageSource';
 import * as view from './view';
 import {
     getState,
@@ -229,14 +230,20 @@ const handleInitMessage = (event: MessageEvent<PopupEvent | IFrameLogRequest>) =
 
     // case of webextension which uses cross origin communication via content script
     if (data.type === POPUP.CONTENT_SCRIPT_LOADED) {
-        handleContentScriptLoaded(data);
+        handleContentScriptLoaded(event as MessageEvent<PopupContentScriptLoaded>);
 
         return;
     }
 
     // This is message from the window.opener
     if (data.type === POPUP.INIT) {
-        init(escapeHtml(data.payload));
+        const fromOpener = isFromOpener(event);
+        if (!fromOpener && !isFromContentScript(event)) {
+            log.warn('ignoring init from unexpected source', event.origin);
+
+            return;
+        }
+        init(escapeHtml(data.payload), fromOpener ? event.origin : undefined);
         window.removeEventListener('message', handleInitMessage);
     }
 };
@@ -298,8 +305,10 @@ const handleMessageInCoreMode = (
 
     if (disposed) return;
 
+    if (!isFromOpener(event) && !isFromContentScript(event)) return;
+
     if (data.type === POPUP.CONTENT_SCRIPT_LOADED) {
-        handleContentScriptLoaded(data);
+        handleContentScriptLoaded(event as MessageEvent<PopupContentScriptLoaded>);
 
         return;
     }
@@ -382,7 +391,13 @@ const handleLogMessage = (event: MessageEvent<IFrameLogRequest>) => {
     }
 };
 
-const handleContentScriptLoaded = (data: PopupContentScriptLoaded) => {
+const handleContentScriptLoaded = (event: MessageEvent<PopupContentScriptLoaded>) => {
+    const { data } = event;
+    if (!isFromContentScript(event)) {
+        log.warn('ignoring content-script loaded from unexpected source', event.origin);
+
+        return;
+    }
     log.debug('content-script loaded', data.payload);
     // Check if extension ID matches the popup URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -401,7 +416,7 @@ const handleContentScriptLoaded = (data: PopupContentScriptLoaded) => {
 };
 
 // handle POPUP.INIT message from window.opener
-const init = async (payload: PopupInit['payload']) => {
+const init = async (payload: PopupInit['payload'], openerOrigin?: string) => {
     log.debug('popup init', payload);
 
     if (!payload) return;
@@ -453,7 +468,7 @@ const init = async (payload: PopupInit['payload']) => {
                     }
                 }, INTERVAL_CHECK_PARENT_ALIVE_MS);
             }
-            await initCoreInPopup(payload, logWriterFactory);
+            await initCoreInPopup(payload, openerOrigin, logWriterFactory);
         } else {
             addWindowEventListener('message', handleMessageInIframeMode, false);
             await initCoreInIframe(payload);
@@ -465,6 +480,7 @@ const init = async (payload: PopupInit['payload']) => {
 
 const initCoreInPopup = async (
     payload: PopupInit['payload'],
+    openerOrigin: string | undefined,
     logWriterFactory?: () => LogWriter | undefined,
 ) => {
     // dynamically load core module
@@ -484,13 +500,10 @@ const initCoreInPopup = async (
     if (disposed) return;
 
     const state = getState();
-    if (!payload.settings.origin) {
-        // Assign origin for core in popup modes
-        if (state.settings?.origin) {
-            payload.settings.origin = state.settings.origin;
-        } else if (window.opener) {
-            payload.settings.origin = window.opener.origin;
-        }
+    if (openerOrigin) {
+        payload.settings.origin = openerOrigin;
+    } else if (!payload.settings.origin && state.settings?.origin) {
+        payload.settings.origin = state.settings.origin;
     }
 
     // init core
@@ -573,7 +586,10 @@ const handshake = (handshake2: PopupHandshake, origin: string) => {
         const core = ensureCore();
         core.handleMessage(handshakeRest);
     }
-    reactEventBus.dispatch({ type: 'state-update', payload: handshake2.payload });
+    reactEventBus.dispatch({
+        type: 'state-update',
+        payload: { ...handshake2.payload, settings: trustedSettings },
+    });
 
     log.debug('handshake done');
 };
