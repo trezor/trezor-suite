@@ -2154,6 +2154,8 @@ export const messages = {
             balance: 'Balance',
             hideToken: 'Hide token',
             showToken: 'Show token',
+            addedByYou: 'Added by you',
+            removeToken: 'Remove token',
         },
         accountSettingsScreen: {
             coin: 'Network',
@@ -2230,6 +2232,25 @@ export const messages = {
     },
     moduleAccounts: {
         accountNotFound: 'Account {accountKey} not found.',
+        addCustomToken: {
+            entryButton: 'Add token',
+            title: 'Add token',
+            warning:
+                'Anyone can create a token with any name, including fake versions of real tokens. Only add a contract address from a source you trust.',
+            contractAddress: 'Contract address',
+            contractAddressPlaceholder: '0x…',
+            loading: 'Reading token…',
+            balance: 'Balance',
+            addButton: 'Add token',
+            tokenAdded: '{tokenName} token added',
+            errors: {
+                invalidAddress: 'This isn’t a valid contract address.',
+                alreadyAdded: 'This token is already in your account.',
+                notAToken:
+                    'No supported token found at this address. Only ERC-20 tokens can be added.',
+                fetchFailed: 'Couldn’t read the token. Check your connection and try again.',
+            },
+        },
         tokens: {
             errorMessage: 'Token not found.',
         },

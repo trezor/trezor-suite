@@ -19,6 +19,7 @@ import {
 import {
     type CustomTokensRootState,
     customTokensReducer,
+    selectCustomToken,
     selectCustomTokenContracts,
 } from './customTokensSlice';
 import { mockSetAccountAddMetadata } from '../../mocks';
@@ -58,7 +59,12 @@ const initStore = (preloaded: { tokens?: TokenInfo[]; customTokens?: string[] } 
             wallet: {
                 accounts: [{ ...account, tokens: preloaded.tokens ?? [] }],
                 customTokens: preloaded.customTokens
-                    ? { [accountKey]: preloaded.customTokens }
+                    ? {
+                          [accountKey]: preloaded.customTokens.map(c => ({
+                              contract: c,
+                              addedAt: 0,
+                          })),
+                      }
                     : {},
             },
         },
@@ -108,12 +114,18 @@ describe(fetchCustomTokenThunk.name, () => {
 });
 
 describe(addCustomTokenThunk.name, () => {
-    it('remembers the contract, lists the token and shows it', () => {
+    afterEach(() => jest.restoreAllMocks());
+
+    it('remembers the contract with the time it was added, lists the token and shows it', () => {
+        jest.spyOn(Date, 'now').mockReturnValue(1_700_000_000_000);
         const store = initStore();
 
         store.dispatch(addCustomTokenThunk({ accountKey, token: usdt }));
 
-        expect(selectCustomTokenContracts(store.getState(), accountKey)).toEqual([contract]);
+        expect(selectCustomToken(store.getState(), account, contract)).toEqual({
+            contract,
+            addedAt: 1_700_000_000_000,
+        });
         expect(selectAccountByKey(store.getState(), accountKey)?.tokens).toEqual([
             expect.objectContaining({ contract, symbol: 'USDT', balance: '1' }),
         ]);
