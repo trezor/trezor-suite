@@ -341,6 +341,36 @@ describe('the account overview with the asset-first Home', () => {
         );
     });
 
+    it('offers no search on an account whose network holds no tokens', () => {
+        // Its coin is the only row there can be.
+        renderOverview([btcAccount]);
+
+        expect(screen.queryByTestId('@wallet/account-assets/search')).not.toBeInTheDocument();
+    });
+
+    it('lists only the assets that match the search, small balances included', () => {
+        renderOverview([ethAccount], { areSmallBalancesShown: false });
+
+        fireEvent.change(screen.getByTestId('@wallet/account-assets/search'), {
+            target: { value: '1inch' },
+        });
+
+        expect(rowTestIds()).toEqual([`@wallet/account-asset/eth/${ONE_INCH}`]);
+    });
+
+    it('says nothing matches a search that finds no asset', () => {
+        renderOverview([ethAccount]);
+
+        fireEvent.change(screen.getByTestId('@wallet/account-assets/search'), {
+            target: { value: 'doge' },
+        });
+
+        expect(screen.queryAllByTestId(/^@wallet\/account-asset\//)).toEqual([]);
+        expect(screen.getByTestId('@wallet/account-assets/no-search-results')).toHaveTextContent(
+            messages.TR_NO_SEARCH_RESULTS.defaultMessage,
+        );
+    });
+
     it('shows the crypto balance under the fiat total on a network without tokens', () => {
         renderOverview([btcAccount]);
 

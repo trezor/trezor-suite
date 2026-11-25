@@ -11,7 +11,7 @@ import {
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { type TokenAddress, type TokenInfoBranded } from '@suite-common/tokens';
-import { isNetworkWithTokens } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, isNetworkWithTokens } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -26,6 +26,7 @@ import {
     getFiatRateKey,
     isErc4626,
     isPositiveBalance,
+    isTokenMatchesSearch,
     sortTokensByName,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
@@ -270,3 +271,35 @@ export const selectAccountAssetOverview = createMemoizedSelector(
         };
     },
 );
+
+type IsAccountListSectionMatchingSearchParams = {
+    section: AccountListSection;
+    /** Lower-cased and trimmed, as `normalizeAssetSearchQuery` gives it. */
+    query: string;
+    /** The coin's name, as the networks name it; matched along with its symbol. */
+    nativeTokenName: string | undefined;
+};
+
+export const normalizeAssetSearchQuery = (query: string) => query.trim().toLowerCase();
+
+/**
+ * Whether a section's name, symbol or contract contains the query. The switch has no default, so a
+ * new section type fails to compile here until it is handled.
+ */
+export const isAccountListSectionMatchingSearch = ({
+    section,
+    query,
+    nativeTokenName,
+}: IsAccountListSectionMatchingSearchParams): boolean => {
+    switch (section.type) {
+        case 'account':
+        case 'staking':
+            return [getNetworkDisplaySymbol(section.account.symbol), nativeTokenName].some(label =>
+                label?.toLowerCase().includes(query),
+            );
+        case 'token':
+            return isTokenMatchesSearch(section.token, query) === true;
+        case 'zeroBalance':
+            return section.tokens.some(token => isTokenMatchesSearch(token, query));
+    }
+};

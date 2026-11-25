@@ -2,28 +2,19 @@ import { type Dispatch, type SetStateAction, useEffect } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type Route, gotoThunk, selectRouteName } from '@suite/router';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
-import {
-    Button,
-    Icon,
-    IconButton,
-    type IconComponent,
-    Input,
-    Row,
-    SubTabs,
-} from '@trezor/components';
+import { Button, IconButton, type IconComponent, Row, SubTabs } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import {
     CoinSlashIcon,
     CoinsIcon,
     EyeSlashIcon,
-    MagnifyingGlassIcon,
     PercentIcon,
     PictureFrameIcon,
     PlusIcon,
@@ -31,6 +22,7 @@ import {
 import { injectDispatch } from '@trezor/redux-utils';
 import { arrayPartition } from '@trezor/utils';
 
+import { AssetSearchInput } from '#src/components/wallet/assets/AssetSearchInput';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { type GetTokensOutputType, getTokens } from '#src/utils/wallet/tokenUtils';
 
@@ -121,7 +113,6 @@ export const TokensNavigation = ({
             : selectCoinDefinitions(state, selectedAccount.account.symbol),
     );
     const isDebug = useSelector(selectIsDebugModeActive);
-    const { translationString } = useTranslation();
 
     const tokens = getTokens({
         tokens: selectedAccount.account.tokens || [],
@@ -176,23 +167,11 @@ export const TokensNavigation = ({
                         <Translation id="TR_ACTIVATE_MANUALLY" />
                     </Button>
                 )}
-                <Input
-                    data-testid="@wallet/accounts/search-icon"
-                    placeholder={translationString(
-                        isNft ? 'TR_SEARCH_COLLECTIONS' : 'TR_SEARCH_TOKENS',
-                    )}
+                <AssetSearchInput
                     value={searchQuery}
-                    onChange={event => setSearchQuery(event.target.value)}
-                    onClear={() => setSearchQuery('')}
-                    size="small"
-                    leftContent={
-                        <Icon
-                            as={MagnifyingGlassIcon}
-                            intent="neutral"
-                            priority="secondary"
-                            size={16}
-                        />
-                    }
+                    onChange={setSearchQuery}
+                    placeholder={isNft ? 'TR_SEARCH_COLLECTIONS' : 'TR_SEARCH_TOKENS'}
+                    data-testid="@wallet/accounts/search-icon"
                 />
                 {showAddToken && (
                     <DebugOnlyBadge>
