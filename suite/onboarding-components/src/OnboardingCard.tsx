@@ -78,7 +78,7 @@ export const OnboardingCard = ({
                 gap={20}
                 position={{ type: 'relative' }}
                 padding={{ top: icon ? 48 : 0 }}
-                margin={{ top: icon && !isBackDropVisible ? -48 : 0 }}
+                margin={{ top: icon && !isBackDropVisible ? -64 : 0 }}
                 width="100%"
             >
                 <Card paddingType="none" data-testid={dataTestId} maxWidth={1020}>
