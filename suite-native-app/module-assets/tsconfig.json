@@ -64,6 +64,7 @@
         {
             "path": "../../suite-native/price-chart"
         },
+        { "path": "../../suite-native/storage" },
         { "path": "../../suite-native/toasts" },
         { "path": "../../suite-native/tokens" },
         {

@@ -14159,6 +14159,7 @@ __metadata:
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/price-chart": "workspace:*"
+    "@suite-native/storage": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@suite-native/tokens": "workspace:*"
@@ -14167,6 +14168,7 @@ __metadata:
     "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    jotai: "npm:2.17.1"
     react: "npm:19.3.0"
     react-redux: "npm:9.3.1"
   languageName: unknown

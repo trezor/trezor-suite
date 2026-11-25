@@ -2497,6 +2497,16 @@ export const messages = {
                 viewInExplorer: 'View in explorer',
                 tokenHidden: 'Token hidden',
                 tokenShown: 'Token shown',
+                copyAddressWarningAlert: {
+                    title: 'This isn’t your receive address.',
+                    description: {
+                        contract: 'Never send funds to a contract address.',
+                        fingerprint: 'Never send funds to a fingerprint address.',
+                        policyId: 'Never send funds to a policy ID address.',
+                    },
+                    doNotShowAgain: 'Don’t show again',
+                    confirmButton: 'I understand, copy',
+                },
                 showUnrecognizedTokenAlert: {
                     title: 'Show {asset}?',
                     description:
