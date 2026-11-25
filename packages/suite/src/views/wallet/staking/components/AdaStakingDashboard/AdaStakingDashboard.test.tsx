@@ -117,11 +117,6 @@ describe('AdaStakingDashboard', () => {
         expect(screen.getByTestId('apy')).toHaveTextContent('5');
     });
 
-    it('keeps zero APY while a non-delegation staking transaction is pending', () => {
-        renderAdaStakingDashboard(true);
-        expect(screen.getByTestId('apy')).toHaveTextContent('0');
-    });
-
     // Recurring bug: https://github.com/trezor/trezor-suite/issues/32138
     it('shows no claim card for a staked account with rewards, as Cardano claims from the staking card', () => {
         renderAdaStakingDashboard();

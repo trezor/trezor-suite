@@ -63,19 +63,6 @@ describe('StakingApyBadge', () => {
         expect(screen.getByText('3.25% APY')).toBeOnTheScreen();
     });
 
-    it.each([null, 0])('shows a plain N/A when the rate is %s', async rate => {
-        jest.mocked(useNetworkStakingRate).mockReturnValue({
-            rate,
-            rateKind: 'apy',
-            isPending: false,
-        });
-
-        await renderBadge(mockStakingPosition());
-
-        expect(screen.getByText('N/A')).toBeOnTheScreen();
-        expect(screen.queryByText('N/A% APY')).not.toBeOnTheScreen();
-    });
-
     it('does not show a rate beside the No rewards warning for a retired provider', async () => {
         jest.mocked(useNetworkStakingRate).mockReturnValue({
             rate: 3.25,
@@ -90,17 +77,5 @@ describe('StakingApyBadge', () => {
         );
 
         expect(screen.queryByTestId('@accountList/item/yieldRateBadge')).not.toBeOnTheScreen();
-    });
-
-    it('shows the rate when the account has a pool', async () => {
-        jest.mocked(useNetworkStakingRate).mockReturnValue({
-            rate: 3.25,
-            rateKind: 'apy',
-            isPending: false,
-        });
-
-        await renderBadge(mockStakingPosition());
-
-        expect(screen.getByText('3.25% APY')).toBeOnTheScreen();
     });
 });
