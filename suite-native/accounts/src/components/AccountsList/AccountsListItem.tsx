@@ -1,8 +1,10 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
+import { selectAccountFiatBalance } from '@suite-common/assets';
 import {
     type StakingRootState,
+    selectAccountCryptoBalanceWithStaking,
     selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
 } from '@suite-common/earn-staking';
@@ -20,12 +22,7 @@ import {
 } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 
-import {
-    type NativeAccountsRootState,
-    selectAccountCryptoBalanceWithStaking,
-    selectAccountFiatBalance,
-    selectAccountHasAnyKnownTokens,
-} from '../../selectors';
+import { type NativeAccountsRootState, selectAccountHasAnyKnownTokens } from '../../selectors';
 import { type OnSelectAccount } from '../../types';
 import { AccountLabel } from '../AccountLabel';
 import { AccountListTokenBadge } from './AccountListTokenBadge';

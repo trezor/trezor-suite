@@ -1,6 +1,6 @@
 import {
+    type AssetTableState,
     type HiddenTokenReason,
-    type HomeAssetTableState,
     selectHiddenWalletAssetKeys,
 } from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
@@ -10,7 +10,7 @@ export type HiddenTokensListEntry =
     | { type: 'section-header'; reason: HiddenTokenReason }
     | { type: 'asset'; assetKey: WalletAssetKey };
 
-const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetTableState>();
+const createMemoizedSelector = createWeakMapSelector.withTypes<AssetTableState>();
 
 const toSectionEntries = (
     reason: HiddenTokenReason,
@@ -25,8 +25,8 @@ const toSectionEntries = (
 
 export const selectHiddenTokensListEntries = createMemoizedSelector(
     [
-        (state: HomeAssetTableState) => selectHiddenWalletAssetKeys(state, 'hiddenByUser'),
-        (state: HomeAssetTableState) => selectHiddenWalletAssetKeys(state, 'unrecognized'),
+        (state: AssetTableState) => selectHiddenWalletAssetKeys(state, 'hiddenByUser'),
+        (state: AssetTableState) => selectHiddenWalletAssetKeys(state, 'unrecognized'),
     ],
     (hiddenByUserAssetKeys, unrecognizedAssetKeys): readonly HiddenTokensListEntry[] => [
         ...toSectionEntries('hiddenByUser', hiddenByUserAssetKeys),

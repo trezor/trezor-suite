@@ -1,15 +1,21 @@
 import { mockStakingState } from '@suite-common/earn-staking/mocks';
 import { stakingAmountSchema } from '@suite-common/earn-staking-common';
 import { mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
-import { type TokenInfoBranded } from '@suite-common/tokens';
+import { type TokenAddress, type TokenInfoBranded } from '@suite-common/tokens';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { fiatRatesInitialState, initialWalletSettingsState } from '@suite-common/wallet-core';
 import { mockStakeRootState } from '@suite-common/wallet-core/mocks';
-import { type Account } from '@suite-common/wallet-types';
-import { mockEthereumStakingAccount } from '@suite-common/wallet-types/mocks';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import {
+    mockAccountToken,
+    mockEthereumStakingAccount,
+    mockWalletAccount,
+} from '@suite-common/wallet-types/mocks';
 
 import {
     type AccountListSectionsRootState,
     getAccountListSections,
+    selectAccountAssetOverview,
     selectAccountListSectionsWithZeroBalanceGroup,
 } from './accountListSections';
 
@@ -75,6 +81,25 @@ describe('getAccountListSections', () => {
 
         const tokenNames = tokenSections.map(section => section.token.name);
         expect(tokenNames).toEqual(['Token1', 'Token3']);
+    });
+
+    it('lists a vault token among the tokens only where asked, as mobile keeps it in its DeFi tab', () => {
+        const accountWithVaultToken = {
+            ...mockAccount,
+            tokens: [{ ...mockAccount.tokens?.[0], protocols: ['erc4626'] }],
+        } as Account;
+        const tokenNames = (areVaultTokensListed: boolean) =>
+            getAccountListSections({
+                account: accountWithVaultToken,
+                tokenDefinitions: mockTokenDefinitions,
+                areVaultTokensListed,
+                ...idleStaking,
+            })
+                .filter(section => section.type === 'token')
+                .map(section => section.token.name);
+
+        expect(tokenNames(false)).toEqual([]);
+        expect(tokenNames(true)).toEqual(['Token1']);
     });
 
     it('should handle account with no tokens', () => {
@@ -203,5 +228,63 @@ describe('selectAccountListSectionsWithZeroBalanceGroup', () => {
         expect(selectAccountListSectionsWithZeroBalanceGroup(state, stakingAccount.key)).toBe(
             selectAccountListSectionsWithZeroBalanceGroup(state, stakingAccount.key),
         );
+    });
+});
+
+describe('selectAccountAssetOverview', () => {
+    const ETH = asNetworkSymbol('eth');
+    const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
+    const ENS = '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72' as TokenAddress;
+    const createState = (account: Account) => {
+        const baseState = mockStakeRootState({ accounts: [account] });
+
+        return {
+            ...baseState,
+            wallet: {
+                ...baseState.wallet,
+                settings: { ...initialWalletSettingsState, localCurrency: 'usd' },
+                fiat: fiatRatesInitialState,
+            },
+            earn: { staking: mockStakingState() },
+            tokenDefinitions: {
+                [ETH]: {
+                    coin: { data: [USDC, ENS], hide: [], show: [], error: false, isLoading: false },
+                },
+            },
+        } as unknown as AccountListSectionsRootState;
+    };
+    const tokens = [
+        mockAccountToken({ symbol: 'USDC', contract: USDC, balance: '1000', decimals: 6 }),
+        mockAccountToken({ symbol: 'ENS', contract: ENS, balance: '0', decimals: 18 }),
+    ];
+    const typesOf = (sections: readonly { type: string }[]) => sections.map(({ type }) => type);
+
+    it('splits what the account holds from the tokens it holds none of, and counts its assets', () => {
+        const account = mockWalletAccount({ symbol: ETH, formattedBalance: '1.2', tokens });
+        const overview = selectAccountAssetOverview(createState(account), account.key);
+
+        expect(typesOf(overview.heldSections)).toEqual(['account', 'token']);
+        expect(overview.zeroBalanceSections).toMatchObject([
+            { type: 'token', token: { symbol: 'ENS' } },
+        ]);
+        expect(overview.assetCount).toBe(2);
+    });
+
+    it('leaves out a coin the account holds none of', () => {
+        const account = mockWalletAccount({ symbol: ETH, formattedBalance: '0', tokens });
+        const overview = selectAccountAssetOverview(createState(account), account.key);
+
+        expect(typesOf(overview.heldSections)).toEqual(['token']);
+        expect(overview.assetCount).toBe(1);
+    });
+
+    it('holds nothing for an account it does not know', () => {
+        const account = mockWalletAccount({ symbol: ETH, formattedBalance: '1.2', tokens });
+
+        expect(selectAccountAssetOverview(createState(account), 'unknown' as AccountKey)).toEqual({
+            heldSections: [],
+            zeroBalanceSections: [],
+            assetCount: 0,
+        });
     });
 });

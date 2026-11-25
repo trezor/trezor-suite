@@ -1,12 +1,12 @@
 import { Translation } from '@suite/intl';
 import { Button, Table } from '@trezor/components';
 
-type HomeAssetExpandRowProps = {
+type AssetTableExpandRowProps = {
     isExpanded: boolean;
     onToggle: () => void;
 };
 
-export const HomeAssetExpandRow = ({ isExpanded, onToggle }: HomeAssetExpandRowProps) => (
+export const AssetTableExpandRow = ({ isExpanded, onToggle }: AssetTableExpandRowProps) => (
     <Table.Row isHighlightedOnHover={false}>
         <Table.Cell
             colSpan={3}

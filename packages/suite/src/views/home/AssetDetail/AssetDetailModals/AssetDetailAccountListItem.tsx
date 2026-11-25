@@ -1,3 +1,4 @@
+import { ASSET_TABLE_LINE_GAP } from '@suite/assets';
 import { type AssetAccount } from '@suite-common/assets';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -6,7 +7,6 @@ import { CardList, Column, Text } from '@trezor/components';
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { HOME_ASSET_LINE_GAP } from '#src/views/home/HomeAssetsTable/homeAssetTableLayout';
 
 import { AssetDetailAccountIdentity } from './AssetDetailAccountIdentity';
 
@@ -32,7 +32,7 @@ export const AssetDetailAccountListItem = ({
                 account={account}
                 data-testid={`@asset-detail/accounts/${account.accountType}/${account.index}`}
             />
-            <Column alignItems="flex-end" gap={HOME_ASSET_LINE_GAP}>
+            <Column alignItems="flex-end" gap={ASSET_TABLE_LINE_GAP}>
                 <BaseCurrencyValue
                     amount={cryptoBalance}
                     symbol={networkSymbol}

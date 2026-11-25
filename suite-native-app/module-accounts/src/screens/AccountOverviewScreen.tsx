@@ -10,11 +10,11 @@ import {
     selectAccountDefiTokensCount,
     selectAccountManuallyHiddenTokensCount,
     selectAccountNetworkType,
+    selectAreTokensSupportedByAccount,
 } from '@suite-common/wallet-core';
 import {
     AccountDiscoveryFailedBanner,
     type NativeAccountsRootState,
-    selectAreTokensSupportedByAccount,
     selectIsAccountDiscoveryFailed,
     useResolvedAccountKey,
 } from '@suite-native/accounts';

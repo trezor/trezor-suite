@@ -1,13 +1,13 @@
 import { type RouterRootState, selectRouterParams } from '@suite/router';
 import {
-    type HomeAssetTableState,
+    type AssetTableState,
     selectWalletAssetKey,
     selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
 import { toTokenAddress } from '@suite-common/tokens';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 
-export type RoutedAssetState = RouterRootState & HomeAssetTableState;
+export type RoutedAssetState = RouterRootState & AssetTableState;
 
 export const selectRoutedAssetKey = (state: RoutedAssetState): WalletAssetKey | undefined => {
     const params = selectRouterParams(state);

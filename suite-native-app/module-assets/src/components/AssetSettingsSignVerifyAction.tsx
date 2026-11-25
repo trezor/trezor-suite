@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    type HomeAssetTableState,
+    type AssetTableState,
     selectWalletAssetKey,
     selectWalletAssetSignVerifyAccounts,
 } from '@suite-common/assets';
@@ -40,10 +40,10 @@ export const AssetSettingsSignVerifyAction = ({
     onOpenSignVerifyAccounts,
     onClose,
 }: AssetSettingsSignVerifyActionProps) => {
-    const assetKey = useSelector((state: HomeAssetTableState) =>
+    const assetKey = useSelector((state: AssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
     );
-    const signVerifyAccounts = useSelector((state: HomeAssetTableState) =>
+    const signVerifyAccounts = useSelector((state: AssetTableState) =>
         selectWalletAssetSignVerifyAccounts(state, assetKey),
     );
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);

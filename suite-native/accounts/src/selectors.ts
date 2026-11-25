@@ -6,10 +6,7 @@ import {
     selectDeviceStaticSessionId,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
-import {
-    type StakingRootState,
-    selectStakingAccountAmountOutsideBalance,
-} from '@suite-common/earn-staking';
+import { type StakingRootState } from '@suite-common/earn-staking';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import {
     type SuiteSyncDataRootState,
@@ -18,7 +15,7 @@ import {
 } from '@suite-common/suite-sync';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol, isNetworkWithTokens } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -37,13 +34,10 @@ import {
     type AccountDescriptor,
     type AccountKey,
     areBaseCurrencyAmountsEqual,
-    asBaseCurrencyAmount,
     createAccountKey,
 } from '@suite-common/wallet-types';
 import {
     BASE_CURRENCY_ZERO,
-    getAccountBalanceWithStaking,
-    getAccountFiatBalance,
     getFiatRateKey,
     isAccountFailed,
     toFiatCurrency,
@@ -245,45 +239,6 @@ export const selectIsAccountsListNetworkFilterVisible = createNetworkMemoizedSel
     networkFilterOptions => networkFilterOptions.length > 1,
 );
 
-export const selectAccountFiatBalance = createMemoizedSelector(
-    [
-        selectCurrentFiatRates,
-        selectAccountByKey,
-        selectAccountTokens,
-        selectBaseCurrency,
-        selectStakingAccountAmountOutsideBalance,
-        (_, _accountKey: AccountKey, shouldIncludeTokens?: boolean) => shouldIncludeTokens ?? true,
-    ],
-    (fiatRates, account, tokenCategories, localCurrency, stakingBalance, shouldIncludeTokens) => {
-        if (!account) {
-            return BASE_CURRENCY_ZERO;
-        }
-
-        const totalBalance = getAccountFiatBalance({
-            account: { ...account, tokens: tokenCategories?.shownWithBalance ?? [] },
-            rates: fiatRates,
-            baseCurrencyCode: localCurrency,
-            stakingBalance,
-            shouldIncludeTokens,
-        });
-
-        return totalBalance ? asBaseCurrencyAmount(totalBalance) : BASE_CURRENCY_ZERO;
-    },
-    {
-        memoizeOptions: {
-            // Accounts and fiat rates churn on every sync; keep the previous BigNumber reference
-            // when the amount is unchanged so useSelector consumers don't rerender.
-            resultEqualityCheck: areBaseCurrencyAmountsEqual,
-        },
-    },
-);
-
-export const selectAccountCryptoBalanceWithStaking = createMemoizedSelector(
-    [selectAccountByKey, selectStakingAccountAmountOutsideBalance],
-    (account, stakingBalance): string =>
-        account ? getAccountBalanceWithStaking({ account, stakingBalance }) : '0',
-);
-
 export const selectAccountTokenFiatBalance = createMemoizedSelector(
     [selectCurrentFiatRates, selectBaseCurrency, selectAccountByKey, selectAccountTokenInfo],
     (fiatRates, localCurrency, account, tokenInfo) => {
@@ -324,11 +279,6 @@ export const selectFreshAccountAddress = createMemoizedSelector(
 export const selectIsAccountDiscoveryFailed = createMemoizedSelector(
     [selectAccountByKey],
     account => !!account && isAccountFailed(account),
-);
-
-export const selectAreTokensSupportedByAccount = createMemoizedSelector(
-    [selectAccountByKey],
-    account => !!account && isNetworkWithTokens(account.symbol),
 );
 
 export const selectHasDeviceAnyFailedAccountForNetworkSymbol = createMemoizedSelector(

@@ -1,5 +1,5 @@
 import {
-    type HomeAssetTableState,
+    type AssetTableState,
     selectCappedAssetKeysByNetwork,
     selectDisplayedNetworkSymbols,
     selectDisplayedWalletAssetKeys,
@@ -13,7 +13,7 @@ import { exhaustive } from '@trezor/type-utils';
 export type PortfolioAssetListEntry =
     { type: 'network'; symbol: NetworkSymbol } | { type: 'asset'; assetKey: WalletAssetKey };
 
-const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetTableState>();
+const createMemoizedSelector = createWeakMapSelector.withTypes<AssetTableState>();
 
 const toAssetEntries = (assetKeys: readonly WalletAssetKey[]): PortfolioAssetListEntry[] =>
     assetKeys.map(assetKey => ({ type: 'asset', assetKey }));

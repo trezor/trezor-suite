@@ -1,13 +1,13 @@
 import { Translation } from '@suite/intl';
 import { Button, Column, Table, Text } from '@trezor/components';
 
-type HomeAssetSmallBalancesHiddenRowProps = {
+type AssetTableSmallBalancesHiddenRowProps = {
     onShowSmallBalances: () => void;
 };
 
-export const HomeAssetSmallBalancesHiddenRow = ({
+export const AssetTableSmallBalancesHiddenRow = ({
     onShowSmallBalances,
-}: HomeAssetSmallBalancesHiddenRowProps) => (
+}: AssetTableSmallBalancesHiddenRowProps) => (
     <Table.Row isHighlightedOnHover={false}>
         <Table.Cell
             colSpan={3}

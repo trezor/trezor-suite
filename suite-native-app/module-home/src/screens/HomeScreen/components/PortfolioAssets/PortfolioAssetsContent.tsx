@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux';
 import { FlashList } from '@shopify/flash-list';
 
 import {
-    HOME_ASSET_ROW_LIMIT,
-    type HomeAssetTableState,
-    selectAreHomeAssetSmallBalancesDisplayed,
+    ASSET_TABLE_ROW_LIMIT,
+    type AssetTableState,
+    selectAreAssetTableSmallBalancesDisplayed,
     selectIsHomeAssetTableFoldable,
     selectIsHomeAssetTableMenuAvailable,
     selectSmallBalanceSummary,
@@ -55,18 +55,18 @@ type RenderEntryParams = {
 export const PortfolioAssetsContent = () => {
     const [isListExpanded, setIsListExpanded] = useState(false);
     // Capping a list no longer than the limit leaves it whole, so no foldability check is needed.
-    const rowLimit = isListExpanded ? undefined : HOME_ASSET_ROW_LIMIT;
-    const entries = useSelector((state: HomeAssetTableState) =>
+    const rowLimit = isListExpanded ? undefined : ASSET_TABLE_ROW_LIMIT;
+    const entries = useSelector((state: AssetTableState) =>
         selectPortfolioAssetListEntries(state, rowLimit),
     );
-    const isFoldable = useSelector((state: HomeAssetTableState) =>
-        selectIsHomeAssetTableFoldable(state, HOME_ASSET_ROW_LIMIT),
+    const isFoldable = useSelector((state: AssetTableState) =>
+        selectIsHomeAssetTableFoldable(state, ASSET_TABLE_ROW_LIMIT),
     );
     const isAssetListLoading = useSelector(selectIsAssetListLoading);
     const hasSmallBalances = useSelector(
-        (state: HomeAssetTableState) => selectSmallBalanceSummary(state) !== undefined,
+        (state: AssetTableState) => selectSmallBalanceSummary(state) !== undefined,
     );
-    const areSmallBalancesDisplayed = useSelector(selectAreHomeAssetSmallBalancesDisplayed);
+    const areSmallBalancesDisplayed = useSelector(selectAreAssetTableSmallBalancesDisplayed);
     const isMenuAvailable = useSelector(selectIsHomeAssetTableMenuAvailable);
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
     const { dispatch } = useServices(injectDispatch);

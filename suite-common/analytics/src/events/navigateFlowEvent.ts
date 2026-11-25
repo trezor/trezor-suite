@@ -22,6 +22,7 @@ export const NAVIGATE_FLOW_FROM = [
     'asset-detail',
     'dashboard',
     'menu',
+    'account-overview',
 ] as const;
 
 export type NavigateFlowFrom = (typeof NAVIGATE_FLOW_FROM)[number];
@@ -49,9 +50,12 @@ export const navigateFlowEvent: EventDef<Attributes, EventType.NavigateFlow> = {
             description: 'The flow the user navigates to',
         },
         from: {
-            changelog: [{ version: '26.11.0', notes: 'added' }],
+            changelog: [
+                { version: '26.11.0', notes: 'added' },
+                { version: '26.12.0', notes: 'added `account-overview`' },
+            ],
             description:
-                'Where the navigation started: `dashboard/header` for the dashboard header buttons, `sidebar` for the main navigation sidebar, `tab` for an account row in the sidebar accounts list on desktop and the Accounts tab on mobile, `home-asset-table` for an asset row in the Home asset table, `asset` for the asset detail Earn section on desktop, `asset-detail` for an account in the asset detail accounts list and for the asset detail Earn section on mobile, `dashboard` for the Home asset table filter menu on desktop and the Home view options on mobile, `menu` for the asset detail menu on mobile',
+                'Where the navigation started: `dashboard/header` for the dashboard header buttons, `sidebar` for the main navigation sidebar, `tab` for an account row in the sidebar accounts list on desktop and the Accounts tab on mobile, `home-asset-table` for an asset row in the Home asset table, `asset` for the asset detail Earn section on desktop, `asset-detail` for an account in the asset detail accounts list and for the asset detail Earn section on mobile, `dashboard` for the Home asset table filter menu on desktop and the Home view options on mobile, `menu` for the asset detail menu on mobile, `account-overview` for an asset row, the hidden tokens link and the Earn section of the account overview on desktop',
         },
         networkSymbol: {
             changelog: [{ version: '26.11.0', notes: 'added' }],

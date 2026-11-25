@@ -30,6 +30,7 @@ import {
     selectEvmPrivatePendingHint,
     selectHasUnseenNonPhishingTransactionNotifications,
     selectHistoryCoveredSince,
+    selectIsAccountTransactionListShown,
     selectNonPhishingTransactionNotifications,
     selectTransactionsWithMissingRates,
 } from './transactionsSelectors';
@@ -545,5 +546,91 @@ describe(selectAreAllAccountTransactionsLoaded.name, () => {
 
     it('is true once fetching reached the end of a history without a reported total', () => {
         expect(getAreAllLoaded(-1, true)).toBe(true);
+    });
+});
+
+describe('selectIsAccountTransactionListShown', () => {
+    type HistoryStateParams = {
+        transactions?: WalletAccountTransaction[];
+        isLoading?: boolean;
+        // Only the fields the selector reads; the state is cast as a whole below.
+        account?: Record<string, unknown>;
+    };
+
+    const isTransactionListShown = ({
+        transactions = [],
+        isLoading = false,
+        account,
+    }: HistoryStateParams) =>
+        selectIsAccountTransactionListShown(
+            {
+                wallet: {
+                    transactions: {
+                        transactions: { [ACCOUNT_KEY]: transactions },
+                        fetchStatusDetail: isLoading
+                            ? { [ACCOUNT_KEY]: { status: 'loading' } }
+                            : {},
+                    },
+                    accounts: [
+                        {
+                            ...ethAccount,
+                            networkType: 'ethereum',
+                            backendType: 'blockbook',
+                            empty: false,
+                            history: { total: 0 },
+                            misc: {},
+                            ...account,
+                        },
+                    ],
+                },
+            } as unknown as TransactionsRootState & AccountsRootState,
+            ACCOUNT_KEY,
+        );
+
+    it('has a history once a transaction is stored', () => {
+        expect(isTransactionListShown({ transactions: [testMocks.getWalletTransaction()] })).toBe(
+            true,
+        );
+    });
+
+    it('has a history while the transactions load', () => {
+        expect(isTransactionListShown({ isLoading: true })).toBe(true);
+    });
+
+    it('has none for an account without transactions', () => {
+        expect(isTransactionListShown({})).toBe(false);
+    });
+
+    it('has a history a direct-RPC backend has not scanned yet', () => {
+        expect(
+            isTransactionListShown({ account: { backendType: 'evm-rpc', history: { total: -1 } } }),
+        ).toBe(true);
+    });
+
+    it('has a history a direct-RPC backend can load further back', () => {
+        expect(
+            isTransactionListShown({
+                account: { backendType: 'evm-rpc', misc: { olderHistoryFrom: 1 } },
+            }),
+        ).toBe(true);
+    });
+
+    it('has none for an empty account, even on a direct-RPC backend', () => {
+        expect(
+            isTransactionListShown({
+                account: { backendType: 'evm-rpc', empty: true, history: { total: -1 } },
+            }),
+        ).toBe(false);
+    });
+
+    it('has none for an account it does not know', () => {
+        expect(
+            selectIsAccountTransactionListShown(
+                {
+                    wallet: { transactions: transactionsInitialState, accounts: [] },
+                } as unknown as TransactionsRootState & AccountsRootState,
+                null,
+            ),
+        ).toBe(false);
     });
 });

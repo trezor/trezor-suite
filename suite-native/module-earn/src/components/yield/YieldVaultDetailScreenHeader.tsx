@@ -2,14 +2,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { selectAccountFiatBalance } from '@suite-common/assets';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type Account } from '@suite-common/wallet-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
-import {
-    AccountLabel,
-    type NativeAccountsRootState,
-    selectAccountFiatBalance,
-} from '@suite-native/accounts';
+import { AccountLabel, type NativeAccountsRootState } from '@suite-native/accounts';
 import { Box, HStack, IconButton } from '@suite-native/atoms';
 import { useYieldFlowData } from '@suite-native/earn';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';

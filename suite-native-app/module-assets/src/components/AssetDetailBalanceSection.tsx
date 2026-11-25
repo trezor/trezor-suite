@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import {
-    type HomeAssetTableState,
+    type AssetTableState,
     selectWalletAssetAccountCount,
     selectWalletAssetAmount,
     selectWalletAssetFiatValue,
@@ -28,17 +28,17 @@ import { AssetDetailSectionHeader } from './AssetDetailSectionHeader';
 export const AssetDetailBalanceSection = () => {
     const { networkSymbol, tokenContract } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
-    const assetKey = useSelector((state: HomeAssetTableState) =>
+    const assetKey = useSelector((state: AssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
     );
-    const amount = useSelector((state: HomeAssetTableState) =>
+    const amount = useSelector((state: AssetTableState) =>
         selectWalletAssetAmount(state, assetKey),
     );
     const fiatValue = useSelector(
-        (state: HomeAssetTableState) => selectWalletAssetFiatValue(state, assetKey),
+        (state: AssetTableState) => selectWalletAssetFiatValue(state, assetKey),
         areBaseCurrencyAmountsEqual,
     );
-    const accountCount = useSelector((state: HomeAssetTableState) =>
+    const accountCount = useSelector((state: AssetTableState) =>
         selectWalletAssetAccountCount(state, assetKey),
     );
     const isFiatRateDisallowed = useSelector((state: TokenDefinitionsRootState) =>

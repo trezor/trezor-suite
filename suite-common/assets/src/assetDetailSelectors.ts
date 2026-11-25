@@ -8,20 +8,17 @@ import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-u
 import { BigNumber } from '@trezor/utils';
 
 import { selectDeviceAssetAccounts } from './assetAccountsSelectors';
-import {
-    type HomeAssetTableState,
-    selectWalletAssetContractAddress,
-} from './homeAssetTableSelectors';
+import { type AssetTableState, selectWalletAssetContractAddress } from './homeAssetTableSelectors';
 
-const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetTableState>();
+const createMemoizedSelector = createWeakMapSelector.withTypes<AssetTableState>();
 
-const selectState = (state: HomeAssetTableState) => state;
+const selectState = (state: AssetTableState) => state;
 
 export const selectWalletAssetAccounts = createMemoizedSelector(
     [
         selectDeviceAssetAccounts,
         selectAccounts,
-        (_state: HomeAssetTableState, assetKey: WalletAssetKey | undefined) => assetKey,
+        (_state: AssetTableState, assetKey: WalletAssetKey | undefined) => assetKey,
     ],
     (assetAccounts, accounts, assetKey): readonly Account[] => {
         const accountKeys = new Set(

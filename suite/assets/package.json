@@ -21,8 +21,12 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite/discreet-mode": "workspace:*",
+        "@suite/intl": "workspace:*",
+        "@suite/settings": "workspace:*",
         "@suite/token": "workspace:*",
+        "@trezor/components": "workspace:*",
         "@trezor/product-components": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "react": "19.3.0",
         "react-redux": "9.3.1"
     }

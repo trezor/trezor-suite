@@ -1,5 +1,5 @@
 import {
-    type HomeAssetTableState,
+    type AssetTableState,
     selectWalletAssetAmount,
     selectWalletAssetContractAddress,
     selectWalletAssetNetworkSymbol,
@@ -14,12 +14,12 @@ import { type Account } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { type BannerFlagsSliceRootState, selectIsEarnBannerClosed } from '@suite-native/banners';
 
-export type AssetDetailStakingBannerState = HomeAssetTableState & BannerFlagsSliceRootState;
+export type AssetDetailStakingBannerState = AssetTableState & BannerFlagsSliceRootState;
 
 const NO_ACCOUNTS: readonly Account[] = [];
 
 const selectIsWalletAssetStakingSupported = (
-    state: HomeAssetTableState,
+    state: AssetTableState,
     assetKey: WalletAssetKey | undefined,
 ): boolean => {
     const networkSymbol = selectWalletAssetNetworkSymbol(state, assetKey);
@@ -32,7 +32,7 @@ const selectIsWalletAssetStakingSupported = (
 };
 
 export const selectShouldShowWalletAssetEarnSection = (
-    state: HomeAssetTableState,
+    state: AssetTableState,
     assetKey: WalletAssetKey | undefined,
 ): boolean => {
     const amount = selectWalletAssetAmount(state, assetKey);

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import {
-    type HomeAssetTableState,
+    type AssetTableState,
     selectWalletAssetAccountCount,
     selectWalletAssetKey,
 } from '@suite-common/assets';
@@ -26,10 +26,10 @@ export const AssetSettingsAccountsAction = ({
     tokenContract,
     onOpenAccounts,
 }: AssetSettingsAccountsActionProps) => {
-    const assetKey = useSelector((state: HomeAssetTableState) =>
+    const assetKey = useSelector((state: AssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
     );
-    const accountsCount = useSelector((state: HomeAssetTableState) =>
+    const accountsCount = useSelector((state: AssetTableState) =>
         selectWalletAssetAccountCount(state, assetKey),
     );
     const { analytics } = useServices(injectNativeAnalytics);

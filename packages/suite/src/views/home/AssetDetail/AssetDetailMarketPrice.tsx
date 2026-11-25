@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { FiatAmountHeadline } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import {
     AssetPriceChart,
@@ -22,7 +23,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { NoRatesTooltip } from '#src/components/suite/Ticker/NoRatesTooltip';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { FiatAmountHeadline } from '#src/views/home/HomeBalance/FiatAmountHeadline';
 
 import { AssetDetailPriceChange } from './AssetDetailPriceChange';
 

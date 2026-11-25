@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { type HomeAssetTableState, selectWalletAssetKey } from '@suite-common/assets';
+import { type AssetTableState, selectWalletAssetKey } from '@suite-common/assets';
 import { useNativeYieldVault } from '@suite-common/earn-stablecoin';
 import { Box } from '@suite-native/atoms';
 import { EthEarnPromoBanner } from '@suite-native/banners';
@@ -18,7 +18,7 @@ import {
 export const AssetDetailStakingBanner = () => {
     const { networkSymbol, tokenContract } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
-    const assetKey = useSelector((state: HomeAssetTableState) =>
+    const assetKey = useSelector((state: AssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
     );
     const accounts = useSelector((state: AssetDetailStakingBannerState) =>

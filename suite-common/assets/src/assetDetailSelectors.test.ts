@@ -19,7 +19,7 @@ import {
     selectWalletAssetHasSpendableBalance,
     selectWalletAssetUnstakedAccounts,
 } from './assetDetailSelectors';
-import { type HomeAssetTableState } from './homeAssetTableSelectors';
+import { type AssetTableState } from './homeAssetTableSelectors';
 
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
 
@@ -91,7 +91,7 @@ type MockStateParams = {
     stakingPositions?: Partial<Record<AccountKey, readonly StakingPosition[]>>;
 };
 
-const createState = ({ accounts, stakingPositions = {} }: MockStateParams): HomeAssetTableState =>
+const createState = ({ accounts, stakingPositions = {} }: MockStateParams): AssetTableState =>
     ({
         earn: {
             staking: mockStakingState({
@@ -113,7 +113,7 @@ const createState = ({ accounts, stakingPositions = {} }: MockStateParams): Home
             [ETH]: { coin: { data: [USDC_ON_ETH, DAI_ON_ETH], hide: [], show: [] } },
         },
         networks: {},
-    }) as unknown as HomeAssetTableState;
+    }) as unknown as AssetTableState;
 
 const bitcoin = getWalletAssetKey({
     deviceState: ALICE,
@@ -215,7 +215,7 @@ describe('whether an asset can be sent', () => {
 });
 
 describe('the accounts the staking banner speaks for', () => {
-    const keysOf = (state: HomeAssetTableState) =>
+    const keysOf = (state: AssetTableState) =>
         selectWalletAssetUnstakedAccounts(state, cardano).map(({ key }) => key);
 
     it('lists every account of the coin, the one holding the most first', () => {
@@ -264,7 +264,7 @@ describe('the accounts the staking banner speaks for', () => {
 });
 
 describe('the ether accounts the staking banner speaks for', () => {
-    const keysOf = (state: HomeAssetTableState) =>
+    const keysOf = (state: AssetTableState) =>
         selectWalletAssetUnstakedAccounts(state, ethereum).map(({ key }) => key);
 
     const idle = mockAccount({ symbol: ETH, index: 0 });

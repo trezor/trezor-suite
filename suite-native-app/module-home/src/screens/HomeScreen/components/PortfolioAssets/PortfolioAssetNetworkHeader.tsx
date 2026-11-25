@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import {
-    type HomeAssetTableState,
+    type AssetTableState,
     selectNetworkFiatValue,
     selectNetworkName,
 } from '@suite-common/assets';
@@ -16,8 +16,8 @@ type PortfolioAssetNetworkHeaderProps = {
 };
 
 export const PortfolioAssetNetworkHeader = ({ symbol }: PortfolioAssetNetworkHeaderProps) => {
-    const name = useSelector((state: HomeAssetTableState) => selectNetworkName(state, symbol));
-    const fiatValue = useSelector((state: HomeAssetTableState) =>
+    const name = useSelector((state: AssetTableState) => selectNetworkName(state, symbol));
+    const fiatValue = useSelector((state: AssetTableState) =>
         selectNetworkFiatValue(state, symbol),
     );
 

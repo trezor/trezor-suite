@@ -27,6 +27,7 @@ import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-type
 
 import {
     type StakingAccountFiatRootState,
+    selectAccountCryptoBalanceWithStaking,
     selectCountedStakingPositionEntriesByAccount,
     selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
@@ -538,5 +539,30 @@ describe('selectStakingAccountFiatAmount', () => {
         expect(
             selectStakingAccountFiatAmount(createState({ rates: usdRates }), ethAccount.key),
         ).toBe(selectStakingAccountFiatAmount(createState({ rates: usdRates }), ethAccount.key));
+    });
+});
+
+describe('selectAccountCryptoBalanceWithStaking', () => {
+    const stakingAccount = { ...ethAccount, formattedBalance: '1.5' };
+    // The 1.2 XRP reserve sits in the formatted balance and outside the available one.
+    const rippleAccount = mockWalletAccount({
+        symbol: asNetworkSymbol('xrp'),
+        balance: '3110000',
+        availableBalance: '1910000',
+        formattedBalance: '3.11',
+    });
+    const state = createState({ accounts: [stakingAccount, rippleAccount] });
+
+    it('adds the amount outside the balance to the formatted balance', () => {
+        // 1.5 ETH held, 2 ETH staked and 0.5 ETH unstaking.
+        expect(selectAccountCryptoBalanceWithStaking(state, stakingAccount.key)).toBe('4');
+    });
+
+    it('keeps the reserve of a Ripple account without a position', () => {
+        expect(selectAccountCryptoBalanceWithStaking(state, rippleAccount.key)).toBe('3.11');
+    });
+
+    it('is zero without the account', () => {
+        expect(selectAccountCryptoBalanceWithStaking(state, unknownAccountKey)).toBe('0');
     });
 });
