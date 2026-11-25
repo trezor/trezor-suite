@@ -417,6 +417,7 @@ export {
     startOnboardingThunk,
     selectCanStartOnboarding,
 } from './src/actions/onboarding/startOnboardingThunk';
+export { selectIsOnboardingDeviceDisconnected } from './src/selectors/onboarding/onboardingSelectors';
 export { useResponsiveContextOnChange } from './src/components/suite/layouts/SuiteLayout/useResponsiveContextOnChange';
 export { MAX_ONBOARDING_WIDTH } from './src/constants/suite/layout';
 export { useFilteredModal } from './src/hooks/suite/useFilteredModal';

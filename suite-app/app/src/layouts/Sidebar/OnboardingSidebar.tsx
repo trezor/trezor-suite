@@ -1,8 +1,8 @@
-import { selectIsDeviceConnected } from '@suite-common/device';
 import { Column, Divider } from '@trezor/components';
 import { QuestionIcon } from '@trezor/icons';
 import {
     OnboardingStepper,
+    selectIsOnboardingDeviceDisconnected,
     useGuide,
     useOnboarding,
     useResponsiveContext,
@@ -16,10 +16,10 @@ import { Sidebar } from './Sidebar';
 export const OnboardingSidebar = () => {
     const { openGuide } = useGuide();
     const { isActive } = useOnboarding();
-    const isDeviceConnected = useSelector(selectIsDeviceConnected);
+    const isDeviceDisconnected = useSelector(selectIsOnboardingDeviceDisconnected);
     const { isSidebarCollapsed } = useResponsiveContext();
 
-    if (!isDeviceConnected) {
+    if (isDeviceDisconnected) {
         return <Sidebar />;
     }
 

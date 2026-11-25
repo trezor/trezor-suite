@@ -21,7 +21,7 @@ import { createRouterStateMockForRoute, mockSuiteRouterHistory } from '@suite/ro
 import { events } from '@suite-common/analytics';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
 import { deviceActions } from '@suite-common/device';
-import { firmwareInitialState } from '@suite-common/firmware';
+import { type FirmwareRootState, firmwareInitialState } from '@suite-common/firmware';
 import { mockNetworkIcon } from '@suite-common/networks/mocks';
 import {
     type PersistentDeviceDataState,
@@ -230,12 +230,14 @@ const selectedDeviceReducer = (
 
 type RenderPreloaderParams = GetInitialStateProps & {
     children?: ReactNode;
+    firmwareStatus?: FirmwareRootState['firmware']['status'];
 };
 
 // Renders Preloader over the reducers that onboarding entry, navigation and device checks change.
 const renderPreloader = ({
     children = 'foo',
     suite,
+    firmwareStatus = firmwareInitialState.status,
     ...stateProps
 }: RenderPreloaderParams = {}) => {
     const initialState: MockSuiteState = {
@@ -246,7 +248,7 @@ const renderPreloader = ({
                 ...suite,
             },
         }),
-        firmware: firmwareInitialState,
+        firmware: { ...firmwareInitialState, status: firmwareStatus },
     };
     const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
         preloadedState: initialState,
@@ -958,6 +960,46 @@ describe(`${Preloader.name} component`, () => {
 
         unmount();
     });
+
+    // The device reboots during the installation, so the user must not be offered a way out of it.
+    it.each(['started', 'thp-pairing'] as const)(
+        'keeps the onboarding sidebar and its progress while the device reboots during a firmware installation (%s)',
+        firmwareStatus => {
+            const device = mockSuiteDevice(
+                { mode: 'initialize', connected: true, available: true, firmware: 'valid' },
+                { initialized: false, internal_model: DeviceModelInternal.T1B1, major_version: 1 },
+            );
+            const { services, unmount } = renderPreloader({
+                router: createRouterStateMockForRoute('onboarding-index'),
+                device: { selectedDevice: device },
+                persistentDeviceData: {
+                    devices: [
+                        {
+                            ...matchingDevicePersistentData,
+                            internal_model: DeviceModelInternal.T1B1,
+                        },
+                    ],
+                },
+                onboarding: { isActive: true, activeStepId: 'firmware' },
+                firmwareStatus,
+            });
+            const stepper = screen.getByTestId('@onboarding/stepper');
+
+            act(() => {
+                services.store.dispatch(deviceActions.deviceDisconnect(device));
+            });
+
+            expect(screen.getByTestId('@onboarding/stepper')).toBe(stepper);
+            expect(screen.getByTestId('@onboarding/stepper/device')).toHaveAttribute(
+                'aria-current',
+                'step',
+            );
+            expect(screen.queryByTestId('@suite/menu/suite-index')).toBeNull();
+            expect(screen.getAllByTestId('@guide/button-open')).toHaveLength(1);
+
+            unmount();
+        },
+    );
 
     // Debug mode used to add a second Settings button to the onboarding layout.
     it('shows a single Settings item above Help in the onboarding sidebar in debug mode', () => {

@@ -26,6 +26,7 @@ import {
     PrerequisitesGuide,
     analyticsActions,
     initThunk,
+    selectIsOnboardingDeviceDisconnected,
     selectPrerequisite,
     selectSuiteLifecycle,
     useAppShortcuts,
@@ -57,6 +58,7 @@ export const Preloader = memo(({ children }: PropsWithChildren) => {
     const routerApp = useSelector(selectRouterApp);
     const isForegroundApp = useSelector(selectIsForegroundApp);
     const isOnboardingSettings = useSelector(selectIsOnboardingSettings);
+    const isOnboardingDeviceDisconnected = useSelector(selectIsOnboardingDeviceDisconnected);
     const hasRoute = useSelector(selectHasRoute);
     const prerequisite = useSelector(selectPrerequisite);
     const shouldDisplayDeviceCompromisedOnRoute = useSelector(
@@ -152,7 +154,7 @@ export const Preloader = memo(({ children }: PropsWithChildren) => {
                 ) : (
                     <SuiteLayout
                         sidebar={<OnboardingSidebar />}
-                        showGuideButton={!device?.connected}
+                        showGuideButton={isOnboardingDeviceDisconnected}
                     >
                         {children}
                     </SuiteLayout>
