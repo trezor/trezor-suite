@@ -688,7 +688,9 @@ const authorizeCoinjoinThunk =
             path: account.path,
             coin: asCoinSymbol(account.symbol),
             coordinator,
-            maxCoordinatorFeeRate: params.maxCoordinatorFeeRate * COORDINATOR_FEE_RATE_MULTIPLIER,
+            maxCoordinatorFeeRate: Math.round(
+                params.maxCoordinatorFeeRate * COORDINATOR_FEE_RATE_MULTIPLIER,
+            ),
             maxFeePerKvbyte: params.maxFeePerKvbyte,
             maxRounds: params.maxRounds,
         });
@@ -809,7 +811,9 @@ export const restoreCoinjoinSessionThunk =
             preauthorized: true, // this parameter will check if device is already authorized
             // reuse session params
             coordinator: client.settings.coordinatorName,
-            maxCoordinatorFeeRate: session.maxCoordinatorFeeRate * COORDINATOR_FEE_RATE_MULTIPLIER,
+            maxCoordinatorFeeRate: Math.round(
+                session.maxCoordinatorFeeRate * COORDINATOR_FEE_RATE_MULTIPLIER,
+            ),
             maxFeePerKvbyte: session.maxFeePerKvbyte,
             maxRounds: session.maxRounds - session.signedRounds.length,
         });

@@ -84,6 +84,16 @@ describe('roundUtils', () => {
         });
     });
 
+    it('getRoundParams sends the coordination fee rate in whole firmware units', () => {
+        // 0.0003 * 10 ** 8 is 29999.999999999996, the firmware takes the rate as uint32.
+        const response = getRoundParams({
+            ...ROUND_CREATION_EVENT.RoundParameters,
+            CoordinationFeeRate: { Rate: 0.0003, PlebsDontPayThreshold: 1000000 },
+        });
+
+        expect(response.fee_rate).toBe(30000);
+    });
+
     it('scheduleDelay', () => {
         const resultInRange = (result: number, min: number, max: number) => {
             expect(result).toBeGreaterThanOrEqual(min);

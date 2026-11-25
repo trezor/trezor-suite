@@ -183,4 +183,34 @@ describe('coinjoinAccountActions', () => {
             expect(actions.map(a => a.type)).toEqual(f.result.actions);
         });
     });
+
+    describe('authorizes the coordinator fee rate in whole firmware units', () => {
+        const f = fixtures.coordinatorFeeRateInFirmwareUnits;
+        const { authorizeCoinjoin } = testMocks.getTrezorConnectMock();
+
+        it('startCoinjoinSession', async () => {
+            const store = initStore(f.startState as Wallet);
+            testMocks.setTrezorConnectFixtures(f.connect);
+            await store.dispatch(
+                // @ts-expect-error params are incomplete
+                coinjoinAccountActions.startCoinjoinSessionThunk(f.account, f.sessionParams),
+            );
+
+            expect(authorizeCoinjoin).toHaveBeenCalledWith(
+                expect.objectContaining({ maxCoordinatorFeeRate: f.authorizedFeeRate }),
+            );
+        });
+
+        it('restoreCoinjoinSession', async () => {
+            const store = initStore(f.restoreState as Wallet);
+            testMocks.setTrezorConnectFixtures(f.connect);
+            await CoinjoinService.createInstance({ symbol: asNetworkSymbol('btc') });
+
+            await store.dispatch(coinjoinAccountActions.restoreCoinjoinSessionThunk(f.accountKey));
+
+            expect(authorizeCoinjoin).toHaveBeenCalledWith(
+                expect.objectContaining({ maxCoordinatorFeeRate: f.authorizedFeeRate }),
+            );
+        });
+    });
 });
