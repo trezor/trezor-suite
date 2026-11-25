@@ -1,7 +1,6 @@
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { isStakingSymbol } from '@suite-common/wallet-utils';
-import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
 
 import { type AccountsRootState } from '../accounts/accountsReducer';
@@ -12,7 +11,6 @@ import {
 } from '../accounts/accountsSelectors';
 import { DEFAULT_VOTING_OPTION } from './cardano/cardanoStakingConstants';
 import {
-    selectCardanoRewardsBalanceByAccountKey,
     selectCardanoStakedBalanceByAccountKey,
     selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol,
 } from './cardano/cardanoStakingSelectors';
@@ -24,22 +22,17 @@ import {
     selectEthereumAccountHasStaking,
     selectEthereumCanClaimByAccountKey,
     selectEthereumClaimableAmountByAccountKey,
-    selectEthereumEntryPeriodInDays,
     selectEthereumIsStakeConfirmingByAccountKey,
     selectEthereumIsStakePendingByAccountKey,
-    selectEthereumRewardsBalanceByAccountKey,
     selectEthereumStakedBalanceByAccountKey,
     selectEthereumTotalStakePendingByAccountKey,
     selectEthereumUnstakableBalanceByAccountKey,
     selectEthereumUnstakingBalanceByAccountKey,
-    selectEthereumValidatorsQueue,
     selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol,
 } from './ethereum/ethereumStakingSelectors';
 import { getEthereumCryptoBalanceWithStaking } from './ethereum/ethereumStakingUtils';
-import { selectPoolStatsApy, selectStake, selectStakeAccountKey } from './shared/stakingSelectors';
-import { getUnstakingPeriodInDays } from './shared/stakingUtils';
+import { selectStake, selectStakeAccountKey } from './shared/stakingSelectors';
 import {
-    selectExpectedRewardsForEpoch,
     selectSolanaCanClaimByAccountKey,
     selectSolanaClaimableAmountByAccountKey,
     selectSolanaIsStakeConfirmingByAccountKey,
@@ -53,7 +46,6 @@ import { getSolanaCryptoBalanceWithStaking } from './solana/solanaStakingUtils';
 import type { StakeRootState, StakeSliceRootState } from './stakingReducerTypes';
 import {
     selectTronAccountHasStaked,
-    selectTronRewardsBalanceByAccountKey,
     selectTronStakedBalanceByAccountKey,
     selectTronUnstakedBalanceByAccountKey,
     selectVisibleDeviceTronAccountsWithStakingByNetworkSymbol,
@@ -198,17 +190,6 @@ export const selectIsStakeConfirmingByAccountKey = (
     }
 };
 
-type SelectApyParams = { accountKey?: AccountKey; networkSymbol?: NetworkSymbol };
-
-export const selectApy = (
-    state: StakeRootState,
-    { accountKey, networkSymbol }: SelectApyParams,
-) => {
-    const account = selectAccountByKey(state, accountKey) ?? undefined;
-
-    return selectPoolStatsApy(state, { account, networkSymbol });
-};
-
 export const selectStakedBalanceByAccountKey = (state: StakeRootState, accountKey: AccountKey) => {
     const account = selectAccountByKey(state, accountKey);
     const symbol = account?.symbol;
@@ -251,32 +232,6 @@ export const selectUnstakableBalanceByAccountKey = (
             return selectCardanoStakedBalanceByAccountKey(state, accountKey);
         case 'trx':
             return selectTronStakedBalanceByAccountKey(state, accountKey);
-        default:
-            return exhaustive(symbol);
-    }
-};
-
-export const selectRewardsBalanceByAccountKey = (
-    state: StakeRootState,
-    accountKey: AccountKey | null,
-) => {
-    const account = selectAccountByKey(state, accountKey);
-    const symbol = account?.symbol;
-
-    if (!symbol || !isStakingSymbol(symbol) || !accountKey) return '0';
-
-    switch (symbol) {
-        case 'eth':
-        case 'thod':
-            return selectEthereumRewardsBalanceByAccountKey(state, accountKey);
-        case 'dsol':
-        case 'sol':
-            // on solana we show rewards per one epoch
-            return selectExpectedRewardsForEpoch(state, accountKey);
-        case 'ada':
-            return selectCardanoRewardsBalanceByAccountKey(state, accountKey);
-        case 'trx':
-            return selectTronRewardsBalanceByAccountKey(state, accountKey);
         default:
             return exhaustive(symbol);
     }
@@ -374,41 +329,6 @@ export const selectUnstakingBalanceByAccountKey = (
             return '0';
         case 'trx':
             return selectTronUnstakedBalanceByAccountKey(state, accountKey);
-        default:
-            return exhaustive(symbol);
-    }
-};
-
-export const selectUnstakingPeriodInDaysByAccountKey = (
-    state: StakeRootState,
-    accountKey: AccountKey,
-) => {
-    const account = selectAccountByKey(state, accountKey);
-
-    if (!account || !isStakingSymbol(account.symbol)) return null;
-
-    const validatorsQueueData = selectEthereumValidatorsQueue(state);
-
-    return getUnstakingPeriodInDays(account.networkType, validatorsQueueData);
-};
-
-export const selectEntryPeriodInDaysBySymbol = (
-    state: StakeRootState,
-    symbol: NetworkSymbol | undefined,
-) => {
-    if (!symbol || !isStakingSymbol(symbol)) return undefined;
-
-    switch (symbol) {
-        case 'eth':
-        case 'thod':
-            return selectEthereumEntryPeriodInDays(state);
-        case 'dsol':
-        case 'sol':
-            return SOLANA_EPOCH_DAYS;
-        case 'ada':
-            return undefined;
-        case 'trx':
-            return undefined;
         default:
             return exhaustive(symbol);
     }

@@ -9,16 +9,12 @@ import {
     selectEthereumCanClaimByAccountKey,
     selectEthereumClaimableAmountByAccountKey,
     selectEthereumIsStakePendingByAccountKey,
-    selectEthereumNextRewardPayout,
     selectEthereumRewardsBalanceByAccountKey,
     selectEthereumStakedBalanceByAccountKey,
     selectEthereumStakingPoolByAccountKey,
     selectEthereumTotalStakePendingByAccountKey,
     selectEthereumUnstakableBalanceByAccountKey,
 } from './ethereumStakingSelectors';
-import { type StakeDataState, stakeDataInitialState } from '../stakingDataSlice';
-import { stakeInitialState } from '../stakingReducer';
-import { type StakeRootState } from '../stakingReducerTypes';
 
 const staticStateString: StaticSessionId = 'device@state:1';
 const ethSymbol = asNetworkSymbol('eth');
@@ -129,50 +125,7 @@ const getTestState = (accounts: Account[]) => ({
     },
 });
 
-const buildStakeState = (data: Partial<StakeDataState['data']>): StakeRootState => ({
-    wallet: {
-        accounts: [],
-        transactions: {
-            transactions: {},
-            phishing: {},
-            fetchStatusDetail: {},
-        },
-        stake: {
-            ...stakeInitialState,
-            data: {
-                ...stakeDataInitialState,
-                data: { ...stakeDataInitialState.data, ...data },
-            },
-        },
-    },
-    device: {
-        devices: [],
-        buttonRequestsByPath: {},
-    },
-});
-
 describe('ethereumStakingSelectors', () => {
-    describe('selectEthereumNextRewardPayout', () => {
-        const createState = (nextRewardPayout?: number) =>
-            buildStakeState({
-                eth: nextRewardPayout
-                    ? { stats: { apy: 0, nextRewardPayout }, validators: {} }
-                    : undefined,
-            });
-
-        it('returns null when next reward payout is unavailable', () => {
-            expect(selectEthereumNextRewardPayout(createState())).toBeNull();
-        });
-
-        it('returns at least 1 day for positive payout values below 1 day', () => {
-            expect(selectEthereumNextRewardPayout(createState(60 * 60))).toBe(1);
-        });
-
-        it('returns rounded day value for payout values over 1 day', () => {
-            expect(selectEthereumNextRewardPayout(createState(2.2 * 24 * 60 * 60))).toBe(2);
-        });
-    });
-
     describe('selectEthereumStakingPoolByAccountKey', () => {
         it('should return staking pool for account with staking', () => {
             const testState = getTestState([ethAccountWithStaking]);

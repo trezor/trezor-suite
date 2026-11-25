@@ -29,7 +29,7 @@ type TransactionReviewEthereumNotesProps = {
 };
 
 // The nonce shown must come from the flow whose transaction is actually under review. This mirrors
-// getReviewSource() in TransactionReviewModal.tsx and keys off each flow's own precomposedTx, so a
+// getReviewSource() in utils.ts and keys off each flow's own precomposedTx, so a
 // nonce resolved for one flow can never leak into another's review (each flow only sets its own
 // state). Every flow resolves the exact signed-with nonce before the device button-request fires,
 // so it's normally set by the time this modal renders; the Note simply doesn't render until then.

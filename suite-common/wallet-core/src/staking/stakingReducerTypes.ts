@@ -6,7 +6,6 @@ import type {
 } from '@suite-common/wallet-types';
 
 import type { AccountVotingDelegation } from './cardano/cardanoStakingTypes';
-import type { StakeDataState } from './stakingDataSlice';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import type { SerializedTx } from '../send/sendFormTypes';
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
@@ -18,7 +17,6 @@ export interface StakeState {
     serializedTx?: SerializedTx; // payload for TrezorBlockchain.pushTransaction
     resolvedEthereumNonce?: string; // EVM nonce resolved at signing time, shown in the review modal
     votingDelegation?: AccountVotingDelegation;
-    data: StakeDataState;
 }
 
 export type StakeSliceRootState = {

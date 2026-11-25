@@ -7,9 +7,10 @@ import { useTradingSellTradeActions } from '#src/hooks/wallet/trading/useTrading
 
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { type TransactionReviewModalProps } from './TransactionReviewModalProps';
-import { type TxInfoState } from './utils';
+import { type TransactionReviewSource, type TxInfoState } from './utils';
 
 type TransactionReviewModalSellProps = {
+    source: TransactionReviewSource;
     txInfoState: TxInfoState;
     isRbfConfirmedError: boolean;
     cancelSignTx: () => void;
@@ -18,6 +19,7 @@ type TransactionReviewModalSellProps = {
 
 export const TransactionReviewModalSell = ({
     decision,
+    source,
     txInfoState,
     cancelSignTx,
     isRbfConfirmedError,
@@ -35,6 +37,7 @@ export const TransactionReviewModalSell = ({
         <TransactionReviewModalBody
             decision={decision}
             txInfoState={txInfoState}
+            source={source}
             tryAgainSignTx={handleTryAgainSignTx}
             cancelSignTx={cancelSignTx}
             isRbfConfirmedError={isRbfConfirmedError}

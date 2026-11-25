@@ -13,7 +13,6 @@ import { type AccountVotingDelegation } from './cardano/cardanoStakingTypes';
 import { stakeInitialState } from './stakingReducer';
 import type { StakeRootState } from './stakingReducerTypes';
 import {
-    selectApy,
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
     selectIsStakeConfirmingByAccountKey,
@@ -140,46 +139,7 @@ const getTestState = (
                 phishing: {},
                 fetchStatusDetail: {},
             },
-            stake: {
-                data: {
-                    error: null,
-                    isLoading: false,
-                    lastSuccessAt: null,
-                    data: {
-                        eth: {
-                            stats: {
-                                apy: 3.08,
-                                nextRewardPayout: 5,
-                            },
-                            validators: {},
-                        },
-                        sol: {
-                            stats: {
-                                apy: 6.24,
-                            },
-                        },
-                        ada: {
-                            pools: [
-                                {
-                                    apy: 2.4,
-                                    saturation: 80.77,
-                                    id: 'pool1sysgx87cwxnqy0pqn8g97gdhd0dmre9rw3jvpn2k7apuwa7cgkn',
-                                },
-                                {
-                                    apy: 2.06,
-                                    saturation: 76.42,
-                                    id: 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
-                                },
-                                {
-                                    apy: 1.96,
-                                    saturation: 62.64,
-                                    id: 'pool13rt3ngkek4l876980ect869cu978d36dcyh22ts4nwuf7ncq02u',
-                                },
-                            ],
-                        },
-                    },
-                },
-            },
+            stake: stakeInitialState,
         },
         device: {
             devices: [
@@ -261,116 +221,6 @@ describe('selectCanClaimByAccountKey', () => {
         const result = selectCanClaimByAccountKey(testState as any, nonExistentKey);
 
         expect(result).toBe(false);
-    });
-});
-
-describe('selectApy', () => {
-    it('should return ETH APY by accountKey', () => {
-        const testState = getTestState([ethAccountWithClaimableStake]);
-
-        const result = selectApy(testState as any, { accountKey: eth1Key });
-
-        expect(result).toBe(3.08);
-    });
-
-    it('should return ETH APY by networkSymbol', () => {
-        const testState = getTestState([]);
-
-        const result = selectApy(testState as any, { networkSymbol: ethSymbol });
-
-        expect(result).toBe(3.08);
-    });
-
-    it('should return SOL APY by accountKey', () => {
-        const testState = getTestState([solAccountWithStaking]);
-
-        const result = selectApy(testState as any, { accountKey: sol1Key });
-
-        expect(result).toBe(6.24);
-    });
-
-    it('should return SOL APY by networkSymbol', () => {
-        const testState = getTestState([]);
-
-        const result = selectApy(testState as any, { networkSymbol: solSymbol });
-
-        expect(result).toBe(6.24);
-    });
-
-    it('should return best pool APY for ADA by networkSymbol', () => {
-        const testState = getTestState([]);
-
-        const result = selectApy(testState as any, { networkSymbol: adaSymbol });
-
-        expect(result).toBe(1.96);
-    });
-
-    it('should return matched pool APY for ADA account with known poolId', () => {
-        const adaAccount = {
-            symbol: 'ada',
-            accountLabel: 'ADA Account #1',
-            deviceState: 'device@state:1',
-            key: ada1Key,
-            visible: true,
-            networkType: 'cardano',
-            misc: {
-                staking: {
-                    poolId: 'pool1sysgx87cwxnqy0pqn8g97gdhd0dmre9rw3jvpn2k7apuwa7cgkn',
-                },
-            },
-        } as unknown as Account;
-        const testState = getTestState([adaAccount]);
-
-        const result = selectApy(testState as any, { accountKey: ada1Key });
-
-        expect(result).toBe(2.4);
-    });
-
-    it('should return null for ADA account staked outside known pools', () => {
-        const adaAccount = {
-            symbol: 'ada',
-            accountLabel: 'ADA Account #1',
-            deviceState: 'device@state:1',
-            key: ada1Key,
-            visible: true,
-            networkType: 'cardano',
-            misc: {
-                staking: {
-                    poolId: 'unknown-pool-id',
-                },
-            },
-        } as unknown as Account;
-        const testState = getTestState([adaAccount]);
-
-        const result = selectApy(testState as any, { accountKey: ada1Key });
-
-        expect(result).toBeNull();
-    });
-
-    it('should return null when neither accountKey nor networkSymbol is provided', () => {
-        const testState = getTestState([]);
-
-        const result = selectApy(testState as any, {});
-
-        expect(result).toBeNull();
-    });
-
-    it('should return null for non-existent accountKey', () => {
-        const testState = getTestState([ethAccountWithClaimableStake]);
-
-        const result = selectApy(testState as any, {
-            accountKey: nonExistentKey,
-        });
-
-        expect(result).toBeNull();
-    });
-
-    it('should return null for unsupported network', () => {
-        const testState = getTestState([etcAccount]);
-
-        const result = selectApy(testState as any, { accountKey: etc1Key });
-
-        expect(result).toBeNull();
     });
 });
 

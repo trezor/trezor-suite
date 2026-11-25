@@ -12,9 +12,10 @@ import {
     sendFormActions,
     stakeActions,
 } from '@suite-common/wallet-core';
-import { type FormState, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
+import { exhaustive } from '@trezor/type-utils';
 
 import {
     removeSendFormDraftThunk,
@@ -32,7 +33,7 @@ import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { TransactionReviewModalExchange } from './TransactionReviewModalExchange';
 import { type TransactionReviewModalProps } from './TransactionReviewModalProps';
 import { TransactionReviewModalSell } from './TransactionReviewModalSell';
-import { type TxInfoState } from './utils';
+import { getReviewSource } from './utils';
 
 // This modal is opened either in Device (button request) or User (push tx) context
 // contexts are distinguished by `type` prop
@@ -47,41 +48,33 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     const selectedAccount = useSelector(selectFullSelectedAccount);
     const { dispatch } = useServices(injectDispatch);
 
-    const getReviewSource = (): {
-        txInfoState: TxInfoState;
-        precomposedForm: FormState | undefined;
-        cancelSignTx: () => void;
-    } => {
-        if (tronStakeTxReview.precomposedTx) {
-            return {
-                txInfoState: tronStakeTxReview,
-                precomposedForm: tronStakeTxReview.precomposedForm,
-                cancelSignTx: () => dispatch(cancelSignTronFreezeTxThunk()),
-            };
-        }
-        if (yieldTxReview.precomposedTx) {
-            return {
-                txInfoState: yieldTxReview,
-                precomposedForm: yieldTxReview.precomposedForm,
-                cancelSignTx: () => dispatch(cancelSignYieldTxThunk()),
-            };
-        }
-        if (send?.precomposedTx) {
-            return {
-                txInfoState: send,
-                precomposedForm: sendPrecomposedForm,
-                cancelSignTx: () => dispatch(cancelSignSendFormTransactionThunk()),
-            };
-        }
+    const { source, txInfoState, precomposedForm } = getReviewSource({
+        tronStakeTxReview,
+        yieldTxReview,
+        send,
+        sendPrecomposedForm,
+        stake,
+        stakePrecomposedForm,
+    });
 
-        return {
-            txInfoState: stake,
-            precomposedForm: stakePrecomposedForm,
-            cancelSignTx: () => dispatch(cancelSignStakingTx()),
-        };
+    const cancelSignTx = () => {
+        switch (source) {
+            case 'tronStake':
+                dispatch(cancelSignTronFreezeTxThunk());
+                break;
+            case 'yield':
+                dispatch(cancelSignYieldTxThunk());
+                break;
+            case 'send':
+                dispatch(cancelSignSendFormTransactionThunk());
+                break;
+            case 'stake':
+                dispatch(cancelSignStakingTx());
+                break;
+            default:
+                exhaustive(source);
+        }
     };
-
-    const { txInfoState, precomposedForm, cancelSignTx } = getReviewSource();
 
     const isRbfConfirmedError = type === 'review-transaction-rbf-previous-transaction-mined-error';
     const isExchange = precomposedForm?.trading?.activeSection === 'exchange';
@@ -133,6 +126,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
         return (
             <TransactionReviewModalExchange
                 decision={decision}
+                source={source}
                 txInfoState={txInfoState}
                 cancelSignTx={cancelSignTx}
                 isRbfConfirmedError={isRbfConfirmedError}
@@ -145,6 +139,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
         return (
             <TransactionReviewModalSell
                 decision={decision}
+                source={source}
                 txInfoState={txInfoState}
                 cancelSignTx={cancelSignTx}
                 isRbfConfirmedError={isRbfConfirmedError}
@@ -156,6 +151,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     return (
         <TransactionReviewModalBody
             decision={decision}
+            source={source}
             txInfoState={txInfoState}
             tryAgainSignTx={handleTryAgainSignTx}
             cancelSignTx={cancelSignTx}

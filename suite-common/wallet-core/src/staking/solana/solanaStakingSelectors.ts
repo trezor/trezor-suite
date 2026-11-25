@@ -2,13 +2,11 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
-import { BigNumber } from '@trezor/utils';
 
-import { calculateSolanaStakingReward, getSolStakingAccountsInfo } from './solanaStakingUtils';
+import { getSolStakingAccountsInfo } from './solanaStakingUtils';
 import { type AccountsRootState } from '../../accounts/accountsReducer';
 import { selectAccountByKey, selectDeviceAccounts } from '../../accounts/accountsSelectors';
 import { selectAccountStakeTransactions } from '../../transactions/transactionsSelectors';
-import { selectPoolStatsApy } from '../shared/stakingSelectors';
 import { type StakeRootState } from '../stakingReducerTypes';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<StakeRootState>();
@@ -52,16 +50,6 @@ export const selectSolanaIsStakeConfirmingByAccountKey = (
     accountKey: AccountKey,
 ) => selectAccountStakeTransactions(state, accountKey).some(tx => isPending(tx));
 
-export const selectSolanaAPYByAccountKey = (
-    state: StakeRootState & AccountsRootState,
-    accountKey: AccountKey,
-) => {
-    const account = selectAccountByKey(state, accountKey);
-    if (!account) return 0;
-
-    return selectPoolStatsApy(state, { account });
-};
-
 export const selectSolanaStakedBalanceByAccountKey = (
     state: AccountsRootState,
     accountKey: AccountKey,
@@ -71,22 +59,6 @@ export const selectSolanaStakedBalanceByAccountKey = (
     if (!stakingInfo?.solStakedBalance) return '0';
 
     return stakingInfo.solStakedBalance;
-};
-
-export const selectExpectedRewardsForEpoch = (
-    state: StakeRootState & AccountsRootState,
-    accountKey: AccountKey,
-) => {
-    const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
-    const apy = selectSolanaAPYByAccountKey(state, accountKey)?.toString();
-
-    if (!stakingInfo || !apy) return '0';
-
-    const yieldBearingBalance = new BigNumber(stakingInfo.solStakedBalance ?? '0')
-        .plus(stakingInfo.solPendingUnstakeBalance ?? '0')
-        .toString();
-
-    return calculateSolanaStakingReward(yieldBearingBalance, apy);
 };
 
 export const selectSolanaTotalStakePendingByAccountKey = (

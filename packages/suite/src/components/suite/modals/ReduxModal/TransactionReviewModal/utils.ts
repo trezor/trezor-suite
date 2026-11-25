@@ -14,7 +14,54 @@ import { getTxValidityTimeoutInMs } from '@suite-common/wallet-utils';
 
 export type TxInfoState = SendState | StakeState | YieldTxReviewState | TronStakeTxReviewState;
 
-export const isStakeState = (state: TxInfoState): state is StakeState => 'data' in state;
+export type TransactionReviewSource = 'tronStake' | 'yield' | 'send' | 'stake';
+
+export type GetReviewSourceParams = {
+    tronStakeTxReview: TronStakeTxReviewState;
+    yieldTxReview: YieldTxReviewState;
+    send: SendState;
+    sendPrecomposedForm: FormState | undefined;
+    stake: StakeState;
+    stakePrecomposedForm: FormState | undefined;
+};
+
+type TransactionReviewSelection = {
+    source: TransactionReviewSource;
+    txInfoState: TxInfoState;
+    precomposedForm: FormState | undefined;
+};
+
+// The flows share one review modal: the first flow with a composed transaction is the one in review.
+export const getReviewSource = ({
+    tronStakeTxReview,
+    yieldTxReview,
+    send,
+    sendPrecomposedForm,
+    stake,
+    stakePrecomposedForm,
+}: GetReviewSourceParams): TransactionReviewSelection => {
+    if (tronStakeTxReview.precomposedTx) {
+        return {
+            source: 'tronStake',
+            txInfoState: tronStakeTxReview,
+            precomposedForm: tronStakeTxReview.precomposedForm,
+        };
+    }
+
+    if (yieldTxReview.precomposedTx) {
+        return {
+            source: 'yield',
+            txInfoState: yieldTxReview,
+            precomposedForm: yieldTxReview.precomposedForm,
+        };
+    }
+
+    if (send.precomposedTx) {
+        return { source: 'send', txInfoState: send, precomposedForm: sendPrecomposedForm };
+    }
+
+    return { source: 'stake', txInfoState: stake, precomposedForm: stakePrecomposedForm };
+};
 
 export const hasTxValidityExpired = (deadline: number) => deadline <= Date.now();
 
@@ -60,14 +107,14 @@ export const getTransactionReviewDeadline = ({
 
 export const selectTxType = (
     state: YieldRootState,
-    txInfoState: TxInfoState,
+    source: TransactionReviewSource,
     precomposedForm: FormState,
 ) => {
     if (precomposedForm.txType) {
         return precomposedForm.txType;
     }
 
-    if (isStakeState(txInfoState) || precomposedForm.tronStaking) {
+    if (source === 'stake' || source === 'tronStake') {
         return 'stake';
     }
 

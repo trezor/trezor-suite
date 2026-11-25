@@ -1,13 +1,11 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type Timestamp } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
-    selectExpectedRewardsForEpoch,
     selectSolStakingAccountsInfoByAccountKey,
-    selectSolanaAPYByAccountKey,
     selectSolanaCanClaimByAccountKey,
     selectSolanaClaimableAmountByAccountKey,
     selectSolanaIsStakePendingByAccountKey,
@@ -16,7 +14,7 @@ import {
     selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol,
 } from './solanaStakingSelectors';
 import { stakeInitialState } from '../stakingReducer';
-import { type StakeRootState, type StakeState } from '../stakingReducerTypes';
+import { type StakeRootState } from '../stakingReducerTypes';
 
 const staticStateString: StaticSessionId = 'device@state:1';
 const solSymbol = asNetworkSymbol('sol');
@@ -136,47 +134,14 @@ const etcAccount: Account = {
     networkType: 'ethereum',
 } as unknown as Account;
 
-const solStakeData: StakeState['data'] = {
-    error: null,
-    isLoading: true,
-    lastSuccessAt: 0 as Timestamp,
-    data: {
-        sol: {
-            stats: {
-                apy: 6.21,
-            },
-        },
-        eth: undefined,
-        ada: undefined,
-    },
-};
-
 type GetTestStateParams = {
     accounts: Account[];
-    withSolStakeData?: boolean;
 };
 
-const getTestState = ({
-    accounts,
-    withSolStakeData = false,
-}: GetTestStateParams): StakeRootState => ({
+const getTestState = ({ accounts }: GetTestStateParams): StakeRootState => ({
     wallet: {
         accounts,
-        stake: {
-            ...stakeInitialState,
-            data: withSolStakeData
-                ? solStakeData
-                : {
-                      error: null,
-                      isLoading: false,
-                      lastSuccessAt: null,
-                      data: {
-                          sol: undefined,
-                          eth: undefined,
-                          ada: undefined,
-                      },
-                  },
-        },
+        stake: stakeInitialState,
         transactions: { transactions: {}, phishing: {}, fetchStatusDetail: {} },
     },
     device: {
@@ -345,39 +310,6 @@ describe('selectors', () => {
         });
     });
 
-    describe('selectSolanaAPYByAccountKey', () => {
-        it('should have apy', () => {
-            const testState = getTestState({
-                accounts: [solAccountWithStaking, solAccountWithActivatingStaking],
-                withSolStakeData: true,
-            });
-
-            expect(
-                selectSolanaAPYByAccountKey(
-                    {
-                        ...testState,
-                    },
-                    sol3Key,
-                ),
-            ).toEqual(6.21);
-        });
-
-        it('should have no apy', () => {
-            const testState = getTestState({
-                accounts: [solAccountWithStaking, solAccountNoStaking, etcAccount],
-            });
-
-            expect(
-                selectSolanaAPYByAccountKey(
-                    {
-                        ...testState,
-                    },
-                    sol3Key,
-                ),
-            ).toEqual(0);
-        });
-    });
-
     describe('selectSolanaStakedBalanceByAccountKey', () => {
         it('should return correct staked balance', () => {
             const testState = getTestState({
@@ -422,55 +354,6 @@ describe('selectors', () => {
                     sol5Key,
                 ),
             ).toEqual('1');
-        });
-    });
-
-    describe('selectExpectedRewardsForEpoch', () => {
-        it('should return correct expected rewards', () => {
-            const testState = getTestState({
-                accounts: [solAccountWithStaking],
-                withSolStakeData: true,
-            });
-
-            expect(
-                selectExpectedRewardsForEpoch(
-                    {
-                        ...testState,
-                    },
-                    sol1Key,
-                ),
-            ).toEqual('0.000170137');
-        });
-
-        it('should return "0" for account without activated or deactivating stake', () => {
-            const testState = getTestState({
-                accounts: [solAccountWithActivatingStaking],
-                withSolStakeData: true,
-            });
-
-            expect(
-                selectExpectedRewardsForEpoch(
-                    {
-                        ...testState,
-                    },
-                    sol3Key,
-                ),
-            ).toEqual('0.000000000');
-        });
-
-        it('should return "0" for non-existent account', () => {
-            const testState = getTestState({
-                accounts: [solAccountWithStaking],
-            });
-
-            expect(
-                selectExpectedRewardsForEpoch(
-                    {
-                        ...testState,
-                    },
-                    nonExistentKey,
-                ),
-            ).toEqual('0');
         });
     });
 

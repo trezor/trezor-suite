@@ -17,9 +17,10 @@ import { useTradingExchangeTradeActions } from '#src/hooks/wallet/trading/useTra
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { type TransactionReviewModalProps } from './TransactionReviewModalProps';
 import { TransactionReviewModalRefreshedQuoteGate } from './TransactionReviewModalRefreshedQuoteGate';
-import { type TxInfoState } from './utils';
+import { type TransactionReviewSource, type TxInfoState } from './utils';
 
 type TransactionReviewModalExchangeProps = {
+    source: TransactionReviewSource;
     txInfoState: TxInfoState;
     isRbfConfirmedError: boolean;
     cancelSignTx: () => void;
@@ -28,6 +29,7 @@ type TransactionReviewModalExchangeProps = {
 
 export const TransactionReviewModalExchange = ({
     decision,
+    source,
     txInfoState,
     cancelSignTx,
     isRbfConfirmedError,
@@ -101,6 +103,7 @@ export const TransactionReviewModalExchange = ({
             <TransactionReviewModalBody
                 decision={decision}
                 txInfoState={txInfoState}
+                source={source}
                 tryAgainSignTx={handleTryAgainSignTx}
                 cancelSignTx={cancelSignTx}
                 isRbfConfirmedError={isRbfConfirmedError}

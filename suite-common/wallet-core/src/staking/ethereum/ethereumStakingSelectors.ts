@@ -1,18 +1,10 @@
 import { type NetworkSymbol } from '@suite-common/networks';
-import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    getAccountEverstakeStakingPool,
-    isPending,
-    secondsToDays,
-} from '@suite-common/wallet-utils';
+import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';
 
-import { getDaysToAddToPoolInitial } from './ethereumStaking';
 import { type AccountsRootState } from '../../accounts/accountsReducer';
 import { selectAccountByKey, selectDeviceAccounts } from '../../accounts/accountsSelectors';
 import { selectAccountStakeTransactions } from '../../transactions/transactionsSelectors';
-import { selectStakeData } from '../shared/stakingSelectors';
-import { getUnstakingPeriodInDays } from '../shared/stakingUtils';
 import { type StakeRootState } from '../stakingReducerTypes';
 
 export const selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol = (
@@ -124,36 +116,4 @@ export const selectEthereumUnstakingBalanceByAccountKey = (
     const stakingPool = selectEthereumStakingPoolByAccountKey(state, accountKey);
 
     return stakingPool?.withdrawTotalAmount ?? '0';
-};
-
-export const selectEthereumValidatorsQueue = (state: StakeRootState) =>
-    selectStakeData(state).eth?.validators;
-
-export const selectUnstakingPeriodInDaysBySymbol = (
-    state: StakeRootState,
-    symbol: NetworkSymbol | undefined,
-) => {
-    const validatorsQueue = selectEthereumValidatorsQueue(state);
-    const networkType = symbol ? getNetworkType(symbol) : undefined;
-
-    return getUnstakingPeriodInDays(networkType, validatorsQueue);
-};
-
-export const selectEthereumEntryPeriodInDays = (state: StakeRootState) => {
-    const validatorsQueue = selectEthereumValidatorsQueue(state);
-
-    if (
-        validatorsQueue?.activationTime === undefined ||
-        validatorsQueue?.addingDelay === undefined
-    ) {
-        return undefined;
-    }
-
-    return getDaysToAddToPoolInitial(validatorsQueue);
-};
-
-export const selectEthereumNextRewardPayout = (state: StakeRootState) => {
-    const nextRewardPayout = selectStakeData(state).eth?.stats?.nextRewardPayout;
-
-    return nextRewardPayout ? Math.max(1, secondsToDays(nextRewardPayout)) : null;
 };

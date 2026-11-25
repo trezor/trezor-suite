@@ -4,11 +4,9 @@ import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-u
 
 import { type AccountsRootState } from '../../accounts/accountsReducer';
 import { selectAccountByKey, selectDeviceAccounts } from '../../accounts/accountsSelectors';
-import { selectStakeData } from '../shared/stakingSelectors';
 import { getStakingDataForNetwork } from '../shared/stakingUtils';
 import { type StakeRootState } from '../stakingReducerTypes';
 import {
-    isCardanoStakedOutsideEverstake,
     isCardanoStakedWithFiveBinaries,
     isCardanoStakingActive,
     isSupportedAdaStakingNetworkSymbol,
@@ -61,21 +59,6 @@ export const selectIsCardanoStakedWithFiveBinaries = (
     if (account?.networkType !== 'cardano') return false;
 
     return isCardanoStakedWithFiveBinaries(account);
-};
-
-export const selectCardanoPoolsInfo = (state: StakeRootState) =>
-    returnStableArrayIfEmpty(selectStakeData(state).ada?.pools);
-
-export const selectIsCardanoStakedOutsideEverstake = (
-    state: StakeRootState,
-    accountKey: AccountKey,
-) => {
-    const account = selectAccountByKey(state, accountKey);
-    if (account?.networkType !== 'cardano') return false;
-
-    const cardanoStakingPool = selectCardanoPoolsInfo(state);
-
-    return isCardanoStakedOutsideEverstake(account, cardanoStakingPool);
 };
 
 export const selectFirstCardanoAccountStakedWithFiveBinaries = createMemoizedSelector(

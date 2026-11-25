@@ -21,12 +21,13 @@ import { type Deferred } from '@trezor/utils';
 
 import { TransactionReviewModalBodyInner } from './TransactionReviewModalBodyInner';
 import { useTransactionReviewDeadline } from './useTransactionReviewDeadline';
-import { type TxInfoState, isStakeState } from './utils';
+import { type TransactionReviewSource, type TxInfoState } from './utils';
 import { ConfirmActionModal } from '../DeviceContextModal/ConfirmActionModal';
 import { ExpiredTxValidityModal } from '../UserContextModal/TxDetailModal/ExpiredTxValidityModal';
 
 export type TransactionReviewModalBodyProps = {
     decision: Deferred<boolean, string | number | undefined> | undefined;
+    source: TransactionReviewSource;
     txInfoState: TxInfoState;
     tryAgainSignTx: () => void;
     cancelSignTx: () => void;
@@ -36,6 +37,7 @@ export type TransactionReviewModalBodyProps = {
 
 export const TransactionReviewModalBody = ({
     decision,
+    source,
     txInfoState,
     tryAgainSignTx,
     cancelSignTx,
@@ -140,7 +142,7 @@ export const TransactionReviewModalBody = ({
         !account ||
         !precomposedTx ||
         !precomposedForm ||
-        (account.networkType === 'cardano' && isStakeState(txInfoState))
+        (account.networkType === 'cardano' && source === 'stake')
     ) {
         // TODO: special case for Connect Popup
         return <ConfirmActionModal device={device} />;
@@ -156,6 +158,7 @@ export const TransactionReviewModalBody = ({
             outputs={outputs}
             decision={decision}
             txInfoState={txInfoState}
+            source={source}
             tryAgainSignTx={tryAgainSignTx}
             cancelSignTx={cancelSignTx}
             precomposedForm={precomposedForm}

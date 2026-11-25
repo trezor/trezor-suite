@@ -1,3 +1,4 @@
+import type { AdaPools } from '@suite-common/earn-staking-api';
 import type { AccountWithNetworkType } from '@suite-common/wallet-types';
 import {
     type CardanoStakingScenario,
@@ -10,9 +11,7 @@ import {
 } from '@suite-common/wallet-types/mocks';
 
 import {
-    selectCardanoPoolsInfo,
     selectFirstCardanoAccountStakedWithFiveBinaries,
-    selectIsCardanoStakedOutsideEverstake,
     selectIsCardanoStakedWithFiveBinaries,
 } from './cardanoStakingSelectors';
 import {
@@ -20,29 +19,34 @@ import {
     getCardanoAccountPoolId,
     getCardanoCurrentVotingOption,
     hasCardanoLiveVoteDelegation,
+    isCardanoStakedOutsideEverstake,
     isCardanoStakedWithEverstake,
     isCardanoWithdrawalBlockedByMissingDrep,
     selectBestCardanoPool,
 } from './cardanoStakingUtils';
-import { mockStakeData, mockStakeRootState } from '../../../mocks';
+import { mockStakeRootState } from '../../../mocks';
 import { selectAdaAccountHasStaked } from '../../accounts/accountsSelectors';
+
+const EVERSTAKE_POOLS: AdaPools['pools'] = [
+    { apy: 2.4, saturation: 80.77, id: MOCK_CARDANO_EVERSTAKE_OTHER_POOL },
+    { apy: 2.06, saturation: 62.64, id: MOCK_CARDANO_EVERSTAKE_POOL },
+];
 
 const readCardanoStakingDetails = (account: AccountWithNetworkType<'cardano'>) => {
     const state = mockStakeRootState({ accounts: [account] });
-    const pools = selectCardanoPoolsInfo(state);
     const poolId = getCardanoAccountPoolId(account);
 
     return {
         hasStaked: selectAdaAccountHasStaked(state, account.key),
         poolId,
-        isStakedWithEverstake: isCardanoStakedWithEverstake(account, pools),
-        isStakedOutsideEverstake: selectIsCardanoStakedOutsideEverstake(state, account.key),
+        isStakedWithEverstake: isCardanoStakedWithEverstake(account, EVERSTAKE_POOLS),
+        isStakedOutsideEverstake: isCardanoStakedOutsideEverstake(account, EVERSTAKE_POOLS),
         isStakedWithFiveBinaries: selectIsCardanoStakedWithFiveBinaries(state, account.key),
         drepId: getCardanoAccountDrepId(account),
         votingOption: getCardanoCurrentVotingOption(account),
         hasLiveVoteDelegation: hasCardanoLiveVoteDelegation(account),
         isWithdrawalBlockedByMissingDrep: isCardanoWithdrawalBlockedByMissingDrep(account),
-        bestPool: selectBestCardanoPool(pools, poolId).bech32,
+        bestPool: selectBestCardanoPool(EVERSTAKE_POOLS, poolId).bech32,
     };
 };
 
@@ -137,12 +141,6 @@ describe('cardano staking details characterization', () => {
         });
 
         expect(selectFirstCardanoAccountStakedWithFiveBinaries(state)).toBe(fiveBinariesAccount);
-    });
-
-    it('reads Everstake pools from staking API data', () => {
-        const state = mockStakeRootState({ accounts: [] });
-
-        expect(selectCardanoPoolsInfo(state)).toEqual(mockStakeData().ada?.pools);
     });
 
     it('falls back to the default Everstake pool without staking API data', () => {
