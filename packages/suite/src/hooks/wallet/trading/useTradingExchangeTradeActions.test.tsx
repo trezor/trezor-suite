@@ -3,6 +3,7 @@ import type { CryptoId, ExchangeTrade } from 'invity-api';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    type TradingError,
     exchangeInitialState,
     tradingExchangeActions,
     initialState as tradingInitialState,
@@ -337,6 +338,29 @@ describe('useTradingExchangeTradeActions', () => {
             expect(getActions()).toContainEqual(
                 tradingExchangeActions.setSelectedQuoteTimestamp(EXPIRED_QUOTE_TIMESTAMP),
             );
+        });
+
+        it('puts the expired quote back without another toast when the confirmation is rejected', async () => {
+            const confirmTradeError: TradingError = { type: 'error', code: 'invalid-response' };
+            mockConfirmTradeThunk.mockImplementationOnce((args: unknown) =>
+                Object.assign(() => ({ unwrap: () => Promise.reject(confirmTradeError) }), {
+                    args,
+                }),
+            );
+            const { getActions, result } = renderActions({
+                selectedQuote: EXPIRED_QUOTE,
+                selectedQuoteTimestamp: EXPIRED_QUOTE_TIMESTAMP,
+            });
+
+            const isRefreshed = await result.current.refreshSelectedQuote();
+
+            expect(isRefreshed).toBe(false);
+            expect(getActions()).toContainEqual(
+                tradingExchangeActions.saveSelectedQuote(EXPIRED_QUOTE),
+            );
+            expect(
+                getActions().filter(action => action.type === notificationsActions.addToast.type),
+            ).toHaveLength(0);
         });
 
         it('does nothing without a receive address on the selected quote', async () => {
