@@ -1,6 +1,5 @@
-// This is the iOS implementation selected by Metro through the `.ios` filename suffix.
 import { useCallback, useRef } from 'react';
-import { Linking, Share } from 'react-native';
+import { Linking } from 'react-native';
 import { type ViewShotRef, captureRef } from 'react-native-view-shot';
 
 import * as Clipboard from 'expo-clipboard';
@@ -12,10 +11,11 @@ import { useToast } from '@suite-native/toasts';
 import { useServices } from '@trezor/dependency-injection';
 import { exhaustive } from '@trezor/type-utils';
 
-import { saveQRCodeImageToPhotos } from '../utils/saveQRCodeImageToPhotos.ios';
-
-const getShareableFileURI = (uri: string): string =>
-    uri.startsWith('file://') ? uri : `file://${uri}`;
+import { getShareableFileURI } from '../utils/getShareableFileURI';
+import { saveQRCodeImageToPhotos } from '../utils/saveQRCodeImageToPhotos';
+// Metro resolves this to `shareQRCodeImage.android.ts` on Android. iOS, TypeScript and Jest use
+// the unsuffixed default.
+import { shareQRCodeImage } from '../utils/shareQRCodeImage';
 
 const captureQRCodeImageURI = (qrCodeView: ViewShotRef): Promise<string> =>
     captureRef(qrCodeView, {
@@ -54,13 +54,12 @@ export const useReceiveQRCodeActions = () => {
 
         try {
             const qrCodeImageURI = await captureQRCodeImageURI(qrCodeViewRef.current);
-
-            const { action } = await Share.share({
-                url: getShareableFileURI(qrCodeImageURI),
+            const hasSharedQRCode = await shareQRCodeImage({
+                imageURI: qrCodeImageURI,
                 title: translate('moduleReceive.addressActions.shareQRCodeImage'),
             });
 
-            if (action === Share.dismissedAction) {
+            if (!hasSharedQRCode) {
                 return;
             }
 

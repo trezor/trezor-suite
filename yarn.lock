@@ -14663,6 +14663,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     expo-clipboard: "npm:~58.0.4"
     expo-media-library: "npm:~58.0.13"
+    expo-sharing: "npm:~58.0.21"
     react: "npm:19.3.0"
     react-native: "npm:0.88.1"
     react-native-view-shot: "npm:6.1.1"

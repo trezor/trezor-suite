@@ -1,0 +1,15 @@
+// Default implementation, used on iOS and by TypeScript and Jest. Metro selects
+// `shareQRCodeImage.android.ts` on Android instead.
+import { Share } from 'react-native';
+
+import { getShareableFileURI } from './getShareableFileURI';
+import type { ShareQRCodeImage } from './shareQRCodeImage.types';
+
+export const shareQRCodeImage: ShareQRCodeImage = async ({ imageURI, title }) => {
+    const { action } = await Share.share({
+        url: getShareableFileURI(imageURI),
+        title,
+    });
+
+    return action !== Share.dismissedAction;
+};
