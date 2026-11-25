@@ -66,6 +66,12 @@ export const stakingPositionDetailsSchema = z.discriminatedUnion('kind', [
         unallocatedVotingPower: stakingAmountSchema,
         rewardClaimAvailableAt: timestampSchema.nullable(),
     }),
+    z.strictObject({
+        kind: z.literal('liquid-token'),
+        contract: z.string().min(1),
+        /** The token balance in its smallest unit; `balances.staked` is its worth in the staked asset. */
+        balance: stakingAmountSchema,
+    }),
 ]);
 
 export type StakingPositionDetails = z.infer<typeof stakingPositionDetailsSchema>;

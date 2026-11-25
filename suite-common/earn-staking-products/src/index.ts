@@ -1,4 +1,7 @@
-export { createStakingProductsCompositionRoot } from './createStakingProductsCompositionRoot';
+export {
+    createStakingProductsCompositionRoot,
+    type StakingProductsCompositionRootDeps,
+} from './createStakingProductsCompositionRoot';
 export {
     createCardanoEverstakeNativeProduct,
     type CardanoEverstakeNativeProductDeps,
@@ -18,6 +21,11 @@ export {
     type EthereumEverstakePooledProductDeps,
 } from './products/ethereum/everstake-pooled/product';
 export {
+    createEthereumLidoLiquidProduct,
+    type CreateEthereumLidoLiquidProductParams,
+    type EthereumLidoLiquidProductDeps,
+} from './products/ethereum/lido-liquid/product';
+export {
     createSolanaEverstakeNativeProduct,
     type CreateSolanaEverstakeNativeProductParams,
     type SolanaEverstakeNativeProductDeps,
@@ -35,6 +43,7 @@ export { curatedProvider } from './providers/curated';
 export { everstakeProvider } from './providers/everstake';
 export { externalProvider } from './providers/external';
 export { fivebinariesProvider } from './providers/fivebinaries';
+export { lidoProvider } from './providers/lido';
 export { luganodesProvider } from './providers/luganodes';
 export { p2pProvider } from './providers/p2p';
 export {

@@ -15,6 +15,9 @@
     "dependencies": {
         "@suite-common/earn-staking-api": "workspace:*",
         "@suite-common/earn-staking-common": "workspace:*",
+        "@trezor/blockchain-core": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
+        "@trezor/network-ethereum-suite-common": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
         "@trezor/network-tron": "workspace:*",
         "@trezor/type-utils": "workspace:*",

@@ -4,7 +4,7 @@ import type { NetworkSymbol } from '@trezor/network-module-types';
 
 export type StakingAccount = Pick<
     AccountInfo,
-    'descriptor' | 'balance' | 'availableBalance' | 'addresses' | 'utxo' | 'misc'
+    'descriptor' | 'balance' | 'availableBalance' | 'addresses' | 'utxo' | 'misc' | 'tokens'
 > & {
     symbol: NetworkSymbol;
     path: string;

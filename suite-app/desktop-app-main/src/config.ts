@@ -36,6 +36,9 @@ export const allowedDomains = [
     trezorIoOnionDomain,
     sldevOnionDomain,
     'earn.trezor.io',
+    // TODO: Remove once the staking API of earn.trezor.io serves the Lido rate and withdrawal times.
+    'eth-api.lido.fi', // Lido APR
+    'wq-api.lido.fi', // Lido withdrawal queue time
     'verify.walletconnect.org', // WalletConnect
     'horizon.stellar.org', // Stellar Horizon, hosted by SDF
     'horizon-testnet.stellar.org', // Stellar Horizon (testnet), hosted by SDF

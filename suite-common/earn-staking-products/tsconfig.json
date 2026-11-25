@@ -5,6 +5,15 @@
         { "path": "../earn-staking-api" },
         { "path": "../earn-staking-common" },
         {
+            "path": "../../packages/blockchain-core"
+        },
+        {
+            "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
+        {
             "path": "../../networks/network-module/network-module-types"
         },
         {
