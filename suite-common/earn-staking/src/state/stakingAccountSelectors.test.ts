@@ -34,6 +34,7 @@ import {
     selectIsStakingOperationPending,
     selectStakingAccountAmount,
     selectStakingAccountFiatAmount,
+    selectStakingAccountLockup,
     selectStakingAccountPositionDetails,
     selectStakingAccountPositionEntry,
     selectStakingPositionEntriesByAccount,
@@ -429,6 +430,33 @@ describe('selectIsStakingOperationPending', () => {
         });
 
         expect(selectIsStakingOperationPending(state, solAccount.key, 'stake')).toBe(false);
+    });
+
+    it('answers for any operation when none is given', () => {
+        const state = createState({ positions: { [ethAccount.key]: [pendingStake] } });
+
+        expect(selectIsStakingOperationPending(state, ethAccount.key)).toBe(true);
+        expect(selectIsStakingOperationPending(createState(), ethAccount.key)).toBe(false);
+    });
+});
+
+describe('selectStakingAccountLockup', () => {
+    it('reads the lockup of the counted position', () => {
+        const liquid = mockStakingPosition({ lockup: 'liquid' });
+
+        expect(selectStakingAccountLockup(createState(), ethAccount.key)).toBe('locked');
+        expect(
+            selectStakingAccountLockup(
+                createState({ positions: { [ethAccount.key]: [liquid] } }),
+                ethAccount.key,
+            ),
+        ).toBe('liquid');
+    });
+
+    it('is null without a counted position', () => {
+        expect(
+            selectStakingAccountLockup(createState({ positions: {} }), ethAccount.key),
+        ).toBeNull();
     });
 });
 

@@ -3,7 +3,7 @@ import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import {
     selectIsStakingAccountActive,
-    selectStakingAccountPositionEntry,
+    selectStakingAccountLockup,
 } from '@suite-common/earn-staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
@@ -59,11 +59,8 @@ export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalan
     const hasStakingExcludedFromBalance = useSelector(state => {
         if (!selectedAccount.account) return false;
 
-        const positionEntry = selectStakingAccountPositionEntry(state, selectedAccount.account.key);
-
         return (
-            positionEntry !== null &&
-            positionEntry.position.lockup === 'locked' &&
+            selectStakingAccountLockup(state, selectedAccount.account.key) === 'locked' &&
             selectIsStakingAccountActive(state, selectedAccount.account.key)
         );
     });

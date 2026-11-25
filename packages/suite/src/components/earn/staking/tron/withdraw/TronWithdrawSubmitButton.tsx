@@ -1,7 +1,7 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { useStakingAccess, useStakingAccountPosition } from '@suite-common/earn-staking';
+import { useStakingAccountPosition } from '@suite-common/earn-staking';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { Button, Tooltip } from '@trezor/components';
@@ -28,8 +28,7 @@ export const TronWithdrawSubmitButton = () => {
         account.symbol,
     );
 
-    const { productId } = useStakingAccountPosition(account.key);
-    const access = useStakingAccess(productId);
+    const { access } = useStakingAccountPosition(account.key);
     const withdrawableAmount = useTronWithdrawableAmount(account);
 
     const hasWithdrawableAmount = isPositiveBalance(withdrawableAmount);

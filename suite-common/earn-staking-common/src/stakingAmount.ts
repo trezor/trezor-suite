@@ -8,3 +8,5 @@ export const stakingAmountSchema = z
     .brand<'StakingAmount'>();
 
 export type StakingAmount = z.infer<typeof stakingAmountSchema>;
+
+export const ZERO_STAKING_AMOUNT: StakingAmount = stakingAmountSchema.parse('0');

@@ -133,14 +133,22 @@ export const selectIsStakingAccountActive = (
         isStakingPositionActive(position),
     );
 
+// Without an operation, any pending staking transaction of the counted positions counts.
 export const selectIsStakingOperationPending = (
     state: StakingRootState,
     accountKey: AccountKey,
-    operation: StakingOperation,
+    operation?: StakingOperation,
 ): boolean =>
     selectCountedStakingPositionEntriesByAccount(state, accountKey).some(({ position }) =>
         hasPendingStakingOperation(position, operation),
     );
+
+// Locked stake is held outside the account balance; liquid stake is the balance itself.
+export const selectStakingAccountLockup = (
+    state: StakingRootState,
+    accountKey: AccountKey,
+): StakingPosition['lockup'] | null =>
+    selectStakingAccountPositionEntry(state, accountKey)?.position.lockup ?? null;
 
 export const selectStakingAccountAmount = (
     state: StakingRootState,

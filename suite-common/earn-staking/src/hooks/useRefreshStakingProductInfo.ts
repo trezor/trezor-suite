@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -21,5 +21,9 @@ export const useRefreshStakingProductInfo = (): RefreshStakingProductInfo => {
         dispatch(refreshStakingProductInfoThunk());
     }, [dispatch]);
 
-    return params => dispatch(refreshStakingProductInfoThunk(params));
+    return useCallback(
+        (params?: RefreshStakingProductInfoParams) =>
+            dispatch(refreshStakingProductInfoThunk(params)),
+        [dispatch],
+    );
 };

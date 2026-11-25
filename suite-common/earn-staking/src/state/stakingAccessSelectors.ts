@@ -265,6 +265,15 @@ export const selectIsStakingAccountDelegatedOutside = (
             position.targets.length > 0 && !descriptor.operations.includes('stake'),
     );
 
+// Delegated to an operator Suite offers: the counted position targets one and the account is not
+// delegated outside, so a registered stake key without a pool is not staked with anyone.
+export const selectIsStakingAccountStakedWithOfferedProvider = (
+    state: StakingRootState,
+    accountKey: AccountKey,
+): boolean =>
+    (selectStakingAccountPositionEntry(state, accountKey)?.position.targets.length ?? 0) > 0 &&
+    !selectIsStakingAccountDelegatedOutside(state, accountKey);
+
 export const STAKING_PROMOTION_SCOPES = ['offered', 'manageable'] as const;
 
 /** `offered`: every product the platform shows; `manageable`: only what it can stake into. */

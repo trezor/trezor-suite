@@ -6,15 +6,15 @@ import {
     formatStakingAmount,
     isStakingOperationAvailable,
     selectHasStakingAccountWarning,
-    selectIsStakingAccountDelegatedOutside,
+    selectIsStakingAccountStakedWithOfferedProvider,
+    selectIsStakingOperationPending,
     useStakingAccountPosition,
 } from '@suite-common/earn-staking';
 import {
     type StakingAmount,
     type StakingOperation,
+    ZERO_STAKING_AMOUNT,
     getStakingPositionPrincipal,
-    hasPendingStakingOperation,
-    stakingAmountSchema,
 } from '@suite-common/earn-staking-common';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { selectAccountStakeTypeTransactions, stakeActions } from '@suite-common/wallet-core';
@@ -48,8 +48,6 @@ import { useSelector } from '#src/hooks/suite/useSelector';
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
 import { ProgressLabels } from './ProgressLabels/ProgressLabels';
-
-const ZERO_STAKING_AMOUNT = stakingAmountSchema.parse('0');
 
 type ItemProps = {
     label: React.ReactNode;
@@ -113,8 +111,11 @@ export const StakingCard = ({
     const isDrepDelegationRequired = useSelector(state =>
         selectHasStakingAccountWarning(state, account.key, 'missing-drep'),
     );
-    const isDelegatedOutside = useSelector(state =>
-        selectIsStakingAccountDelegatedOutside(state, account.key),
+    const isStakedWithProvider = useSelector(state =>
+        selectIsStakingAccountStakedWithOfferedProvider(state, account.key),
+    );
+    const hasPendingOperation = useSelector(state =>
+        selectIsStakingOperationPending(state, account.key),
     );
 
     const stakeTxs = useSelector(state => selectAccountStakeTypeTransactions(state, account.key));
@@ -143,8 +144,6 @@ export const StakingCard = ({
     const unstakingBalance = formatAmount(totals.unstaking);
 
     const isCardanoNetworkType = account.networkType === 'cardano';
-    const isStakedWithProvider =
-        position !== null && position.targets.length > 0 && !isDelegatedOutside;
 
     // A registered Cardano key reports no pending balance; legacy read a delegation as activating
     // until its first reward, which keeps the timeline on the tab until then.
@@ -163,10 +162,7 @@ export const StakingCard = ({
 
     // A pending Solana stake-type tx is only the stand-in kept until the backend reports it; it
     // does not lock unstaking or reward claims the way an unconfirmed Ethereum stake does.
-    const isStakeConfirming =
-        account.networkType !== 'solana' &&
-        position !== null &&
-        hasPendingStakingOperation(position);
+    const isStakeConfirming = account.networkType !== 'solana' && hasPendingOperation;
 
     const isStakingDisabled = !isAvailable('stake');
     const isUnstakeDisabled = !isAvailable('unstake');

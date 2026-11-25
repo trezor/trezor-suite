@@ -7,7 +7,7 @@ import {
     useStakingAccountPosition,
 } from '@suite-common/earn-staking';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
-import { type StakingAmount, stakingAmountSchema } from '@suite-common/earn-staking-common';
+import { type StakingAmount, ZERO_STAKING_AMOUNT } from '@suite-common/earn-staking-common';
 import {
     TRON_REPRESENTATIVE_TERMS_OF_SERVICE_URLS,
     type TronFlow,
@@ -34,8 +34,6 @@ import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { type useTronStakeForm } from './useTronStakeForm';
 import { getVotingDelegationAnalyticsValue, parseVoteAllocations } from '../utils/voteUtils';
-
-const ZERO_STAKING_AMOUNT = stakingAmountSchema.parse('0');
 
 interface UseTronStakeActionsProps {
     account: Account;

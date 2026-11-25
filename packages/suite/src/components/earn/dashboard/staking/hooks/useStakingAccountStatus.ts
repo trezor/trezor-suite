@@ -3,8 +3,8 @@ import {
     selectIsStakingAccountActive,
     selectIsStakingAccountDelegatedOutside,
     selectStakeableStakingProductDescriptorBySymbol,
+    selectStakingAccountLockup,
     selectStakingAccountPositionDetails,
-    selectStakingAccountPositionEntry,
 } from '@suite-common/earn-staking';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { type Account } from '@suite-common/wallet-types';
@@ -33,8 +33,7 @@ export const useStakingAccountStatus = (account: Account): StakingAccountStatus 
     );
     // A liquid position stakes the whole balance, so there is nothing more to stake.
     const isLiquidPosition = useSelector(
-        state =>
-            selectStakingAccountPositionEntry(state, account.key)?.position.lockup === 'liquid',
+        state => selectStakingAccountLockup(state, account.key) === 'liquid',
     );
 
     const unallocatedVotingPower = useSelector(

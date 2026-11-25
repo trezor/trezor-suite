@@ -1,13 +1,12 @@
 import {
     type StakingAmount,
     type StakingProductLimits,
+    ZERO_STAKING_AMOUNT,
     stakingAmountSchema,
 } from '@suite-common/earn-staking-common';
 import { BigNumber } from '@trezor/utils';
 
 import { getStakeableBalance } from './getStakeableBalance';
-
-const ZERO_STAKING_AMOUNT = stakingAmountSchema.parse('0');
 
 export type PotentialStakingRewardsAccount = {
     availableBalance: string;

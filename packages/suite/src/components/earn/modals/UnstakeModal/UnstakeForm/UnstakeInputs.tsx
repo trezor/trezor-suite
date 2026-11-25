@@ -3,8 +3,8 @@ import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { formatStakingAmount, useStakingAccountPosition } from '@suite-common/earn-staking';
 import {
+    ZERO_STAKING_AMOUNT,
     getStakingPositionPrincipal,
-    stakingAmountSchema,
 } from '@suite-common/earn-staking-common';
 import { useFormatters } from '@suite-common/formatters';
 import { AMOUNT_MAX_LENGTH } from '@suite-common/wallet-core';
@@ -26,8 +26,6 @@ import {
     validateSolanaUnstakeAmount,
     validateSolanaUnstakeFiatAmount,
 } from '#src/utils/suite/validation';
-
-const ZERO_STAKING_AMOUNT = stakingAmountSchema.parse('0');
 
 export const UnstakeInputs = () => {
     // React Compiler: `getValues` keeps one identity for the form's whole life, so a compiled
