@@ -1,4 +1,4 @@
-import { Box } from '@suite-native/atoms';
+import { Box, VStack } from '@suite-native/atoms';
 
 import { ReferralButton } from '../ReferralButton';
 import { PortfolioAssetsFeedback } from './PortfolioAssetsFeedback';
@@ -20,14 +20,16 @@ export const PortfolioAssetsListFooter = ({
     isLoadingSkeletonVisible,
     onShowMorePress,
 }: PortfolioAssetsListFooterProps) => (
-    <Box paddingBottom="sp24">
-        {isLoadingSkeletonVisible && (
-            <PortfolioAssetsLoadingSkeleton isFirst={isListEmpty} isLast={!isFoldable} />
-        )}
-        <PortfolioAssetsShowMore isExpanded={isListExpanded} onPress={onShowMorePress} />
+    <VStack spacing="sp16">
+        <Box>
+            {isLoadingSkeletonVisible && (
+                <PortfolioAssetsLoadingSkeleton isFirst={isListEmpty} isLast={!isFoldable} />
+            )}
+            <PortfolioAssetsShowMore isExpanded={isListExpanded} onPress={onShowMorePress} />
+        </Box>
         {!isListEmpty && <PortfolioAssetsFeedback />}
-        <Box paddingHorizontal="sp16" paddingTop="sp64">
+        <Box marginHorizontal="sp16">
             <ReferralButton />
         </Box>
-    </Box>
+    </VStack>
 );
