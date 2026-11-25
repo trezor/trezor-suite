@@ -605,6 +605,7 @@ const evmAccount = (
     backendType: 'blockbook' | 'evm-rpc',
     tokens: AccountWithNetworkType<'ethereum'>['tokens'],
     accountHistory = evmRpcHistory,
+    isRateLimited?: boolean,
 ) =>
     ({
         ...mockWalletAccount({
@@ -613,11 +614,20 @@ const evmAccount = (
             history: accountHistory,
             tokens,
         }),
-        misc: { nonce: '0' },
+        misc: { nonce: '0', ...(isRateLimited && { isRateLimited }) },
         backendType,
     }) as AccountWithNetworkType<'ethereum'>;
-const evmFreshInfo = (tokens: TokenInfo[] | undefined, freshHistory = evmRpcHistory) =>
-    ({ balance: '0', history: freshHistory, misc: { nonce: '0' }, tokens }) as AccountInfo;
+const evmFreshInfo = (
+    tokens: TokenInfo[] | undefined,
+    freshHistory = evmRpcHistory,
+    isRateLimited?: boolean,
+) =>
+    ({
+        balance: '0',
+        history: freshHistory,
+        misc: { nonce: '0', ...(isRateLimited && { isRateLimited }) },
+        tokens,
+    }) as AccountInfo;
 
 const evmTokenCases = [
     {
@@ -654,6 +664,19 @@ const evmTokenCases = [
         description: 'direct rpc: history never scanned, so its transactions were never fetched',
         account: evmAccount('evm-rpc', [], unscannedHistory),
         freshInfo: evmFreshInfo(undefined, unscannedHistory),
+        result: true,
+    },
+    {
+        description: 'direct rpc: a rate limit cost the fresh answer part of what it should hold',
+        account: evmAccount('evm-rpc', []),
+        freshInfo: evmFreshInfo(undefined, evmRpcHistory, true),
+        result: true,
+    },
+    {
+        description:
+            'direct rpc: the answer that a rate limit left incomplete can now be completed',
+        account: evmAccount('evm-rpc', [], evmRpcHistory, true),
+        freshInfo: evmFreshInfo(undefined),
         result: true,
     },
     {
