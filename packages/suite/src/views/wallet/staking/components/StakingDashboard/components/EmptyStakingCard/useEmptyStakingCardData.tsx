@@ -1,6 +1,7 @@
 import { type ReactNode, useMemo } from 'react';
 
 import { AssetSymbol } from '@suite/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import {
     calculateRewards,
@@ -64,7 +65,11 @@ export const useEmptyStakingCardData = ({
 
     const hasPotentialRewards = new BigNumber(potentialRewards).gt(0);
 
-    const displaySymbol = account ? <AssetSymbol networkSymbol={account.symbol} /> : '';
+    const displaySymbol = account ? (
+        <AssetSymbol assetId={createAssetId({ networkSymbol: account.symbol })} />
+    ) : (
+        ''
+    );
 
     return {
         rate,

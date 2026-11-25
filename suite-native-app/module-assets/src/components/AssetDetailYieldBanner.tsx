@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     type HomeAssetTableState,
     selectWalletAssetKey,
@@ -64,6 +65,8 @@ export const AssetDetailYieldBanner = () => {
         return null;
     }
 
+    const assetId = createAssetId({ networkSymbol, contractAddress: tokenContract });
+
     const reportYieldNavigate = (action: 'continue' | 'cancel') =>
         analytics.report({
             type: events.yieldNavigateEvent.name,
@@ -95,12 +98,7 @@ export const AssetDetailYieldBanner = () => {
                             apy: formattedApy,
                             symbol: (
                                 // Nested Text does not inherit the banner's text style.
-                                <AssetSymbol
-                                    isTruncated
-                                    networkSymbol={networkSymbol}
-                                    contractAddress={tokenContract}
-                                    color="contentBrand"
-                                />
+                                <AssetSymbol isTruncated assetId={assetId} color="contentBrand" />
                             ),
                         }}
                     />
@@ -112,8 +110,7 @@ export const AssetDetailYieldBanner = () => {
                             symbol: (
                                 <AssetSymbol
                                     isTruncated
-                                    networkSymbol={networkSymbol}
-                                    contractAddress={tokenContract}
+                                    assetId={assetId}
                                     variant="body-sm"
                                     color="contentBrand"
                                 />

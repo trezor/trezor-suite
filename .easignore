@@ -88,6 +88,7 @@
 !/suite-common/analytics
 !/suite-common/analytics-redux
 !/suite-common/apps-embedding
+!/suite-common/asset-types
 !/suite-common/assets
 !/suite-common/bip329
 !/suite-common/bip329-types

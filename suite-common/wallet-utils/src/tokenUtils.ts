@@ -1,8 +1,10 @@
+import { normalizeTokenAddress } from '@suite-common/tokens';
 import {
     type Explorer,
     type NetworkSymbol,
     type NetworkSymbolExtended,
     type NetworkType,
+    asNetworkSymbol,
     getExplorerUrl,
     getNetworkDisplaySymbol,
     getNetworkType,
@@ -20,19 +22,15 @@ export const getContractAddressForNetworkSymbol = (
     symbol: NetworkSymbolExtended,
     contractAddress: string,
 ) => {
-    const networkType = getNetworkType(symbol.toLowerCase() as NetworkSymbol);
+    const networkSymbol = asNetworkSymbol(symbol.toLowerCase());
 
-    switch (networkType) {
-        case 'ethereum':
-            return contractAddress.toLowerCase();
-        case 'cardano': {
-            const { policyId } = parseAsset(contractAddress);
+    if (getNetworkType(networkSymbol) === 'cardano') {
+        const { policyId } = parseAsset(contractAddress);
 
-            return policyId.toLowerCase();
-        }
-        default:
-            return contractAddress;
+        return policyId.toLowerCase();
     }
+
+    return normalizeTokenAddress(networkSymbol, contractAddress);
 };
 
 const getTokenExplorerSuffix = (

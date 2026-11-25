@@ -1,10 +1,9 @@
 import { type ReactNode } from 'react';
 
 import { AssetIcon, AssetSymbol } from '@suite/assets';
+import { type AssetId, parseAssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
-import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, Row, TOOLTIP_DELAY_LONG, Text, TruncateWithTooltip } from '@trezor/components';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
@@ -12,12 +11,12 @@ import { useSelector } from '#src/hooks/suite/useSelector';
 import { HOME_ASSET_LINE_GAP } from './homeAssetTableLayout';
 
 type HomeAssetIdentityProps = {
-    symbol: NetworkSymbol;
-    contractAddress: TokenAddress | undefined;
+    assetId: AssetId;
     badge?: ReactNode;
 };
 
-export const HomeAssetIdentity = ({ symbol, contractAddress, badge }: HomeAssetIdentityProps) => {
+export const HomeAssetIdentity = ({ assetId, badge }: HomeAssetIdentityProps) => {
+    const { networkSymbol: symbol, contractAddress } = parseAssetId(assetId);
     const { NetworkNameFormatter } = useFormatters();
     const isIconFetchable = useSelector(
         state =>
@@ -28,8 +27,7 @@ export const HomeAssetIdentity = ({ symbol, contractAddress, badge }: HomeAssetI
     return (
         <Row gap={12} minWidth={0}>
             <AssetIcon
-                networkSymbol={symbol}
-                contractAddress={contractAddress}
+                assetId={assetId}
                 size={32}
                 showNetworkIcon
                 shouldTryToFetch={isIconFetchable}
@@ -43,7 +41,7 @@ export const HomeAssetIdentity = ({ symbol, contractAddress, badge }: HomeAssetI
                         data-testid="@dashboard/home-asset/name"
                     >
                         <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
-                            <AssetSymbol networkSymbol={symbol} contractAddress={contractAddress} />
+                            <AssetSymbol assetId={assetId} />
                         </TruncateWithTooltip>
                     </Text>
                     {badge}

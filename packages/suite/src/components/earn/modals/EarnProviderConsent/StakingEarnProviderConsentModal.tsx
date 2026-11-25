@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     EarnFlow,
     type EarnProvider,
@@ -53,7 +54,13 @@ export const StakingEarnProviderConsentModal = ({
             heading={
                 <Translation
                     id="TR_EARN_STAKE_TOKEN"
-                    values={{ symbol: <AssetSymbol networkSymbol={account.symbol} /> }}
+                    values={{
+                        symbol: (
+                            <AssetSymbol
+                                assetId={createAssetId({ networkSymbol: account.symbol })}
+                            />
+                        ),
+                    }}
                 />
             }
             description={

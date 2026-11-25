@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { getNetwork } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -42,7 +43,11 @@ export const ReserveBanner = ({ account }: ReserveBannerProps) => {
                     values={{
                         minBalance: formatNetworkAmount(account.misc.reserve, account.symbol),
                         networkName: getNetwork(account.symbol).name,
-                        displaySymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                        displaySymbol: (
+                            <AssetSymbol
+                                assetId={createAssetId({ networkSymbol: account.symbol })}
+                            />
+                        ),
                     }}
                 />
             }

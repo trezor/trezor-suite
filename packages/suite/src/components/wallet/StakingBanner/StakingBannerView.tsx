@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { AssetSymbol } from '@suite/assets';
 import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { getPotentialStakingRewards } from '@suite-common/wallet-core';
@@ -26,7 +27,9 @@ export const StakingBannerView = ({ accounts, onExplore, onClose }: StakingBanne
     const formatApyValue = useFormatApy();
     const { rate } = useStakingRate({ symbol: account.symbol, accountKey: account.key });
 
-    const displaySymbol = <AssetSymbol networkSymbol={account.symbol} />;
+    const displaySymbol = (
+        <AssetSymbol assetId={createAssetId({ networkSymbol: account.symbol })} />
+    );
     // Tron pays its rate as an APR, as its Earn modal says.
     const isAprRate = getNetworkType(account.symbol) === 'tron';
     const formattedRate = formatApyValue(rate);

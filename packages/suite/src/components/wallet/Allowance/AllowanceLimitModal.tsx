@@ -1,5 +1,6 @@
 import { AssetIcon, AssetSymbol } from '@suite/assets';
 import { Translation, type TranslationKey } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { type AllowanceLimitType } from '@suite-common/wallet-types';
 import { Badge, Card, Column, Modal, Paragraph, Row, Text } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
@@ -33,9 +34,11 @@ export const AllowanceLimitModal = ({
     onSelect,
     onClose,
 }: AllowanceLimitModalProps) => {
-    const symbolLabel = (
-        <AssetSymbol networkSymbol={token.networkSymbol} contractAddress={token.contractAddress} />
-    );
+    const assetId = createAssetId({
+        networkSymbol: token.networkSymbol,
+        contractAddress: token.contractAddress,
+    });
+    const symbolLabel = <AssetSymbol assetId={assetId} />;
     const translationValues = { value: amount, send: symbolLabel };
 
     return (
@@ -57,11 +60,7 @@ export const AllowanceLimitModal = ({
                     >
                         <Column gap={4} alignItems="flex-start">
                             <Row gap={8}>
-                                <AssetIcon
-                                    networkSymbol={token.networkSymbol}
-                                    contractAddress={token.contractAddress}
-                                    size={20}
-                                />
+                                <AssetIcon assetId={assetId} size={20} />
                                 <Text typographyStyle="body-md-strong">
                                     <Translation
                                         id={LIMIT_TYPE_LABEL_ID[type]}

@@ -1,6 +1,7 @@
 import { AssetSymbol } from '@suite/assets';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, Paragraph } from '@trezor/components';
 
@@ -31,7 +32,9 @@ export const EarnStakingPotentialRewards = ({
                         id="TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD"
                         values={{
                             amount: formattedAccountBalance,
-                            displaySymbol: <AssetSymbol networkSymbol={symbol} />,
+                            displaySymbol: (
+                                <AssetSymbol assetId={createAssetId({ networkSymbol: symbol })} />
+                            ),
                         }}
                     />
                 </HiddenPlaceholder>

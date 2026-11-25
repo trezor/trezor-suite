@@ -1,4 +1,4 @@
-import { toTokenAddress } from '@suite-common/tokens';
+import { normalizeTokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { type TokenMetadata, type TokenMetadataByNetwork } from './TokenMetadataContext';
@@ -31,7 +31,7 @@ describe('consolidateTokenMetadata', () => {
     ])('prefers earlier $location and fills missing fields', ({ sources }) => {
         const result = consolidateTokenMetadata({ sources, parentTokensByNetwork: new Map() });
 
-        expect(result.get(eth)?.get(token.contract)).toStrictEqual({
+        expect(result.get(eth)?.get(normalizeTokenAddress(eth, token.contract))).toStrictEqual({
             ...token,
             symbol: 'FIRST',
             decimals: 0,
@@ -42,8 +42,8 @@ describe('consolidateTokenMetadata', () => {
         const parentToken = Object.freeze({ ...token });
         const otherToken = Object.freeze({ ...token, contract: toTokenAddress('token-b') });
         const parentTokens = new Map([
-            [parentToken.contract, parentToken],
-            [otherToken.contract, otherToken],
+            [normalizeTokenAddress(eth, parentToken.contract), parentToken],
+            [normalizeTokenAddress(eth, otherToken.contract), otherToken],
         ]);
         const parentTokensByNetwork: TokenMetadataByNetwork = new Map([[eth, parentTokens]]);
         const source = Object.freeze({
@@ -56,13 +56,17 @@ describe('consolidateTokenMetadata', () => {
 
         const result = consolidateTokenMetadata({ sources, parentTokensByNetwork });
 
-        expect(result.get(eth)?.get(token.contract)).toStrictEqual({
+        expect(result.get(eth)?.get(normalizeTokenAddress(eth, token.contract))).toStrictEqual({
             ...token,
             name: 'Local name',
         });
-        expect(result.get(eth)?.get(otherToken.contract)).toStrictEqual(otherToken);
-        expect(parentTokens.get(token.contract)).toStrictEqual(token);
-        expect(parentTokens.get(otherToken.contract)).toStrictEqual(otherToken);
+        expect(result.get(eth)?.get(normalizeTokenAddress(eth, otherToken.contract))).toStrictEqual(
+            otherToken,
+        );
+        expect(parentTokens.get(normalizeTokenAddress(eth, token.contract))).toStrictEqual(token);
+        expect(parentTokens.get(normalizeTokenAddress(eth, otherToken.contract))).toStrictEqual(
+            otherToken,
+        );
         expect(parentTokens.size).toBe(2);
     });
 
@@ -75,13 +79,17 @@ describe('consolidateTokenMetadata', () => {
             parentTokensByNetwork: new Map(),
         });
 
-        expect(result.get(eth)?.get(token.contract)?.symbol).toBe('AAA');
-        expect(result.get(arb)?.get(token.contract)?.symbol).toBe('ARB');
+        expect(result.get(eth)?.get(normalizeTokenAddress(eth, token.contract))?.symbol).toBe(
+            'AAA',
+        );
+        expect(result.get(arb)?.get(normalizeTokenAddress(arb, token.contract))?.symbol).toBe(
+            'ARB',
+        );
     });
 
     it('retains parent networks that have no local sources', () => {
         const parentTokensByNetwork: TokenMetadataByNetwork = new Map([
-            [arb, new Map([[token.contract, token]])],
+            [arb, new Map([[normalizeTokenAddress(arb, token.contract), token]])],
         ]);
 
         const result = consolidateTokenMetadata({
@@ -89,7 +97,9 @@ describe('consolidateTokenMetadata', () => {
             parentTokensByNetwork,
         });
 
-        expect(result.get(arb)?.get(token.contract)).toStrictEqual(token);
+        expect(result.get(arb)?.get(normalizeTokenAddress(arb, token.contract))).toStrictEqual(
+            token,
+        );
         expect(parentTokensByNetwork.has(eth)).toBe(false);
     });
 

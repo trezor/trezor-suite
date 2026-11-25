@@ -1,31 +1,28 @@
 import { useSelector } from 'react-redux';
 
 import { TokenSymbol } from '@suite/token';
+import { type AssetId, parseAssetId } from '@suite-common/asset-types';
 import { type NetworksRootState, selectNetworkDisplaySymbol } from '@suite-common/networks';
-import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 type AssetSymbolProps = {
-    networkSymbol: NetworkSymbol;
-    contractAddress?: TokenAddress;
+    assetId: AssetId;
     isTruncated?: boolean;
 };
 
 /** The symbol of a coin or a token; an unrecognized token's symbol has its URLs masked. */
-export const AssetSymbol = ({ networkSymbol, contractAddress, isTruncated }: AssetSymbolProps) => {
+export const AssetSymbol = ({ assetId, isTruncated }: AssetSymbolProps) => {
+    const { networkSymbol, contractAddress } = parseAssetId(assetId);
     const networkDisplaySymbol = useSelector((state: NetworksRootState) =>
         selectNetworkDisplaySymbol(state, networkSymbol),
     );
 
-    if (contractAddress) {
-        return (
-            <TokenSymbol
-                networkSymbol={networkSymbol}
-                tokenContract={contractAddress}
-                isTruncated={isTruncated}
-            />
-        );
-    }
-
-    return networkDisplaySymbol ?? null;
+    return contractAddress ? (
+        <TokenSymbol
+            networkSymbol={networkSymbol}
+            tokenContract={contractAddress}
+            isTruncated={isTruncated}
+        />
+    ) : (
+        (networkDisplaySymbol ?? null)
+    );
 };

@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type FeeInfo, type FormState } from '@suite-common/wallet-types';
@@ -48,7 +49,11 @@ export const TradingNetworkFeeInfoItem = ({
                                 id={tooltipTextId}
                                 values={{
                                     br: <br />,
-                                    networkDisplaySymbol: <AssetSymbol networkSymbol={symbol} />,
+                                    networkDisplaySymbol: (
+                                        <AssetSymbol
+                                            assetId={createAssetId({ networkSymbol: symbol })}
+                                        />
+                                    ),
                                 }}
                             />
                         }

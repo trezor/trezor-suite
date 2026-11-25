@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 
 import { AssetSymbol } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     Card,
     Column,
@@ -41,7 +42,7 @@ export const TronNote = ({ close }: TronNoteProps) => {
 
     const { translationString } = useTranslation();
 
-    const networkDisplaySymbol = <AssetSymbol networkSymbol={symbol} />;
+    const networkDisplaySymbol = <AssetSymbol assetId={createAssetId({ networkSymbol: symbol })} />;
 
     const value = watch(inputName);
     const byteSize = countBytesInString(value || '');

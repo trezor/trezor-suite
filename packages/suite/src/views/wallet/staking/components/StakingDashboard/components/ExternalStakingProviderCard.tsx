@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
@@ -18,7 +19,7 @@ export const ExternalStakingProviderCard = ({
     symbol,
     totalStaked,
 }: ExternalStakingProviderCardProps) => {
-    const displaySymbol = <AssetSymbol networkSymbol={symbol} />;
+    const displaySymbol = <AssetSymbol assetId={createAssetId({ networkSymbol: symbol })} />;
     const totalStakedInUnits = subunitsToUnits({
         value: asAmountSubunit(new BigNumber(totalStaked || '0')),
         symbol,

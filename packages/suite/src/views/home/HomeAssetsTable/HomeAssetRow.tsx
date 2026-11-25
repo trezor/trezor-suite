@@ -2,6 +2,7 @@ import { memo } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { gotoThunk } from '@suite/router';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     selectWalletAssetContractAddress,
     selectWalletAssetNetworkSymbol,
@@ -43,6 +44,8 @@ export const HomeAssetRow = memo(function HomeAssetRow({
         return null;
     }
 
+    const assetId = createAssetId({ networkSymbol, contractAddress });
+
     const openAssetDetail = () => {
         analytics.report({
             type: events.navigateFlowEvent.name,
@@ -69,8 +72,7 @@ export const HomeAssetRow = memo(function HomeAssetRow({
         >
             <Table.Cell padding={HOME_ASSET_CELL_PADDING.first} data-testid={assetNameTestId}>
                 <HomeAssetIdentity
-                    symbol={networkSymbol}
-                    contractAddress={contractAddress}
+                    assetId={assetId}
                     badge={
                         <HomeAssetApyBadge
                             symbol={networkSymbol}

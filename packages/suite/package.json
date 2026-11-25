@@ -45,6 +45,7 @@
         "@suite-common/address": "workspace:*",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/analytics-redux": "workspace:*",
+        "@suite-common/asset-types": "workspace:*",
         "@suite-common/assets": "workspace:*",
         "@suite-common/backup": "workspace:*",
         "@suite-common/bip329": "workspace:*",

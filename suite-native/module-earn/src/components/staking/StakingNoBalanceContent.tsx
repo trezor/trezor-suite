@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { createAssetId } from '@suite-common/asset-types';
 import {
     type StakingRootState,
     formatStakingAmount,
@@ -48,6 +49,8 @@ export const StakingNoBalanceContent = ({ accountKey }: StakingNoBalanceContentP
         return null;
     }
 
+    const nativeAssetId = createAssetId({ networkSymbol: account.symbol });
+
     return (
         <Screen
             header={
@@ -77,10 +80,7 @@ export const StakingNoBalanceContent = ({ accountKey }: StakingNoBalanceContentP
                             id="earn.noBalance.staking.title"
                             values={{
                                 displaySymbol: (
-                                    <AssetSymbol
-                                        networkSymbol={account.symbol}
-                                        variant="headline-sm"
-                                    />
+                                    <AssetSymbol assetId={nativeAssetId} variant="headline-sm" />
                                 ),
                             }}
                         />
@@ -103,7 +103,7 @@ export const StakingNoBalanceContent = ({ accountKey }: StakingNoBalanceContentP
                                     ),
                                     displaySymbol: (
                                         <AssetSymbol
-                                            networkSymbol={account.symbol}
+                                            assetId={nativeAssetId}
                                             color="contentSecondary"
                                         />
                                     ),
@@ -115,7 +115,7 @@ export const StakingNoBalanceContent = ({ accountKey }: StakingNoBalanceContentP
                                 values={{
                                     displaySymbol: (
                                         <AssetSymbol
-                                            networkSymbol={account.symbol}
+                                            assetId={nativeAssetId}
                                             color="contentSecondary"
                                         />
                                     ),

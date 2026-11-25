@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     selectWalletAssetContractAddress,
     selectWalletAssetHiddenReason,
@@ -69,8 +70,10 @@ export const AssetDetailHiddenBanner = ({ assetKey }: AssetDetailHiddenBannerPro
                     values={{
                         asset: (
                             <AssetSymbol
-                                networkSymbol={networkSymbol}
-                                contractAddress={contractAddress}
+                                assetId={createAssetId({
+                                    networkSymbol,
+                                    contractAddress,
+                                })}
                                 isTruncated
                             />
                         ),

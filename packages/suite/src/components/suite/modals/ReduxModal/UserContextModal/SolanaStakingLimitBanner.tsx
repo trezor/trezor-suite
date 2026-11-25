@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     type SolanaStakingLimit,
     estimateSolanaStakingLimit,
@@ -83,7 +84,11 @@ export const SolanaStakingLimitBanner = ({
                     values={{
                         limit: MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
                         amount: formatNetworkAmount(limit.estimatedAmount, account.symbol),
-                        symbol: <AssetSymbol networkSymbol={account.symbol} />,
+                        symbol: (
+                            <AssetSymbol
+                                assetId={createAssetId({ networkSymbol: account.symbol })}
+                            />
+                        ),
                     }}
                 />
             }

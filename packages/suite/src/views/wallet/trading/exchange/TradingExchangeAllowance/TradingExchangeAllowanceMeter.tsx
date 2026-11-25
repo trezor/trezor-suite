@@ -2,6 +2,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { AssetIcon } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { type ExchangeAllowanceCoverage } from '@suite-common/trading';
 import { Column, ProgressBar, Row, Text, type TextIntent } from '@trezor/components';
 
@@ -40,8 +41,10 @@ export const TradingExchangeAllowanceMeter = ({
     const intent = COVERAGE_INTENT[coverage.kind];
     const tokenIcon = (
         <AssetIcon
-            networkSymbol={token.networkSymbol}
-            contractAddress={token.contractAddress}
+            assetId={createAssetId({
+                networkSymbol: token.networkSymbol,
+                contractAddress: token.contractAddress,
+            })}
             size={20}
         />
     );

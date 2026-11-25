@@ -7,6 +7,7 @@ import { AssetSymbol } from '@suite/assets';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { createAssetId } from '@suite-common/asset-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { toTokenAddress } from '@suite-common/tokens';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -194,6 +195,7 @@ export const UnwrapNativeToken = ({
     const { formState } = methods;
 
     const renderContent = () => {
+        const nativeAssetId = createAssetId({ networkSymbol: account.symbol });
         if (broadcast && isFlowComplete) {
             return (
                 <WrappedNativeFlowComplete
@@ -205,7 +207,7 @@ export const UnwrapNativeToken = ({
                             id="TR_UNWRAP_COMPLETE_DESCRIPTION"
                             values={{
                                 tokenSymbol,
-                                nativeSymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                                nativeSymbol: <AssetSymbol assetId={nativeAssetId} />,
                             }}
                         />
                     }
@@ -238,7 +240,7 @@ export const UnwrapNativeToken = ({
                         id="TR_EARN_YIELD_UNWRAP_TITLE"
                         values={{
                             tokenSymbol,
-                            nativeSymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                            nativeSymbol: <AssetSymbol assetId={nativeAssetId} />,
                         }}
                     />
                 </Text>

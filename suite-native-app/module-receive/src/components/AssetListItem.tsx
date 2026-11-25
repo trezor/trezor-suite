@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { createAssetId } from '@suite-common/asset-types';
 import {
     type NetworksRootState,
     selectIsNativeTokenNetworkNameRedundant,
@@ -61,34 +62,21 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
     );
     const shouldShowNetworkBadge = !asset.isNativeToken || !isNetworkNameRedundant;
     const tokenContract = asset.isNativeToken ? undefined : asset.contractAddress;
+    const assetId = createAssetId({
+        networkSymbol: asset.networkSymbol,
+        contractAddress: tokenContract,
+    });
 
     return (
         <Box style={applyStyle(rowStyle, { isFirst, isLast })}>
             <AccountsListItemBase
                 onPress={() => onSelect(item)}
-                icon={
-                    <AssetIcon
-                        networkSymbol={asset.networkSymbol}
-                        contractAddress={tokenContract}
-                        showNetworkIcon
-                        size="medium"
-                    />
-                }
-                title={
-                    <AssetName
-                        networkSymbol={asset.networkSymbol}
-                        contractAddress={tokenContract}
-                    />
-                }
+                icon={<AssetIcon assetId={assetId} showNetworkIcon size="medium" />}
+                title={<AssetName assetId={assetId} />}
                 badges={
                     <HStack alignItems="center">
                         <Text variant="body-sm" priority="secondary">
-                            <AssetSymbol
-                                networkSymbol={asset.networkSymbol}
-                                contractAddress={tokenContract}
-                                variant="body-sm"
-                                priority="secondary"
-                            />
+                            <AssetSymbol assetId={assetId} variant="body-sm" priority="secondary" />
                         </Text>
                         {shouldShowNetworkBadge && <Badge label={asset.networkName} />}
                     </HStack>

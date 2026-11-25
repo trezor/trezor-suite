@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation, type TranslationKey } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import {
     hasCardanoLiveVoteDelegation,
@@ -21,7 +22,9 @@ export const StakingProviderConsentBanners = ({
     flow,
 }: StakingProviderConsentBannersProps) => {
     const { networkType } = account;
-    const displaySymbol = <AssetSymbol networkSymbol={account.symbol} />;
+    const displaySymbol = (
+        <AssetSymbol assetId={createAssetId({ networkSymbol: account.symbol })} />
+    );
 
     if (!isStakingNetworkType(networkType)) return null;
 

@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { createAssetId } from '@suite-common/asset-types';
 import {
     type HomeAssetTableState,
     selectWalletAssetHiddenReason,
@@ -84,8 +85,10 @@ export const AssetDetailHiddenBanner = () => {
                             // Nested Text does not inherit the banner's text style.
                             <AssetSymbol
                                 isTruncated
-                                networkSymbol={networkSymbol}
-                                contractAddress={tokenContract}
+                                assetId={createAssetId({
+                                    networkSymbol,
+                                    contractAddress: tokenContract,
+                                })}
                                 variant="body-sm"
                                 color="contentInfo"
                             />

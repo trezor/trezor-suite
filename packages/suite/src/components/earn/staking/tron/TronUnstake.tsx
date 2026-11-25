@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { type Account } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 
@@ -31,7 +32,11 @@ export const TronUnstake = ({ account }: TronUnstakeProps) => {
                                     id="TR_EARN_TRON_UNSTAKE_DESCRIPTION"
                                     values={{
                                         displaySymbol: (
-                                            <AssetSymbol networkSymbol={account.symbol} />
+                                            <AssetSymbol
+                                                assetId={createAssetId({
+                                                    networkSymbol: account.symbol,
+                                                })}
+                                            />
                                         ),
                                     }}
                                 />

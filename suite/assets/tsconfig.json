@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/asset-types"
+        },
+        {
             "path": "../../suite-common/formatters"
         },
         { "path": "../../suite-common/networks" },

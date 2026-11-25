@@ -1,4 +1,5 @@
 import { AssetValue } from '@suite/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import { asAmountUnit, findToken } from '@suite-common/wallet-utils';
@@ -36,8 +37,10 @@ export const GlobalReceiveAccountAssetAmount = ({
             <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                 <AssetValue
                     amount={asAmountUnit(new BigNumber(amount))}
-                    networkSymbol={account.symbol}
-                    contractAddress={tokenAddress}
+                    assetId={createAssetId({
+                        networkSymbol: account.symbol,
+                        contractAddress: tokenAddress,
+                    })}
                     isCompact
                 />
             </Text>

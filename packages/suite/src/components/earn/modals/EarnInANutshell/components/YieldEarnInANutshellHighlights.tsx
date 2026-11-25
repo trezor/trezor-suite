@@ -2,6 +2,7 @@ import { FormattedList } from 'react-intl';
 
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     CoinVerticalIcon,
@@ -33,7 +34,7 @@ export const YieldEarnInANutshellHighlights = ({
 }: YieldEarnInANutshellHighlightsProps) => {
     // For a wrapped-native vault the user perceives their asset as the native coin (e.g. ETH),
     // while `depositSymbol` is the wrapped token the vault holds (e.g. WETH).
-    const nativeSymbol = <AssetSymbol networkSymbol={networkSymbol} />;
+    const nativeSymbol = <AssetSymbol assetId={createAssetId({ networkSymbol })} />;
     const supplySymbol = isWrappedNativeVault ? nativeSymbol : depositSymbol;
 
     const highlights: EarnInANutshellHighlight[] = [

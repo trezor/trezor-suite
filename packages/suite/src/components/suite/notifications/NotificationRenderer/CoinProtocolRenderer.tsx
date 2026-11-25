@@ -5,6 +5,7 @@ import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouteName } from '@suite/router';
 import { isBech32AddressUppercase } from '@suite-common/address';
+import { createAssetId } from '@suite-common/asset-types';
 import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
@@ -40,7 +41,9 @@ export const CoinProtocolRenderer = ({
     const networkSymbol = useSelector(state =>
         selectNetworkSymbolForProtocol(state, notification.scheme),
     );
-    const displaySymbol = networkSymbol && <AssetSymbol networkSymbol={networkSymbol} />;
+    const displaySymbol = networkSymbol && (
+        <AssetSymbol assetId={createAssetId({ networkSymbol })} />
+    );
     const networkName = networkSymbol && getNetworkDisplaySymbolName(networkSymbol);
     const networkAccounts = useSelector(state =>
         selectDeviceAccountsByNetworkSymbol(state, networkSymbol),

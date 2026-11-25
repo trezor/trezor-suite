@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { TRON_FLOW_STEPS, type TronStakeStepId } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, StepList, type StepListItemState, Text } from '@trezor/components';
@@ -32,6 +33,8 @@ export const TronStake = ({ account }: TronStakeProps) => {
         return stepIndex === currentStepIndex ? 'active' : 'pending';
     };
 
+    const nativeAssetId = createAssetId({ networkSymbol: account.symbol });
+
     return (
         <TronStakeContext.Provider value={context}>
             <Column alignItems="center">
@@ -45,9 +48,7 @@ export const TronStake = ({ account }: TronStakeProps) => {
                                 <Translation
                                     id="TR_EARN_TRON_STAKE_COMPLETE_DESCRIPTION"
                                     values={{
-                                        displaySymbol: (
-                                            <AssetSymbol networkSymbol={account.symbol} />
-                                        ),
+                                        displaySymbol: <AssetSymbol assetId={nativeAssetId} />,
                                     }}
                                 />
                             }
@@ -91,9 +92,7 @@ export const TronStake = ({ account }: TronStakeProps) => {
                                                 id="TR_EARN_TRON_FREEZE_STEP_TITLE"
                                                 values={{
                                                     displaySymbol: (
-                                                        <AssetSymbol
-                                                            networkSymbol={account.symbol}
-                                                        />
+                                                        <AssetSymbol assetId={nativeAssetId} />
                                                     ),
                                                 }}
                                             />

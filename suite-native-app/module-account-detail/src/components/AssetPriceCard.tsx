@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { createAssetId } from '@suite-common/asset-types';
 import { type TokenAddress } from '@suite-common/tokens';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
@@ -57,6 +58,7 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
     if (!networkSymbol) return null;
     if (!isLoading && currentValue === null) return null;
 
+    const assetId = createAssetId({ networkSymbol, contractAddress: token?.contract });
     const priceContract = isErc4626Token ? underlyingAssetContract : tokenContract;
     const isCoinPrice = !priceContract || isWrappedNativeToken(networkSymbol, priceContract);
     const isUnderlyingAssetResolving = isErc4626Token && underlyingAssetContract === null;
@@ -82,14 +84,13 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
                         <Box style={applyStyle(cardContentStyle)}>
                             {token ? (
                                 <AssetName
-                                    networkSymbol={networkSymbol}
-                                    contractAddress={token.contract}
+                                    assetId={assetId}
                                     variant="body-sm-strong"
                                     color="contentPrimary"
                                 />
                             ) : (
                                 <AssetSymbol
-                                    networkSymbol={networkSymbol}
+                                    assetId={assetId}
                                     variant="body-sm-strong"
                                     color="contentPrimary"
                                 />

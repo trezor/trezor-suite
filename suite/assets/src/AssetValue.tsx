@@ -1,26 +1,20 @@
 import { HiddenPlaceholder } from '@suite/discreet-mode';
+import { type AssetId, parseAssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import { useTokenMetadata } from '@suite-common/token';
-import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AmountUnit } from '@suite-common/wallet-utils';
 
 import { AssetSymbol } from './AssetSymbol';
 
 type AssetValueProps = {
+    assetId: AssetId;
     amount: AmountUnit;
-    networkSymbol: NetworkSymbol;
-    contractAddress?: TokenAddress;
     isCompact?: boolean;
 };
 
 /** An amount of a native token or a token; an unrecognized token's symbol has its URLs masked. */
-export const AssetValue = ({
-    amount,
-    networkSymbol,
-    contractAddress,
-    isCompact = false,
-}: AssetValueProps) => {
+export const AssetValue = ({ amount, assetId, isCompact = false }: AssetValueProps) => {
+    const { networkSymbol, contractAddress } = parseAssetId(assetId);
     const { CryptoAmountFormatter } = useFormatters();
     const token = useTokenMetadata(networkSymbol, contractAddress);
     const formatStyle = isCompact ? 'compact-balance' : 'exact';
@@ -49,7 +43,7 @@ export const AssetValue = ({
                 formatStyle={formatStyle}
                 tokenDecimals={token?.decimals}
             />{' '}
-            <AssetSymbol networkSymbol={networkSymbol} contractAddress={contractAddress} />
+            <AssetSymbol assetId={assetId} />
         </HiddenPlaceholder>
     );
 };

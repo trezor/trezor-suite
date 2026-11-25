@@ -1,5 +1,6 @@
 import { AssetName } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     type TradingAssetOption,
     cryptoIdToNetworkSymbolAndContractAddress,
@@ -18,7 +19,9 @@ export const GlobalSendReceiveAssetDescription = ({
 
     const { contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(asset.id);
     const assetName = (
-        <AssetName networkSymbol={asset.networkSymbol} contractAddress={contractAddress} />
+        <AssetName
+            assetId={createAssetId({ networkSymbol: asset.networkSymbol, contractAddress })}
+        />
     );
 
     if (!contractAddress) {

@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { createAssetId } from '@suite-common/asset-types';
 import {
     type StakingRootState,
     formatStakingAmount,
@@ -48,7 +49,12 @@ export const SolExternalStakingBanner = ({
                     id="earn.stakingManagementScreen.outsideStakingBanner.description"
                     values={{
                         amount: totalStakedInUnits,
-                        symbol: <AssetSymbol networkSymbol={networkSymbol} variant="body-sm" />,
+                        symbol: (
+                            <AssetSymbol
+                                assetId={createAssetId({ networkSymbol })}
+                                variant="body-sm"
+                            />
+                        ),
                         fiat: (
                             <CryptoToFiatAmountFormatter
                                 value={totalStakedInUnits}

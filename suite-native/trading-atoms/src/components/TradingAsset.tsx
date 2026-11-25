@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { createAssetId } from '@suite-common/asset-types';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { AssetName, AssetSymbol } from '@suite-native/assets';
@@ -45,6 +46,17 @@ const rightContentStyle = prepareNativeStyle(() => ({
 }));
 
 export const TradingAsset = (props: TradingAssetProps) => {
+    const asset =
+        props.assetType === 'crypto'
+            ? {
+                  ...props,
+                  assetId: createAssetId({
+                      networkSymbol: props.networkSymbol,
+                      contractAddress: props.contractAddress,
+                  }),
+              }
+            : props;
+
     const { applyStyle } = useNativeStyles();
     const {
         iconSize = 'medium',
@@ -54,20 +66,15 @@ export const TradingAsset = (props: TradingAssetProps) => {
         spacing = 'sp8',
         testID,
         assetType,
-    } = props;
+    } = asset;
 
     const getPrimaryText = () => {
-        if (props.assetType === 'fiat') return primaryLabel === 'name' ? props.name : props.symbol;
-
-        const asset = {
-            networkSymbol: props.networkSymbol,
-            contractAddress: props.contractAddress,
-        };
+        if (asset.assetType === 'fiat') return primaryLabel === 'name' ? asset.name : asset.symbol;
 
         return primaryLabel === 'name' ? (
-            <AssetName {...asset} variant={primaryTextVariant} />
+            <AssetName assetId={asset.assetId} variant={primaryTextVariant} />
         ) : (
-            <AssetSymbol {...asset} variant={primaryTextVariant} isTruncated />
+            <AssetSymbol assetId={asset.assetId} variant={primaryTextVariant} isTruncated />
         );
     };
     const shouldShowSymbolOnSecondaryLine = primaryLabel === 'name';
@@ -77,13 +84,13 @@ export const TradingAsset = (props: TradingAssetProps) => {
         <HStack alignItems="center" spacing={spacing} testID={testID}>
             {assetType === 'crypto' ? (
                 <TokenIcon
-                    networkSymbol={props.networkSymbol}
-                    contractAddress={props.contractAddress}
+                    networkSymbol={asset.networkSymbol}
+                    contractAddress={asset.contractAddress}
                     showNetworkIcon
                     size={iconSize}
                 />
             ) : (
-                <FiatCurrencyIcon size={iconSize} value={props.fiatCurrency} />
+                <FiatCurrencyIcon size={iconSize} value={asset.fiatCurrency} />
             )}
             <VStack flex={1} justifyContent="center" spacing={0}>
                 <Text
@@ -103,12 +110,11 @@ export const TradingAsset = (props: TradingAssetProps) => {
                                 testID={testID ? `${testID}/secondary-symbol` : undefined}
                                 variant="body-sm"
                             >
-                                {props.assetType === 'fiat' ? (
-                                    props.symbol
+                                {asset.assetType === 'fiat' ? (
+                                    asset.symbol
                                 ) : (
                                     <AssetSymbol
-                                        networkSymbol={props.networkSymbol}
-                                        contractAddress={props.contractAddress}
+                                        assetId={asset.assetId}
                                         variant="body-sm"
                                         color="contentSecondary"
                                         isTruncated
@@ -116,18 +122,18 @@ export const TradingAsset = (props: TradingAssetProps) => {
                                 )}
                             </Text>
                         )}
-                        {props.assetType === 'crypto' &&
-                            (props.networkDisplay === 'text' ? (
+                        {asset.assetType === 'crypto' &&
+                            (asset.networkDisplay === 'text' ? (
                                 <Text
                                     color="contentSecondary"
                                     numberOfLines={1}
                                     testID={testID ? `${testID}/network-text` : undefined}
                                     variant="body-sm"
                                 >
-                                    {getNetwork(props.networkSymbol).name}
+                                    {getNetwork(asset.networkSymbol).name}
                                 </Text>
                             ) : (
-                                <NetworkBadge symbol={props.networkSymbol} />
+                                <NetworkBadge symbol={asset.networkSymbol} />
                             ))}
                     </HStack>
                 )}

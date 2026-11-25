@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     getCardanoTokenSendMinAdaAmount,
     isCardanoTokenSendAdaInsufficient,
@@ -34,7 +35,7 @@ export const CardanoMinAmountInfo = () => {
     });
 
     const hasEnoughADA = !isCardanoTokenSendAdaInsufficient({ balance, minAdaAmount });
-    const networkDisplaySymbol = <AssetSymbol networkSymbol={symbol} />;
+    const networkDisplaySymbol = <AssetSymbol assetId={createAssetId({ networkSymbol: symbol })} />;
 
     return (
         <>

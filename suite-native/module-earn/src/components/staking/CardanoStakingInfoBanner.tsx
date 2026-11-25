@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { createAssetId } from '@suite-common/asset-types';
 import { type StakingRootState, selectHasStakingAccountWarning } from '@suite-common/earn-staking';
 import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -61,7 +62,7 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
                     values={{
                         symbol: (
                             <AssetSymbol
-                                networkSymbol={networkSymbol}
+                                assetId={createAssetId({ networkSymbol })}
                                 variant="body-sm"
                                 color="contentInfo"
                             />

@@ -1,6 +1,7 @@
 import { AssetIcon, AssetName } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { gotoThunk, selectSettingsBackRoute } from '@suite/router';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     selectWalletAssetContractAddress,
     selectWalletAssetNetworkSymbol,
@@ -42,23 +43,18 @@ export const AssetDetailName = () => {
     const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
 
+    const assetId =
+        networkSymbol === undefined ? undefined : createAssetId({ networkSymbol, contractAddress });
+
     return (
         <Row alignItems="center" gap={16}>
             <AssetDetailBackButton />
-            {networkSymbol !== undefined && (
+            {networkSymbol !== undefined && assetId !== undefined && (
                 <Row gap={12} minWidth={0}>
-                    <AssetIcon
-                        networkSymbol={networkSymbol}
-                        contractAddress={contractAddress}
-                        size={32}
-                        showNetworkIcon
-                    />
+                    <AssetIcon assetId={assetId} size={32} showNetworkIcon />
                     <Column alignItems="flex-start" minWidth={0}>
                         <Text typographyStyle="body-md-strong" ellipsisLineCount={1}>
-                            <AssetName
-                                networkSymbol={networkSymbol}
-                                contractAddress={contractAddress}
-                            />
+                            <AssetName assetId={assetId} />
                         </Text>
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                             <NetworkNameFormatter value={networkSymbol} />

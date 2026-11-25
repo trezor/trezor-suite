@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { AssetSymbol } from '@suite/assets';
 import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { useShouldRedactNumbers } from '@suite-common/discreet-mode';
 import { isSignValuePositive, useFormatters } from '@suite-common/formatters';
 import { type SignValue } from '@suite-common/suite-types';
@@ -132,13 +133,16 @@ export const FormattedCryptoAmount = ({
     const getSymbolContent = () => {
         if (isSatoshis) return formattedSymbol;
 
-        if (network) return <AssetSymbol networkSymbol={network.symbol} />;
+        if (network)
+            return <AssetSymbol assetId={createAssetId({ networkSymbol: network.symbol })} />;
 
         if (tokenNetworkSymbol && tokenContract) {
             return (
                 <AssetSymbol
-                    networkSymbol={tokenNetworkSymbol}
-                    contractAddress={tokenContract}
+                    assetId={createAssetId({
+                        networkSymbol: tokenNetworkSymbol,
+                        contractAddress: tokenContract,
+                    })}
                     isTruncated
                 />
             );

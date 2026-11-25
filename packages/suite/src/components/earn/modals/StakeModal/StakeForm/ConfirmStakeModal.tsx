@@ -4,6 +4,7 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { createAssetId } from '@suite-common/asset-types';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkType } from '@suite-common/wallet-config';
 import {
@@ -88,6 +89,8 @@ export const ConfirmStakeModal = ({
         [account.networkType],
     );
 
+    const nativeAssetId = createAssetId({ networkSymbol: account.symbol });
+
     return (
         <Modal
             heading={<Translation id="TR_STAKE_CONFIRM_ENTRY_PERIOD" />}
@@ -116,9 +119,7 @@ export const ConfirmStakeModal = ({
                         <Translation
                             id={getStakeEnteringMessage(account.networkType)}
                             values={{
-                                networkDisplaySymbol: (
-                                    <AssetSymbol networkSymbol={account.symbol} />
-                                ),
+                                networkDisplaySymbol: <AssetSymbol assetId={nativeAssetId} />,
                                 count:
                                     account.networkType === 'ethereum'
                                         ? daysToAddToPool
@@ -138,9 +139,7 @@ export const ConfirmStakeModal = ({
                         <Translation
                             id="TR_STAKE_ETH_WILL_BE_BLOCKED"
                             values={{
-                                networkDisplaySymbol: (
-                                    <AssetSymbol networkSymbol={account.symbol} />
-                                ),
+                                networkDisplaySymbol: <AssetSymbol assetId={nativeAssetId} />,
                             }}
                         />
                     }

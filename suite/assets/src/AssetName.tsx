@@ -1,4 +1,5 @@
 import { TokenName, maskUrls } from '@suite/token';
+import { type AssetId, parseAssetId } from '@suite-common/asset-types';
 import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
 import { selectTokenByNetworkAndContract } from '@suite-common/token';
 import {
@@ -13,18 +14,18 @@ import { NativeTokenName } from './NativeTokenName';
 
 type AssetNameTextRootState = AccountsRootState & NetworksRootState & TokenDefinitionsRootState;
 
-type AssetNameProps = {
-    networkSymbol: NetworkSymbol;
-    contractAddress?: TokenAddress;
-};
+type AssetNameProps = { assetId: AssetId };
 
 /** The name of a native token or a token; an unrecognized token's name has its URLs masked. */
-export const AssetName = ({ networkSymbol, contractAddress }: AssetNameProps) =>
-    contractAddress ? (
+export const AssetName = ({ assetId }: AssetNameProps) => {
+    const { networkSymbol, contractAddress } = parseAssetId(assetId);
+
+    return contractAddress ? (
         <TokenName networkSymbol={networkSymbol} tokenContract={contractAddress} />
     ) : (
         <NativeTokenName networkSymbol={networkSymbol} />
     );
+};
 
 /**
  * `AssetName` as plain text, for places that take only a string, such as the window title.

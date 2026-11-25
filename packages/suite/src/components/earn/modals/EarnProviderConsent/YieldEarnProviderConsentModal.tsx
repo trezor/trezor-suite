@@ -3,6 +3,7 @@ import { AssetSymbol } from '@suite/assets';
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     EarnFlow,
     type EarnProvider,
@@ -65,7 +66,9 @@ export const YieldEarnProviderConsentModal = ({
         networkSymbol: account.symbol,
         yieldContext,
     });
-    const displaySymbol = <AssetSymbol networkSymbol={account.symbol} />;
+    const displaySymbol = (
+        <AssetSymbol assetId={createAssetId({ networkSymbol: account.symbol })} />
+    );
     const depositSymbol = isWrappedNativeToken(account.symbol, normalizedTokenContractAddress)
         ? displaySymbol
         : (tokenSymbolFromAccount ?? tokenSymbolFromTrading ?? displaySymbol);

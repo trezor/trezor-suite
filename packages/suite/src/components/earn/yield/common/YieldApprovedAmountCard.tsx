@@ -1,5 +1,6 @@
 import { AssetIcon } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { toTokenAddress } from '@suite-common/tokens';
 import type { YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { Card, IconButton, Row, Text } from '@trezor/components';
@@ -35,8 +36,10 @@ export const YieldApprovedAmountCard = ({
                 <Row alignItems="center" gap={8}>
                     <AssetIcon
                         size={20}
-                        networkSymbol={token.networkSymbol}
-                        contractAddress={contractAddress}
+                        assetId={createAssetId({
+                            networkSymbol: token.networkSymbol,
+                            contractAddress,
+                        })}
                         showNetworkIcon
                         isBordered={false}
                     />

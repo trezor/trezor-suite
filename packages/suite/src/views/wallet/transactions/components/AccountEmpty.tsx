@@ -3,6 +3,7 @@ import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { selectIsRegionRestricted } from '@suite/regions';
 import { gotoThunk } from '@suite/router';
+import { createAssetId } from '@suite-common/asset-types';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getNetwork, getNetworkFeatures } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -28,7 +29,9 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     // Trading is unavailable for the Privacy (SLIP-25) account type, see HeaderActions.
     const isTradingAvailable = account.accountType !== 'coinjoin';
 
-    const displaySymbol = <AssetSymbol networkSymbol={account.symbol} />;
+    const displaySymbol = (
+        <AssetSymbol assetId={createAssetId({ networkSymbol: account.symbol })} />
+    );
     const networkName = getNetwork(account.symbol).name;
 
     const handleNavigateToReceivePage = () => {

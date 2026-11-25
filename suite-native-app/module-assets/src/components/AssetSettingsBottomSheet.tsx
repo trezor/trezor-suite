@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { createAssetId } from '@suite-common/asset-types';
 import { type AssetsRootState, selectAssetTokenInfo } from '@suite-common/assets';
 import { AssetSymbol } from '@suite-native/assets';
 import { BottomSheetModal, type BottomSheetModalRef, VStack } from '@suite-native/atoms';
@@ -41,8 +42,10 @@ export const AssetSettingsBottomSheet = ({
             title={
                 <AssetSymbol
                     isTruncated
-                    networkSymbol={networkSymbol}
-                    contractAddress={tokenContract}
+                    assetId={createAssetId({
+                        networkSymbol,
+                        contractAddress: tokenContract,
+                    })}
                     variant="headline-sm"
                 />
             }

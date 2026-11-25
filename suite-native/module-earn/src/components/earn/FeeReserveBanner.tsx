@@ -1,3 +1,4 @@
+import { createAssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/networks';
 import { AssetSymbol } from '@suite-native/assets';
@@ -33,7 +34,10 @@ export const FeeReserveBanner = ({
             withSymbol: false,
         }),
         nativeSymbol: (
-            <AssetSymbol networkSymbol={networkSymbol} color={intentToColorMap[intent].textColor} />
+            <AssetSymbol
+                assetId={createAssetId({ networkSymbol })}
+                color={intentToColorMap[intent].textColor}
+            />
         ),
     };
 

@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { createAssetId } from '@suite-common/asset-types';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -55,7 +56,7 @@ export const ReceiveFreshAddressHeader = ({
                                 values={{
                                     coinSymbol: (
                                         <AssetSymbol
-                                            networkSymbol={symbol}
+                                            assetId={createAssetId({ networkSymbol: symbol })}
                                             variant="body-md-strong"
                                         />
                                     ),

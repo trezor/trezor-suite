@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import {
@@ -29,7 +30,7 @@ export const StakingEarnInANutshellHighlights = ({
 }: StakingEarnInANutshellHighlightsProps) => {
     if (!isStakingNetworkType(networkType)) return null;
 
-    const networkDisplaySymbol = <AssetSymbol networkSymbol={networkSymbol} />;
+    const networkDisplaySymbol = <AssetSymbol assetId={createAssetId({ networkSymbol })} />;
 
     const highlights: EarnInANutshellHighlight[] = (() => {
         switch (networkType) {

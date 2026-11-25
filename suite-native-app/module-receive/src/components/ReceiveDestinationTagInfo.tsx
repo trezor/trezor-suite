@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { createAssetId } from '@suite-common/asset-types';
 import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
@@ -61,8 +62,10 @@ export const ReceiveDestinationTagInfo = ({
                         coinSymbol: (
                             // Nested Text does not inherit the banner title's typography.
                             <AssetSymbol
-                                networkSymbol={accountSymbol}
-                                contractAddress={token?.symbol ? token.contract : undefined}
+                                assetId={createAssetId({
+                                    networkSymbol: accountSymbol,
+                                    contractAddress: token?.symbol ? token.contract : undefined,
+                                })}
                                 variant="body-sm"
                                 color="contentInfo"
                             />

@@ -1,3 +1,4 @@
+import { createAssetId } from '@suite-common/asset-types';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useAssetSymbolText } from '@suite-native/assets';
@@ -21,7 +22,7 @@ export const EarnNoBalanceFooter = ({
     onReceivePress,
     onSwapPress,
 }: EarnNoBalanceFooterProps) => {
-    const displaySymbol = useAssetSymbolText(networkSymbol, contractAddress);
+    const displaySymbol = useAssetSymbolText(createAssetId({ networkSymbol, contractAddress }));
 
     if (!onBuyPress && !onReceivePress && !onSwapPress) {
         return null;

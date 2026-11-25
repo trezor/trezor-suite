@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
+import { createAssetId } from '@suite-common/asset-types';
 import type { DeviceRootState } from '@suite-common/device';
 import {
     type StakingRootState,
@@ -139,6 +140,8 @@ export const HowStakeWorksScreen = () => {
         return <EarnLoadingScreen />;
     }
 
+    const nativeAssetId = createAssetId({ networkSymbol: symbol });
+
     return (
         <Screen header={<ScreenHeader closeActionType="back" />}>
             <VStack flex={1} justifyContent="space-between">
@@ -150,7 +153,10 @@ export const HowStakeWorksScreen = () => {
                                 id="earn.howStakeWorksScreen.title"
                                 values={{
                                     displaySymbol: (
-                                        <AssetSymbol networkSymbol={symbol} variant="headline-md" />
+                                        <AssetSymbol
+                                            assetId={nativeAssetId}
+                                            variant="headline-md"
+                                        />
                                     ),
                                 }}
                             />
@@ -161,7 +167,7 @@ export const HowStakeWorksScreen = () => {
                                 values={{
                                     displaySymbol: (
                                         <AssetSymbol
-                                            networkSymbol={symbol}
+                                            assetId={nativeAssetId}
                                             variant="body-sm"
                                             color="contentSecondary"
                                         />

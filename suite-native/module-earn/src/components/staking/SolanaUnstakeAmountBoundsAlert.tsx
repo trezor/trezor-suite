@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { createAssetId } from '@suite-common/asset-types';
 import {
     getSolanaUnstakeAmountBounds,
     selectBaseCurrency,
@@ -82,6 +83,8 @@ export const SolanaUnstakeAmountBoundsAlert = ({
             ''
         );
 
+    const nativeAssetId = createAssetId({ networkSymbol: account.symbol });
+
     return (
         <BannerInline
             intent="critical"
@@ -99,7 +102,7 @@ export const SolanaUnstakeAmountBoundsAlert = ({
                                     <>
                                         {bounds.closestHigher}{' '}
                                         <AssetSymbol
-                                            networkSymbol={account.symbol}
+                                            assetId={nativeAssetId}
                                             variant="body-sm-strong"
                                             color="contentCritical"
                                         />
@@ -119,7 +122,7 @@ export const SolanaUnstakeAmountBoundsAlert = ({
                                     <>
                                         {bounds.closestLower}{' '}
                                         <AssetSymbol
-                                            networkSymbol={account.symbol}
+                                            assetId={nativeAssetId}
                                             variant="body-sm-strong"
                                             color="contentCritical"
                                         />

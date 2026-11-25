@@ -9,10 +9,13 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/network-ethereum-types": "workspace:*",
+        "@trezor/network-module-types": "workspace:*",
         "@trezor/type-utils": "workspace:*"
     }
 }

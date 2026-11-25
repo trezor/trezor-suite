@@ -1,3 +1,4 @@
+import { createAssetId } from '@suite-common/asset-types';
 import { Context } from '@suite-common/message-system';
 import { TokenMetadataProvider } from '@suite-common/token';
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
@@ -62,7 +63,11 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                         <Translation
                             id={messages.title}
                             values={{
-                                nativeSymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                                nativeSymbol: (
+                                    <AssetSymbol
+                                        assetId={createAssetId({ networkSymbol: account.symbol })}
+                                    />
+                                ),
                                 wrappedSymbol: wrappedTokenSymbol,
                             }}
                         />

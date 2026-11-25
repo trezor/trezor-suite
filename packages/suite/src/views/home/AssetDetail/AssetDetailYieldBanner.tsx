@@ -4,6 +4,7 @@ import { closeTokenYieldBanner, selectIsTokenYieldBannerClosed } from '@suite/fl
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     selectWalletAssetContractAddress,
     selectWalletAssetNetworkSymbol,
@@ -52,7 +53,7 @@ export const AssetDetailYieldBanner = ({ assetKey }: AssetDetailYieldBannerProps
     }
 
     const symbolLabel = (
-        <AssetSymbol networkSymbol={networkSymbol} contractAddress={contractAddress} isTruncated />
+        <AssetSymbol assetId={createAssetId({ networkSymbol, contractAddress })} isTruncated />
     );
 
     const reportYieldNavigate = (action: 'continue' | 'cancel') =>

@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { type NetworkSymbol, type StakingNetworkType } from '@suite-common/wallet-config';
 import { HandCoinsIcon, PiggyBankIcon, WalletIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
@@ -23,7 +24,7 @@ export const UpdateEarnInANutshellHighlights = ({
     apy,
 }: UpdateEarnInANutshellHighlightsProps) => {
     const formatApyValue = useFormatApy();
-    const networkDisplaySymbol = <AssetSymbol networkSymbol={networkSymbol} />;
+    const networkDisplaySymbol = <AssetSymbol assetId={createAssetId({ networkSymbol })} />;
 
     const highlights: EarnInANutshellHighlight[] = [
         {

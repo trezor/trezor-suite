@@ -2,6 +2,7 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { AssetSymbol } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { createAssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import { AMOUNT_MAX_LENGTH, getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
 import { type StakeFormState } from '@suite-common/wallet-types';
@@ -109,7 +110,9 @@ export const StakeInputs = () => {
     const shouldShowAmountForWithdrawalWarning =
         isLessAmountForWithdrawalWarningShown || isAmountForWithdrawalWarningShown;
 
-    const networkDisplaySymbol = <AssetSymbol networkSymbol={account.symbol} />;
+    const networkDisplaySymbol = (
+        <AssetSymbol assetId={createAssetId({ networkSymbol: account.symbol })} />
+    );
 
     const isFractionButtonDisabled = (divisor: number) => {
         if (!account.formattedBalance || !network.decimals) return false;

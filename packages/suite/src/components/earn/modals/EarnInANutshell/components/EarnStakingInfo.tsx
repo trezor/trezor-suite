@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -71,7 +72,11 @@ const EthereumStakingRows = ({
             subheading={
                 <Translation
                     id="TR_EARN_STAKING_GETTING_READY"
-                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
+                    values={{
+                        networkDisplaySymbol: (
+                            <AssetSymbol assetId={createAssetId({ networkSymbol })} />
+                        ),
+                    }}
                 />
             }
             content={{
@@ -99,7 +104,11 @@ const SolanaStakingRows = ({ flow, networkSymbol, apy }: EarnStakingRowsProps) =
             subheading={
                 <Translation
                     id="TR_EARN_STAKE_WAIT_FOR_ACTIVATION"
-                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
+                    values={{
+                        networkDisplaySymbol: (
+                            <AssetSymbol assetId={createAssetId({ networkSymbol })} />
+                        ),
+                    }}
                 />
             }
             content={{

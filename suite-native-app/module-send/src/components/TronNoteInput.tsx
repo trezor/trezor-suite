@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
+import { createAssetId } from '@suite-common/asset-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { AssetSymbol } from '@suite-native/assets';
 import {
@@ -56,6 +57,8 @@ export const TronNoteInput = ({ symbol }: TronNoteInputProps) => {
         closeModal();
     };
 
+    const nativeAssetId = createAssetId({ networkSymbol: symbol });
+
     return (
         <>
             {value ? (
@@ -87,7 +90,10 @@ export const TronNoteInput = ({ symbol }: TronNoteInputProps) => {
                                     id="moduleSend.tron.note.info"
                                     values={{
                                         networkDisplaySymbol: (
-                                            <AssetSymbol networkSymbol={symbol} variant="body-sm" />
+                                            <AssetSymbol
+                                                assetId={nativeAssetId}
+                                                variant="body-sm"
+                                            />
                                         ),
                                     }}
                                 />
@@ -120,7 +126,7 @@ export const TronNoteInput = ({ symbol }: TronNoteInputProps) => {
                                 id="moduleSend.tron.note.info"
                                 values={{
                                     networkDisplaySymbol: (
-                                        <AssetSymbol networkSymbol={symbol} variant="body-sm" />
+                                        <AssetSymbol assetId={nativeAssetId} variant="body-sm" />
                                     ),
                                 }}
                             />

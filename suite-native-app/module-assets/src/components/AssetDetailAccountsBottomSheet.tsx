@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { createAssetId } from '@suite-common/asset-types';
 import {
     type HomeAssetTableState,
     selectWalletAssetHoldings,
@@ -74,8 +75,10 @@ export const AssetDetailAccountsBottomSheet = ({ ref }: AssetDetailAccountsBotto
                         assetName: (
                             <AssetSymbol
                                 isTruncated
-                                networkSymbol={networkSymbol}
-                                contractAddress={tokenContract}
+                                assetId={createAssetId({
+                                    networkSymbol,
+                                    contractAddress: tokenContract,
+                                })}
                                 variant="body-sm"
                                 color="contentSecondary"
                             />

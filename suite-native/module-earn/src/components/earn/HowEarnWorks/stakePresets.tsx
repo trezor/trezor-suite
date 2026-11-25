@@ -1,3 +1,4 @@
+import { createAssetId } from '@suite-common/asset-types';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { AssetSymbol } from '@suite-native/assets';
@@ -45,6 +46,8 @@ export const useHowStakeWorksPreset = ({
             ? 'earn.howStakeWorksScreen.unstakeTimeline.second.description'
             : 'earn.notAvailable';
 
+    const nativeAssetId = createAssetId({ networkSymbol: symbol });
+
     return {
         benefitItems: [
             {
@@ -68,7 +71,7 @@ export const useHowStakeWorksPreset = ({
                         id="earn.howStakeWorksScreen.benefits.second.title"
                         values={{
                             displaySymbol: (
-                                <AssetSymbol networkSymbol={symbol} variant="body-md-strong" />
+                                <AssetSymbol assetId={nativeAssetId} variant="body-md-strong" />
                             ),
                         }}
                     />
@@ -172,7 +175,7 @@ export const useHowStakeWorksPreset = ({
                                 values={{
                                     symbol: (
                                         <AssetSymbol
-                                            networkSymbol={symbol}
+                                            assetId={nativeAssetId}
                                             variant="body-sm-strong"
                                         />
                                     ),
@@ -191,7 +194,7 @@ export const useHowStakeWorksPreset = ({
                                 values={{
                                     symbol: (
                                         <AssetSymbol
-                                            networkSymbol={symbol}
+                                            assetId={nativeAssetId}
                                             variant="body-sm-strong"
                                         />
                                     ),

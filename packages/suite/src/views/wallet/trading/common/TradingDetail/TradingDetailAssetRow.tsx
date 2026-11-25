@@ -6,6 +6,7 @@ import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
 import { AssetIcon, AssetName } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import {
     type NetworksRootState,
@@ -63,6 +64,8 @@ export const TradingDetailAssetRow = ({
         return null;
     }
 
+    const assetId = createAssetId({ networkSymbol, contractAddress: tokenContract });
+
     return (
         <Column width="100%" gap={8} data-testid={`${testIdPrefix}-info`}>
             <Row justifyContent="space-between">
@@ -100,18 +103,10 @@ export const TradingDetailAssetRow = ({
             ) : (
                 <Row gap={8} justifyContent="space-between">
                     <Row gap={8} alignItems="center">
-                        <AssetIcon
-                            size={40}
-                            networkSymbol={networkSymbol}
-                            contractAddress={tokenContract}
-                            showNetworkIcon={showNetwork}
-                        />
+                        <AssetIcon size={40} assetId={assetId} showNetworkIcon={showNetwork} />
                         <Column alignItems="start">
                             <Text data-testid={`${testIdPrefix}-asset-name`}>
-                                <AssetName
-                                    networkSymbol={networkSymbol}
-                                    contractAddress={tokenContract}
-                                />
+                                <AssetName assetId={assetId} />
                             </Text>
                             {showNetwork && (
                                 <Text

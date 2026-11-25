@@ -1,4 +1,5 @@
 import { AssetIcon, AssetSymbol } from '@suite/assets';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     type TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     type TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
@@ -26,20 +27,13 @@ export function AssetPickerInputContent({ value }: AssetPickerInputContentProps)
     const { networkSymbol } = value;
     const { contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(value.id);
 
+    const assetId = createAssetId({ networkSymbol, contractAddress });
+
     return (
         <Row gap={8} alignItems="center">
-            <AssetIcon
-                size={24}
-                networkSymbol={networkSymbol}
-                contractAddress={contractAddress}
-                showNetworkIcon
-            />
+            <AssetIcon size={24} assetId={assetId} showNetworkIcon />
             <span data-testid="@asset-picker/display-symbol">
-                <AssetSymbol
-                    networkSymbol={networkSymbol}
-                    contractAddress={contractAddress}
-                    isTruncated
-                />
+                <AssetSymbol assetId={assetId} isTruncated />
             </span>
         </Row>
     );

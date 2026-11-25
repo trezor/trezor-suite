@@ -1,23 +1,18 @@
 import { AssetName, AssetSymbol } from '@suite/assets';
+import { type AssetId, parseAssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import { selectIsNativeTokenNetworkNameRedundant } from '@suite-common/networks';
-import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Badge, Column, Row, Text } from '@trezor/components';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 type AssetDetailsProps = {
-    networkSymbol: NetworkSymbol;
-    contractAddress?: TokenAddress;
+    assetId: AssetId;
     isDisabled?: boolean;
 };
 
-export function AssetDetails({
-    networkSymbol,
-    contractAddress,
-    isDisabled = false,
-}: AssetDetailsProps) {
+export function AssetDetails({ assetId, isDisabled = false }: AssetDetailsProps) {
+    const { networkSymbol, contractAddress } = parseAssetId(assetId);
     const { NetworkNameFormatter } = useFormatters();
     const isNetworkNameRedundant = useSelector(state =>
         selectIsNativeTokenNetworkNameRedundant(state, networkSymbol),
@@ -32,7 +27,7 @@ export function AssetDetails({
                 maxWidth="100%"
                 isDisabled={isDisabled}
             >
-                <AssetName networkSymbol={networkSymbol} contractAddress={contractAddress} />
+                <AssetName assetId={assetId} />
             </Text>
             <Row gap={8} alignItems="center">
                 <Text
@@ -41,7 +36,7 @@ export function AssetDetails({
                     priority="secondary"
                     isDisabled={isDisabled}
                 >
-                    <AssetSymbol networkSymbol={networkSymbol} contractAddress={contractAddress} />
+                    <AssetSymbol assetId={assetId} />
                 </Text>
                 {shouldShowNetworkBadge && (
                     <Badge size="small">

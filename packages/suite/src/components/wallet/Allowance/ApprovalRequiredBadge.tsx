@@ -2,6 +2,7 @@ import { type CryptoId } from 'invity-api';
 
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
 import { Icon, Row, Text, Tooltip } from '@trezor/components';
 import { LockIcon } from '@trezor/icons';
@@ -13,7 +14,7 @@ type ApprovalRequiredBadgeProps = {
 export const ApprovalRequiredBadge = ({ cryptoId }: ApprovalRequiredBadgeProps) => {
     const { networkSymbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
     const symbol = networkSymbol && (
-        <AssetSymbol networkSymbol={networkSymbol} contractAddress={contractAddress} isTruncated />
+        <AssetSymbol assetId={createAssetId({ networkSymbol, contractAddress })} isTruncated />
     );
 
     return (

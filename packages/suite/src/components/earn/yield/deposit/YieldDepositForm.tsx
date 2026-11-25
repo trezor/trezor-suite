@@ -2,6 +2,7 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
+import { createAssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -344,6 +345,8 @@ export const YieldDepositForm = () => {
         retryInitAllowance();
     };
 
+    const nativeAssetId = createAssetId({ networkSymbol: account.symbol });
+
     return (
         <>
             <Column width="100%" alignItems="center">
@@ -396,9 +399,7 @@ export const YieldDepositForm = () => {
                                     <Translation
                                         id="TR_EARN_YIELD_WRAP_TITLE"
                                         values={{
-                                            nativeSymbol: (
-                                                <AssetSymbol networkSymbol={account.symbol} />
-                                            ),
+                                            nativeSymbol: <AssetSymbol assetId={nativeAssetId} />,
                                             tokenSymbol: token.symbol,
                                         }}
                                     />
@@ -407,9 +408,7 @@ export const YieldDepositForm = () => {
                                     <Translation
                                         id="TR_EARN_YIELD_WRAP_DESCRIPTION"
                                         values={{
-                                            nativeSymbol: (
-                                                <AssetSymbol networkSymbol={account.symbol} />
-                                            ),
+                                            nativeSymbol: <AssetSymbol assetId={nativeAssetId} />,
                                         }}
                                     />
                                 ),

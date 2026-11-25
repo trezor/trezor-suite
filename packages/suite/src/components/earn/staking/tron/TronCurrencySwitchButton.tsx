@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Rate } from '@suite-common/wallet-types';
 import { TextButton } from '@trezor/components';
@@ -22,7 +23,11 @@ export const TronCurrencySwitchButton = ({
     if (!rate?.rate) return null;
 
     const currencySymbol =
-        currency === 'crypto' ? fiatCurrencySymbol : <AssetSymbol networkSymbol={networkSymbol} />;
+        currency === 'crypto' ? (
+            fiatCurrencySymbol
+        ) : (
+            <AssetSymbol assetId={createAssetId({ networkSymbol })} />
+        );
 
     const onToggle = () => {
         const newCurrency = currency === 'crypto' ? 'fiat' : 'crypto';

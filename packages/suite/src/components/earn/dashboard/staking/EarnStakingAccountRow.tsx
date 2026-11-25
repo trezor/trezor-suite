@@ -3,6 +3,7 @@ import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
+import { createAssetId } from '@suite-common/asset-types';
 import { useFormatters } from '@suite-common/formatters';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
@@ -210,7 +211,9 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                     amount: minStakingAmount
                         ? formatCryptoAmount(minStakingAmount.toString())
                         : undefined,
-                    displaySymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                    displaySymbol: (
+                        <AssetSymbol assetId={createAssetId({ networkSymbol: account.symbol })} />
+                    ),
                 }}
             />
         </Paragraph>

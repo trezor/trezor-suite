@@ -1,5 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { createAssetId } from '@suite-common/asset-types';
 import {
     type HiddenTokenReason,
     selectWalletAssetContractAddress,
@@ -75,8 +76,10 @@ export const UnhideAssetModal = ({ assetKey, reason, onCancel }: UnhideAssetModa
                     values={{
                         asset: networkSymbol && (
                             <AssetSymbol
-                                networkSymbol={networkSymbol}
-                                contractAddress={contractAddress}
+                                assetId={createAssetId({
+                                    networkSymbol,
+                                    contractAddress,
+                                })}
                                 isTruncated
                             />
                         ),

@@ -1,8 +1,16 @@
 import { type ComponentProps } from 'react';
 
+import { type AssetId, parseAssetId } from '@suite-common/asset-types';
 import { TokenIcon } from '@suite-native/tokens';
 
-type AssetIconProps = ComponentProps<typeof TokenIcon>;
+type AssetIconProps = Omit<
+    ComponentProps<typeof TokenIcon>,
+    'networkSymbol' | 'contractAddress'
+> & {
+    assetId: AssetId;
+};
 
 /** The icon of a native token or a token, with a token's placeholder resolved from its metadata. */
-export const AssetIcon = (props: AssetIconProps) => <TokenIcon {...props} />;
+export const AssetIcon = ({ assetId, ...props }: AssetIconProps) => (
+    <TokenIcon {...parseAssetId(assetId)} {...props} />
+);

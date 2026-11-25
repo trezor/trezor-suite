@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { createAssetId } from '@suite-common/asset-types';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import {
     type StakingRootState,
@@ -57,6 +58,8 @@ export const AssetDetailStakingRewardsBanner = ({
         : formattedRewards;
     const isAprRate = rateKind === 'apr';
 
+    const nativeAssetId = createAssetId({ networkSymbol });
+
     return (
         <EarnPromoBanner
             symbol={networkSymbol}
@@ -66,9 +69,7 @@ export const AssetDetailStakingRewardsBanner = ({
                         id="moduleAssets.assetDetailScreen.stakingBanner.titleApr"
                         values={{
                             apr: formattedRate,
-                            symbol: (
-                                <AssetSymbol networkSymbol={networkSymbol} color="contentBrand" />
-                            ),
+                            symbol: <AssetSymbol assetId={nativeAssetId} color="contentBrand" />,
                         }}
                     />
                 ) : (
@@ -76,9 +77,7 @@ export const AssetDetailStakingRewardsBanner = ({
                         id="moduleAssets.assetDetailScreen.stakingBanner.title"
                         values={{
                             apy: formattedRate,
-                            symbol: (
-                                <AssetSymbol networkSymbol={networkSymbol} color="contentBrand" />
-                            ),
+                            symbol: <AssetSymbol assetId={nativeAssetId} color="contentBrand" />,
                         }}
                     />
                 )
@@ -95,7 +94,7 @@ export const AssetDetailStakingRewardsBanner = ({
                             potentialRewards: displayedRewards,
                             symbol: (
                                 <AssetSymbol
-                                    networkSymbol={networkSymbol}
+                                    assetId={nativeAssetId}
                                     variant="body-sm"
                                     color="contentBrand"
                                 />
@@ -108,7 +107,7 @@ export const AssetDetailStakingRewardsBanner = ({
                         values={{
                             symbol: (
                                 <AssetSymbol
-                                    networkSymbol={networkSymbol}
+                                    assetId={nativeAssetId}
                                     variant="body-sm"
                                     color="contentBrand"
                                 />

@@ -3,6 +3,7 @@ import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { openDeferredModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
+import { createAssetId } from '@suite-common/asset-types';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import { type EarnModalAction } from '@suite-common/suite-types/src/staking';
 import { type Account, supportedTronNetworkSymbols } from '@suite-common/wallet-types';
@@ -95,7 +96,9 @@ export const TronStakeInANutshellModal = ({
         });
     };
 
-    const displaySymbol = <AssetSymbol networkSymbol={supportedTronNetworkSymbols[0]} />;
+    const displaySymbol = (
+        <AssetSymbol assetId={createAssetId({ networkSymbol: supportedTronNetworkSymbols[0] })} />
+    );
     const networkFeeBadge = { text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true };
 
     const processes: EarnInANutshellProcess[] = [

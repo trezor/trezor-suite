@@ -1,3 +1,4 @@
+import { createAssetId } from '@suite-common/asset-types';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { AssetSymbol } from '@suite-native/assets';
@@ -21,8 +22,7 @@ export const YieldWithdrawWarning = ({
 }: YieldWithdrawWarningProps) => {
     const vaultTokenSymbol = (
         <AssetSymbol
-            networkSymbol={networkSymbol}
-            contractAddress={tokenContract}
+            assetId={createAssetId({ networkSymbol, contractAddress: tokenContract })}
             variant="body-sm"
             color="contentInfo"
         />
