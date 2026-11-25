@@ -1090,9 +1090,12 @@ describe(`${Preloader.name} component`, () => {
             type: events.onboardingStepViewedEvent.name,
             payload: { stepName: 'security-check', stepIndex: 1, platform: 'desktop' },
         });
-        expect(services.analytics.report).not.toHaveBeenCalledWith(
-            expect.objectContaining({ type: desktopEvents.deviceSetupStartedEvent.name }),
-            expect.anything(),
+        expect(services.analytics.report).toHaveBeenCalledWith(
+            {
+                type: desktopEvents.deviceSetupStartedEvent.name,
+                payload: { deviceModel: DeviceModelInternal.T3B1 },
+            },
+            { force: true },
         );
         expect(screen.getByTestId('@onboarding/stepper/device')).toHaveAttribute(
             'aria-current',

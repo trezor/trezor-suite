@@ -80,9 +80,7 @@ export const startOnboardingThunk = createThunk<
     dispatch(goToStep(initialStepId));
     if (!isRecoveryInProgress || shouldRestart) {
         dispatch(updateAnalytics({ startTime: Date.now() }));
-    }
 
-    if (initialStepId === STEP.ID_FIRMWARE_STEP) {
         extra.services.analytics.report(
             {
                 type: events.deviceSetupStartedEvent.name,

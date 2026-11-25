@@ -165,8 +165,9 @@ describe('startOnboardingThunk', () => {
             onboardingAnalytics: { startTime: 123, seed: 'recovery-in-progress' },
         };
 
-        const { state } = await runStartOnboarding(initial);
+        const { state, analytics } = await runStartOnboarding(initial);
 
+        expect(analytics.report).not.toHaveBeenCalled();
         expect(state.onboarding.path).toEqual(['recovery']);
         expect(state.onboarding.onboardingAnalytics).toEqual(
             initial.onboarding.onboardingAnalytics,
