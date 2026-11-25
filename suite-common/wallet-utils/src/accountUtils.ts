@@ -127,6 +127,10 @@ const getAccountTypePrefix = (path: string) => {
         case `501'`: {
             return 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE';
         }
+        // Bitcoin Cash addresses are displayed in CashAddr format.
+        case `145'`: {
+            return 'TR_ACCOUNT_TYPE_BIP44_CASHADDR';
+        }
         default:
             return null;
     }
@@ -207,19 +211,39 @@ export const getAccountTypeName = ({ path, accountType, networkType }: getAccoun
     return 'TR_ACCOUNT_TYPE_BIP44_NAME';
 };
 
-export const getAccountTypeTech = (path: Bip43PathTemplate, networkType: NetworkType) => {
+type getAccountTypeTechProps = {
+    path: Bip43PathTemplate;
+    networkType: NetworkType;
+    accountType?: AccountType;
+};
+
+export const getAccountTypeTech = ({ path, networkType, accountType }: getAccountTypeTechProps) => {
     const accountTypePrefix = getAccountTypePrefix(path);
     if (accountTypePrefix) return `${accountTypePrefix}_TECH` as const;
 
     // Only Bitcoin-like networks have address scripts (P2PKH); others use their own encoding.
     switch (networkType) {
         case 'ethereum':
-            return 'TR_ACCOUNT_TYPE_BIP44_HEX_TECH';
+            // Same account types as `getAccountTypeName` and `getAccountTypeDesc`.
+            switch (accountType) {
+                case 'ledger':
+                    return 'TR_ACCOUNT_TYPE_LEDGER_HEX_TECH';
+                case 'legacy':
+                    return 'TR_ACCOUNT_TYPE_LEGACY_HEX_TECH';
+                default:
+                    return 'TR_ACCOUNT_TYPE_BIP44_HEX_TECH';
+            }
         case 'stellar':
             return 'TR_ACCOUNT_TYPE_BIP44_STRKEY_TECH';
         case 'ripple':
         case 'tron':
             return 'TR_ACCOUNT_TYPE_BIP44_BASE58_TECH';
+        case 'bitcoin':
+        case 'cardano':
+        case 'solana':
+            break;
+        default:
+            return exhaustive(networkType);
     }
 
     const bip43 = getBip43Type(path);
@@ -228,8 +252,6 @@ export const getAccountTypeTech = (path: Bip43PathTemplate, networkType: Network
     if (bip43 === 'bip49') return 'TR_ACCOUNT_TYPE_BIP49_TECH';
     if (bip43 === 'shelley') return 'TR_ACCOUNT_TYPE_SHELLEY';
     if (bip43 === 'slip25') return 'TR_ACCOUNT_TYPE_SLIP25_TECH';
-    // Bitcoin Cash addresses are displayed in CashAddr format.
-    if (path.split('/')[2] === `145'`) return 'TR_ACCOUNT_TYPE_BIP44_CASHADDR_TECH';
 
     return 'TR_ACCOUNT_TYPE_BIP44_TECH';
 };

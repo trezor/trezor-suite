@@ -112,9 +112,7 @@ describe('account utils', () => {
         });
 
         it('keeps its technical description', () => {
-            expect(getAccountTypeTech(slip25Account.path, slip25Account.networkType)).toBe(
-                'TR_ACCOUNT_TYPE_SLIP25_TECH',
-            );
+            expect(getAccountTypeTech(slip25Account)).toBe('TR_ACCOUNT_TYPE_SLIP25_TECH');
         });
     });
 
@@ -127,7 +125,6 @@ describe('account utils', () => {
             ["m/86'/0'/i'", 'bitcoin', 'TR_ACCOUNT_TYPE_BIP86_TECH'],
             ["m/44'/145'/i'", 'bitcoin', 'TR_ACCOUNT_TYPE_BIP44_CASHADDR_TECH'],
             ["m/44'/60'/0'/0/i", 'ethereum', 'TR_ACCOUNT_TYPE_BIP44_HEX_TECH'],
-            ["m/44'/60'/i'/0/0", 'ethereum', 'TR_ACCOUNT_TYPE_BIP44_HEX_TECH'],
             ["m/44'/61'/0'/0/i", 'ethereum', 'TR_ACCOUNT_TYPE_BIP44_HEX_TECH'],
             ["m/44'/148'/i'", 'stellar', 'TR_ACCOUNT_TYPE_BIP44_STRKEY_TECH'],
             ["m/44'/144'/i'/0/0", 'ripple', 'TR_ACCOUNT_TYPE_BIP44_BASE58_TECH'],
@@ -135,8 +132,21 @@ describe('account utils', () => {
             ["m/44'/501'/i'/0'", 'solana', 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_TECH'],
             ["m/1852'/1815'/i'", 'cardano', 'TR_ACCOUNT_TYPE_SHELLEY'],
         ] as const)('returns technical description for %s on %s', (path, networkType, result) => {
-            expect(getAccountTypeTech(path, networkType)).toBe(result);
+            expect(getAccountTypeTech({ path, networkType })).toBe(result);
         });
+
+        it.each([
+            ["m/44'/60'/0'/0/i", 'normal', 'TR_ACCOUNT_TYPE_BIP44_HEX_TECH'],
+            ["m/44'/60'/i'/0/0", 'ledger', 'TR_ACCOUNT_TYPE_LEDGER_HEX_TECH'],
+            ["m/44'/60'/0'/i", 'legacy', 'TR_ACCOUNT_TYPE_LEGACY_HEX_TECH'],
+        ] as const)(
+            'returns technical description for %s %s Ethereum account',
+            (path, accountType, result) => {
+                expect(getAccountTypeTech({ path, networkType: 'ethereum', accountType })).toBe(
+                    result,
+                );
+            },
+        );
     });
 
     it('format network amount', () => {

@@ -4697,6 +4697,14 @@ export const messages = defineMessages({
         id: 'TR_ACCOUNT_TYPE_BIP44_HEX_TECH',
         defaultMessage: 'BIP44, Hex',
     },
+    TR_ACCOUNT_TYPE_LEDGER_HEX_TECH: {
+        id: 'TR_ACCOUNT_TYPE_LEDGER_HEX_TECH',
+        defaultMessage: 'Ledger Wallet, Hex',
+    },
+    TR_ACCOUNT_TYPE_LEGACY_HEX_TECH: {
+        id: 'TR_ACCOUNT_TYPE_LEGACY_HEX_TECH',
+        defaultMessage: 'Ledger Legacy, Hex',
+    },
     TR_ACCOUNT_TYPE_BIP44_STRKEY_TECH: {
         id: 'TR_ACCOUNT_TYPE_BIP44_STRKEY_TECH',
         defaultMessage: 'BIP44, StrKey',
