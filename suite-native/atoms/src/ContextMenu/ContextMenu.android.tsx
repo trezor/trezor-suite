@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Pressable } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 
-import { DropdownMenu, DropdownMenuItem, Host, RNHostView, Text } from '@expo/ui/jetpack-compose';
+import { DropdownMenu, DropdownMenuItem, Host, Text } from '@expo/ui/jetpack-compose';
+import { fillMaxSize } from '@expo/ui/jetpack-compose/modifiers';
 
 import type { ContextMenuProps } from './ContextMenu.types';
 
@@ -17,29 +18,33 @@ export const ContextMenu = ({ actions, children, style }: ContextMenuProps) => {
     };
 
     return (
-        <Host matchContents style={style}>
-            <DropdownMenu expanded={isMenuExpanded} onDismissRequest={handleDismissMenu}>
-                <DropdownMenu.Trigger>
-                    <RNHostView matchContents>
-                        <Pressable onLongPress={handleLongPress}>{children}</Pressable>
-                    </RNHostView>
-                </DropdownMenu.Trigger>
-                <DropdownMenu.Items>
-                    {actions.map(({ label, onPress }) => (
-                        <DropdownMenuItem
-                            key={label}
-                            onClick={() => {
-                                handleDismissMenu();
-                                void onPress();
-                            }}
-                        >
-                            <DropdownMenuItem.Text>
-                                <Text>{label}</Text>
-                            </DropdownMenuItem.Text>
-                        </DropdownMenuItem>
-                    ))}
-                </DropdownMenu.Items>
-            </DropdownMenu>
-        </Host>
+        <Pressable onLongPress={handleLongPress} style={style}>
+            {children}
+            {/* The children stay in the React Native tree so Yoga keeps constraining them (text
+            truncation, flex shrinking). The host only overlays them as the menu anchor. */}
+            <Host pointerEvents="none" style={StyleSheet.absoluteFill}>
+                <DropdownMenu
+                    expanded={isMenuExpanded}
+                    onDismissRequest={handleDismissMenu}
+                    modifiers={[fillMaxSize()]}
+                >
+                    <DropdownMenu.Items>
+                        {actions.map(({ label, onPress }) => (
+                            <DropdownMenuItem
+                                key={label}
+                                onClick={() => {
+                                    handleDismissMenu();
+                                    void onPress();
+                                }}
+                            >
+                                <DropdownMenuItem.Text>
+                                    <Text>{label}</Text>
+                                </DropdownMenuItem.Text>
+                            </DropdownMenuItem>
+                        ))}
+                    </DropdownMenu.Items>
+                </DropdownMenu>
+            </Host>
+        </Pressable>
     );
 };
