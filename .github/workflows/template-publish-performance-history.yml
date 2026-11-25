@@ -2,7 +2,8 @@ name: "Reusable Publish Performance History"
 
 # Publishes one run's performance history to S3. See docs/tests/perf-history.md.
 # The caller sets `needs`, `if`, `permissions` and `concurrency`; `timeout-minutes` is an input
-# because a reusable-workflow caller cannot set it.
+# because a reusable-workflow caller cannot set it. On a pull request the caller also grants
+# `pull-requests: write`, so the run's dashboard link lands in the PR's performance comment.
 on:
   workflow_call:
     inputs:
@@ -67,6 +68,8 @@ jobs:
           PERF_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           PERF_SEAL_BASELINE: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/develop' }}
           PUBLISH_COMMAND: ${{ inputs.publish-command }}
+          # Read only on a pull request, to link the results from its performance comment.
+          GITHUB_TOKEN: ${{ github.token }}
         run: eval "$PUBLISH_COMMAND"
 
       - name: Configure AWS credentials
@@ -87,7 +90,11 @@ jobs:
           if [ -d "$BUNDLE/runs" ]; then
             aws s3 cp --recursive --no-progress "$BUNDLE/runs/" "$DESTINATION/runs/"
           fi
-          aws s3 cp --recursive --no-progress --exclude "runs/*" "$BUNDLE/" "$DESTINATION/"
+          # Indexes and baselines are rewritten in place and read back by the next run, which may be
+          # minutes later on a pull request, so no cache may hold an older copy.
+          aws s3 cp --recursive --no-progress --exclude "runs/*" \
+            --cache-control "no-cache, max-age=0" \
+            "$BUNDLE/" "$DESTINATION/"
 
       - name: Publish the dashboard
         if: ${{ hashFiles('perf-upload/**') != '' }}

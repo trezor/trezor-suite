@@ -337,6 +337,7 @@ jobs:
     permissions:
       id-token: write # to assume the dev-deploy role
       contents: read
+      pull-requests: write # to link the results from the PR's performance comment
     concurrency:
       group: publish-performance-history-web-${{ github.ref }}
       cancel-in-progress: false

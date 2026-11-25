@@ -2,8 +2,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import type { PerfRun, PerfRunContext, PerfUploadFile } from './store';
-import { STORE_PREFIX, buildUploadBundle, indexKey, isRollingIndex, publicUrl } from './store';
+import { PERF_REPORT_MARKER, formatDashboardSection, perfReportComment } from './markdown';
+import type { PerfPlatform, PerfRun, PerfRunContext, PerfUploadFile } from './store';
+import { STORE_PREFIX, buildUploadBundle, dashboardUrl, indexKey, publicUrl } from './store';
 import { fetchStoreText } from './storeReader';
 
 /**
@@ -114,22 +115,18 @@ export const publishRuns = async ({
         return { status: 'skipped', reason: 'no runs to publish' };
     }
 
-    // A branch appends to its rolling index, so what is already there is read back first — over
-    // plain HTTPS, because the objects are public. Absent is the normal state of a first run.
+    // A run appends to its branch's or pull request's index, so what is already there is read back
+    // first — over plain HTTPS, because the objects are public. Absent is the normal state of a first
+    // run.
     //
     // One publish can cover several platforms, and each keeps its own index, so every one of them is
     // read separately. Reading a single file and reusing its contents for the rest would write one
     // platform's history into another platform's index.
     const indexKeys = [...new Set(runs.map(run => indexKey(run.context)))];
-    const rollingKeys = [
-        ...new Set(
-            runs.filter(run => isRollingIndex(run.context)).map(run => indexKey(run.context)),
-        ),
-    ];
     const existingIndex: Record<string, string> = {};
     const unreadableKeys = new Set<string>();
 
-    for (const key of rollingKeys) {
+    for (const key of indexKeys) {
         const url = publicUrl(key);
         const existing = await fetchStoreText(url);
 
@@ -163,6 +160,104 @@ export const publishRuns = async ({
     return { status: 'written', files, indexUrls };
 };
 
+/** What one platform contributed to a written bundle, for the links printed after it. */
+export type PublishedPlatform = {
+    platform: PerfPlatform;
+    measurementCount: number;
+    dashboardUrl: string;
+};
+
+/**
+ * The platforms whose index this bundle writes. One whose index could not be read back is left out:
+ * its rows are not in the store, so a link to them would show nothing new.
+ */
+export const listPublishedPlatforms = (
+    runs: readonly PerfRun[],
+    files: readonly PerfUploadFile[],
+): PublishedPlatform[] => {
+    const writtenKeys = new Set(files.map(file => file.path));
+    const byPlatform = new Map<PerfPlatform, PublishedPlatform>();
+
+    for (const run of runs) {
+        if (!writtenKeys.has(indexKey(run.context))) continue;
+
+        const { platform, prNumber, branch } = run.context;
+        const previous = byPlatform.get(platform);
+
+        byPlatform.set(platform, {
+            platform,
+            measurementCount: (previous?.measurementCount ?? 0) + run.measurements.length,
+            dashboardUrl: dashboardUrl(prNumber ? { platform, prNumber } : { platform, branch }),
+        });
+    }
+
+    return [...byPlatform.values()];
+};
+
+export type UpsertPrCommentParams = {
+    marker: string;
+    buildBody: (existingBody: string | undefined) => string;
+    holdsOwnContent?: (body: string) => boolean;
+    createIfMissing?: boolean;
+};
+
+/** Structurally `upsertStickyPrComment` of `@trezor/e2e-utils`, which this package does not depend on. */
+export type UpsertPrComment = (params: UpsertPrCommentParams) => Promise<string>;
+
+export type PublishFromCiOptions = {
+    /** Given on pull requests' publish jobs: links this run's results from the PR's perf comment. */
+    upsertPrComment?: UpsertPrComment;
+};
+
+/** The section label of one platform's dashboard link in the shared perf comment. */
+const dashboardSectionLabel = (platform: PerfPlatform) => `dashboard / ${platform}`;
+
+type LinkOnPullRequestParams = {
+    published: readonly PublishedPlatform[];
+    identity: PerfRunIdentity;
+    upsertPrComment: UpsertPrComment;
+};
+
+/**
+ * Started if it is not there yet: unlike the per-job sections, which only ever amend a comment an
+ * over-limit flow began, a published run is always worth a line — it is where the numbers are.
+ */
+const linkOnPullRequest = async ({
+    published,
+    identity,
+    upsertPrComment,
+}: LinkOnPullRequestParams) => {
+    const sections = published.map(entry => ({
+        label: dashboardSectionLabel(entry.platform),
+        section: formatDashboardSection({
+            ...entry,
+            commitId: identity.commitId,
+            runUrl: identity.runUrl,
+        }),
+    }));
+    const result = await upsertPrComment({
+        marker: PERF_REPORT_MARKER,
+        buildBody: existingBody =>
+            sections.reduce<string | undefined>(
+                (body, { label, section }) =>
+                    perfReportComment({ existingBody: body, label, section }),
+                existingBody,
+            ) ?? '',
+        holdsOwnContent: body => sections.every(({ section }) => body.includes(section)),
+        createIfMissing: true,
+    });
+
+    console.log(`[performance] Pull request comment: ${result}.`);
+};
+
+const writeStepSummary = (lines: readonly string[]) => {
+    const summaryPath = process.env.GITHUB_STEP_SUMMARY;
+
+    if (!summaryPath) return;
+
+    fs.appendFileSync(summaryPath, `### Performance history\n\n${lines.join('\n')}\n\n`);
+};
+
 /**
  * The CI entry point of every platform: reads the job's environment, lets the platform map its
  * downloaded shard artifacts to runs, and writes the bundle. Never throws, so it can never fail
@@ -170,6 +265,7 @@ export const publishRuns = async ({
  */
 export const publishFromCi = async (
     collectRuns: (artifactsDir: string, identity: PerfRunIdentity) => PerfRun[],
+    { upsertPrComment }: PublishFromCiOptions = {},
 ): Promise<void> => {
     try {
         const identity = resolveRunIdentity(process.env);
@@ -183,14 +279,45 @@ export const publishFromCi = async (
         }
 
         const artifactsDir = path.resolve(process.env.PERF_ARTIFACTS_DIR || 'perf-artifacts');
+        const runs = collectRuns(artifactsDir, identity);
         const outcome = await publishRuns({
-            runs: collectRuns(artifactsDir, identity),
+            runs,
             bundleRoot: path.resolve(process.env.PERF_BUNDLE_DIR || 'perf-upload'),
             sealBaseline: process.env.PERF_SEAL_BASELINE === 'true',
         });
 
         if (outcome.status === 'skipped') {
             console.log(`[performance] Nothing published from ${artifactsDir}: ${outcome.reason}.`);
+            // A green job that uploaded nothing reads as a success otherwise.
+            writeStepSummary([
+                `Nothing published: ${outcome.reason}. Only tests that call \`perf.measure\` record history.`,
+            ]);
+
+            return;
+        }
+
+        const published = listPublishedPlatforms(runs, outcome.files);
+
+        for (const entry of published) {
+            console.log(`[performance] Dashboard (${entry.platform}): ${entry.dashboardUrl}`);
+        }
+        writeStepSummary(
+            published.map(
+                entry =>
+                    `- **${entry.platform}**: ${entry.measurementCount} measurement(s) — [dashboard](${entry.dashboardUrl})`,
+            ),
+        );
+
+        // The comment links what the upload step is about to write: the bundle is uploaded right
+        // after this script, and a failed upload fails the job, which is visible on the PR anyway.
+        if (identity.prNumber && upsertPrComment && published.length > 0) {
+            try {
+                await linkOnPullRequest({ published, identity, upsertPrComment });
+            } catch (error) {
+                console.log(
+                    `[performance] Could not link the results on the pull request: ${error instanceof Error ? error.message : String(error)}`,
+                );
+            }
         }
     } catch (error) {
         console.log(

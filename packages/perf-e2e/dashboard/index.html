@@ -18,6 +18,10 @@
                 --line: #e4e4e7;
                 --panel: #fafafa;
                 --accent: #0a7;
+                --pr: #2f62d6;
+                --better: #0a7a4a;
+                --worse: #c23b1c;
+                --flash: #fff4c2;
             }
             @media (prefers-color-scheme: dark) {
                 :root {
@@ -26,6 +30,10 @@
                     --muted: #9a9aa2;
                     --line: #26262b;
                     --panel: #161619;
+                    --pr: #7aa2ff;
+                    --better: #3ccf8e;
+                    --worse: #ff7a5c;
+                    --flash: #3a3420;
                 }
             }
             * {
@@ -76,7 +84,27 @@
                 color: var(--fg);
                 border: 1px solid var(--line);
                 border-radius: 5px;
-                min-width: 11rem;
+                min-width: 8rem;
+            }
+            input#pr {
+                min-width: 0;
+                width: 7rem;
+            }
+            .summary {
+                border: 1px solid var(--line);
+                border-left: 3px solid var(--pr);
+                border-radius: 8px;
+                padding: 0.75rem 1rem;
+                margin-bottom: 1.25rem;
+            }
+            .summary h2 {
+                font-size: 0.95rem;
+                margin: 0 0 0.35rem;
+            }
+            .summary p {
+                margin: 0.25rem 0 0;
+                color: var(--muted);
+                font-size: 12px;
             }
             .card {
                 border: 1px solid var(--line);
@@ -84,32 +112,70 @@
                 padding: 1rem;
                 margin-bottom: 1.25rem;
                 background: var(--panel);
+                min-width: 0;
             }
             .card h2 {
                 font-size: 0.95rem;
                 margin: 0 0 0.1rem;
+                overflow-wrap: anywhere;
             }
-            .card .meta {
+            .meta {
                 color: var(--muted);
                 font-size: 12px;
                 margin: 0 0 0.75rem;
             }
-            .card .note {
+            .note {
                 color: var(--muted);
                 font-size: 11px;
                 margin: 0.5rem 0 0;
             }
-            svg {
-                display: block;
-                width: 100%;
-                height: auto;
+            .legend {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.25rem 1rem;
+                color: var(--muted);
+                font-size: 11px;
+                margin: 0 0 0.35rem;
             }
-            .axis {
+            .legend svg {
+                display: inline-block;
+                width: 22px;
+                height: 10px;
+                vertical-align: middle;
+                margin-right: 0.3rem;
+            }
+            .plot {
+                display: grid;
+                grid-template-columns: auto minmax(0, 1fr);
+                column-gap: 0.4rem;
+            }
+            .yaxis {
+                position: relative;
+                text-align: right;
+                color: var(--muted);
+                font-size: 11px;
+                font-variant-numeric: tabular-nums;
+            }
+            .yaxis .sizer {
+                visibility: hidden;
+            }
+            .yaxis .tick {
+                position: absolute;
+                right: 0;
+                transform: translateY(-50%);
+            }
+            .xaxis {
+                grid-column: 2;
                 display: flex;
                 justify-content: space-between;
                 color: var(--muted);
                 font-size: 11px;
                 margin-top: 0.2rem;
+            }
+            svg.chart {
+                display: block;
+                width: 100%;
+                height: auto;
             }
             .grid {
                 stroke: var(--line);
@@ -120,8 +186,18 @@
                 stroke: var(--accent);
                 stroke-width: 2;
             }
+            .series.pr {
+                stroke: var(--pr);
+                stroke-dasharray: 6 4;
+            }
+            .reference {
+                stroke: var(--accent);
+                stroke-width: 1;
+                stroke-dasharray: 2 4;
+            }
             .dot {
                 fill: var(--accent);
+                cursor: pointer;
             }
             /* Hollow, not a second hue: a traced run is the same measurement recorded differently,
                and the difference has to survive a colourblind reader and a black-and-white print. */
@@ -129,6 +205,18 @@
                 fill: var(--bg);
                 stroke: var(--accent);
                 stroke-width: 2;
+            }
+            /* A square, not only a second hue, for the same reason. */
+            .dot.pr {
+                fill: var(--pr);
+            }
+            .dot.pr.profiled {
+                fill: var(--bg);
+                stroke: var(--pr);
+            }
+            .table-wrap {
+                overflow-x: auto;
+                margin-top: 0.75rem;
             }
             table {
                 border-collapse: collapse;
@@ -138,7 +226,7 @@
             th,
             td {
                 border-bottom: 1px solid var(--line);
-                padding: 0.45rem 0.55rem;
+                padding: 0.4rem 0.55rem;
                 text-align: left;
                 white-space: nowrap;
             }
@@ -147,9 +235,30 @@
                 color: var(--muted);
                 font-size: 12px;
             }
+            th.n,
             td.n {
                 text-align: right;
                 font-variant-numeric: tabular-nums;
+            }
+            td.better {
+                color: var(--better);
+            }
+            td.worse {
+                color: var(--worse);
+            }
+            tr.pr td:first-child {
+                box-shadow: inset 3px 0 0 var(--pr);
+            }
+            tr.flash td {
+                background: var(--flash);
+            }
+            details {
+                margin-top: 0.75rem;
+            }
+            summary {
+                cursor: pointer;
+                color: var(--muted);
+                font-size: 12px;
             }
             code {
                 font-size: 12px;
@@ -165,13 +274,28 @@
             a {
                 color: var(--accent);
             }
+            @media (max-width: 40rem) {
+                body {
+                    padding: 1.25rem 1rem 3rem;
+                }
+                form > label {
+                    flex: 1 1 9rem;
+                }
+                select,
+                input,
+                input#pr {
+                    width: 100%;
+                    min-width: 0;
+                }
+            }
         </style>
     </head>
     <body>
         <main>
             <h1>Suite performance history</h1>
             <p class="sub">
-                Read straight from the object store — no server, no credentials. One point per run.
+                Read straight from the object store — no server, no credentials. One point per
+                measurement per run; open “data points” under a chart for the numbers behind it.
             </p>
 
             <form id="controls">
@@ -185,12 +309,29 @@
                     </select>
                 </label>
                 <label
-                    >Branch
+                    ><span id="branch-label">Branch</span>
                     <input id="branch" value="develop" spellcheck="false" />
+                </label>
+                <label
+                    >Pull request
+                    <input
+                        id="pr"
+                        inputmode="numeric"
+                        placeholder="e.g. 35380"
+                        spellcheck="false"
+                    />
                 </label>
                 <label
                     >Metric
                     <select id="metric"></select>
+                </label>
+                <label
+                    >Branch runs
+                    <select id="range">
+                        <option value="30">last 30</option>
+                        <option value="90">last 90</option>
+                        <option value="all">all</option>
+                    </select>
                 </label>
             </form>
 
@@ -198,17 +339,48 @@
         </main>
 
         <script>
+            const REPOSITORY_URL = 'https://github.com/trezor/trezor-suite';
+            /** How many of the branch's latest comparable runs make the reference a PR is read against. */
+            const REFERENCE_RUNS = 5;
+            /** A change smaller than this reads as run-to-run noise rather than better or worse. */
+            const NOISE_RATIO = 0.05;
+            const PLATFORMS = ['web', 'desktop', 'android', 'ios'];
+            const RANGES = ['30', '90', 'all'];
+
             const $ = id => document.getElementById(id);
             const params = new URLSearchParams(location.search);
+            const pick = (value, allowed, fallback) => (allowed.includes(value) ? value : fallback);
+            /** Digits only: the number becomes a path segment and a GitHub link. */
+            const cleanPr = value =>
+                /^\d{1,9}$/.test(String(value ?? '').trim()) ? String(value).trim() : '';
+
             const state = {
-                platform: params.get('platform') || 'web',
+                platform: pick(params.get('platform'), PLATFORMS, 'web'),
                 branch: params.get('branch') || 'develop',
+                pr: cleanPr(params.get('pr')),
                 metric: params.get('metric') || '',
-                rows: [],
+                range: pick(params.get('range'), RANGES, '30'),
+                branchRows: [],
+                prRows: [],
             };
 
-            const indexUrl = () =>
-                `../index/${encodeURIComponent(state.platform)}/${state.branch.replace(/\//g, '__')}/index.ndjson`;
+            /** Same rule as `slugify` in `@trezor/perf-e2e`'s store, which wrote the keys. */
+            const slugify = value => {
+                const flat = String(value)
+                    .replace(/[^\w.\-/]+/g, '-')
+                    .replace(/\//g, '__');
+                let start = 0;
+                let end = flat.length;
+                while (start < end && flat[start] === '-') start += 1;
+                while (end > start && flat[end - 1] === '-') end -= 1;
+
+                return flat.slice(start, end).slice(0, 80) || 'unknown';
+            };
+
+            const branchIndexUrl = () =>
+                `../index/${encodeURIComponent(state.platform)}/${slugify(state.branch)}/index.ndjson`;
+            const prIndexUrl = () =>
+                `../index/${encodeURIComponent(state.platform)}/pr/${state.pr}/index.ndjson`;
 
             /** A line the file holds that we cannot parse is dropped, never allowed to blank the page. */
             const parse = text =>
@@ -218,13 +390,32 @@
                     .filter(Boolean)
                     .flatMap(line => {
                         try {
-                            return [JSON.parse(line)];
+                            const row = JSON.parse(line);
+
+                            return row && typeof row === 'object' ? [row] : [];
                         } catch {
                             return [];
                         }
                     });
 
+            const fetchRows = async url => {
+                try {
+                    const response = await fetch(url, { cache: 'no-cache' });
+
+                    return response.ok ? parse(await response.text()) : [];
+                } catch {
+                    return [];
+                }
+            };
+
             const key = row => (row.variant ? `${row.scenario} [${row.variant}]` : row.scenario);
+            const time = row => Date.parse(row.ts ?? '') || 0;
+            const byTime = (a, b) => time(a) - time(b);
+            const valueOf = row => {
+                const value = row.metrics?.[state.metric];
+
+                return typeof value === 'number' && Number.isFinite(value) ? value : null;
+            };
 
             const fmt = value =>
                 value === null || value === undefined
@@ -232,9 +423,35 @@
                     : Math.abs(value) >= 100
                       ? Math.round(value).toLocaleString()
                       : String(Math.round(value * 10) / 10);
+            const when = row => ((row.ts ?? '').slice(0, 16) || '?').replace('T', ' ');
+            const day = ms => new Date(ms).toISOString().slice(0, 10);
+
+            const median = values => {
+                const sorted = values.filter(v => v !== null).toSorted((a, b) => a - b);
+                if (sorted.length === 0) return null;
+                const middle = Math.floor(sorted.length / 2);
+
+                return sorted.length % 2
+                    ? sorted[middle]
+                    : (sorted[middle - 1] + sorted[middle]) / 2;
+            };
 
             /**
-             * Everything on this page is built as nodes, never as a string of HTML: the branch comes
+             * Every metric we record is a cost — a duration, a count of long tasks or commits — so
+             * lower is better. A change within the noise band gets no verdict.
+             */
+            const delta = (current, reference) => {
+                if (current === null || reference === null || reference === 0) return null;
+                const ratio = (current - reference) / Math.abs(reference);
+                const verdict = Math.abs(ratio) < NOISE_RATIO ? '' : ratio < 0 ? 'better' : 'worse';
+                const arrow = verdict === 'better' ? '▼ ' : verdict === 'worse' ? '▲ ' : '';
+                const sign = ratio > 0 ? '+' : '';
+
+                return { text: `${arrow}${sign}${Math.round(ratio * 1000) / 10} %`, verdict };
+            };
+
+            /**
+             * Everything on this page is built as nodes, never as a string of HTML: the inputs come
              * from the query string and the rest comes from objects in a bucket, and `innerHTML`
              * would run whatever either of them contained. `textContent` and `setAttribute` cannot.
              */
@@ -244,11 +461,14 @@
                 const node = ns ? document.createElementNS(ns, tag) : document.createElement(tag);
 
                 for (const [name, value] of Object.entries(props ?? {})) {
-                    if (value === undefined || value === null) continue;
+                    if (value === undefined || value === null || value === false) continue;
                     if (name === 'text') node.textContent = String(value);
+                    else if (name === 'onclick') node.addEventListener('click', value);
                     else node.setAttribute(name, String(value));
                 }
-                node.append(...(children ?? []));
+                node.append(
+                    ...(children ?? []).filter(child => child !== null && child !== undefined),
+                );
 
                 return node;
             };
@@ -256,188 +476,620 @@
             const el = (tag, props, children) => make(null, tag, props, children);
             const svg = (tag, props, children) => make(SVG_NS, tag, props, children);
 
-            /**
-             * One series per card, titled by its scenario, so it needs no legend. The domain is the
-             * data's own range, padded: anchoring a duration trend at zero flattens exactly the
-             * movement this chart exists to show. Both ends are labelled so the range is never
-             * implied. A real pixel viewBox, not a stretched unit square - `preserveAspectRatio:
-             * none` would render the point markers as ellipses.
-             */
-            const W = 600;
-            const H = 140;
-            const PAD = 10;
+            /** Stored values never choose a link's scheme or host: only GitHub runs and store keys. */
+            const runHref = row => {
+                if (typeof row.runUrl === 'string' && row.runUrl.startsWith(`${REPOSITORY_URL}/`)) {
+                    return row.runUrl;
+                }
 
-            const chart = points => {
-                const values = points.map(p => p.value).filter(v => v !== null);
-                if (values.length === 0) return [];
+                return /^\d+$/.test(String(row.run ?? ''))
+                    ? `${REPOSITORY_URL}/actions/runs/${row.run}`
+                    : null;
+            };
+            const commitHref = row =>
+                /^[0-9a-f]{7,40}$/i.test(String(row.commitId ?? ''))
+                    ? `${REPOSITORY_URL}/commit/${row.commitId}`
+                    : null;
+            const blobHref = row =>
+                typeof row.blob?.key === 'string' && /^runs\/[\w.\-/]+$/.test(row.blob.key)
+                    ? `../${row.blob.key}`
+                    : null;
+            const link = (href, text) => (href ? el('a', { href, text }) : el('span', { text }));
+
+            const pointId = (cardIndex, row) =>
+                `p-${cardIndex}-${slugify(`${row.source}-${row.run}-${row.attempt}-${row.shard}`)}`;
+
+            const flashRow = id => {
+                const row = $(id);
+                if (!row) return;
+                row.closest('details')?.setAttribute('open', '');
+                row.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                row.classList.add('flash');
+                setTimeout(() => row.classList.remove('flash'), 1600);
+            };
+
+            /**
+             * Time on the x axis, so a pull request's pushes sit among the branch runs they were
+             * measured beside. The y domain is the data's own range, padded: anchoring a duration
+             * at zero flattens exactly the movement this chart exists to show. A real pixel viewBox
+             * as wide as the card, not a stretched unit square, so the markers stay round and square
+             * and a phone gets a chart as tall as a desktop does.
+             */
+            const H = 160;
+            const PAD = 10;
+            const chartWidth = () => Math.max(240, Math.round(($('out').clientWidth || 600) - 90));
+
+            const chart = ({ cardIndex, branchPoints, prPoints, reference }) => {
+                const W = chartWidth();
+                const all = [...branchPoints, ...prPoints].filter(p => p.value !== null);
+                if (all.length === 0) {
+                    return [
+                        el('p', {
+                            class: 'note',
+                            text: `No ${state.metric} values in these runs.`,
+                        }),
+                    ];
+                }
+                const values = [
+                    ...all.map(p => p.value),
+                    ...(reference === null ? [] : [reference]),
+                ];
                 const lo = Math.min(...values);
                 const hi = Math.max(...values);
                 const pad = (hi - lo) * 0.15 || Math.abs(hi) * 0.1 || 1;
                 const min = lo - pad;
                 const span = hi + pad - min;
-                const x = i =>
-                    points.length === 1 ? W / 2 : PAD + (i / (points.length - 1)) * (W - 2 * PAD);
+                const times = all.map(time);
+                const t0 = Math.min(...times);
+                const tSpan = Math.max(...times) - t0;
+                const x = p =>
+                    tSpan === 0 ? W / 2 : PAD + ((time(p) - t0) / tSpan) * (W - 2 * PAD);
                 const y = v => H - PAD - ((v - min) / span) * (H - 2 * PAD);
-                const drawn = points
-                    .map((p, i) => (p.value === null ? null : `${x(i)},${y(p.value)}`))
-                    .filter(Boolean);
+                const line = (points, cls) =>
+                    svg('polyline', {
+                        class: cls,
+                        points: points
+                            .filter(p => p.value !== null)
+                            .map(p => `${x(p)},${y(p.value)}`)
+                            .join(' '),
+                    });
+                const marker = (p, isPr) => {
+                    const cls = `dot${isPr ? ' pr' : ''}${p.profiled ? ' profiled' : ''}`;
+                    const label = `${fmt(p.value)} — ${p.source} · ${String(p.commitId).slice(0, 9)} · ${when(p)}${p.profiled ? ' · profiled' : ''}`;
+                    const props = {
+                        class: cls,
+                        tabindex: 0,
+                        role: 'button',
+                        'aria-label': label,
+                        onclick: () => flashRow(pointId(cardIndex, p)),
+                    };
+                    const shape = isPr
+                        ? svg('rect', {
+                              ...props,
+                              x: x(p) - 4.5,
+                              y: y(p.value) - 4.5,
+                              width: 9,
+                              height: 9,
+                          })
+                        : svg('circle', { ...props, cx: x(p), cy: y(p.value), r: 4 });
+                    shape.append(svg('title', { text: label }));
+                    shape.addEventListener('keydown', event => {
+                        if (event.key === 'Enter' || event.key === ' ')
+                            flashRow(pointId(cardIndex, p));
+                    });
+
+                    return shape;
+                };
 
                 const plot = svg(
                     'svg',
                     {
+                        class: 'chart',
                         viewBox: `0 0 ${W} ${H}`,
                         role: 'img',
-                        'aria-label': `trend over ${points.length} run(s)`,
+                        'aria-label': `${state.metric} over ${all.length} point(s)`,
                     },
                     [
-                        svg('line', { class: 'grid', x1: 0, y1: H - PAD, x2: W, y2: H - PAD }),
-                        svg('polyline', { class: 'series', points: drawn.join(' ') }),
-                        ...points.flatMap((p, i) =>
-                            p.value === null
-                                ? []
-                                : [
-                                      svg(
-                                          'circle',
-                                          {
-                                              class: `dot${p.profiled ? ' profiled' : ''}`,
-                                              cx: x(i),
-                                              cy: y(p.value),
-                                              r: 4,
-                                          },
-                                          [
-                                              svg('title', {
-                                                  text: `${fmt(p.value)} — ${String(p.commitId).slice(0, 9)} (run ${p.run})${p.profiled ? ' · profiled' : ''}`,
-                                              }),
-                                          ],
-                                      ),
-                                  ],
-                        ),
+                        svg('line', { class: 'grid', x1: 0, y1: y(hi), x2: W, y2: y(hi) }),
+                        svg('line', { class: 'grid', x1: 0, y1: y(lo), x2: W, y2: y(lo) }),
+                        reference === null
+                            ? null
+                            : svg('line', {
+                                  class: 'reference',
+                                  x1: 0,
+                                  y1: y(reference),
+                                  x2: W,
+                                  y2: y(reference),
+                              }),
+                        line(branchPoints, 'series'),
+                        line(prPoints, 'series pr'),
+                        ...branchPoints.filter(p => p.value !== null).map(p => marker(p, false)),
+                        ...prPoints.filter(p => p.value !== null).map(p => marker(p, true)),
                     ],
                 );
 
-                const axis = el('div', { class: 'axis' }, [
-                    el('span', { text: 'oldest' }),
-                    el('span', { text: `${fmt(lo)} – ${fmt(hi)}` }),
-                    el('span', { text: 'newest' }),
-                ]);
-
-                return points.some(p => p.profiled)
-                    ? [
-                          plot,
-                          axis,
-                          el('p', {
-                              class: 'note',
-                              text: 'Hollow points were recorded under Lighthouse tracing, which costs the app time: a step where the markers change is the tracer, not the app.',
-                          }),
-                      ]
-                    : [plot, axis];
+                return [
+                    el('div', { class: 'plot' }, [
+                        el('div', { class: 'yaxis', 'aria-hidden': 'true' }, [
+                            el('span', {
+                                class: 'sizer',
+                                text: [fmt(hi), fmt(lo)].sort((a, b) => b.length - a.length)[0],
+                            }),
+                            el('span', {
+                                class: 'tick',
+                                style: `top:${(y(hi) / H) * 100}%`,
+                                text: fmt(hi),
+                            }),
+                            el('span', {
+                                class: 'tick',
+                                style: `top:${(y(lo) / H) * 100}%`,
+                                text: fmt(lo),
+                            }),
+                        ]),
+                        plot,
+                        el('div', { class: 'xaxis' }, [
+                            el('span', { text: day(t0) }),
+                            el('span', { text: tSpan === 0 ? '' : day(t0 + tSpan) }),
+                        ]),
+                    ]),
+                ];
             };
 
-            const metricRow = (metric, last) =>
-                el('tr', {}, [
-                    el('td', { text: metric }),
-                    el('td', { class: 'n', text: fmt(last.metrics[metric]) }),
-                    el(
-                        'td',
-                        {},
-                        // The key is a path under this prefix, never a whole URL, so a stored value
-                        // cannot choose the scheme.
-                        last.blob
-                            ? [el('a', { href: `../${last.blob.key}`, text: last.blob.kind })]
-                            : [],
-                    ),
+            const legend = ({ hasPr, hasReference, hasProfiled }) =>
+                el('div', { class: 'legend' }, [
+                    el('span', {}, [
+                        svg('svg', { viewBox: '0 0 22 10', 'aria-hidden': 'true' }, [
+                            svg('line', { class: 'series', x1: 0, y1: 5, x2: 22, y2: 5 }),
+                            svg('circle', { class: 'dot', cx: 11, cy: 5, r: 3.5 }),
+                        ]),
+                        state.branch,
+                    ]),
+                    hasPr
+                        ? el('span', {}, [
+                              svg('svg', { viewBox: '0 0 22 10', 'aria-hidden': 'true' }, [
+                                  svg('line', { class: 'series pr', x1: 0, y1: 5, x2: 22, y2: 5 }),
+                                  svg('rect', { class: 'dot pr', x: 7, y: 1, width: 8, height: 8 }),
+                              ]),
+                              `PR #${state.pr}`,
+                          ])
+                        : null,
+                    hasReference
+                        ? el('span', {}, [
+                              svg('svg', { viewBox: '0 0 22 10', 'aria-hidden': 'true' }, [
+                                  svg('line', { class: 'reference', x1: 0, y1: 5, x2: 22, y2: 5 }),
+                              ]),
+                              `${state.branch} median of last ${REFERENCE_RUNS}`,
+                          ])
+                        : null,
+                    hasProfiled
+                        ? el('span', { text: 'hollow = recorded under Lighthouse tracing' })
+                        : null,
                 ]);
 
-            const card = (name, rows) => {
-                const points = rows.map(r => ({
-                    value: r.metrics?.[state.metric] ?? null,
-                    commitId: r.commitId ?? '',
-                    run: r.run ?? '',
-                    profiled: r.profiled === true,
-                }));
+            const cell = (text, cls) => el('td', { class: cls, text });
+            const deltaCell = d => (d ? cell(d.text, `n ${d.verdict}`) : cell('—', 'n'));
+
+            /** Every metric of the scenario, the PR's latest push against the branch and its own first push. */
+            const comparisonTable = ({ metrics, referenceRows, prRows }) => {
+                const first = prRows[0];
+                const last = prRows.at(-1);
+                const head = [
+                    'metric',
+                    'PR latest',
+                    `vs ${state.branch}`,
+                    'vs first',
+                    `${state.branch} (median)`,
+                    'PR first',
+                ];
+
+                return el('div', { class: 'table-wrap' }, [
+                    el('table', {}, [
+                        el(
+                            'tr',
+                            {},
+                            head.map((text, i) => el('th', { class: i ? 'n' : null, text })),
+                        ),
+                        ...metrics.map(metric => {
+                            const read = row => {
+                                const v = row?.metrics?.[metric];
+
+                                return typeof v === 'number' && Number.isFinite(v) ? v : null;
+                            };
+                            const reference = median(referenceRows.map(read));
+                            const firstValue = read(first);
+                            const lastValue = read(last);
+
+                            return el('tr', {}, [
+                                cell(metric),
+                                cell(fmt(lastValue), 'n'),
+                                deltaCell(delta(lastValue, reference)),
+                                deltaCell(prRows.length > 1 ? delta(lastValue, firstValue) : null),
+                                cell(fmt(reference), 'n'),
+                                cell(prRows.length > 1 ? fmt(firstValue) : '—', 'n'),
+                            ]);
+                        }),
+                    ]),
+                ]);
+            };
+
+            /** Every metric of the scenario on the branch: the latest run and the spread behind it. */
+            const latestTable = ({ metrics, rows }) => {
                 const last = rows.at(-1);
-                const metrics = Object.keys(last.metrics ?? {});
-                const when = ((last.ts ?? '').slice(0, 19) || '?').replace('T', ' ');
+                const recent = rows.slice(-REFERENCE_RUNS);
+                const head = [
+                    'metric',
+                    'latest',
+                    'vs median',
+                    `median of last ${recent.length}`,
+                    'min',
+                    'max',
+                ];
+
+                return el('div', { class: 'table-wrap' }, [
+                    el('table', {}, [
+                        el(
+                            'tr',
+                            {},
+                            head.map((text, i) => el('th', { class: i ? 'n' : null, text })),
+                        ),
+                        ...metrics.map(metric => {
+                            const values = rows
+                                .map(row => row.metrics?.[metric])
+                                .filter(v => typeof v === 'number' && Number.isFinite(v));
+                            const latest = last.metrics?.[metric] ?? null;
+                            const reference = median(
+                                recent.map(row => row.metrics?.[metric] ?? null),
+                            );
+
+                            return el('tr', {}, [
+                                cell(metric),
+                                cell(fmt(latest), 'n'),
+                                deltaCell(recent.length > 1 ? delta(latest, reference) : null),
+                                cell(fmt(reference), 'n'),
+                                cell(fmt(values.length ? Math.min(...values) : null), 'n'),
+                                cell(fmt(values.length ? Math.max(...values) : null), 'n'),
+                            ]);
+                        }),
+                    ]),
+                ]);
+            };
+
+            /** Newest first, one row per point on the chart, each linking to what produced it. */
+            const pointsTable = ({ cardIndex, points }) => {
+                const head = [
+                    'when (UTC)',
+                    'source',
+                    'commit',
+                    'run',
+                    'shard',
+                    'samples',
+                    state.metric,
+                    'Δ prev',
+                    '',
+                ];
+                const ordered = points.toSorted(byTime).map((p, i, list) => {
+                    const previous = list.slice(0, i).findLast(q => q.source === p.source);
+
+                    return { p, d: previous ? delta(p.value, previous.value) : null };
+                });
+
+                return el('details', {}, [
+                    el('summary', { text: `Data points (${points.length})` }),
+                    el('div', { class: 'table-wrap' }, [
+                        el('table', {}, [
+                            el(
+                                'tr',
+                                {},
+                                head.map((text, i) =>
+                                    el('th', { class: i >= 5 && i <= 7 ? 'n' : null, text }),
+                                ),
+                            ),
+                            ...ordered
+                                .toReversed()
+                                .map(({ p, d }) =>
+                                    el(
+                                        'tr',
+                                        { id: pointId(cardIndex, p), class: p.isPr ? 'pr' : null },
+                                        [
+                                            cell(when(p)),
+                                            cell(p.source),
+                                            el('td', {}, [
+                                                link(
+                                                    commitHref(p),
+                                                    String(p.commitId ?? '').slice(0, 9) || '?',
+                                                ),
+                                            ]),
+                                            el('td', {}, [
+                                                link(
+                                                    runHref(p),
+                                                    `${p.run ?? '?'}${p.attempt && p.attempt !== '1' ? ` #${p.attempt}` : ''}`,
+                                                ),
+                                            ]),
+                                            cell(p.shard ?? '?'),
+                                            cell(p.samples ?? '?', 'n'),
+                                            cell(`${fmt(p.value)}${p.profiled ? ' ◌' : ''}`, 'n'),
+                                            deltaCell(d),
+                                            el('td', {}, [
+                                                blobHref(p) ? link(blobHref(p), p.blob.kind) : null,
+                                            ]),
+                                        ],
+                                    ),
+                                ),
+                        ]),
+                    ]),
+                    points.some(p => p.profiled)
+                        ? el('p', { class: 'note', text: '◌ recorded under Lighthouse tracing.' })
+                        : null,
+                ]);
+            };
+
+            const metricsOf = rows =>
+                [...new Set(rows.flatMap(row => Object.keys(row.metrics ?? {})))].sort();
+
+            const limitRange = rows =>
+                state.range === 'all' ? rows : rows.slice(-Number(state.range));
+
+            const branchCard = (name, rows, cardIndex) => {
+                const shown = limitRange(rows);
+                const points = shown.map(row => ({
+                    ...row,
+                    source: state.branch,
+                    isPr: false,
+                    value: valueOf(row),
+                }));
+                const last = shown.at(-1);
 
                 return el('section', { class: 'card' }, [
                     el('h2', { text: name }),
                     el('p', {
                         class: 'meta',
-                        text: `${rows.length} run(s) · last ${when}Z · ${last.samples ?? '?'} sample(s) · shard ${last.shard ?? '?'}`,
+                        text: `${shown.length} of ${rows.length} run(s) · last ${when(last)} UTC · ${last.samples ?? '?'} sample(s) · shard ${last.shard ?? '?'}`,
                     }),
-                    ...chart(points),
-                    el('table', {}, [
-                        el('tr', {}, [
-                            el('th', { text: 'metric' }),
-                            el('th', { style: 'text-align:right', text: 'latest' }),
-                            el('th'),
-                        ]),
-                        ...metrics.map(metric => metricRow(metric, last)),
+                    legend({
+                        hasPr: false,
+                        hasReference: false,
+                        hasProfiled: points.some(p => p.profiled),
+                    }),
+                    ...chart({ cardIndex, branchPoints: points, prPoints: [], reference: null }),
+                    latestTable({ metrics: metricsOf([last]), rows: shown }),
+                    pointsTable({ cardIndex, points }),
+                ]);
+            };
+
+            /**
+             * Traced and untraced numbers measure the same thing differently, so the branch is read
+             * only through the runs recorded the way the PR's latest one was.
+             */
+            const prCard = (name, prRows, branchRows, cardIndex) => {
+                const profiled = prRows.at(-1).profiled === true;
+                const comparable = branchRows.filter(row => (row.profiled === true) === profiled);
+                const hidden = branchRows.length - comparable.length;
+                const shown = limitRange(comparable);
+                const referenceRows = comparable.slice(-REFERENCE_RUNS);
+                const reference = median(referenceRows.map(valueOf));
+                const branchPoints = shown.map(row => ({
+                    ...row,
+                    source: state.branch,
+                    isPr: false,
+                    value: valueOf(row),
+                }));
+                const prPoints = prRows.map(row => ({
+                    ...row,
+                    source: `PR #${state.pr}`,
+                    isPr: true,
+                    value: valueOf(row),
+                }));
+                const last = prRows.at(-1);
+
+                return el('section', { class: 'card' }, [
+                    el('h2', { text: name }),
+                    el('p', {
+                        class: 'meta',
+                        text: `${prRows.length} PR run(s) · latest ${when(last)} UTC at ${String(last.commitId ?? '').slice(0, 9)} · ${comparable.length} comparable ${state.branch} run(s)`,
+                    }),
+                    legend({
+                        hasPr: true,
+                        hasReference: reference !== null,
+                        hasProfiled: [...branchPoints, ...prPoints].some(p => p.profiled),
+                    }),
+                    ...chart({ cardIndex, branchPoints, prPoints, reference }),
+                    comparisonTable({ metrics: metricsOf(prRows), referenceRows, prRows }),
+                    hidden > 0
+                        ? el('p', {
+                              class: 'note',
+                              text: `${hidden} ${state.branch} run(s) hidden: recorded ${profiled ? 'without' : 'under'} Lighthouse tracing, unlike this PR, so their numbers are not comparable.`,
+                          })
+                        : null,
+                    comparable.length === 0
+                        ? el('p', {
+                              class: 'note',
+                              text: `No comparable ${state.branch} run yet, so the PR can only be compared with its own first push.`,
+                          })
+                        : null,
+                    el('p', {
+                        class: 'note',
+                        text: `▼ better, ▲ worse: every metric is a cost. Changes within ±${NOISE_RATIO * 100} % are left unmarked as run-to-run noise.`,
+                    }),
+                    pointsTable({ cardIndex, points: [...branchPoints, ...prPoints] }),
+                ]);
+            };
+
+            const group = rows => {
+                const groups = new Map();
+                for (const row of rows.toSorted(byTime)) {
+                    const k = key(row);
+                    groups.set(k, [...(groups.get(k) ?? []), row]);
+                }
+
+                return groups;
+            };
+
+            const otherPlatformLinks = () =>
+                PLATFORMS.filter(platform => platform !== state.platform).flatMap((platform, i) => {
+                    const query = new URLSearchParams({ platform, pr: state.pr });
+
+                    return [i ? ' · ' : '', el('a', { href: `?${query}`, text: platform })];
+                });
+
+            const prSummary = () => {
+                const runs = new Map();
+                for (const row of state.prRows) {
+                    runs.set(`${row.run}-${row.attempt}`, row);
+                }
+                const pushes = [...runs.values()].toSorted(byTime);
+
+                return el('section', { class: 'summary' }, [
+                    el('h2', {}, [
+                        el('a', {
+                            href: `${REPOSITORY_URL}/pull/${state.pr}`,
+                            text: `PR #${state.pr}`,
+                        }),
+                        ` on ${state.platform}, against ${state.branch}`,
                     ]),
+                    el('p', {}, [
+                        `${pushes.length} run(s): `,
+                        ...pushes.flatMap((row, i) => [
+                            i ? ', ' : '',
+                            link(
+                                runHref(row),
+                                `${String(row.commitId ?? '').slice(0, 9)} (${when(row)})`,
+                            ),
+                        ]),
+                    ]),
+                    el('p', {}, ['Other platforms: ', ...otherPlatformLinks()]),
                 ]);
             };
 
             const render = () => {
                 const out = $('out');
 
-                if (state.rows.length === 0) {
+                if (state.pr) {
+                    if (state.prRows.length === 0) {
+                        out.replaceChildren(
+                            el('p', { class: 'empty' }, [
+                                `No ${state.platform} runs recorded for PR #${state.pr} at `,
+                                el('code', { text: prIndexUrl() }),
+                                '. A pull request publishes only when its e2e run executed a test that calls ',
+                                el('code', { text: 'perf.measure' }),
+                                '. Try another platform: ',
+                                ...otherPlatformLinks(),
+                            ]),
+                        );
+
+                        return;
+                    }
+                    const branchGroups = group(state.branchRows);
+                    const prGroups = group(state.prRows);
+                    const unmeasured = [...branchGroups.keys()].filter(name => !prGroups.has(name));
+
+                    out.replaceChildren(
+                        prSummary(),
+                        ...[...prGroups.entries()].map(([name, rows], i) =>
+                            prCard(name, rows, branchGroups.get(name) ?? [], i),
+                        ),
+                        unmeasured.length
+                            ? el('p', {
+                                  class: 'note',
+                                  text: `Not measured by this PR: ${unmeasured.join(', ')}.`,
+                              })
+                            : null,
+                    );
+
+                    return;
+                }
+
+                if (state.branchRows.length === 0) {
                     out.replaceChildren(
                         el('p', { class: 'empty' }, [
                             'No history at ',
-                            el('code', { text: indexUrl() }),
-                            ' yet. A branch gets an index once a run on it publishes; pull request runs write per-run files instead.',
+                            el('code', { text: branchIndexUrl() }),
+                            ' yet. A branch gets an index once a run on it publishes; for a pull request, fill in its number.',
                         ]),
                     );
 
                     return;
                 }
 
-                const groups = new Map();
-                for (const row of state.rows) {
-                    const k = key(row);
-                    groups.set(k, [...(groups.get(k) ?? []), row]);
-                }
-
                 out.replaceChildren(
-                    ...[...groups.entries()].map(([name, rows]) => card(name, rows)),
+                    ...[...group(state.branchRows).entries()].map(([name, rows], i) =>
+                        branchCard(name, rows, i),
+                    ),
                 );
             };
 
             const fillMetrics = () => {
-                const all = [
-                    ...new Set(state.rows.flatMap(r => Object.keys(r.metrics ?? {}))),
-                ].sort();
+                const all = metricsOf(state.pr ? state.prRows : state.branchRows);
                 const select = $('metric');
                 select.replaceChildren(...all.map(m => el('option', { value: m, text: m })));
-                if (!all.includes(state.metric)) state.metric = all[0] ?? '';
+                // Total blocking time is the headline number wherever it is measured.
+                if (!all.includes(state.metric)) {
+                    state.metric = all.find(m => m.endsWith('totalBlockingTimeMs')) ?? all[0] ?? '';
+                }
                 select.value = state.metric;
+            };
+
+            /** The address always describes the view, so it can be pasted into a PR or a chat. */
+            const syncUrl = () => {
+                const query = new URLSearchParams({ platform: state.platform });
+                if (state.branch !== 'develop') query.set('branch', state.branch);
+                if (state.pr) query.set('pr', state.pr);
+                if (state.metric) query.set('metric', state.metric);
+                if (state.range !== '30') query.set('range', state.range);
+                history.replaceState(null, '', `?${query}`);
+                $('branch-label').textContent = state.pr ? 'Compare with branch' : 'Branch';
             };
 
             const load = async () => {
                 $('out').replaceChildren(el('p', { class: 'empty', text: 'Loading…' }));
-                try {
-                    const response = await fetch(indexUrl());
-                    state.rows = response.ok ? parse(await response.text()) : [];
-                } catch {
-                    state.rows = [];
-                }
+                const [branchRows, prRows] = await Promise.all([
+                    fetchRows(branchIndexUrl()),
+                    state.pr ? fetchRows(prIndexUrl()) : Promise.resolve([]),
+                ]);
+                state.branchRows = branchRows;
+                state.prRows = prRows;
                 fillMetrics();
+                syncUrl();
                 render();
             };
 
             $('platform').value = state.platform;
             $('branch').value = state.branch;
-            $('platform').addEventListener('change', e => {
-                state.platform = e.target.value;
+            $('pr').value = state.pr;
+            $('range').value = state.range;
+            $('controls').addEventListener('submit', event => event.preventDefault());
+            $('platform').addEventListener('change', event => {
+                state.platform = event.target.value;
                 load();
             });
-            $('branch').addEventListener('change', e => {
-                state.branch = e.target.value;
+            $('branch').addEventListener('change', event => {
+                state.branch = event.target.value.trim() || 'develop';
                 load();
             });
-            $('metric').addEventListener('change', e => {
-                state.metric = e.target.value;
+            $('pr').addEventListener('change', event => {
+                state.pr = cleanPr(event.target.value.replace(/^#/, ''));
+                event.target.value = state.pr;
+                load();
+            });
+            $('metric').addEventListener('change', event => {
+                state.metric = event.target.value;
+                syncUrl();
                 render();
+            });
+            $('range').addEventListener('change', event => {
+                state.range = event.target.value;
+                syncUrl();
+                render();
+            });
+
+            let resizeTimer;
+            let renderedWidth = innerWidth;
+            addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    if (innerWidth === renderedWidth) return;
+                    renderedWidth = innerWidth;
+                    render();
+                }, 200);
             });
 
             load();

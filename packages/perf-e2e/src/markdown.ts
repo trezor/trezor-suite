@@ -351,6 +351,31 @@ export const formatCommentSection = (
     ].join('\n');
 };
 
+export type DashboardSectionParams = {
+    platform: string;
+    measurementCount: number;
+    dashboardUrl: string;
+    commitId: string;
+    runUrl?: string;
+};
+
+/**
+ * One line per platform, pointing at every run of this pull request on the dashboard rather than at
+ * this run alone: the page is where a later push can be compared with an earlier one.
+ */
+export const formatDashboardSection = ({
+    platform,
+    measurementCount,
+    dashboardUrl,
+    commitId,
+    runUrl,
+}: DashboardSectionParams): string => {
+    const commit = `\`${commitId.slice(0, 9)}\``;
+    const source = runUrl ? `[${commit}](${runUrl})` : commit;
+
+    return `- 📊 **${escapeHtml(platform)}**: [this pull request on the dashboard](${dashboardUrl}) — ${measurementCount} measurement(s) from ${source}`;
+};
+
 export const perfReportSection = ({
     label,
     section,
