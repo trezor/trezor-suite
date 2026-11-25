@@ -987,6 +987,14 @@ describe(`${Preloader.name} component`, () => {
         });
         const { activeStepId, onboardingAnalytics } = services.store.getState().onboarding;
 
+        const stepViews = () =>
+            jest
+                .mocked(services.analytics.report)
+                .mock.calls.filter(
+                    ([event]) => event.type === events.onboardingStepViewedEvent.name,
+                );
+        expect(stepViews()).toHaveLength(1);
+
         fireEvent.click(screen.getByTestId('@suite/menu/settings'));
 
         expect(services.store.getState().router.route?.name).toBe('settings-index');
@@ -1009,6 +1017,8 @@ describe(`${Preloader.name} component`, () => {
             onboardingAnalytics.startTime,
         );
         expect(screen.getByTestId('@onboarding/device-check/setup-button')).toBeVisible();
+
+        expect(stepViews()).toHaveLength(1);
 
         unmount();
     });

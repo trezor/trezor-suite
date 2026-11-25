@@ -24,7 +24,7 @@ type Attributes = {
 export const onboardingStepViewedEvent: EventDef<Attributes, EventType.OnboardingStepViewed> = {
     name: EventType.OnboardingStepViewed,
     descriptionTrigger:
-        'Fired once when an onboarding step screen is entered. Re-fires on re-entry (e.g. user navigates back and forward), not on re-render. Emitted by both desktop and mobile (suite-native).',
+        'Fired once when an onboarding step screen is entered. Re-fires on re-entry (e.g. user navigates back and forward), not on re-render. Returning from desktop Settings to the same onboarding step does not count as re-entry. Emitted by both desktop and mobile (suite-native).',
     description: `Drives the onboarding funnel — every onboarding step the user lands on during initial device setup produces exactly one event. Steps are model-gated and path-gated (create-new-wallet vs. recover-existing-seed), so not all fire in every session. \`stepName\` is the stable, cross-platform identifier used to build a comparable funnel across platforms; some steps are platform-specific (see below).`,
     changelog: [{ version: '26.6.1', notes: 'added' }],
 

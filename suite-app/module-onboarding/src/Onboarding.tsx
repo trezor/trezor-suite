@@ -1,8 +1,6 @@
 import { type ReactNode, useEffect, useMemo } from 'react';
 
-import { injectDesktopAnalytics } from '@suite/analytics';
 import { gotoThunk, selectRouterApp } from '@suite/router';
-import { events } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
 import { useServices } from '@trezor/dependency-injection';
@@ -19,7 +17,6 @@ import {
     SecurityCheckStep,
     SecurityStep,
     UnexpectedState,
-    getOnboardingStepIndex,
     onboardingSteps,
     selectCanStartOnboarding,
     startOnboardingThunk,
@@ -35,7 +32,7 @@ type OnboardingProps = {
 };
 
 export const Onboarding = ({ sidebar }: OnboardingProps) => {
-    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const { activeStepId, isActive } = useOnboarding();
     const device = useSelector(selectSelectedDevice);
@@ -63,21 +60,6 @@ export const Onboarding = ({ sidebar }: OnboardingProps) => {
             dispatch(startOnboardingThunk());
         }
     }, [dispatch, routerApp, canStartOnboarding, device?.path, device?.features, isActive]);
-
-    // Fires once per step entry. activeStepId is the dep, so it does not fire on
-    // re-render and re-fires on re-entry (e.g. user navigates back and forward).
-    useEffect(() => {
-        if (routerApp !== 'onboarding' || !isActive) return;
-
-        analytics.report({
-            type: events.onboardingStepViewedEvent.name,
-            payload: {
-                stepName: activeStepId,
-                stepIndex: getOnboardingStepIndex(activeStepId),
-                platform: 'desktop',
-            },
-        });
-    }, [activeStepId, analytics, routerApp, isActive]);
 
     const StepComponent = useMemo(() => {
         switch (activeStepId) {

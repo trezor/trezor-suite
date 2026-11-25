@@ -10,7 +10,7 @@ import {
     selectRouterApp,
     selectRouterLoaded,
 } from '@suite/router';
-import { Onboarding } from '@suite-app/module-onboarding';
+import { Onboarding, OnboardingStepAnalytics } from '@suite-app/module-onboarding';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
 import {
     useReportDeviceCompromised,
@@ -144,15 +144,20 @@ export const Preloader = memo(({ children }: PropsWithChildren) => {
         return <DeviceCompromisedScreen />;
     }
 
-    if (isOnboarding || isStartingOnboarding) {
-        return <Onboarding sidebar={<OnboardingSidebar />} />;
-    }
-
-    if (isOnboardingSettings) {
+    if (isOnboarding || isStartingOnboarding || isOnboardingSettings) {
         return (
-            <SuiteLayout sidebar={<OnboardingSidebar />} showGuideButton={!device?.connected}>
-                {children}
-            </SuiteLayout>
+            <OnboardingStepAnalytics>
+                {isOnboarding || isStartingOnboarding ? (
+                    <Onboarding sidebar={<OnboardingSidebar />} />
+                ) : (
+                    <SuiteLayout
+                        sidebar={<OnboardingSidebar />}
+                        showGuideButton={!device?.connected}
+                    >
+                        {children}
+                    </SuiteLayout>
+                )}
+            </OnboardingStepAnalytics>
         );
     }
 
