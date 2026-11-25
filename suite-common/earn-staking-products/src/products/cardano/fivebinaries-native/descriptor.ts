@@ -20,6 +20,7 @@ export const createCardanoFivebinariesNativeProductDescriptor = ({
     messageSystemFeatures,
 }: CreateCardanoFivebinariesNativeProductDescriptorParams): StakingProductDescriptor => {
     const product = {
+        name: 'FiveBinaries Native Staking',
         networkSymbol,
         asset: { kind: 'native' },
         providerId: provider.id,

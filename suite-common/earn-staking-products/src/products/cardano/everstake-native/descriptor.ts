@@ -20,6 +20,7 @@ export const createCardanoEverstakeNativeProductDescriptor = ({
     messageSystemFeatures,
 }: CreateCardanoEverstakeNativeProductDescriptorParams): StakingProductDescriptor => {
     const product = {
+        name: 'Everstake Native Staking',
         networkSymbol,
         asset: { kind: 'native' },
         providerId: provider.id,

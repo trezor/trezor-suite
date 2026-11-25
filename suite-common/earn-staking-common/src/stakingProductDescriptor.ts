@@ -55,6 +55,7 @@ export type StakingRewardsKind = z.infer<typeof stakingRewardsKindSchema>;
 
 export const stakingProductDescriptorObjectSchema = z.strictObject({
     id: stakingProductIdSchema,
+    name: z.string(),
     networkSymbol: networkSymbolSchema,
     asset: stakingProductAssetSchema,
     providerId: stakingProviderIdSchema,

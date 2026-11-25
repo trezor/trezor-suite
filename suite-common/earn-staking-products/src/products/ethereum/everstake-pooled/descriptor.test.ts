@@ -23,6 +23,7 @@ describe('createEthereumEverstakePooledProductDescriptor', () => {
         expect(stakingProductDescriptorSchema.safeParse(descriptor).success).toBe(true);
         expect(descriptor).toMatchObject({
             id,
+            name: 'Everstake Pooled Staking',
             networkSymbol: symbol,
             asset: { kind: 'native' },
             providerId: 'everstake',

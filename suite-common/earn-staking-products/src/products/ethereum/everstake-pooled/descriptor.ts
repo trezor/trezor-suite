@@ -20,6 +20,7 @@ export const createEthereumEverstakePooledProductDescriptor = ({
     deployment,
 }: CreateEthereumEverstakePooledProductDescriptorParams): StakingProductDescriptor => {
     const product = {
+        name: 'Everstake Pooled Staking',
         networkSymbol,
         asset: { kind: 'native' },
         providerId: everstakeProvider.id,

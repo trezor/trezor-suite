@@ -16,6 +16,7 @@ describe('createCardanoFivebinariesNativeProductDescriptor', () => {
         expect(stakingProductDescriptorSchema.safeParse(descriptor).success).toBe(true);
         expect(descriptor).toEqual({
             id: 'ada:ada:fivebinaries:native',
+            name: 'FiveBinaries Native Staking',
             networkSymbol: 'ada',
             asset: { kind: 'native' },
             providerId: 'fivebinaries',

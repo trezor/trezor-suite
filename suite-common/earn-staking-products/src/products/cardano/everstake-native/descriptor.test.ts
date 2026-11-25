@@ -17,6 +17,7 @@ describe('createCardanoEverstakeNativeProductDescriptor', () => {
         expect(stakingProductDescriptorSchema.safeParse(descriptor).success).toBe(true);
         expect(descriptor).toEqual({
             id: 'ada:ada:everstake:native',
+            name: 'Everstake Native Staking',
             networkSymbol: 'ada',
             asset: { kind: 'native' },
             providerId: 'everstake',

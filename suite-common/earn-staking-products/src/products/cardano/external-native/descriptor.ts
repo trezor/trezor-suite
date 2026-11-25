@@ -18,6 +18,7 @@ export const createCardanoExternalNativeProductDescriptor = ({
     messageSystemFeatures,
 }: CreateCardanoExternalNativeProductDescriptorParams): StakingProductDescriptor => {
     const product = {
+        name: 'External Native Staking',
         networkSymbol,
         asset: { kind: 'native' },
         providerId: externalProvider.id,

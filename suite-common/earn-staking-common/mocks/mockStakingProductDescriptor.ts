@@ -8,6 +8,7 @@ import {
 } from '../src';
 
 const defaults: Omit<StakingProductDescriptor, 'id'> = {
+    name: 'Mocked product',
     networkSymbol: asNetworkSymbol('eth'),
     asset: { kind: 'native' },
     providerId: stakingProviderIdSchema.parse('everstake'),

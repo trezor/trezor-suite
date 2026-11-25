@@ -20,6 +20,7 @@ describe('createSolanaNativeDelegationDescriptor', () => {
         expect(stakingProductDescriptorSchema.safeParse(descriptor).success).toBe(true);
         expect(descriptor).toEqual({
             id,
+            name: 'Everstake Native Staking',
             networkSymbol: symbol,
             asset: { kind: 'native' },
             providerId: 'everstake',
