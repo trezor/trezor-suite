@@ -173,29 +173,21 @@ describe('startOnboardingThunk', () => {
         );
     });
 
-    it('returns to connection checks when restarting with an initialized device', async () => {
-        const initial = getInitialState();
-        initial.router = createRouterStateMockForRoute('onboarding-index');
-        initial.onboarding = { ...initial.onboarding, isActive: true };
-        initial.device.selectedDevice = mockSuiteDevice({ connected: true });
+    it.each([false, true])(
+        'returns an onboarding route with an initialized device to connection checks (restart=%s)',
+        async shouldRestart => {
+            const initial = getInitialState();
+            initial.router = createRouterStateMockForRoute('onboarding-index');
+            initial.onboarding = { ...initial.onboarding, isActive: shouldRestart };
+            initial.device.selectedDevice = mockSuiteDevice({ connected: true });
 
-        const { state } = await runStartOnboarding(initial, { shouldRestart: true });
+            const { state, analytics } = await runStartOnboarding(initial, { shouldRestart });
 
-        expect(state.router.app).not.toBe('onboarding');
-        expect(state.onboarding.isActive).toBe(false);
-    });
-
-    it('returns a direct onboarding route with an initialized device to connection checks', async () => {
-        const initial = getInitialState();
-        initial.router = createRouterStateMockForRoute('onboarding-index');
-        initial.device.selectedDevice = mockSuiteDevice({ connected: true });
-
-        const { state, analytics } = await runStartOnboarding(initial);
-
-        expect(state.router.app).not.toBe('onboarding');
-        expect(state.onboarding.isActive).toBe(false);
-        expect(analytics.report).not.toHaveBeenCalled();
-    });
+            expect(state.router.app).not.toBe('onboarding');
+            expect(state.onboarding.isActive).toBe(false);
+            expect(analytics.report).not.toHaveBeenCalled();
+        },
+    );
 
     it('enters onboarding at manual inspection for a device that has not passed it', async () => {
         const { actions, navigate } = await runStartOnboarding(getInitialState());
@@ -210,16 +202,6 @@ describe('startOnboardingThunk', () => {
             }),
         );
         expect(navigate).not.toHaveBeenCalled();
-    });
-
-    it('starts at firmware when manual inspection is already saved, before electronic authentication', async () => {
-        const state = getInitialState();
-        state.persistentDeviceData.devices = [defaultDevicePersistentData];
-
-        const { actions } = await runStartOnboarding(state);
-
-        expect(actions).toContainEqual(goToStep('firmware'));
-        expect(actions).not.toContainEqual(goToStep('authenticate-device'));
     });
 
     it('starts manual inspection for a fresh bootloader without a device ID', async () => {

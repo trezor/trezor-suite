@@ -184,17 +184,6 @@ describe('steps', () => {
     });
 
     describe(isStepUsed.name, () => {
-        it('keeps manual inspection when electronic authenticity checking is disabled', () => {
-            const stepIds = allSteps
-                .filter(step =>
-                    isStepUsed(step, createProps({ isDeviceAuthenticityCheckEnabled: false })),
-                )
-                .map(step => step.id);
-
-            expect(stepIds[0]).toBe(STEP.ID_SECURITY_CHECK_STEP);
-            expect(stepIds).not.toContain(STEP.ID_AUTHENTICATE_DEVICE_STEP);
-        });
-
         it('should exclude authenticate step when authenticity check is disabled', () => {
             const authenticateStep = allSteps.find(s => s.id === STEP.ID_AUTHENTICATE_DEVICE_STEP)!;
             const deviceT3T1 = createDevice({

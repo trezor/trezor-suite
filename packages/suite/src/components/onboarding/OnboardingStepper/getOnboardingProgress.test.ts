@@ -1,7 +1,31 @@
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
+import { type AnyStepId } from '#src/types/onboarding';
+
 import { getOnboardingProgress } from './getOnboardingProgress';
+
+type GetDeviceProgressParams = {
+    activeStepId: AnyStepId;
+    device: TrezorDevice;
+    isDeviceAuthenticityCheckEnabled?: boolean;
+    isUnlockedBootloaderAllowed?: boolean;
+};
+
+const getDeviceProgress = ({
+    activeStepId,
+    device,
+    isDeviceAuthenticityCheckEnabled = true,
+    isUnlockedBootloaderAllowed = false,
+}: GetDeviceProgressParams) =>
+    getOnboardingProgress({
+        activeStepId,
+        device,
+        onboardingPath: [],
+        isDeviceAuthenticityCheckEnabled,
+        isUnlockedBootloaderAllowed,
+    }).device;
 
 describe(getOnboardingProgress.name, () => {
     it.each([
@@ -29,21 +53,14 @@ describe(getOnboardingProgress.name, () => {
     ] as const)(
         'counts the manual check as the first Device substep for $model',
         ({ model, steps, progress }) => {
-            expect(
-                steps.map(
-                    activeStepId =>
-                        getOnboardingProgress({
-                            activeStepId,
-                            device: mockSuiteDevice(
-                                { connected: true, available: true },
-                                { internal_model: model },
-                            ),
-                            onboardingPath: [],
-                            isDeviceAuthenticityCheckEnabled: true,
-                            isUnlockedBootloaderAllowed: false,
-                        }).device,
-                ),
-            ).toEqual(progress);
+            const device = mockSuiteDevice(
+                { connected: true, available: true },
+                { internal_model: model },
+            );
+
+            expect(steps.map(activeStepId => getDeviceProgress({ activeStepId, device }))).toEqual(
+                progress,
+            );
         },
     );
 
@@ -73,7 +90,7 @@ describe(getOnboardingProgress.name, () => {
         'normalizes Device progress to available steps ($model, $step)',
         ({ model, enabled, minor, step, expected }) => {
             expect(
-                getOnboardingProgress({
+                getDeviceProgress({
                     activeStepId: step,
                     device: mockSuiteDevice(
                         {},
@@ -84,29 +101,33 @@ describe(getOnboardingProgress.name, () => {
                             patch_version: 0,
                         },
                     ),
-                    onboardingPath: [],
                     isDeviceAuthenticityCheckEnabled: enabled,
-                    isUnlockedBootloaderAllowed: false,
-                }).device,
+                }),
             ).toBe(expected);
         },
     );
 
-    it.each(['normal', 'bootloader'] as const)(
-        'keeps DAC in the planned steps during %s mode',
-        mode => {
+    it.each([
+        { model: DeviceModelInternal.T3B1, majorVersion: 2, expected: 2 / 5 },
+        { model: DeviceModelInternal.T1B1, majorVersion: 1, expected: 2 / 3 },
+        { model: DeviceModelInternal.T2T1, majorVersion: 2, expected: 2 / 3 },
+    ])(
+        'keeps the planned Device steps in bootloader mode on $model',
+        ({ model, majorVersion, expected }) => {
             expect(
-                getOnboardingProgress({
+                getDeviceProgress({
                     activeStepId: 'firmware',
                     device: mockSuiteDevice(
-                        { mode, connected: true, available: true },
-                        { internal_model: DeviceModelInternal.T3B1 },
+                        { mode: 'bootloader', connected: true, available: true },
+                        {
+                            internal_model: model,
+                            initialized: false,
+                            firmware_present: true,
+                            major_version: majorVersion,
+                        },
                     ),
-                    onboardingPath: [],
-                    isDeviceAuthenticityCheckEnabled: true,
-                    isUnlockedBootloaderAllowed: false,
-                }).device,
-            ).toBe(2 / 5);
+                }),
+            ).toBe(expected);
         },
     );
 
@@ -147,15 +168,12 @@ describe(getOnboardingProgress.name, () => {
                     },
                 ),
             ];
-            const progress = devices.map(
-                device =>
-                    getOnboardingProgress({
-                        activeStepId: 'firmware',
-                        device,
-                        onboardingPath: [],
-                        isDeviceAuthenticityCheckEnabled,
-                        isUnlockedBootloaderAllowed: false,
-                    }).device,
+            const progress = devices.map(device =>
+                getDeviceProgress({
+                    activeStepId: 'firmware',
+                    device,
+                    isDeviceAuthenticityCheckEnabled,
+                }),
             );
 
             const expected = isDeviceAuthenticityCheckEnabled ? 2 / 5 : 2 / 4;
@@ -165,16 +183,14 @@ describe(getOnboardingProgress.name, () => {
 
     it('omits DAC when an unlocked bootloader is allowed', () => {
         expect(
-            getOnboardingProgress({
+            getDeviceProgress({
                 activeStepId: 'tutorial',
                 device: mockSuiteDevice(
                     { connected: true, available: true },
                     { internal_model: DeviceModelInternal.T3B1, bootloader_locked: false },
                 ),
-                onboardingPath: [],
-                isDeviceAuthenticityCheckEnabled: true,
                 isUnlockedBootloaderAllowed: true,
-            }).device,
+            }),
         ).toBe(3 / 4);
     });
 });

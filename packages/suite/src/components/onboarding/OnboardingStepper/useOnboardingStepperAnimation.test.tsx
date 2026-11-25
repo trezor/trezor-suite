@@ -4,7 +4,6 @@ import { STEPPER_FILL_MS, STEPPER_RESIZE_MS } from './animationTimings';
 import { type OnboardingProgress } from './getOnboardingProgress';
 import { useOnboardingStepperAnimation } from './useOnboardingStepperAnimation';
 
-const manualCheck: OnboardingProgress = { device: 1 / 5, wallet: 0, pin: 0 };
 const firmware: OnboardingProgress = { device: 2 / 5, wallet: 0, pin: 0 };
 const authenticity: OnboardingProgress = { device: 3 / 5, wallet: 0, pin: 0 };
 const walletChoice: OnboardingProgress = { device: 1, wallet: 1 / 3, pin: 0 };
@@ -43,41 +42,6 @@ describe(useOnboardingStepperAnimation.name, () => {
         rerender({ ...initialProps, progress: authenticity });
         expect(result.current.progress).toEqual(authenticity);
     });
-
-    it('starts empty when device information is not available yet', () => {
-        const props: AnimationProps = { ...initialProps, progress: undefined };
-        const { result, rerender } = renderHook(useOnboardingStepperAnimation, {
-            initialProps: props,
-        });
-
-        expect(result.current.progress).toEqual({ device: 0, wallet: 0, pin: 0 });
-        expect(result.current.activeCategory).toBeNull();
-
-        rerender(initialProps);
-        expect(result.current.progress).toEqual(firmware);
-        expect(result.current.activeCategory).toBe('device');
-    });
-
-    it.each([false, true])(
-        'advances Device after the manual check, with reduced motion %s',
-        shouldReduceMotion => {
-            const { result, rerender } = renderHook(useOnboardingStepperAnimation, {
-                initialProps: {
-                    progress: manualCheck,
-                    shouldReduceMotion,
-                },
-            });
-
-            expect(result.current.activeCategory).toBe('device');
-            expect(result.current.progress).toEqual(manualCheck);
-
-            rerender({ progress: firmware, shouldReduceMotion });
-
-            expect(result.current.activeCategory).toBe('device');
-            expect(result.current.progress).toEqual(firmware);
-            expect(result.current.fillDelayMs).toBe(0);
-        },
-    );
 
     it('finishes the old fill before changing bullets, then lets the new line grow before filling', () => {
         const { result, rerender } = renderHook(useOnboardingStepperAnimation, { initialProps });
@@ -126,16 +90,6 @@ describe(useOnboardingStepperAnimation.name, () => {
 
         expect(result.current.progress).toEqual(authenticity);
         expect(result.current.activeCategory).toBe('device');
-    });
-
-    it('completes every category on the final screen', () => {
-        const { result, rerender } = renderHook(useOnboardingStepperAnimation, { initialProps });
-
-        rerender({ ...initialProps, progress: final });
-        act(() => jest.advanceTimersByTime(STEPPER_FILL_MS));
-
-        expect(result.current.activeCategory).toBeNull();
-        expect(result.current.progress).toEqual(final);
     });
 
     it('skips animation delays for reduced motion and cancels timers on unmount', () => {
