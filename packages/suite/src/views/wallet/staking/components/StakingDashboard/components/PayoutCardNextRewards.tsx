@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { useStakingActivationDays } from '@suite-common/earn';
 import {
+    getStakingNextPayoutInDays,
     useStakingAccountPosition,
     useStakingDaysUntil,
     useStakingPeriods,
@@ -18,29 +19,21 @@ interface PayoutCardNextRewardsProps {
 export const PayoutCardNextRewards = ({ account }: PayoutCardNextRewardsProps) => {
     const { productId, totals } = useStakingAccountPosition(account.key);
     const { isPending } = useStakingProductInfo(productId);
-    const { nextRewardAt } = useStakingPeriods(productId);
+    const { nextRewardAt, rewardPeriodDays } = useStakingPeriods(productId);
 
     const nextRewardInDays = useStakingDaysUntil(nextRewardAt);
     const daysUntilActivation = useStakingActivationDays(account.key);
-    const hasStake = isPositiveBalance(totals.staked);
 
-    const getPayoutInDays = (): number | null => {
-        if (nextRewardInDays === null) return null;
-
-        if (hasStake) return nextRewardInDays;
-
-        // Nothing earns before the first activation: a payout before it waits for the next one,
-        // and an activation that cannot be dated dates no payout.
-        if (daysUntilActivation === null) return null;
-
-        return daysUntilActivation <= nextRewardInDays
-            ? nextRewardInDays
-            : daysUntilActivation + nextRewardInDays;
-    };
+    const days = getStakingNextPayoutInDays({
+        nextRewardInDays,
+        daysUntilActivation,
+        rewardPeriodDays,
+        hasStake: isPositiveBalance(totals.staked),
+    });
 
     return (
         <PayoutCard
-            days={getPayoutInDays()}
+            days={days}
             isPending={isPending}
             label={<Translation id="TR_STAKE_NEXT_PAYOUT" />}
         />
