@@ -5,36 +5,23 @@ import {
     CORE_CALL_CANCEL,
     type CoreCallCancelMessage,
     type CoreCallMessage,
-    type Manifest,
     POPUP,
-    type PermissionRequest,
     type PopupClosedMessage,
     type PopupHandshake,
 } from '@trezor/connect';
 import { ERRORS } from '@trezor/connect-common';
-import { parseManifest, parseVersion } from '@trezor/connect-common/src/data/connectSettings';
 import { isLinux } from '@trezor/env-utils';
-import { type ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
+import { findProcessFromIncomingPort } from '@trezor/node-utils';
 import { createDeferred, resolveAfter } from '@trezor/utils';
 
 import { addMessage, deleteMessage, rejectMessage, setAppInit } from './connect-popup-messages';
+import { createConnectionSession } from './createConnectionSession';
 import { createProcessLookup } from './createProcessLookup';
 import { type createHttpReceiver } from './http-receiver';
 import { getProcessIcon } from './process-icon';
 import { type Dependencies } from '../modules';
 
 const LOG_PREFIX = 'connect-ws';
-export const HANDSHAKE_TIMEOUT_MS = 10000;
-// Deadline of the process lookup run by the handshake. It is not the client's budget for the
-// handshake itself: connect-web abandons that after 3 s, so a lookup slower than 3 s has already
-// failed the call. This deadline only guarantees that the idle timeout is re-armed and that the
-// child process of an abandoned lookup is killed.
-export const PROCESS_LOOKUP_TIMEOUT_MS = 10000;
-// A connection whose lookup ran and found no process looks again only after this pause. Such a
-// client is never found when it runs sandboxed on Linux, so a retry on every handshake would only
-// be work. A lookup that failed or timed out is not covered: it looks again on the next handshake.
-export const PROCESS_LOOKUP_RETRY_INTERVAL_MS = 5000;
-export const IDLE_CONNECTION_TIMEOUT_MS = 60000;
 export const MAX_CONCURRENT_CONNECTIONS = 50;
 export const MAX_CONNECTIONS_PER_ORIGIN = 5;
 const MAX_MESSAGE_SIZE = 2 * 1024 * 1024; // 2 MB
@@ -115,7 +102,10 @@ export const exposeConnectWs = ({
     const connectionsByOrigin = new Map<string, number>();
     const getActiveConnections = () =>
         Array.from(connectionsByOrigin.values()).reduce((acc, val) => acc + val, 0);
-    const processLookup = createProcessLookup({ findProcessFromIncomingPort, logger });
+    const connectionSession = createConnectionSession({
+        logger,
+        processLookup: createProcessLookup({ findProcessFromIncomingPort, logger }),
+    });
 
     const wss = new WebSocketServer({
         noServer: true,
@@ -157,43 +147,19 @@ export const exposeConnectWs = ({
             `new connection from ${ip}:${port} (${activeConnections + 1}/${MAX_CONCURRENT_CONNECTIONS})`,
         );
 
-        let processOnPort: ProcessInfo | undefined;
-
-        let manifest: Manifest | undefined;
-        let version: string | undefined;
-        let requestedPermissions: PermissionRequest[] | undefined;
-        let isHandshakeDone = false;
-        let idleTimeout: ReturnType<typeof setTimeout> | undefined;
-
-        // Releases the slot of a client that has stopped making calls. Pings do not restart it:
-        // the client pings on its own, so the connection would never expire.
-        const startIdleTimeout = () => {
-            clearTimeout(idleTimeout);
-            if (req.socket.destroyed) return;
-            idleTimeout = setTimeout(() => {
-                logger.info(LOG_PREFIX, `connection closed: idle timeout from ${ip}:${port}`);
-                // A close frame rather than a destroyed socket: an idle expiry is routine and must
-                // not reach the client as an abnormal closure. The client reconnects on its next
-                // call; only a call that starts while this frame is in flight fails its handshake
-                // and is served by the web popup.
-                ws.close(1000, 'idle timeout');
-            }, IDLE_CONNECTION_TIMEOUT_MS);
-        };
-
-        // Close connection if handshake is not received within timeout
-        const handshakeTimeout = setTimeout(() => {
-            if (!isHandshakeDone) {
-                logger.warn(LOG_PREFIX, `connection closed: handshake timeout from ${ip}:${port}`);
-                req.socket.destroy();
-            }
-        }, HANDSHAKE_TIMEOUT_MS);
-
-        const connectionProcessLookup = processLookup({
+        const session = connectionSession({
+            ip,
             port,
+            originKey,
             connection: req.socket,
-            shouldFilterSelf: !process.env.PLAYWRIGHT_RUN, // Ignore own process, unless testing.
-            timeoutMs: PROCESS_LOOKUP_TIMEOUT_MS,
-            retryIntervalMs: PROCESS_LOOKUP_RETRY_INTERVAL_MS,
+            sendHandshakeAck: id =>
+                ws.send(JSON.stringify({ id, type: POPUP.HANDSHAKE, payload: 'ok' })),
+            // A close frame rather than a destroyed socket: an idle expiry is routine and must not
+            // reach the client as an abnormal closure. The client reconnects on its next call; only
+            // a call that starts while this frame is in flight fails its handshake and is served by
+            // the web popup.
+            closeConnection: () => ws.close(1000, 'idle timeout'),
+            hasPendingCalls: () => connectionPendingMessages.size > 0,
         });
 
         logger.info(LOG_PREFIX, `origin: ${origin}`);
@@ -222,38 +188,13 @@ export const exposeConnectWs = ({
                 return;
             }
 
-            if (!isHandshakeDone && message.type !== POPUP.HANDSHAKE) {
+            if (!session.isHandshakeDone() && message.type !== POPUP.HANDSHAKE) {
                 logger.warn(LOG_PREFIX, `${message.type} rejected: handshake not completed`);
 
                 return;
             }
             if (message.type === POPUP.HANDSHAKE) {
-                // A call without a valid manifest is dropped without a response, so acknowledging
-                // the handshake would leave the client waiting and hold the connection slot.
-                const handshakeManifest = parseManifest(message.payload.settings.manifest);
-                if (!handshakeManifest) {
-                    logger.warn(
-                        LOG_PREFIX,
-                        `connection closed: invalid handshake manifest from ${ip}:${port} (origin: ${originKey})`,
-                    );
-                    req.socket.destroy();
-
-                    return;
-                }
-
-                // The client handshakes before every call, so expiring the connection during the
-                // lookup would fail that call and make the client fall back to the web popup.
-                clearTimeout(idleTimeout);
-                processOnPort = await connectionProcessLookup.lookUp();
-                manifest = handshakeManifest;
-                version = parseVersion(message.payload.settings.version);
-                requestedPermissions = message.payload.settings.requestedPermissions;
-                isHandshakeDone = true;
-                clearTimeout(handshakeTimeout);
-                ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
-                if (connectionPendingMessages.size === 0) {
-                    startIdleTimeout();
-                }
+                await session.handleHandshake(message);
             } else if (message.type === POPUP.CLOSED) {
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: message.payload?.error,
@@ -269,6 +210,9 @@ export const exposeConnectWs = ({
                     connectionId,
                 });
             } else if (message.type === CORE_CALL) {
+                const { manifest, version, requestedPermissions, processOnPort } =
+                    session.getContext();
+
                 if (!processOnPort) {
                     // The lookup can legitimately miss, so log both endpoints of the connection:
                     // it tells an lsof or netstat format difference apart from a lookup that
@@ -328,7 +272,7 @@ export const exposeConnectWs = ({
                 const deferred = addMessage(storeId);
                 connectionPendingMessages.add(storeId);
                 // The user can take longer than the idle timeout to confirm a pending call.
-                clearTimeout(idleTimeout);
+                session.clearIdleTimeout();
 
                 try {
                     // check window exists, if not wait for it to be created
@@ -407,15 +351,13 @@ export const exposeConnectWs = ({
                 } finally {
                     connectionPendingMessages.delete(storeId);
                     if (connectionPendingMessages.size === 0) {
-                        startIdleTimeout();
+                        session.startIdleTimeout();
                     }
                 }
             }
         });
         ws.on('close', () => {
-            clearTimeout(handshakeTimeout);
-            clearTimeout(idleTimeout);
-            connectionProcessLookup.abort();
+            session.dispose();
             const currentOriginCount = connectionsByOrigin.get(originKey) ?? 1;
             if (currentOriginCount <= 1) {
                 connectionsByOrigin.delete(originKey);
