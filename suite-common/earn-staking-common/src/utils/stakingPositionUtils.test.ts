@@ -1,6 +1,7 @@
 import { mockStakingPosition, mockStakingProductInfo } from '../../mocks';
 import { stakingAmountSchema } from '../stakingAmount';
 import {
+    getStakingEarningAmount,
     getStakingPositionAmount,
     getStakingPositionAmountOutsideBalance,
     getStakingPositionPrincipal,
@@ -39,6 +40,26 @@ describe('getStakingPositionAmount', () => {
 
     it('is zero for an empty position', () => {
         expect(getStakingPositionAmount(mockStakingPosition({ balances: balances({}) }))).toBe('0');
+    });
+});
+
+describe('getStakingEarningAmount', () => {
+    it('adds the staked and pending amounts and leaves the unstaking and withdrawable ones out', () => {
+        expect(
+            getStakingEarningAmount(
+                balances({
+                    staked: amount('2000000000000000000'),
+                    pending: amount('250000000000000000'),
+                    unstaking: amount('500000000000000000'),
+                    withdrawable: amount('100000000000000000'),
+                    rewards: amount('12000000000000000'),
+                }),
+            ),
+        ).toBe('2250000000000000000');
+    });
+
+    it('is zero for empty balances', () => {
+        expect(getStakingEarningAmount(balances({}))).toBe('0');
     });
 });
 

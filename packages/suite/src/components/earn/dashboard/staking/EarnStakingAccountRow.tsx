@@ -16,7 +16,7 @@ import {
     useStakingAccess,
     useStakingAccountPosition,
 } from '@suite-common/earn-staking';
-import { type StakingOperation } from '@suite-common/earn-staking-common';
+import { type StakingOperation, getStakingEarningAmount } from '@suite-common/earn-staking-common';
 import { useFormatters } from '@suite-common/formatters';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
@@ -258,7 +258,13 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
             formatStyle: 'compact-balance',
         });
 
-    const currentRewards = calculateRewards(stakingBalance, rate);
+    // The rate applies to the staked and pending amounts; the Staked line and the fiat sort keep
+    // the whole position, the unfreeze queue of a Tron account included.
+    const earningBalance = formatStakingAmount({
+        amount: getStakingEarningAmount(totals),
+        networkSymbol: account.symbol,
+    });
+    const currentRewards = calculateRewards(earningBalance, rate);
 
     const potentialRewards = getEarnStakingPotentialRewards({
         currentRewards,

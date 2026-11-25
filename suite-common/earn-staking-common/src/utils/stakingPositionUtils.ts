@@ -2,7 +2,11 @@ import { BigNumber } from '@trezor/utils';
 
 import { type StakingAmount, stakingAmountSchema } from '../stakingAmount';
 import type { StakingOperation } from '../stakingOperation';
-import type { StakingPosition, StakingPositionWarningCode } from '../stakingPosition';
+import type {
+    StakingPosition,
+    StakingPositionBalances,
+    StakingPositionWarningCode,
+} from '../stakingPosition';
 import type { StakingRewardsKind } from '../stakingProductDescriptor';
 import type { StakingProductInfo } from '../stakingProductInfo';
 
@@ -13,6 +17,13 @@ export const getStakingPositionAmount = ({ balances }: StakingPosition): Staking
     toStakingAmount(
         BigNumber.sum(balances.staked, balances.pending, balances.unstaking, balances.withdrawable),
     );
+
+// What a rate applies to: the stake and what waits to join it. An unstaking or a withdrawable
+// amount earns nothing any more.
+export const getStakingEarningAmount = ({
+    staked,
+    pending,
+}: StakingPositionBalances): StakingAmount => toStakingAmount(BigNumber.sum(staked, pending));
 
 export const getStakingPositionPrincipal = (
     { balances }: StakingPosition,
