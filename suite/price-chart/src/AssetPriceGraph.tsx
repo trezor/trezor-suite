@@ -205,6 +205,7 @@ export const AssetPriceGraph = ({ points }: AssetPriceGraphProps) => {
                             isAnimationActive={false}
                         />
                         <Line
+                            data-testid="@price-chart/line"
                             dataKey="price"
                             type="monotone"
                             stroke={theme.borderBrand}
