@@ -63,10 +63,14 @@ it.each([
     });
 });
 
-it.each(['blockchainGetInfo', 'tronComposeTransaction', 'tronSignTransaction'] as const)(
+it.each([
+    ['TrezorBlockchain.getInfo', () => jest.spyOn(TrezorBlockchain, 'getInfo')],
+    ['tronComposeTransaction', () => jest.spyOn(TrezorConnect, 'tronComposeTransaction')],
+    ['tronSignTransaction', () => jest.spyOn(TrezorConnect, 'tronSignTransaction')],
+] as const)(
     'returns a safe error if %s rejects while preparing the transaction',
-    async method => {
-        jest.spyOn(TrezorConnect, method).mockRejectedValueOnce(new Error('Backend account data'));
+    async (_, spyOnMethod) => {
+        spyOnMethod().mockRejectedValueOnce(new Error('Backend account data'));
 
         await expect(
             signTronContract({

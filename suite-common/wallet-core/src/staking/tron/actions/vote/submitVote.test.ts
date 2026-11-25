@@ -38,7 +38,9 @@ jest.mock('@trezor/connect', () => {
         },
     };
 });
-jest.mock('@trezor/blockchain-core', () => ({ TrezorBlockchain: { pushTransaction: jest.fn() } }));
+jest.mock('@trezor/blockchain-core', () => ({
+    TrezorBlockchain: { getInfo: jest.fn(), pushTransaction: jest.fn() },
+}));
 jest.mock('../../shared/reportTronVoteTxId', () => ({ reportTronVoteTxId: jest.fn() }));
 jest.mock('../../shared/signTronContract', () => ({ signTronContract: jest.fn() }));
 
@@ -392,7 +394,7 @@ it('finishes a Tron unstake after transaction preparation rejects and permits a 
     const actualSignTronContract = jest.requireActual<{
         signTronContract: typeof signTronContract;
     }>('../../shared/signTronContract').signTronContract;
-    const getBlockchainInfo = jest.spyOn(TrezorConnect, 'blockchainGetInfo');
+    const getBlockchainInfo = jest.spyOn(TrezorBlockchain, 'getInfo');
     getBlockchainInfo.mockRejectedValueOnce(new Error('Backend account data'));
     signTronContractMock.mockImplementationOnce(actualSignTronContract);
     const store = initStore();
