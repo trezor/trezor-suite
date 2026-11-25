@@ -14,7 +14,6 @@ import {
     selectIsDeviceBackupUnfinished,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { selectDeviceStakingEntryByWarning } from '@suite-common/earn-staking';
 import { selectBannerMessage } from '@suite-common/message-system';
 import { isWeb } from '@trezor/env-utils';
 
@@ -31,6 +30,7 @@ import { LocalNetworkAccessPermission } from './LocalNetworkAccessPermission';
 import { NoBackup } from './NoBackupBanner';
 import { NoConnectionBanner } from './NoConnectionBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
+import { selectIsCardanoOutdatedStakingBannerShown } from './cardanoOutdatedStakingBannerSelectors';
 
 const Container = styled.div<{ $fill?: boolean }>`
     width: 100%;
@@ -57,9 +57,8 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     const isDeviceBackupUnfinished = useSelector(selectIsDeviceBackupUnfinished);
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
     const transport = useSelector(selectSuiteTransport);
-    // The first funded entry with an outdated provider, as the mobile banner reads it.
-    const outdatedProviderEntry = useSelector(state =>
-        selectDeviceStakingEntryByWarning(state, 'outdated-provider'),
+    const isCardanoOutdatedStakingBannerShown = useSelector(
+        selectIsCardanoOutdatedStakingBannerShown,
     );
     const { localNetworkAccessPermission } = useLocalNetworkAccessPermission();
     const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
@@ -119,7 +118,7 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     } else if (legacyBridgeDetected) {
         banner = <BridgeDeprecated />;
         priority = 30;
-    } else if (outdatedProviderEntry !== null) {
+    } else if (isCardanoOutdatedStakingBannerShown) {
         banner = <CardanoOutdatedStakingBanner />;
         priority = 20;
     } else if (deviceStaticSessionId !== null && isSuiteSyncBannerVisible) {

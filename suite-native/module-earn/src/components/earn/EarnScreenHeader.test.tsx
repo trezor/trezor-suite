@@ -72,7 +72,7 @@ const fivebinaries = mockStakingProductDescriptor({
     platforms: { desktop: { access: 'manage' }, mobile: { access: 'read-only' } },
 });
 const ethAccount = mockWalletAccount({ symbol: eth, deviceState });
-const adaAccount = mockWalletAccount({ symbol: ada, deviceState });
+const adaAccount = mockWalletAccount({ symbol: ada, deviceState, availableBalance: '5000000' });
 
 const fivebinariesPosition = mockStakingPosition({
     productId: fivebinaries.id,
