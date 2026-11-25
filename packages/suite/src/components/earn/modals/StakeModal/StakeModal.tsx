@@ -30,7 +30,11 @@ export const StakeModal = ({ onCancel, account, flow }: StakeModalProps) => {
     const stakeContextValues = useStakeForm({ account });
     const { isBelowTablet } = useLayoutSize();
 
-    // The Cardano delegation composes with the cached pool list, so it is at most five minutes old.
+    /**
+     * Refreshes product info older than five minutes.
+     * The Cardano compose and sign read the pools from whatever is cached,
+     * which is older while this refresh runs or after it fails.
+     */
     useRefreshStakingProductInfo();
 
     const isStakingActive = useSelector(state => selectIsStakingAccountActive(state, account.key));

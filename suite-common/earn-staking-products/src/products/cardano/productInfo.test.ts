@@ -63,6 +63,20 @@ describe('fetchCardanoProductInfo', () => {
         });
     });
 
+    it('drops a pool the target schema rejects and keeps the rest', async () => {
+        const info = await fetchEverstakeInfo(
+            createDeps({
+                pools: [
+                    { apy: 2.4, saturation: -1, id: MOCK_CARDANO_EVERSTAKE_OTHER_POOL },
+                    { apy: 2.06, saturation: 62.64, id: MOCK_CARDANO_EVERSTAKE_POOL },
+                ],
+            }),
+        );
+
+        expect(info.rate).toBe(2.06);
+        expect(info.targets.map(({ address }) => address)).toEqual([MOCK_CARDANO_EVERSTAKE_POOL]);
+    });
+
     it('leaves out a pool the provider does not own', async () => {
         const info = await fetchEverstakeInfo(
             createDeps({

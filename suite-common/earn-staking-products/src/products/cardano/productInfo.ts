@@ -7,6 +7,7 @@ import {
     type StakingProductInfo,
     type StakingProvider,
     stakingProductInfoSchema,
+    stakingProductTargetSchema,
 } from '@suite-common/earn-staking-common';
 
 import { CARDANO_EPOCH_DAYS } from './constants';
@@ -46,13 +47,18 @@ export const fetchCardanoProductInfo = async (
         .map(pool => ({ ...pool, id: pool.id.toLowerCase() }))
         .filter(({ id }) => poolIds.includes(id))
         .filter(({ id }, index, ownPools) => ownPools.findIndex(pool => pool.id === id) === index)
-        .map(({ id, apy, saturation }) => ({
-            address: id,
-            providerId: provider.id,
-            name: provider.name,
-            rate: apy,
-            saturation,
-        }));
+        .flatMap(({ id, apy, saturation }) => {
+            const target = {
+                address: id,
+                providerId: provider.id,
+                name: provider.name,
+                rate: apy,
+                saturation,
+            };
+
+            // One pool the schema rejects, a negative rate or saturation, leaves the others listed.
+            return stakingProductTargetSchema.safeParse(target).success ? [target] : [];
+        });
 
     // New stake goes to the least saturated pool, so its APY is the one Suite promotes.
     const [leastSaturatedTarget] = targets.toSorted((a, b) => a.saturation - b.saturation);
