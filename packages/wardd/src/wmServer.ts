@@ -124,7 +124,7 @@ export const startWmServer = async (opts: WmServerOptions) => {
             await fs.rename(`${file}.tmp`, file);
         };
     }
-    // one change at a time, so a compare-and-swap and its persistence are not interleaved
+    // one change at a time, so a predecessor check and its persistence are not interleaved
     let queue: Promise<unknown> = Promise.resolve();
     const serial = <T>(fn: () => Promise<T>) => {
         const run = queue.then(fn, fn);

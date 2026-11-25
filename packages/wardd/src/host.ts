@@ -856,9 +856,10 @@ export class WardHost {
     /**
      * WardPublish -> WardPublishAck, or WardPublishConflict when it is definitively not landing.
      *
-     * STAGE, CAS, PROMOTE -- the write-ahead order a real wardd needs, and the append-only log
+     * STAGE, CHECK THE PREDECESSOR, PROMOTE -- the write-ahead order a real wardd needs, and the append-only log
      * gives it for nothing: the row is staged first, and it is the head only once the WM's
-     * compare-and-swap points at it. A refused CAS leaves a dead row, never a half-applied tree.
+     * predecessor check points at it. A failed predecessor check leaves a dead row, never a
+     * half-applied tree.
      */
     servicePublish(req: Json) {
         return this.exclusive(async () => {

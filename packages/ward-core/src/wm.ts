@@ -6,9 +6,9 @@
  * build rejects every WM signature until a real key is provisioned. It stands in, behind the
  * `WmClient` interface, until the real WM (trezor-suite-sync) speaks v7.
  *
- * What a WM is: it holds each wallet's head `(counter, root)`; it compare-and-swaps an advance and
- * verifies the device's `wm_sig` over it; and on request it signs the step that reached the head,
- * bound to the device's round nonce. It is an authority on FRESHNESS and ORDERING only -- the
+ * What a WM is: it holds each wallet's head `(counter, root)`; it checks an advance's predecessor
+ * and verifies the device's `wm_sig` over it; and on request it signs the step that reached the
+ * head, bound to the device's round nonce. It is an authority on FRESHNESS and ORDERING only -- the
  * device never takes a root on its word.
  *
  * SESSIONS. A device's `wm_sig` is bound to the round nonce it picked for its latest sync -- the
@@ -40,7 +40,7 @@ const ATTEST_DOMAIN = ascii('WARD ATTEST v1');
 const ATTEST_VERSION = 7;
 /** The well-known debug WM key the emulator and debug firmware trust. */
 export const DEBUG_WM_SEED = ascii('AUTHDB QM DEBUG KEY SEED v1 ....');
-/** Mirrors the firmware's `apps.ward.cas.MAX_BATCH`. */
+/** Mirrors the firmware's `apps.ward.transition.MAX_BATCH`. */
 export const MAX_BATCH = 8;
 
 const rootOrEmpty = (root: Uint8Array | null | undefined) => root ?? EMPTY_ROOT;
@@ -148,8 +148,8 @@ export interface WmClient {
     /** Sign the current head for a freshness check, preserving the active write session. */
     attest(wardId: Uint8Array, nonce: Uint8Array): Promise<Attestation>;
     /**
-     * Compare-and-swap an advance whose `wm_sig` is bound to the session nonce, timestamp it at the
-     * WM, and return whether it was a revert with the WM's signed record of it.
+     * Check the predecessor of an advance whose `wm_sig` is bound to the session nonce, sign it at
+     * the WM, and return whether it was a revert with the WM's signed record of it.
      */
     advance(step: {
         wardId: Uint8Array;
@@ -176,12 +176,15 @@ export class WmConflict extends Error {
     }
 }
 
+/**
+ * One wallet's register: the step that reached the head. It holds NO TIME. The WM dates each
+ * signature by its clock when it signs; wardd keeps the signed records, and with them the times.
+ */
 interface HeadRecord {
     fromCounter: number;
     fromRoot: Uint8Array;
     counter: number;
     root: Uint8Array;
-    timestamp: number;
 }
 
 /** The in-process development WM. */
@@ -218,7 +221,6 @@ export class DevWm implements WmClient {
             fromRoot: rootOrEmpty(root),
             counter: 0,
             root: rootOrEmpty(root),
-            timestamp: this.now(),
         });
 
         return Promise.resolve();
@@ -263,13 +265,14 @@ export class DevWm implements WmClient {
         return Promise.resolve(this.signHead(wardId, h, nonce));
     }
 
+    /** Sign the step that reached the head under `nonce`, dated by the WM's clock now. */
     private signHead(wardId: Uint8Array, h: HeadRecord, nonce: Uint8Array): Acceptance {
         const body = {
             fromCounter: h.fromCounter,
             fromRoot: h.fromRoot,
             toCounter: h.counter,
             toRoot: h.root,
-            timestamp: h.timestamp,
+            timestamp: this.now(),
         };
 
         return { ...body, signature: this.sign(nonce, wardId, body), nonce };
@@ -278,7 +281,7 @@ export class DevWm implements WmClient {
     advance(step: Parameters<WmClient['advance']>[0]): ReturnType<WmClient['advance']> {
         const h = this.heads.get(toHex(step.wardId));
         if (!h) return Promise.reject(new Error('wallet is not enrolled with this WM; sync first'));
-        // COMPARE-AND-SWAP on the head it holds.
+        // PREDECESSOR CHECK on the head it holds.
         if (h.counter !== step.fromCounter || !equalBytes(h.root, rootOrEmpty(step.fromRoot))) {
             return Promise.reject(new WmConflict(h.counter));
         }
@@ -313,7 +316,6 @@ export class DevWm implements WmClient {
             fromRoot: rootOrEmpty(step.fromRoot),
             counter: step.toCounter,
             root: rootOrEmpty(step.toRoot),
-            timestamp: this.now(),
         };
         this.heads.set(toHex(step.wardId), head);
 
@@ -338,7 +340,6 @@ export class DevWm implements WmClient {
             fromRoot: toHex(r.fromRoot),
             counter: r.counter,
             root: toHex(r.root),
-            timestamp: r.timestamp,
         });
 
         return { heads: Object.fromEntries([...this.heads].map(([id, r]) => [id, hex(r)])) };
@@ -346,7 +347,7 @@ export class DevWm implements WmClient {
 
     /**
      * Load a snapshot. Sessions are volatile and end here. Fields older snapshots carried (head
-     * nonces, a nonce ledger) are ignored.
+     * nonces, a nonce ledger, a head timestamp) are ignored.
      */
     restore(snap: DevWmSnapshot): this {
         this.initialChallenge = crypto.getRandomValues(new Uint8Array(32));
@@ -360,7 +361,6 @@ export class DevWm implements WmClient {
                     fromRoot: toBytes(r.fromRoot),
                     counter: r.counter,
                     root: toBytes(r.root),
-                    timestamp: r.timestamp,
                 },
             ]),
         );
@@ -377,7 +377,6 @@ export interface DevWmSnapshot {
             fromRoot: string;
             counter: number;
             root: string;
-            timestamp: number;
         }
     >;
 }

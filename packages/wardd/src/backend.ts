@@ -3,8 +3,9 @@
  *
  * WHY NOT A TABLE OF LEAVES. A replica that several hosts write through a CRDT cannot hold "the
  * current leaves" as mutable rows: two hosts that both apply a write at counter N write the same
- * rows, the WM compare-and-swaps exactly one of them in, and the loser's rows have already
- * replicated. Last-writer-wins would then mix the two branches -- a tree no device ever built.
+ * rows, the WM lets exactly one of them in by the predecessor check, and the loser's rows have
+ * already replicated. Last-writer-wins would then mix the two branches -- a tree no device ever
+ * built.
  *
  * So a row is written ONCE and never updated, and its id is the transition itself: nothing can
  * conflict. The tree at a head is DERIVED by walking the links back from that head to genesis and

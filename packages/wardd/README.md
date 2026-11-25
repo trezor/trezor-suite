@@ -53,7 +53,7 @@ node --import tsx src/cli.ts --service [--port 21324] [--state-file F]
   From then on it only answers what the device asks: `WardSyncRequest`, `WardServiceFetch` and
   `WardPublish`. They're answered from the same replica, development WM and checks as the connect
   path.
-- **A publish is staged, compare-and-swapped, then promoted:** its row is appended first, and it
+- **A publish is staged, predecessor-checked, then promoted:** its row is appended first, and it
   becomes the head only once the WM accepts it.
 - **`--state-file`** holds the wallet, the replica's links and the WM, rewritten after every change,
   so a restart resumes.

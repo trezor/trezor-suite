@@ -1,6 +1,6 @@
 /**
  * Every wardd conversation against the fake device: genesis, flush (single and batched), catch-up
- * along the chain, a fork that needs the user's rejoin, a lost compare-and-swap, and the replica
+ * along the chain, a fork that needs the user's rejoin, a lost predecessor check, and the replica
  * refusing a corrupt row.
  */
 import { ed25519 } from '@noble/curves/ed25519.js';
@@ -522,7 +522,6 @@ describe('a WM whose register went back', () => {
                     fromRoot: rows[0]!.fromRoot ?? toHex(EMPTY_ROOT),
                     counter: rows[0]!.toCounter,
                     root: rows[0]!.toRoot ?? toHex(EMPTY_ROOT),
-                    timestamp: 1,
                 },
             },
         });
@@ -582,7 +581,6 @@ describe('a WM whose register went back', () => {
                     fromRoot: toHex(EMPTY_ROOT),
                     counter: 1,
                     root: rows[0]!.toRoot!,
-                    timestamp: 1,
                 },
             },
         });

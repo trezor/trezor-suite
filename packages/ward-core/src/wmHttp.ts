@@ -2,7 +2,7 @@
  * The WARD Manager over HTTP: the `WmClient` wardd uses when the WM runs as its own process
  * (`wardd --wm URL`, served by `wardd/src/wmServer.ts`).
  *
- * Bytes travel as hex, an absent root as null. A refused compare-and-swap comes back as
+ * Bytes travel as hex, an absent root as null. A refused predecessor check comes back as
  * `WmConflict`, exactly as from the in-process WM; a WM that cannot be reached at all comes back
  * as `WmUnavailable`, so a caller can tell "the WM said no" from "there is no WM to ask".
  */

@@ -1,6 +1,6 @@
 /**
  * The dev WM against the firmware tests' MockWM and ward_keys (vectors generated there), and its
- * behaviour as a WM: enrolment, attestation, compare-and-swap, both tags, the batch range.
+ * behaviour as a WM: enrolment, attestation, predecessor check, both tags, the batch range.
  */
 import { ed25519 } from '@noble/curves/ed25519.js';
 
@@ -153,6 +153,35 @@ describe('DevWm as a WM', () => {
         ).toBe(true);
     });
 
+    it('dates each signature by its clock when signing, and keeps no time in the register', async () => {
+        let now = 1_000;
+        const dev = new DevWm(DEBUG_WM_SEED, () => now);
+        await dev.enrol(wardId, null, headInit);
+        await open(dev, session);
+        const { acceptance } = await dev.advance({
+            wardId,
+            fromCounter: 0,
+            fromRoot: null,
+            toCounter: 1,
+            toRoot: r1,
+            wmSig: wmSig(0, null, 1, r1),
+        });
+        expect(acceptance.timestamp).toBe(1_000);
+
+        now = 5_000;
+        const later = await dev.attest(wardId, new Uint8Array(32).fill(9));
+        expect([later.fromCounter, later.toCounter, later.timestamp]).toEqual([0, 1, 5_000]);
+        expect(
+            ed25519.verify(
+                later.signature,
+                attestationPreimage(new Uint8Array(32).fill(9), wardId, later),
+                dev.pubkey,
+            ),
+        ).toBe(true);
+        // the acceptance time survives only in the signed record, which wardd keeps
+        expect(Object.values(dev.snapshot().heads)[0]).not.toHaveProperty('timestamp');
+    });
+
     it('advances on a genuine wm_sig, and refuses a replay', async () => {
         const dev = await enrolled();
         const sig = wmSig(0, null, 1, r1);
@@ -167,7 +196,7 @@ describe('DevWm as a WM', () => {
             }),
         ).resolves.toMatchObject({ revert: false });
         expect(await dev.head(wardId)).toEqual({ counter: 1, root: r1 });
-        // the same authorisation again: the head moved, so compare-and-swap refuses it
+        // the same authorisation again: the head moved, so the predecessor check refuses it
         await expect(
             dev.advance({
                 wardId,
