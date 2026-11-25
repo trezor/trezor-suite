@@ -133,6 +133,7 @@ export { AssetDetailYieldBanner } from './src/views/home/AssetDetail/AssetDetail
 export { AssetNotExists } from './src/views/home/AssetDetail/AssetNotExists';
 export { selectRoutedAssetKey } from './src/views/home/AssetDetail/selectRoutedAssetKey';
 export { EarnDashboard } from './src/components/earn/dashboard/EarnDashboard';
+export { EarnPositions } from './src/components/earn/positions/EarnPositions';
 export { TronClaim } from './src/components/earn/staking/tron/TronClaim';
 export { TronStakePageHeader } from './src/components/earn/staking/tron/TronStakePageHeader';
 export { useEarnRouteAccount } from './src/components/earn/utils/useEarnRouteAccount';

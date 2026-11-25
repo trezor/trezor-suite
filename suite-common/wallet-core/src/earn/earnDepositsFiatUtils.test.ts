@@ -15,6 +15,7 @@ import {
     type EarnFiatValuation,
     getEarnMissingRateTickerIds,
     getEarnPositionFiatAmount,
+    getYieldPositionFiatTokenAddress,
     hasAnyEarnFiatRate,
     sumEarnFiatValuations,
 } from './earnDepositsFiatUtils';
@@ -57,6 +58,17 @@ const createRates = (entries: [EarnFiatPosition, number | undefined][]): RatesBy
 const createValuation = (tickerId: TickerId, fiatAmount: string | null): EarnFiatValuation => ({
     tickerId,
     fiatAmount: fiatAmount === null ? null : asBaseCurrencyAmount(new BigNumber(fiatAmount)),
+});
+
+describe(getYieldPositionFiatTokenAddress.name, () => {
+    it('lowercases an EVM underlying token contract', () => {
+        expect(
+            getYieldPositionFiatTokenAddress(
+                ethSymbol,
+                toTokenAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
+            ),
+        ).toBe(usdcContract);
+    });
 });
 
 describe(getEarnPositionFiatAmount.name, () => {

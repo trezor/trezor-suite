@@ -10,6 +10,7 @@ import {
     createStableTickerIds,
     getEarnMissingRateTickerIds,
     hasAnyEarnFiatRate,
+    selectHasUnavailableYieldBalance,
     selectYieldFiatValuations,
     selectYieldPositionsCount,
     sumEarnFiatValuations,
@@ -43,9 +44,9 @@ export const selectEarnMissingTickerIds = createMemoizedSelector(
 );
 
 export const selectIsEarnFiatTotalIncomplete = createMemoizedSelector(
-    [selectEarnMissingTickerIds, selectIsFiatRatesLoadingParam],
-    (missingTickerIds, isFiatRatesLoading): boolean =>
-        missingTickerIds.length > 0 && !isFiatRatesLoading,
+    [selectEarnMissingTickerIds, selectHasUnavailableYieldBalance, selectIsFiatRatesLoadingParam],
+    (missingTickerIds, hasUnavailableYieldBalance, isFiatRatesLoading): boolean =>
+        hasUnavailableYieldBalance || (missingTickerIds.length > 0 && !isFiatRatesLoading),
 );
 
 export const selectIsEarnFiatTotalUnavailable = createMemoizedSelector(

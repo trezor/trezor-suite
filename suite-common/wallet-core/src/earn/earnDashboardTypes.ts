@@ -25,7 +25,7 @@ export type YieldListItem = {
     apy: number | null;
     token?: YieldDtoV2['token'];
     accountKey: AccountKey;
-    tokenBalance: string;
+    tokenBalance: string | null;
 };
 
 export type YieldListItemWithAccount = {

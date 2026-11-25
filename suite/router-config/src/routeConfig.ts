@@ -65,6 +65,11 @@ export const routes = [
         app: 'earn',
     },
     {
+        name: 'earn-positions',
+        pattern: '/earn/positions',
+        app: 'earn',
+    },
+    {
         name: 'suite-refer-a-friend',
         pattern: '/refer-a-friend',
         app: 'refer-a-friend',

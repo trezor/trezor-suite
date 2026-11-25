@@ -33,6 +33,7 @@ import {
     getStakingPromoListSymbols,
     selectCardanoAccountForFiveBinariesBanner,
     selectCardanoStakedWithFiveBinariesAccountKey,
+    selectHasUnavailableYieldBalance,
     selectStakingFiatPositions,
     selectStakingListItems,
     selectStakingListSymbols,
@@ -43,6 +44,7 @@ import {
     selectYieldClaimTokens,
     selectYieldClaimTotalFiatAmount,
     selectYieldFiatPositions,
+    selectYieldListItemFiatAmount,
     selectYieldListItems,
     selectYieldListVaultIcons,
     selectYieldPromoListItems,
@@ -596,6 +598,26 @@ describe('selectYieldListItems', () => {
         ]);
     });
 
+    it('lists a receipt token position without a price per share and skips underlying-only accounts', () => {
+        const positionAccount = createEthAccount('ethposition', '100000000');
+        const underlyingOnlyAccount = mockWalletAccount({
+            symbol: asNetworkSymbol('eth'),
+            descriptor: asAccountDescriptor('ethunderlying'),
+            deviceState: DEVICE_STATIC_SESSION_ID,
+            tokens: [mockAccountToken({ contract: UNDERLYING_TOKEN_CONTRACT, balance: '50' })],
+        });
+        const state = createState([positionAccount, underlyingOnlyAccount]);
+
+        expect(selectYieldListItems(state, [vault])).toEqual([
+            expect.objectContaining({
+                accountKey: positionAccount.key,
+                tokenBalance: null,
+            }),
+        ]);
+        expect(selectYieldFiatPositions(state, [vault])).toEqual([]);
+        expect(selectHasUnavailableYieldBalance(state, [vault])).toBe(true);
+    });
+
     it('keeps item and array references across recreated state', () => {
         const accounts = [createEthAccount('ethposition', '1000000')];
         const firstItems = selectYieldListItems(createState([...accounts]), [vault]);
@@ -866,6 +888,13 @@ describe('earn fiat selectors', () => {
     const getYieldTokenBalance = (state: EarnListRootState) =>
         selectYieldListItems(state, [valuedVault])[0]?.tokenBalance ?? '0';
 
+    it('marks the underlying amount of a priced vault as available', () => {
+        const state = createState(accounts);
+
+        expect(getYieldTokenBalance(state)).not.toBe('0');
+        expect(selectHasUnavailableYieldBalance(state, [valuedVault])).toBe(false);
+    });
+
     it('projects one fiat position per valued staking and yield item', () => {
         const state = createState(accounts);
 
@@ -887,6 +916,28 @@ describe('earn fiat selectors', () => {
 
         expect(selectStakingTotalFiatAmount(state)).toBe('2.5');
         expect(selectYieldTotalFiatAmount(state, [valuedVault])).toBe(yieldFiatAmount.toString());
+    });
+
+    it('values a yield item like the total when the rate key uses another contract casing', () => {
+        const checksummedContract = toTokenAddress(
+            `0x${UNDERLYING_TOKEN_CONTRACT.slice(2).toUpperCase()}`,
+        );
+        const state = createState(
+            accounts,
+            createRates([
+                {
+                    ticker: { symbol: ethSymbol, tokenAddress: checksummedContract },
+                    fiatRateKey: getFiatRateKey(ethSymbol, 'usd', checksummedContract),
+                    rate: 2,
+                },
+            ]),
+        );
+        const [item] = selectYieldListItems(state, [valuedVault]);
+
+        expect(item && selectYieldListItemFiatAmount(state, item)?.toString()).toBe(
+            selectYieldTotalFiatAmount(state, [valuedVault]),
+        );
+        expect(selectYieldTotalFiatAmount(state, [valuedVault])).not.toBe('0');
     });
 });
 

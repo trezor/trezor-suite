@@ -16,6 +16,7 @@ import { AccountSubpageName } from './AccountName/AccountSubpageName';
 import { isAccountAddressInHeader } from './AccountName/isAccountAddressInHeader';
 import { AssetDetailName } from './AssetDetailName';
 import { BasicName } from './BasicName';
+import { EarnPositionsName } from './EarnPositionsName';
 import { HiddenTokensName } from './HiddenTokensName';
 import { SettingsName } from './SettingsName';
 
@@ -43,6 +44,10 @@ export const PageName = () => {
 
     if (currentRoute?.includes('settings')) {
         return <SettingsName />;
+    }
+
+    if (currentRoute === 'earn-positions') {
+        return <EarnPositionsName />;
     }
 
     if (currentRoute?.includes('earn')) {

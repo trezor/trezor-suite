@@ -23,7 +23,7 @@ export const EarnDashboardHeader = () => {
 
     return (
         <Grid columns={columns} gap={16}>
-            <EarnBalanceCard />
+            <EarnBalanceCard positionsCount={earnPositionsCount} />
             <EarnBalanceBreakdown />
         </Grid>
     );

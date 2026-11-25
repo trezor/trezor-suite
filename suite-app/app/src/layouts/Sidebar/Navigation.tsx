@@ -22,6 +22,7 @@ import { NavigationItem, type NavigationItemProps } from './NavigationItem';
 
 const EARN_ROUTES: Route['name'][] = [
     'suite-earn',
+    'earn-positions',
     'earn-yield-deposit',
     'earn-yield-withdraw',
     'earn-yield-claim',

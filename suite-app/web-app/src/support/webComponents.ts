@@ -41,6 +41,13 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             }),
         ),
     ),
+    'earn-positions': lazy(() =>
+        import(
+            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnPositionsPage'
+        ).then(({ EarnPositionsPage }) => ({
+            default: EarnPositionsPage,
+        })),
+    ),
     'earn-yield-deposit': lazy(() =>
         import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnDepositPage').then(
             ({ EarnDepositPage }) => ({

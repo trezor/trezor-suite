@@ -10,6 +10,8 @@ import {
     buildYieldUnwrapTransactionData,
     buildYieldWithdrawCalldata,
     buildYieldWrapTransactionData,
+    canConvertOutputTokenBalanceToInputTokenAmount,
+    getConvertedOutputTokenBalanceToInputTokenAmount,
     getNextYieldFlowStep,
     getWrapReserveStatus,
     getWrappableNativeBalance,
@@ -831,5 +833,54 @@ describe('yieldUtils', () => {
                 ).toBeUndefined();
             });
         });
+    });
+
+    describe('output token conversion', () => {
+        const token = {
+            address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            symbol: 'USDC',
+            name: 'USD Coin',
+            decimals: 6,
+            network: 'ethereum',
+        } as YieldDtoV2['token'];
+        const outputToken = {
+            address: VAULT_ADDRESS,
+            symbol: 'trUSDC',
+            name: 'Vault USDC',
+            decimals: 18,
+            network: 'ethereum',
+        } as NonNullable<YieldDtoV2['outputToken']>;
+
+        const getParams = (price: string) => ({
+            networkSymbol: ethSymbol,
+            token,
+            outputToken,
+            pricePerShareState: { price, shareToken: outputToken, quoteToken: token },
+        });
+
+        it('converts the output token balance with a valid share price', () => {
+            expect(canConvertOutputTokenBalanceToInputTokenAmount(getParams('1.5'))).toBe(true);
+            expect(
+                getConvertedOutputTokenBalanceToInputTokenAmount({
+                    ...getParams('1.5'),
+                    outputTokenBalance: '2',
+                }),
+            ).toBe('3');
+        });
+
+        it.each(['not-a-price', '', 'Infinity', '0', '-1'])(
+            'treats the share price %p as unavailable',
+            price => {
+                expect(canConvertOutputTokenBalanceToInputTokenAmount(getParams(price))).toBe(
+                    false,
+                );
+                expect(
+                    getConvertedOutputTokenBalanceToInputTokenAmount({
+                        ...getParams(price),
+                        outputTokenBalance: '2',
+                    }),
+                ).toBe('0');
+            },
+        );
     });
 });
