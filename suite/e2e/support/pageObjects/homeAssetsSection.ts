@@ -11,6 +11,14 @@ export class HomeAssetsSection {
     readonly assetRows: Locator;
     readonly assetToken = (symbol: NetworkSymbol, contract: string) =>
         this.page.getByTestId(`@dashboard/home-asset-item/${symbol}/${contract}`);
+    readonly assetFiatBalance = (symbol: NetworkSymbol, contract = 'coin') =>
+        this.page
+            .getByTestId(`@dashboard/home-asset-item/${symbol}/${contract}`)
+            .getByTestId('@asset-table/fiat-balance');
+    readonly assetCryptoBalance = (symbol: NetworkSymbol) =>
+        this.page
+            .getByTestId(`@dashboard/home-asset-item/${symbol}/coin`)
+            .getByTestId('@asset-table/crypto-balance');
     readonly expandButton: Locator;
     readonly groupingButton: Locator;
     readonly groupByNetworks: Locator;
@@ -27,6 +35,10 @@ export class HomeAssetsSection {
     readonly unrecognizedTokens: Locator;
     readonly hiddenToken = (symbol: NetworkSymbol, contract: string) =>
         this.unrecognizedTokens.getByTestId(`@hidden-tokens/item/${symbol}/${contract}`);
+    readonly manuallyHiddenToken = (symbol: NetworkSymbol, contract: string) =>
+        this.page
+            .getByTestId('@hidden-tokens/hidden-by-user')
+            .getByTestId(`@hidden-tokens/item/${symbol}/${contract}`);
     readonly backButton: Locator;
     readonly bannerTitle: Locator;
     readonly bannerDescription: Locator;

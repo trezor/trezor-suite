@@ -6,5 +6,11 @@ type StakingSplitLegendSquareProps = {
 };
 
 export const StakingSplitLegendSquare = ({ color }: StakingSplitLegendSquareProps) => (
-    <Box width={12} height={12} borderRadius={4} backgroundColor={color} />
+    <Box
+        data-testid="@staking-split/legend-square"
+        width={12}
+        height={12}
+        borderRadius={4}
+        backgroundColor={color}
+    />
 );
