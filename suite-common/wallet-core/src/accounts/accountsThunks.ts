@@ -8,6 +8,7 @@ import {
 } from '@suite-common/toast-notifications';
 import {
     type TokenDefinitionsRootState,
+    normalizeTokenContract,
     selectCoinDefinitions,
 } from '@suite-common/token-definitions';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
@@ -20,6 +21,7 @@ import {
     analyzeTransactions,
     asAmountSubunit,
     findAccountDevice,
+    findToken,
     formatNetworkAmount,
     getAccountTransactions,
     isAccountOutdated,
@@ -55,6 +57,11 @@ import {
 } from '../blockchain/blockchainReducer';
 import { type WalletSettingsRootState } from '../settings/walletSettingsReducer';
 import {
+    type CustomTokensRootState,
+    selectCustomTokenContracts,
+    selectIsCustomToken,
+} from '../token/customTokensSlice';
+import {
     type StellarContractTokensRootState,
     selectStellarContractTokens,
 } from '../token/stellarContractTokensSlice';
@@ -75,7 +82,11 @@ const getRefreshDetails = (account: Account): GetAccountInfoParams['details'] =>
     return 'basic';
 };
 
-const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['tokens']) => {
+const fetchAccountTokens = async (
+    account: Account,
+    payloadTokens: AccountInfo['tokens'],
+    customContracts: string[],
+) => {
     const tokens: TokenInfo[] = [];
 
     // Stellar: All tokens with active trustlines are already in payload (even with 0 balance).
@@ -84,34 +95,34 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
     }
 
     const isEvmNetwork = account.networkType === 'ethereum';
+    const normalize = (contract: string) => normalizeTokenContract(account.symbol, contract);
+    const payloadContracts = new Set(payloadTokens?.map(t => normalize(t.contract)));
+    const accountContracts = (account.tokens ?? []).map(t => t.contract);
+    const listedContracts = new Set(accountContracts.map(normalize));
 
     // get list of tokens that are not included in default response, their balances need to be fetched
-    const customTokens =
-        account.tokens?.filter(
-            t =>
-                !payloadTokens?.some(p =>
-                    isEvmNetwork
-                        ? p.contract.toLowerCase() === t.contract.toLowerCase()
-                        : p.contract === t.contract,
-                ),
-        ) ?? [];
+    const missingContracts = [
+        ...accountContracts,
+        ...customContracts.filter(contract => !listedContracts.has(normalize(contract))),
+    ].filter(contract => !payloadContracts.has(normalize(contract)));
 
-    const promises = customTokens.map(t =>
-        TrezorConnect.getAccountInfo({
-            coin: asCoinSymbol(account.symbol),
-            identity: tryGetAccountIdentity(account),
-            descriptor: account.descriptor,
-            details: 'tokenBalances',
-            contractFilter: t.contract,
-            protocols: isEvmNetwork ? ['erc4626'] : undefined,
-        }),
+    const results = await Promise.allSettled(
+        missingContracts.map(contract =>
+            TrezorConnect.getAccountInfo({
+                coin: asCoinSymbol(account.symbol),
+                identity: tryGetAccountIdentity(account),
+                descriptor: account.descriptor,
+                details: 'tokenBalances',
+                contractFilter: contract,
+                protocols: isEvmNetwork ? ['erc4626'] : undefined,
+            }),
+        ),
     );
 
-    const results = await Promise.all(promises);
-
-    results.forEach(res => {
-        if (res.success && res.payload.tokens) {
-            tokens.push(...res.payload.tokens);
+    // On EVM a token that could not be read keeps its last known balance, see the accounts reducer.
+    results.forEach(result => {
+        if (result.status === 'fulfilled' && result.value.success && result.value.payload.tokens) {
+            tokens.push(...result.value.payload.tokens);
         }
     });
 
@@ -169,6 +180,7 @@ type FetchAndUpdateAccountThunkParams = {
 
 export type FetchAndUpdateAccountThunkState = AccountsRootState &
     BlockchainRootState &
+    CustomTokensRootState &
     DeviceRootState &
     NotificationsRootState &
     StellarContractTokensRootState &
@@ -330,7 +342,18 @@ export const fetchAndUpdateAccountThunk = createThunk<
             });
 
             // add custom tokens into the account.tokens
-            const customTokens = await fetchAccountTokens(account, payload.tokens);
+            const fetchedCustomTokens = await fetchAccountTokens(
+                account,
+                payload.tokens,
+                selectCustomTokenContracts(getState(), account.key),
+            );
+            // The user may have removed a token while it was being read.
+            const currentAccount = selectAccountByKey(getState(), account.key);
+            const customTokens = fetchedCustomTokens.filter(
+                token =>
+                    selectIsCustomToken(getState(), account, token.contract) ||
+                    !!findToken(currentAccount?.tokens, token.contract),
+            );
             payload.tokens =
                 customTokens.length > 0
                     ? (payload.tokens || []).concat(customTokens)

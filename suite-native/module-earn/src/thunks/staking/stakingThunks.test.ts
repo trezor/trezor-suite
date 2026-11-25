@@ -13,6 +13,7 @@ import {
     WALLET_SDK_SOURCE_MOBILE,
     blockchainInitialState,
     buildStakeData,
+    customTokensInitialState,
     earnTransactionsReducer,
     feesInitialState,
     initialWalletSettingsState,
@@ -177,6 +178,7 @@ const buildStore = ({
                 earnTransactions: earnTransactionsReducer,
                 fees: () => feesInitialState,
                 stellarContractTokens: () => stellarContractTokensInitialState,
+                customTokens: () => customTokensInitialState,
                 transactions: () => ({
                     transactions: {},
                     phishing: {},

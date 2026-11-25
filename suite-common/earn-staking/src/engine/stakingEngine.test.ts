@@ -19,6 +19,7 @@ import {
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     blockchainInitialState,
+    customTokensInitialState,
     feesInitialState,
     fetchAndUpdateAccountThunk,
     handleEarnTransactionReplacementThunk,
@@ -218,6 +219,7 @@ const initStore = ({
                 accounts: (state = [account]) => state,
                 blockchain: (state = blockchainInitialState) => state,
                 stellarContractTokens: (state = stellarContractTokensInitialState) => state,
+                customTokens: (state = customTokensInitialState) => state,
                 transactions: transactionsReducer,
                 settings: (state = initialWalletSettingsState) => state,
                 fees: (state = feesInitialState) => state,

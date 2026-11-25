@@ -177,6 +177,13 @@ const addAccountTokens = createAction(
     }),
 );
 
+const removeAccountTokens = createAction(
+    `${ACCOUNTS_MODULE_PREFIX}/removeAccountTokens`,
+    (accountKey: AccountKey, contracts: string[]) => ({
+        payload: { accountKey, contracts },
+    }),
+);
+
 const renameAccount = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/renameAccount`,
     (accountKey: string, accountLabel: string) => ({
@@ -225,6 +232,7 @@ export const accountsActions = {
     createAccountFromAccountInfo,
     updateAccount,
     addAccountTokens,
+    removeAccountTokens,
     renameAccount,
     updateSelectedAccount,
     changeAccountVisibility,
