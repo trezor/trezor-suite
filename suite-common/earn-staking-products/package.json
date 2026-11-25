@@ -15,6 +15,7 @@
     "dependencies": {
         "@suite-common/earn-staking-api": "workspace:*",
         "@suite-common/earn-staking-common": "workspace:*",
+        "@suite-common/react-query": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
         "@trezor/network-tron": "workspace:*",
         "@trezor/type-utils": "workspace:*",

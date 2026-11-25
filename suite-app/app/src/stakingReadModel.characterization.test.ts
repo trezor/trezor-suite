@@ -134,7 +134,6 @@ const selectedDevice = mockSuiteDevice({
 });
 
 const createState = async () => {
-    const adapters = createStakingProductsCompositionRoot();
     const productInfo = {
         'eth:eth:everstake:pooled': {
             rate: 3.08,
@@ -154,6 +153,7 @@ const createState = async () => {
         },
     };
     const queryClient = mockStakingQueryClient({ productInfo });
+    const adapters = createStakingProductsCompositionRoot({ queryClient });
     const { services } = createTestCompositionRoot<Deps, State>({
         reducer: {
             earn: combineReducers({ staking: stakingReducer }),

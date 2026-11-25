@@ -3,7 +3,11 @@ import {
     defaultEarnStakingWorkerBaseUrl,
     earnStakingWorkerBaseUrl,
 } from '@suite-common/earn-staking-api';
-import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
+import {
+    type StakingProductAdapter,
+    stakingProductDescriptorSchema,
+} from '@suite-common/earn-staking-common';
+import { QueryClient, createQueryClient } from '@suite-common/react-query';
 import {
     type CardanoStakingScenario,
     mockCardanoStakingAccount,
@@ -21,8 +25,11 @@ import {
 import { createSolanaExternalNativeProduct } from './products/solana/external-native/product';
 import { everstakeProvider } from './providers/everstake';
 
+const createAdapters = (queryClient = createQueryClient({ shouldRefetchOnEvents: false })) =>
+    createStakingProductsCompositionRoot({ queryClient });
+
 describe('createStakingProductsCompositionRoot', () => {
-    const adapters = createStakingProductsCompositionRoot();
+    const adapters = createAdapters();
 
     it('registers the Ethereum, Solana, Cardano and Tron products for mainnet testnet networks', () => {
         expect(adapters.map(adapter => adapter.descriptor.id)).toEqual([
@@ -50,32 +57,114 @@ describe('createStakingProductsCompositionRoot', () => {
         ]);
     });
 
-    it('fetches each staking endpoint once while every product refreshes its info', async () => {
-        earnStakingWorkerBaseUrl.set(defaultEarnStakingWorkerBaseUrl);
-        const fetchSpy = jest
-            .spyOn(globalThis, 'fetch')
-            .mockImplementation(() => Promise.resolve(new Response('{}')));
-
-        await Promise.allSettled(adapters.map(adapter => adapter.fetchProductInfo({})));
-
-        const requestedPaths = fetchSpy.mock.calls.map(([input]) =>
-            new Request(input).url.replace(defaultEarnStakingWorkerBaseUrl, ''),
-        );
-        fetchSpy.mockRestore();
-
-        expect(requestedPaths.toSorted()).toEqual([
-            '/ada/pools?limit=1000',
-            '/eth/stats',
-            '/eth/validators-queue',
-            '/sol/stats',
-            '/trx/stats',
-        ]);
-    });
-
     it('registers descriptors that match the contract', () => {
         adapters.forEach(adapter => {
             expect(stakingProductDescriptorSchema.safeParse(adapter.descriptor).success).toBe(true);
         });
+    });
+});
+
+const SECONDS_IN_DAY = 24 * 60 * 60;
+
+const SHARED_ENDPOINT_RESPONSES: Record<string, unknown> = {
+    '/eth/stats': { symbol: 'eth', apy: 3.08, nextRewardPayout: 0 },
+    '/eth/validators-queue': {
+        addingDelay: SECONDS_IN_DAY,
+        activationTime: SECONDS_IN_DAY,
+        withdrawTime: SECONDS_IN_DAY,
+        exitTime: SECONDS_IN_DAY,
+    },
+    '/sol/stats': { symbol: 'sol', apy: 6.24 },
+};
+
+const EVERY_ENDPOINT_PATH = [
+    '/ada/pools?limit=1000',
+    '/eth/stats',
+    '/eth/validators-queue',
+    '/sol/stats',
+    '/trx/stats',
+];
+
+describe('staking endpoint requests', () => {
+    let fetchSpy: jest.SpiedFunction<typeof fetch>;
+
+    const getPath = (input: RequestInfo | URL) =>
+        new Request(input).url.replace(defaultEarnStakingWorkerBaseUrl, '');
+
+    const getRequestedPaths = () => fetchSpy.mock.calls.map(([input]) => getPath(input)).toSorted();
+
+    const refreshEveryProductInfo = (adapters: readonly StakingProductAdapter[]) =>
+        Promise.allSettled(adapters.map(adapter => adapter.fetchProductInfo({})));
+
+    const getAdapter = (adapters: readonly StakingProductAdapter[], productId: string) => {
+        const adapter = adapters.find(({ descriptor }) => descriptor.id === productId);
+
+        if (!adapter) throw new Error(`Missing product ${productId}`);
+
+        return adapter;
+    };
+
+    beforeEach(() => {
+        earnStakingWorkerBaseUrl.set(defaultEarnStakingWorkerBaseUrl);
+        fetchSpy = jest
+            .spyOn(globalThis, 'fetch')
+            .mockImplementation(input =>
+                Promise.resolve(Response.json(SHARED_ENDPOINT_RESPONSES[getPath(input)] ?? {})),
+            );
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it('fetches each endpoint once while every product refreshes its info', async () => {
+        await refreshEveryProductInfo(createAdapters());
+
+        expect(getRequestedPaths()).toEqual(EVERY_ENDPOINT_PATH);
+    });
+
+    it('fetches the shared endpoints again on the next refresh', async () => {
+        const adapters = createAdapters();
+
+        await refreshEveryProductInfo(adapters);
+        await refreshEveryProductInfo(adapters);
+
+        expect(getRequestedPaths()).toEqual(EVERY_ENDPOINT_PATH.flatMap(path => [path, path]));
+    });
+
+    it('leaves the retries to the product info query', async () => {
+        fetchSpy.mockImplementation(() =>
+            Promise.resolve(new Response('Bad gateway', { status: 502 })),
+        );
+        const retryingQueryClient = new QueryClient({
+            defaultOptions: { queries: { retry: 3, retryDelay: 0 } },
+        });
+
+        await refreshEveryProductInfo(createAdapters(retryingQueryClient));
+
+        expect(getRequestedPaths()).toEqual(EVERY_ENDPOINT_PATH);
+    });
+
+    it('stops only the aborted product, leaving the shared request to the other', async () => {
+        const adapters = createAdapters();
+        const abortController = new AbortController();
+
+        const ethereumInfo = getAdapter(adapters, 'eth:eth:everstake:pooled').fetchProductInfo({
+            abortSignal: abortController.signal,
+        });
+        const hoodiInfo = getAdapter(adapters, 'thod:thod:everstake:pooled').fetchProductInfo({});
+        abortController.abort(new Error('Left the page'));
+
+        await expect(ethereumInfo).rejects.toThrow('Left the page');
+        await expect(hoodiInfo).resolves.toEqual({
+            rate: null,
+            entryPeriodDays: 2,
+            exitPeriodDays: 2,
+            rewardPeriodDays: null,
+            nextRewardAt: null,
+            targets: [],
+        });
+        expect(getRequestedPaths()).toEqual(['/eth/stats', '/eth/validators-queue']);
     });
 });
 
@@ -142,7 +231,7 @@ describe('Solana products', () => {
 });
 
 describe('Cardano products', () => {
-    const cardanoProducts = createStakingProductsCompositionRoot().filter(
+    const cardanoProducts = createAdapters().filter(
         product => product.descriptor.networkSymbol === 'ada',
     );
 
@@ -196,7 +285,7 @@ describe('Cardano products', () => {
 describe('mobile platform support', () => {
     it('manages the Everstake Ethereum and Solana products and shows every other one read-only', () => {
         const supportByProduct = Object.fromEntries(
-            createStakingProductsCompositionRoot().map(
+            createAdapters().map(
                 ({ descriptor }) => [descriptor.id, descriptor.platforms.mobile] as const,
             ),
         );

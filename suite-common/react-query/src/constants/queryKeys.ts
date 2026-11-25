@@ -28,6 +28,11 @@ export const commonQueryKeys = {
         address,
     ],
     tronStakingStats: () => ['tron-staking-stats'],
+    stakingStats: (networkSymbol: string) => ['staking-stats', networkSymbol],
+    stakingValidatorsQueue: (params?: { timestamp?: number | null }) => [
+        'staking-validators-queue',
+        params?.timestamp ?? null,
+    ],
     stakingProductInfo: (productId: string) => ['staking-product-info', productId],
     yieldOpportunity: (vaultId: string | undefined) => ['yield-opportunities', 'single', vaultId],
     yieldOpportunitiesList: (params: { limit: number }) => ['yield-opportunities', 'list', params],

@@ -129,16 +129,16 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         dispatch: deps.dispatch,
     });
 
+    const queryClient = createQueryClient({ shouldRefetchOnEvents: false });
+
     const staking = createStakingCompositionRoot({
         platform: 'mobile',
-        adapters: createStakingProductsCompositionRoot(),
+        adapters: createStakingProductsCompositionRoot({ queryClient }),
         deviceAccess: createNativeStakingDeviceAccess({
             getTrezorConnect: deps.getTrezorConnect,
         }),
         dispatch: deps.dispatch,
     });
-
-    const queryClient = createQueryClient({ shouldRefetchOnEvents: false });
 
     const createLogger: ConnectSettings['createLogger'] = (prefix: string) =>
         initLog(prefix, false);
