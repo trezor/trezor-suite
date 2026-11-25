@@ -6,12 +6,6 @@ import { type Account, type AccountKey, type BaseCurrencyAmount } from '@suite-c
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface YieldOpportunity extends YieldDtoV2 {}
 
-export type StakingListItem = {
-    symbol: NetworkSymbol;
-    accountKey: AccountKey;
-    balance: string;
-};
-
 export type YieldListItem = {
     id: string;
     yieldId: string;

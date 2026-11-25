@@ -51,11 +51,6 @@ import type { FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
 import { type PhishingRootState } from '../phishing/phishingReducerTypes';
 import { selectActiveDustPhishingThreshold } from '../phishing/phishingSelectors';
 import { isCardanoStakingTx } from '../staking/cardano/cardanoStakingUtils';
-import {
-    getTxStakeType,
-    isAccountStakingActive,
-    isAccountStakingActiveByHistory,
-} from '../staking/shared/stakingUtils';
 import { isTronStakingTx } from '../staking/tron/tronStakingUtils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
@@ -286,42 +281,6 @@ export const selectAccountYieldVaultTransactions = createMemoizedSelector(
     (transactions, vaultContract) =>
         returnStableArrayIfEmpty(
             transactions.filter(transaction => isYieldVaultTx(transaction, vaultContract)),
-        ),
-);
-
-export const hasPendingStakeTypeTransaction = createMemoizedSelector(
-    [selectAccountStakeTypeTransactions],
-    transactions => transactions.some(tx => isPending(tx)),
-);
-
-export const selectAccountStakeTransactions = createMemoizedSelector(
-    [selectAccountTransactions],
-    transactions =>
-        returnStableArrayIfEmpty(transactions.filter(tx => getTxStakeType(tx) === 'stake')),
-);
-
-export const selectAccountUnstakeTransactions = createMemoizedSelector(
-    [selectAccountTransactions],
-    transactions =>
-        returnStableArrayIfEmpty(transactions.filter(tx => getTxStakeType(tx) === 'unstake')),
-);
-
-export const selectAccountClaimTransactions = createMemoizedSelector(
-    [selectAccountTransactions],
-    transactions =>
-        returnStableArrayIfEmpty(transactions.filter(tx => getTxStakeType(tx) === 'claim')),
-);
-
-export const selectAccountIsStakingActive = createMemoizedSelector(
-    [selectAccountClaimTransactions, selectAccountByKey],
-    (claimTransactions, account) => isAccountStakingActive(account, claimTransactions),
-);
-
-export const selectAnyAccountIsStakingActive = createMemoizedSelector(
-    [selectTransactions, (_: TransactionsRootState, accounts: Account[]) => accounts],
-    (transactions, accounts) =>
-        accounts.some(account =>
-            isAccountStakingActiveByHistory(account, transactions[account.key] ?? []),
         ),
 );
 

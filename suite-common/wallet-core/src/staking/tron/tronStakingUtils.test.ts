@@ -1,5 +1,3 @@
-import { type TrezorDevice } from '@suite-common/suite-types';
-import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -8,25 +6,13 @@ import {
     type TronUnstakingBatch,
     type TronVote,
 } from '@trezor/blockchain-link-types';
-import { type Features } from '@trezor/connect';
 
 import {
-    TRON_REWARD_CLAIM_COOLDOWN_SECONDS,
     getResourceGain,
-    getTronAvailableVotingPower,
-    getTronCryptoBalanceWithStaking,
-    getTronPendingUnstakeBalance,
-    getTronPendingUnstakingBatches,
-    getTronRewardClaimCooldownEndsAt,
     getTronStakingRewards,
-    getTronTotalVotingPower,
-    getTronUnstakingBalance,
-    getTronUnstakingBatches,
     getTronVotes,
     getTronWithdrawableBalance,
     isSupportedTronStakingNetworkSymbol,
-    isTronClaimSupported,
-    isTronStakingActive,
 } from './tronStakingUtils';
 
 const TRX = 1_000_000;
@@ -95,43 +81,6 @@ describe('isSupportedTronStakingNetworkSymbol', () => {
     });
 });
 
-describe('isTronStakingActive', () => {
-    it('returns false for a null account', () => {
-        expect(isTronStakingActive(null)).toBe(false);
-    });
-
-    it('returns false when there is no stakingInfo', () => {
-        expect(isTronStakingActive(buildTronAccount())).toBe(false);
-    });
-
-    it('returns false when the staked balance is zero', () => {
-        const account = buildTronAccount({ stakingInfo: buildStakingInfo({ stakedBalance: '0' }) });
-        expect(isTronStakingActive(account)).toBe(false);
-    });
-
-    it('returns true when the staked balance is greater than zero', () => {
-        const account = buildTronAccount({
-            stakingInfo: buildStakingInfo({ stakedBalance: '1' }),
-        });
-        expect(isTronStakingActive(account)).toBe(true);
-    });
-});
-
-describe('getTronCryptoBalanceWithStaking', () => {
-    it('returns the spendable balance when there is no stakingInfo', () => {
-        const account = buildTronAccount({ formattedBalance: '10' });
-        expect(getTronCryptoBalanceWithStaking(account)).toBe('10');
-    });
-
-    it('adds the staked balance (in TRX) to the spendable balance', () => {
-        const account = buildTronAccount({
-            formattedBalance: '10',
-            stakingInfo: buildStakingInfo({ stakedBalance: String(5 * TRX) }),
-        });
-        expect(getTronCryptoBalanceWithStaking(account)).toBe('15');
-    });
-});
-
 describe('getTronStakingRewards', () => {
     it('returns 0 when there is no stakingInfo', () => {
         expect(getTronStakingRewards(buildTronAccount())).toBe('0');
@@ -142,38 +91,6 @@ describe('getTronStakingRewards', () => {
             stakingInfo: buildStakingInfo({ unclaimedReward: String(2 * TRX) }),
         });
         expect(getTronStakingRewards(account)).toBe('2');
-    });
-});
-
-describe('Tron reward claim cooldown', () => {
-    beforeEach(() => {
-        jest.spyOn(Date, 'now').mockReturnValue(NOW_SECONDS * 1000);
-    });
-
-    afterEach(() => {
-        jest.restoreAllMocks();
-    });
-
-    describe('getTronRewardClaimCooldownEndsAt', () => {
-        it('returns null when there is no stakingInfo', () => {
-            expect(getTronRewardClaimCooldownEndsAt(buildTronAccount())).toBe(null);
-        });
-
-        it('returns null when rewards were never withdrawn', () => {
-            const account = buildTronAccount({
-                stakingInfo: buildStakingInfo({ latestWithdrawTime: 0 }),
-            });
-            expect(getTronRewardClaimCooldownEndsAt(account)).toBe(null);
-        });
-
-        it('adds the 24h cooldown to the last withdrawal time', () => {
-            const account = buildTronAccount({
-                stakingInfo: buildStakingInfo({ latestWithdrawTime: NOW_SECONDS }),
-            });
-            expect(getTronRewardClaimCooldownEndsAt(account)).toBe(
-                NOW_SECONDS + TRON_REWARD_CLAIM_COOLDOWN_SECONDS,
-            );
-        });
     });
 });
 
@@ -197,16 +114,6 @@ describe('Tron unstaking balances', () => {
         }),
     });
 
-    describe('getTronUnstakingBalance', () => {
-        it('returns 0 when there is no stakingInfo', () => {
-            expect(getTronUnstakingBalance(buildTronAccount())).toBe('0');
-        });
-
-        it('sums all unstaking batches regardless of expiry', () => {
-            expect(getTronUnstakingBalance(accountWithBatches)).toBe('10');
-        });
-    });
-
     describe('getTronWithdrawableBalance', () => {
         it('sums only batches whose expireTime has passed', () => {
             expect(getTronWithdrawableBalance(accountWithBatches)).toBe('4');
@@ -225,76 +132,6 @@ describe('Tron unstaking balances', () => {
             expect(getTronWithdrawableBalance(account)).toBe('3');
         });
     });
-
-    describe('getTronPendingUnstakeBalance', () => {
-        it('sums only batches that have not yet expired', () => {
-            expect(getTronPendingUnstakeBalance(accountWithBatches)).toBe('6');
-        });
-
-        it('uses the given time instead of the current one', () => {
-            expect(getTronPendingUnstakeBalance(accountWithBatches, NOW_SECONDS + 100)).toBe('0');
-        });
-    });
-});
-
-describe('getTronUnstakingBatches', () => {
-    it('returns the batches ordered by expiry', () => {
-        const account = buildTronAccount({
-            stakingInfo: buildStakingInfo({
-                unstakingBatches: [
-                    buildBatch(String(2 * TRX), NOW_SECONDS + 20),
-                    buildBatch(String(1 * TRX), NOW_SECONDS + 10),
-                ],
-            }),
-        });
-
-        expect(getTronUnstakingBatches(account)).toEqual([
-            { amount: String(1 * TRX), expireTime: NOW_SECONDS + 10 },
-            { amount: String(2 * TRX), expireTime: NOW_SECONDS + 20 },
-        ]);
-    });
-
-    it('returns an empty list for an account without staking info', () => {
-        expect(getTronUnstakingBatches(buildTronAccount())).toEqual([]);
-    });
-});
-
-describe('getTronPendingUnstakingBatches', () => {
-    const DAY = 24 * 60 * 60;
-
-    it('converts pending batches to TRX and keeps their expiry', () => {
-        const batches = [
-            buildBatch(String(2 * TRX), NOW_SECONDS + 1),
-            buildBatch(String(3 * TRX), NOW_SECONDS + 6 * DAY),
-        ];
-
-        expect(
-            getTronPendingUnstakingBatches({
-                batches,
-                symbol: asNetworkSymbol('trx'),
-                nowSeconds: NOW_SECONDS,
-            }),
-        ).toEqual([
-            { amount: '2', expireTime: NOW_SECONDS + 1 },
-            { amount: '3', expireTime: NOW_SECONDS + 6 * DAY },
-        ]);
-    });
-
-    it('skips batches that are already withdrawable', () => {
-        const batches = [
-            buildBatch(String(1 * TRX), NOW_SECONDS - 10),
-            buildBatch(String(2 * TRX), NOW_SECONDS),
-            buildBatch(String(3 * TRX), NOW_SECONDS + 10),
-        ];
-
-        expect(
-            getTronPendingUnstakingBatches({
-                batches,
-                symbol: asNetworkSymbol('trx'),
-                nowSeconds: NOW_SECONDS,
-            }),
-        ).toEqual([{ amount: '3', expireTime: NOW_SECONDS + 10 }]);
-    });
 });
 
 describe('getTronVotes', () => {
@@ -310,32 +147,6 @@ describe('getTronVotes', () => {
         const votes: TronVote[] = [{ address: 'TSR...', voteCount: '100' }];
         const account = buildTronAccount({ stakingInfo: buildStakingInfo({ votes }) });
         expect(getTronVotes(account)).toBe(votes);
-    });
-});
-
-describe('getTronTotalVotingPower', () => {
-    it('returns 0 when there is no stakingInfo', () => {
-        expect(getTronTotalVotingPower(buildTronAccount())).toBe('0');
-    });
-
-    it('returns the total voting power when present', () => {
-        const account = buildTronAccount({
-            stakingInfo: buildStakingInfo({ totalVotingPower: '42' }),
-        });
-        expect(getTronTotalVotingPower(account)).toBe('42');
-    });
-});
-
-describe('getTronAvailableVotingPower', () => {
-    it('returns 0 when there is no stakingInfo', () => {
-        expect(getTronAvailableVotingPower(buildTronAccount())).toBe('0');
-    });
-
-    it('returns the available voting power when present', () => {
-        const account = buildTronAccount({
-            stakingInfo: buildStakingInfo({ availableVotingPower: '7' }),
-        });
-        expect(getTronAvailableVotingPower(account)).toBe('7');
     });
 });
 
@@ -371,31 +182,5 @@ describe(getResourceGain.name, () => {
 
     it.each(['', '0', '-1', 'abc'])('returns null for invalid amount %p', amount => {
         expect(getResourceGain(amount, 'energy', resourceGainResources)).toBeNull();
-    });
-});
-
-const createDevice = (features: Partial<Features>): TrezorDevice =>
-    ({
-        features: testMocks.getDeviceFeatures(features),
-    }) as unknown as TrezorDevice;
-
-const createDeviceWithFirmware = ([major, minor, patch]: [number, number, number]): TrezorDevice =>
-    createDevice({ major_version: major, minor_version: minor, patch_version: patch });
-
-describe(isTronClaimSupported.name, () => {
-    it('returns false when no device is selected', () => {
-        expect(isTronClaimSupported(undefined)).toBe(false);
-    });
-
-    it('returns false when device has no features', () => {
-        const deviceWithoutFeatures = {} as unknown as TrezorDevice;
-
-        expect(isTronClaimSupported(deviceWithoutFeatures)).toBe(false);
-    });
-
-    it('requires firmware 2.12.2', () => {
-        expect(isTronClaimSupported(createDeviceWithFirmware([2, 12, 1]))).toBe(false);
-        expect(isTronClaimSupported(createDeviceWithFirmware([2, 12, 2]))).toBe(true);
-        expect(isTronClaimSupported(createDeviceWithFirmware([2, 13, 0]))).toBe(true);
     });
 });

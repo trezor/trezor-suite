@@ -45,10 +45,11 @@ import {
 import { asNetworkSymbols } from '@trezor/network-module-types';
 import { BigNumber } from '@trezor/utils';
 
-// The oracle is the seven P0.1 characterization suites in wallet-core and wallet-utils, whose
-// literals the parity suites of the products package carry. This suite runs the real products, the
-// real sync thunk and the new selectors on the same scenario accounts, so the literals outlive the
-// legacy suites. Every reading that differs from legacy on purpose is named in its scenario.
+// The oracle was the seven P0.1 characterization suites in wallet-core and wallet-utils, whose
+// literals the parity suites of the products package carry; the legacy read side went with them in
+// P2.5. This suite runs the real products, the real sync thunk and the new selectors on the same
+// scenario accounts, so the literals outlive the legacy suites. Every reading that differs from
+// legacy on purpose is named in its scenario.
 type Reading = {
     isActive: boolean;
     staked: string;

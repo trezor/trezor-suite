@@ -1,6 +1,5 @@
 import { decodeFunctionResult } from 'viem';
 
-import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
 import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
@@ -17,7 +16,6 @@ import {
     getEthereumEstimateFeeParams,
     isPending,
     sanitizeHex,
-    secondsToDays,
 } from '@suite-common/wallet-utils';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { type BlockchainEstimatedFee } from '@trezor/blockchain-core';
@@ -38,7 +36,6 @@ import { BigNumber, throwError } from '@trezor/utils';
 
 import { ETH_NETWORK_ADDRESSES, type EthNetworkAddresses } from './ethereumNetworkAddresses';
 import {
-    DAYS_TO_ADD_TO_POOL_DEFAULT,
     MIN_ETH_AMOUNT_FOR_STAKING,
     STAKE_GAS_LIMIT_RESERVE,
     UNSTAKE_INTERCHANGES,
@@ -769,64 +766,6 @@ export const getStakeTxGasLimit = async ({
             },
         };
     }
-};
-
-export const getDaysToAddToPool = (
-    stakeTxs: WalletAccountTransaction[],
-    validatorsQueue?: EthValidatorsQueue | null,
-) => {
-    if (
-        validatorsQueue?.addingDelay === undefined ||
-        validatorsQueue?.activationTime === undefined
-    ) {
-        return undefined;
-    }
-
-    const lastTxBlockTime = stakeTxs[0]?.blockTime;
-
-    if (!lastTxBlockTime) {
-        return undefined;
-    }
-
-    const now = Math.floor(Date.now() / 1000);
-
-    const secondsToWait =
-        lastTxBlockTime + validatorsQueue.addingDelay + validatorsQueue.activationTime - now;
-    const daysToWait = secondsToDays(secondsToWait);
-
-    return daysToWait <= 0 ? 1 : daysToWait;
-};
-
-export const getDaysToUnstake = (
-    unstakeTxs: WalletAccountTransaction[],
-    validatorsQueue?: EthValidatorsQueue | null,
-) => {
-    if (typeof validatorsQueue?.withdrawTime !== 'number') {
-        return undefined;
-    }
-
-    const now = Math.floor(Date.now() / 1000);
-    const lastTxBlockTime = unstakeTxs[0]?.blockTime || now;
-
-    const secondsToWait =
-        lastTxBlockTime + validatorsQueue.withdrawTime + (validatorsQueue?.exitTime || 0) - now;
-    const daysToWait = secondsToDays(secondsToWait);
-
-    return daysToWait <= 0 ? 1 : daysToWait;
-};
-
-export const getDaysToAddToPoolInitial = (validatorsQueue?: EthValidatorsQueue | null) => {
-    if (
-        validatorsQueue?.addingDelay === undefined ||
-        validatorsQueue?.activationTime === undefined
-    ) {
-        return DAYS_TO_ADD_TO_POOL_DEFAULT;
-    }
-
-    const secondsToWait = validatorsQueue.addingDelay + validatorsQueue.activationTime;
-    const daysToWait = secondsToDays(secondsToWait);
-
-    return daysToWait <= 0 ? 1 : daysToWait;
 };
 
 export const getInstantStakeType = (
