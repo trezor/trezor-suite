@@ -15,6 +15,7 @@ describe('createTronNativeProductDescriptor', () => {
         expect(stakingProductDescriptorSchema.safeParse(descriptor).success).toBe(true);
         expect(descriptor).toEqual({
             id: 'trx:trx:curated:native',
+            name: 'Tron Native Staking',
             networkSymbol: 'trx',
             asset: { kind: 'native' },
             providerId: 'curated',

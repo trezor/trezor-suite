@@ -12,6 +12,7 @@ export const createSolanaExternalNativeProductDescriptor = (
     networkSymbol: NetworkSymbol,
 ): StakingProductDescriptor => {
     const product = {
+        name: 'External Native Staking',
         networkSymbol,
         asset: { kind: 'native' },
         providerId: externalProvider.id,

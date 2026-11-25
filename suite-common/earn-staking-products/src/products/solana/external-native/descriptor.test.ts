@@ -13,6 +13,7 @@ describe('createSolanaExternalDelegationDescriptor', () => {
         expect(stakingProductDescriptorSchema.safeParse(descriptor).success).toBe(true);
         expect(descriptor).toEqual({
             id,
+            name: 'External Native Staking',
             networkSymbol: symbol,
             asset: { kind: 'native' },
             providerId: 'external',

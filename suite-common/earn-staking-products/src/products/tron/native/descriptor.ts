@@ -22,6 +22,7 @@ export const createTronNativeProductDescriptor = ({
     messageSystemFeatures,
 }: CreateTronNativeProductDescriptorParams): StakingProductDescriptor => {
     const product = {
+        name: 'Tron Native Staking',
         networkSymbol,
         asset: { kind: 'native' },
         providerId: curatedProvider.id,

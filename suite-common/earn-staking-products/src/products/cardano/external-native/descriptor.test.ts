@@ -14,6 +14,7 @@ describe('createCardanoExternalNativeProductDescriptor', () => {
         expect(stakingProductDescriptorSchema.safeParse(descriptor).success).toBe(true);
         expect(descriptor).toEqual({
             id: 'ada:ada:external:native',
+            name: 'External Native Staking',
             networkSymbol: 'ada',
             asset: { kind: 'native' },
             providerId: 'external',
