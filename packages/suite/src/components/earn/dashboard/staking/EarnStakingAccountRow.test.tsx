@@ -12,7 +12,8 @@ import { type GotoThunkDeps, routerReducer } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { type StakingDep } from '@suite-common/earn-staking';
 import { mockStakingQueryClient, mockStakingServices } from '@suite-common/earn-staking/mocks';
-import { type StakingPosition } from '@suite-common/earn-staking-common';
+import { type StakingPosition, type StakingProductInfo } from '@suite-common/earn-staking-common';
+import { mockStakingProductInfo } from '@suite-common/earn-staking-common/mocks';
 import { Feature, type MessageSystemState } from '@suite-common/message-system';
 import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -47,6 +48,8 @@ const HUNDRED_ADA = '100000000';
 const ADA_REWARDS = '56398';
 const HOUR_MS = 60 * 60 * 1000;
 
+const CURRENT_REWARDS = '@earn/dashboard/current-rewards';
+const STAKED_AMOUNT = '@earn/dashboard/staked-amount';
 const WITHDRAW_BUTTON = '@earn/dashboard/withdraw-button';
 const STAKE_MORE_BUTTON = '@earn/dashboard/stake-more-button';
 const VOTE_BUTTON = '@earn/dashboard/vote-button';
@@ -86,11 +89,12 @@ const cardanoPosition = (overrides: Partial<StakingPosition> = {}) =>
 type RenderParams = {
     account: Account;
     position: StakingPosition;
+    productInfo?: StakingProductInfo;
     messageSystem?: MessageSystemState;
     firmware?: VersionArray;
 };
 
-const renderRow = ({ account, position, messageSystem, firmware }: RenderParams) => {
+const renderRow = ({ account, position, productInfo, messageSystem, firmware }: RenderParams) => {
     const report = mock<DesktopAnalyticsDep['analytics']['report']>();
     const initialState: MockSuiteState = {
         ...createEarnStakingTableState({
@@ -121,13 +125,39 @@ const renderRow = ({ account, position, messageSystem, firmware }: RenderParams)
     renderWithProviders(
         { ...services, networks: mockNetworksServices() },
         <EarnStakingAccountRow account={account} isCardLayout />,
-        { queryClient: mockStakingQueryClient() },
+        {
+            queryClient: mockStakingQueryClient({
+                productInfo: productInfo === undefined ? {} : { [position.productId]: productInfo },
+            }),
+        },
     );
 
     return { store: services.store, report };
 };
 
 describe('EarnStakingAccountRow', () => {
+    describe('current rewards', () => {
+        it('rates the frozen TRX and not the unfreeze queue, which the Staked line still counts', () => {
+            renderRow({
+                account: fundedTrxAccount,
+                position: tronPosition({
+                    balances: {
+                        ...ZERO_BALANCES,
+                        staked: amount(HUNDRED_TRX),
+                        unstaking: amount('40000000'),
+                        withdrawable: amount('20000000'),
+                    },
+                    // Every vote is cast, so the row reads as active, not as "remaining votes".
+                    details: { ...tronDetails, unallocatedVotingPower: amount('0') },
+                }),
+                productInfo: mockStakingProductInfo({ rate: 4, targets: [] }),
+            });
+
+            expect(screen.getByTestId(CURRENT_REWARDS)).toHaveTextContent('4.00 TRX');
+            expect(screen.getByTestId(STAKED_AMOUNT)).toHaveTextContent(/160(\.00)? TRX/);
+        });
+    });
+
     describe('claim slot', () => {
         it('offers the withdrawal of unfrozen TRX on an account with nothing else', async () => {
             const { store, report } = renderRow({

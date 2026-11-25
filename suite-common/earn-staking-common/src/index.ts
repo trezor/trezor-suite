@@ -114,6 +114,7 @@ export {
     type TronResourceAmounts,
 } from './stakingPositionDetails';
 export {
+    getStakingEarningAmount,
     getStakingPositionAmount,
     getStakingPositionAmountOutsideBalance,
     getStakingPositionPrincipal,
