@@ -37,6 +37,10 @@ export const PageName = () => {
         return <HiddenTokensName />;
     }
 
+    if (currentRoute === 'wallet-tokens-hidden' && isHomeTableActive) {
+        return <HiddenTokensName isAccountScoped />;
+    }
+
     if (currentRoute === 'suite-asset') {
         return <AssetDetailName />;
     }

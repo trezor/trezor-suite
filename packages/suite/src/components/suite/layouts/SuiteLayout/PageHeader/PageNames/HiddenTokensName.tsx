@@ -7,8 +7,19 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { BasicName } from './BasicName';
 
-export const HiddenTokensName = () => {
+type HiddenTokensNameProps = {
+    isAccountScoped?: boolean;
+};
+
+export const HiddenTokensName = ({ isAccountScoped = false }: HiddenTokensNameProps) => {
     const { dispatch } = useServices(injectDispatch);
+
+    const goBack = () =>
+        dispatch(
+            isAccountScoped
+                ? gotoThunk({ routeName: 'wallet-index', preserveParams: true })
+                : gotoThunk({ routeName: 'suite-index' }),
+        );
 
     return (
         <Row alignItems="center" gap={16}>
@@ -17,7 +28,7 @@ export const HiddenTokensName = () => {
                 intent="neutral"
                 priority="secondary"
                 size="large"
-                onClick={() => dispatch(gotoThunk({ routeName: 'suite-index' }))}
+                onClick={goBack}
                 data-testid="@hidden-tokens/back"
                 tooltip={{ content: <Translation id="TR_BACK" /> }}
             />

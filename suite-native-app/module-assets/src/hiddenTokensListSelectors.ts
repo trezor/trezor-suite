@@ -1,7 +1,7 @@
 import {
     type AssetTableState,
     type HiddenTokenReason,
-    selectHiddenWalletAssetKeys,
+    selectHiddenAssetKeys,
 } from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { createWeakMapSelector } from '@trezor/redux-utils';
@@ -25,8 +25,8 @@ const toSectionEntries = (
 
 export const selectHiddenTokensListEntries = createMemoizedSelector(
     [
-        (state: AssetTableState) => selectHiddenWalletAssetKeys(state, 'hiddenByUser'),
-        (state: AssetTableState) => selectHiddenWalletAssetKeys(state, 'unrecognized'),
+        (state: AssetTableState) => selectHiddenAssetKeys(state, 'hiddenByUser'),
+        (state: AssetTableState) => selectHiddenAssetKeys(state, 'unrecognized'),
     ],
     (hiddenByUserAssetKeys, unrecognizedAssetKeys): readonly HiddenTokensListEntry[] => [
         ...toSectionEntries('hiddenByUser', hiddenByUserAssetKeys),

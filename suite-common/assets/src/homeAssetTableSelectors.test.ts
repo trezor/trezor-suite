@@ -28,8 +28,9 @@ import {
     selectDisplayedNetworkSymbols,
     selectDisplayedWalletAssetKeys,
     selectDisplayedWalletAssetKeysOfNetwork,
+    selectHiddenAssetAmount,
+    selectHiddenAssetKeys,
     selectHiddenWalletAssetCount,
-    selectHiddenWalletAssetKeys,
     selectHomeAssetGrouping,
     selectHomeAssetTotals,
     selectIsHomeAssetTableFoldable,
@@ -338,7 +339,7 @@ describe('the rows the table is given', () => {
         expect(selectHomeAssetRowKeys(state)).toEqual([
             getWalletAssetKey({ deviceState: ALICE, networkSymbol: BTC }),
         ]);
-        expect(selectHiddenWalletAssetKeys(state, 'hiddenByUser')).toEqual([
+        expect(selectHiddenAssetKeys(state, 'hiddenByUser')).toEqual([
             getWalletAssetKey({
                 deviceState: ALICE,
                 networkSymbol: ETH,
@@ -363,7 +364,7 @@ describe('the rows the table is given', () => {
         expect(selectHomeAssetRowKeys(state)).toEqual([
             getWalletAssetKey({ deviceState: ALICE, networkSymbol: BTC }),
         ]);
-        expect(selectHiddenWalletAssetKeys(state, 'hiddenByUser')).toEqual([]);
+        expect(selectHiddenAssetKeys(state, 'hiddenByUser')).toEqual([]);
     });
 
     it('leaves out a token nothing vouches for', () => {
@@ -846,12 +847,38 @@ describe('the tokens the table leaves out', () => {
     it('tells apart what the user hid from what nothing vouches for', () => {
         const state = stateWithBitcoinBalance('1');
 
-        expect(selectHiddenWalletAssetKeys(state, 'hiddenByUser')).toEqual([
+        expect(selectHiddenAssetKeys(state, 'hiddenByUser')).toEqual([
             `${ALICE}/eth/${USDC_ON_ETH}`,
         ]);
-        expect(selectHiddenWalletAssetKeys(state, 'unrecognized')).toEqual([
+        expect(selectHiddenAssetKeys(state, 'unrecognized')).toEqual([
             `${ALICE}/eth/${UNKNOWN_TOKEN}`,
         ]);
+    });
+
+    it("lists one account's hidden tokens with what that account holds of them", () => {
+        const first = mockAccount({
+            symbol: ETH,
+            tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '10' }],
+        });
+        const second = mockAccount({
+            symbol: ETH,
+            index: 1,
+            tokens: [
+                { symbol: 'usdc', contract: USDC_ON_ETH, balance: '5' },
+                { symbol: 'bad', contract: UNKNOWN_TOKEN, balance: '5' },
+            ],
+        });
+        const state = createState({ accounts: [first, second], hiddenTokens: [USDC_ON_ETH] });
+        const usdc = getWalletAssetKey({
+            deviceState: ALICE,
+            networkSymbol: ETH,
+            contractAddress: USDC_ON_ETH,
+        });
+
+        expect(selectHiddenAssetKeys(state, 'hiddenByUser', first.key)).toEqual([usdc]);
+        expect(selectHiddenAssetKeys(state, 'unrecognized', first.key)).toEqual([]);
+        expect(selectHiddenAssetAmount(state, usdc, first.key)).toBe('10');
+        expect(selectWalletAssetAmount(state, usdc, true)).toBe('15');
     });
 
     it('hands back the same lists when a balance elsewhere changes', () => {
@@ -860,11 +887,11 @@ describe('the tokens the table leaves out', () => {
 
         // Both groups ask, as the page does: reselect keeps one previous result per selector,
         // not one per argument, so asking for a single reason would hide a cross-argument miss.
-        const byUserBefore = selectHiddenWalletAssetKeys(before, 'hiddenByUser');
-        const unrecognizedBefore = selectHiddenWalletAssetKeys(before, 'unrecognized');
+        const byUserBefore = selectHiddenAssetKeys(before, 'hiddenByUser');
+        const unrecognizedBefore = selectHiddenAssetKeys(before, 'unrecognized');
 
-        expect(selectHiddenWalletAssetKeys(after, 'hiddenByUser')).toBe(byUserBefore);
-        expect(selectHiddenWalletAssetKeys(after, 'unrecognized')).toBe(unrecognizedBefore);
+        expect(selectHiddenAssetKeys(after, 'hiddenByUser')).toBe(byUserBefore);
+        expect(selectHiddenAssetKeys(after, 'unrecognized')).toBe(unrecognizedBefore);
     });
 
     it('puts the most valuable hidden token first, and settles a tie on what is held', () => {
@@ -888,7 +915,7 @@ describe('the tokens the table leaves out', () => {
         });
 
         // Only the Ethereum one can be priced, so it leads; the other falls back to its balance.
-        expect(selectHiddenWalletAssetKeys(state, 'hiddenByUser')).toEqual([
+        expect(selectHiddenAssetKeys(state, 'hiddenByUser')).toEqual([
             `${ALICE}/eth/${USDC_ON_ETH}`,
             `${ALICE}/pol/${USDC_ON_POL}`,
         ]);
@@ -945,7 +972,7 @@ describe('the tokens the table leaves out', () => {
             hiddenTokens: [USDC_ON_POL],
         });
 
-        expect(selectHiddenWalletAssetKeys(state, 'hiddenByUser')).toEqual([]);
+        expect(selectHiddenAssetKeys(state, 'hiddenByUser')).toEqual([]);
     });
 });
 

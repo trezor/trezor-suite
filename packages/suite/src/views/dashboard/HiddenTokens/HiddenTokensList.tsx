@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
-import { selectHasHiddenWalletAssets } from '@suite-common/assets';
+import { selectHasHiddenAssets } from '@suite-common/assets';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 
 import { useDiscovery } from '#src/hooks/suite/useDiscovery';
@@ -9,8 +10,12 @@ import { NoTokens } from '#src/views/wallet/tokens/common/NoTokens';
 
 import { HiddenTokensCard } from './HiddenTokensCard';
 
-export const HiddenTokensList = () => {
-    const hasHiddenAssets = useSelector(selectHasHiddenWalletAssets);
+type HiddenTokensListProps = {
+    accountKey?: AccountKey;
+};
+
+export const HiddenTokensList = ({ accountKey }: HiddenTokensListProps) => {
+    const hasHiddenAssets = useSelector(state => selectHasHiddenAssets(state, accountKey));
     const { isDiscoveryRunning } = useDiscovery();
 
     if (!hasHiddenAssets && isDiscoveryRunning) {
@@ -31,11 +36,13 @@ export const HiddenTokensList = () => {
             <HiddenTokensCard
                 heading={<Translation id="TR_HIDDEN_TOKENS" />}
                 reason="hiddenByUser"
+                accountKey={accountKey}
                 data-testid="@hidden-tokens/hidden-by-user"
             />
             <HiddenTokensCard
                 heading={<Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR" />}
                 reason="unrecognized"
+                accountKey={accountKey}
                 data-testid="@hidden-tokens/unrecognized"
             />
         </Column>

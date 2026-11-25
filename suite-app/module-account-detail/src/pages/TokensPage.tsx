@@ -18,10 +18,13 @@ import {
     StellarTokenInputModal,
     TokensNavigation,
     WalletLayout,
+    useIsAssetFirstHome,
     useSelector,
 } from '@trezor/suite';
 
-export const TokensPage = () => {
+import { AccountHiddenTokensPage } from './AccountHiddenTokensPage';
+
+const TokensTabs = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [showManualInput, setShowManualInput] = useState(false);
     const [manualTokenContract, setManualTokenContract] = useState<string | null>(null);
@@ -123,5 +126,16 @@ export const TokensPage = () => {
                 />
             )}
         </WalletLayout>
+    );
+};
+
+export const TokensPage = () => {
+    const routeName = useSelector(selectRouteName);
+    const isAssetFirstHome = useIsAssetFirstHome();
+
+    return routeName === 'wallet-tokens-hidden' && isAssetFirstHome ? (
+        <AccountHiddenTokensPage />
+    ) : (
+        <TokensTabs />
     );
 };

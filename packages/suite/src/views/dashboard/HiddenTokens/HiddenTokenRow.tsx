@@ -3,10 +3,12 @@ import { memo } from 'react';
 import { ASSET_TABLE_LINE_GAP } from '@suite/assets';
 import { gotoThunk } from '@suite/router';
 import {
+    selectHiddenAssetAmount,
     selectWalletAssetContractAddress,
     selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Column, type Padding, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -15,8 +17,8 @@ import { typographyStylesBase } from '@trezor/theme';
 import { PriceTicker } from '#src/components/suite/Ticker/PriceTicker';
 import { TrendTicker } from '#src/components/suite/Ticker/TrendTicker';
 import { AssetIdentity } from '#src/components/wallet/assets/AssetIdentity';
+import { AssetTableAmount } from '#src/components/wallet/assets/AssetTableAmount';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { HomeAssetBalanceContainer } from '#src/views/home/HomeAssetsTable/HomeAssetBalanceContainer';
 import { useIsAssetFirstHome } from '#src/views/home/useIsAssetFirstHome';
 
 export const HIDDEN_TOKEN_ROW_PADDING = { vertical: 12, horizontal: 20 } satisfies Padding;
@@ -34,11 +36,13 @@ export const HIDDEN_TOKEN_BALANCE_WIDTH = 180;
 
 type HiddenTokenRowProps = {
     assetKey: WalletAssetKey;
+    accountKey?: AccountKey;
     onSelect: (assetKey: WalletAssetKey) => void;
 };
 
 export const HiddenTokenRow = memo(function HiddenTokenRow({
     assetKey,
+    accountKey,
     onSelect,
 }: HiddenTokenRowProps) {
     const { dispatch } = useServices(injectDispatch);
@@ -49,6 +53,7 @@ export const HiddenTokenRow = memo(function HiddenTokenRow({
     const contractAddress = useSelector(state =>
         selectWalletAssetContractAddress(state, assetKey, true),
     );
+    const amount = useSelector(state => selectHiddenAssetAmount(state, assetKey, accountKey));
 
     if (networkSymbol === undefined) {
         return null;
@@ -89,7 +94,13 @@ export const HiddenTokenRow = memo(function HiddenTokenRow({
                     <TrendTicker symbol={networkSymbol} contractAddress={contractAddress} />
                 </Column>
                 <Column width={HIDDEN_TOKEN_BALANCE_WIDTH} alignItems="flex-end">
-                    <HomeAssetBalanceContainer assetKey={assetKey} isHidden />
+                    {amount !== undefined && (
+                        <AssetTableAmount
+                            symbol={networkSymbol}
+                            contractAddress={contractAddress}
+                            amount={amount}
+                        />
+                    )}
                 </Column>
             </Row>
         </Box>
