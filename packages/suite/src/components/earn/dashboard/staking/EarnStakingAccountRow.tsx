@@ -146,11 +146,20 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         (!isTronNetworkType && !isClaimOffered) ||
         isDrepDelegationRequired;
 
-    const claimTooltipContent =
-        claimingMessageContent ??
-        (isDrepDelegationRequired ? (
-            <Translation id="TR_STAKE_DREP_DELEGATION_REQUIRED" />
-        ) : undefined);
+    // A disabled claim says why: the switch, the DRep, a pending claim, or the pending transaction
+    // that withholds the operation.
+    const getClaimTooltipContent = () => {
+        if (claimingMessageContent) return claimingMessageContent;
+        if (isDrepDelegationRequired) return <Translation id="TR_STAKE_DREP_DELEGATION_REQUIRED" />;
+        if (isClaimPending) return <Translation id="TR_STAKE_CLAIM_PENDING" />;
+        if (!isTronNetworkType && !isClaimOffered) {
+            return <Translation id="TR_STAKE_CLAIM_TRANSACTION_PENDING" />;
+        }
+
+        return undefined;
+    };
+
+    const claimTooltipContent = getClaimTooltipContent();
 
     const minStakingAmount =
         stakeableDescriptor === null

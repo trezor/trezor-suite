@@ -12971,6 +12971,11 @@ export const messages = defineMessages({
         id: 'TR_STAKE_CLAIM_PENDING',
         defaultMessage: 'Claim pending',
     },
+    TR_STAKE_CLAIM_TRANSACTION_PENDING: {
+        id: 'TR_STAKE_CLAIM_TRANSACTION_PENDING',
+        defaultMessage: 'Transaction pending',
+        description: 'Tooltip of a claim button disabled until a pending transaction confirms',
+    },
     TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED: {
         id: 'TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED',
         defaultMessage: 'The claimed amount will be transferred to your account.',
