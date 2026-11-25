@@ -48,7 +48,7 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
 
     const { productId, position, totals } = useStakingAccountPosition(accountKey);
     const { rate } = useNetworkStakingRate({ networkSymbol: account.symbol, accountKey });
-    const { entryPeriodDays, exitPeriodDays, rewardPeriodDays } = useStakingPeriods(productId);
+    const { entryPeriodDays, exitPeriodDays } = useStakingPeriods(productId);
 
     const daysUntilActivation = useStakingDaysUntil(position?.activations[0]?.availableAt ?? null);
     const daysUntilUnlock = useStakingDaysUntil(position?.unlocks[0]?.availableAt ?? null);
@@ -121,9 +121,7 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
                                         <Flex direction={canClaim ? 'column' : 'row'} gap={12}>
                                             <ApyCard apy={rate} />
 
-                                            <PayoutCardFrequencyRewards
-                                                rewardFrequency={rewardPeriodDays}
-                                            />
+                                            <PayoutCardFrequencyRewards productId={productId} />
                                         </Flex>
                                     </Grid>
 

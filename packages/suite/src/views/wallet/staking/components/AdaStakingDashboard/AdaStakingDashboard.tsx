@@ -6,7 +6,6 @@ import {
     selectIsStakingAccountDelegatedOutside,
     useNetworkStakingRate,
     useStakingAccountPosition,
-    useStakingPeriods,
 } from '@suite-common/earn-staking';
 import { hasPendingStakingOperation } from '@suite-common/earn-staking-common';
 import {
@@ -56,7 +55,6 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
 
     const { productId, position } = useStakingAccountPosition(accountKey);
     const { rate } = useNetworkStakingRate({ networkSymbol: account.symbol, accountKey });
-    const { rewardPeriodDays } = useStakingPeriods(productId);
 
     const isStakingActive = useSelector(state => selectIsStakingAccountActive(state, accountKey));
 
@@ -92,9 +90,7 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
                                 <Flex gap={12}>
                                     <ApyCard apy={shownRate} isNotEarning={hasOutdatedProvider} />
 
-                                    <PayoutCardFrequencyRewards
-                                        rewardFrequency={rewardPeriodDays}
-                                    />
+                                    <PayoutCardFrequencyRewards productId={productId} />
                                 </Flex>
 
                                 <StakingCard account={account} />
