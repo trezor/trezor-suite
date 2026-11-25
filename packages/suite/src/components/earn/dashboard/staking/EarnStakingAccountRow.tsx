@@ -126,8 +126,9 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     const { isDisabled: isVotingDisabled, message: votingMessageContent } =
         useStakingOperationSwitch(productId, 'vote');
 
-    // A Tron unlock matures by time alone, so the row settles it at the current minute.
-    const nowMs = useNow(TRON_UNLOCKS_REFRESH_INTERVAL_MS);
+    // A Tron unlock matures by time alone, so a Tron row settles it at the current minute; no
+    // other row has a reason to tick.
+    const nowMs = useNow(isTronNetworkType ? TRON_UNLOCKS_REFRESH_INTERVAL_MS : null);
     const withdrawableAmount =
         isTronNetworkType && position !== null
             ? settleTronUnlocks({ position, nowMs }).withdrawable

@@ -10,7 +10,7 @@ import { messages } from '@suite/intl';
 import { initialMetadataState } from '@suite/metadata';
 import { type GotoThunkDeps, routerReducer } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
-import { type StakingDep } from '@suite-common/earn-staking';
+import { type StakingDep, TRON_UNLOCKS_REFRESH_INTERVAL_MS } from '@suite-common/earn-staking';
 import { mockStakingQueryClient, mockStakingServices } from '@suite-common/earn-staking/mocks';
 import { type StakingPosition, type StakingProductInfo } from '@suite-common/earn-staking-common';
 import { mockStakingProductInfo } from '@suite-common/earn-staking-common/mocks';
@@ -136,6 +136,32 @@ const renderRow = ({ account, position, productInfo, messageSystem, firmware }: 
 };
 
 describe('EarnStakingAccountRow', () => {
+    describe('Tron clock', () => {
+        it('ticks the unlock clock on a Tron row only', () => {
+            const setIntervalSpy = jest.spyOn(global, 'setInterval');
+            const ethAccount = mockAccount({ symbol: ETH, descriptor: 'ETH' });
+
+            renderRow({
+                account: ethAccount,
+                position: mockStakedPosition(ethProduct.id, ONE_ETH),
+            });
+
+            expect(setIntervalSpy).not.toHaveBeenCalledWith(
+                expect.any(Function),
+                TRON_UNLOCKS_REFRESH_INTERVAL_MS,
+            );
+
+            renderRow({ account: trxAccount, position: tronPosition() });
+
+            expect(setIntervalSpy).toHaveBeenCalledWith(
+                expect.any(Function),
+                TRON_UNLOCKS_REFRESH_INTERVAL_MS,
+            );
+
+            setIntervalSpy.mockRestore();
+        });
+    });
+
     describe('current rewards', () => {
         it('rates the frozen TRX and not the unfreeze queue, which the Staked line still counts', () => {
             renderRow({
