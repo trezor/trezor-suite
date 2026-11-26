@@ -15,8 +15,12 @@
         { "path": "../../suite-common/icons" },
         { "path": "../../suite-common/trading" },
         {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
             "path": "../../suite-common/wallet-types"
         },
+        { "path": "../assets" },
         { "path": "../intl" },
         { "path": "../router" },
         { "path": "../../packages/components" },
@@ -25,6 +29,7 @@
             "path": "../../packages/product-components"
         },
         { "path": "../../packages/redux-utils" },
-        { "path": "../../packages/theme" }
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/utils" }
     ]
 }
