@@ -14,7 +14,10 @@ import { Translation } from '@suite-native/intl';
 import { Screen, TradingStackRoutes } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 import { useTransactionStatusOverride } from '@suite-native/trading-debug';
-import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+import {
+    selectExchangeFlowApprovalStatus,
+    selectExchangeSelectedSendAccount,
+} from '@suite-native/trading-state';
 import { type TradingStackScreenProps } from '@suite-native/trading-types';
 import {
     useNavigationRemoveInterceptorAlert,
@@ -53,6 +56,7 @@ export const TradingConfirmingScreen = ({
     const activeQuote = useSelector(selectTradingExchangeSelectedQuote);
     const accountKey = sendAccount?.key ?? null;
     const approvalSendTxHash = activeQuote?.approvalSendTxHash;
+    const flowApprovalStatus = useSelector(selectExchangeFlowApprovalStatus);
     const coinSymbol = useSelector((state: TradingRootState) =>
         selectTradingCoinSymbolByCryptoId(state, activeQuote?.send),
     );
@@ -217,11 +221,12 @@ export const TradingConfirmingScreen = ({
         );
     }
 
-    // Only the flow type is known here, so an approval after a revoke is shown without the revoke step.
-    const approvalStatus = getExchangeApprovalFlowStatus({
+    // The content depends only on this step, the step numbers on the whole flow stored on quote selection.
+    const stepApprovalStatus = getExchangeApprovalFlowStatus({
         isRevoked: flowType === 'revoke-and-approve',
         shouldIncreaseLimit: hasPreapprovedLimit(activeQuote),
     });
+    const approvalStatus = flowApprovalStatus ?? stepApprovalStatus;
     const readOnlyLimitRow = <LimitInfoRow testID="ExchangeApproval/LimitPicker" />;
     const extraRows = (
         <>
@@ -233,17 +238,17 @@ export const TradingConfirmingScreen = ({
     return (
         <ExchangeFlowStepsLayout
             approvalStatus={approvalStatus}
-            currentStep={approvalStatus === 'needs_revoke' ? 'revoke' : 'approval'}
+            currentStep={flowType === 'revoke-and-approve' ? 'revoke' : 'approval'}
             header={<ExchangeFlowScreenHeader closeActionType="close" />}
             footer={footer}
             belowCards={debugView}
         >
-            {approvalStatus === 'needs_revoke' && (
+            {stepApprovalStatus === 'needs_revoke' && (
                 <ExchangeFlowRevokeStepContent coinSymbol={coinSymbol} feeRow={feeRow}>
                     {extraRows}
                 </ExchangeFlowRevokeStepContent>
             )}
-            {approvalStatus === 'needs_increase' && (
+            {stepApprovalStatus === 'needs_increase' && (
                 <ExchangeFlowIncreaseStepContent
                     coinSymbol={coinSymbol}
                     limitRow={readOnlyLimitRow}
@@ -252,7 +257,7 @@ export const TradingConfirmingScreen = ({
                     {extraRows}
                 </ExchangeFlowIncreaseStepContent>
             )}
-            {approvalStatus === 'needs_approval' && (
+            {stepApprovalStatus === 'needs_approval' && (
                 <ExchangeFlowApproveStepContent
                     coinSymbol={coinSymbol}
                     limitRow={readOnlyLimitRow}

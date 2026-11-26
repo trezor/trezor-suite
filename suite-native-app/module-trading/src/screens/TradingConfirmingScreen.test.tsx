@@ -14,7 +14,7 @@ import { getTranslation } from '@suite-native/intl';
 import { type TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import { act, renderWithStoreProvider, userEvent, within } from '@suite-native/test-utils-store';
 import { eth1NormalAccount, exchangeQuotes } from '@suite-native/trading-fixtures';
-import { type TradingRootState } from '@suite-native/trading-state';
+import { type TradingRootState, tradingActions } from '@suite-native/trading-state';
 import {
     useNavigationRemoveInterceptorAlert,
     useTransactionDetails,
@@ -312,6 +312,24 @@ describe('TradingConfirmingScreen', () => {
             getTranslation('moduleTrading.tradingExchangeFlowScreen.increaseStep.title'),
             { exact: false },
         );
+    });
+
+    it('approve: renders the approval after a revoke as the second of three steps', async () => {
+        store.dispatch(tradingActions.setExchangeFlowApprovalStatus('needs_revoke'));
+
+        const { getByTestId, getAllByTestId } = await renderScreen({ flowType: 'approve' });
+
+        expect(getByTestId('@step-cards/current')).toHaveTextContent(
+            getTranslation('stepCards.stepper', { stepNumber: 2, stepCount: 3 }) +
+                getTranslation('moduleTrading.tradingExchangeFlowScreen.approveStep.title'),
+            { exact: false },
+        );
+        expect(
+            within(getByTestId('@step-cards/finished')).getByText(
+                getTranslation('moduleTrading.tradingExchangeFlowScreen.revokeStep.nextStepTitle'),
+            ),
+        ).toBeOnTheScreen();
+        expect(getAllByTestId('@step-cards/next')).toHaveLength(1);
     });
 
     it('revoke-and-approve: renders the revoke step as the first of three steps', async () => {
