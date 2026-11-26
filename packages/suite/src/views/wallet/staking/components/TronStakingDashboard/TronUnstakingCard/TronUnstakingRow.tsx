@@ -42,7 +42,11 @@ export const TronUnstakingRow = ({ index, amount, availableAt, symbol }: TronUns
 
             <Table.Cell align="end" padding={CELL_PADDING}>
                 <Column alignItems="flex-end">
-                    <Text typographyStyle="body-md-strong" data-testid={`${testIdPrefix}/amount`}>
+                    <Text
+                        typographyStyle="body-md-strong"
+                        textWrap="nowrap"
+                        data-testid={`${testIdPrefix}/amount`}
+                    >
                         <FormattedCryptoAmount value={amount} networkSymbol={symbol} />
                     </Text>
 
