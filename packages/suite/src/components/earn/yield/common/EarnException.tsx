@@ -33,7 +33,7 @@ export const EarnException = ({
                     intent: 'neutral',
                     priority: 'secondary',
                     onClick: () => dispatch(gotoThunk({ routeName: 'suite-earn' })),
-                    children: <Translation id="TR_EARN_YIELD_BACK_TO_OVERVIEW" />,
+                    children: <Translation id="TR_EARN_BACK_TO_OVERVIEW" />,
                 },
             ]}
         />

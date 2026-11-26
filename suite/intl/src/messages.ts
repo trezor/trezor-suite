@@ -11369,8 +11369,8 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_DEPOSITED',
         defaultMessage: 'Deposited',
     },
-    TR_EARN_YIELD_BACK_TO_OVERVIEW: {
-        id: 'TR_EARN_YIELD_BACK_TO_OVERVIEW',
+    TR_EARN_BACK_TO_OVERVIEW: {
+        id: 'TR_EARN_BACK_TO_OVERVIEW',
         defaultMessage: 'Back to overview',
     },
     TR_EARN_YIELD_DEPOSIT_DISABLED: {
