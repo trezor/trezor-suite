@@ -42,11 +42,11 @@ Nested mandatory skills still apply within their stated scope.
   [Security headers](skills/security-headers/SKILL.md). Migration default exports are a specific exception
   to the general named-export rule.
 - Analytics/Sentry reporting: [Analytics and Sentry privacy](skills/analytics-and-sentry-privacy/SKILL.md).
-- Commits and PR creation: [Git conventions](skills/git-and-commit-guidelines/SKILL.md).
+- Commits: [Git conventions](skills/git-and-commit-guidelines/SKILL.md).
 - GitHub PRs and issues: any write action (creating a PR or issue, review, comment, description,
   approval, merge) follows the mandatory [write rules](skills/github-write-actions/SKILL.md).
-  Reviews: [PR review](skills/pr-review/SKILL.md). Issues: [GitHub issues](skills/github-issues/SKILL.md).
-  PR descriptions: [QA notes](skills/qa-notes/SKILL.md).
+  Pull requests (create, review): [Pull requests](skills/pull-requests/SKILL.md).
+  Issues: [GitHub issues](skills/github-issues/SKILL.md).
   Style proposals: [Contribution guide](skills/skills-and-code-style-contribution/SKILL.md).
 
 The architecture and verification rules below supersede conflicting generalizations in the Packages
