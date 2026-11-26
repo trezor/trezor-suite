@@ -20,6 +20,7 @@ import type { thpGetCredentials } from './thpGetCredentials';
 import type { thpRemoveCredentials } from './thpRemoveCredentials';
 import type { wipeDevice } from './wipeDevice';
 import type { TrezorConnectEvolu } from '../evolu';
+import type { TrezorConnectPrecompose } from '../precompose';
 
 // Device configuration, firmware, security, and hardware control
 type TrezorConnectManagementBase = {
@@ -46,6 +47,9 @@ type TrezorConnectManagementBase = {
     getSettings: typeof getSettings;
 };
 
-// Evolu identity operations export secret key material, so they belong to the privileged tier and
-// are folded in here to keep them out of the public API (`Omit<Callable, keyof Management>`).
-export type TrezorConnectManagement = TrezorConnectManagementBase & TrezorConnectEvolu;
+// Evolu identity operations export secret key material, and the precompose operations serve only
+// Suite's own transaction review, so they belong to the privileged tier and are folded in here to
+// keep them out of the public API (`Omit<Callable, keyof Management>`).
+export type TrezorConnectManagement = TrezorConnectManagementBase &
+    TrezorConnectEvolu &
+    TrezorConnectPrecompose;

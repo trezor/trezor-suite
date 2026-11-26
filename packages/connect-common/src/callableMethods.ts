@@ -25,6 +25,10 @@ export const connectManagementMethods = [
     'evoluGetNode',
     'evoluSignRegistrationRequest',
     'evoluGetDelegatedIdentityKey',
+    // Transaction summaries for Suite's own review of a signing call.
+    'precomposeSignTransaction',
+    'ethereumPrecomposeSignTransaction',
+    'solanaPrecomposeSignTransaction',
 ] as const;
 
 const connectPublicCallableMethodGroups = {
