@@ -16,7 +16,7 @@ type AmountComponentProps = {
     withLink?: boolean;
     withSign?: boolean;
     signGrayscale?: boolean;
-    alignMultitoken?: 'flex-end' | 'flex-start';
+    alignNft?: 'flex-end' | 'flex-start';
     linkTypographyStyle?: TypographyStyle;
     'data-testid'?: string;
 };
@@ -27,7 +27,7 @@ export const AmountComponent = ({
     withLink = false,
     withSign = false,
     signGrayscale,
-    alignMultitoken,
+    alignNft,
     linkTypographyStyle,
     'data-testid': dataTest,
 }: AmountComponentProps): React.ReactNode => {
@@ -41,7 +41,7 @@ export const AmountComponent = ({
                 isWithLink={withLink}
                 signValue={withSign ? operation : null}
                 signGrayscale={signGrayscale}
-                alignMultitoken={alignMultitoken}
+                alignNft={alignNft}
                 linkTypographyStyle={linkTypographyStyle}
             />
         );

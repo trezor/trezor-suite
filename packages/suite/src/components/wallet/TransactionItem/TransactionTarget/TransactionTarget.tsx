@@ -130,7 +130,7 @@ export const TransactionTarget = ({
                         networkSymbol={transaction.symbol}
                         withLink={false}
                         withSign
-                        alignMultitoken="flex-end"
+                        alignNft="flex-end"
                     />
                 );
             default:

@@ -13,6 +13,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { isNftMatchesSearch, isNftToken, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { getLidoDeployment } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 type GetTokensInput<T extends TokenInfo> = {
@@ -59,9 +60,13 @@ export const getTokens = <T extends TokenInfo = TokenInfo>({
     const hiddenTokens = new Set(tokenDefinitions?.hide.map(normalizeContract));
     const shownTokens = new Set(tokenDefinitions?.show.map(normalizeContract));
 
+    const lidoWithdrawalQueue = isNft ? getLidoDeployment(symbol)?.withdrawalQueue : undefined;
+
     filteredTokens.forEach(token => {
-        const isKnown = isTokenDefinitionKnown(tokenDefinitions?.data, symbol, token.contract);
         const contract = normalizeContract(token.contract);
+        const isLidoWithdrawalNft = token.standard === 'ERC721' && contract === lidoWithdrawalQueue;
+        const isKnown =
+            isLidoWithdrawalNft || isTokenDefinitionKnown(tokenDefinitions?.data, symbol, contract);
         const isHidden = hiddenTokens.has(contract);
         const isShown = shownTokens.has(contract);
 

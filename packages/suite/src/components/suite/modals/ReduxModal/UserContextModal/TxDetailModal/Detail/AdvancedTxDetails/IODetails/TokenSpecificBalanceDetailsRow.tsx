@@ -85,7 +85,7 @@ export const TokenSpecificBalanceDetailsRow = ({
                                     transfer={transfer}
                                     networkSymbol={tx.symbol}
                                     isWithLink
-                                    alignMultitoken="flex-start"
+                                    alignNft="flex-start"
                                     linkTypographyStyle="body-xs"
                                 />
                             ) : (
