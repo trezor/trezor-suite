@@ -12,7 +12,9 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@noble/ciphers": "^2.3.0",
         "@noble/curves": "^2.0.1",
+        "@noble/hashes": "^2.0.1",
         "@reduxjs/toolkit": "2.13.0",
         "@scure/base": "^2.0.0",
         "@suite-common/device": "workspace:*",

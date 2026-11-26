@@ -61,6 +61,14 @@ export const ContactsErrorMessage = ({ error }: ContactsErrorMessageProps) => {
             return <Translation id="TR_CONTACTS_ERROR_NO_FRESH_ADDRESS" />;
         case 'NotAttested':
             return <Translation id="TR_CONTACTS_ERROR_NOT_ATTESTED" />;
+        case 'MessagingUnavailable':
+            return <Translation id="TR_CONTACTS_ERROR_MESSAGING_UNAVAILABLE" />;
+        case 'HotKeyNotPublished':
+            return <Translation id="TR_CONTACTS_ERROR_HOT_KEY_NOT_PUBLISHED" />;
+        case 'ContactNotReachable':
+            return <Translation id="TR_CONTACTS_ERROR_CONTACT_NOT_REACHABLE" />;
+        case 'MessageNotDelivered':
+            return <Translation id="TR_CONTACTS_ERROR_MESSAGE_NOT_DELIVERED" />;
         default:
             return exhaustive(error);
     }

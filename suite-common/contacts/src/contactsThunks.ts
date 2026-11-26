@@ -19,6 +19,7 @@ import {
 } from './contactsSlice';
 import {
     CONTACTS_ACTION_PREFIX,
+    CONTACTS_IDENTITY_PATH,
     type ContactsDevice,
     type ContactsStorageDeps,
     ensureContactsStorage,
@@ -29,9 +30,6 @@ import {
     isSelectedContactsDevice,
 } from './contactsThunkHelpers';
 import { encodeNpub, parseNpub } from './npub';
-
-/** NIP-06: the key the Trezor derives the contact identity (npub) from. */
-const IDENTITY_PATH = "m/44'/1237'/0'/0/0";
 
 // The Trezor keeps contacts in the host label domain, keyed by the npub, valued by the name.
 const CONTACT_WARD_APP_ID = 'bitcoin';
@@ -66,7 +64,7 @@ export const loadContactIdentityThunk = createThunk<
     const { staticSessionId } = contactsDevice.payload;
     const response = await TrezorConnect.nostrGetPublicKey({
         device: getConnectDevice(contactsDevice.payload),
-        path: IDENTITY_PATH,
+        path: CONTACTS_IDENTITY_PATH,
         showOnTrezor: params.showOnTrezor === true,
         __experimental: true,
     });
@@ -91,10 +89,10 @@ type ContactsDeviceThunkParams = {
     contactsDevice: ContactsDevice;
 };
 
-type EnsureContactIdentityThunkState = DeviceRootState & ContactsRootState;
+export type EnsureContactIdentityThunkState = DeviceRootState & ContactsRootState;
 
 /** The wallet's npub, read from its Trezor (silently) if this session has not yet. */
-const ensureContactIdentityThunk = createThunk<
+export const ensureContactIdentityThunk = createThunk<
     Result<string, ContactsError>,
     ContactsDeviceThunkParams,
     { state: EnsureContactIdentityThunkState }

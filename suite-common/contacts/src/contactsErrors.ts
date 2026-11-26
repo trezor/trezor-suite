@@ -32,7 +32,15 @@ export type ContactsError =
     | { type: 'WalletNotRemembered' }
     | { type: 'NoFreshAddress' }
     /** The Trezor showed the address but did not attest it. */
-    | { type: 'NotAttested' };
+    | { type: 'NotAttested' }
+    /** The wallet's inbox on the relays is not open. */
+    | { type: 'MessagingUnavailable' }
+    /** Contacts cannot reply before the wallet's identity attested its hot key. */
+    | { type: 'HotKeyNotPublished' }
+    /** The contact's identity attested no hot key on the relays, so nothing can reach them. */
+    | { type: 'ContactNotReachable' }
+    /** No relay took the message. */
+    | { type: 'MessageNotDelivered' };
 
 const CANCEL_CODES: ERRORS.ErrorCode[] = [
     'Failure_ActionCancelled',

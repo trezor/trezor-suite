@@ -16,6 +16,9 @@ import { type ContactsError } from './contactsErrors';
 
 export const CONTACTS_ACTION_PREFIX = '@suite-common/contacts';
 
+/** NIP-06: the key the Trezor derives the contact identity (npub) from. */
+export const CONTACTS_IDENTITY_PATH = "m/44'/1237'/0'/0/0";
+
 export type ContactsDevice = {
     device: AcquiredDevice;
     staticSessionId: StaticSessionId;
