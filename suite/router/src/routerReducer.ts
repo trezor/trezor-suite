@@ -111,11 +111,11 @@ export const selectIsAccountTabPage = (state: RouterRootState) =>
     isAccountTabRoute(selectRouteName(state));
 
 export const selectRouterApp = (state: RouterRootState) => state.router.app;
-export const selectHasRoute = (state: RouterRootState) => state.router.route !== undefined;
+export const selectHasRoute = (state: RouterRootState) => selectRoute(state) !== undefined;
 export const selectIsForegroundApp = (state: RouterRootState) =>
-    state.router.route?.isForegroundApp === true;
+    selectRoute(state)?.isForegroundApp === true;
 export const selectIsFullscreenApp = (state: RouterRootState) =>
-    state.router.route?.isFullscreenApp === true;
+    selectRoute(state)?.isFullscreenApp === true;
 export const selectForegroundAppParams = (state: RouterRootState) =>
     state.router.route?.isForegroundApp === true ? state.router.params : undefined;
 

@@ -35,10 +35,10 @@ export const selectOAuthServerEnvironment = (state: SuiteSettingsRootState) =>
 export const selectExperimentalFeatures = (state: SuiteSettingsRootState) =>
     state.suiteSettings.experimental;
 export const selectIsExperimentalEnabled = (state: SuiteSettingsRootState) =>
-    state.suiteSettings.experimental !== undefined;
+    selectExperimentalFeatures(state) !== undefined;
 export const selectHasExperimentalFeature =
     (feature: ExperimentalFeature) => (state: SuiteSettingsRootState) =>
-        state.suiteSettings.experimental?.includes(feature) ?? false;
+        selectExperimentalFeatures(state)?.includes(feature) ?? false;
 export const selectIsTestnetNetworksEnabled = (state: SuiteSettingsRootState) =>
     state.suiteSettings.isTestnetNetworksEnabled;
 export const selectIsNftSectionEnabled = (state: SuiteSettingsRootState) =>

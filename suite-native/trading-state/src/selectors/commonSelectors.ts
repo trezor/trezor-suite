@@ -215,7 +215,7 @@ export const selectActiveTradingType = (state: TradingRootState) =>
     state.wallet.trading.activeTradingType;
 
 export const selectHasActiveTradingType = (state: TradingRootState) =>
-    state.wallet.trading.activeTradingType !== null;
+    selectActiveTradingType(state) !== null;
 
 export const selectFiatRateByTradeableAsset = (
     state: FiatRatesRootState & WalletSettingsRootState,
