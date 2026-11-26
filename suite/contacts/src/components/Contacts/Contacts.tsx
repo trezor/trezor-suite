@@ -7,11 +7,12 @@ import { Banner, Column } from '@trezor/components';
 
 import { ContactsList } from './ContactsList/ContactsList';
 import { IdentityCard } from './IdentityCard/IdentityCard';
+import { MessagingCard } from './MessagingCard/MessagingCard';
 import { ShareAddressCard } from './ShareAddressCard/ShareAddressCard';
 
 /**
- * The selected wallet's contact ID, which anyone may share, the addresses it shares with contacts,
- * and the contacts it pays by name. Those live in Suite Sync and on the Trezor's WARD, which only
+ * The selected wallet's contact ID, which anyone may share, its address requests over nostr
+ * relays, the addresses it shares with contacts, and the contacts it pays by name. Those live in Suite Sync and on the Trezor's WARD, which only
  * the standard wallet uses.
  */
 export const Contacts = () => {
@@ -22,6 +23,7 @@ export const Contacts = () => {
     return (
         <Column gap={16} alignItems="stretch">
             <IdentityCard />
+            <MessagingCard />
             <ShareAddressCard />
 
             {isPassphraseWallet && (

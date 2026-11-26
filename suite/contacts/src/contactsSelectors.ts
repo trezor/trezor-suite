@@ -10,6 +10,7 @@ import {
     type SuiteSyncDataRootState,
     selectSuiteSyncContactAddresses,
 } from '@suite-common/suite-sync';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
@@ -30,6 +31,29 @@ export const selectContactShareableAccounts = createWeakMapSelector.withTypes<
     AccountsRootState & DeviceRootState
 >()([selectVisibleDeviceAccounts], accounts =>
     returnStableArrayIfEmpty(accounts.filter(account => getContactsSlip44(account) !== undefined)),
+);
+
+export type ContactsNetwork = {
+    slip44: number;
+    /** Of the wallet's first account with the SLIP-44, to name it. */
+    networkSymbol: NetworkSymbol;
+};
+
+/** The SLIP-44 coin types the selected wallet has contacts accounts of, once each. */
+export const selectContactsNetworks = createWeakMapSelector.withTypes<
+    AccountsRootState & DeviceRootState
+>()([selectContactShareableAccounts], accounts =>
+    returnStableArrayIfEmpty(
+        accounts.reduce<ContactsNetwork[]>((networks, account) => {
+            const slip44 = getContactsSlip44(account);
+
+            if (slip44 === undefined || networks.some(network => network.slip44 === slip44)) {
+                return networks;
+            }
+
+            return [...networks, { slip44, networkSymbol: account.symbol }];
+        }, []),
+    ),
 );
 
 type SelectContactUnspentAddressCountParams = {

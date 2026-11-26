@@ -12,6 +12,7 @@ import { Badge, Button, Column, Row, Text } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
 
 import { PasteAddressModal } from './PasteAddressModal/PasteAddressModal';
+import { RequestAddressButtons } from './RequestAddressButtons/RequestAddressButtons';
 import { type ContactRowAction, useContactRowActions } from './useContactRowActions';
 import { selectContactUnspentAddressCount } from '../../../../contactsSelectors';
 import { ContactsErrorMessage } from '../../ContactsErrorMessage';
@@ -93,6 +94,8 @@ export const ContactRow = ({ staticSessionId, npub, name }: ContactRowProps) => 
                     </Button>
                 </Row>
             </Row>
+
+            <RequestAddressButtons staticSessionId={staticSessionId} npub={npub} name={name} />
 
             {outcome?.type === 'error' && (
                 <Text typographyStyle="body-sm" intent="critical">

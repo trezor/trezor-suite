@@ -37,7 +37,7 @@ import { type EnsureContactIdentityThunkState, ensureContactIdentityThunk } from
 import { type ContactsMessagingDep } from './createContactsMessaging';
 import { decodeNpub } from './npub';
 
-type ContactsMessagingServiceDeps = WithServices<ContactsMessagingDep>;
+export type ContactsMessagingServiceDeps = WithServices<ContactsMessagingDep>;
 
 const getNowSeconds = () => Math.floor(Date.now() / 1000);
 

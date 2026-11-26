@@ -29,6 +29,7 @@ export {
 export { type PayableContact, getContactsSlip44 } from './contactPayments';
 export { type ContactsError } from './contactsErrors';
 export {
+    type ContactsMessagingServiceDeps,
     dismissContactAddressRequestThunk,
     fetchContactHotKeyThunk,
     publishContactsHotKeyThunk,

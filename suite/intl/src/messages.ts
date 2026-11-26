@@ -5884,6 +5884,73 @@ export const messages = defineMessages({
         id: 'TR_CONTACTS_ERROR_MESSAGE_NOT_DELIVERED',
         defaultMessage: 'No relay took the message. Check your connection and try again.',
     },
+    TR_CONTACTS_MESSAGING_TITLE: {
+        id: 'TR_CONTACTS_MESSAGING_TITLE',
+        defaultMessage: 'Address requests',
+    },
+    TR_CONTACTS_MESSAGING_DESCRIPTION: {
+        id: 'TR_CONTACTS_MESSAGING_DESCRIPTION',
+        defaultMessage:
+            "Contacts ask you for an address, and you send one, through public nostr relays. Messages are encrypted to your wallet's messaging key; the relays see only that something was sent, and when.",
+    },
+    TR_CONTACTS_MESSAGING_CONNECTING: {
+        id: 'TR_CONTACTS_MESSAGING_CONNECTING',
+        defaultMessage: 'Reading the messaging key from your Trezor…',
+    },
+    TR_CONTACTS_MESSAGING_RELAYS: {
+        id: 'TR_CONTACTS_MESSAGING_RELAYS',
+        defaultMessage: 'Connected to {connected} of {total} relays',
+    },
+    TR_CONTACTS_MESSAGING_KEY_MISSING: {
+        id: 'TR_CONTACTS_MESSAGING_KEY_MISSING',
+        defaultMessage:
+            'Contacts cannot reach this wallet until you publish its messaging key. Your Trezor asks you to confirm it once.',
+    },
+    TR_CONTACTS_MESSAGING_KEY_PUBLISH: {
+        id: 'TR_CONTACTS_MESSAGING_KEY_PUBLISH',
+        defaultMessage: 'Publish messaging key',
+    },
+    TR_CONTACTS_MESSAGING_KEY_PUBLISHED: {
+        id: 'TR_CONTACTS_MESSAGING_KEY_PUBLISHED',
+        defaultMessage: 'Your messaging key is published, so contacts can reach this wallet.',
+    },
+    TR_CONTACTS_REQUESTS_EMPTY: {
+        id: 'TR_CONTACTS_REQUESTS_EMPTY',
+        defaultMessage: 'No address requests.',
+    },
+    TR_CONTACTS_REQUEST_UNKNOWN_SENDER: {
+        id: 'TR_CONTACTS_REQUEST_UNKNOWN_SENDER',
+        defaultMessage: 'Not in your contacts',
+    },
+    TR_CONTACTS_REQUEST_NETWORK: {
+        id: 'TR_CONTACTS_REQUEST_NETWORK',
+        defaultMessage:
+            'Asks for a {network} address. Compare the npub with the one this contact gave you.',
+    },
+    TR_CONTACTS_REQUEST_NO_ACCOUNT: {
+        id: 'TR_CONTACTS_REQUEST_NO_ACCOUNT',
+        defaultMessage: 'Asks for an address on a network this wallet has no account on.',
+    },
+    TR_CONTACTS_REQUEST_SEND: {
+        id: 'TR_CONTACTS_REQUEST_SEND',
+        defaultMessage: 'Send address',
+    },
+    TR_CONTACTS_REQUEST_SENT: {
+        id: 'TR_CONTACTS_REQUEST_SENT',
+        defaultMessage: 'Sent {address}.',
+    },
+    TR_CONTACTS_REQUEST_ADDRESS: {
+        id: 'TR_CONTACTS_REQUEST_ADDRESS',
+        defaultMessage: 'Request address',
+    },
+    TR_CONTACTS_REQUEST_NETWORK_ADDRESS: {
+        id: 'TR_CONTACTS_REQUEST_NETWORK_ADDRESS',
+        defaultMessage: 'Request {network} address',
+    },
+    TR_CONTACTS_REQUEST_ADDRESS_SENT: {
+        id: 'TR_CONTACTS_REQUEST_ADDRESS_SENT',
+        defaultMessage: 'Request sent. The address shows up here once {name} sends it.',
+    },
     TR_CONTACTS_PAY_CONTACT: {
         id: 'TR_CONTACTS_PAY_CONTACT',
         defaultMessage: 'Pay a contact',
