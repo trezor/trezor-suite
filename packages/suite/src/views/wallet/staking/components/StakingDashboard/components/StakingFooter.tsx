@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { Button, Text } from '@trezor/components';
+import { HELP_CENTER_LIDO_STAKING } from '@trezor/urls';
 
 import { PoweredByBadge } from '#src/components/earn/providers/PoweredByBadge';
 import { getStakingGuideLink } from '#src/components/earn/utils/getStakingGuideLink';
@@ -19,28 +20,31 @@ const Wrapper = styled.div`
     padding-top: 16px;
 `;
 
-type StakingFooterProps = {
-    networkType: NetworkType;
-};
+type StakingFooterProps =
+    { networkType: NetworkType; provider?: never } | { networkType?: never; provider: 'lido' };
 
-export const StakingFooter = ({ networkType }: StakingFooterProps) => {
+export const StakingFooter = ({ networkType, provider }: StakingFooterProps) => {
     const { openNodeById } = useGuideOpenNode();
 
-    const moreInfoLink = getStakingGuideLink(networkType);
+    const guideId = getStakingGuideLink(networkType);
+    const helpCenterUrl = provider === 'lido' ? HELP_CENTER_LIDO_STAKING : undefined;
+    const networkProviderName = networkType === 'tron' ? 'P2P.org & Luganodes' : undefined;
+    const providerName = provider === 'lido' ? 'Lido' : networkProviderName;
 
     return (
         <Wrapper>
-            {networkType === 'tron' ? (
+            {providerName ? (
                 <Text intent="neutral" priority="secondary">
-                    <Translation id="TR_STAKE_PROVIDED_BY" /> P2P.org &amp; Luganodes
+                    <Translation id="TR_STAKE_PROVIDED_BY" /> {providerName}
                 </Text>
             ) : (
                 <PoweredByBadge provider="everstake" />
             )}
 
-            {moreInfoLink && (
+            {(guideId || helpCenterUrl) && (
                 <Button
-                    onClick={() => openNodeById(moreInfoLink)}
+                    href={helpCenterUrl}
+                    onClick={guideId ? () => openNodeById(guideId) : undefined}
                     intent="neutral"
                     priority="secondary"
                     size="small"

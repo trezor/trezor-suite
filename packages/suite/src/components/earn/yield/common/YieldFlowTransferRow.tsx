@@ -12,6 +12,7 @@ type YieldFlowTransferRowProps = {
     outputLabelId: TranslationId;
     input: YieldFlowCompleteValue;
     output: YieldFlowCompleteValue;
+    isOutputCompact?: boolean;
 };
 
 export const YieldFlowTransferRow = ({
@@ -19,6 +20,7 @@ export const YieldFlowTransferRow = ({
     outputLabelId,
     input,
     output,
+    isOutputCompact,
 }: YieldFlowTransferRowProps) => {
     const { isBelowTablet } = useLayoutSize();
 
@@ -49,6 +51,7 @@ export const YieldFlowTransferRow = ({
                     contractAddress: output.token.contractAddress ?? null,
                 }}
                 amount={output.amount}
+                isCompact={isOutputCompact}
                 data-testid="@yield/flow-complete/transfer/output"
             />
         </Column>

@@ -9,11 +9,12 @@ import {
 } from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
-import { Button, Card, Column, InfoItem, Paragraph, Tooltip } from '@trezor/components';
+import { Button, Card, InfoItem, Paragraph, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { ChecksIcon, InfoIcon, LightningIcon, SpinnerGapIcon } from '@trezor/icons';
+import { InfoIcon, SpinnerGapIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { ReadyToClaimCard } from '#src/components/earn/staking/ReadyToClaimCard';
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useStakingOperationSwitch } from '#src/hooks/earn/useStakingOperationSwitch';
@@ -97,20 +98,10 @@ export const ClaimCard = ({ account }: ClaimCardProps) => {
             </InfoItem>
         </Card>
     ) : (
-        <Card data-testid="@staking/can-claim-card">
-            <Column flex="1" gap={24}>
-                <InfoItem
-                    label={<Translation id="TR_STAKE_UNSTAKED_AND_READY_TO_CLAIM" />}
-                    icon={ChecksIcon}
-                >
-                    {content}
-                </InfoItem>
-                <InfoItem label={<Translation id="TR_STAKE_TIME_TO_CLAIM" />} icon={LightningIcon}>
-                    <Paragraph typographyStyle="headline-sm">
-                        <Translation id="TR_EARN_INSTANTLY" />
-                    </Paragraph>
-                </InfoItem>
-
+        <ReadyToClaimCard
+            data-testid="@staking/can-claim-card"
+            amount={content}
+            action={
                 <Tooltip content={claimingMessageContent}>
                     <Button
                         onClick={openClaimModal}
@@ -121,7 +112,7 @@ export const ClaimCard = ({ account }: ClaimCardProps) => {
                         <Translation id="TR_STAKE_CLAIM" />
                     </Button>
                 </Tooltip>
-            </Column>
-        </Card>
+            }
+        />
     );
 };

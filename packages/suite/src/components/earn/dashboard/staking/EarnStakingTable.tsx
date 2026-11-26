@@ -10,8 +10,10 @@ import { OutlineHighlight } from '@trezor/product-components';
 import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
+import { EarnLidoAccountRow } from './EarnLidoAccountRow';
 import { EarnStakingAccountRow } from './EarnStakingAccountRow';
 import { EarnStakingActivateRow } from './EarnStakingActivateRow';
+import { useLidoEarnAccounts } from './hooks/useLidoEarnAccounts';
 import { useStakingTableData } from './hooks/useStakingTableData';
 import { EarnProviderInfoBadge } from '../../providers/EarnProviderInfoBadge';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
@@ -36,6 +38,7 @@ export const EarnStakingTable = ({ onReady }: EarnStakingTableProps) => {
         hasStakingPosition,
         availableStakingCount,
     } = useStakingTableData();
+    const lidoAccounts = useLidoEarnAccounts();
 
     useEffect(() => {
         onReady({ hasStakingPosition, availableStakingCount, hasShowMore: isExpandable });
@@ -60,6 +63,14 @@ export const EarnStakingTable = ({ onReady }: EarnStakingTableProps) => {
                     <Column gap={16} alignItems="center">
                         {isCardLayout ? (
                             <Column gap={8} width="100%">
+                                {lidoAccounts.map(account => (
+                                    <EarnLidoAccountRow
+                                        account={account}
+                                        key={account.key}
+                                        isCardLayout
+                                    />
+                                ))}
+
                                 {displayedAccounts.map(account => (
                                     <EarnStakingAccountRow
                                         account={account}
@@ -84,6 +95,14 @@ export const EarnStakingTable = ({ onReady }: EarnStakingTableProps) => {
                                         showRewardsColumns={hasAnyRewardsData}
                                     />
                                     <Table.Body>
+                                        {lidoAccounts.map(account => (
+                                            <EarnLidoAccountRow
+                                                account={account}
+                                                key={account.key}
+                                                isCardLayout={false}
+                                            />
+                                        ))}
+
                                         {displayedAccounts.map(account => (
                                             <EarnStakingAccountRow
                                                 account={account}

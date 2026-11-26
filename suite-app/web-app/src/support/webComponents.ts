@@ -132,6 +132,34 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             default: EarnTronClaimPage,
         })),
     ),
+    'earn-lido': lazy(() =>
+        import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnLidoPage').then(
+            ({ EarnLidoPage }) => ({
+                default: EarnLidoPage,
+            }),
+        ),
+    ),
+    'earn-lido-stake': lazy(() =>
+        import(
+            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnLidoStakePage'
+        ).then(({ EarnLidoStakePage }) => ({
+            default: EarnLidoStakePage,
+        })),
+    ),
+    'earn-lido-unstake': lazy(() =>
+        import(
+            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnLidoUnstakePage'
+        ).then(({ EarnLidoUnstakePage }) => ({
+            default: EarnLidoUnstakePage,
+        })),
+    ),
+    'earn-lido-claim': lazy(() =>
+        import(
+            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnLidoClaimPage'
+        ).then(({ EarnLidoClaimPage }) => ({
+            default: EarnLidoClaimPage,
+        })),
+    ),
     'apps-embedding-index': lazy(() =>
         import(
             /* webpackChunkName: "apps-embedding" */ '@suite-app/module-apps-embedding/pages/AppsEmbeddingPage'

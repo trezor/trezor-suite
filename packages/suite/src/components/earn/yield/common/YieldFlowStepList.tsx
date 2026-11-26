@@ -35,6 +35,7 @@ const ClickableStepContent = styled.div`
 `;
 
 export type YieldFlowStepDefinition = {
+    testId?: string;
     /** Label on the title row next to the step number. */
     title?: ReactNode;
     /** Supplementary text tight under the title; shown only while the step is active. */
@@ -115,6 +116,7 @@ export const YieldFlowStepList = <TSequence extends readonly YieldFlowStepId[]>(
                     <StepList.Item
                         key={stepId}
                         state={view.state}
+                        data-testid={definition?.testId}
                         onClick={onEdit}
                         title={
                             <Column gap={8} width="100%">

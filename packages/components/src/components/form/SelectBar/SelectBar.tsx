@@ -11,6 +11,7 @@ import { commonFocusStyles, focusStyleTransition } from '../../../utils/utils';
 import { Box } from '../../Box/Box';
 import { Column, Flex } from '../../Flex/Flex';
 import { Grid } from '../../Grid/Grid';
+import { Tooltip } from '../../Tooltip/Tooltip';
 import { Text } from '../../typography/Text/Text';
 
 export const allowedSelectBarFrameProps = ['margin'] as const satisfies FramePropsKeys[];
@@ -82,6 +83,7 @@ type ValueTypes = number | string | boolean;
 type Option<V extends ValueTypes> = {
     label: ReactNode;
     value: V;
+    tooltip?: ReactNode;
 };
 
 export type SelectBarProps<V extends ValueTypes> = {
@@ -140,6 +142,8 @@ export const SelectBar = <V extends ValueTypes>({
     );
 
     const handleKeyboardNav = (e: KeyboardEvent) => {
+        if (isDisabled) return;
+
         const selectedOptionIndex = options.findIndex(option => option.value === selectedOptionIn);
 
         let option;
@@ -197,7 +201,7 @@ export const SelectBar = <V extends ValueTypes>({
                         $optionsCount={options.length}
                         $selectedIndex={selectedIndex}
                         $orientation={isVertical ? 'vertical' : orientation}
-                        tabIndex={0}
+                        tabIndex={isDisabled ? -1 : 0}
                         onKeyDown={handleKeyboardNav}
                     />
                     <Grid columns={isVertical ? 1 : options.length} gap={GAP} forceEqualColumns>
@@ -208,9 +212,9 @@ export const SelectBar = <V extends ValueTypes>({
                                     : false;
                             const textIntent = mapStateToTextIntent(isSelected);
 
-                            return (
+                            const pill = (
                                 <Text
-                                    key={String(option.value)}
+                                    width="100%"
                                     intent={textIntent.intent}
                                     priority={textIntent.priority}
                                     isDisabled={isDisabled}
@@ -225,6 +229,7 @@ export const SelectBar = <V extends ValueTypes>({
                                         onClick={handleOptionClick(option)}
                                         $isDisabled={!!isDisabled}
                                         $isSelected={isSelected}
+                                        aria-disabled={isDisabled}
                                         data-isdisabled={!!isDisabled}
                                         data-testid={`${dataTest ?? 'select-bar'}/${String(option.value)}`}
                                     >
@@ -238,7 +243,6 @@ export const SelectBar = <V extends ValueTypes>({
                                                 as="div"
                                                 align="center"
                                                 width="100%"
-                                                maxWidth="100%"
                                                 minWidth={0}
                                                 ellipsisLineCount={1}
                                             >
@@ -252,6 +256,12 @@ export const SelectBar = <V extends ValueTypes>({
                                         </Column>
                                     </Option>
                                 </Text>
+                            );
+
+                            return (
+                                <Tooltip key={String(option.value)} content={option.tooltip}>
+                                    {pill}
+                                </Tooltip>
                             );
                         })}
                     </Grid>
