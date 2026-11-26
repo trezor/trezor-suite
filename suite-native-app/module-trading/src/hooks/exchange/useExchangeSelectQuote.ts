@@ -28,12 +28,14 @@ import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
+    tradingActions,
 } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
+import { toExchangeFlowApprovalStatus } from '../../utils/exchange/exchangeFlowSteps';
 import { isFullySelectedReceiveAccount } from '../../utils/general/receiveAccountUtils';
 
 type NavigationProps = TabToStackCompositeNavigationProp<
@@ -126,6 +128,11 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
             // status to preserve desktop behavior. The approval/revoke screens read selectedQuote,
             // so persist it explicitly here.
             dispatch(tradingExchangeActions.saveSelectedQuote(selectedQuote));
+            dispatch(
+                tradingActions.setExchangeFlowApprovalStatus(
+                    toExchangeFlowApprovalStatus(approvalStatus),
+                ),
+            );
 
             switch (approvalStatus) {
                 case 'approved':
@@ -178,6 +185,8 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
                 case 'needs_revoke':
                 case 'approved':
                     dispatch(tradingExchangeActions.saveSelectedQuote(selectedQuote));
+                    // A standalone revoke is not a part of the swap steps.
+                    dispatch(tradingActions.setExchangeFlowApprovalStatus(undefined));
 
                     return navigation.navigate(RootStackRoutes.TradingStack, {
                         screen: TradingStackRoutes.TradingExchangeRevoke,

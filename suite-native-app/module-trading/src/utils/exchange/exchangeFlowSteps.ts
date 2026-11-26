@@ -1,3 +1,4 @@
+import { type ApprovalStatus } from '@suite-common/trading';
 import { type ExchangeFlowApprovalStatus } from '@suite-native/trading-types';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -32,6 +33,24 @@ export const getExchangeFlowSteps = (
         case 'needs_increase':
         case 'needs_approval':
             return ['approval', 'preview'];
+        default:
+            return exhaustive(approvalStatus);
+    }
+};
+
+// The approval steps the swap of a selected quote goes through, undefined when the swap is the only step.
+export const toExchangeFlowApprovalStatus = (
+    approvalStatus: ApprovalStatus | null,
+): ExchangeFlowApprovalStatus | undefined => {
+    switch (approvalStatus) {
+        case 'needs_approval':
+        case 'needs_increase':
+        case 'needs_revoke':
+            return approvalStatus;
+        case 'approved':
+        case 'not_needed':
+        case null:
+            return undefined;
         default:
             return exhaustive(approvalStatus);
     }

@@ -2,6 +2,7 @@ import {
     getExchangeApprovalFlowStatus,
     getExchangeFlowStepCards,
     getExchangeFlowSteps,
+    toExchangeFlowApprovalStatus,
 } from './exchangeFlowSteps';
 
 describe('getExchangeFlowSteps', () => {
@@ -11,6 +12,19 @@ describe('getExchangeFlowSteps', () => {
         ['needs_approval', ['approval', 'preview']],
     ] as const)('returns steps for %s', (approvalStatus, expectedSteps) => {
         expect(getExchangeFlowSteps(approvalStatus)).toEqual(expectedSteps);
+    });
+});
+
+describe('toExchangeFlowApprovalStatus', () => {
+    it.each([
+        ['needs_approval', 'needs_approval'],
+        ['needs_increase', 'needs_increase'],
+        ['needs_revoke', 'needs_revoke'],
+        ['approved', undefined],
+        ['not_needed', undefined],
+        [null, undefined],
+    ] as const)('maps %s to %s', (approvalStatus, expectedFlowApprovalStatus) => {
+        expect(toExchangeFlowApprovalStatus(approvalStatus)).toBe(expectedFlowApprovalStatus);
     });
 });
 

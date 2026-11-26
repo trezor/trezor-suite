@@ -17,7 +17,11 @@ import {
     invityDexQuote,
     mercuryoFixedBestQuote,
 } from '@suite-native/trading-fixtures';
-import { type TradingRootState } from '@suite-native/trading-state';
+import {
+    type TradingRootState,
+    selectExchangeFlowApprovalStatus,
+    tradingActions,
+} from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
 
@@ -503,6 +507,8 @@ describe('useExchangeSelectQuote', () => {
                 exchangeForm.setValue('quote', quote);
             });
 
+            // A status left over from a previous flow must not leak into this one.
+            store.dispatch(tradingActions.setExchangeFlowApprovalStatus('needs_approval'));
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const { result } = await renderUseExchangeSelectQuote();
             dispatchSpy.mockClear();
@@ -525,6 +531,7 @@ describe('useExchangeSelectQuote', () => {
                 screen: 'TradingExchangePreview',
                 params: {},
             });
+            expect(selectExchangeFlowApprovalStatus(store.getState())).toBe(undefined);
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: '@trading-exchange/saveSelectedQuote',
                 payload: quote,
@@ -597,6 +604,7 @@ describe('useExchangeSelectQuote', () => {
                 screen: 'TradingExchangeApproval',
                 params: {},
             });
+            expect(selectExchangeFlowApprovalStatus(store.getState())).toBe('needs_approval');
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: '@trading-exchange/saveSelectedQuote',
                 payload: quote,
@@ -640,6 +648,7 @@ describe('useExchangeSelectQuote', () => {
                     shouldIncreaseLimit: true,
                 },
             });
+            expect(selectExchangeFlowApprovalStatus(store.getState())).toBe('needs_increase');
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: '@trading-exchange/saveSelectedQuote',
                 payload: quote,
@@ -685,6 +694,7 @@ describe('useExchangeSelectQuote', () => {
                     shouldIncreaseLimit: true,
                 },
             });
+            expect(selectExchangeFlowApprovalStatus(store.getState())).toBe('needs_revoke');
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: '@trading-exchange/saveSelectedQuote',
                 payload: quote,
@@ -701,6 +711,8 @@ describe('useExchangeSelectQuote', () => {
                 exchangeForm.setValue('quote', quote);
             });
 
+            // A status left over from a previous flow must not leak into this one.
+            store.dispatch(tradingActions.setExchangeFlowApprovalStatus('needs_approval'));
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const { result } = await renderUseExchangeSelectQuote();
             dispatchSpy.mockClear();
@@ -725,6 +737,7 @@ describe('useExchangeSelectQuote', () => {
                     shouldIncreaseLimit: false,
                 },
             });
+            expect(selectExchangeFlowApprovalStatus(store.getState())).toBe(undefined);
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: '@trading-exchange/saveSelectedQuote',
                 payload: quote,
