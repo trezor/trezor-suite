@@ -11,12 +11,10 @@ import type {
     EthereumTransaction,
     EthereumTransactionEIP1559,
     PermissionRequest,
-    TokenInfo,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { MessagesSchema } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
-import { BigNumber } from '@trezor/utils';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
@@ -39,19 +37,16 @@ import * as helper from '../ethereumSignTx';
 type Params = {
     path: number[];
     network?: EthereumNetworkInfo;
-    definitions?: MessagesSchema.EthereumDefinitions;
     chunkify: boolean;
     auth7702?: MessagesSchema.EthereumSignTxEIP1559['auth7702'];
 } & (
     | {
           type: 'legacy';
           tx: EthereumTransaction;
-          originalTx: EthereumTransaction;
       }
     | {
           type: 'eip1559';
           tx: EthereumTransactionEIP1559;
-          originalTx: EthereumTransactionEIP1559;
       }
 );
 
@@ -140,7 +135,6 @@ export default class EthereumSignTransaction extends AbstractMethod<
                     ? encodePaymentRequestAmount(tx.payment_req, PAYMENT_REQUEST_AMOUNT_BYTES.EVM)
                     : undefined,
             },
-            originalTx: tx,
             chunkify,
             auth7702,
         } as Params;
@@ -172,16 +166,13 @@ export default class EthereumSignTransaction extends AbstractMethod<
         return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
-    // Only `__info` names the network and token and previews the transfer, so only `__info`
-    // downloads their definitions to decode them.
+    // Only the `__info` title names the network, so only `__info` downloads its definition.
     async getMethodInfo() {
         const definitions = await getEthereumTransactionDefinitions({
             path: this.params.path,
             transaction: this.params.tx,
         });
         if (definitions) {
-            this.params.definitions = definitions;
-
             const decoded = decodeEthereumDefinition(definitions);
             if (decoded.network) {
                 this.params.network = ethereumNetworkInfoFromDefinition(decoded.network);
@@ -193,91 +184,6 @@ export default class EthereumSignTransaction extends AbstractMethod<
 
     get info() {
         return getNetworkLabel('Sign #NETWORK transaction', this.params.network);
-    }
-
-    payloadToPrecomposed() {
-        try {
-            const transaction = this.params.originalTx;
-            const feePerByte = new BigNumber(transaction.gasPrice || transaction.maxFeePerGas!);
-            const fee = feePerByte.multipliedBy(transaction.gasLimit);
-            const { data } = transaction;
-            let recipient = transaction.to!;
-            let amount = new BigNumber(transaction.value);
-            let totalSpent = amount.plus(fee);
-            let token: TokenInfo | undefined;
-
-            // ERC-20 transfer
-            // TODO: consider refactoring to shared util package together with `suite-common/wallet-constants/src/sendForm.ts`
-            if (
-                transaction.to &&
-                data?.startsWith('a9059cbb') &&
-                amount.eq(0) &&
-                this.params.definitions
-            ) {
-                const decoded = decodeEthereumDefinition(this.params.definitions);
-                if (decoded.token) {
-                    recipient = '0x' + data.slice(32, 72);
-                    amount = new BigNumber(data.slice(72, 136), 16);
-                    totalSpent = amount;
-                    token = {
-                        ...decoded.token,
-                        standard: 'ERC20',
-                        contract: decoded.token.address,
-                    };
-                }
-            }
-
-            const result = {
-                type: 'final' as const,
-                inputs: [],
-                outputsPermutation: [0],
-                outputs: [
-                    {
-                        address: recipient,
-                        amount: amount.toString(),
-                        script_type: 'PAYTOADDRESS' as const,
-                    },
-                ],
-                totalSpent: totalSpent.toString(),
-                fee: fee.toString(),
-                feePerByte: feePerByte
-                    .dividedBy(1e9) // wei to Gwei
-                    .toString(),
-                maxFeePerGas: transaction.maxFeePerGas
-                    ? new BigNumber(transaction.maxFeePerGas)
-                          .dividedBy(1e9) // wei to Gwei
-                          .toString()
-                    : undefined,
-                maxPriorityFeePerGas: transaction.maxPriorityFeePerGas
-                    ? new BigNumber(transaction.maxPriorityFeePerGas)
-                          .dividedBy(1e9) // wei to Gwei
-                          .toString()
-                    : undefined,
-                feeLimit: new BigNumber(transaction.gasLimit).toString(),
-                bytes: 0,
-                max: undefined,
-                isTokenKnown: !!token,
-                token,
-                nativeToken: this.params.network
-                    ? {
-                          type: 'NATIVE',
-                          standard: 'NATIVE',
-                          contract: '',
-                          name: this.params.network.name,
-                          symbol: this.params.network.shortcut,
-                          decimals: this.params.network.decimals,
-                      }
-                    : undefined,
-                network: this.params.network,
-            };
-
-            return Promise.resolve(result);
-        } catch (e) {
-            // Don't throw errors from this method
-            console.error('Error in payloadToPrecomposed', e);
-
-            return Promise.resolve(undefined);
-        }
     }
 
     async run() {

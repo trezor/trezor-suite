@@ -2,13 +2,13 @@ import { isEvmTxSimulationSupported } from '@suite-common/tx-simulation';
 import { asNetworkSymbol, getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import { type Account, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getPrecomposedTxWithAccountToken } from '@suite-common/wallet-utils';
-import TrezorConnect, { type MethodInfo } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 
 import { AbstractSignTransactionFlow } from './AbstractSignTransactionFlow';
 import { selectConnectPopupCall } from '../connectPopupReducer';
 
 export class EthereumSignTransaction extends AbstractSignTransactionFlow<'ethereumSignTransaction'> {
-    protected async prepareSigning(txSigningPrecomposed?: PrecomposedTransactionFinal) {
+    protected async prepareSigning() {
         const { path, transaction } = this.payload;
         const chainId = transaction.chainId || 1;
         const account = this.selectSigningAccount(
@@ -20,8 +20,9 @@ export class EthereumSignTransaction extends AbstractSignTransactionFlow<'ethere
             },
         );
 
-        if (txSigningPrecomposed) {
-            this.storeEthereumPrecomposedTransaction(txSigningPrecomposed, account);
+        const precomposed = await TrezorConnect.ethereumPrecomposeSignTransaction(this.payload);
+        if (precomposed.success) {
+            this.storeEthereumPrecomposedTransaction(precomposed.payload, account);
         }
 
         // The simulation modal has nothing to render for a chain Blockaid can't scan, so opening it
@@ -56,17 +57,11 @@ export class EthereumSignTransaction extends AbstractSignTransactionFlow<'ethere
         };
 
         // Update precomposed transaction
-        const methodInfo = await TrezorConnect.ethereumSignTransaction({
-            ...modifiedPayload,
-            __info: true,
-        });
-        if (!methodInfo.success) {
-            throw methodInfo.error;
+        const precomposed = await TrezorConnect.ethereumPrecomposeSignTransaction(modifiedPayload);
+        if (!precomposed.success) {
+            throw precomposed.error;
         }
-        const { precomposed } = methodInfo.payload as unknown as MethodInfo;
-        if (precomposed) {
-            this.storeEthereumPrecomposedTransaction(precomposed, account);
-        }
+        this.storeEthereumPrecomposedTransaction(precomposed.payload, account);
 
         return modifiedPayload;
     }
