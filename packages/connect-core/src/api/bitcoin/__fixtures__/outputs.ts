@@ -97,4 +97,61 @@ export const validateTrezorOutputs = [
         ],
         error: 'Parameter "script_type" has invalid type. "string" expected.',
     },
+    {
+        description: 'external output with contact fields passes them through',
+        params: [
+            {
+                address: '1BitcoinEaterAddressDontSendf59kuE',
+                amount: '100000',
+                contact_pubkey: 'abababababababababababababababababababababababababababababababab',
+                contact_signature:
+                    'cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd',
+            },
+        ],
+        result: [
+            {
+                address: '1BitcoinEaterAddressDontSendf59kuE',
+                contact_pubkey: 'abababababababababababababababababababababababababababababababab',
+                contact_signature:
+                    'cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd',
+            },
+        ],
+    },
+    {
+        description: 'external output with a contact pubkey but no signature throws',
+        params: [
+            {
+                address: '1BitcoinEaterAddressDontSendf59kuE',
+                amount: '100000',
+                contact_pubkey: 'abababababababababababababababababababababababababababababababab',
+            },
+        ],
+        error: 'Contact fields must be a 32-byte public key and a 64-byte signature, both hex',
+    },
+    {
+        description: 'external output with a contact signature that is not hex throws',
+        params: [
+            {
+                address: '1BitcoinEaterAddressDontSendf59kuE',
+                amount: '100000',
+                contact_pubkey: 'abababababababababababababababababababababababababababababababab',
+                contact_signature:
+                    'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',
+            },
+        ],
+        error: 'Contact fields must be a 32-byte public key and a 64-byte signature, both hex',
+    },
+    {
+        description: 'change output with contact fields throws',
+        params: [
+            {
+                address_n: "m/44'/0'/0'/1/0",
+                amount: '100000',
+                contact_pubkey: 'abababababababababababababababababababababababababababababababab',
+                contact_signature:
+                    'cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd',
+            },
+        ],
+        error: 'Contact fields are allowed only on a single-signature external output',
+    },
 ];

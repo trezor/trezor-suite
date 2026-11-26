@@ -8,7 +8,13 @@ import {
 } from '@trezor/ward';
 
 import * as settingsStore from '../../../data/settingsStore';
-import { callWard, withWard } from '../wardAdapter';
+import {
+    WARD_SIGNING_PROOF_TIMEOUT,
+    WARD_SIGNING_SYNC_TIMEOUT,
+    callWard,
+    withSyncedWard,
+    withWard,
+} from '../wardAdapter';
 
 /** A device session: `relayCall` answers by name; a pull goes through the registered callback. */
 const fakeCmd = (answers: Record<string, () => Promise<{ type: string; message: any }>>) => {
@@ -221,5 +227,183 @@ describe('the per-conversation relay allowlist', () => {
         const { reachedDevice } = await refusalOf('sync', 'WARDPerformRevert');
 
         expect(reachedDevice).toBe(false);
+    });
+});
+
+describe('fail-open WARD for signing', () => {
+    const signed = { signatures: ['00'] };
+
+    /** wardd whose `sync` conversation is `sync`, answering proofs with `proof`. */
+    const syncingWardd = (
+        sync: (relay: RelayDevice) => Promise<Record<string, unknown>>,
+        proof: () => Promise<Record<string, unknown>> = () => Promise.resolve({ proof: [] }),
+    ) => {
+        const endpoint: WardRelayEndpoint = {
+            call: jest.fn((method, _params, device) =>
+                method === 'answerProofRequest' ? proof() : sync(device!),
+            ),
+            close: jest.fn(),
+        };
+        setWardd({ connect: () => Promise.resolve(endpoint) });
+
+        return endpoint;
+    };
+
+    afterEach(() => {
+        jest.useRealTimers();
+    });
+
+    it('signs without wardd when none is configured', async () => {
+        setWardd(undefined);
+        const run = jest.fn(() => Promise.resolve(signed));
+
+        await expect(withSyncedWard({ cmd: fakeCmd({}) as any, run })).resolves.toBe(signed);
+        expect(run).toHaveBeenCalledTimes(1);
+    });
+
+    it('signs without wardd when it cannot be reached', async () => {
+        const cmd = fakeCmd({});
+        setWardd({ connect: () => Promise.reject(new Error('wardd is not reachable')) });
+        const run = jest.fn(() => Promise.resolve(signed));
+
+        await expect(withSyncedWard({ cmd: cmd as any, run })).resolves.toBe(signed);
+        expect(run).toHaveBeenCalledTimes(1);
+        expect(cmd.setWardProofCallback).not.toHaveBeenCalled();
+    });
+
+    it('signs without wardd, its pulls answered by nobody, when the sync fails', async () => {
+        const cmd = fakeCmd({});
+        const endpoint = syncingWardd(() =>
+            Promise.reject(
+                new RelayFailure('internal', 'hydrate: no transition produces root -- lineage'),
+            ),
+        );
+        const run = jest.fn(() => {
+            // Cleared before signing: the device's pulls are then answered `unavailable`.
+            expect(cmd.setWardProofCallback).toHaveBeenLastCalledWith(undefined);
+            expect(endpoint.close).toHaveBeenCalled();
+
+            return Promise.resolve(signed);
+        });
+
+        await expect(withSyncedWard({ cmd: cmd as any, run })).resolves.toBe(signed);
+        expect(run).toHaveBeenCalledTimes(1);
+    });
+
+    it('answers the pulls through wardd while signing after a sync', async () => {
+        const cmd = fakeCmd({
+            WARDSync: () => Promise.resolve({ type: 'WARDSyncAck', message: { ward_id: 'cd' } }),
+        });
+        const endpoint = syncingWardd(async relay => {
+            await relay({ name: 'WARDSync', message: {} });
+
+            return { wardId: 'cd', counter: 1, root: 'ab' };
+        });
+
+        const ack = await withSyncedWard({
+            cmd: cmd as any,
+            run: () => cmd.pull({ entry_key: 'ee' }),
+        });
+
+        expect(ack).toEqual({ proof: [] });
+        expect(endpoint.call).toHaveBeenCalledWith('sync', {}, expect.any(Function));
+        expect(cmd.setWardProofCallback).toHaveBeenLastCalledWith(undefined);
+        expect(endpoint.close).toHaveBeenCalled();
+    });
+
+    it('does not sign twice when signing itself fails after a sync', async () => {
+        const endpoint = syncingWardd(() => Promise.resolve({}));
+        const run = jest.fn(() => Promise.reject(new Error('Failure_ActionCancelled')));
+
+        await expect(withSyncedWard({ cmd: fakeCmd({}) as any, run })).rejects.toThrow(
+            'Failure_ActionCancelled',
+        );
+        expect(run).toHaveBeenCalledTimes(1);
+        expect(endpoint.close).toHaveBeenCalled();
+    });
+
+    it('gives up on a wardd that accepts the sync and never answers', async () => {
+        jest.useFakeTimers();
+        const endpoint = syncingWardd(() => new Promise(() => {}));
+        const run = jest.fn(() => Promise.resolve(signed));
+
+        const result = withSyncedWard({ cmd: fakeCmd({}) as any, run });
+        await jest.advanceTimersByTimeAsync(WARD_SIGNING_SYNC_TIMEOUT - 1);
+        expect(run).not.toHaveBeenCalled();
+        await jest.advanceTimersByTimeAsync(1);
+
+        await expect(result).resolves.toBe(signed);
+        expect(endpoint.close).toHaveBeenCalled();
+    });
+
+    it('gives up on a wardd that never finishes connecting, and closes it if it does', async () => {
+        jest.useFakeTimers();
+        let connected: (endpoint: WardRelayEndpoint) => void = () => {};
+        let connectSignal: AbortSignal | undefined;
+        setWardd({
+            connect: signal =>
+                new Promise(resolve => {
+                    connectSignal = signal;
+                    connected = resolve;
+                }),
+        });
+        const run = jest.fn(() => Promise.resolve(signed));
+
+        const result = withSyncedWard({ cmd: fakeCmd({}) as any, run });
+        await jest.advanceTimersByTimeAsync(WARD_SIGNING_SYNC_TIMEOUT);
+        await expect(result).resolves.toBe(signed);
+        // lets a client that is still connecting close its socket
+        expect(connectSignal?.aborted).toBe(true);
+
+        const late: WardRelayEndpoint = { call: jest.fn(), close: jest.fn() };
+        connected(late);
+        await jest.advanceTimersByTimeAsync(0);
+
+        expect(late.close).toHaveBeenCalled();
+        expect(late.call).not.toHaveBeenCalled();
+    });
+
+    it("lets wardd's device call in flight end, and no further one start, before signing", async () => {
+        jest.useFakeTimers();
+        let answerDevice: () => void = () => {};
+        const cmd = fakeCmd({
+            WARDSync: () =>
+                new Promise(resolve => {
+                    answerDevice = () => resolve({ type: 'WARDSyncAck', message: {} });
+                }),
+            WARDReconcile: () => Promise.resolve({ type: 'WARDReconcileAck', message: {} }),
+        });
+        let next: RelayMessage | undefined;
+        syncingWardd(async relay => {
+            await relay({ name: 'WARDSync', message: {} });
+            next = await relay({ name: 'WARDReconcile', message: {} });
+
+            return {};
+        });
+        const run = jest.fn(() => Promise.resolve(signed));
+
+        const result = withSyncedWard({ cmd: cmd as any, run });
+        await jest.advanceTimersByTimeAsync(WARD_SIGNING_SYNC_TIMEOUT);
+        expect(run).not.toHaveBeenCalled();
+
+        answerDevice();
+        await expect(result).resolves.toBe(signed);
+        await jest.advanceTimersByTimeAsync(0);
+        expect(next?.name).toBe('Failure');
+        expect(cmd.relayCall).not.toHaveBeenCalledWith('WARDReconcile', expect.anything());
+    });
+
+    it('answers a proof pull wardd is too slow for as unavailable', async () => {
+        jest.useFakeTimers();
+        const cmd = fakeCmd({});
+        syncingWardd(
+            () => Promise.resolve({}),
+            () => new Promise(() => {}),
+        );
+
+        const ack = withSyncedWard({ cmd: cmd as any, run: () => cmd.pull({ entry_key: 'ee' }) });
+        await jest.advanceTimersByTimeAsync(WARD_SIGNING_PROOF_TIMEOUT);
+
+        await expect(ack).resolves.toEqual({ unavailable: true });
     });
 });

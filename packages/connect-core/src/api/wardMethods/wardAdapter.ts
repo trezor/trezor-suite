@@ -12,6 +12,7 @@
  */
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { MessagesSchema } from '@trezor/protobuf';
+import { scheduleAction } from '@trezor/utils';
 import {
     type RelayDevice,
     RelayFailure,
@@ -60,6 +61,14 @@ export type WardCall = (
     params: Record<string, unknown>,
 ) => Promise<Record<string, unknown>>;
 
+/** How long signing waits for wardd to connect, say hello and sync before it signs without it. */
+export const WARD_SIGNING_SYNC_TIMEOUT = 10_000;
+/** How long a proof pull during signing waits for wardd before the device is told there is none. */
+export const WARD_SIGNING_PROOF_TIMEOUT = 5_000;
+
+/** Lets a caller that gave up on a conversation keep wardd's next messages off the device. */
+type RelayGate = { isOpen: boolean; deviceCall?: Promise<unknown> };
+
 const requireWardd = (method: string): WardRelay => {
     const wardd = settingsStore.get('wardd');
     if (!wardd) {
@@ -88,15 +97,20 @@ const refuse = (message: string): RelayMessage => ({
  * wardd's to see -- it ends the conversation -- so it goes back as a `Failure` message rather than
  * ending the call here.
  */
-const createRelay = (cmd: Cmd, conversation: WardConversation): RelayDevice => {
+const createRelay = (cmd: Cmd, conversation: WardConversation, gate?: RelayGate): RelayDevice => {
     const allowed: readonly string[] = RELAY_ALLOWLIST[conversation];
 
     return async ({ name, message }) => {
         if (!allowed.includes(name)) {
             return refuse(`wardd may not send ${name} during ${conversation}`);
         }
+        if (gate && !gate.isOpen) {
+            return refuse(`${conversation} was abandoned`);
+        }
         try {
-            const res = await cmd.relayCall(name, stripAbsent(message));
+            const deviceCall = cmd.relayCall(name, stripAbsent(message));
+            if (gate) gate.deviceCall = deviceCall;
+            const res = await deviceCall;
 
             return { name: res.type, message: stripAbsent(res.message) };
         } catch (error) {
@@ -110,15 +124,18 @@ const createRelay = (cmd: Cmd, conversation: WardConversation): RelayDevice => {
 
 /**
  * Answer the device's pulls from `endpoint` until `releasePulls`.
- * ACCEPTED: any wardd failure to serve a proof is answered `unavailable`; the device may then show
- * a STICKY cached label, possibly stale, marked as cached.
+ * ACCEPTED: any wardd failure to serve a proof, or with `proofTimeout` a late one, is answered
+ * `unavailable`; the device may then show a STICKY cached label, possibly stale, marked as cached.
  */
-const answerPulls = (cmd: Cmd, endpoint: WardRelayEndpoint) => {
+const answerPulls = (cmd: Cmd, endpoint: WardRelayEndpoint, proofTimeout?: number) => {
     cmd.setWardProofCallback(async request => {
         try {
-            return stripAbsent(
-                await endpoint.call('answerProofRequest', { request: stripAbsent(request) }),
+            const ack = await scheduleAction(
+                () => endpoint.call('answerProofRequest', { request: stripAbsent(request) }),
+                { timeout: proofTimeout },
             );
+
+            return stripAbsent(ack);
         } catch {
             return { unavailable: true };
         }
@@ -132,7 +149,7 @@ const closeQuietly = async (endpoint: WardRelayEndpoint) => {
     try {
         await endpoint.close();
     } catch {
-        // The call's own result stands: a failed close must not lose it.
+        // The call's own result stands: a failed close must not lose, say, a signed transaction.
     }
 };
 
@@ -173,3 +190,70 @@ export const callWard = <T>(
     conversation: WardConversation,
     params: Record<string, unknown>,
 ) => withWard(cmd, method, async call => (await call(conversation, params)) as T);
+
+type SyncForSigningParams = {
+    cmd: Cmd;
+    wardd: WardRelay;
+};
+
+/**
+ * wardd's endpoint with this session synced and the pulls answered, or undefined when wardd failed
+ * or did not connect, say hello and sync within WARD_SIGNING_SYNC_TIMEOUT. Then nothing of wardd is
+ * left on the session.
+ */
+const syncForSigning = async ({ cmd, wardd }: SyncForSigningParams) => {
+    const gate: RelayGate = { isOpen: true };
+    let endpoint: WardRelayEndpoint | undefined;
+    try {
+        await scheduleAction(
+            async signal => {
+                // The timeout aborts `signal`, which also closes a socket whose hello hangs.
+                const connected = await wardd.connect(signal);
+                if (signal?.aborted) {
+                    // Connected only after the caller went on without wardd.
+                    await closeQuietly(connected);
+
+                    return;
+                }
+                endpoint = connected;
+                answerPulls(cmd, connected, WARD_SIGNING_PROOF_TIMEOUT);
+                await connected.call('sync', {}, createRelay(cmd, 'sync', gate));
+            },
+            { timeout: WARD_SIGNING_SYNC_TIMEOUT },
+        );
+
+        return endpoint;
+    } catch {
+        gate.isOpen = false;
+        if (endpoint) await releasePulls(cmd, endpoint);
+        // A device call wardd started must end before the caller's own call starts on the session.
+        await gate.deviceCall?.catch(() => {});
+
+        return undefined;
+    }
+};
+
+type WithSyncedWardParams<T> = {
+    cmd: Cmd;
+    /** The device call whose pulls wardd answers; it runs without wardd when the sync fails. */
+    run: () => Promise<T>;
+};
+
+/**
+ * FAIL-OPEN WARD for a device call that only gains from it, such as signing with contact outputs:
+ * wardd first syncs this session (no wallet pin: the session is the one the call already validated).
+ * When wardd is not set, fails or stalls, `run` goes ahead without it: the device's pulls are
+ * answered `unavailable` and it shows bare addresses. While `run` runs, each pull gets
+ * WARD_SIGNING_PROOF_TIMEOUT.
+ */
+export const withSyncedWard = async <T>({ cmd, run }: WithSyncedWardParams<T>): Promise<T> => {
+    const wardd = settingsStore.get('wardd');
+    const endpoint = wardd ? await syncForSigning({ cmd, wardd }) : undefined;
+    if (!endpoint) return run();
+
+    try {
+        return await run();
+    } finally {
+        await releasePulls(cmd, endpoint);
+    }
+};

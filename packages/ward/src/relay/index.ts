@@ -155,7 +155,8 @@ export interface WardRelayEndpoint {
 
 /** Where a host library gets endpoints: wardd in-process, or a WebSocket client to a running wardd. */
 export interface WardRelay {
-    connect(): Promise<WardRelayEndpoint>;
+    /** Aborting `signal` gives up on an endpoint that is not connected yet and closes its socket. */
+    connect(signal?: AbortSignal): Promise<WardRelayEndpoint>;
     dispose?(): void | Promise<void>;
 }
 
