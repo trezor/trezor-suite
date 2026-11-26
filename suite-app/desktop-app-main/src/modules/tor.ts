@@ -290,7 +290,7 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter, logger }: Depen
     });
 
     // Handle event emitted by request-interceptor module
-    let lastCircuitResetTime = 0;
+    let lastCircuitResetTime = -Infinity;
     const socksTimeout = 30000; // this value reflects --SocksTimeout flag set by TorController config
     mainThreadEmitter.on('module/reset-tor-circuits', event => {
         if (store.getTorSettings().useExternalTor) {
@@ -298,10 +298,10 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter, logger }: Depen
 
             return;
         }
-        const lastResetDiff = Date.now() - lastCircuitResetTime;
+        const lastResetDiff = performance.now() - lastCircuitResetTime;
         if (lastResetDiff > socksTimeout) {
             logger.debug('tor', `Close active circuits. Triggered by identity ${event.identity}`);
-            lastCircuitResetTime = Date.now();
+            lastCircuitResetTime = performance.now();
             getTarget().torController.closeActiveCircuits();
         } else {
             logger.debug(
