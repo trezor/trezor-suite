@@ -17,4 +17,5 @@ export const tradingInitialState: TradingState = {
     activeTradingType: undefined,
     providerConfirmationStatus: 'inactive',
     currentProviderMetadata: undefined,
+    exchangeFlowApprovalStatus: undefined,
 };

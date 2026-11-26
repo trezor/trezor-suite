@@ -8,6 +8,7 @@ import type {
     TradingTypeWithConcierge,
 } from '@suite-common/trading';
 
+import type { ExchangeFlowApprovalStatus } from './exchange';
 import type { ProviderConfirmationStatus } from './general';
 
 export type TradingResidenceState = {
@@ -33,6 +34,7 @@ export interface TradingState extends CommonTradingState {
     activeTradingType: TradingTypeWithConcierge | undefined;
     providerConfirmationStatus: ProviderConfirmationStatus;
     currentProviderMetadata: ProviderMetadata | undefined;
+    exchangeFlowApprovalStatus: ExchangeFlowApprovalStatus | undefined;
 }
 
 export type TradingRootState = {

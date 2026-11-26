@@ -18,6 +18,7 @@ import { type TradingRootState } from '../reducers';
 import {
     selectExchangeAmountLimits,
     selectExchangeBuyTradeableAssets,
+    selectExchangeFlowApprovalStatus,
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
     selectTradingExchange,
@@ -182,6 +183,18 @@ describe('exchangeSelectors', () => {
 
         describe.skip('debug-only networks', () => {
             // There are currently no debug only networks. Skipping
+        });
+    });
+
+    describe('selectExchangeFlowApprovalStatus', () => {
+        it('should return undefined by default', () => {
+            expect(selectExchangeFlowApprovalStatus(state)).toBeUndefined();
+        });
+
+        it('should return trading.exchangeFlowApprovalStatus', () => {
+            state.wallet.trading.exchangeFlowApprovalStatus = 'needs_revoke';
+
+            expect(selectExchangeFlowApprovalStatus(state)).toBe('needs_revoke');
         });
     });
 

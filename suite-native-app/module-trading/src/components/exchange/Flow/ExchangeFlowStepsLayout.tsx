@@ -3,10 +3,10 @@ import { type ReactNode } from 'react';
 import { VStack } from '@suite-native/atoms';
 import { Screen } from '@suite-native/navigation';
 import { CurrentStepCard, FinishedStepCard, NextStepCard } from '@suite-native/step-cards';
+import { type ExchangeFlowApprovalStatus } from '@suite-native/trading-types';
 
 import { ExchangeFlowStepTitle } from './ExchangeFlowStepTitle';
 import {
-    type ExchangeFlowApprovalStatus,
     type ExchangeFlowStep,
     getExchangeFlowStepCards,
 } from '../../../utils/exchange/exchangeFlowSteps';

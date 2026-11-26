@@ -1,12 +1,7 @@
-import { type ApprovalStatus } from '@suite-common/trading';
+import { type ExchangeFlowApprovalStatus } from '@suite-native/trading-types';
 import { exhaustive } from '@trezor/type-utils';
 
 export type ExchangeFlowStep = 'revoke' | 'approval' | 'preview';
-
-export type ExchangeFlowApprovalStatus = Extract<
-    ApprovalStatus,
-    'needs_approval' | 'needs_increase' | 'needs_revoke'
->;
 
 export type ExchangeFlowNextStep = {
     step: ExchangeFlowStep;
