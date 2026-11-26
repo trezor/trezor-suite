@@ -111,6 +111,16 @@ describe('ExchangeFlowSwapStepContent', () => {
         expect(screen.getByText('Issue banner')).toBeOnTheScreen();
     });
 
+    it('does not render the provider footer', async () => {
+        await renderContent();
+
+        expect(
+            screen.queryByText(
+                getTranslation('moduleTrading.tradingScreen.footer.howTradingWorksSheet.title'),
+            ),
+        ).not.toBeOnTheScreen();
+    });
+
     it('leaves a transaction error to the fee row', async () => {
         await renderContent({ txnErrorString: 'Insufficient funds' });
 

@@ -38,6 +38,10 @@ import { createTradingTestStore } from '../test-utils/tradingTestUtils';
 
 type State = TradingRootState & AccountsRootState;
 
+const HOW_TRADING_WORKS = getTranslation(
+    'moduleTrading.tradingScreen.footer.howTradingWorksSheet.title',
+);
+
 let mockFocusHandlers = new Set<() => void>();
 
 const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
@@ -280,6 +284,21 @@ describe('TradingExchangePreviewScreen', () => {
             expect(result.getByTestId('@trading/history/detail/info/get')).toBeOnTheScreen();
         },
     );
+
+    it('should render the provider footer when not approved', async () => {
+        const { result } = await renderTradingExchangePreviewScreen();
+
+        expect(result.getByText(HOW_TRADING_WORKS)).toBeOnTheScreen();
+    });
+
+    it('should render the provider footer outside of the step card when approved', async () => {
+        const { result } = await renderTradingExchangePreviewScreen(true);
+
+        expect(result.getByText(HOW_TRADING_WORKS)).toBeOnTheScreen();
+        expect(
+            within(result.getByTestId('@step-cards/current')).queryByText(HOW_TRADING_WORKS),
+        ).toBeNull();
+    });
 
     it('should render transaction details section', async () => {
         const {

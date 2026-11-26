@@ -12,11 +12,7 @@ import { BannerInline, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { CurrentStepCardHeader } from '@suite-native/step-cards';
 import { TradingHistoryDetailAssetRow } from '@suite-native/trading-history';
-import {
-    Footer,
-    KycPolicyWarning,
-    hasKycPolicyWarning,
-} from '@suite-native/trading-provider-utils';
+import { KycPolicyWarning, hasKycPolicyWarning } from '@suite-native/trading-provider-utils';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
 import { useExchangeSwapAssets } from '../../../hooks/exchange/useExchangeSwapAssets';
@@ -88,7 +84,6 @@ export const ExchangeFlowSwapStepContent = ({
                         accessibilityHint={translate('generic.warning')}
                     />
                 )}
-                <Footer />
             </VStack>
         </>
     );

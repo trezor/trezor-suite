@@ -31,6 +31,7 @@ const renderLayout = ({
             currentStep={currentStep}
             header={<Text>Header</Text>}
             footer={<Text>Footer</Text>}
+            belowCards={<Text>Below cards</Text>}
         >
             <Text>Current step content</Text>
         </ExchangeFlowStepsLayout>,
@@ -47,6 +48,15 @@ describe('ExchangeFlowStepsLayout', () => {
             getTranslation('stepCards.stepper', { stepNumber: 1, stepCount: 2 }) +
                 'Current step content',
         );
+    });
+
+    it('renders the below cards content outside of the step cards', async () => {
+        await renderLayout({ approvalStatus: 'needs_approval', currentStep: 'preview' });
+
+        expect(screen.getByText('Below cards')).toBeOnTheScreen();
+        expect(
+            within(screen.getByTestId('@step-cards/current')).queryByText('Below cards'),
+        ).not.toBeOnTheScreen();
     });
 
     it('renders the finished and next step cards around the current step', async () => {

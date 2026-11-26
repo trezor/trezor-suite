@@ -16,6 +16,7 @@ export type ExchangeFlowStepsLayoutProps = {
     currentStep: ExchangeFlowStep;
     header: ReactNode;
     footer: ReactNode;
+    belowCards?: ReactNode;
     children: ReactNode;
 };
 
@@ -24,6 +25,7 @@ export const ExchangeFlowStepsLayout = ({
     currentStep,
     header,
     footer,
+    belowCards,
     children,
 }: ExchangeFlowStepsLayoutProps) => {
     const { lastFinishedStep, currentStepNumber, stepCount, nextSteps } = getExchangeFlowStepCards({
@@ -33,21 +35,26 @@ export const ExchangeFlowStepsLayout = ({
 
     return (
         <Screen header={header} footer={footer}>
-            <VStack spacing={0}>
-                {!!lastFinishedStep && (
-                    <FinishedStepCard title={<ExchangeFlowStepTitle step={lastFinishedStep} />} />
-                )}
-                <CurrentStepCard stepNumber={currentStepNumber} stepCount={stepCount}>
-                    {children}
-                </CurrentStepCard>
-                {nextSteps.map(({ step, stepNumber }) => (
-                    <NextStepCard
-                        key={step}
-                        stepNumber={stepNumber}
-                        stepCount={stepCount}
-                        title={<ExchangeFlowStepTitle step={step} />}
-                    />
-                ))}
+            <VStack spacing="sp16" flex={1}>
+                <VStack spacing={0}>
+                    {!!lastFinishedStep && (
+                        <FinishedStepCard
+                            title={<ExchangeFlowStepTitle step={lastFinishedStep} />}
+                        />
+                    )}
+                    <CurrentStepCard stepNumber={currentStepNumber} stepCount={stepCount}>
+                        {children}
+                    </CurrentStepCard>
+                    {nextSteps.map(({ step, stepNumber }) => (
+                        <NextStepCard
+                            key={step}
+                            stepNumber={stepNumber}
+                            stepCount={stepCount}
+                            title={<ExchangeFlowStepTitle step={step} />}
+                        />
+                    ))}
+                </VStack>
+                {belowCards}
             </VStack>
         </Screen>
     );

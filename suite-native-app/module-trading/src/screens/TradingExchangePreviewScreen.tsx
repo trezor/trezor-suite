@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 
-import { Box, Card } from '@suite-native/atoms';
+import { Box, Card, VStack } from '@suite-native/atoms';
 import { Screen, TradingStackRoutes } from '@suite-native/navigation';
+import { Footer } from '@suite-native/trading-provider-utils';
 import { type TradingStackScreenProps } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -61,6 +62,7 @@ export const TradingExchangePreviewScreen = ({
                 currentStep="preview"
                 header={<ExchangePreviewScreenHeader />}
                 footer={footer}
+                belowCards={<Footer />}
             >
                 {content}
             </ExchangeFlowStepsLayout>
@@ -70,9 +72,12 @@ export const TradingExchangePreviewScreen = ({
     return (
         <Screen header={<ExchangePreviewScreenHeader />} footer={footer}>
             {/* A swap without an approval is a single step, so it has no stepper. */}
-            <Card noPadding>
-                <Box paddingTop="sp16">{content}</Box>
-            </Card>
+            <VStack spacing="sp16" flex={1}>
+                <Card noPadding>
+                    <Box paddingTop="sp16">{content}</Box>
+                </Card>
+                <Footer />
+            </VStack>
         </Screen>
     );
 };
