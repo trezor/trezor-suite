@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { BannerInline, Text, VStack } from '@suite-native/atoms';
+import { BannerInline, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DynamicScreenHeader,
@@ -9,14 +9,13 @@ import {
     ScreenHeader,
     type TradingStackRoutes,
 } from '@suite-native/navigation';
-import { CurrentStepCardHeader } from '@suite-native/step-cards';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 import { type TradingStackScreenProps } from '@suite-native/trading-types';
 
 import { ApprovalButton } from '../components/exchange/Approval/ApprovalButton';
 import { ExchangeRevokeDetails } from '../components/exchange/Approval/ExchangeRevokeDetails';
-import { RevokeLimitInfoRow } from '../components/exchange/Approval/RevokeLimitInfoRow';
 import { ExchangeFlowApprovalFeeSelectorRow } from '../components/exchange/Flow/ExchangeFlowApprovalFeeSelectorRow';
+import { ExchangeFlowRevokeStepContent } from '../components/exchange/Flow/ExchangeFlowRevokeStepContent';
 import { ExchangeFlowScreenHeader } from '../components/exchange/Flow/ExchangeFlowScreenHeader';
 import { ExchangeFlowStepsLayout } from '../components/exchange/Flow/ExchangeFlowStepsLayout';
 import { useExchangeRevokeStep } from '../hooks/exchange/Approval/useExchangeRevokeStep';
@@ -103,19 +102,10 @@ export const TradingExchangeRevokeScreen = ({
                 />
             }
         >
-            <CurrentStepCardHeader>
-                <Text variant="headline-sm">
-                    <Translation id="moduleTrading.tradingExchangeFlowScreen.revokeStep.title" />
-                </Text>
-                <Text variant="body-sm" color="contentSecondary">
-                    <Translation
-                        id="moduleTrading.tradingExchangeFlowScreen.revokeStep.description"
-                        values={{ symbol: coinSymbol }}
-                    />
-                </Text>
-            </CurrentStepCardHeader>
-            <RevokeLimitInfoRow />
-            <ExchangeFlowApprovalFeeSelectorRow accountKey={account.key} />
+            <ExchangeFlowRevokeStepContent
+                coinSymbol={coinSymbol}
+                feeRow={<ExchangeFlowApprovalFeeSelectorRow accountKey={account.key} />}
+            />
         </ExchangeFlowStepsLayout>
     );
 };
