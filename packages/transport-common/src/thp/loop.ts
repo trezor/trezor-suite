@@ -49,8 +49,8 @@ export const thpLoop = async ({
     let phase = receiveOnly ? ThpLoopState.READ_RESPONSE : ThpLoopState.WRITE_REQUEST;
     let writeAttempt = 0;
     let readAttempt = 0;
-    const deadline = Date.now() + THP_ACK_DEADLINE;
-    const isDeadlineReached = () => Date.now() >= deadline;
+    const deadline = performance.now() + THP_ACK_DEADLINE;
+    const isDeadlineReached = () => performance.now() >= deadline;
     const thpStateError = (message: string) => error({ code: THP_STATE_ERROR, message });
     const isThpTransportBusy = (result: Buffer) =>
         protocolThp.decodeThpError(result).message.code === 'ThpTransportBusy';
