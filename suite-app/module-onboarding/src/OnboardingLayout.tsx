@@ -6,10 +6,10 @@ import styled from 'styled-components';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { TRAFFIC_LIGHT_DEFAULT_OFFSET } from '@suite/macos';
-import { MODAL_CONTEXT_USER } from '@suite/modal';
+import { MODAL_CONTEXT_USER, closeModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { ReduxModal } from '@suite-app/app-modal';
-import { Box, Button, Column, Row } from '@trezor/components';
+import { Box, Button, Column, ModalLoader, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
 import { XIcon } from '@trezor/icons';
@@ -23,6 +23,7 @@ import {
     OnboardingProgressBar,
     SmallDeviceItem,
     SuiteBanners,
+    reportToSentryThunk,
     useFilteredModal,
     useOnboardingCancelButtonContext,
 } from '@trezor/suite';
@@ -97,16 +98,27 @@ type OnboardingLayoutProps = {
 export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
     const isMac = isMacOs();
     const isDesktopApp = isDesktop();
+    const { dispatch } = useServices(injectDispatch);
 
     const allowedModal = useFilteredModal(
         [MODAL_CONTEXT_USER],
         ['advanced-coin-settings', 'disable-tor'],
     );
 
+    /** A failed chunk cannot be retried until the page reloads, so close the modal. */
+    const handleModalError = (error: Error) => {
+        dispatch(reportToSentryThunk(error));
+        dispatch(closeModal());
+    };
+
     return (
         <>
             <ConnectionGlobalModalManager />
-            {allowedModal !== null ? <ReduxModal {...allowedModal} /> : null}
+            {allowedModal !== null ? (
+                <ModalLoader name={allowedModal.context} onError={handleModalError}>
+                    <ReduxModal {...allowedModal} />
+                </ModalLoader>
+            ) : null}
             <Row width="100%" height="100%">
                 <Column width="100%" height="100%" overflow="auto" alignItems="center">
                     {isMac && isDesktopApp && <OnboardingSpacer />}

@@ -1,318 +1,268 @@
 /**
- * The modals these declarations load live in this package, so they are reachable only from here.
- * `UserContextModal` renders them from `@suite-app/app-modal`, behind the `Suspense` boundary in
- * `ModalSwitcher`, and reaches them through this object rather than through static re-exports,
- * which would pull every modal back into the boot bundle.
+ * Reached through these exports rather than static re-exports, which would pull every modal back
+ * into the boot bundle. `UserContextModal` renders them behind the `Suspense` in `ModalSwitcher`.
  */
-import { lazy } from 'react';
+
+import { lazyComponentByName } from '@trezor/lazy-loading';
 
 /**
- * The four modals imported eagerly below must mount in the same commit that opens them.
- * ActivateAssetsModal, AddAccountModal and TransactionReviewModal set state.modal.preserve from a
- * mount effect, and a UI_EVENTS.CLOSE_UI_WINDOW arriving before that resets the modal to its
- * initial state (see modalReducer). A lazy boundary delays the mount past the event, so the modal
- * never appears. QrScannerModal is eager because it already lazy loads @zxing/library itself.
+ * Eager: ActivateAssetsModal, AddAccountModal and TransactionReviewModal set state.modal.preserve
+ * from a mount effect, and a lazy boundary would delay it past UI_EVENTS.CLOSE_UI_WINDOW, which
+ * resets the modal (see modalReducer). QrScannerModal already lazy loads @zxing/library itself.
  */
 import { ActivateAssetsModal } from './ActivateAssetsModal';
 import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
 import { AddAccountModal } from './AddAccountModal/AddAccountModal';
 import { QrScannerModal } from './QrScannerModal/QrScannerModal';
-import {
-    loadApplicationLogModal,
-    loadBackgroundGalleryModal,
-    loadSafetyChecksModal,
-} from './modalChunkLoaders';
 
-const MetadataProviderModal = lazy(() =>
-    import(/* webpackChunkName: "modals-user" */ '@suite/metadata').then(m => ({
-        default: m.MetadataProviderModal,
-    })),
+/**
+ * `webpackExports` on the barrel imports below: a runtime key picks the export, so without it the
+ * bundler ships all of them. Measured at +5.2 KB of `@suite/tor-desktop` UI in `modals-tor`.
+ */
+export const { LazyComponent: MetadataProviderModal } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-user", webpackExports: ["MetadataProviderModal"] */ '@suite/metadata'
+        ),
+    'MetadataProviderModal',
 );
-const DisableTorModal = lazy(() =>
-    import(/* webpackChunkName: "modals-tor" */ '@suite/tor-desktop').then(m => ({
-        default: m.DisableTorModal,
-    })),
+export const { LazyComponent: DisableTorModal } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-tor", webpackExports: ["DisableTorModal"] */ '@suite/tor-desktop'
+        ),
+    'DisableTorModal',
 );
-const DisableTorStopCoinjoinModal = lazy(() =>
-    import(/* webpackChunkName: "modals-tor" */ '@suite/tor-desktop').then(m => ({
-        default: m.DisableTorStopCoinjoinModal,
-    })),
+export const { LazyComponent: DisableTorStopCoinjoinModal } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-tor", webpackExports: ["DisableTorStopCoinjoinModal"] */ '@suite/tor-desktop'
+        ),
+    'DisableTorStopCoinjoinModal',
 );
-const RequestEnableTorModal = lazy(() =>
-    import(/* webpackChunkName: "modals-tor" */ '@suite/tor-desktop').then(m => ({
-        default: m.RequestEnableTorModal,
-    })),
+export const { LazyComponent: RequestEnableTorModal } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-tor", webpackExports: ["RequestEnableTorModal"] */ '@suite/tor-desktop'
+        ),
+    'RequestEnableTorModal',
 );
-const EarnClaimModal = lazy(() =>
-    import(
-        /* webpackChunkName: "modals-earn" */ '#src/components/earn/modals/EarnClaimModal/EarnClaimModal'
-    ).then(m => ({ default: m.EarnClaimModal })),
+export const { LazyComponent: EarnClaimModal } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-earn" */ '#src/components/earn/modals/EarnClaimModal/EarnClaimModal'
+        ),
+    'EarnClaimModal',
 );
-const EarnInANutshellModal = lazy(() =>
-    import(
-        /* webpackChunkName: "modals-earn" */ '#src/components/earn/modals/EarnInANutshell/EarnInANutshellModal'
-    ).then(m => ({ default: m.EarnInANutshellModal })),
+export const { LazyComponent: EarnInANutshellModal } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-earn" */ '#src/components/earn/modals/EarnInANutshell/EarnInANutshellModal'
+        ),
+    'EarnInANutshellModal',
 );
-const EarnProviderConsentModal = lazy(() =>
-    import(
-        /* webpackChunkName: "modals-earn" */ '#src/components/earn/modals/EarnProviderConsent/EarnProviderConsentModal'
-    ).then(m => ({ default: m.EarnProviderConsentModal })),
+export const { LazyComponent: EarnProviderConsentModal } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-earn" */ '#src/components/earn/modals/EarnProviderConsent/EarnProviderConsentModal'
+        ),
+    'EarnProviderConsentModal',
 );
-const StakeModal = lazy(() =>
-    import(
-        /* webpackChunkName: "modals-earn" */ '#src/components/earn/modals/StakeModal/StakeModal'
-    ).then(m => ({ default: m.StakeModal })),
+export const { LazyComponent: StakeModal } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-earn" */ '#src/components/earn/modals/StakeModal/StakeModal'
+        ),
+    'StakeModal',
 );
-const TronStakeConsentModal = lazy(() =>
-    import(
-        /* webpackChunkName: "modals-earn" */ '#src/components/earn/staking/tron/TronStakeConsentModal'
-    ).then(m => ({
-        default: m.TronStakeConsentModal,
-    })),
+export const { LazyComponent: TronStakeConsentModal } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-earn" */ '#src/components/earn/staking/tron/TronStakeConsentModal'
+        ),
+    'TronStakeConsentModal',
 );
-const TronStakeInANutshellModal = lazy(() =>
-    import(
-        /* webpackChunkName: "modals-earn" */ '#src/components/earn/modals/EarnInANutshell/TronStakeInANutshellModal'
-    ).then(m => ({ default: m.TronStakeInANutshellModal })),
+export const { LazyComponent: TronStakeInANutshellModal } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-earn" */ '#src/components/earn/modals/EarnInANutshell/TronStakeInANutshellModal'
+        ),
+    'TronStakeInANutshellModal',
 );
-const TronVoteConsentModal = lazy(() =>
-    import(
-        /* webpackChunkName: "modals-earn" */ '#src/components/earn/staking/tron/vote/TronVoteConsentModal'
-    ).then(m => ({ default: m.TronVoteConsentModal })),
+export const { LazyComponent: TronVoteConsentModal } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-earn" */ '#src/components/earn/staking/tron/vote/TronVoteConsentModal'
+        ),
+    'TronVoteConsentModal',
 );
-const UnstakeModal = lazy(() =>
-    import(
-        /* webpackChunkName: "modals-earn" */ '#src/components/earn/modals/UnstakeModal/UnstakeModal'
-    ).then(m => ({ default: m.UnstakeModal })),
+export const { LazyComponent: UnstakeModal } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-earn" */ '#src/components/earn/modals/UnstakeModal/UnstakeModal'
+        ),
+    'UnstakeModal',
 );
-const ConnectPopupTxSimulationModal = lazy(() =>
-    import(
-        /* webpackChunkName: "modals-connect-popup" */ '#src/components/tx-simulation/connect-popup/ConnectPopupTxSimulationModal'
-    ).then(m => ({
-        default: m.ConnectPopupTxSimulationModal,
-    })),
+export const { LazyComponent: ConnectPopupTxSimulationModal } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-connect-popup" */ '#src/components/tx-simulation/connect-popup/ConnectPopupTxSimulationModal'
+        ),
+    'ConnectPopupTxSimulationModal',
 );
-const EarnYieldTxSimulationModal = lazy(() =>
-    import(
-        /* webpackChunkName: "modals-earn" */ '#src/components/tx-simulation/earn-stablecoin/EarnYieldTxSimulationModal'
-    ).then(m => ({
-        default: m.EarnYieldTxSimulationModal,
-    })),
+export const { LazyComponent: EarnYieldTxSimulationModal } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-earn" */ '#src/components/tx-simulation/earn-stablecoin/EarnYieldTxSimulationModal'
+        ),
+    'EarnYieldTxSimulationModal',
 );
-const ConfirmXpubModal = lazy(() =>
-    import(/* webpackChunkName: "modals-device" */ '../ConfirmXpubModal').then(m => ({
-        default: m.ConfirmXpubModal,
-    })),
+export const { LazyComponent: ConfirmXpubModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-device" */ '../ConfirmXpubModal'),
+    'ConfirmXpubModal',
 );
-const CopyAddressModal = lazy(() =>
-    import(/* webpackChunkName: "modals-user" */ '../CopyAddressModal').then(m => ({
-        default: m.CopyAddressModal,
-    })),
+export const { LazyComponent: CopyAddressModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-user" */ '../CopyAddressModal'),
+    'CopyAddressModal',
 );
-const PinInvalidModal = lazy(() =>
-    import(/* webpackChunkName: "modals-device" */ '../DeviceContextModal/PinInvalidModal').then(
-        m => ({ default: m.PinInvalidModal }),
-    ),
+export const { LazyComponent: PinInvalidModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-device" */ '../DeviceContextModal/PinInvalidModal'),
+    'PinInvalidModal',
 );
-const UnhideTokenModal = lazy(() =>
-    import(/* webpackChunkName: "modals-user" */ '../UnhideTokenModal').then(m => ({
-        default: m.UnhideTokenModal,
-    })),
+export const { LazyComponent: UnhideTokenModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-user" */ '../UnhideTokenModal'),
+    'UnhideTokenModal',
 );
-const AddTokenModal = lazy(() =>
-    import(/* webpackChunkName: "modals-user" */ './AddTokenModal').then(m => ({
-        default: m.AddTokenModal,
-    })),
+export const { LazyComponent: AddTokenModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-user" */ './AddTokenModal'),
+    'AddTokenModal',
 );
-const AdvancedCoinSettingsModal = lazy(() =>
-    import(
-        /* webpackChunkName: "modals-user" */ './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal'
-    ).then(m => ({
-        default: m.AdvancedCoinSettingsModal,
-    })),
+export const { LazyComponent: AdvancedCoinSettingsModal } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-user" */ './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal'
+        ),
+    'AdvancedCoinSettingsModal',
 );
-const ApplicationLogModal = lazy(() =>
-    loadApplicationLogModal().then(m => ({ default: m.ApplicationLogModal })),
+export const { LazyComponent: ApplicationLogModal, load: loadApplicationLogModal } =
+    lazyComponentByName(
+        () => import(/* webpackChunkName: "modals-user" */ './ApplicationLogModal'),
+        'ApplicationLogModal',
+    );
+export const { LazyComponent: AutoStartBeforeQuitModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-user" */ './AutoStartBeforeQuitModal'),
+    'AutoStartBeforeQuitModal',
 );
-const AutoStartBeforeQuitModal = lazy(() =>
-    import(/* webpackChunkName: "modals-user" */ './AutoStartBeforeQuitModal').then(m => ({
-        default: m.AutoStartBeforeQuitModal,
-    })),
+export const { LazyComponent: BackgroundGalleryModal, load: loadBackgroundGalleryModal } =
+    lazyComponentByName(
+        () => import(/* webpackChunkName: "modals-user" */ './BackgroundGalleryModal'),
+        'BackgroundGalleryModal',
+    );
+export const { LazyComponent: CancelCoinjoinModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-coinjoin" */ './CancelCoinjoinModal'),
+    'CancelCoinjoinModal',
 );
-const BackgroundGalleryModal = lazy(() =>
-    loadBackgroundGalleryModal().then(m => ({ default: m.BackgroundGalleryModal })),
+export const { LazyComponent: CoinjoinSuccessModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-coinjoin" */ './CoinjoinSuccessModal'),
+    'CoinjoinSuccessModal',
 );
-const CancelCoinjoinModal = lazy(() =>
-    import(/* webpackChunkName: "modals-coinjoin" */ './CancelCoinjoinModal').then(m => ({
-        default: m.CancelCoinjoinModal,
-    })),
+export const { LazyComponent: ConfirmUnverifiedProceedModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-user" */ './ConfirmUnverifiedProceedModal'),
+    'ConfirmUnverifiedProceedModal',
 );
-const CoinjoinSuccessModal = lazy(() =>
-    import(/* webpackChunkName: "modals-coinjoin" */ './CoinjoinSuccessModal').then(m => ({
-        default: m.CoinjoinSuccessModal,
-    })),
+export const { LazyComponent: ConfirmUnverifiedXpubModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-user" */ './ConfirmUnverifiedXpubModal'),
+    'ConfirmUnverifiedXpubModal',
 );
-const ConfirmUnverifiedProceedModal = lazy(() =>
-    import(/* webpackChunkName: "modals-user" */ './ConfirmUnverifiedProceedModal').then(m => ({
-        default: m.ConfirmUnverifiedProceedModal,
-    })),
+export const { LazyComponent: ConnectAddressConfirmation } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-connect-popup" */ './ConnectAddressConfirmation'),
+    'ConnectAddressConfirmation',
 );
-const ConfirmUnverifiedXpubModal = lazy(() =>
-    import(/* webpackChunkName: "modals-user" */ './ConfirmUnverifiedXpubModal').then(m => ({
-        default: m.ConfirmUnverifiedXpubModal,
-    })),
+export const { LazyComponent: ConnectErrorModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-connect-popup" */ './ConnectErrorModal'),
+    'ConnectErrorModal',
 );
-const ConnectAddressConfirmation = lazy(() =>
-    import(/* webpackChunkName: "modals-connect-popup" */ './ConnectAddressConfirmation').then(
-        m => ({ default: m.ConnectAddressConfirmation }),
-    ),
+export const { LazyComponent: ConnectLoadingModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-connect-popup" */ './ConnectLoadingModal'),
+    'ConnectLoadingModal',
 );
-const ConnectErrorModal = lazy(() =>
-    import(/* webpackChunkName: "modals-connect-popup" */ './ConnectErrorModal').then(m => ({
-        default: m.ConnectErrorModal,
-    })),
+export const { LazyComponent: ConnectPermissionsModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-connect-popup" */ './ConnectPermissionsModal'),
+    'ConnectPermissionsModal',
 );
-const ConnectLoadingModal = lazy(() =>
-    import(/* webpackChunkName: "modals-connect-popup" */ './ConnectLoadingModal').then(m => ({
-        default: m.ConnectLoadingModal,
-    })),
+export const { LazyComponent: ConnectSelectAccount } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-connect-popup" */ './ConnectSelectAccount/ConnectSelectAccount'
+        ),
+    'ConnectSelectAccount',
 );
-const ConnectPermissionsModal = lazy(() =>
-    import(/* webpackChunkName: "modals-connect-popup" */ './ConnectPermissionsModal').then(m => ({
-        default: m.ConnectPermissionsModal,
-    })),
+export const { LazyComponent: CriticalCoinjoinPhaseModal } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-coinjoin" */ './CriticalCoinjoinPhaseModal/CriticalCoinjoinPhaseModal'
+        ),
+    'CriticalCoinjoinPhaseModal',
 );
-const ConnectSelectAccount = lazy(() =>
-    import(
-        /* webpackChunkName: "modals-connect-popup" */ './ConnectSelectAccount/ConnectSelectAccount'
-    ).then(m => ({
-        default: m.ConnectSelectAccount,
-    })),
+export const { LazyComponent: DeviceAuthenticityOptOutModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-user" */ './DeviceAuthenticityOptOutModal'),
+    'DeviceAuthenticityOptOutModal',
 );
-const CriticalCoinjoinPhaseModal = lazy(() =>
-    import(
-        /* webpackChunkName: "modals-coinjoin" */ './CriticalCoinjoinPhaseModal/CriticalCoinjoinPhaseModal'
-    ).then(m => ({
-        default: m.CriticalCoinjoinPhaseModal,
-    })),
+export const { LazyComponent: FirmwareRevisionOptOutModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-user" */ './FirmwareRevisionOptOutModal'),
+    'FirmwareRevisionOptOutModal',
 );
-const DeviceAuthenticityOptOutModal = lazy(() =>
-    import(/* webpackChunkName: "modals-user" */ './DeviceAuthenticityOptOutModal').then(m => ({
-        default: m.DeviceAuthenticityOptOutModal,
-    })),
+export const { LazyComponent: ImportTransactionModal } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-user" */ './ImportTransactionModal/ImportTransactionModal'
+        ),
+    'ImportTransactionModal',
 );
-const FirmwareRevisionOptOutModal = lazy(() =>
-    import(/* webpackChunkName: "modals-user" */ './FirmwareRevisionOptOutModal').then(m => ({
-        default: m.FirmwareRevisionOptOutModal,
-    })),
+export const { LazyComponent: MoreRoundsNeededModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-coinjoin" */ './MoreRoundsNeededModal'),
+    'MoreRoundsNeededModal',
 );
-const ImportTransactionModal = lazy(() =>
-    import(
-        /* webpackChunkName: "modals-user" */ './ImportTransactionModal/ImportTransactionModal'
-    ).then(m => ({
-        default: m.ImportTransactionModal,
-    })),
+export const { LazyComponent: PinMismatchModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-device" */ './PinMismatchModal'),
+    'PinMismatchModal',
 );
-const MoreRoundsNeededModal = lazy(() =>
-    import(/* webpackChunkName: "modals-coinjoin" */ './MoreRoundsNeededModal').then(m => ({
-        default: m.MoreRoundsNeededModal,
-    })),
+export const { LazyComponent: SafetyChecksModal, load: loadSafetyChecksModal } =
+    lazyComponentByName(
+        () => import(/* webpackChunkName: "modals-user" */ './SafetyChecksModal'),
+        'SafetyChecksModal',
+    );
+export const { LazyComponent: StakeChangeDelegateModal } = lazyComponentByName(
+    () =>
+        import(
+            /* webpackChunkName: "modals-earn" */ './StakeChangeDelegateModal/StakeChangeDelegateModal'
+        ),
+    'StakeChangeDelegateModal',
 );
-const PinMismatchModal = lazy(() =>
-    import(/* webpackChunkName: "modals-device" */ './PinMismatchModal').then(m => ({
-        default: m.PinMismatchModal,
-    })),
+export const { LazyComponent: TorLoadingModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-tor" */ './TorLoadingModal'),
+    'TorLoadingModal',
 );
-const SafetyChecksModal = lazy(() =>
-    loadSafetyChecksModal().then(m => ({ default: m.SafetyChecksModal })),
+export const { LazyComponent: TxDetailModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-user" */ './TxDetailModal/TxDetailModal'),
+    'TxDetailModal',
 );
-const StakeChangeDelegateModal = lazy(() =>
-    import(
-        /* webpackChunkName: "modals-earn" */ './StakeChangeDelegateModal/StakeChangeDelegateModal'
-    ).then(m => ({
-        default: m.StakeChangeDelegateModal,
-    })),
+export const { LazyComponent: UnecoCoinjoinModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-coinjoin" */ './UnecoCoinjoinModal'),
+    'UnecoCoinjoinModal',
 );
-const TorLoadingModal = lazy(() =>
-    import(/* webpackChunkName: "modals-tor" */ './TorLoadingModal').then(m => ({
-        default: m.TorLoadingModal,
-    })),
+export const { LazyComponent: WalletConnectProposalModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-user" */ './WalletConnectProposalModal'),
+    'WalletConnectProposalModal',
 );
-const TxDetailModal = lazy(() =>
-    import(/* webpackChunkName: "modals-user" */ './TxDetailModal/TxDetailModal').then(m => ({
-        default: m.TxDetailModal,
-    })),
+export const { LazyComponent: WalletConnectSwitchAccountModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-user" */ './WalletConnectSwitchAccountModal'),
+    'WalletConnectSwitchAccountModal',
 );
-const UnecoCoinjoinModal = lazy(() =>
-    import(/* webpackChunkName: "modals-coinjoin" */ './UnecoCoinjoinModal').then(m => ({
-        default: m.UnecoCoinjoinModal,
-    })),
-);
-const WalletConnectProposalModal = lazy(() =>
-    import(/* webpackChunkName: "modals-user" */ './WalletConnectProposalModal').then(m => ({
-        default: m.WalletConnectProposalModal,
-    })),
-);
-const WalletConnectSwitchAccountModal = lazy(() =>
-    import(/* webpackChunkName: "modals-user" */ './WalletConnectSwitchAccountModal').then(m => ({
-        default: m.WalletConnectSwitchAccountModal,
-    })),
-);
-const WipeDeviceSuccessModal = lazy(() =>
-    import(/* webpackChunkName: "modals-user" */ './WipeDeviceSuccessModal').then(m => ({
-        default: m.WipeDeviceSuccessModal,
-    })),
+export const { LazyComponent: WipeDeviceSuccessModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-user" */ './WipeDeviceSuccessModal'),
+    'WipeDeviceSuccessModal',
 );
 
-export const lazyUserContextModals = {
-    ActivateAssetsModal,
-    AddAccountModal,
-    AddTokenModal,
-    AdvancedCoinSettingsModal,
-    ApplicationLogModal,
-    AutoStartBeforeQuitModal,
-    BackgroundGalleryModal,
-    CancelCoinjoinModal,
-    CoinjoinSuccessModal,
-    ConfirmUnverifiedProceedModal,
-    ConfirmUnverifiedXpubModal,
-    ConfirmXpubModal,
-    ConnectAddressConfirmation,
-    ConnectErrorModal,
-    ConnectLoadingModal,
-    ConnectPermissionsModal,
-    ConnectPopupTxSimulationModal,
-    ConnectSelectAccount,
-    CopyAddressModal,
-    CriticalCoinjoinPhaseModal,
-    DeviceAuthenticityOptOutModal,
-    DisableTorModal,
-    DisableTorStopCoinjoinModal,
-    EarnClaimModal,
-    EarnInANutshellModal,
-    EarnProviderConsentModal,
-    EarnYieldTxSimulationModal,
-    FirmwareRevisionOptOutModal,
-    ImportTransactionModal,
-    MetadataProviderModal,
-    MoreRoundsNeededModal,
-    PinInvalidModal,
-    PinMismatchModal,
-    QrScannerModal,
-    RequestEnableTorModal,
-    SafetyChecksModal,
-    StakeChangeDelegateModal,
-    StakeModal,
-    TorLoadingModal,
-    TransactionReviewModal,
-    TronStakeConsentModal,
-    TronStakeInANutshellModal,
-    TronVoteConsentModal,
-    TxDetailModal,
-    UnecoCoinjoinModal,
-    UnhideTokenModal,
-    UnstakeModal,
-    WalletConnectProposalModal,
-    WalletConnectSwitchAccountModal,
-    WipeDeviceSuccessModal,
-};
+/** Eager, for the reason given above; exported by name like every modal here. */
+export { ActivateAssetsModal, AddAccountModal, QrScannerModal, TransactionReviewModal };

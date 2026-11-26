@@ -49,7 +49,7 @@ export {
 export { createDb } from './src/storage/createDb';
 export { type DbDep } from './src/storage/Db';
 export { selectIsWindowVisible } from './src/reducers/suite/windowReducer';
-export { reportSecurityCheck } from './src/utils/suite/sentry';
+export { reportSecurityCheck, reportToSentryThunk } from './src/utils/suite/sentry';
 export { markDeviceAsRecentlyConnectedThunk } from './src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
 export { storageLoadReducers } from './src/support/storageLoadReducers';
 export {
@@ -341,7 +341,7 @@ export { ConnectionGlobalModalManager } from './src/components/connection/Connec
 export { ThpGlobalModalManager } from './src/components/connection/thp/ThpGlobalModalManager';
 export { WipedBleDeviceNeedsManualOsRemovalModalManager } from './src/components/suite/bluetooth/WipedBleDeviceNeedsManualOsRemovalModalManager';
 export { getForegroundApp } from './src/components/suite/modals/ModalSwitcher/lazyForegroundApps';
-export { lazyUserContextModals } from './src/components/suite/modals/ReduxModal/UserContextModal/lazyUserContextModals';
+export * from './src/components/suite/modals/ReduxModal/UserContextModal/lazyUserContextModals';
 export {
     Body,
     Columns,

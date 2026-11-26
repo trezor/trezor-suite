@@ -37,6 +37,7 @@
         },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/icons" },
+        { "path": "../../packages/lazy-loading" },
         {
             "path": "../../packages/product-components"
         },

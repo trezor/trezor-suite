@@ -1,33 +1,27 @@
-import { lazy } from 'react';
-
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type ThpAutoconnectStep, type ThpStep } from '@suite-common/thp';
+import { lazyComponentByName } from '@trezor/lazy-loading';
 import { exhaustive } from '@trezor/type-utils';
 
-const ThpAutoconnectInfoModal = lazy(() =>
-    import(/* webpackChunkName: "modals-connection" */ '@suite/thp').then(m => ({
-        default: m.ThpAutoconnectInfoModal,
-    })),
+const { LazyComponent: ThpAutoconnectInfoModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-connection" */ '@suite/thp'),
+    'ThpAutoconnectInfoModal',
 );
-const ThpPairingFailedModal = lazy(() =>
-    import(/* webpackChunkName: "modals-connection" */ '@suite/thp').then(m => ({
-        default: m.ThpPairingFailedModal,
-    })),
+const { LazyComponent: ThpPairingFailedModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-connection" */ '@suite/thp'),
+    'ThpPairingFailedModal',
 );
-const ThpPairingPinEntryModal = lazy(() =>
-    import(/* webpackChunkName: "modals-connection" */ '@suite/thp').then(m => ({
-        default: m.ThpPairingPinEntryModal,
-    })),
+const { LazyComponent: ThpPairingPinEntryModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-connection" */ '@suite/thp'),
+    'ThpPairingPinEntryModal',
 );
-const ThpAutoconnectionModal = lazy(() =>
-    import(/* webpackChunkName: "modals-connection" */ './ThpAutoconnectionModal').then(m => ({
-        default: m.ThpAutoconnectionModal,
-    })),
+const { LazyComponent: ThpAutoconnectionModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-connection" */ './ThpAutoconnectionModal'),
+    'ThpAutoconnectionModal',
 );
-const ThpConnectionModal = lazy(() =>
-    import(/* webpackChunkName: "modals-connection" */ './ThpConnectionModal').then(m => ({
-        default: m.ThpConnectionModal,
-    })),
+const { LazyComponent: ThpConnectionModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-connection" */ './ThpConnectionModal'),
+    'ThpConnectionModal',
 );
 
 type ThpStepModalProps = {

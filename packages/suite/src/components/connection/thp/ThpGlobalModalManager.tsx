@@ -1,14 +1,16 @@
-import { Suspense } from 'react';
-
 import { selectThpAutoconnectStep, selectThpStep } from '@suite-common/thp';
 import { selectSelectedFirstThpDevice } from '@suite-common/wallet-core';
-import { ModalSkeleton } from '@trezor/components';
+import { ModalLoader } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
+import { reportToSentryThunk } from '#src/utils/suite/sentry';
 
 import { ThpStepModal } from './ThpStepModal';
 
 export const ThpGlobalModalManager = () => {
+    const { dispatch } = useServices(injectDispatch);
     const device = useSelector(selectSelectedFirstThpDevice);
     const thpStep = useSelector(selectThpStep);
     const thpAutoconnectStep = useSelector(selectThpAutoconnectStep);
@@ -17,13 +19,14 @@ export const ThpGlobalModalManager = () => {
         return null;
     }
 
+    /** Device-driven, so nothing local to close: report it and leave the modal out. */
     return (
-        <Suspense fallback={<ModalSkeleton />}>
+        <ModalLoader name="thp-step-modal" onError={error => dispatch(reportToSentryThunk(error))}>
             <ThpStepModal
                 device={device}
                 thpStep={thpStep}
                 thpAutoconnectStep={thpAutoconnectStep}
             />
-        </Suspense>
+        </ModalLoader>
     );
 };

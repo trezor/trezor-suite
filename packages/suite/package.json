@@ -178,6 +178,7 @@
         "@trezor/dom-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
+        "@trezor/lazy-loading": "workspace:*",
         "@trezor/logger": "workspace:*",
         "@trezor/network-cardano-suite-common": "workspace:*",
         "@trezor/network-ethereum": "workspace:*",

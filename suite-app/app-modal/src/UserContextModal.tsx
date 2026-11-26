@@ -5,15 +5,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { UI_EVENTS } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
-import { type ReduxModalProps, lazyUserContextModals, useSelector } from '@trezor/suite';
-import { exhaustive } from '@trezor/type-utils';
-
-/**
- * Destructured rather than imported one by one from `@trezor/suite`: these are the lazy wrappers
- * declared beside the modals themselves, so the switch below names them exactly as it would the
- * components, while their code stays out of the boot bundle.
- */
-const {
+import {
     ActivateAssetsModal,
     AddAccountModal,
     AddTokenModal,
@@ -48,6 +40,7 @@ const {
     PinInvalidModal,
     PinMismatchModal,
     QrScannerModal,
+    type ReduxModalProps,
     RequestEnableTorModal,
     SafetyChecksModal,
     StakeChangeDelegateModal,
@@ -64,7 +57,9 @@ const {
     WalletConnectProposalModal,
     WalletConnectSwitchAccountModal,
     WipeDeviceSuccessModal,
-} = lazyUserContextModals;
+    useSelector,
+} from '@trezor/suite';
+import { exhaustive } from '@trezor/type-utils';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTEXT_USER>) => {
