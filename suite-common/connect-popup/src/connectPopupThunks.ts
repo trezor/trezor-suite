@@ -40,6 +40,7 @@ import {
     applyRequestCompatibility,
     applyResponseCompatibility,
 } from './popupFlows/utils/compatibility';
+import { stripContactFields } from './popupFlows/utils/stripContactFields';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
 
@@ -76,7 +77,8 @@ export const connectPopupCallInnerThunk = createThunk<
     PopupFlowParams<CallMethodKeys>,
     { state: ConnectPopupCallInnerThunkState; extra: ConnectPopupCallInnerThunkDeps }
 >(`${CONNECT_POPUP_MODULE}/callThunk`, async (params, { dispatch, getState, extra }) => {
-    const paramsCompat = applyRequestCompatibility(params);
+    // Every host app's call (popup, connect-ws, deeplink, MCP) enters Suite's Connect here.
+    const paramsCompat = applyRequestCompatibility(stripContactFields(params));
     const flow = createPopupFlow(paramsCompat, { dispatch, getState });
 
     try {
