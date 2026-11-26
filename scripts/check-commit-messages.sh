@@ -18,12 +18,12 @@ for commit in $(git rev-list origin/"$BASE_BRANCH_NAME"..HEAD); do
     continue
     fi
 
-    # Check for fixup commits
-    if echo "$commit_msg" | grep -qE "^fixup! "; then
+    # Check for fixup and amend commits
+    if echo "$commit_msg" | grep -qE "^(fixup|amend)! "; then
     tput -T linux setaf 1
-    echo "Fixup commit validation failed for commit $commit: $commit_msg"
+    echo "Fixup/amend commit validation failed for commit $commit: $commit_msg"
     tput -T linux sgr0
-    echo -e "To squash fixup commits, run:\ngit rebase -i --autosquash origin/HEAD"
+    echo -e "To squash fixup and amend commits, run:\ngit rebase -i --autosquash origin/HEAD"
     exit 1
     fi
 
