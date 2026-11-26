@@ -3,7 +3,11 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenInfo } from '@trezor/connect';
 import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
-import type { TokenDefinitionsRootState, TokenDefinitionsState } from './tokenDefinitionsTypes';
+import type {
+    CoinDefinitionsDataRootState,
+    TokenDefinitionsRootState,
+    TokenDefinitionsState,
+} from './tokenDefinitionsTypes';
 import { isTokenDefinitionKnown } from './tokenDefinitionsUtils';
 
 export const selectTokenDefinitions = (state: TokenDefinitionsRootState) => state.tokenDefinitions;
@@ -30,7 +34,7 @@ export const selectNftDefinitions = (state: TokenDefinitionsRootState, symbol: N
     state.tokenDefinitions?.[symbol]?.nft;
 
 export const selectCoinDefinition = (
-    state: TokenDefinitionsRootState,
+    state: CoinDefinitionsDataRootState,
     symbol: NetworkSymbol,
     contractAddress: TokenAddress,
 ) => {
@@ -41,7 +45,7 @@ export const selectCoinDefinition = (
 };
 
 export const selectIsSpecificCoinDefinitionKnown = (
-    state: TokenDefinitionsRootState,
+    state: CoinDefinitionsDataRootState,
     symbol: NetworkSymbol,
     contractAddress: TokenAddress,
 ) => !!selectCoinDefinition(state, symbol, contractAddress);

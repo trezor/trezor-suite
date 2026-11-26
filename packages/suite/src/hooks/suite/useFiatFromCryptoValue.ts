@@ -31,15 +31,16 @@ export const useFiatFromCryptoValue = ({
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, baseCurrencyCode, tokenAddress);
 
-    const currentRate = useSelector(state =>
-        selectFiatRatesByFiatRateKey(state, fiatRateKey, rateType),
+    // Only the number: every fetch rewrites the rate entry, even when the price stays the same.
+    const currentRate = useSelector(
+        state => selectFiatRatesByFiatRateKey(state, fiatRateKey, rateType)?.rate,
     );
 
-    const rate = useHistoricRate ? historicRate : currentRate?.rate;
+    const rate = useHistoricRate ? historicRate : currentRate;
     const fiatAmount = useMemo(
         () => (rate ? toFiatCurrency({ amount, rate }) : null),
         [amount, rate],
     );
 
-    return { baseCurrencyCode, fiatAmount, rate, currentRate };
+    return { baseCurrencyCode, fiatAmount, fiatRateKey, rate };
 };

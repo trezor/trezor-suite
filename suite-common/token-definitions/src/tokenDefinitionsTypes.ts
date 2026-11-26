@@ -48,6 +48,13 @@ export type TokenDefinitionsState = PartialRecord<NetworkSymbol, TokenDefinition
 
 export type TokenDefinitionsRootState = { tokenDefinitions: TokenDefinitionsState };
 
+/**
+ * The only part of the state the coin definition lookups read.
+ */
+export type CoinDefinitionsDataRootState = {
+    tokenDefinitions: PartialRecord<NetworkSymbol, { coin?: Pick<TokenDefinition, 'data'> }>;
+};
+
 export type GetTokenDefinitionsEnabledNetworksDep = {
     getTokenDefinitionsEnabledNetworks: Getter<[], NetworkSymbol[]>;
 };
