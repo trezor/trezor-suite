@@ -216,6 +216,7 @@ export default defineConfig(
             },
             optimizeDeps: isWebProject
                 ? {
+                      entries: [path.resolve(e2eDir, '../src/api/*/api/index.ts')],
                       include: [
                           'vite-plugin-node-polyfills/shims/buffer',
                           'vite-plugin-node-polyfills/shims/global',
