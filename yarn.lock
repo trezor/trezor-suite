@@ -11757,6 +11757,24 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/contacts@workspace:suite-common/contacts":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/contacts@workspace:suite-common/contacts"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.13.0"
+    "@scure/base": "npm:^2.0.0"
+    "@suite-common/device": "workspace:*"
+    "@suite-common/suite-sync": "workspace:*"
+    "@suite-common/suite-sync-storage": "workspace:*"
+    "@suite-common/suite-sync-types": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/delegated-identity-key-types@workspace:*, @suite-common/delegated-identity-key-types@workspace:suite-common/delegated-identity-key-types":
   version: 0.0.0-use.local
   resolution: "@suite-common/delegated-identity-key-types@workspace:suite-common/delegated-identity-key-types"
