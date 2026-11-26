@@ -11,17 +11,13 @@ import { type NetworkSymbol } from '@suite-common/networks';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent } from '@suite-common/wallet-utils';
 import { injectNativeAnalytics } from '@suite-native/analytics';
-import {
-    BottomSheetModal,
-    type BottomSheetModalRef,
-    Box,
-    HStack,
-    Text,
-    VStack,
-} from '@suite-native/atoms';
-import { Icon, TokenIcon, tokenIconSizes } from '@suite-native/icons';
+import { type BottomSheetModalRef } from '@suite-native/atoms';
+import { TokenIcon } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
+
+import { EarnRateBreakdownBottomSheet } from '../earn/EarnRateBreakdownBottomSheet';
+import { EarnRateBreakdownRow } from '../earn/EarnRateBreakdownRow';
 
 const getYieldApyBreakdownDescriptionKey = (
     yieldSource: RewardDtoV2['yieldSource'],
@@ -72,48 +68,34 @@ const RewardRow = ({ reward, networkSymbol, tokenSymbol }: RewardRowProps) => {
     const rateTranslationId = getRateTranslationId(reward.yieldSource);
 
     return (
-        <HStack spacing="sp8" alignItems="center">
-            <Box flex={1}>
-                <VStack spacing={0}>
-                    <HStack justifyContent="space-between">
-                        <HStack alignItems="center">
-                            <TokenIcon
-                                networkSymbol={networkSymbol}
-                                contractAddress={reward.token.address}
-                                tokenSymbol={rewardSymbol}
-                                size="extraSmall"
-                                showNetworkIcon
-                            />
-
-                            <Text variant="body-md">{rewardSymbol}</Text>
-                        </HStack>
-
-                        {rewardRatePercent !== null && rewardRatePercent > 0 && (
-                            <Text variant="body-md" color="contentBrand">
-                                +
-                                {PercentageFormatter.format(rewardRatePercent, {
-                                    withSymbol: true,
-                                })}
-                                {rateTranslationId && (
-                                    <>
-                                        {' '}
-                                        <Translation id={rateTranslationId} />
-                                    </>
-                                )}
-                            </Text>
+        <EarnRateBreakdownRow
+            icon={
+                <TokenIcon
+                    networkSymbol={networkSymbol}
+                    contractAddress={reward.token.address}
+                    tokenSymbol={rewardSymbol}
+                    size="extraSmall"
+                    showNetworkIcon
+                />
+            }
+            symbol={rewardSymbol}
+            description={
+                descriptionKey && <Translation id={descriptionKey} values={{ tokenSymbol }} />
+            }
+            value={
+                rewardRatePercent !== null && rewardRatePercent > 0 ? (
+                    <>
+                        +{PercentageFormatter.format(rewardRatePercent, { withSymbol: true })}
+                        {rateTranslationId && (
+                            <>
+                                {' '}
+                                <Translation id={rateTranslationId} />
+                            </>
                         )}
-                    </HStack>
-
-                    {descriptionKey && (
-                        <Box style={{ marginLeft: tokenIconSizes.extraSmall }} paddingLeft="sp8">
-                            <Text variant="body-sm" color="contentSecondary">
-                                <Translation id={descriptionKey} values={{ tokenSymbol }} />
-                            </Text>
-                        </Box>
-                    )}
-                </VStack>
-            </Box>
-        </HStack>
+                    </>
+                ) : undefined
+            }
+        />
     );
 };
 
@@ -160,40 +142,31 @@ export const YieldApyBreakdownBottomSheet = ({
     const hasAprReward = !!sortedRewards.some(isAprReward);
 
     return (
-        <BottomSheetModal
+        <EarnRateBreakdownBottomSheet
             ref={ref}
-            title={vault.outputToken?.name}
-            isCloseDisplayed
+            title={vault.outputToken.name}
             onClose={onClose}
             onDismiss={handleDismiss}
             bottomSheetCustomProps={{ onChange: handleSheetChange }}
+            testID="@account-detail/stablecoin-yield/apy-breakdown-sheet"
+            footer={
+                <Translation
+                    id={
+                        hasAprReward
+                            ? 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.footerApyApr'
+                            : 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.footerApy'
+                    }
+                />
+            }
         >
-            <Box testID="@account-detail/stablecoin-yield/apy-breakdown-sheet">
-                <VStack spacing="sp20">
-                    {sortedRewards.map((reward, index) => (
-                        <RewardRow
-                            key={`${reward.token.symbol}-${reward.yieldSource}-${index}`}
-                            reward={reward}
-                            networkSymbol={networkSymbol}
-                            tokenSymbol={tokenSymbol}
-                        />
-                    ))}
-
-                    <HStack spacing="sp8" alignItems="center">
-                        <Icon name="arrowsDownUp" size="medium" color="contentSecondary" />
-
-                        <Text variant="body-md" color="contentSecondary">
-                            <Translation
-                                id={
-                                    hasAprReward
-                                        ? 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.footerApyApr'
-                                        : 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.footerApy'
-                                }
-                            />
-                        </Text>
-                    </HStack>
-                </VStack>
-            </Box>
-        </BottomSheetModal>
+            {sortedRewards.map((reward, index) => (
+                <RewardRow
+                    key={`${reward.token.symbol}-${reward.yieldSource}-${index}`}
+                    reward={reward}
+                    networkSymbol={networkSymbol}
+                    tokenSymbol={tokenSymbol}
+                />
+            ))}
+        </EarnRateBreakdownBottomSheet>
     );
 };
