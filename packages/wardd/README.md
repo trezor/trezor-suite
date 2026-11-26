@@ -1,81 +1,24 @@
-# wardd: the local WARD service
+# The local WARD service
 
-`wardd` runs on the machine the Trezor is plugged into.
+wardd runs separately from Suite desktop on the machine connected to the Trezor. It stores encrypted
+changes in an Evolu replica and rebuilds the wallet tree to serve proofs. Wallet integrations reach
+it through the [WARD relay](../ward-core/relay.md).
 
-- **It holds the replica:** the wallet's WARD tree, as an append-only log of transitions in its
-  own Evolu instance.
-- **It holds the WM client:** for now an in-process development WM speaking attestation v6, which
-  only emulator and debug firmware trust.
-- **It drives the device:** every sync, catch-up and flush, in the order the firmware requires.
+## Publication
 
-Integrations don't implement any of this. Each one carries messages between wardd and the device
-on the session it already holds, over the relay contract (`packages/ward-core/relay.md`):
+With a manager, wardd stores the encrypted change and submits it for acceptance. Saving the
+manager's receipt is a separate step that can fail after the change lands. A client relaying the
+device can request an immediate sync to verify the accepted head. A missing receipt can limit later
+recovery.
 
-| Integration     | Binding                                                                           |
-| --------------- | --------------------------------------------------------------------------------- |
-| Connect         | the `wardRelay` method, plus `createWarddProvider` for the `wardProvider` setting |
-| HWI             | `trezorlib.ward_relay` (trezor-firmware)                                          |
-| BHWI, async-hwi | the `ward-relay` crate (trezor-firmware `rust/ward-relay`)                        |
-| Lark            | `ward-relay` for Java (trezor-firmware `java/ward-relay`)                         |
+In the manager-free MVP, wardd verifies the wallet's publication signature and stores the change.
+Concurrent writers can produce different valid histories.
 
-## Running it
+## Deployment
 
-```text
-yarn workspace @trezor/wardd start [--port 21329] [--data-dir ~/.trezor-ward] \
-    [--token-file F] [--memory] [--relay <evolu relay url>] [--origin <allowed origin>]...
-```
+wardd can use a local development manager or contact a separate manager. Debug devices and emulators
+trust the development key. Release devices currently reject manager attestations. After a manager
+restore, a compatible wallet-channel client can coordinate recovery with a Trezor that remembers a
+later head. The deprecated dedicated interface lacks that recovery path.
 
-- **Listening:** wardd listens on `127.0.0.1` only.
-- **Browser pages** must come from an allowed `--origin`. The default list is the Suite and Connect
-  origins.
-- **Every client** must present the pairing token. Without `--token-file`, a token is generated in
-  `<data-dir>/token` with mode 0600, and the bindings read it from there by default.
-- **`--memory`** keeps the replica and the development WM in memory, for tests. Otherwise:
-    - the replica is SQLite under `--data-dir`;
-    - the development WM's state is `<data-dir>/dev-wm.json`, so a restart isn't read as a WM swap;
-    - `--relay` replicates the store through an Evolu relay.
-
-`start` runs wardd as one `node` process (`node --import tsx src/cli.ts`), and SIGINT or SIGTERM
-stops it cleanly. Supervise that process directly, not a wrapper such as `yarn` or the `tsx` binary:
-those spawn a child `node`, and stopping the wrapper alone leaves wardd running.
-
-## Serving a service build
-
-On a service build the device doesn't ask the calling app for WARD data; it asks a daemon on its
-own WARD interface. `wardd --service` is that daemon:
-
-```text
-node --import tsx src/cli.ts --service [--port 21324] [--state-file F]
-```
-
-- **`--port`** is the device's wire port; the interface is found at `+7`.
-- **First,** wardd probes which transport the interface speaks, then binds with `WardServiceOpen`.
-  From then on it only answers what the device asks: `WardSyncRequest`, `WardServiceFetch` and
-  `WardPublish`. They're answered from the same replica, development WM and checks as the connect
-  path.
-- **A publish is staged, predecessor-checked, then promoted:** its row is appended first, and it
-  becomes the head only once the WM accepts it.
-- **`--state-file`** holds the wallet, the replica's links and the WM, rewritten after every change,
-  so a restart resumes.
-- **`--key-file` and `--debug-port`** are accepted for compatibility with the Python daemon it
-  replaces, and are unused: a codec interface has no identity to pin and no pairing screen.
-- **Log lines** (`BOUND`, `SERVED <n> <Request> -> <Reply>`, `STOPPED <n>`) are the Python daemon's,
-  which `connect-cli/e2e/ward-queue.sh` parses. That script uses wardd by default, or the Python
-  daemon with `WARD_SERVICE_DAEMON=python`.
-
-## End to end
-
-`packages/connect-cli/e2e/ward-wardd.sh` runs the full arc on an emulator: Connect, then a second
-emulator with the same seed driven through the Python and Rust bindings, then the Java binding
-reading the result. The header of that script explains how to run it.
-
-## Not yet
-
-- **The production WM** (`trezor-suite-sync`) still speaks attestation v1. wardd uses the
-  development WM behind `WmClient`. Deploying the WM build requires v7 head attestations,
-  authenticated write-session activation, and read-only head attestation.
-- **A WM below the device** is reported (`wm_behind`). Roll-forward repairs it on the wallet
-  channel only; the deprecated service channel does not.
-- **THP service interfaces:** `wardd --service` serves the codec interface, which every service
-  build has by default. A `ward_service_thp` build still needs `ward-service-daemon.py`.
-- **Suite desktop:** wardd isn't bundled with Suite desktop yet.
+See the [operations guide](OPERATIONS.md) for configuration.
