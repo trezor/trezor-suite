@@ -1,6 +1,6 @@
 ---
 name: tests
-description: Test style guidelines including naming conventions, mock organization, dispatch and thunk testing, translation handling, and file structure. Use when writing or organizing tests in the Trezor Suite codebase.
+description: Test style guidelines including what a test should cover, naming conventions, mock organization, dispatch and thunk testing, translation handling, and file structure. Use when writing or organizing tests in the Trezor Suite codebase.
 ---
 
 # Tests
@@ -8,6 +8,23 @@ description: Test style guidelines including naming conventions, mock organizati
 ## Reading
 
 - Avoid testing implementation details: https://kentcdodds.com/blog/testing-implementation-details
+
+## What a test covers
+
+A unit test covers the domain: the rules a user or a caller relies on, and the edge cases where those
+rules could break, such as an empty or zero balance, a missing rate, a reached limit, an account of
+another network or unexpected input. Start from those cases, not from the code's branches.
+
+Do not write tests that only restate the code:
+
+- One test per branch of a `switch` or a mapping, each asserting the literal the code returns.
+- That a prop or an option is passed through, or that a component renders exactly what it was given.
+- That a mock was called with what the test itself set up.
+- A re-check of a constant or of what the type system already guarantees.
+
+Before adding a test, ask whether it would fail for a bug a user could hit. If it would only fail
+when the code is rewritten, leave it out. A few tests of real cases are worth more than many
+mechanical ones.
 
 ## Translations in tests
 
