@@ -404,12 +404,14 @@ export const groupTransactionsByDate = (
         .reduce<GroupedTransactionsByDate>((r, item) => {
             // pending txs are grouped as 'no-blocktime' only if blockTime is unavailable (otherwise sorted by blockTime)
             const key = getTransactionDateGroupKey(item, groupBy);
-            const prev = r[key] ?? [];
+            const group = r[key];
+            if (group) {
+                group.push(item);
+            } else {
+                r[key] = [item];
+            }
 
-            return {
-                ...r,
-                [key]: [...prev, item],
-            };
+            return r;
         }, {});
 
 export const groupJointTransactions = (transactions: WalletAccountTransaction[]) =>
