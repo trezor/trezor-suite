@@ -41,8 +41,8 @@ export default class WardDisplayAddress extends AbstractMethod<
         const cmd = this.getDevice().getCommands();
         const { appId, address, wardId } = this.params;
 
-        return withWard(cmd, 'wardDisplayAddress', async (endpoint, relay) => {
-            const synced = await endpoint.call('sync', { wardId }, relay);
+        return withWard(cmd, 'wardDisplayAddress', async call => {
+            const synced = await call('sync', { wardId });
             await cmd.typedCall('DisplayAddress', 'Success', { address, app_id: appId });
 
             return { shown: true, wardId: synced.wardId as string };

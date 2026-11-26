@@ -110,27 +110,36 @@ class SocketEndpoint implements WardRelayEndpoint {
 export class WarddClient implements WardRelay {
     constructor(private readonly options: WarddClientOptions) {}
 
-    /** Open a socket and say hello; resolves once wardd has accepted the token. */
-    async connect(): Promise<WardRelayEndpoint> {
+    /**
+     * Open a socket and say hello; resolves once wardd has accepted the token. A wardd that accepts
+     * the socket but never answers the hello would keep it open for good, so aborting `signal`
+     * closes it.
+     */
+    async connect(signal?: AbortSignal): Promise<WardRelayEndpoint> {
+        signal?.throwIfAborted();
         const url = this.options.url ?? WARDD_DEFAULT_URL;
         const Ctor = this.options.WebSocket ?? globalThis.WebSocket;
         if (!Ctor) throw new Error('no WebSocket implementation available to reach wardd');
         const socket = new Ctor(url);
-        await new Promise<void>((resolve, reject) => {
-            socket.onopen = () => resolve();
-            socket.onerror = () =>
-                reject(new RelayFailure('internal', `wardd is not reachable at ${url}`));
-        });
         const endpoint = new SocketEndpoint(socket);
+        const abort = () => endpoint.close();
+        signal?.addEventListener('abort', abort, { once: true });
         try {
+            await new Promise<void>((resolve, reject) => {
+                socket.onopen = () => resolve();
+                socket.onerror = () =>
+                    reject(new RelayFailure('internal', `wardd is not reachable at ${url}`));
+            });
             await endpoint.call('hello', {
                 version: RELAY_PROTOCOL_VERSION,
                 token: this.options.token,
             });
         } catch (error) {
-            // a refused hello must not leave a socket open behind it
+            // neither a refused hello nor an abort may leave a socket open behind it
             endpoint.close();
             throw error;
+        } finally {
+            signal?.removeEventListener('abort', abort);
         }
 
         return endpoint;

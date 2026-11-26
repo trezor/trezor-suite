@@ -136,7 +136,14 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
     };
 
     const getAddress = async (
-        { address_n, show_display, multisig, script_type, chunkify }: Messages.GetAddress,
+        {
+            address_n,
+            show_display,
+            multisig,
+            script_type,
+            chunkify,
+            contact_attestation,
+        }: Messages.GetAddress,
         coinInfo: BitcoinNetworkInfo,
     ) => {
         if (!script_type) {
@@ -160,6 +167,7 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
             multisig,
             script_type: script_type || 'SPENDADDRESS',
             chunkify,
+            contact_attestation,
         });
 
         return response.message;

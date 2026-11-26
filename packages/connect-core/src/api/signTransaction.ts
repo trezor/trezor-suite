@@ -33,6 +33,12 @@ import { getLabel } from '../utils/pathUtils';
 import { PAYMENT_REQUEST_AMOUNT_BYTES, encodePaymentRequestAmount } from '../utils/paymentRequest';
 import { getTransactionVbytes } from './bitcoin/transactionBytes';
 import { validateParams } from './common/paramsValidator';
+import { withSyncedWard } from './wardMethods/wardAdapter';
+
+// Contact outputs ask the device to look the contact up in WARD; any other signing leaves wardd
+// alone, so it does not take one of the device's WARD sessions.
+const hasContactOutputs = (outputs: PROTO.TxOutputType[]) =>
+    outputs.some(output => output.contact_pubkey !== undefined);
 
 type Params = {
     inputs: PROTO.TxInputType[];
@@ -300,19 +306,29 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             );
         }
 
-        if (this.preauthorized) {
-            await device.getCommands().preauthorize(true);
-        } else if (params.unlockPath) {
-            await device.getCommands().unlockPath(params.unlockPath);
-        }
+        // The WARD sync must come before preauthorize/unlockPath: the firmware chains those
+        // straight into SignTx.
+        const sign = async () => {
+            if (this.preauthorized) {
+                await device.getCommands().preauthorize(true);
+            } else if (params.unlockPath) {
+                await device.getCommands().unlockPath(params.unlockPath);
+            }
 
-        device.startPiggybackAck();
-        const response = await signTx({
-            ...params,
-            refTxs,
-            typedCall: device.getCommands().typedCall,
-        });
-        await device.stopPiggybackAck();
+            device.startPiggybackAck();
+            const signed = await signTx({
+                ...params,
+                refTxs,
+                typedCall: device.getCommands().typedCall,
+            });
+            await device.stopPiggybackAck();
+
+            return signed;
+        };
+
+        const response = hasContactOutputs(outputs)
+            ? await withSyncedWard({ cmd: device.getCommands(), run: sign })
+            : await sign();
 
         // return only signatures, using option `serialize: false`
         if (!response.serializedTx) {

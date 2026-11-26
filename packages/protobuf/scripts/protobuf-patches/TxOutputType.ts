@@ -3,6 +3,7 @@
 // TxOutputType replacement
 // TxOutputType needs more exact types
 // differences: external output (no address_n), opreturn output (no address_n, no address)
+// contact fields: only on external outputs
 
 export type ChangeOutputScriptType = Exclude<OutputScriptType, 'PAYTOOPRETURN'>;
 
@@ -16,6 +17,8 @@ export type TxOutputType =
           orig_hash?: string;
           orig_index?: number;
           payment_req_index?: number;
+          contact_pubkey?: string;
+          contact_signature?: string;
       }
     | {
           address?: never;
@@ -26,6 +29,8 @@ export type TxOutputType =
           orig_hash?: string;
           orig_index?: number;
           payment_req_index?: number;
+          contact_pubkey?: never;
+          contact_signature?: never;
       }
     | {
           address?: never;
@@ -36,6 +41,8 @@ export type TxOutputType =
           orig_hash?: string;
           orig_index?: number;
           payment_req_index?: number;
+          contact_pubkey?: never;
+          contact_signature?: never;
       };
 
 export type TxOutput = TxOutputType;

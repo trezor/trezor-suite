@@ -118,4 +118,51 @@ describe('DeviceCurrentSession: WARD log redaction', () => {
         expect(text).not.toContain('MAC_SECRET');
         expect(text).toContain('"counter":5');
     });
+
+    // The log blacklist replaces top-level fields only, and an output's contact fields sit in
+    // `tx.output`, so the whole `tx` goes.
+    it("redacts a signed output's contact fields", async () => {
+        const { session, respondWith, loggedText } = setup();
+        respondWith({ type: 'TxRequest', message: { request_type: 'TXFINISHED' } });
+
+        await session.typedCall('TxAckOutput', 'TxRequest', {
+            tx: {
+                output: {
+                    address: 'OUTPUT_ADDRESS_SECRET',
+                    amount: '1000',
+                    script_type: 'PAYTOADDRESS',
+                    contact_pubkey: 'CONTACT_PUBKEY_SECRET',
+                    contact_signature: 'CONTACT_SIGNATURE_SECRET',
+                },
+            },
+        });
+
+        const text = loggedText();
+        expect(text).not.toContain('OUTPUT_ADDRESS_SECRET');
+        expect(text).not.toContain('CONTACT_PUBKEY_SECRET');
+        expect(text).not.toContain('CONTACT_SIGNATURE_SECRET');
+        expect(text).toContain('(redacted...)');
+    });
+
+    it("redacts an attested address's identity key and signature", async () => {
+        const { session, respondWith, loggedText } = setup();
+        respondWith({
+            type: 'Address',
+            message: {
+                address: 'tb1qexample',
+                contact_signature: 'CONTACT_SIGNATURE_SECRET',
+                contact_pubkey: 'CONTACT_PUBKEY_SECRET',
+            },
+        });
+
+        await session.typedCall('GetAddress', 'Address', {
+            address_n: [2147483732, 2147483649, 2147483648, 0, 0],
+            show_display: true,
+            contact_attestation: true,
+        });
+
+        const text = loggedText();
+        expect(text).not.toContain('CONTACT_SIGNATURE_SECRET');
+        expect(text).not.toContain('CONTACT_PUBKEY_SECRET');
+    });
 });

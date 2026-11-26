@@ -16,6 +16,31 @@ import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
 import { fixPath, getHDPath, getOutputScriptType } from '../../utils/pathUtils';
 import { validateParams } from '../common/paramsValidator';
 
+const isHexOfLength = (value: string | undefined, length: number) =>
+    typeof value === 'string' && value.length === length && /^[0-9a-fA-F]+$/.test(value);
+
+// The device verifies a contact's attestation of an external output's address and then shows the
+// contact's name. It refuses malformed contact fields, which would end the signing on the device.
+const validateContactFields = (output: PROTO.TxOutputType) => {
+    const { address, contact_pubkey, contact_signature } = output;
+    if (contact_pubkey === undefined && contact_signature === undefined) return;
+
+    // OP_RETURN outputs have no `multisig` in the type, so it cannot be destructured from the union.
+    const isMultisig = 'multisig' in output && !!output.multisig;
+    if (typeof address !== 'string' || isMultisig) {
+        throw ERRORS.TypedError(
+            'Method_InvalidParameter',
+            'Contact fields are allowed only on a single-signature external output',
+        );
+    }
+    if (!isHexOfLength(contact_pubkey, 64) || !isHexOfLength(contact_signature, 128)) {
+        throw ERRORS.TypedError(
+            'Method_InvalidParameter',
+            'Contact fields must be a 32-byte public key and a 64-byte signature, both hex',
+        );
+    }
+};
+
 /** *****
  * SignTransaction: validation
  ****** */
@@ -35,6 +60,8 @@ export const validateTrezorOutputs = (
             { name: 'op_return_data', type: 'string' },
             { name: 'script_type', type: 'string' },
             { name: 'multisig', type: 'object' },
+            { name: 'contact_pubkey', type: 'string' },
+            { name: 'contact_signature', type: 'string' },
         ]);
 
         if (
@@ -68,6 +95,8 @@ export const validateTrezorOutputs = (
                 );
             }
         }
+
+        validateContactFields(output);
     });
 
     return trezorOutputs;

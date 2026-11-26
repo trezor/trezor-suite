@@ -28,7 +28,7 @@ export const BackupAvailability = Type.KeyOfEnum(Enum_BackupAvailability, {
 
 export enum BackupMethod {
     Display = 0,
-    N1W1 = 1,
+    K1N1 = 1,
 }
 
 export type EnumBackupMethod = Static<typeof EnumBackupMethod>;
@@ -82,7 +82,7 @@ export enum Enum_Capability {
     Capability_BLE = 22,
     Capability_NFC = 23,
     Capability_Tron = 24,
-    Capability_N1W1 = 25,
+    Capability_K1N1 = 25,
     Capability_TouchWakeup = 26,
     Capability_Ethereum_EIP7702 = 28,
     Capability_Miniscript = 29,

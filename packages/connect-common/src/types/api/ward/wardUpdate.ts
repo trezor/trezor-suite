@@ -37,6 +37,11 @@ export const WardUpdateSchema = Type.Object({
     delete: Type.Optional(Type.Boolean()),
     /** If given, the device's own ward_id must match it: it proves which wallet is unlocked. */
     wardId: Type.Optional(Type.String()),
+    /**
+     * The entry's raw value, hex, written as is instead of `"<networkSymbol>:<metadata JSON>"`:
+     * for entries whose value the device shows verbatim, such as a contact's name.
+     */
+    valueHex: Type.Optional(Type.String({ pattern: '^([0-9a-fA-F]{2})*$' })),
 });
 
 export interface WardUpdateResult {
@@ -57,6 +62,12 @@ export interface WardUpdateResult {
      * retry the update (it syncs first).
      */
     conflict?: boolean;
+    /**
+     * The device queued the intent but it is not installed yet (the WM could not be reached, or
+     * it conflicted): it waits for the next sync to publish it.
+     */
+    queued?: boolean;
+    pendingId?: number;
 }
 
 export declare function wardUpdate(params: Params<WardUpdateSchema>): Response<WardUpdateResult>;

@@ -20,6 +20,7 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
             wardId: payload.wardId,
             // explicit: `metadata: {}` is an update to "<networkSymbol>:{}", never a delete
             delete: payload.delete === true,
+            valueHex: payload.valueHex,
         });
         this.useDeviceState = false;
         this.useEmptyPassphrase = true;
