@@ -30,6 +30,11 @@ const blacklist: Record<string, string[] | true> = {
     PublicKey: ['node', 'xpub'],
     DecryptedMessage: ['message', 'address'],
     Features: true,
+    // Contact attestation: the wallet's identity key and its signature over the shared address. A
+    // signed output carries the same fields, nested in `tx.output`, and only top-level fields can
+    // be listed here, so the whole `tx` goes.
+    Address: ['contact_signature', 'contact_pubkey'],
+    TxAckOutput: ['tx'],
     // WARD entries are user secrets: the new value, the sealed leaf parts and the exported keys are
     // as sensitive as a passphrase, the root MACs are restore-capable, and `app_id`/`address`/
     // `entry_key` are the labels that key an entry -- keep all of it out of the device-call log, as
