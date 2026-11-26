@@ -11,7 +11,6 @@ import type {
     MethodInfo,
     MethodPermission,
     PermissionRequest,
-    PrecomposeResultFinal,
     StaticSessionId,
     UiRequestButtonData,
 } from '@trezor/connect-common';
@@ -279,17 +278,11 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     // Async so that a method can download what its title names (e.g. a network definition) only
     // when the title is requested, instead of on every call.
-    public async getMethodInfo(): Promise<MethodInfo> {
-        return {
+    public getMethodInfo(): Promise<MethodInfo> {
+        return Promise.resolve({
             requiredPermissions: this.requiredPermissions,
             info: this.info,
-            precomposed: await this.payloadToPrecomposed(),
-        };
-    }
-
-    protected payloadToPrecomposed(): Promise<PrecomposeResultFinal | undefined> {
-        // Suite uses precomposed result for transaction review modals
-        return Promise.resolve(undefined);
+        });
     }
 
     public checkDeviceCapability() {

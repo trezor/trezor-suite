@@ -191,7 +191,7 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
         await this.enableNetworks(consentPermissions);
         await this.waitForDevice();
 
-        const { response, isPostCallOngoing } = await this.process(methodInfo.precomposed);
+        const { response, isPostCallOngoing } = await this.process();
 
         if (!response.success) {
             throw response.error;
