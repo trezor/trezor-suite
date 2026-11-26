@@ -10,7 +10,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { ApyValue } from '#src/views/wallet/staking/components/ApyValue';
 
 import { EarnYieldApyBreakdown } from './EarnYieldApyBreakdown';
-import { EarnRateTooltip } from '../common/EarnRateTooltip';
+import { EarnRateTooltip } from '../../common/EarnRateTooltip';
 
 const APY_TOOLTIP_REPORT_DELAY_MS = 1000;
 

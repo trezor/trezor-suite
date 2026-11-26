@@ -14,7 +14,6 @@ const Abbr = styled.abbr`
 type EarnRateTooltipProps = {
     children: ReactNode;
     content: ReactNode;
-    tooltipMaxWidth?: number;
     onMouseEnter?: () => void;
     onMouseLeave?: () => void;
     'data-testid'?: string;
@@ -23,12 +22,11 @@ type EarnRateTooltipProps = {
 export const EarnRateTooltip = ({
     children,
     content,
-    tooltipMaxWidth = 600,
     onMouseEnter,
     onMouseLeave,
     'data-testid': dataTestId,
 }: EarnRateTooltipProps) => (
-    <Tooltip as="span" display="inline-flex" content={content} tooltipMaxWidth={tooltipMaxWidth}>
+    <Tooltip as="span" tabIndex={0} display="inline-flex" content={content} tooltipMaxWidth={600}>
         <Abbr data-testid={dataTestId} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
             {children}
         </Abbr>

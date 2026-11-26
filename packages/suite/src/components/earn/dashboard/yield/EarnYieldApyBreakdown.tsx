@@ -11,8 +11,8 @@ import { getApyPercent } from '@suite-common/wallet-utils';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { TokenIcon } from '@trezor/product-components';
 
-import { EarnRateBreakdown } from '../common/EarnRateBreakdown';
-import { EarnRateBreakdownRow } from '../common/EarnRateBreakdownRow';
+import { EarnRateBreakdown } from '../../common/EarnRateBreakdown';
+import { EarnRateBreakdownRow } from '../../common/EarnRateBreakdownRow';
 
 type EarnYieldApyBreakdownProps = {
     rewards: RewardDtoV2[];

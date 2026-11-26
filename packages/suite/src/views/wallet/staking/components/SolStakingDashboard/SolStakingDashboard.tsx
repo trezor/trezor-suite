@@ -119,7 +119,7 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
                                         <ClaimCard account={account} />
 
                                         <Flex direction={canClaim ? 'column' : 'row'} gap={12}>
-                                            <ApyCard apy={rate} />
+                                            <ApyCard networkSymbol={account.symbol} apy={rate} />
 
                                             <PayoutCardFrequencyRewards productId={productId} />
                                         </Flex>

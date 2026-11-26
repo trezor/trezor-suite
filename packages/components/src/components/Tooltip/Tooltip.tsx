@@ -68,6 +68,7 @@ type TooltipUiProps = {
     zIndex?: ZIndexValues;
     disableFlip?: boolean;
     as?: 'div' | 'span';
+    tabIndex?: number;
 } & AllowedFrameProps;
 
 export type ManagedTooltipProps = ManagedModeProps & TooltipUiProps & TooltipBoxProps;
@@ -94,6 +95,7 @@ export const Tooltip = ({
     zIndex = zIndices.tooltip,
     disableFlip = false,
     as = 'div',
+    tabIndex,
     ...rest
 }: TooltipProps) => {
     const theme = useTheme();
@@ -121,6 +123,7 @@ export const Tooltip = ({
             <TooltipTrigger>
                 <Content
                     as={as}
+                    tabIndex={tabIndex}
                     data-component="Tooltip"
                     $isUnderlined={isUnderlined}
                     {...frameProps}

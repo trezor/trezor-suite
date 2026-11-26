@@ -10,6 +10,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { StepList } from '@trezor/components';
 
+import { StakingRateTooltip } from '#src/components/earn/staking/StakingRateTooltip';
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
 
 import { EarnInfoRow, getEarnInfoRowDaysContent } from './EarnInfoRow';
@@ -42,13 +43,18 @@ const StakingSignRow = ({ flow }: Pick<EarnStakingRowsProps, 'flow'>) => (
     />
 );
 
-const ApproximateApy = ({ apy }: Pick<EarnStakingRowsProps, 'apy'>) => {
+const ApproximateApy = ({
+    apy,
+    networkSymbol,
+}: Pick<EarnStakingRowsProps, 'apy' | 'networkSymbol'>) => {
     const formatApyValue = useFormatApy();
 
     return apy === null ? (
         <Translation id="TR_EARN_APY_N_A" />
     ) : (
-        <Translation id="TR_EARN_APY_APPROX" values={{ apyPercent: formatApyValue(apy) }} />
+        <StakingRateTooltip networkSymbol={networkSymbol} rate={apy} rateKind="apy">
+            <Translation id="TR_EARN_APY_APPROX" values={{ apyPercent: formatApyValue(apy) }} />
+        </StakingRateTooltip>
     );
 };
 
@@ -80,7 +86,7 @@ const EthereumStakingRows = ({
         <EarnInfoRow
             heading={<Translation id="TR_EARN_REWARDS_WEEKLY" />}
             subheading={<Translation id="TR_EARN_REWARDS_ARE_RESTAKED" />}
-            content={{ text: <ApproximateApy apy={apy} /> }}
+            content={{ text: <ApproximateApy apy={apy} networkSymbol={networkSymbol} /> }}
         />
     </>
 );
@@ -107,12 +113,17 @@ const SolanaStakingRows = ({
         <EarnInfoRow
             heading={<RewardsEveryHeading days={rewardPeriodDays} />}
             subheading={<Translation id="TR_EARN_REWARDS_ARE_RESTAKED" />}
-            content={{ text: <ApproximateApy apy={apy} /> }}
+            content={{ text: <ApproximateApy apy={apy} networkSymbol={networkSymbol} /> }}
         />
     </>
 );
 
-const CardanoStakingRows = ({ flow, apy, rewardPeriodDays }: EarnStakingRowsProps) => (
+const CardanoStakingRows = ({
+    flow,
+    networkSymbol,
+    apy,
+    rewardPeriodDays,
+}: EarnStakingRowsProps) => (
     <>
         <StakingSignRow flow={flow} />
         <EarnInfoRow
@@ -147,7 +158,7 @@ const CardanoStakingRows = ({ flow, apy, rewardPeriodDays }: EarnStakingRowsProp
                 )
             }
             subheading={<Translation id="TR_EARN_REWARDS_ARE_RESTAKED" />}
-            content={{ text: <ApproximateApy apy={apy} /> }}
+            content={{ text: <ApproximateApy apy={apy} networkSymbol={networkSymbol} /> }}
         />
     </>
 );

@@ -95,7 +95,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
                                     <ClaimCard account={account} />
 
                                     <Flex direction={canClaim ? 'column' : 'row'} gap={12}>
-                                        <ApyCard apy={rate} />
+                                        <ApyCard networkSymbol={account.symbol} apy={rate} />
 
                                         <PayoutCardNextRewards account={account} />
                                     </Flex>

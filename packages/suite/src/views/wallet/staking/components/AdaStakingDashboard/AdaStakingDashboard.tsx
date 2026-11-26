@@ -88,7 +88,11 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
                                 <CardanoNewProviderCard account={account} />
 
                                 <Flex gap={12}>
-                                    <ApyCard apy={shownRate} isNotEarning={hasOutdatedProvider} />
+                                    <ApyCard
+                                        networkSymbol={account.symbol}
+                                        apy={shownRate}
+                                        isNotEarning={hasOutdatedProvider}
+                                    />
 
                                     <PayoutCardFrequencyRewards productId={productId} />
                                 </Flex>

@@ -96,6 +96,19 @@ describe('Tooltip', () => {
         expect(parent).toHaveAttribute('data-state', 'closed');
     });
 
+    it('opens when a text trigger receives keyboard focus', async () => {
+        renderWithTheme(
+            <Tooltip as="span" tabIndex={0} content="Rate details">
+                ~2.94%
+            </Tooltip>,
+        );
+
+        await userEvent.tab();
+
+        expect(screen.getByText('~2.94%')).toHaveFocus();
+        expect(await screen.findByRole('tooltip')).toHaveTextContent('Rate details');
+    });
+
     it('should apply the cursor prop to the content wrapper', () => {
         const tooltipContent = 'Tooltip Content';
         renderWithTheme(

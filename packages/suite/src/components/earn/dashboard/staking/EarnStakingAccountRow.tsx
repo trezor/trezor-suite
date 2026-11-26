@@ -423,7 +423,11 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                             <EarnAccountCell account={account} />
 
                             {apyAvailable ? (
-                                <EarnStakingRateTooltip rateKind={rateKind} rate={rate} />
+                                <EarnStakingRateTooltip
+                                    networkSymbol={account.symbol}
+                                    rateKind={rateKind}
+                                    rate={rate}
+                                />
                             ) : (
                                 <Text typographyStyle="body-sm">
                                     <Translation id="TR_EARN_NOT_AVAILABLE" />
@@ -527,7 +531,11 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
 
                 <Table.Cell>
                     {apyAvailable ? (
-                        <EarnStakingRateTooltip rateKind={rateKind} rate={rate} />
+                        <EarnStakingRateTooltip
+                            networkSymbol={account.symbol}
+                            rateKind={rateKind}
+                            rate={rate}
+                        />
                     ) : (
                         <Text typographyStyle="body-sm">
                             <Translation id="TR_EARN_NOT_AVAILABLE" />
