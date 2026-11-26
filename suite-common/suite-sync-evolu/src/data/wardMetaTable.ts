@@ -6,7 +6,14 @@
 // transitions column, so a proof could never be served from them. A rewrite must add
 // those columns first (planned_fixes Gap 5). Table kept for the per-entry schema shape.
 
-import { NonEmptyString1000, createIdFromString, id, nullOr, object } from '@evolu/common';
+import {
+    NonEmptyTrimmedString1000,
+    type ObjectType,
+    createIdFromString,
+    id,
+    nullOr,
+    object,
+} from '@evolu/common';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
@@ -27,21 +34,22 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
  * compatible key-migration and is intentionally not done here.
  */
 export const WardMetaId = id('WardMetaId');
-export type WardMetaId = typeof WardMetaId.Type;
+export type WardMetaId = typeof WardMetaId.Output;
 
 export const createWardMetaId = (address: string, networkSymbol: NetworkSymbol) =>
     WardMetaId.from(createIdFromString(`${address}-${networkSymbol}`));
 
 const wardMetaTableColumns = {
     id: WardMetaId,
-    address: NonEmptyString1000,
-    networkSymbol: NonEmptyString1000,
-    label: nullOr(NonEmptyString1000),
-    counter: NonEmptyString1000,
-    dataMac: nullOr(NonEmptyString1000),
+    address: NonEmptyTrimmedString1000,
+    networkSymbol: NonEmptyTrimmedString1000,
+    label: nullOr(NonEmptyTrimmedString1000),
+    counter: NonEmptyTrimmedString1000,
+    dataMac: nullOr(NonEmptyTrimmedString1000),
 };
 
-export const WardMetaEvoluSchema = object(wardMetaTableColumns);
+export const WardMetaEvoluSchema: ObjectType<typeof wardMetaTableColumns> =
+    object(wardMetaTableColumns);
 
 export const WardMetaTableSchema = {
     wardMeta: wardMetaTableColumns,
