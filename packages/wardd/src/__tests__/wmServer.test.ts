@@ -132,6 +132,78 @@ describe('the WARD Manager over HTTP', () => {
         }
     });
 
+    it('attests and reports a head only once its save completes', async () => {
+        const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'ward-wm-'));
+        const realRename = fs.rename.bind(fs);
+        let releaseSave = () => {};
+        const saveHeld = new Promise<void>(resolve => {
+            releaseSave = resolve;
+        });
+        let onSaveStarted = () => {};
+        const saveStarted = new Promise<void>(resolve => {
+            onSaveStarted = resolve;
+        });
+        const { server, wm } = await withWm(dir);
+        try {
+            const { a, host } = await setup(wm);
+            await host.sync(a.call);
+            jest.spyOn(fs, 'rename').mockImplementation(async (from, to) => {
+                onSaveStarted();
+                await saveHeld;
+
+                return realRename(from, to);
+            });
+            a.enqueue('alice', 'v1');
+            const flushed = host.flush(a.call);
+            await saveStarted;
+
+            const answered: string[] = [];
+            const attested = wm.attest(a.wardId, new Uint8Array(32)).then(att => {
+                answered.push('attest');
+
+                return att;
+            });
+            const head = wm.head(a.wardId).then(h => {
+                answered.push('head');
+
+                return h;
+            });
+            await new Promise(resolve => setTimeout(resolve, 50));
+            expect(answered).toEqual([]);
+
+            releaseSave();
+            await flushed;
+            expect(await attested).toMatchObject({ toCounter: 1 });
+            expect(await head).toMatchObject({ counter: 1 });
+        } finally {
+            jest.restoreAllMocks();
+            await server.close();
+            await fs.rm(dir, { recursive: true, force: true });
+        }
+    });
+
+    it('goes back to its last saved head when a save fails', async () => {
+        const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'ward-wm-'));
+        const { server, wm, lines } = await withWm(dir);
+        try {
+            const { a, host } = await setup(wm);
+            await host.sync(a.call);
+            jest.spyOn(fs, 'rename').mockRejectedValueOnce(new Error('disk full'));
+            a.enqueue('alice', 'v1');
+            await host.flush(a.call).catch(() => {});
+
+            expect(await wm.head(a.wardId)).toMatchObject({ counter: 0 });
+            expect(await wm.attest(a.wardId, new Uint8Array(32))).toMatchObject({ toCounter: 0 });
+            const saved = JSON.parse(await fs.readFile(path.join(dir, 'wm.json'), 'utf8'));
+            expect(saved.heads[toHex(a.wardId)]).toMatchObject({ counter: 0 });
+            expect(lines.some(l => l.includes('NOT SAVED') && l.includes('disk full'))).toBe(true);
+        } finally {
+            jest.restoreAllMocks();
+            await server.close();
+            await fs.rm(dir, { recursive: true, force: true });
+        }
+    });
+
     it('rejects malformed requests without touching the state', async () => {
         const { server } = await withWm();
         try {

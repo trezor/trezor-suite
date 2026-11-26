@@ -118,19 +118,52 @@ export const startWmServer = async (opts: WmServerOptions) => {
         } catch (e) {
             if ((e as NodeJS.ErrnoException).code !== 'ENOENT') throw e;
         }
-        // write-then-rename: a crash mid-write must not leave a WM whose register went back
+        const { dataDir } = opts;
+        // Write, fsync, then rename and fsync the directory: a crash or power loss must never
+        // leave a WM whose register went back behind a head it already signed.
         persist = async () => {
-            await fs.writeFile(`${file}.tmp`, JSON.stringify(wm.snapshot()), { mode: 0o600 });
-            await fs.rename(`${file}.tmp`, file);
+            const tmp = `${file}.tmp`;
+            const handle = await fs.open(tmp, 'w', 0o600);
+            try {
+                await handle.writeFile(JSON.stringify(wm.snapshot()));
+                await handle.sync();
+            } finally {
+                await handle.close();
+            }
+            await fs.rename(tmp, file);
+            // Windows cannot open a directory to fsync it.
+            if (process.platform !== 'win32') {
+                const dir = await fs.open(dataDir, 'r');
+                try {
+                    await dir.sync();
+                } finally {
+                    await dir.close();
+                }
+            }
         };
     }
-    // one change at a time, so a predecessor check and its persistence are not interleaved
+
+    // Every request that reads or changes a head runs here, one at a time. A predecessor check and
+    // its save are not interleaved, and no head is signed or reported before its save completes.
     let queue: Promise<unknown> = Promise.resolve();
     const serial = <T>(fn: () => Promise<T>) => {
         const run = queue.then(fn, fn);
         queue = run.catch(() => {});
 
         return run;
+    };
+
+    // Saves the change just made in memory. If the save fails, the WM goes back to `before`, its
+    // last saved state, so it never serves a head it does not hold on disk. That also ends every
+    // open session. The caller sees 503, which `HttpWm` reports as an unavailable WM.
+    const save = async (before: DevWmSnapshot, what: string) => {
+        try {
+            await persist();
+        } catch (e) {
+            wm.restore(before);
+            log(`[state] ${what} NOT SAVED, back to the last saved state: ${(e as Error).message}`);
+            throw new HttpError(503, 'the WARD Manager could not save its state');
+        }
     };
 
     const route = async (req: IncomingMessage): Promise<unknown> => {
@@ -155,16 +188,19 @@ export const startWmServer = async (opts: WmServerOptions) => {
         }
         if (op === 'head') {
             if (req.method !== 'GET') throw new HttpError(405, 'GET only');
-            const h = wm.record(wardId);
 
-            return {
-                head: h
-                    ? {
-                          counter: h.counter,
-                          root: equalBytes(h.root, EMPTY_ROOT) ? null : toHex(h.root),
-                      }
-                    : null,
-            };
+            return serial(() => {
+                const h = wm.record(wardId);
+
+                return Promise.resolve({
+                    head: h
+                        ? {
+                              counter: h.counter,
+                              root: equalBytes(h.root, EMPTY_ROOT) ? null : toHex(h.root),
+                          }
+                        : null,
+                });
+            });
         }
         if (req.method !== 'POST') throw new HttpError(405, 'POST only');
         const body = await readBody(req);
@@ -183,18 +219,22 @@ export const startWmServer = async (opts: WmServerOptions) => {
         }
         if (op === 'attest') {
             const nonce = hex32(body.nonce, 'nonce');
-            const att = await wm.attest(wardId, nonce).catch((e: Error) => {
-                throw new HttpError(404, e.message);
-            });
-            log(
-                `[attest] ${ward} head #${att.toCounter} root=${shortRoot(att.toRoot)}` +
-                    ` for device nonce ${short(toHex(nonce))}`,
-            );
 
-            return attestationToJson(att);
+            return serial(async () => {
+                const att = await wm.attest(wardId, nonce).catch((e: Error) => {
+                    throw new HttpError(404, e.message);
+                });
+                log(
+                    `[attest] ${ward} head #${att.toCounter} root=${shortRoot(att.toRoot)}` +
+                        ` for device nonce ${short(toHex(nonce))}`,
+                );
+
+                return attestationToJson(att);
+            });
         }
 
         return serial(async () => {
+            const before = wm.snapshot();
             if (op === 'enrol') {
                 const root = rootField(body.root, 'root');
                 const known = wm.record(wardId);
@@ -205,7 +245,7 @@ export const startWmServer = async (opts: WmServerOptions) => {
                         throw new HttpError(403, e.message);
                     });
                 if (!known) {
-                    await persist();
+                    await save(before, `[enrol] ${ward}`);
                     log(`[enrol] ${ward} enrolled at genesis root=${shortRoot(root)}`);
                 }
 
@@ -230,7 +270,7 @@ export const startWmServer = async (opts: WmServerOptions) => {
             const what = `#${step.fromCounter} -> #${step.toCounter}`;
             try {
                 const { revert, acceptance } = await wm.advance(step);
-                await persist();
+                await save(before, `[advance] ${ward} ${what}`);
                 log(
                     `[advance] ${ward} ${what} ${revert ? 'REVERT ' : ''}accepted,` +
                         ` root=${shortRoot(step.toRoot)}`,
@@ -238,6 +278,7 @@ export const startWmServer = async (opts: WmServerOptions) => {
 
                 return { revert, acceptance: acceptanceToJson(acceptance) };
             } catch (e) {
+                if (e instanceof HttpError) throw e;
                 if (e instanceof WmConflict) {
                     log(`[advance] ${ward} ${what} CONFLICT: the head is at #${e.headCounter}`);
                     throw new HttpError(409, 'conflict', { headCounter: e.headCounter });
