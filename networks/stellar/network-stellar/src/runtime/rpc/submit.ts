@@ -84,9 +84,9 @@ const sendWithRetry = async (server: StellarRpcServer, transaction: StellarTrans
 
 // `PENDING` only means accepted, so apply-time failures show up by polling `getTransaction`.
 const pollForApplyResult = async (server: StellarRpcServer, hash: string) => {
-    const deadline = Date.now() + STELLAR_RPC_SUBMIT_POLL_TIMEOUT_MS;
+    const deadline = performance.now() + STELLAR_RPC_SUBMIT_POLL_TIMEOUT_MS;
 
-    while (Date.now() < deadline) {
+    while (performance.now() < deadline) {
         // A failed poll says nothing about a transaction the node already accepted.
         const result = await server.getTransaction(hash).catch(() => undefined);
 
