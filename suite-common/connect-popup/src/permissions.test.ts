@@ -7,12 +7,16 @@ import {
     CALL_SOURCE_WALLETCONNECT,
     CALL_SOURCE_WEB,
     type ConnectCallSource,
+    UNKNOWN_PROCESS,
 } from './connectPopupTypes';
 import {
+    canProcessCall,
     canRememberPermissions,
     canonicalizePermissionCoins,
     deriveCardanoEnabledNetworks,
     groupPermissionsByCoin,
+    isEstablishedOrigin,
+    isSameConnectApp,
     mergePermissions,
     permissionsAreCovered,
     sanitizeRequestedPermissions,
@@ -301,6 +305,28 @@ describe('canRememberPermissions', () => {
             { type: CALL_SOURCE_WEB, origin: 'null', manifest },
         ],
         [
+            'the wildcard origin a message carries before it is attributed to a caller',
+            { type: CALL_SOURCE_WEB, origin: '*', manifest },
+        ],
+        ['an empty origin', { type: CALL_SOURCE_WEB, origin: '', manifest }],
+        [
+            'a wildcard origin that only looks like a host',
+            { type: CALL_SOURCE_WEB, origin: 'https://*.example.com', manifest },
+        ],
+        [
+            'a deeplink whose callback URL has no host, which leaves its scheme alone',
+            { type: CALL_SOURCE_DEEPLINK, origin: 'myapp://', manifest },
+        ],
+        [
+            'a desktop app whose process is unknown',
+            {
+                type: CALL_SOURCE_DESKTOP_WS,
+                origin: 'https://example.com',
+                process: UNKNOWN_PROCESS,
+                manifest,
+            },
+        ],
+        [
             // Every MCP caller shares the one constant origin, so one without a process would
             // inherit the grant of the next caller Suite could not identify either.
             'an mcp client whose process stayed unresolved',
@@ -318,4 +344,159 @@ describe('canRememberPermissions', () => {
     ])('does not remember permissions for %s', (_, source) => {
         expect(canRememberPermissions(source)).toBe(false);
     });
+});
+
+describe('canProcessCall', () => {
+    const manifest = { appName: 'App' };
+
+    it.each(['https://example.com', 'http://127.0.0.1:21325'])(
+        'processes a web call from the established origin %s',
+        origin => {
+            expect(canProcessCall({ type: CALL_SOURCE_WEB, origin, manifest })).toBe(true);
+        },
+    );
+
+    it.each(['', '*', 'null', 'https://*.example.com', ' https://example.com'])(
+        'refuses a web call whose origin %p is not established',
+        origin => {
+            expect(canProcessCall({ type: CALL_SOURCE_WEB, origin, manifest })).toBe(false);
+        },
+    );
+
+    // The `Origin` header of a desktop WebSocket call is passed on as it is: a page that sends the
+    // literal `null` or `*` gets past the main process, which drops only a missing one.
+    describe('a desktop call', () => {
+        const appProcess = { name: 'App', fullPath: '/usr/bin/app', warning: false };
+
+        it.each(['https://example.com', 'http://127.0.0.1:21325'])(
+            'is processed from the established origin %s',
+            origin => {
+                expect(
+                    canProcessCall({
+                        type: CALL_SOURCE_DESKTOP_WS,
+                        origin,
+                        process: appProcess,
+                        manifest,
+                    }),
+                ).toBe(true);
+            },
+        );
+
+        it.each(['', '*', 'null', 'https://*.example.com'])(
+            'is refused when its origin %p is not established',
+            origin => {
+                expect(
+                    canProcessCall({
+                        type: CALL_SOURCE_DESKTOP_WS,
+                        origin,
+                        process: appProcess,
+                        manifest,
+                    }),
+                ).toBe(false);
+            },
+        );
+
+        // Not the origin, but the process tells a desktop caller apart: an unknown one is asked
+        // about every time and never remembered, which is a different decision from this one.
+        it('is processed from an established origin when its process is unknown', () => {
+            expect(
+                canProcessCall({
+                    type: CALL_SOURCE_DESKTOP_WS,
+                    origin: 'https://example.com',
+                    process: UNKNOWN_PROCESS,
+                    manifest,
+                }),
+            ).toBe(true);
+        });
+    });
+
+    // MCP names its caller by one constant origin, and a deeplink by the scheme and host of its
+    // callback URL: a call whose origin is still not established is asked about every time and never
+    // remembered. WalletConnect's origin may be empty for an unverified dapp, which its own session
+    // consent covers.
+    it.each<[string, ConnectCallSource]>([
+        ['a deeplink', { type: CALL_SOURCE_DEEPLINK, origin: 'example://app', manifest }],
+        [
+            'a deeplink whose callback URL has no host',
+            { type: CALL_SOURCE_DEEPLINK, origin: 'myapp://', manifest },
+        ],
+        ['an mcp client', { type: CALL_SOURCE_MCP, origin: 'mcp://localhost', manifest }],
+        [
+            'a walletconnect dapp WC could not verify',
+            { type: CALL_SOURCE_WALLETCONNECT, origin: '', manifest },
+        ],
+    ])('does not gate %s on its origin', (_, source) => {
+        expect(canProcessCall(source)).toBe(true);
+    });
+});
+
+describe('isEstablishedOrigin', () => {
+    it.each([
+        'https://example.com',
+        'http://127.0.0.1:21325',
+        'example://app',
+        'mcp://localhost',
+        // The webextension link names its caller by the bare extension id.
+        'abcdefghijklmnopabcdefghijklmnop',
+    ])('accepts the caller origin %s', origin => {
+        expect(isEstablishedOrigin(origin)).toBe(true);
+    });
+
+    it.each(['null', '*', '', '  ', undefined, null, 42])('rejects %p', origin => {
+        expect(isEstablishedOrigin(origin)).toBe(false);
+    });
+
+    it.each(['https://*', 'https://*.example.com', '*.example.com', 'https://example.com/*'])(
+        'rejects the origin %s, a wildcard is not a caller even as a part of an origin',
+        origin => {
+            expect(isEstablishedOrigin(origin)).toBe(false);
+        },
+    );
+
+    // The origin is stored and compared as it is, so a padded one would never equal the caller's own.
+    it.each([' https://example.com', 'https://example.com ', '\thttps://example.com\n'])(
+        'rejects the padded origin %p',
+        origin => {
+            expect(isEstablishedOrigin(origin)).toBe(false);
+        },
+    );
+
+    // What a deeplink callback URL without a host leaves of its origin: every callback of the same
+    // scheme would share it.
+    it.each(['myapp://', 'file://', 'https://'])(
+        'rejects the origin %s, a scheme alone is not a caller',
+        origin => {
+            expect(isEstablishedOrigin(origin)).toBe(false);
+        },
+    );
+});
+
+describe('isSameConnectApp', () => {
+    const manifest = { appName: 'App' };
+    const app: ConnectCallSource = {
+        type: CALL_SOURCE_WEB,
+        origin: 'https://example.com',
+        manifest,
+    };
+
+    it('matches the same caller', () => {
+        expect(isSameConnectApp(app, { ...app })).toBe(true);
+    });
+
+    it('does not match another origin', () => {
+        expect(isSameConnectApp(app, { ...app, origin: 'https://other.example' })).toBe(false);
+    });
+
+    // A grant stored for an unattributed caller would otherwise be shared by every site that also
+    // arrives without an origin — the wildcard matches everything, including itself.
+    it.each(['*', '', 'null', 'https://*.example.com', ' https://example.com', 'myapp://'])(
+        'does not match the unestablished origin %p, even against itself',
+        origin => {
+            const unattributed = { ...app, origin };
+
+            expect(isSameConnectApp(unattributed, unattributed)).toBe(false);
+            expect(isSameConnectApp(unattributed, app)).toBe(false);
+            expect(isSameConnectApp(app, unattributed)).toBe(false);
+        },
+    );
 });

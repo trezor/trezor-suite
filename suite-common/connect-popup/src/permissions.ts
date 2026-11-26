@@ -7,12 +7,16 @@ import {
     asCoinSymbol,
     isCoinSymbol,
 } from '@trezor/connect';
+import { exhaustive } from '@trezor/type-utils';
 import { isArrayMember } from '@trezor/utils';
 import { unique } from '@trezor/utils/src/unique';
 
 import {
+    CALL_SOURCE_DEEPLINK,
+    CALL_SOURCE_DESKTOP_WS,
     CALL_SOURCE_MCP,
     CALL_SOURCE_WALLETCONNECT,
+    CALL_SOURCE_WEB,
     type ConnectCallSource,
     type ConnectProcessInfo,
     UNKNOWN_PROCESS,
@@ -74,11 +78,32 @@ export const permissionsAreCovered = (
         granted.some(g => g.permission === req.permission && g.coin === req.coin),
     );
 
+// The empty string and `null`, which browsers send for every sandboxed or local page. Every caller
+// holding one would compare equal to every other caller holding it.
+const UNESTABLISHED_ORIGINS: ReadonlySet<string> = new Set(['', 'null']);
+
+/**
+ * Whether `origin` identifies a caller. It does not when it is one of `UNESTABLISHED_ORIGINS`, a
+ * wildcard such as the `*` a window message carries until the handshake attributes it to an origin
+ * (also as a part of one, as in `https://*.example.com`), a scheme with no host (`myapp://`, what a
+ * deeplink callback URL without a host leaves of its origin), or padded with whitespace. The origin
+ * is stored and compared as it is, so a padded one would never equal the caller's own.
+ */
+export const isEstablishedOrigin = (origin: unknown): origin is string =>
+    typeof origin === 'string' &&
+    origin === origin.trim() &&
+    !UNESTABLISHED_ORIGINS.has(origin) &&
+    !origin.includes('*') &&
+    !origin.endsWith('://');
+
 /**
  * Whether permissions remembered for `app` belong to the caller `source`: the same source type,
- * origin and process.
+ * origin and process. Both origins must be established, so a grant matched only by an unknown or
+ * wildcard origin is never reused by another caller.
  */
 export const isSameConnectApp = (app: ConnectCallSource, source: ConnectCallSource): boolean =>
+    isEstablishedOrigin(app.origin) &&
+    isEstablishedOrigin(source.origin) &&
     app.type === source.type &&
     app.origin === source.origin &&
     app.process?.fullPath === source.process?.fullPath;
@@ -95,19 +120,46 @@ export const isIdentifiedProcess = (process: ConnectProcessInfo): boolean =>
     process.fullPath !== UNKNOWN_PROCESS.fullPath;
 
 /**
- * Permissions are remembered only for a caller that can be told apart from others: not for a
- * process that could not be identified, and not for the origin `null` that browsers send for every
- * sandboxed or local page. WalletConnect is excluded too: its consent lives in its own session.
- * A source with no `process` at all (web, deeplink) is told apart by its origin alone. MCP is the
- * exception: its origin is the constant `mcp://localhost`, so every MCP caller without a resolved
- * process would share one grant — an identified process is required for it instead.
+ * Permissions are remembered only for a caller that can be told apart from others: with an
+ * established origin, not for a process that could not be identified. WalletConnect is excluded
+ * too: its consent lives in its own session. A source with no `process` at all (web, deeplink) is
+ * told apart by its origin alone. MCP is the exception: its origin is the constant
+ * `mcp://localhost`, so every MCP caller without a resolved process would share one grant — an
+ * identified process is required for it instead.
  */
 export const canRememberPermissions = (source: ConnectCallSource): boolean =>
     source.type !== CALL_SOURCE_WALLETCONNECT &&
-    source.origin !== 'null' &&
+    isEstablishedOrigin(source.origin) &&
     (source.type === CALL_SOURCE_MCP
         ? !!source.process && isIdentifiedProcess(source.process)
         : !source.process || isIdentifiedProcess(source.process));
+
+/**
+ * Whether a call from `source` may be processed at all. A caller told apart by its origin must have
+ * an established one: a call that arrives without it cannot be attributed to an app, so the user
+ * would be asked to trust a name they cannot check.
+ * - A web caller: the popup link starts at `*` and only narrows it from the bootstrap handshake.
+ * - A desktop caller: the `Origin` header of its WebSocket call is passed on as it is, and the main
+ *   process drops only a missing one, so a literal `null` or `*` reaches Suite.
+ *
+ * The other sources are not refused on it. MCP names its caller by one constant origin and a
+ * deeplink by the scheme and host of its callback URL: a call of theirs whose origin is still not
+ * established is asked about every time and never remembered. WalletConnect's origin can be empty
+ * for an unverified dapp, which its own session consent covers.
+ */
+export const canProcessCall = (source: ConnectCallSource): boolean => {
+    switch (source.type) {
+        case CALL_SOURCE_WEB:
+        case CALL_SOURCE_DESKTOP_WS:
+            return isEstablishedOrigin(source.origin);
+        case CALL_SOURCE_DEEPLINK:
+        case CALL_SOURCE_MCP:
+        case CALL_SOURCE_WALLETCONNECT:
+            return true;
+        default:
+            return exhaustive(source);
+    }
+};
 
 export const groupPermissionsByCoin = (permissions: PermissionRequest[]): GroupedPermissions[] => {
     const order: (CoinSymbol | undefined)[] = [];
