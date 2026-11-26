@@ -2987,15 +2987,18 @@ describe('tradingSelectors', () => {
             },
         );
 
-        it('should return false for unsupported network even when firmware supports slip24', () => {
-            const unsupportedNetworkAccount = {
-                ...accountBtc,
-                networkType: 'cardano',
-            };
-            expect(
-                selectTradingIsSlip24Allowed(state, unsupportedNetworkAccount as any, true),
-            ).toBe(false);
-        });
+        it.each(['cardano', 'stellar', 'tron'])(
+            'should return false for unsupported %s network even when firmware supports slip24',
+            networkType => {
+                const unsupportedNetworkAccount = {
+                    ...accountBtc,
+                    networkType,
+                };
+                expect(
+                    selectTradingIsSlip24Allowed(state, unsupportedNetworkAccount as any, true),
+                ).toBe(false);
+            },
+        );
     });
 
     describe('selectTradingIsSlip24SellAllowed', () => {
