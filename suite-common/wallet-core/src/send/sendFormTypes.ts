@@ -22,12 +22,26 @@ export type ComposeTransactionThunkArguments = {
     isNetworkReserveEnabled?: boolean;
 };
 
+/**
+ * A payment to an address a contact's Trezor attested. With it, the payer's Trezor checks the
+ * attestation and shows the contact's name for the output instead of the bare address.
+ */
+export type ContactOutputAttestation = {
+    address: string;
+    /** The contact's x-only identity public key, hex. */
+    contactPubkey: string;
+    /** The contact's BIP-340 attestation of `address`, hex. */
+    contactSignature: string;
+};
+
 export type SignTransactionThunkArguments = {
     formState: FormState;
     precomposedTransaction: PrecomposedTransactionFinal;
     selectedAccount: Account;
     device: TrezorDevice;
     paymentRequests?: PROTO.PaymentRequest[];
+    /** Bitcoin only. */
+    contactOutputs?: ContactOutputAttestation[];
 };
 
 export type ComposeFeeLevelsError = {

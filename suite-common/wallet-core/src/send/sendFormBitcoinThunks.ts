@@ -7,6 +7,7 @@ import {
     type FormState,
     type PrecomposedLevels,
     type PrecomposedTransaction,
+    type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import {
     datetimeToLocktime,
@@ -34,6 +35,7 @@ import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
     type ComposeFeeLevelsError,
     type ComposeTransactionThunkArguments,
+    type ContactOutputAttestation,
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
@@ -288,6 +290,31 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
     },
 );
 
+type AddContactAttestationsParams = {
+    outputs: PrecomposedTransactionFinal['outputs'];
+    contactOutputs: ContactOutputAttestation[];
+};
+
+// The Trezor takes contact fields on payment outputs only; it refuses them on change and OP_RETURN.
+const addContactAttestations = ({ outputs, contactOutputs }: AddContactAttestationsParams) =>
+    outputs.map(output => {
+        if (output.address === undefined) {
+            return output;
+        }
+
+        const contactOutput = contactOutputs.find(({ address }) => address === output.address);
+
+        if (!contactOutput) {
+            return output;
+        }
+
+        return {
+            ...output,
+            contact_pubkey: contactOutput.contactPubkey,
+            contact_signature: contactOutput.contactSignature,
+        };
+    });
+
 type SignBitcoinSendFormTransactionThunkState = TransactionsRootState & WalletSettingsRootState;
 
 export const signBitcoinSendFormTransactionThunk = createThunk<
@@ -300,7 +327,14 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/signBitcoinSendFormTransactionThunk`,
     async (
-        { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
+        {
+            formState,
+            precomposedTransaction,
+            selectedAccount,
+            device,
+            paymentRequests,
+            contactOutputs,
+        },
         { getState, rejectWithValue },
     ) => {
         const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
@@ -402,7 +436,15 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
                 useEmptyPassphrase: device.useEmptyPassphrase,
             },
             inputs: precomposedTransaction.inputs,
-            outputs: precomposedTransaction.outputs,
+            // Connect puts every output of a transaction with a payment request under that request,
+            // and a replacement keeps the original outputs, so neither takes contact fields.
+            outputs:
+                contactOutputs?.length && !paymentRequests?.length && !formState.rbfParams
+                    ? addContactAttestations({
+                          outputs: precomposedTransaction.outputs,
+                          contactOutputs,
+                      })
+                    : precomposedTransaction.outputs,
             account: {
                 addresses: selectedAccount.addresses,
                 transactions: refTxs,

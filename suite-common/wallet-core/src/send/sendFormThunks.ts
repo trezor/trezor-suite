@@ -87,6 +87,7 @@ import {
 } from './sendFormSolanaThunks';
 import {
     type ComposeFeeLevelsError,
+    type ContactOutputAttestation,
     type PushTransactionError,
     type SignTransactionError,
     type SignTransactionTimeoutError,
@@ -732,6 +733,7 @@ type SignTransactionThunkParams = {
     precomposedTransaction: PrecomposedTransactionFinal | PrecomposedTransactionFinalCardano;
     selectedAccount: Account;
     paymentRequests?: PROTO.PaymentRequest[];
+    contactOutputs?: ContactOutputAttestation[];
 };
 
 export type SignTransactionThunkState = AccountsRootState &
@@ -749,7 +751,7 @@ export const signTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/signTransactionThunk`,
     async (
-        { formState, precomposedTransaction, selectedAccount, paymentRequests },
+        { formState, precomposedTransaction, selectedAccount, paymentRequests, contactOutputs },
         { dispatch, rejectWithValue, getState },
     ) => {
         const device = selectSelectedDevice(getState());
@@ -783,7 +785,9 @@ export const signTransactionThunk = createThunk<
             };
 
             if (networkType === 'bitcoin') {
-                response = await dispatch(signBitcoinSendFormTransactionThunk(thunkArguments));
+                response = await dispatch(
+                    signBitcoinSendFormTransactionThunk({ ...thunkArguments, contactOutputs }),
+                );
             } else if (networkType === 'ethereum') {
                 response = await dispatch(signEthereumSendFormTransactionThunk(thunkArguments));
             } else if (networkType === 'solana') {
