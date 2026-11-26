@@ -22,6 +22,7 @@ export default class NostrGetPublicKey extends AbstractMethod<
 
         const params = {
             address_n: validatePath(payload.path),
+            show_display: payload.showOnTrezor,
         };
 
         super(message, params);
