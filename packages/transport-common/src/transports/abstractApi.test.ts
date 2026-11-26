@@ -352,6 +352,31 @@ describe('Usb', () => {
             expect(nextAcquireRes).toEqual({ success: true, payload: '2' });
         });
 
+        it('releaseSync frees the device even when closeDevice rejects', async () => {
+            const { transport, testUsbApi } = await initTest();
+            await transport.enumerate();
+            const acquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(acquireRes.success).toEqual(true);
+            if (!acquireRes.success) return;
+
+            // releaseSync runs when the device is already gone, so closeDevice
+            // of a non-usb api may well reject
+            jest.spyOn(testUsbApi, 'closeDevice').mockRejectedValue(new Error('device is gone'));
+
+            transport.releaseSync(acquireRes.payload);
+            // releaseSync does not return its promise, let its chain settle.
+            await new Promise(resolve => setTimeout(resolve, 0));
+
+            // releaseDone ran despite the rejection, so the session is released
+            // and the lock taken by releaseIntent is not leaked
+            const nextAcquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(nextAcquireRes).toEqual({ success: true, payload: '2' });
+        });
+
         // CURRENTLY LEAKS — see PR #27978 for the fix.
         //
         // AbstractApiTransport.listen() registers three event handlers (one on the api emitter,
