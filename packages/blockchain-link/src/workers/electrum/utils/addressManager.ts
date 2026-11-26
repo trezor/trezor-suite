@@ -22,13 +22,11 @@ export const createAddressManager = (getNetwork: () => Network | undefined) => {
         const toAdd = addresses.filter(arrayDistinct).filter(addr => !subscribedAddrs[addr]);
         const network = getNetwork();
 
-        subscribedAddrs = toAdd.reduce<AddressMap>(
-            (dic, addr) => ({
-                ...dic,
-                [addr]: addressToScripthash(addr, network),
-            }),
-            subscribedAddrs,
-        );
+        subscribedAddrs = toAdd.reduce<AddressMap>((dic, addr) => {
+            dic[addr] = addressToScripthash(addr, network);
+
+            return dic;
+        }, subscribedAddrs);
 
         return toAdd.map(addr => subscribedAddrs[addr]).filter((addr): addr is string => !!addr);
     };
@@ -46,13 +44,11 @@ export const createAddressManager = (getNetwork: () => Network | undefined) => {
     const addAccounts = (accounts: SubscriptionAccountInfo[]) => {
         const toAdd = accounts.filter(acc => !subscribedAccs[acc.descriptor]);
 
-        subscribedAccs = toAdd.reduce<AccountMap>(
-            (dic, acc) => ({
-                ...dic,
-                [acc.descriptor]: acc.addresses || { change: [], used: [], unused: [] },
-            }),
-            subscribedAccs,
-        );
+        subscribedAccs = toAdd.reduce<AccountMap>((dic, acc) => {
+            dic[acc.descriptor] = acc.addresses || { change: [], used: [], unused: [] };
+
+            return dic;
+        }, subscribedAccs);
 
         const addresses = addressesFromAccounts(toAdd.map(acc => acc.addresses));
 
