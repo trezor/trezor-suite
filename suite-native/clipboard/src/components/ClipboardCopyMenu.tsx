@@ -36,7 +36,7 @@ export const ClipboardCopyMenu = ({ value, onCopy, children, style }: ClipboardC
             actions={[
                 {
                     label: translate('generic.buttons.copy'),
-                    systemImage: 'doc.on.doc',
+                    icon: 'copy',
                     onPress: handleCopy,
                 },
             ]}

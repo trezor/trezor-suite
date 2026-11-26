@@ -31,22 +31,22 @@ export const ReceiveQRCodeCard = ({
             actions={[
                 {
                     label: translate('moduleReceive.addressActions.shareQRCodeImage'),
-                    systemImage: 'square.and.arrow.up',
+                    icon: 'share',
                     onPress: handleShareQRCode,
                 },
                 {
                     label: translate('moduleReceive.addressActions.saveQRCodeImage'),
-                    systemImage: 'square.and.arrow.down',
+                    icon: 'download',
                     onPress: handleSaveQRCode,
                 },
                 {
                     label: translate('generic.buttons.copy'),
-                    systemImage: 'qrcode',
+                    icon: 'qrCode',
                     onPress: handleCopyQRCode,
                 },
                 {
                     label: translate('moduleReceive.addressActions.copyAddress'),
-                    systemImage: 'doc.on.doc',
+                    icon: 'copy',
                     onPress: onCopyAddress,
                 },
             ]}
