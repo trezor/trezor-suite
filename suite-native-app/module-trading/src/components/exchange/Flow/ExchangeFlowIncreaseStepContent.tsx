@@ -1,24 +1,23 @@
-import type { DexApprovalType } from 'invity-api';
+import { type ReactNode } from 'react';
 
-import { type AccountKey } from '@suite-common/wallet-types';
 import { Divider, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { CurrentStepCardHeader } from '@suite-native/step-cards';
 
-import { ExchangeFlowApprovalFeeSelectorRow } from './ExchangeFlowApprovalFeeSelectorRow';
-import { LimitPicker } from '../Approval/LimitPicker';
 import { OriginalLimit } from '../Approval/OriginalLimit';
 
 export type ExchangeFlowIncreaseStepContentProps = {
-    accountKey: AccountKey;
     coinSymbol?: string;
-    onApprovalTypeChange: (approvalType: DexApprovalType) => void;
+    limitRow: ReactNode;
+    feeRow: ReactNode;
+    children?: ReactNode;
 };
 
 export const ExchangeFlowIncreaseStepContent = ({
-    accountKey,
     coinSymbol,
-    onApprovalTypeChange,
+    limitRow,
+    feeRow,
+    children,
 }: ExchangeFlowIncreaseStepContentProps) => (
     <>
         <CurrentStepCardHeader>
@@ -33,8 +32,9 @@ export const ExchangeFlowIncreaseStepContent = ({
             </Text>
         </CurrentStepCardHeader>
         <OriginalLimit />
-        <LimitPicker onApprovalTypeChange={onApprovalTypeChange} />
+        {limitRow}
         <Divider testID="@exchange-flow/increase/fee-divider" />
-        <ExchangeFlowApprovalFeeSelectorRow accountKey={accountKey} />
+        {feeRow}
+        {children}
     </>
 );

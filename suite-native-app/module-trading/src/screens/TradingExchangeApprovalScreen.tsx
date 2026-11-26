@@ -8,6 +8,8 @@ import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 import { type TradingStackScreenProps } from '@suite-native/trading-types';
 
 import { ApprovalButton } from '../components/exchange/Approval/ApprovalButton';
+import { LimitPicker } from '../components/exchange/Approval/LimitPicker';
+import { ExchangeFlowApprovalFeeSelectorRow } from '../components/exchange/Flow/ExchangeFlowApprovalFeeSelectorRow';
 import { ExchangeFlowApproveStepContent } from '../components/exchange/Flow/ExchangeFlowApproveStepContent';
 import { ExchangeFlowIncreaseStepContent } from '../components/exchange/Flow/ExchangeFlowIncreaseStepContent';
 import { ExchangeFlowScreenHeader } from '../components/exchange/Flow/ExchangeFlowScreenHeader';
@@ -46,6 +48,9 @@ export const TradingExchangeApprovalScreen = ({
         );
     }
 
+    const limitRow = <LimitPicker onApprovalTypeChange={onApprovalTypeChange} />;
+    const feeRow = <ExchangeFlowApprovalFeeSelectorRow accountKey={account.key} />;
+
     return (
         <ExchangeFlowStepsLayout
             approvalStatus={approvalStatus}
@@ -61,15 +66,15 @@ export const TradingExchangeApprovalScreen = ({
         >
             {approvalStatus === 'needs_increase' ? (
                 <ExchangeFlowIncreaseStepContent
-                    accountKey={account.key}
                     coinSymbol={coinSymbol}
-                    onApprovalTypeChange={onApprovalTypeChange}
+                    limitRow={limitRow}
+                    feeRow={feeRow}
                 />
             ) : (
                 <ExchangeFlowApproveStepContent
-                    accountKey={account.key}
                     coinSymbol={coinSymbol}
-                    onApprovalTypeChange={onApprovalTypeChange}
+                    limitRow={limitRow}
+                    feeRow={feeRow}
                 />
             )}
         </ExchangeFlowStepsLayout>
