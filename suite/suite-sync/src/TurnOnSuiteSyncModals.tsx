@@ -1,4 +1,3 @@
-import { Suspense, lazy } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
@@ -7,33 +6,41 @@ import {
     type WithSuiteSyncAndDeviceState,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
-import { ModalSkeleton } from '@trezor/components';
+import { ModalLoader } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
+import { lazyComponentByName } from '@trezor/lazy-loading';
 import { exhaustive } from '@trezor/type-utils';
 
-const FirmwareUpgradeNeededModal = lazy(() =>
-    import(/* webpackChunkName: "modals-firmware" */ '@suite/firmware-upgrade').then(m => ({
-        default: m.FirmwareUpgradeNeededModal,
-    })),
+const { LazyComponent: FirmwareUpgradeNeededModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-firmware" */ '@suite/firmware-upgrade'),
+    'FirmwareUpgradeNeededModal',
 );
-const SuiteSyncTurnOnModal = lazy(() =>
-    import(/* webpackChunkName: "modals-connection" */ './SuiteSyncTurnOnModal').then(m => ({
-        default: m.SuiteSyncTurnOnModal,
-    })),
+const { LazyComponent: SuiteSyncTurnOnModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-connection" */ './SuiteSyncTurnOnModal'),
+    'SuiteSyncTurnOnModal',
 );
 
 type TurnOnSuiteSyncModalsProps = {
     onClose: () => void;
+    /** Reports a modal that failed to load. This package cannot reach Suite's Sentry thunk. */
+    onError?: (error: Error) => void;
     onSuccess?: () => void;
     deviceStaticSessionId: StaticSessionId | null;
 };
 
 export const TurnOnSuiteSyncModals = ({
     onClose,
+    onError,
     onSuccess,
     deviceStaticSessionId,
 }: TurnOnSuiteSyncModalsProps) => {
     const { translationString } = useTranslation();
+
+    /** Closing leaves the device usable; the modal itself cannot be retried after a failed load. */
+    const handleError = (error: Error) => {
+        onError?.(error);
+        onClose();
+    };
     const suiteSyncInteraction = useSelector(
         (state: WithSuiteSyncAndDeviceState & MessageSystemRootState) =>
             selectSuiteSyncInteraction(state, deviceStaticSessionId),
@@ -53,23 +60,23 @@ export const TurnOnSuiteSyncModals = ({
         // This component has several render sites, so each lazy modal carries its own boundary.
         case 'suite-sync-off':
             return (
-                <Suspense fallback={<ModalSkeleton />}>
+                <ModalLoader name={suiteSyncInteraction} onError={handleError}>
                     <SuiteSyncTurnOnModal
                         onClose={onClose}
                         onSuccess={onSuccess}
                         deviceStaticSessionId={deviceStaticSessionId}
                     />
-                </Suspense>
+                </ModalLoader>
             );
 
         case 'firmware-upgrade-needed':
             return (
-                <Suspense fallback={<ModalSkeleton />}>
+                <ModalLoader name={suiteSyncInteraction} onError={handleError}>
                     <FirmwareUpgradeNeededModal
                         onClose={onClose}
                         featureName={translationString('TR_LABELING_SECURE_SYNC')}
                     />
-                </Suspense>
+                </ModalLoader>
             );
 
         default:

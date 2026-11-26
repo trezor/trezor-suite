@@ -1,48 +1,42 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
+import { useStore } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
-import { openModal } from '@suite/modal';
-import { useMutation } from '@suite-common/react-query';
+import { type ModalRootState, type ModalState, selectModal } from '@suite/modal';
 import { type UserContextPayload } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { useServices } from '@trezor/dependency-injection';
+import { useModuleLoader } from '@trezor/lazy-loading';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { openModalWhenSlotUnchangedThunk } from '#src/actions/suite/openModalWhenSlotUnchangedThunk';
 import { getModalChunkLoader } from '#src/components/suite/modals/ReduxModal/UserContextModal/modalChunkLoaders';
 
-/** A chunk lost to a flaky connection is worth retrying before the modal gives up on it. */
-const CHUNK_LOAD_RETRIES = 2;
-
 /**
- * Opens a user-context modal once its code chunk has arrived, so the opener can report a loading
- * state rather than looking inert while the chunk is in flight.
+ * Opens a user-context modal once its chunk has arrived, so the opener can show a loading state.
  *
- * Loading the chunk is a mutation because it is imperative and user-triggered: `useQuery` fetches
- * on mount, which would turn every opener that rendered into a prefetch of its modal.
- *
- * A chunk that never arrives leaves the modal closed behind a toast, rather than reaching the
- * `lazy()` boundary, whose rejection takes the whole app to the error screen and stays cached
- * until a reload.
+ * A type with no entry in `modalChunkLoaders` opens in the same commit as the click, which the
+ * eager modals rely on (see `lazyUserContextModals`); an entry turns the loading state on.
  */
 export const useModalLoader = () => {
     const { dispatch } = useServices(injectDispatch);
     const { translationString } = useTranslation();
+    /** Read through the store rather than a selector: an opener must not re-render per modal. */
+    const store = useStore<ModalRootState>();
+    const expectedModal = useRef<ModalState | null>(null);
 
-    const { mutate: loadModalChunk, isPending } = useMutation({
-        // The module is not kept: `lazy()` imports it again from webpack's cache, so this only
-        // has to wait for the chunk to arrive.
-        mutationFn: async (payload: UserContextPayload) => {
-            await getModalChunkLoader(payload.type)?.();
+    const { load, preload, isLoading } = useModuleLoader({
+        toKey: (payload: UserContextPayload) => payload.type,
+        getLoader: getModalChunkLoader,
+        onLoaded: payload => {
+            const expected = expectedModal.current;
+
+            if (expected === null) {
+                return;
+            }
+
+            dispatch(openModalWhenSlotUnchangedThunk(payload, expected));
         },
-        retry: CHUNK_LOAD_RETRIES,
-        /**
-         * Declared on the mutation rather than passed to `mutate()`, so they still run when the
-         * opener unmounted while the chunk was in flight; react-query drops the per-call callbacks
-         * in that case. That is the behaviour this wants: the modal lives in redux and not in the
-         * opener, so a click outliving its button still opens the modal it asked for, and a chunk
-         * that never arrives is still reported instead of failing silently.
-         */
-        onSuccess: (_, payload) => dispatch(openModal(payload)),
         onError: () =>
             dispatch(
                 notificationsActions.addToast({
@@ -52,36 +46,17 @@ export const useModalLoader = () => {
             ),
     });
 
+    /**
+     * The slot is read at the click, not when the chunk lands, so that a device prompt arriving
+     * in between is left alone. An opener rendered inside a modal still replaces its own.
+     */
     const open = useCallback(
         (payload: UserContextPayload) => {
-            /**
-             * A modal with no chunk to wait for opens in this same commit. ActivateAssetsModal,
-             * AddAccountModal and TransactionReviewModal set `state.modal.preserve` from a mount
-             * effect, and deferring their dispatch by even a tick would delay that past
-             * UI_EVENTS.CLOSE_UI_WINDOW, which is why they are eager to begin with.
-             */
-            if (!getModalChunkLoader(payload.type)) {
-                dispatch(openModal(payload));
-
-                return;
-            }
-
-            loadModalChunk(payload);
+            expectedModal.current = selectModal(store.getState());
+            load(payload);
         },
-        [dispatch, loadModalChunk],
+        [load, store],
     );
 
-    /**
-     * Fetches a modal's chunk before the click that needs it, so an opener that was hovered or
-     * tabbed to usually has nothing left to wait for.
-     *
-     * A failed preload is deliberately silent: webpack drops a chunk it could not fetch from its
-     * registry, so the click requests it again, and the mutation above owns the retries and the
-     * error toast.
-     */
-    const preload = useCallback((type: UserContextPayload['type']) => {
-        getModalChunkLoader(type)?.().catch(() => undefined);
-    }, []);
-
-    return { open, preload, isLoading: isPending };
+    return { open, preload, isLoading };
 };

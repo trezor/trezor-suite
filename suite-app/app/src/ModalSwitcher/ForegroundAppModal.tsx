@@ -1,10 +1,8 @@
-import { Suspense } from 'react';
-
 import { closeModalAppThunk } from '@suite/router';
-import { ModalSkeleton } from '@trezor/components';
+import { ModalLoader } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
-import { type ForegroundAppRoute, getForegroundApp } from '@trezor/suite';
+import { type ForegroundAppRoute, getForegroundApp, reportToSentryThunk } from '@trezor/suite';
 
 type ForegroundAppModalProps = {
     app: ForegroundAppRoute['app'];
@@ -25,9 +23,15 @@ export const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps)
 
     return (
         ForegroundApp && (
-            <Suspense fallback={<ModalSkeleton />}>
+            <ModalLoader
+                name={app}
+                onError={error => {
+                    dispatch(reportToSentryThunk(error));
+                    onCancel();
+                }}
+            >
                 <ForegroundApp cancelable={cancelable} onCancel={onCancel} />
-            </Suspense>
+            </ModalLoader>
         )
     );
 };

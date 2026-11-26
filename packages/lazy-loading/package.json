@@ -12,6 +12,14 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@trezor/type-utils": "workspace:*"
+        "@tanstack/react-query": "5.105.0",
+        "@trezor/react-utils": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "react": "19.3.0"
+    },
+    "devDependencies": {
+        "@testing-library/react": "^16.3.3",
+        "@types/react": "19.3.0",
+        "react-dom": "19.3.0"
     }
 }

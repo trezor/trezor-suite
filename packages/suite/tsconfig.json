@@ -252,6 +252,7 @@
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
         { "path": "../icons" },
+        { "path": "../lazy-loading" },
         { "path": "../logger" },
         {
             "path": "../../networks/cardano/network-cardano-suite-common"

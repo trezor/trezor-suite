@@ -1,4 +1,3 @@
-import { lazy } from 'react';
 import { useIntl } from 'react-intl';
 
 import { selectSelectedAccount } from '@suite/account';
@@ -7,49 +6,43 @@ import { type MODAL_CONTEXT_DEVICE } from '@suite/modal';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import TrezorConnect, { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
+import { lazyComponentByName } from '@trezor/lazy-loading';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 import type { ReduxModalProps } from '../ReduxModalProps';
-// Eager on purpose: TransactionReviewModal sets state.modal.preserve from a mount effect, which a
-// lazy boundary would delay past UI_EVENTS.CLOSE_UI_WINDOW (see modalReducer).
+// Eager: TransactionReviewModal's mount effect sets state.modal.preserve before CLOSE_UI_WINDOW.
 import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
-import { lazyUserContextModals } from '../UserContextModal/lazyUserContextModals';
+import {
+    ConfirmXpubModal,
+    ConnectAddressConfirmation,
+    ConnectSelectAccount,
+} from '../UserContextModal/lazyUserContextModals';
 
-const ConfirmActionModal = lazy(() =>
-    import(/* webpackChunkName: "modals-device" */ './ConfirmActionModal').then(m => ({
-        default: m.ConfirmActionModal,
-    })),
+const { LazyComponent: ConfirmActionModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-device" */ './ConfirmActionModal'),
+    'ConfirmActionModal',
 );
-const ConfirmFingerprintModal = lazy(() =>
-    import(/* webpackChunkName: "modals-device" */ './ConfirmFingerprintModal').then(m => ({
-        default: m.ConfirmFingerprintModal,
-    })),
+const { LazyComponent: ConfirmFingerprintModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-device" */ './ConfirmFingerprintModal'),
+    'ConfirmFingerprintModal',
 );
-const ConfirmPassphraseBeforeAction = lazy(() =>
-    import(/* webpackChunkName: "modals-device" */ './ConfirmPassphraseBeforeAction').then(m => ({
-        default: m.ConfirmPassphraseBeforeAction,
-    })),
+const { LazyComponent: ConfirmPassphraseBeforeAction } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-device" */ './ConfirmPassphraseBeforeAction'),
+    'ConfirmPassphraseBeforeAction',
 );
-const PassphraseOnDeviceModal = lazy(() =>
-    import(/* webpackChunkName: "modals-device" */ './PassphraseOnDeviceModal').then(m => ({
-        default: m.PassphraseOnDeviceModal,
-    })),
+const { LazyComponent: PassphraseOnDeviceModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-device" */ './PassphraseOnDeviceModal'),
+    'PassphraseOnDeviceModal',
 );
-const PinModal = lazy(() =>
-    import(/* webpackChunkName: "modals-device" */ './PinModal').then(m => ({
-        default: m.PinModal,
-    })),
+const { LazyComponent: PinModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-device" */ './PinModal'),
+    'PinModal',
 );
-const SignMessageModal = lazy(() =>
-    import(/* webpackChunkName: "modals-device" */ './SignMessageModal').then(m => ({
-        default: m.SignMessageModal,
-    })),
+const { LazyComponent: SignMessageModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-device" */ './SignMessageModal'),
+    'SignMessageModal',
 );
-/** Declared once beside the modals themselves; these three are shared with the user context. */
-const { ConfirmXpubModal, ConnectAddressConfirmation, ConnectSelectAccount } =
-    lazyUserContextModals;
-
 /** Modals requested by Device from `trezor-connect` */
 export const DeviceContextModal = ({
     windowType,

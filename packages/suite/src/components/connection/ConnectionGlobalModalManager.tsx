@@ -1,19 +1,18 @@
-import { Suspense, lazy } from 'react';
-
 import { selectIsConnectionModalOpen, setConnectionModal } from '@suite/device';
 import { selectThpStep } from '@suite-common/thp';
-import { ModalSkeleton } from '@trezor/components';
+import { ModalLoader } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { lazyComponentByName } from '@trezor/lazy-loading';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
+import { reportToSentryThunk } from '#src/utils/suite/sentry';
 
 import { ConnectionGlobalModalProvider } from './context/ConnectionGlobalModalContext';
 
-const ConnectDeviceGlobalModal = lazy(() =>
-    import(/* webpackChunkName: "modals-connection" */ './ConnectDeviceGlobalModal').then(m => ({
-        default: m.ConnectDeviceGlobalModal,
-    })),
+const { LazyComponent: ConnectDeviceGlobalModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-connection" */ './ConnectDeviceGlobalModal'),
+    'ConnectDeviceGlobalModal',
 );
 
 export const ConnectionGlobalModalManager = () => {
@@ -29,9 +28,15 @@ export const ConnectionGlobalModalManager = () => {
 
     return (
         <ConnectionGlobalModalProvider>
-            <Suspense fallback={<ModalSkeleton />}>
+            <ModalLoader
+                name="connect-device-global-modal"
+                onError={error => {
+                    dispatch(reportToSentryThunk(error));
+                    closeConnectionModal();
+                }}
+            >
                 <ConnectDeviceGlobalModal onCancel={closeConnectionModal} />
-            </Suspense>
+            </ModalLoader>
         </ConnectionGlobalModalProvider>
     );
 };

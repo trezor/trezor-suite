@@ -18573,6 +18573,7 @@ __metadata:
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/icons": "workspace:*"
+    "@trezor/lazy-loading": "workspace:*"
     "@trezor/product-components": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/requirements": "workspace:*"
@@ -20149,7 +20150,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/lazy-loading@workspace:packages/lazy-loading"
   dependencies:
+    "@tanstack/react-query": "npm:5.105.0"
+    "@testing-library/react": "npm:^16.3.3"
+    "@trezor/react-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@types/react": "npm:19.3.0"
+    react: "npm:19.3.0"
+    react-dom: "npm:19.3.0"
   languageName: unknown
   linkType: soft
 
@@ -21161,6 +21168,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/icons": "workspace:*"
+    "@trezor/lazy-loading": "workspace:*"
     "@trezor/logger": "workspace:*"
     "@trezor/network-cardano-suite-common": "workspace:*"
     "@trezor/network-ethereum": "workspace:*"

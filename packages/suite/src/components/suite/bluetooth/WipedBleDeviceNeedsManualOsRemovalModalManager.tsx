@@ -1,19 +1,19 @@
-import { Suspense, lazy } from 'react';
-
 import { selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
-import { ModalSkeleton } from '@trezor/components';
+import { ModalLoader } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { lazyComponentByName } from '@trezor/lazy-loading';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
+import { reportToSentryThunk } from '#src/utils/suite/sentry';
 
-const UnpairBluetoothDeviceFromOsModal = lazy(() =>
-    import(/* webpackChunkName: "modals-connection" */ './UnpairBluetoothDeviceFromOsModal').then(
-        m => ({
-            default: m.UnpairBluetoothDeviceFromOsModal,
-        }),
-    ),
+const { LazyComponent: UnpairBluetoothDeviceFromOsModal } = lazyComponentByName(
+    () => import(/* webpackChunkName: "modals-connection" */ './UnpairBluetoothDeviceFromOsModal'),
+    'UnpairBluetoothDeviceFromOsModal',
 );
 
 export const WipedBleDeviceNeedsManualOsRemovalModalManager = () => {
+    const { dispatch } = useServices(injectDispatch);
     const wasBluetoothDeviceWiped = useSelector(selectIsDeviceOsUnpairingRequired);
 
     if (!wasBluetoothDeviceWiped?.isRequired) {
@@ -21,10 +21,13 @@ export const WipedBleDeviceNeedsManualOsRemovalModalManager = () => {
     }
 
     return (
-        <Suspense fallback={<ModalSkeleton />}>
+        <ModalLoader
+            name="unpair-bluetooth-device-from-os-modal"
+            onError={error => dispatch(reportToSentryThunk(error))}
+        >
             <UnpairBluetoothDeviceFromOsModal
                 skipToggleModalConnection={wasBluetoothDeviceWiped.skipToggleModalConnection}
             />
-        </Suspense>
+        </ModalLoader>
     );
 };
