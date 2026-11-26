@@ -9,7 +9,7 @@ File an issue only when the user explicitly asks. A review or a fix does not gra
 
 This repository is `trezor/trezor-suite`. Firmware, bootloader, crypto library, trezorlib, protobuf, and device-level behavior belong on `trezor/trezor-firmware`, not here and not on the Suite project.
 
-Start the body with the agent attribution prefix required by the repository workflow. First line of the description, then a blank line, then the template. Titles stay free of that prefix and of real names.
+Start the body with the agent prefix from the [write rules](../github-write-actions/SKILL.md). First line of the description, then a blank line, then the template. Titles stay free of that prefix and of real names.
 
 ## Write
 
