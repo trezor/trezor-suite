@@ -29,6 +29,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { getStakingAccountRouteParams } from '#src/constants/suite/staking';
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
 import { useTronFirmwareUpgradeModal } from '#src/hooks/earn/useTronFirmwareUpgradeModal';
 import { useSelector } from '#src/hooks/suite/useSelector';
@@ -39,7 +40,8 @@ import {
     useTronStakingOperation,
 } from './hooks/useTronStakingOperation';
 
-type TronFlowRoute = 'earn-tron-stake' | 'earn-tron-unstake' | 'earn-tron-vote';
+type TronFlowRoute =
+    'earn-staking-tron-stake' | 'earn-staking-tron-unstake' | 'earn-staking-tron-vote';
 
 type TronFlow = {
     operation: StakingOperation;
@@ -51,17 +53,17 @@ type TronFlow = {
 };
 
 const TRON_FLOWS: Record<TronFlowRoute, TronFlow> = {
-    'earn-tron-stake': {
+    'earn-staking-tron-stake': {
         operation: 'stake',
         featureName: 'TR_EARN_TRON_STAKE_TITLE',
         event: events.stakingStakeEvent.name,
     },
-    'earn-tron-unstake': {
+    'earn-staking-tron-unstake': {
         operation: 'unstake',
         featureName: 'TR_EARN_TRON_UNSTAKE_TITLE',
         event: events.stakingUnstakeEvent.name,
     },
-    'earn-tron-vote': {
+    'earn-staking-tron-vote': {
         operation: 'vote',
         featureName: 'TR_EARN_TRON_VOTE',
         event: events.stakingUpdateProviderEvent.name,
@@ -134,11 +136,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
         dispatch(
             gotoThunk({
                 routeName,
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
+                params: getStakingAccountRouteParams(account),
             }),
         );
 
@@ -190,7 +188,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                             <Button
                                 intent="brand"
                                 priority="primary"
-                                onClick={() => goToFlow('earn-tron-stake')}
+                                onClick={() => goToFlow('earn-staking-tron-stake')}
                                 isDisabled={stake.isDisabled}
                                 data-testid="@staking/tron-staked-card/stake-button"
                             >
@@ -209,7 +207,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                                 <Button
                                     intent="neutral"
                                     priority="secondary"
-                                    onClick={() => goToFlow('earn-tron-unstake')}
+                                    onClick={() => goToFlow('earn-staking-tron-unstake')}
                                     isDisabled={unstake.isDisabled}
                                     data-testid="@staking/tron-staked-card/unstake-button"
                                 >
@@ -223,7 +221,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                                 <Button
                                     intent="neutral"
                                     priority="secondary"
-                                    onClick={() => goToFlow('earn-tron-vote')}
+                                    onClick={() => goToFlow('earn-staking-tron-vote')}
                                     isDisabled={vote.isDisabled}
                                     data-testid="@staking/tron-staked-card/vote-button"
                                 >

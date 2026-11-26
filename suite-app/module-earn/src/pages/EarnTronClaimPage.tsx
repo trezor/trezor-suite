@@ -2,12 +2,12 @@ import {
     AccountNotExists,
     TronClaim,
     TronStakePageHeader,
-    useEarnRouteAccount,
     useLayout,
+    useTronStakingRouteAccount,
 } from '@trezor/suite';
 
 export const EarnTronClaimPage = () => {
-    const { account } = useEarnRouteAccount();
+    const account = useTronStakingRouteAccount();
 
     useLayout('Earn', <TronStakePageHeader account={account} />);
 

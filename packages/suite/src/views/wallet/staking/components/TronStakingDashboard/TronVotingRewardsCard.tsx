@@ -24,6 +24,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { CountdownTimer } from '#src/components/suite/CountdownTimer';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { getStakingAccountRouteParams } from '#src/constants/suite/staking';
 import { useTronFirmwareUpgradeModal } from '#src/hooks/earn/useTronFirmwareUpgradeModal';
 import { useTronRewardsClaimCoolDown } from '#src/hooks/earn/useTronRewardsClaimCoolDown';
 import { useSelector } from '#src/hooks/suite/useSelector';
@@ -67,12 +68,8 @@ export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) =
 
         dispatch(
             gotoThunk({
-                routeName: 'earn-tron-claim',
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
+                routeName: 'earn-staking-tron-claim',
+                params: getStakingAccountRouteParams(account),
             }),
         );
 

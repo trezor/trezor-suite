@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { gotoThunk } from '@suite/router';
+import { gotoThunk, selectSettingsBackRoute } from '@suite/router';
 import { type TronFlow } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
@@ -8,6 +8,8 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { EarnFlowComplete } from '#src/components/earn/common/EarnFlowComplete';
 import { EarnFlowFeedbackCard } from '#src/components/earn/common/EarnFlowFeedbackCard';
+import { getStakingAccountRouteParams } from '#src/constants/suite/staking';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 interface TronStakeCompleteProps {
     account: Account;
@@ -25,16 +27,16 @@ export const TronStakeComplete = ({
     children,
 }: TronStakeCompleteProps) => {
     const { dispatch } = useServices(injectDispatch);
+    const previousRoute = useSelector(selectSettingsBackRoute);
 
     const handleBackToOverview = () =>
         dispatch(
             gotoThunk({
-                routeName: 'wallet-staking',
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
+                routeName:
+                    previousRoute.name === 'wallet-staking'
+                        ? 'wallet-staking'
+                        : 'earn-staking-tron',
+                params: getStakingAccountRouteParams(account),
             }),
         );
 

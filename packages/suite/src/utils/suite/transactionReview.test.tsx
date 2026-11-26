@@ -1,6 +1,6 @@
 import { AssetSymbol } from '@suite/assets';
 import { toTokenAddress } from '@suite-common/tokens';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { type FormState } from '@suite-common/wallet-types';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
@@ -31,6 +31,7 @@ type GetTranslationParams = {
     approvalToken: TokenInfo | undefined;
     source: 'heading' | 'button';
     routeName?: string;
+    symbol?: NetworkSymbol;
     isBumpFeeRbfAction?: boolean;
 };
 
@@ -39,10 +40,11 @@ const getTranslation = ({
     approvalToken,
     source,
     routeName,
+    symbol = asNetworkSymbol('eth'),
     isBumpFeeRbfAction = false,
 }: GetTranslationParams) =>
     getTransactionReviewModalActionTranslation({
-        symbol: asNetworkSymbol('eth'),
+        symbol,
         stakeType: null,
         precomposedForm,
         approvalToken,
@@ -157,5 +159,24 @@ describe('getTransactionReviewModalActionTranslation', () => {
                 routeName,
             }),
         ).toEqual({ id: button });
+    });
+
+    it.each([
+        ['withdraw', 'TR_EARN_TRON_WITHDRAW_TITLE'],
+        ['claim', 'TR_EARN_TRON_CLAIM_TITLE'],
+    ] as const)('labels a Tron %s review from the composed transaction', (kind, id) => {
+        const precomposedForm = getFormState({
+            outputs: [],
+            tronStaking: { kind },
+        });
+
+        expect(
+            getTranslation({
+                symbol: asNetworkSymbol('trx'),
+                precomposedForm,
+                approvalToken: undefined,
+                source: 'heading',
+            }),
+        ).toEqual({ id });
     });
 });

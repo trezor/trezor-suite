@@ -136,6 +136,20 @@ const renderRow = ({ account, position, productInfo, messageSystem, firmware }: 
 };
 
 describe('EarnStakingAccountRow', () => {
+    it('opens the Tron product dashboard for the selected account', async () => {
+        const { store } = renderRow({ account: trxAccount, position: tronPosition() });
+
+        await userEvent.click(screen.getByTestId('@earn/dashboard/staking-account/trx-2'));
+
+        await waitFor(() => {
+            expect(store.getState().router).toMatchObject({
+                pathname: '/earn/staking/tron',
+                hash: '#/trx/2/normal',
+                params: { stakingProductId: 'trx:trx:curated:native', accountIndex: 2 },
+            });
+        });
+    });
+
     describe('Tron clock', () => {
         it('ticks the unlock clock on a Tron row only', () => {
             const setIntervalSpy = jest.spyOn(global, 'setInterval');
@@ -204,9 +218,10 @@ describe('EarnStakingAccountRow', () => {
             await userEvent.click(withdrawButton);
 
             await waitFor(() => {
-                expect(store.getState().router.route?.name).toBe('earn-tron-withdraw');
+                expect(store.getState().router.route?.name).toBe('earn-staking-tron-withdraw');
             });
             expect(store.getState().router.params).toMatchObject({
+                stakingProductId: 'trx:trx:curated:native',
                 symbol: 'trx',
                 accountIndex: 2,
                 accountType: 'normal',
@@ -359,7 +374,7 @@ describe('EarnStakingAccountRow', () => {
                     messages.TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING.defaultMessage,
                 ),
             ).toBeInTheDocument();
-            expect(store.getState().router.route?.name).not.toMatch(/^earn-tron/);
+            expect(store.getState().router.route?.name).not.toMatch(/^earn-staking-/);
             expect(report).not.toHaveBeenCalled();
         };
 

@@ -2,7 +2,7 @@ export { EarnClaimPage } from './pages/EarnClaimPage';
 export { EarnDepositPage } from './pages/EarnDepositPage';
 export { EarnPage } from './pages/EarnPage';
 export { EarnTronClaimPage } from './pages/EarnTronClaimPage';
-export { EarnTronRedirectPage } from './pages/EarnTronRedirectPage';
+export { EarnTronDashboardPage } from './pages/EarnTronDashboardPage';
 export { EarnTronStakePage } from './pages/EarnTronStakePage';
 export { EarnTronUnstakePage } from './pages/EarnTronUnstakePage';
 export { EarnTronVotePage } from './pages/EarnTronVotePage';

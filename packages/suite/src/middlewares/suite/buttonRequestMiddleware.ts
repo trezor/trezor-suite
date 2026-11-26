@@ -43,11 +43,11 @@ const SIGN_TX_ROUTES = [
     // would replace the review with ConfirmActionModal midway and reset its step tracking.
     'earn-yield-wrap',
     'earn-yield-unwrap',
-    'earn-tron-stake',
-    'earn-tron-vote',
-    'earn-tron-unstake',
-    'earn-tron-withdraw',
-    'earn-tron-claim',
+    'earn-staking-tron-stake',
+    'earn-staking-tron-vote',
+    'earn-staking-tron-unstake',
+    'earn-staking-tron-withdraw',
+    'earn-staking-tron-claim',
 ] as const;
 
 const SIGN_TX_CONNECT_METHODS = [

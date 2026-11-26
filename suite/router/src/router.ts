@@ -1,3 +1,4 @@
+import { stakingProductIdSchema } from '@suite-common/earn-staking-common';
 import { type WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
 
 import { type Route } from './route';
@@ -135,14 +136,22 @@ const validateEarnYieldParams = (route: Route, hash: HashString) => {
     });
 };
 
-const validateEarnStakingParams = (hash: HashString) => {
+const validateEarnStakingParams = (route: Route, hash: HashString) => {
     const [symbol, index, rawAccountType] = parseHash(hash);
+    const productId = stakingProductIdSchema.safeParse(route.stakingProductId);
+    const accountParams = validateAccountRouteParams({ symbol, index, rawAccountType });
 
-    return validateAccountRouteParams({
-        symbol,
-        index,
-        rawAccountType,
-    });
+    if (
+        !productId.success ||
+        !accountParams ||
+        !index ||
+        !/^\d+$/.test(index) ||
+        !Number.isSafeInteger(accountParams.accountIndex)
+    ) {
+        return;
+    }
+
+    return { ...accountParams, stakingProductId: productId.data };
 };
 
 const parseParamValue = <T>(value: string, defaultValue?: T) => {
@@ -210,7 +219,7 @@ const getAppParams = (route: Route, hash: HashString = '') => {
         case 'earn-yield':
             return validateEarnYieldParams(route, hash);
         case 'earn-staking':
-            return validateEarnStakingParams(hash);
+            return validateEarnStakingParams(route, hash);
         case 'wallet':
             return validateWalletParams(hash);
         default:

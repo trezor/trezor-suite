@@ -13,6 +13,13 @@ export const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
 export const modalAppParams = ['cancelable', 'variant'] as const;
 export const dashboardParams = ['modal', 'networkSymbol'] as const;
 export const earnParams = ['symbol', 'accountIndex', 'accountType', 'vaultAddress'] as const;
+export const tronStakingProductId = 'trx:trx:curated:native';
+
+const tronStakingRoute = {
+    app: 'earn-staking',
+    params: walletParams,
+    stakingProductId: tronStakingProductId,
+} as const;
 export const assetParams = ['symbol', 'contractAddress'] as const;
 
 // Do not export, only for type-checking `routes` itself, instead use the inferred `Route` in @suite/router.
@@ -24,6 +31,7 @@ type RouteDefinition = {
     app: RouterApp;
     // Schema to parse URL hash as segments separated by '/', see walletParams for an example. See top of this file how to add/update them.
     params?: readonly string[];
+    stakingProductId?: string;
     // Whether this app has its own layout, and it also effectively makes it a foreground app, see Preloader.tsc
     isFullscreenApp?: boolean;
     // Whether this app renders with priority over Prerequisites, see Preloader.tsc
@@ -106,39 +114,34 @@ export const routes = [
         params: earnParams,
     },
     {
-        name: 'earn-tron',
-        pattern: '/earn/tron',
-        app: 'earn-staking',
+        name: 'earn-staking-tron',
+        pattern: '/earn/staking/tron',
+        ...tronStakingRoute,
     },
     {
-        name: 'earn-tron-stake',
-        pattern: '/earn/tron/stake',
-        app: 'earn-staking',
-        params: earnParams,
+        name: 'earn-staking-tron-stake',
+        pattern: '/earn/staking/tron/stake',
+        ...tronStakingRoute,
     },
     {
-        name: 'earn-tron-vote',
-        pattern: '/earn/tron/vote',
-        app: 'earn-staking',
-        params: earnParams,
+        name: 'earn-staking-tron-vote',
+        pattern: '/earn/staking/tron/vote',
+        ...tronStakingRoute,
     },
     {
-        name: 'earn-tron-unstake',
-        pattern: '/earn/tron/unstake',
-        app: 'earn-staking',
-        params: earnParams,
+        name: 'earn-staking-tron-unstake',
+        pattern: '/earn/staking/tron/unstake',
+        ...tronStakingRoute,
     },
     {
-        name: 'earn-tron-withdraw',
-        pattern: '/earn/tron/withdraw',
-        app: 'earn-staking',
-        params: earnParams,
+        name: 'earn-staking-tron-withdraw',
+        pattern: '/earn/staking/tron/withdraw',
+        ...tronStakingRoute,
     },
     {
-        name: 'earn-tron-claim',
-        pattern: '/earn/tron/claim',
-        app: 'earn-staking',
-        params: earnParams,
+        name: 'earn-staking-tron-claim',
+        pattern: '/earn/staking/tron/claim',
+        ...tronStakingRoute,
     },
     {
         name: 'apps-embedding-index',

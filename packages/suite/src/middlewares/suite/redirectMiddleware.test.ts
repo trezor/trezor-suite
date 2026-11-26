@@ -2,7 +2,7 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { type LocksRootState, locksInitialState, locksReducer } from '@suite/locks';
 import { type State as ModalReducerState, type ModalRootState, modalReducer } from '@suite/modal';
-import { type GotoThunkDeps, type RouterRootState, routerReducer } from '@suite/router';
+import { type GotoThunkDeps, type RouterRootState, getRoute, routerReducer } from '@suite/router';
 import {
     type RouterStateOverrides,
     createRouterStateMock,
@@ -131,17 +131,7 @@ describe('redirectMiddleware', () => {
                             accountIndex: 2,
                             accountType: 'normal',
                         },
-                        route: {
-                            name: 'wallet-index',
-                            pattern: '/accounts',
-                            app: 'wallet',
-                            params: ['symbol', 'accountIndex', 'accountType'],
-                            isForegroundApp: undefined,
-                            isFullscreenApp: undefined,
-                            isNestedRoute: undefined,
-                            clearUrl: undefined,
-                            hasNestedRoutes: undefined,
-                        },
+                        route: getRoute('wallet-index'),
                     },
                 ),
             );

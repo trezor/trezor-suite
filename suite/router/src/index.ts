@@ -1,3 +1,5 @@
+export { tronStakingProductId } from '@suite/router-config';
+
 export * from './Anchor';
 export * from './anchors';
 export * from './anchorUtils';

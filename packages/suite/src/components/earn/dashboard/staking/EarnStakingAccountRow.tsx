@@ -29,6 +29,7 @@ import { useNow } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
+import { getStakingAccountRouteParams } from '#src/constants/suite/staking';
 import { useStakingOperationSwitch } from '#src/hooks/earn/useStakingOperationSwitch';
 import { useTronFirmwareUpgradeModal } from '#src/hooks/earn/useTronFirmwareUpgradeModal';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
@@ -47,7 +48,7 @@ import { useStakingAccountStatus } from './hooks/useStakingAccountStatus';
 type TronEarnFlow = 'stake' | 'vote' | 'withdraw';
 
 type TronEarnFlowConfig = {
-    routeName: 'earn-tron-stake' | 'earn-tron-vote' | 'earn-tron-withdraw';
+    routeName: 'earn-staking-tron-stake' | 'earn-staking-tron-vote' | 'earn-staking-tron-withdraw';
     eventType:
         | typeof events.stakingStakeEvent.name
         | typeof events.stakingUnstakeEvent.name
@@ -58,17 +59,17 @@ type TronEarnFlowConfig = {
 
 const TRON_EARN_FLOWS: Record<TronEarnFlow, TronEarnFlowConfig> = {
     stake: {
-        routeName: 'earn-tron-stake',
+        routeName: 'earn-staking-tron-stake',
         eventType: events.stakingStakeEvent.name,
         featureName: 'TR_EARN_TRON_STAKE_TITLE',
     },
     vote: {
-        routeName: 'earn-tron-vote',
+        routeName: 'earn-staking-tron-vote',
         eventType: events.stakingUpdateProviderEvent.name,
         featureName: 'TR_EARN_TRON_VOTE',
     },
     withdraw: {
-        routeName: 'earn-tron-withdraw',
+        routeName: 'earn-staking-tron-withdraw',
         eventType: events.stakingUnstakeEvent.name,
         featureName: 'TR_EARN_TRON_WITHDRAW_TITLE',
     },
@@ -204,12 +205,8 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
 
         dispatch(
             gotoThunk({
-                routeName: 'wallet-staking',
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
+                routeName: isTronNetworkType ? 'earn-staking-tron' : 'wallet-staking',
+                params: getStakingAccountRouteParams(account),
             }),
         );
 
@@ -347,11 +344,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         dispatch(
             gotoThunk({
                 routeName,
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
+                params: getStakingAccountRouteParams(account),
             }),
         );
 
