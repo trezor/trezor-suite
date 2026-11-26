@@ -11124,6 +11124,86 @@ export const messages = defineMessages({
         id: 'TR_EARN_DEFI_YIELD',
         defaultMessage: 'DeFi Yield',
     },
+    TR_EARN_YIELD_VAULT_DETAIL_TOKEN_BALANCE: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_TOKEN_BALANCE',
+        defaultMessage: 'Token balance',
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_DEPOSIT_NOW: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_DEPOSIT_NOW',
+        defaultMessage: 'Deposit now',
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_DEPOSIT_MORE: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_DEPOSIT_MORE',
+        defaultMessage: 'Deposit more',
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_WITHDRAW: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_WITHDRAW',
+        defaultMessage: 'Withdraw',
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_BUY: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_BUY',
+        defaultMessage: 'Buy',
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_APY: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_APY',
+        defaultMessage: 'APY',
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_ESIMATED_YEARLY_REWARDS: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_ESIMATED_YEARLY_REWARDS',
+        defaultMessage: 'Estimated yearly rewards',
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_REWARD_PAYOUT: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_REWARD_PAYOUT',
+        defaultMessage: 'Reward payout',
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_EVERY_BLOCK: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_EVERY_BLOCK',
+        defaultMessage: 'Every block',
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_REPRESENTS: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_REPRESENTS',
+        defaultMessage: 'Represents',
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_PROVIDER: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_PROVIDER',
+        defaultMessage: 'Provider',
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_VAULT: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_VAULT',
+        defaultMessage: 'Vault',
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_EARN_MORE_TITLE: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_EARN_MORE_TITLE',
+        defaultMessage: 'Earn more by depositing',
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_EARN_MORE_AVAILABLE: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_EARN_MORE_AVAILABLE',
+        defaultMessage: '{amount} available',
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_EARN_MORE_A_YEAR: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_EARN_MORE_A_YEAR',
+        defaultMessage: '+{amount} a year',
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_REWARDS_WITH_BONUS: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_REWARDS_WITH_BONUS',
+        defaultMessage: '{rewards} and {bonusRewards}',
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_EARN_MORE_CRYPTO: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_EARN_MORE_CRYPTO',
+        defaultMessage: `+{amount}`,
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_EARN_TITLE: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_EARN_TITLE',
+        defaultMessage: 'Earn by depositing',
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_EARN_A_YEAR: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_EARN_A_YEAR',
+        defaultMessage: '{amount} a year',
+    },
+    TR_EARN_YIELD_VAULT_DETAIL_EARN_CRYPTO: {
+        id: 'TR_EARN_YIELD_VAULT_DETAIL_EARN_CRYPTO',
+        defaultMessage: `{amount}`,
+    },
     TR_EARN_STAKING: {
         id: 'TR_EARN_STAKING',
         defaultMessage: 'Staking',

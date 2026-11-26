@@ -66,6 +66,14 @@ describe('router', () => {
                 }),
             ).toEqual('/earn/yield/withdraw#/eth/0/normal/0xvault');
             expect(
+                test('earn-yield-vault', {
+                    symbol: ethSymbol,
+                    accountIndex: 0,
+                    accountType: 'normal',
+                    vaultAddress: '0xvault',
+                }),
+            ).toEqual('/earn/yield/vault#/eth/0/normal/0xvault');
+            expect(
                 test('earn-yield-claim', {
                     symbol: ethSymbol,
                     accountIndex: 0,

@@ -155,7 +155,7 @@ export type UserContextPayload =
           account: Account;
           analyticsStep: Extract<
               EarnAnalyticsStep,
-              'earn-dashboard' | 'yield-deposit' | 'yield-withdraw'
+              'earn-dashboard' | 'vault-detail' | 'yield-deposit' | 'yield-withdraw'
           >;
           actionType?: EarnModalAction;
           yieldContext?: EarnYieldContext;

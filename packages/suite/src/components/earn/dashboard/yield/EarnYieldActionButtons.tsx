@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { type MouseEvent, type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Button, Tooltip } from '@trezor/components';
@@ -15,10 +15,10 @@ type EarnYieldActionButtonsProps = {
     isWithdrawDisabled: boolean;
     depositMessageContent: ReactNode;
     withdrawMessageContent: ReactNode;
-    onDepositMore: () => void;
-    onWithdraw: () => void;
-    onDepositNow: () => void;
-    onBuy: () => void;
+    onDepositMore: (event: MouseEvent<HTMLButtonElement>) => void;
+    onWithdraw: (event: MouseEvent<HTMLButtonElement>) => void;
+    onDepositNow: (event: MouseEvent<HTMLButtonElement>) => void;
+    onBuy: (event: MouseEvent<HTMLButtonElement>) => void;
 };
 
 export const EarnYieldActionButtons = ({

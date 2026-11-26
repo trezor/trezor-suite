@@ -1,3 +1,5 @@
+import { type MouseEvent } from 'react';
+
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { useTranslation } from '@suite/intl';
@@ -99,7 +101,9 @@ export const EarnYieldAccountOpportunity = ({
         compactAmountFormatterContext,
     );
 
-    const navigateToTradingBuy = () => {
+    const navigateToTradingBuy = (event: MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+
         const networkSymbol = opportunity.account?.symbol ?? opportunity.networkSymbol;
         const accountIndex = opportunity.account?.index ?? 0;
         const accountType = opportunity.account?.accountType ?? 'normal';
@@ -153,7 +157,9 @@ export const EarnYieldAccountOpportunity = ({
         tokenContractAddress: opportunity.vault.token.address ?? undefined,
     };
 
-    const openYieldDepositFlow = () => {
+    const openYieldDepositFlow = (event: MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+
         if (!opportunity.account) {
             return;
         }
@@ -196,7 +202,9 @@ export const EarnYieldAccountOpportunity = ({
         );
     };
 
-    const navigateToYieldWithdraw = () => {
+    const navigateToYieldWithdraw = (event: MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+
         if (!opportunity.account || !vaultContractAddress) {
             return;
         }
@@ -230,6 +238,22 @@ export const EarnYieldAccountOpportunity = ({
         dispatch(
             gotoThunk({
                 routeName: 'earn-yield-withdraw',
+                params: getEarnRouteParams({
+                    account: opportunity.account,
+                    vaultAddress: vaultContractAddress,
+                }),
+            }),
+        );
+    };
+
+    const navigateToYieldVault = () => {
+        if (!opportunity.account || !vaultContractAddress) {
+            return;
+        }
+
+        dispatch(
+            gotoThunk({
+                routeName: 'earn-yield-vault',
                 params: getEarnRouteParams({
                     account: opportunity.account,
                     vaultAddress: vaultContractAddress,
@@ -318,6 +342,7 @@ export const EarnYieldAccountOpportunity = ({
                 {firmwareModal}
                 <Card
                     paddingType="small"
+                    onClick={navigateToYieldVault}
                     data-testid={`@earn/dashboard/row/${opportunity.vault.id}`}
                 >
                     <Column gap={12} width="100%">
@@ -387,6 +412,7 @@ export const EarnYieldAccountOpportunity = ({
             {firmwareModal}
             <Table.Row
                 ref={setAnchorElement}
+                onClick={navigateToYieldVault}
                 isHighlighted={shouldHighlight}
                 data-testid={`@earn/dashboard/row/${opportunity.vault.id}`}
             >

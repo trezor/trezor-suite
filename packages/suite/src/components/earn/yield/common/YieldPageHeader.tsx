@@ -22,8 +22,24 @@ import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 import { useYieldBackNavigation } from '../hooks/useYieldBackNavigation';
 
+type YieldPageHeaderAnalyticsStep = Extract<
+    EarnAnalyticsStep,
+    'vault-detail' | 'yield-deposit' | 'yield-withdraw'
+>;
+
+const getBackFlowType = (analyticsStep: YieldPageHeaderAnalyticsStep) => {
+    switch (analyticsStep) {
+        case 'yield-deposit':
+            return 'deposit';
+        case 'yield-withdraw':
+            return 'withdraw';
+        case 'vault-detail':
+            return undefined;
+    }
+};
+
 interface YieldPageHeaderProps {
-    analyticsStep: Extract<EarnAnalyticsStep, 'yield-deposit' | 'yield-withdraw'>;
+    analyticsStep: YieldPageHeaderAnalyticsStep;
     fallbackTitleId: TranslationKey;
     account?: Account;
     routeParams?: EarnParams;
@@ -41,12 +57,12 @@ export const YieldPageHeader = ({
 }: YieldPageHeaderProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { translationString } = useTranslation();
-    const { isBelowMobile } = useLayoutSize();
+    const { isBelowTablet } = useLayoutSize();
     const vaultName = vault?.metadata.name;
     const hasVaultIdentity = !isInvalid && !!account && !!vaultName;
 
     const onBackClick = useYieldBackNavigation({
-        flowType: analyticsStep === 'yield-deposit' ? 'deposit' : 'withdraw',
+        flowType: getBackFlowType(analyticsStep),
         account,
         vault,
     });
@@ -84,7 +100,12 @@ export const YieldPageHeader = ({
     };
 
     const fallbackIcon = routeParams?.symbol ? (
-        <TokenIcon networkSymbol={routeParams.symbol} size={32} isBordered={false} />
+        <TokenIcon
+            networkSymbol={routeParams.symbol}
+            size={32}
+            isBordered={false}
+            isTransparent={true}
+        />
     ) : null;
     const tokenIcon = hasVaultIdentity ? (
         <TokenIcon
@@ -94,13 +115,14 @@ export const YieldPageHeader = ({
             showNetworkIcon
             size={32}
             isBordered={false}
+            isTransparent={true}
             wrappedTokenIcon="network"
         />
     ) : (
         fallbackIcon
     );
 
-    const howItWorks = isBelowMobile ? (
+    const howItWorks = isBelowTablet ? (
         <IconButton
             icon={InfoIcon}
             intent="neutral"

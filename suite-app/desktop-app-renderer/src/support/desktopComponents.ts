@@ -20,6 +20,7 @@ import {
     EarnUnwrapPage,
     EarnWithdrawPage,
     EarnWrapPage,
+    EarnYieldVaultPage,
     WalletStakingPage,
 } from '@suite-app/module-earn';
 import { DashboardPage, HiddenTokensPage } from '@suite-app/module-home';
@@ -81,6 +82,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'earn-yield-claim': EarnClaimPage,
     'earn-yield-unwrap': EarnUnwrapPage,
     'earn-yield-wrap': EarnWrapPage,
+    'earn-yield-vault': EarnYieldVaultPage,
     'earn-tron': EarnTronRedirectPage,
     'earn-tron-stake': EarnTronStakePage,
     'earn-tron-vote': EarnTronVotePage,

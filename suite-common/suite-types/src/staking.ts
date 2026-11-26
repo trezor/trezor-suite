@@ -32,4 +32,5 @@ export type EarnAnalyticsStep =
     | 'yield-deposit'
     | 'yield-withdraw'
     | 'unstake-form-modal'
+    | 'vault-detail'
     | 'withdraw-form-modal';

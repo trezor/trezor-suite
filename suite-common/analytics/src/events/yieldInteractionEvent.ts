@@ -76,7 +76,7 @@ export const yieldInteractionEvent: EventDef<Attributes, EventType.YieldInteract
         },
         value: {
             description:
-                'Optional sub-identifier — for `in-a-nutshell-process-tab`: `deposit` | `withdraw` | `claim`; for `withdraw-unit-toggle`: the unit being switched to (`asset` = underlying deposit token, `shares` = vault receipt token); for `amount-currency-toggle`: the input unit being switched to (`crypto` | `fiat`); for `withdraw-max`: the current unit (`asset` | `shares`); for `pending-tx-open`: the pending tx type (`approve` | `revoke` | `deposit` | `withdraw` | `redeem` | `claim` | `wrap` | `unwrap`), opening in-app details on desktop or the explorer on mobile; omitted for `deposit-max`, `wrap-max` and `unwrap-max`. For the mobile fee elements only: the same operation label as `transaction/broadcast-status` (`stake` | `unstake` | `claim` | `approve` | `revoke` | `merkl-claim` | `yield-deposit` | `yield-withdraw` | `yield-redeem` | `wrap` | `unwrap`); no numeric fee values.',
+                'Optional sub-identifier — for `how-it-works`: the screen it was opened from (`yield-deposit` | `yield-withdraw` | `vault-detail`); for `in-a-nutshell-process-tab`: `deposit` | `withdraw` | `claim`; for `withdraw-unit-toggle`: the unit being switched to (`asset` = underlying deposit token, `shares` = vault receipt token); for `amount-currency-toggle`: the input unit being switched to (`crypto` | `fiat`); for `withdraw-max`: the current unit (`asset` | `shares`); for `pending-tx-open`: the pending tx type (`approve` | `revoke` | `deposit` | `withdraw` | `redeem` | `claim` | `wrap` | `unwrap`), opening in-app details on desktop or the explorer on mobile; omitted for `deposit-max`, `wrap-max` and `unwrap-max`. For the mobile fee elements only: the same operation label as `transaction/broadcast-status` (`stake` | `unstake` | `claim` | `approve` | `revoke` | `merkl-claim` | `yield-deposit` | `yield-withdraw` | `yield-redeem` | `wrap` | `unwrap`); no numeric fee values.',
             changelog: [
                 { version: '26.5.2', notes: 'added' },
                 {
@@ -86,6 +86,10 @@ export const yieldInteractionEvent: EventDef<Attributes, EventType.YieldInteract
                 {
                     version: '26.11.0',
                     notes: 'Fee elements use the fixed mobile Earn operation as value.',
+                },
+                {
+                    version: '26.12.0',
+                    notes: 'added `vault-detail` value for `how-it-works` (desktop)',
                 },
             ],
         },

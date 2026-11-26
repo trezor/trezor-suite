@@ -9,7 +9,7 @@ import {
     type Route,
     type RouterRootState,
     getRoute,
-    gotoThunk,
+    goBackThunk,
     routerLocationChange,
     routerReducer,
 } from '@suite/router';
@@ -62,12 +62,15 @@ const CompletionScreen = ({ children }: PropsWithChildren) => (
     </YieldFlowComplete>
 );
 
+const earnLocationChange = {
+    type: 'router/routerLocationChange',
+    payload: { app: 'earn', route: { name: 'suite-earn' }, params: undefined },
+};
+
 jest.mock('@suite/router', () => ({
     ...jest.requireActual('@suite/router'),
-    gotoThunk: jest.fn(() => ({
-        type: 'router/routerLocationChange',
-        payload: { app: 'earn', route: { name: 'suite-earn' }, params: undefined },
-    })),
+    gotoThunk: jest.fn(() => earnLocationChange),
+    goBackThunk: jest.fn(() => earnLocationChange),
 }));
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
@@ -86,6 +89,13 @@ const earnLocation = {
     pathname: '/earn',
     app: 'earn',
     route: requireRoute('suite-earn'),
+    params: undefined,
+} as const;
+
+const vaultDetailLocation = {
+    pathname: '/earn/yield/vault',
+    app: 'earn-yield',
+    route: requireRoute('earn-yield-vault'),
     params: undefined,
 } as const;
 
@@ -174,7 +184,29 @@ describe('useYieldBackNavigation', () => {
                 type: 'yield/navigate',
                 payload: expect.objectContaining({ action: 'cancel', from: `${flowType}-form` }),
             });
-            expect(gotoThunk).toHaveBeenCalledWith({ routeName: 'suite-earn' });
+            expect(goBackThunk).toHaveBeenCalledTimes(1);
+            expect(goBackThunk).toHaveBeenCalledWith({ fallback: { routeName: 'suite-earn' } });
+        },
+    );
+
+    it.each(['deposit', 'withdraw'] as const)(
+        'reports an unfinished %s exit back to the vault detail it was opened from',
+        sessionType => {
+            const { analytics, store, unmount, flowType } = setup(sessionType);
+
+            act(() => store.dispatch(routerLocationChange(vaultDetailLocation)));
+            unmount();
+
+            expect(analytics.report).toHaveBeenCalledTimes(1);
+            expect(analytics.report).toHaveBeenCalledWith({
+                type: 'yield/navigate',
+                payload: {
+                    action: 'cancel',
+                    from: `${flowType}-form`,
+                    to: 'vault-detail',
+                    networkSymbol: 'eth',
+                },
+            });
         },
     );
 

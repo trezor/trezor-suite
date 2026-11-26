@@ -1,4 +1,5 @@
 import { type ImageType } from '@trezor/components';
+import { isArrayMember, typedObjectKeys } from '@trezor/utils';
 
 type ProviderMetadata = {
     name: string;
@@ -20,3 +21,6 @@ export const EARN_PROVIDER_METADATA = {
 } as const satisfies Record<string, ProviderMetadata>;
 
 export type EarnProviderId = keyof typeof EARN_PROVIDER_METADATA;
+
+export const isEarnProviderId = (providerId: string): providerId is EarnProviderId =>
+    isArrayMember(providerId, typedObjectKeys(EARN_PROVIDER_METADATA));

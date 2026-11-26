@@ -120,6 +120,7 @@ const initStore = (report: jest.Mock, preloadedState: FixtureState) =>
             suiteRouterHistory: {
                 getLocation: jest.fn(),
                 navigate: jest.fn(),
+                back: jest.fn(() => false),
                 listen: jest.fn(() => jest.fn()),
             },
         }),

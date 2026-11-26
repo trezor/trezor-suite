@@ -8,7 +8,7 @@ import { belowBreakpoint, breakpoints } from '@trezor/theme';
 const HeaderLayout = styled.div`
     display: grid;
     grid-template-columns: auto auto minmax(0, 1fr) auto;
-    gap: 2px 12px;
+    gap: 0 12px;
     align-items: center;
     width: 100%;
     min-width: 0;
@@ -82,6 +82,7 @@ type EarnAccountPageHeaderGridProps = {
     balance?: ReactNode;
     actions?: ReactNode;
     isBelowMobile: boolean;
+    isBelowTablet: boolean;
 };
 
 export const EarnAccountPageHeaderGrid = ({
@@ -92,6 +93,7 @@ export const EarnAccountPageHeaderGrid = ({
     balance,
     actions,
     isBelowMobile,
+    isBelowTablet,
 }: EarnAccountPageHeaderGridProps) => (
     <HeaderLayout>
         <Navigation>{backButton}</Navigation>
@@ -101,8 +103,8 @@ export const EarnAccountPageHeaderGrid = ({
         <IdentityTitle>
             <Text
                 as="div"
-                typographyStyle="body-md-strong"
-                ellipsisLineCount={isBelowMobile ? 2 : 1}
+                typographyStyle="body-sm-strong"
+                ellipsisLineCount={isBelowTablet ? 2 : 1}
             >
                 {title}
             </Text>
