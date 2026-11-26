@@ -56,6 +56,10 @@ const SIGN_TX_CONNECT_METHODS = [
     'stellarSignTransaction',
 ] as const;
 
+// A WARD write (e.g. adding a contact) is confirmed on the Trezor with ButtonRequest_ConfirmOutput,
+// which would otherwise open the transaction review. It is a plain confirmation.
+const WARD_CONFIRMATION_NAMES = ['ward_update', 'ward_delete'];
+
 const getAccountForButtonRequest = (state: ButtonRequestMiddlewareState) => {
     const account = selectSelectedAccount(state);
     if (account) return account;
@@ -116,6 +120,19 @@ const buttonRequest =
         // ugly hack to make Ethereum staking and bump fee review modal on specific devices work
         // root cause of this bug is wrong button request ButtonRequest_Other from CardanoSignTx - should be ButtonRequest_SignTx
         if (isUiEventOfType(action, UI_EVENTS.BUTTON_REQUEST)) {
+            if (
+                action.payload.code === 'ButtonRequest_ConfirmOutput' &&
+                action.payload.name !== undefined &&
+                WARD_CONFIRMATION_NAMES.includes(action.payload.name)
+            ) {
+                api.dispatch({
+                    ...action,
+                    payload: { ...action.payload, code: 'ButtonRequest_Other' },
+                });
+
+                return action;
+            }
+
             if (shouldRemapToSignTx(action.payload.code, action.payload.name, api.getState())) {
                 api.dispatch({
                     ...action,
