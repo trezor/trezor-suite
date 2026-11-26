@@ -61,6 +61,7 @@ import {
     initSharedWorker,
     startDbWorker,
 } from '@evolu/common/local-first';
+import { installPolyfills } from '@evolu/common/polyfills';
 import { createBetterSqliteDriver } from '@evolu/nodejs';
 import { hmac } from '@noble/hashes/hmac.js';
 import { sha512 } from '@noble/hashes/sha2.js';
@@ -92,16 +93,18 @@ export const wardOwnerSecret = (evoluNodeHex: string): Uint8Array => {
 
 /** The Evolu owner for a WARD secret, derived the way Suite derives its own from a Trezor node. */
 export const wardOwner = (secretBytes: Uint8Array): AppOwner => {
-    const secret = getOrThrow(OwnerSecret.from(secretBytes));
+    const secret = getOrThrow(OwnerSecret.fromUnknown(secretBytes));
     const owner: Owner = {
         id: ownerIdBytesToOwnerId(
-            getOrThrow(OwnerIdBytes.from(createSlip21(secret, ['OwnerIdBytes']).slice(0, 16))),
+            getOrThrow(
+                OwnerIdBytes.fromUnknown(createSlip21(secret, ['OwnerIdBytes']).slice(0, 16)),
+            ),
         ),
         encryptionKey: getOrThrow(
-            OwnerEncryptionKey.from(createSlip21(secret, ['OwnerEncryptionKey'])),
+            OwnerEncryptionKey.fromUnknown(createSlip21(secret, ['OwnerEncryptionKey'])),
         ),
         writeKey: getOrThrow(
-            OwnerWriteKey.from(createSlip21(secret, ['OwnerWriteKey']).slice(0, 16)),
+            OwnerWriteKey.fromUnknown(createSlip21(secret, ['OwnerWriteKey']).slice(0, 16)),
         ),
     };
 
@@ -139,6 +142,9 @@ type StoredRow = { wardId: string | null; body: string | null; isDeleted: 0 | 1 
 
 /** Evolu's platform deps for Node, with the SQLite files under `dataDir` (null: in memory). */
 const createNodeRun = (dataDir: string | null) => {
+    // Evolu 8.10 calls Map.prototype.getOrInsertComputed, which Node 24 lacks.
+    installPolyfills();
+
     const consoleStoreOutput = createConsoleStoreOutput();
     const console = createConsole({ output: consoleStoreOutput });
     const lockManager = testCreateLockManager();
@@ -371,7 +377,7 @@ export class EvoluWardStorage implements WardTransitionStore {
                             `${wardId} ${transition.counter} ${transition.targetRoot}`,
                         ),
                         wardId,
-                        counter: getOrThrow(NonNegativeInt.from(transition.counter)),
+                        counter: getOrThrow(NonNegativeInt.fromUnknown(transition.counter)),
                         body: JSON.stringify(transition),
                     },
                     { onComplete },
@@ -420,9 +426,9 @@ export class EvoluWardStorage implements WardTransitionStore {
                             `${wardId} ${acceptance.counter} ${acceptance.targetRoot}`,
                         ),
                         wardId,
-                        counter: getOrThrow(NonNegativeInt.from(acceptance.counter)),
+                        counter: getOrThrow(NonNegativeInt.fromUnknown(acceptance.counter)),
                         targetRoot: acceptance.targetRoot,
-                        timestamp: getOrThrow(NonNegativeInt.from(acceptance.timestamp)),
+                        timestamp: getOrThrow(NonNegativeInt.fromUnknown(acceptance.timestamp)),
                         wmSignature: acceptance.wmSignature,
                     },
                     { onComplete },
