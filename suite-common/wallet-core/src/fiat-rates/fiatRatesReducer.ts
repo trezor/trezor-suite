@@ -131,13 +131,16 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                     const fiatRateKey = getFiatRateKeyFromTicker(tickerId, baseCurrencyCode);
 
                     // combine new rates with existing historic rates
-                    state['historic'][fiatRateKey] = {
-                        ...state['historic'][fiatRateKey],
-                        ...rates.reduce(
-                            (acc, rate) => ({ ...acc, [rate.lastTickerTimestamp]: rate.rate }),
-                            {},
-                        ),
-                    };
+                    state['historic'][fiatRateKey] = rates.reduce(
+                        (historicRates, { lastTickerTimestamp, rate }) => {
+                            if (rate !== undefined) {
+                                historicRates[lastTickerTimestamp] = rate;
+                            }
+
+                            return historicRates;
+                        },
+                        state['historic'][fiatRateKey] ?? {},
+                    );
                 });
             })
             .addMatcher(
