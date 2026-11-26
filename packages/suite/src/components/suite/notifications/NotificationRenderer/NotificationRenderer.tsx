@@ -2,6 +2,7 @@ import { type JSX } from 'react';
 
 import { type ErrorCode } from 'invity-api';
 
+import { WALLET_MISMATCH_ERROR_CODE } from '@suite/device';
 import { type ExtendedMessageDescriptor, Translation, useTranslation } from '@suite/intl';
 import { TRADING_ERROR_MESSAGE } from '@suite/trading';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
@@ -32,12 +33,17 @@ type RenderConfig = {
 };
 
 // Connect uses the default Device_InvalidState message only for a passphrase that does not match the wallet.
-const getErrorValue = (error: string) =>
-    error === ERRORS.ERROR_CODES.Device_InvalidState ? (
-        <Translation id="TOAST_PASSPHRASE_MISMATCH_ERROR" />
-    ) : (
-        error
-    );
+const getErrorValue = (error: string) => {
+    if (error === ERRORS.ERROR_CODES.Device_InvalidState) {
+        return <Translation id="TOAST_PASSPHRASE_MISMATCH_ERROR" />;
+    }
+
+    if (error === WALLET_MISMATCH_ERROR_CODE) {
+        return <Translation id="TR_DEVICE_WALLET_MISMATCH" />;
+    }
+
+    return error;
+};
 
 /**
  * Renders a notification with the provided configuration.

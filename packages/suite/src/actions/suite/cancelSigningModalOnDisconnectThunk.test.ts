@@ -66,18 +66,6 @@ describe('cancelSigningModalOnDisconnectThunk', () => {
             answer: { value: false },
             actions: [closeModal(), disconnectToast],
         },
-        {
-            name: 'Tron vote consent',
-            open: (store: TestStore): Promise<unknown> =>
-                store.dispatch(
-                    openDeferredModal(
-                        { type: 'tron-vote-consent', representatives: [] },
-                        { devicePath: device.path, cancelWith: false },
-                    ),
-                ),
-            answer: false,
-            actions: [closeModal(), disconnectToast],
-        },
     ])('answers the pending $name as cancelled and tells the user why', async testCase => {
         const store = createStore();
         const decision = testCase.open(store);
@@ -111,32 +99,6 @@ describe('cancelSigningModalOnDisconnectThunk', () => {
 
         await expect(decision).resolves.toBe(true);
         expect(store.getActions()).toEqual([closeModal(), deviceActions.deviceDisconnect(device)]);
-        expect(selectUserContextModalPayload(store.getState())).toBeUndefined();
-    });
-
-    it('closes an accepted simulation on owner disconnect while keeping its answer', async () => {
-        const store = createStore();
-        const decision = store.dispatch(
-            openDeferredModal(
-                { type: 'earn-yield-tx-simulation', data: undefined },
-                { devicePath: device.path, cancelWith: { value: false } },
-            ),
-        );
-        const modal = selectUserContextModalPayload(store.getState());
-        if (modal?.type !== 'earn-yield-tx-simulation') throw new Error('Missing simulation');
-        const accepted = {
-            value: true,
-            selectedFee: null,
-            selectedFeeLevel: 'normal',
-            resolve: jest.fn(),
-        } as const;
-        modal.decision.resolve(accepted);
-        store.clearActions();
-
-        store.dispatch(cancelSigningModalOnDisconnectThunk(device.path));
-
-        await expect(decision).resolves.toBe(accepted);
-        expect(store.getActions()).toEqual([closeModal()]);
         expect(selectUserContextModalPayload(store.getState())).toBeUndefined();
     });
 

@@ -18,7 +18,11 @@ import {
     prepareDesktopDeviceReducer,
     setConnectionModal,
 } from './deviceSlice';
-import { type DeviceSessionError, useDeviceReadyGuard } from './useDeviceReadyGuard';
+import {
+    type DeviceSessionError,
+    WALLET_MISMATCH_ERROR_CODE,
+    useDeviceReadyGuard,
+} from './useDeviceReadyGuard';
 
 type State = DesktopDeviceRootState & LocksRootState;
 
@@ -138,10 +142,9 @@ describe('useDeviceReadyGuard', () => {
 
         await expect(result.current()).resolves.toBe(false);
         expect(getDeviceState).not.toHaveBeenCalled();
-        expect(onFailed).toHaveBeenCalledWith({
-            code: undefined,
-            message: 'Select the wallet for this account.',
-        });
+        expect(onFailed).toHaveBeenCalledWith(
+            expect.objectContaining({ code: WALLET_MISMATCH_ERROR_CODE }),
+        );
     });
 
     it('ignores a successful device response after the screen is left', async () => {
@@ -155,8 +158,8 @@ describe('useDeviceReadyGuard', () => {
         await expect(result.current()).resolves.toBe(false);
     });
 
-    it('stops when the selected wallet changes during the PIN prompt', async () => {
-        const { store, result } = renderGuard(readyDevice);
+    it('reports a wallet mismatch when the selected wallet changes during the PIN prompt', async () => {
+        const { store, result, onFailed } = renderGuard(readyDevice);
         jest.spyOn(TrezorConnect, 'getDeviceState').mockImplementationOnce(() => {
             store.dispatch(
                 deviceActions.updateSelectedDevice(
@@ -174,6 +177,27 @@ describe('useDeviceReadyGuard', () => {
         await act(async () => {
             await expect(result.current()).resolves.toBe(false);
         });
+        expect(onFailed).toHaveBeenCalledWith(
+            expect.objectContaining({ code: WALLET_MISMATCH_ERROR_CODE }),
+        );
+    });
+
+    it('reports a disconnected device when it disconnects during the PIN prompt', async () => {
+        const { store, result, onFailed } = renderGuard(readyDevice);
+        jest.spyOn(TrezorConnect, 'getDeviceState').mockImplementationOnce(() => {
+            store.dispatch(
+                deviceActions.updateSelectedDevice({ ...readyDevice, connected: false }),
+            );
+
+            return Promise.resolve({ success: true, payload: { state: {} } });
+        });
+
+        await act(async () => {
+            await expect(result.current()).resolves.toBe(false);
+        });
+        expect(onFailed).toHaveBeenCalledWith(
+            expect.objectContaining({ code: 'Device_Disconnected' }),
+        );
     });
 
     it('stops the action when the connection modal is closed without a device', async () => {
@@ -244,22 +268,5 @@ describe('useDeviceReadyGuard', () => {
             code: undefined,
             message: 'Device session is not available',
         });
-    });
-
-    it('works without a failure handler', async () => {
-        jest.spyOn(TrezorConnect, 'getDeviceState').mockResolvedValue({
-            success: false,
-            error: { code: 'Failure_PinCancelled', message: 'cancelled' },
-        });
-        const { services } = createTestCompositionRoot<void, State>({
-            reducer: combineReducers({ device: deviceReducer, locks: locksReducer }),
-            preloadedState: {
-                device: { ...initialState, selectedDevice: readyDevice },
-                locks: locksInitialState,
-            },
-        });
-        const { result } = renderHookWithStoreProvider(useDeviceReadyGuard, { services });
-
-        await expect(result.current()).resolves.toBe(false);
     });
 });

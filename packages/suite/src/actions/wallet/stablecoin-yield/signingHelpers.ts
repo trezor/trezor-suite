@@ -1,5 +1,6 @@
 import { type Dispatch, type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
+import { WALLET_MISMATCH_ERROR_CODE } from '@suite/device';
 import {
     type ModalRootState,
     closeModal,
@@ -37,7 +38,7 @@ import {
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
-import { asCoinSymbol } from '@trezor/connect-common';
+import { ERRORS, asCoinSymbol } from '@trezor/connect-common';
 
 import { getDeviceErrorMessage } from '#src/utils/wallet/getDeviceErrorMessage';
 
@@ -91,6 +92,14 @@ export const showYieldSubmitErrorThunk =
 export const getYieldSubmitErrorAnalyticsMessage = (error: unknown) =>
     isYieldPushError(error) ? 'push-failed' : 'submit-failed';
 
+export const createYieldSigningDeviceError = (
+    device: TrezorDevice | undefined,
+    account: Pick<Account, 'deviceState'>,
+) =>
+    device?.connected && device.available && device.state?.staticSessionId !== account.deviceState
+        ? new Error('Wallet mismatch', { cause: WALLET_MISMATCH_ERROR_CODE })
+        : new Error(ERRORS.ERROR_CODES.Device_Disconnected, { cause: 'Device_Disconnected' });
+
 export const isYieldSigningDevice = (
     device: TrezorDevice | undefined,
     account: Pick<Account, 'deviceState'>,
@@ -119,7 +128,7 @@ export const openYieldSimulationThunk =
             !device.state?.staticSessionId ||
             device.state.staticSessionId !== owner.state?.staticSessionId
         ) {
-            return Promise.resolve({ value: false } as const);
+            return Promise.reject(createYieldSigningDeviceError(device, data.account));
         }
 
         return dispatch(
@@ -204,7 +213,7 @@ export const sendYieldTransaction = async ({
     const addressDisplayType = selectAddressDisplayType(getState());
 
     if (!isYieldSigningDevice(device, account)) {
-        return { status: 'cancelled', stage: 'signing' };
+        throw createYieldSigningDeviceError(device, account);
     }
 
     if (account.networkType !== 'ethereum') {

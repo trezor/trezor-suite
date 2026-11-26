@@ -16,6 +16,18 @@ export type DeviceSessionError = {
     message: string;
 };
 
+export const WALLET_MISMATCH_ERROR_CODE = 'Wallet_Mismatch';
+
+const WALLET_MISMATCH_ERROR: DeviceSessionError = {
+    code: WALLET_MISMATCH_ERROR_CODE,
+    message: 'The selected wallet does not own the account',
+};
+
+const DEVICE_DISCONNECTED_ERROR: DeviceSessionError = {
+    code: 'Device_Disconnected',
+    message: 'Device disconnected',
+};
+
 type UseDeviceReadyGuardParams = {
     expectedWallet?: string;
     onFailed?: (error: DeviceSessionError) => void;
@@ -81,7 +93,7 @@ export const useDeviceReadyGuard = ({
 
         const connectedWallet = connectedDevice.state?.staticSessionId;
         if (expectedWallet && connectedWallet && connectedWallet !== expectedWallet) {
-            onFailed?.({ code: undefined, message: 'Select the wallet for this account.' });
+            onFailed?.(WALLET_MISMATCH_ERROR);
 
             return false;
         }
@@ -89,18 +101,35 @@ export const useDeviceReadyGuard = ({
         const session = await verifyDeviceSession(connectedDevice);
         if (!mounted.current) return false;
 
-        if (session.status === 'failed') {
-            onFailed?.({ code: session.code, message: session.message });
+        if (session.status !== 'verified') {
+            if (session.status === 'failed') {
+                onFailed?.({ code: session.code, message: session.message });
+            }
+
+            return false;
         }
 
         const selected = selectSelectedDevice(getState());
 
-        return (
-            session.status === 'verified' &&
+        if (
             isDeviceConnected(selected) &&
-            selected.path === connectedDevice.path &&
-            selected.instance === connectedDevice.instance &&
-            selected.state?.staticSessionId === (expectedWallet ?? connectedWallet)
-        );
+            selected.state?.staticSessionId !== (expectedWallet ?? connectedWallet)
+        ) {
+            onFailed?.(WALLET_MISMATCH_ERROR);
+
+            return false;
+        }
+
+        if (
+            !isDeviceConnected(selected) ||
+            selected.path !== connectedDevice.path ||
+            selected.instance !== connectedDevice.instance
+        ) {
+            onFailed?.(DEVICE_DISCONNECTED_ERROR);
+
+            return false;
+        }
+
+        return true;
     }, [device, requestConnection, expectedWallet, onFailed, getState]);
 };

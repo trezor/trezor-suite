@@ -2654,6 +2654,10 @@ export const messages = defineMessages({
         defaultMessage: 'Device not connected',
         id: 'TR_DEVICE_NOT_CONNECTED',
     },
+    TR_DEVICE_WALLET_MISMATCH: {
+        defaultMessage: 'Select the wallet that owns this account.',
+        id: 'TR_DEVICE_WALLET_MISMATCH',
+    },
     TR_DEVICE_FW_UNKNOWN: {
         defaultMessage: 'Unknown',
         id: 'TR_DEVICE_FW_UNKNOWN',

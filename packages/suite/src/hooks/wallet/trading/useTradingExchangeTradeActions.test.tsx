@@ -424,15 +424,20 @@ describe('useTradingExchangeTradeActions', () => {
         });
 
         it.each([
-            ['disconnects', undefined],
-            ['becomes unavailable', mockSuiteDevice({ ...DEVICE, available: false })],
+            ['disconnects', undefined, 'TR_DEVICE_NOT_CONNECTED'],
+            [
+                'becomes unavailable',
+                mockSuiteDevice({ ...DEVICE, available: false }),
+                'TR_DEVICE_NOT_CONNECTED',
+            ],
             [
                 'switches wallets',
                 mockSuiteDevice({ ...DEVICE, state: { staticSessionId: 'other@device:0' } }),
+                'Wallet_Mismatch',
             ],
         ] as const)(
             'stops when the selected device %s before signing',
-            async (_, selectedDevice) => {
+            async (_, selectedDevice, expectedError) => {
                 const { result, getActions } = renderActions({ selectedDevice });
 
                 await result.current.signDataAndConfirm();
@@ -441,7 +446,7 @@ describe('useTradingExchangeTradeActions', () => {
                 expect(getActions()).toContainEqual(
                     expect.objectContaining({
                         type: notificationsActions.addToast.type,
-                        payload: expect.objectContaining({ error: 'TR_DEVICE_NOT_CONNECTED' }),
+                        payload: expect.objectContaining({ error: expectedError }),
                     }),
                 );
             },

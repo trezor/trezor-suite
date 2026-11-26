@@ -1,3 +1,4 @@
+import { WALLET_MISMATCH_ERROR_CODE } from '@suite/device';
 import { ERRORS } from '@trezor/connect-common';
 
 const DEVICE_DISCONNECTED_DURING_ACTION = 'device disconnected during action';
@@ -18,6 +19,10 @@ export const getDeviceErrorMessage = ({ code, message }: DeviceError) => {
 
     if (code === 'Device_Disconnected' || message.includes(DEVICE_DISCONNECTED_DURING_ACTION)) {
         return ERRORS.ERROR_CODES.Device_Disconnected;
+    }
+
+    if (code === WALLET_MISMATCH_ERROR_CODE) {
+        return WALLET_MISMATCH_ERROR_CODE;
     }
 
     return undefined;

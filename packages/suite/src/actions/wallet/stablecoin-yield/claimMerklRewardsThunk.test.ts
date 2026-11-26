@@ -12,6 +12,7 @@ import {
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type EthereumGetCurrentNonceThunkState, yieldActions } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -256,10 +257,16 @@ describe('claimMerklRewardsThunk', () => {
             });
         });
 
-        const { result } = await dispatchClaim(jest.fn());
+        const { result, store } = await dispatchClaim(jest.fn());
 
-        expect(result).toBeNull();
+        expect(result).toBeUndefined();
         expect(resolve).toHaveBeenCalledTimes(1);
+        expect(store.getActions()).toContainEqual(
+            expect.objectContaining({
+                type: notificationsActions.addToast.type,
+                payload: expect.objectContaining({ type: 'sign-tx-error' }),
+            }),
+        );
         expect(TrezorConnect.ethereumSignTransaction).not.toHaveBeenCalled();
     });
 

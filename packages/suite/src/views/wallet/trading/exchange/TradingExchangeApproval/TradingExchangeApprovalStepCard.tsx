@@ -69,7 +69,7 @@ export const TradingExchangeApprovalStepCard = ({
     getCryptoInfo,
 }: TradingExchangeApprovalStepCardProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const ensureDeviceReady = useDeviceReadyGuardWithToast();
+    const ensureDeviceReady = useDeviceReadyGuardWithToast(account.deviceState);
     const { confirmApproval, confirmPendingApproval } = useExchangeApproval({ account });
     const { handleClick, disabled: isPreparingApproval } = useAsyncClickHandler();
     const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);

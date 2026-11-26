@@ -54,7 +54,6 @@ type TradingOfferExchangeProps = {
 export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) => {
     const { handleClick, disabled } = useAsyncClickHandler();
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const ensureDeviceReady = useDeviceReadyGuardWithToast();
     const formStep = useSelector(selectTradingExchangeFormStep);
     const providers = useSelector(selectTradingExchangeProviders);
     const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
@@ -68,6 +67,7 @@ export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) =
         sendTransaction,
         signDataAndConfirm,
     } = useTradingExchangeTradeActions();
+    const ensureDeviceReady = useDeviceReadyGuardWithToast(sendAccount?.deviceState);
 
     const { feeInfo, composeFormState, applySelectedFee, composableFeeLevels } =
         useTradingExchangeConfirmFees(sendAccount);
