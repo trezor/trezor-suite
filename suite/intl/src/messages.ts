@@ -5773,6 +5773,107 @@ export const messages = defineMessages({
         defaultMessage:
             'Your Trezor will apply the change once the WARD Manager confirms it. Keep wardd running.',
     },
+    TR_CONTACTS_SHARE_TITLE: {
+        id: 'TR_CONTACTS_SHARE_TITLE',
+        defaultMessage: 'Share an address with a contact',
+    },
+    TR_CONTACTS_SHARE_DESCRIPTION: {
+        id: 'TR_CONTACTS_SHARE_DESCRIPTION',
+        defaultMessage:
+            'Your Trezor shows your next receive address and signs it with your contact ID. When the contact pays it, their Trezor shows your name. Share a new address for every payment.',
+    },
+    TR_CONTACTS_SHARE_ACCOUNT_OPTION: {
+        id: 'TR_CONTACTS_SHARE_ACCOUNT_OPTION',
+        defaultMessage: '{account} ({path})',
+    },
+    TR_CONTACTS_SHARE_NO_ACCOUNT: {
+        id: 'TR_CONTACTS_SHARE_NO_ACCOUNT',
+        defaultMessage: 'This wallet has no Bitcoin account to share an address from.',
+    },
+    TR_CONTACTS_SHARE_BUTTON: {
+        id: 'TR_CONTACTS_SHARE_BUTTON',
+        defaultMessage: 'Share address',
+    },
+    TR_CONTACTS_SHARE_RESULT: {
+        id: 'TR_CONTACTS_SHARE_RESULT',
+        defaultMessage: 'Send this text to your contact:',
+    },
+    TR_CONTACTS_SHARE_NOT_REMEMBERED: {
+        id: 'TR_CONTACTS_SHARE_NOT_REMEMBERED',
+        defaultMessage:
+            'Remember this wallet to share addresses. Suite keeps the shared addresses only for a remembered wallet, so it never shares one twice.',
+    },
+    TR_CONTACTS_PASTE_ADDRESS: {
+        id: 'TR_CONTACTS_PASTE_ADDRESS',
+        defaultMessage: 'Paste address',
+    },
+    TR_CONTACTS_PASTE_ADDRESS_TITLE: {
+        id: 'TR_CONTACTS_PASTE_ADDRESS_TITLE',
+        defaultMessage: 'Paste an address from {name}',
+    },
+    TR_CONTACTS_PASTE_ADDRESS_LABEL: {
+        id: 'TR_CONTACTS_PASTE_ADDRESS_LABEL',
+        defaultMessage: 'Shared address',
+    },
+    TR_CONTACTS_PASTE_ADDRESS_HINT: {
+        id: 'TR_CONTACTS_PASTE_ADDRESS_HINT',
+        defaultMessage: 'Paste the text {name} copied from Contacts in Trezor Suite.',
+    },
+    TR_CONTACTS_PASTE_ADDRESS_SAVE: {
+        id: 'TR_CONTACTS_PASTE_ADDRESS_SAVE',
+        defaultMessage: 'Save address',
+    },
+    TR_CONTACTS_ADDRESSES_TO_PAY: {
+        id: 'TR_CONTACTS_ADDRESSES_TO_PAY',
+        defaultMessage:
+            '{count, plural, =0 {No address to pay} one {# address to pay} other {# addresses to pay}}',
+    },
+    TR_CONTACTS_ERROR_INVALID_SHARE: {
+        id: 'TR_CONTACTS_ERROR_INVALID_SHARE',
+        defaultMessage: 'This is not an address shared from Contacts in Trezor Suite.',
+    },
+    TR_CONTACTS_ERROR_INVALID_ATTESTATION: {
+        id: 'TR_CONTACTS_ERROR_INVALID_ATTESTATION',
+        defaultMessage: "The address is not signed by the contact's Trezor.",
+    },
+    TR_CONTACTS_ERROR_NPUB_MISMATCH: {
+        id: 'TR_CONTACTS_ERROR_NPUB_MISMATCH',
+        defaultMessage: 'The contact ID in the text does not match its signature.',
+    },
+    TR_CONTACTS_ERROR_UNSUPPORTED_NETWORK: {
+        id: 'TR_CONTACTS_ERROR_UNSUPPORTED_NETWORK',
+        defaultMessage: 'Contacts can pay only Bitcoin, Testnet and Regtest addresses.',
+    },
+    TR_CONTACTS_ERROR_OTHER_CONTACT: {
+        id: 'TR_CONTACTS_ERROR_OTHER_CONTACT',
+        defaultMessage: 'This address was shared by someone else, not by this contact.',
+    },
+    TR_CONTACTS_ERROR_ADDRESS_PAID: {
+        id: 'TR_CONTACTS_ERROR_ADDRESS_PAID',
+        defaultMessage: 'This contact address was already paid. Ask the contact for a new address.',
+    },
+    TR_CONTACTS_ERROR_UNSUPPORTED_ACCOUNT: {
+        id: 'TR_CONTACTS_ERROR_UNSUPPORTED_ACCOUNT',
+        defaultMessage: 'Contact addresses work only with Bitcoin accounts.',
+    },
+    TR_CONTACTS_ERROR_NO_FRESH_ADDRESS: {
+        id: 'TR_CONTACTS_ERROR_NO_FRESH_ADDRESS',
+        defaultMessage:
+            'This account has no unused address left to share. Receive a payment first.',
+    },
+    TR_CONTACTS_ERROR_NOT_ATTESTED: {
+        id: 'TR_CONTACTS_ERROR_NOT_ATTESTED',
+        defaultMessage:
+            'Your Trezor showed the address but did not sign it. Pick another account or update the firmware.',
+    },
+    TR_CONTACTS_PAY_CONTACT: {
+        id: 'TR_CONTACTS_PAY_CONTACT',
+        defaultMessage: 'Pay a contact',
+    },
+    TR_CONTACTS_PICKER_QUEUED: {
+        id: 'TR_CONTACTS_PICKER_QUEUED',
+        defaultMessage: 'Waiting for the WARD Manager, your Trezor shows the bare address',
+    },
     TR_WALLET: {
         id: 'TR_WALLET',
         defaultMessage: 'Accounts',

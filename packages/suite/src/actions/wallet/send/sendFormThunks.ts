@@ -7,6 +7,10 @@ import {
     selectSelectedAccountKey,
 } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import {
+    type GetSendFormContactOutputsThunkState,
+    getSendFormContactOutputsThunk,
+} from '@suite/contacts';
 import { processLegacyMetadataIntoSuiteSyncThunk } from '@suite/labeling';
 import {
     type MetadataRootState,
@@ -14,12 +18,18 @@ import {
     selectMetadataEnabled,
 } from '@suite/metadata';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
+import {
+    type MarkContactAddressesSpentThunkDeps,
+    type MarkContactAddressesSpentThunkState,
+    markContactAddressesSpentThunk,
+} from '@suite-common/contacts';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { type WithSuiteSyncState, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type CancelSignSendFormTransactionThunkDeps,
     type CancelSignSendFormTransactionThunkState,
@@ -254,9 +264,15 @@ type SignAndPushSendFormTransactionThunkParams = {
     shouldShowApprovalToast?: boolean;
 };
 
+// The toast prefixes the signing error, so this is only the reason.
+const CONTACT_ADDRESS_PAID_ERROR =
+    'This contact address was already paid. Ask the contact for a new address.';
+
 export type SignAndPushSendFormTransactionThunkState = ApplySendFormMetadataLabelsThunkState &
     CancelSignSendFormTransactionThunkState &
     EnhancePrecomposedTransactionThunkState &
+    GetSendFormContactOutputsThunkState &
+    MarkContactAddressesSpentThunkState &
     MessageSystemRootState &
     PushSendFormTransactionThunkState &
     SignTransactionThunkState &
@@ -265,6 +281,7 @@ export type SignAndPushSendFormTransactionThunkState = ApplySendFormMetadataLabe
 
 export type SignAndPushSendFormTransactionThunkDeps = ApplySendFormMetadataLabelsThunkDeps &
     CancelSignSendFormTransactionThunkDeps &
+    MarkContactAddressesSpentThunkDeps &
     PushSendFormTransactionThunkDeps &
     UpdateRbfLabelsThunkDeps &
     WithServices<DesktopAnalyticsDep>;
@@ -309,6 +326,27 @@ export const signAndPushSendFormTransactionThunk = createThunk<
             }),
         ).unwrap();
 
+        // Checked right before signing: another Suite of the wallet may have paid the contact
+        // address since it was picked.
+        const contactOutputs = await dispatch(
+            getSendFormContactOutputsThunk({
+                accountKey: selectedAccount.key,
+                formState,
+                paymentRequests,
+            }),
+        ).unwrap();
+
+        if (!contactOutputs.success) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'sign-tx-error',
+                    error: CONTACT_ADDRESS_PAID_ERROR,
+                }),
+            );
+
+            return;
+        }
+
         // TransactionReviewModal has 2 steps: signing and pushing
         // TrezorConnect emits UI_EVENTS.CLOSE_UI_WINDOW after the signing process
         // this action is blocked by preserveModal()
@@ -327,6 +365,7 @@ export const signAndPushSendFormTransactionThunk = createThunk<
                 precomposedTransaction: enhancedPrecomposedTransaction,
                 selectedAccount,
                 paymentRequests,
+                contactOutputs: contactOutputs.payload,
             }),
         );
 
@@ -420,6 +459,15 @@ export const signAndPushSendFormTransactionThunk = createThunk<
 
         const result = pushResponse.payload;
         const { txid } = result.payload;
+
+        if (contactOutputs.payload.length > 0) {
+            dispatch(
+                markContactAddressesSpentThunk({
+                    accountKey: selectedAccount.key,
+                    addresses: contactOutputs.payload.map(({ address }) => address),
+                }),
+            );
+        }
 
         if (isBumpFeeRbf && device.state?.staticSessionId) {
             dispatch(

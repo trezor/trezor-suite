@@ -33,6 +33,7 @@
         {
             "path": "../../suite-common/connect-popup"
         },
+        { "path": "../../suite-common/contacts" },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/device-authenticity"
@@ -171,6 +172,7 @@
         { "path": "../../suite/backup" },
         { "path": "../../suite/bluetooth" },
         { "path": "../../suite/coinjoin" },
+        { "path": "../../suite/contacts" },
         { "path": "../../suite/debug" },
         { "path": "../../suite/desktop-app-api" },
         { "path": "../../suite/desktop-update" },
