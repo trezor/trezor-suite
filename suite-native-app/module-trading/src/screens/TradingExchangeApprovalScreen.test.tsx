@@ -13,7 +13,7 @@ import {
 } from '@suite-native/navigation';
 import { fireEvent, within } from '@suite-native/test-utils-store';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
-import { type TradingRootState } from '@suite-native/trading-state';
+import { type TradingRootState, tradingActions } from '@suite-native/trading-state';
 
 import { TradingExchangeApprovalScreen } from './TradingExchangeApprovalScreen';
 import { APPROVAL_CONTINUE_BUTTON_TEST_ID } from '../components/exchange/Approval/ApprovalButton';
@@ -243,6 +243,17 @@ describe('TradingExchangeApprovalScreen', () => {
                 getTranslation('moduleTrading.tradingExchangeFlowScreen.revokeStep.nextStepTitle'),
             ),
         ).toBeOnTheScreen();
+        expect(getByTestId('@step-cards/current')).toHaveTextContent(
+            getTranslation('stepCards.stepper', { stepNumber: 2, stepCount: 3 }),
+            { exact: false },
+        );
+    });
+
+    it('should render the step number of the flow stored on quote selection', async () => {
+        store.dispatch(tradingActions.setExchangeFlowApprovalStatus('needs_revoke'));
+
+        const { getByTestId } = await renderScreen();
+
         expect(getByTestId('@step-cards/current')).toHaveTextContent(
             getTranslation('stepCards.stepper', { stepNumber: 2, stepCount: 3 }),
             { exact: false },

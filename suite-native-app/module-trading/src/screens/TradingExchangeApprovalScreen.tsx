@@ -4,7 +4,10 @@ import { useSelector } from 'react-redux';
 import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader, type TradingStackRoutes } from '@suite-native/navigation';
-import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+import {
+    selectExchangeFlowApprovalStatus,
+    selectExchangeSelectedSendAccount,
+} from '@suite-native/trading-state';
 import { type TradingStackScreenProps } from '@suite-native/trading-types';
 
 import { ApprovalButton } from '../components/exchange/Approval/ApprovalButton';
@@ -24,7 +27,9 @@ export const TradingExchangeApprovalScreen = ({
     route: { params },
 }: TradingExchangeApprovalScreenProps) => {
     const { shouldIncreaseLimit, isRevoked } = params;
-    const approvalStatus = getExchangeApprovalFlowStatus({ isRevoked, shouldIncreaseLimit });
+    const paramsApprovalStatus = getExchangeApprovalFlowStatus({ isRevoked, shouldIncreaseLimit });
+    // The status stored on quote selection covers the steps of the whole flow.
+    const approvalStatus = useSelector(selectExchangeFlowApprovalStatus) ?? paramsApprovalStatus;
     const { quote, coinSymbol, isApprovalReady, isDisabled, onApprovalTypeChange } =
         useExchangeApprovalStep({ isRevoked });
     const account = useSelector(selectExchangeSelectedSendAccount);
@@ -64,7 +69,7 @@ export const TradingExchangeApprovalScreen = ({
                 />
             }
         >
-            {approvalStatus === 'needs_increase' ? (
+            {paramsApprovalStatus === 'needs_increase' ? (
                 <ExchangeFlowIncreaseStepContent
                     coinSymbol={coinSymbol}
                     limitRow={limitRow}
