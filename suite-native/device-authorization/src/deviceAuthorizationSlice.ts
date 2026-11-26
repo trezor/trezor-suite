@@ -91,7 +91,7 @@ export const selectDeviceAuthorizationStep = (state: DeviceAuthorizationRootStat
     state.deviceAuthorization.deviceAuthorizationStep;
 
 export const selectDeviceRequestedPin = (state: DeviceAuthorizationRootState) =>
-    state.deviceAuthorization.deviceAuthorizationStep === DeviceAuthorizationStep.PinRequested;
+    selectDeviceAuthorizationStep(state) === DeviceAuthorizationStep.PinRequested;
 
 export const selectPassphraseRequestId = (state: DeviceAuthorizationRootState) =>
     state.deviceAuthorization.passphraseRequestId;

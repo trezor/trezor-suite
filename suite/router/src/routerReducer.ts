@@ -117,7 +117,7 @@ export const selectIsForegroundApp = (state: RouterRootState) =>
 export const selectIsFullscreenApp = (state: RouterRootState) =>
     selectRoute(state)?.isFullscreenApp === true;
 export const selectForegroundAppParams = (state: RouterRootState) =>
-    state.router.route?.isForegroundApp === true ? state.router.params : undefined;
+    selectRoute(state)?.isForegroundApp === true ? selectRouterParams(state) : undefined;
 
 export const selectCanNavigate = (state: LocksRootState & ModalRootState) =>
     !selectIsRouterOrUiLocked(state) && !selectHasActiveModal(state);

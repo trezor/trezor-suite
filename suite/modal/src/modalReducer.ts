@@ -210,14 +210,13 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
     return state;
 };
 
-export const selectHasActiveModal = (state: ModalRootState) =>
-    state.modal.context !== MODAL_CONTEXT_NONE;
-
 export const selectModal = (state: ModalRootState) => state.modal;
 export const selectModalContext = (state: ModalRootState) => state.modal.context;
+export const selectHasActiveModal = (state: ModalRootState) =>
+    selectModalContext(state) !== MODAL_CONTEXT_NONE;
 export const selectIsDeviceInteractionModalActive = (state: ModalRootState) =>
-    state.modal.context === MODAL_CONTEXT_DEVICE ||
-    state.modal.context === MODAL_CONTEXT_DEVICE_CONFIRMATION;
+    selectModalContext(state) === MODAL_CONTEXT_DEVICE ||
+    selectModalContext(state) === MODAL_CONTEXT_DEVICE_CONFIRMATION;
 
 export const selectModalRequestId = (state: ModalRootState) =>
     state.modal.context === MODAL_CONTEXT_DEVICE ? state.modal.requestId : undefined;
