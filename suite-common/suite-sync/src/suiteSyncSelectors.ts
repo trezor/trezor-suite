@@ -23,7 +23,7 @@ export const selectIsSuiteSyncEnabled = (
 ): boolean =>
     state.suiteSync.settings.isSuiteSyncEnabled && selectIsSuiteSyncFeatureAvailable(state);
 
-export const selectIsSuiteSyncDebugEnabled = (state: WithSuiteSyncAndDeviceState): boolean =>
+export const selectIsSuiteSyncDebugEnabled = (state: WithSuiteSyncState): boolean =>
     state.suiteSync.settings.isSuiteSyncDebugEnabled;
 
 export const selectIsSuiteSyncInitPossible = (
