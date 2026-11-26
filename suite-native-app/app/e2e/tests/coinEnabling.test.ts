@@ -20,7 +20,9 @@ describe('Coin enabling [@androidOnly @T3T1 @T3W1]', () => {
     });
 
     it('Coin Enabling', async () => {
-        // Without any enabled network, passing the interactive device checks leads directly to the coin enabling.
+        await onHome.waitForScreen();
+        await onHome.tapGetStartedButton();
+
         await onCoinEnabling.waitForInitScreen();
         await onCoinEnabling.toggleNetwork('btc');
         await onCoinEnabling.clickOnConfirmButton();
