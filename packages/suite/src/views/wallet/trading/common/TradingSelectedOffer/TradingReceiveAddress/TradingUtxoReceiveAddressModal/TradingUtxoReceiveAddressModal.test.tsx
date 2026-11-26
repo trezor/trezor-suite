@@ -135,6 +135,8 @@ const buildState = () => ({
                     ),
                 },
                 outputs: {},
+                contacts: {},
+                contactAddresses: {},
             },
         },
     },

@@ -2,10 +2,14 @@ import {
     type EntityListener,
     type SuiteSyncAccount,
     type SuiteSyncAddress,
+    type SuiteSyncContact,
+    type SuiteSyncContactAddress,
     type SuiteSyncOutput,
     type SuiteSyncWallet,
     createSuiteSyncAccountId,
     createSuiteSyncAddressId,
+    createSuiteSyncContactAddressId,
+    createSuiteSyncContactId,
     createSuiteSyncOutputId,
 } from '@suite-common/suite-sync-storage';
 import { type SuiteSyncListener } from '@suite-common/suite-sync-types';
@@ -35,6 +39,8 @@ const createListenerMock = (): SuiteSyncListener => ({
         addresses: jest.fn(),
         outputs: jest.fn(),
         wallets: jest.fn(),
+        contacts: jest.fn(),
+        contactAddresses: jest.fn(),
     },
 });
 
@@ -43,6 +49,8 @@ type StorageSubscriptions = {
     addresses: EntityListener<SuiteSyncAddress>[];
     outputs: EntityListener<SuiteSyncOutput>[];
     wallets: EntityListener<SuiteSyncWallet>[];
+    contacts: EntityListener<SuiteSyncContact>[];
+    contactAddresses: EntityListener<SuiteSyncContactAddress>[];
 };
 
 const createStorageWithEmitters = (storageEmitter: StorageSubscriptions) =>
@@ -71,6 +79,20 @@ const createStorageWithEmitters = (storageEmitter: StorageSubscriptions) =>
         wallets: {
             subscribe: onChange => {
                 storageEmitter.wallets.push(onChange);
+
+                return () => {};
+            },
+        },
+        contacts: {
+            subscribe: onChange => {
+                storageEmitter.contacts.push(onChange);
+
+                return () => {};
+            },
+        },
+        contactAddresses: {
+            subscribe: onChange => {
+                storageEmitter.contactAddresses.push(onChange);
 
                 return () => {};
             },
@@ -105,6 +127,8 @@ describe(createEnsureSubscribedStorage.name, () => {
             accounts: { subscribe: () => () => {} },
             addresses: { subscribe: () => () => {} },
             outputs: { subscribe: () => () => {} },
+            contacts: { subscribe: () => () => {} },
+            contactAddresses: { subscribe: () => () => {} },
         });
 
         const subscriptionStorage = createSubscriptionStorage();
@@ -138,6 +162,8 @@ describe(createEnsureSubscribedStorage.name, () => {
             accounts: { subscribe: () => () => {} },
             addresses: { subscribe: () => () => {} },
             outputs: { subscribe: () => () => {} },
+            contacts: { subscribe: () => () => {} },
+            contactAddresses: { subscribe: () => () => {} },
         });
 
         const deps = createMockDeps<EnsureSubscribedStorageDeps>({
@@ -159,6 +185,8 @@ describe(createEnsureSubscribedStorage.name, () => {
         expect(storage.data.accounts.subscribe).toHaveBeenCalledTimes(1);
         expect(storage.data.addresses.subscribe).toHaveBeenCalledTimes(1);
         expect(storage.data.outputs.subscribe).toHaveBeenCalledTimes(1);
+        expect(storage.data.contacts.subscribe).toHaveBeenCalledTimes(1);
+        expect(storage.data.contactAddresses.subscribe).toHaveBeenCalledTimes(1);
     });
 
     it('subscription emit actions', async () => {
@@ -169,6 +197,8 @@ describe(createEnsureSubscribedStorage.name, () => {
             accounts: [],
             addresses: [],
             outputs: [],
+            contacts: [],
+            contactAddresses: [],
         };
 
         const storage = createStorageWithEmitters(storageEmitters);
@@ -254,6 +284,32 @@ describe(createEnsureSubscribedStorage.name, () => {
         expect(suiteSyncListener.onEntityChange.wallets).toHaveBeenCalledWith(
             deviceStaticSessionId,
             [{ label: 'Wallet Label', walletDescriptor: '1' }],
+        );
+
+        const contact: SuiteSyncContact = {
+            id: createSuiteSyncContactId('npub1alice'),
+            npub: 'npub1alice',
+            name: 'Alice',
+            isDeleted: false,
+        };
+        storageEmitters.contacts.forEach(it => it.onChange([contact]));
+        expect(suiteSyncListener.onEntityChange.contacts).toHaveBeenCalledWith(
+            deviceStaticSessionId,
+            [contact],
+        );
+
+        const contactAddress: SuiteSyncContactAddress = {
+            id: createSuiteSyncContactAddressId({ npub: 'npub1alice', slip44: 1, address: 'tb1q' }),
+            npub: 'npub1alice',
+            slip44: 1,
+            address: 'tb1q',
+            signature: 'ab',
+            isSpent: false,
+        };
+        storageEmitters.contactAddresses.forEach(it => it.onChange([contactAddress]));
+        expect(suiteSyncListener.onEntityChange.contactAddresses).toHaveBeenCalledWith(
+            deviceStaticSessionId,
+            [contactAddress],
         );
     });
 });

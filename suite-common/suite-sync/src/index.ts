@@ -80,6 +80,10 @@ export {
     selectSuiteSyncAddressLabels,
 } from './data/address/suiteSyncAddressSelectors';
 export {
+    selectSuiteSyncContactAddresses,
+    selectSuiteSyncContacts,
+} from './data/contact/suiteSyncContactSelectors';
+export {
     selectSuiteSyncOutputLabelsByAccount,
     selectSuiteSyncOutputLabel,
     selectSuiteSyncOutputLabels,

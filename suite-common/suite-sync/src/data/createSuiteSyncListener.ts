@@ -7,6 +7,8 @@ import {
     clearDataForWallet,
     upsertManyAccounts,
     upsertManyAddresses,
+    upsertManyContactAddresses,
+    upsertManyContacts,
     upsertManyOutputs,
     upsertManyWallets,
 } from './suiteSyncDataReducer';
@@ -31,6 +33,16 @@ export const createSuiteSyncListener = (deps: SuiteSyncListenerDeps): SuiteSyncL
         outputs: (deviceStaticSessionId, entities) => {
             const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
             deps.dispatch(upsertManyOutputs({ walletDescriptor, outputs: entities }));
+        },
+        contacts: (deviceStaticSessionId, entities) => {
+            const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
+            deps.dispatch(upsertManyContacts({ walletDescriptor, contacts: entities }));
+        },
+        contactAddresses: (deviceStaticSessionId, entities) => {
+            const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
+            deps.dispatch(
+                upsertManyContactAddresses({ walletDescriptor, contactAddresses: entities }),
+            );
         },
     },
     onUnsubscribe: ({ walletDescriptor }) => {

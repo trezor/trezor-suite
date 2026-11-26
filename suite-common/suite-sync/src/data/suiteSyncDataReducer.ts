@@ -3,6 +3,8 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import {
     type SuiteSyncAccount,
     type SuiteSyncAddress,
+    type SuiteSyncContact,
+    type SuiteSyncContactAddress,
     type SuiteSyncOutput,
     type SuiteSyncWallet,
 } from '@suite-common/suite-sync-storage';
@@ -13,6 +15,8 @@ export type WalletData = {
     accounts: Record<SuiteSyncAccount['id'], SuiteSyncAccount>;
     addresses: Record<SuiteSyncAddress['address'], SuiteSyncAddress>;
     outputs: Record<SuiteSyncOutput['id'], SuiteSyncOutput>;
+    contacts: Record<SuiteSyncContact['id'], SuiteSyncContact>;
+    contactAddresses: Record<SuiteSyncContactAddress['id'], SuiteSyncContactAddress>;
 };
 
 export type SuiteSyncDataState = {
@@ -36,6 +40,8 @@ const ensureWallet = (
             accounts: {},
             addresses: {},
             outputs: {},
+            contacts: {},
+            contactAddresses: {},
         };
     }
 
@@ -58,6 +64,8 @@ const suiteSyncDataSlice = createSlice({
                     accounts: existing?.accounts ?? {},
                     addresses: existing?.addresses ?? {},
                     outputs: existing?.outputs ?? {},
+                    contacts: existing?.contacts ?? {},
+                    contactAddresses: existing?.contactAddresses ?? {},
                 };
             });
         },
@@ -104,6 +112,34 @@ const suiteSyncDataSlice = createSlice({
             });
         },
 
+        upsertManyContacts: (
+            state: SuiteSyncDataState,
+            action: PayloadAction<{
+                walletDescriptor: WalletDescriptor;
+                contacts: SuiteSyncContact[];
+            }>,
+        ) => {
+            const wallet = ensureWallet(state, action.payload.walletDescriptor);
+
+            action.payload.contacts.forEach(contact => {
+                wallet.contacts[contact.id] = contact;
+            });
+        },
+
+        upsertManyContactAddresses: (
+            state: SuiteSyncDataState,
+            action: PayloadAction<{
+                walletDescriptor: WalletDescriptor;
+                contactAddresses: SuiteSyncContactAddress[];
+            }>,
+        ) => {
+            const wallet = ensureWallet(state, action.payload.walletDescriptor);
+
+            action.payload.contactAddresses.forEach(contactAddress => {
+                wallet.contactAddresses[contactAddress.id] = contactAddress;
+            });
+        },
+
         clearDataForWallet: (
             state: SuiteSyncDataState,
             action: PayloadAction<WalletDescriptor>,
@@ -121,6 +157,8 @@ export const {
     upsertManyAccounts,
     upsertManyAddresses,
     upsertManyOutputs,
+    upsertManyContacts,
+    upsertManyContactAddresses,
     clearDataForWallet,
     clearAll,
 } = suiteSyncDataActions;

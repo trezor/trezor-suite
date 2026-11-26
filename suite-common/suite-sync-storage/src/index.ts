@@ -37,3 +37,12 @@ export type { OutputTable, SuiteSyncOutput } from './data/OutputTable';
 export { createSuiteSyncOutputId } from './data/OutputTable';
 export type { AccountTable, SuiteSyncAccount } from './data/AccountTable';
 export { createSuiteSyncAccountId } from './data/AccountTable';
+export type { ContactTable, SuiteSyncContact, SuiteSyncContactId } from './data/ContactTable';
+export { createSuiteSyncContactId } from './data/ContactTable';
+export type {
+    ContactAddressTable,
+    CreateSuiteSyncContactAddressIdParams,
+    SuiteSyncContactAddress,
+    SuiteSyncContactAddressId,
+} from './data/ContactAddressTable';
+export { createSuiteSyncContactAddressId } from './data/ContactAddressTable';

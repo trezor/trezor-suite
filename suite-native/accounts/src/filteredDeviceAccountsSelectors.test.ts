@@ -166,6 +166,8 @@ const createState = (accounts: Account[]): NativeAccountsWithNetworksRootState =
                 ]),
                 addresses: {},
                 outputs: {},
+                contacts: {},
+                contactAddresses: {},
             },
             [OTHER_WALLET_DESCRIPTOR]: {
                 wallet: {
@@ -177,6 +179,8 @@ const createState = (accounts: Account[]): NativeAccountsWithNetworksRootState =
                 ]),
                 addresses: {},
                 outputs: {},
+                contacts: {},
+                contactAddresses: {},
             },
         },
     },

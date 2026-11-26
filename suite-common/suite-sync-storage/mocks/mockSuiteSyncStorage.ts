@@ -23,6 +23,8 @@ export const mockSuiteSyncStorage = (
         accounts: createMockSuiteSyncTable(),
         addresses: createMockSuiteSyncTable(),
         outputs: createMockSuiteSyncTable(),
+        contacts: createMockSuiteSyncTable(),
+        contactAddresses: createMockSuiteSyncTable(),
     },
     forceResync: overrides.forceResync ?? (async () => {}),
     disconnectRelay: overrides.disconnectRelay ?? (async () => {}),

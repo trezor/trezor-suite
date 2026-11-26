@@ -1,6 +1,8 @@
 import {
     AccountTable,
     AddressTable,
+    ContactAddressTable,
+    ContactTable,
     InferSuiteSyncTableEntity,
     OutputTable,
     SuiteSyncStorage,
@@ -20,6 +22,8 @@ type CreateSuiteSyncStorageMockParams = {
     accounts?: Partial<AccountTable>;
     addresses?: Partial<AddressTable>;
     outputs?: Partial<OutputTable>;
+    contacts?: Partial<ContactTable>;
+    contactAddresses?: Partial<ContactAddressTable>;
     forceResync?: SuiteSyncStorage['forceResync'];
     disconnectRelay?: SuiteSyncStorage['disconnectRelay'];
     updateRelayUrl?: SuiteSyncStorage['updateRelayUrl'];
@@ -33,6 +37,10 @@ export const createSuiteSyncStorageMock = (params: CreateSuiteSyncStorageMockPar
             accounts: createSuiteSyncTableMock<AccountTable>(params.accounts),
             addresses: createSuiteSyncTableMock<AddressTable>(params.addresses),
             outputs: createSuiteSyncTableMock<OutputTable>(params.outputs),
+            contacts: createSuiteSyncTableMock<ContactTable>(params.contacts),
+            contactAddresses: createSuiteSyncTableMock<ContactAddressTable>(
+                params.contactAddresses,
+            ),
         },
         forceResync: params.forceResync ?? mockNotExpected('forceResync'),
         disconnectRelay: params.disconnectRelay ?? mockNotExpected('disconnectRelay'),
