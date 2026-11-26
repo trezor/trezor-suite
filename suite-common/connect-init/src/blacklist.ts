@@ -11,6 +11,7 @@ export const blacklist: (typeof connectCallableMethods)[number][] = [
     'solanaComposeTransaction',
     'solanaPrecomposeSignTransaction',
     'ethereumPrecomposeSignTransaction',
+    'precomposeSignTransaction',
     'tronComposeTransaction',
     'requestLogin',
     'getCoinInfo',

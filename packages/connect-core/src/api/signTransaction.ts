@@ -30,7 +30,6 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetworkOrThrow } from '../data/coinInfo';
 import { getLabel } from '../utils/pathUtils';
 import { PAYMENT_REQUEST_AMOUNT_BYTES, encodePaymentRequestAmount } from '../utils/paymentRequest';
-import { getTransactionVbytes } from './bitcoin/transactionBytes';
 import { validateParams } from './common/paramsValidator';
 
 type Params = {
@@ -205,60 +204,6 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
     get info() {
         return getLabel('Sign #NETWORK transaction', this.params.coinInfo);
-    }
-
-    payloadToPrecomposed() {
-        try {
-            const { inputs, outputs, coinInfo, refTxs } = this.params;
-            const inputsTotal: BigNumber = inputs.reduce((bn, input) => {
-                if (typeof input.amount === 'string') {
-                    return bn.plus(input.amount);
-                } else {
-                    if (!refTxs) {
-                        throw ERRORS.TypedError(
-                            'Runtime',
-                            'refTxs are required for precomposed transaction info when input amount is not provided',
-                        );
-                    }
-                    const refTx = refTxs.find(tx => tx.hash === input.prev_hash);
-                    const refOutput =
-                        refTx?.outputs?.[input.prev_index] ??
-                        refTx?.bin_outputs?.[input.prev_index];
-                    if (refOutput) return bn.plus(refOutput.amount);
-                }
-
-                return bn;
-            }, new BigNumber(0));
-            const outputsTotal: BigNumber = outputs.reduce(
-                (bn, output) => bn.plus(typeof output.amount === 'string' ? output.amount : '0'),
-                new BigNumber(0),
-            );
-            const bytes = getTransactionVbytes(inputs, outputs, coinInfo);
-            if (!bytes) throw ERRORS.TypedError('Runtime', 'Transaction bytes not calculated');
-            const fee = inputsTotal.minus(outputsTotal);
-            if (fee.lte(0)) {
-                throw ERRORS.TypedError('Runtime', 'Computed fee is non-positive');
-            }
-            const feePerByte = fee.dividedBy(bytes);
-
-            const result = {
-                type: 'final' as const,
-                inputs,
-                outputs,
-                outputsPermutation: Array.from({ length: outputs.length }, (_, i) => i),
-                totalSpent: inputsTotal.toString(),
-                fee: fee.toString(),
-                feePerByte: feePerByte.toString(),
-                bytes,
-            };
-
-            return Promise.resolve(result);
-        } catch (e) {
-            // Don't throw errors from this method
-            console.error('Error in payloadToPrecomposed', e);
-
-            return Promise.resolve(undefined);
-        }
     }
 
     async run() {
