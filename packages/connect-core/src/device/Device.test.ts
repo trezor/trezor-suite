@@ -94,6 +94,11 @@ class ControllableTransport extends AbstractTransport {
         this.pendingAcquires.shift()?.resolve(success(session));
         this.setSession(session);
     }
+
+    completeRelease() {
+        this.pendingReleases.shift()?.resolve(success(null));
+        this.setSession(null);
+    }
 }
 
 const createDevice = () => {
@@ -123,5 +128,26 @@ describe('Device', () => {
         // Jest fails the test on any unhandled rejection from the session change handler.
         await expect(run).rejects.toThrow(TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS);
         await flush();
+    });
+
+    it('does not acquire for a run interrupted while waiting for the previous release', async () => {
+        const { transport, device } = createDevice();
+
+        const firstRun = device.run(() => Promise.resolve(), RUN_OPTIONS).catch(() => {});
+        await flush();
+        transport.completeAcquire(Session('1'));
+        await flush();
+        expect(transport.pendingReleases).toHaveLength(1);
+        await device.interrupt(new Error('first'));
+        await firstRun;
+
+        const secondRun = device.run(() => Promise.resolve(), RUN_OPTIONS).catch(() => {});
+        await flush();
+        await device.interrupt(new Error('second'));
+        await secondRun;
+
+        transport.completeRelease();
+        await flush();
+        expect(transport.pendingAcquires).toHaveLength(0);
     });
 });

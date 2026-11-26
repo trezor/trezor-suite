@@ -529,6 +529,9 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
         const acquireNeeded = !this.isUsedHere() || this.currentSession?.isDisposed();
         if (acquireNeeded) {
+            // An aborted run keeps executing while it waits for the previous release, and a session
+            // acquired after its catch handler already ran would never be released.
+            if (abortSignal.aborted) throw abortSignal.reason;
             // acquire session
             await this.acquire();
         }
