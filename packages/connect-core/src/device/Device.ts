@@ -188,6 +188,10 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
     private sessionDfd?: Deferred<Session | null>;
 
+    // A disconnected instance has no transport listeners left, so an acquire would wait forever
+    // for a session change. Callers that held it across a disconnect must not start a new run.
+    private disconnected = false;
+
     constructor({ id, transport, descriptor, createLogger }: DeviceParams) {
         super();
 
@@ -358,6 +362,11 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
     // call only once, right after device creation
     async handshake() {
+        // The handshake may wait in DeviceList's queue past a disconnect. Returning true would
+        // register this stale instance.
+        if (this.disconnected) {
+            return false;
+        }
         if (this.isUsedElsewhere()) {
             return true;
         }
@@ -448,6 +457,9 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
     // TODO empty fn variant can be split/removed
     run(fn?: () => Promise<void>, options: RunOptions = {}) {
+        if (this.disconnected) {
+            throw ERRORS.TypedError('Device_Disconnected');
+        }
         if (this.runPromise) {
             this.logger.warn('Previous call is still running');
             throw ERRORS.TypedError('Device_CallInProgress');
@@ -956,6 +968,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     private disconnect() {
         this.logger.debug('Disconnect cleanup');
 
+        this.disconnected = true;
         this.transport.off(TRANSPORT.STOPPED, this.onTransportStopped);
         this.transport.deviceEvents.off(this.descriptor.path, this.onTransportDeviceEvent);
         this.removeAllListeners();
