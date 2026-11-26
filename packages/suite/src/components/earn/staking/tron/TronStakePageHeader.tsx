@@ -1,18 +1,16 @@
-import { AccountLabel } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk, selectRouteName, selectSettingsBackRoute } from '@suite/router';
 import { selectTronStakeSession } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
+import { Box, Button, IconButton } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { CaretLeftIcon, InfoIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
+import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { PageHeader } from '#src/components/suite/layouts/SuiteLayout/PageHeader/PageHeader';
+import { EarnAccountPageHeader } from '#src/components/earn/common/EarnAccountPageHeader';
 import { TRON_FLOW_BY_ROUTE } from '#src/constants/suite/staking';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 import { useSelector } from '#src/hooks/suite/useSelector';
@@ -86,43 +84,11 @@ export const TronStakePageHeader = ({ account }: TronStakePageHeaderProps) => {
     };
 
     return (
-        <PageHeader>
-            <Row width="100%" gap={16} alignItems="center">
-                <IconButton
-                    icon={CaretLeftIcon}
-                    intent="neutral"
-                    priority="secondary"
-                    size="large"
-                    onClick={onBackClick}
-                    data-testid="@account-subpage/back"
-                    tooltip={{ content: <Translation id="TR_BACK" /> }}
-                />
-                {account ? (
-                    <Row alignItems="center" gap={12} overflow="hidden">
-                        <TokenIcon networkSymbol={account.symbol} size={32} />
-                        <Column gap={2} overflow="hidden">
-                            <Text
-                                typographyStyle="body-md-strong"
-                                ellipsisLineCount={isBelowMobile ? 0 : 1}
-                            >
-                                <Translation id="TR_EARN_STAKING" />
-                            </Text>
-                            <AccountLabel
-                                account={account}
-                                showAccountTypeBadge
-                                accountTypeBadgeSize="small"
-                                intent="neutral"
-                                priority="secondary"
-                                typographyStyle="body-sm"
-                            />
-                        </Column>
-                    </Row>
-                ) : (
-                    <Text typographyStyle="body-md-strong">
-                        <Translation id="TR_EARN_STAKING" />
-                    </Text>
-                )}
-
+        <EarnAccountPageHeader
+            title={<Translation id="TR_EARN_STAKING" />}
+            account={account}
+            onBack={onBackClick}
+            actions={
                 <Box margin={{ left: 'auto' }}>
                     {isBelowMobile ? (
                         <IconButton
@@ -145,7 +111,7 @@ export const TronStakePageHeader = ({ account }: TronStakePageHeaderProps) => {
                         </Button>
                     )}
                 </Box>
-            </Row>
-        </PageHeader>
+            }
+        />
     );
 };
