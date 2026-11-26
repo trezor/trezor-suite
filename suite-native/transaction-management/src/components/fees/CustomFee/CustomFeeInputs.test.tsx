@@ -6,15 +6,17 @@ import type { AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
+    act,
     createStoreFromPreloadedState,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
+    userEvent,
 } from '@suite-native/test-utils-store';
 
 import { CustomFeeInputs, type CustomFeeInputsProps } from './CustomFeeInputs';
 import { type FeesFormType } from '../../..';
 import { ETH_ACCOUNT_KEY, getWalletState } from '../../../__fixtures__/walletState';
-import { useFeesForm } from '../../../hooks';
+import { type UseFeesFormProps, useFeesForm } from '../../../hooks';
 
 type State = FeesRootState;
 
@@ -182,6 +184,46 @@ describe('CustomFeeInputs', () => {
                     }),
                 ),
             ).toBeNull();
+        });
+    });
+
+    describe('Clearing', () => {
+        it('should keep a cleared fee rate empty when its default is refreshed', async () => {
+            const { result, rerender } = await renderHookWithStoreProvider(useFeesForm, {
+                initialProps: { accountKey: ETH_ACCOUNT_KEY, defaultFeePerUnit: '1' },
+                services: { store },
+                preloadedState: defaultState,
+            });
+            const { getByTestId } = await renderCustomFeeInputs({ form: result.current });
+            const input = getByTestId('@transactionManagement/customFeePerUnit-input');
+            expect(input).toHaveDisplayValue('1');
+
+            await userEvent.clear(input);
+            await act(() => rerender({ accountKey: ETH_ACCOUNT_KEY, defaultFeePerUnit: '2' }));
+
+            expect(input).toHaveDisplayValue('');
+        });
+
+        it('should fill an untouched fee rate with a late default after another field is edited', async () => {
+            const { result, rerender } = await renderHookWithStoreProvider(useFeesForm, {
+                initialProps: { accountKey: ETH_ACCOUNT_KEY } as UseFeesFormProps,
+                services: { store },
+                preloadedState: defaultState,
+            });
+            const form = result.current;
+            // The fees sheet reads isDirty, which makes the form derive dirtiness for every field.
+            form.subscribe({ formState: { isDirty: true }, callback: () => {} });
+            const { getByTestId } = await renderCustomFeeInputs({
+                form,
+                props: { symbol: ethSymbol },
+            });
+            const feeRateInput = getByTestId('@transactionManagement/customFeePerUnit-input');
+            expect(feeRateInput).toHaveDisplayValue('');
+
+            await userEvent.type(getByTestId('@transactionManagement/customFeeLimit-input'), '1');
+            await act(() => rerender({ accountKey: ETH_ACCOUNT_KEY, defaultFeePerUnit: '2' }));
+
+            expect(feeRateInput).toHaveDisplayValue('2');
         });
     });
 });
