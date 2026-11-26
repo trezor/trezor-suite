@@ -191,12 +191,17 @@ export const createCore = (
         if (!openDeviceResult.success) {
             // release the lock taken by acquireIntent without committing a session,
             // otherwise the device is locked forever and every later acquire deadlocks
-            await sessionsClient.acquireDone({ path: acquireInput.path, abort: true });
+            await sessionsClient.acquireDone({
+                path: acquireInput.path,
+                session: acquireIntentResult.payload.session,
+                abort: true,
+            });
 
             return openDeviceResult;
         }
         await sessionsClient.acquireDone({
             path: acquireInput.path,
+            session: acquireIntentResult.payload.session,
             sessionOwner: acquireInput.sessionOwner,
         });
 
@@ -213,7 +218,7 @@ export const createCore = (
             return releaseIntentResult;
         }
 
-        const { path } = releaseIntentResult.payload;
+        const { path, releaseId } = releaseIntentResult.payload;
 
         const closeRes = await api.closeDevice(path);
 
@@ -222,7 +227,7 @@ export const createCore = (
         }
 
         // always reached, even when closeDevice failed, so the lock is freed
-        return sessionsClient.releaseDone({ path });
+        return sessionsClient.releaseDone({ path, releaseId });
     };
 
     const getProtocol = (protocolName: BridgeProtocolMessage['protocol']) => {
