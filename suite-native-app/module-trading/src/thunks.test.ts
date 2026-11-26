@@ -19,6 +19,7 @@ import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { selectAccountTokenInfo } from '@suite-native/tokens';
 import { eth1NormalAccount, invityDexQuote } from '@suite-native/trading-fixtures';
+import { tradingActions } from '@suite-native/trading-state';
 import { asGetter, createMockDeps, mock } from '@trezor/dependency-injection';
 import { type ReduxStoreWithThunk } from '@trezor/redux-utils';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
@@ -186,6 +187,15 @@ describe('thunks', () => {
                 tradingExchangeActions.setLastErrorMessage(undefined),
             );
             expect(dispatch).toHaveBeenCalledWith(tradingBuyActions.setLastErrorMessage(undefined));
+        });
+
+        it('should clear the exchange flow approval status', async () => {
+            const thunk = clearTradingStateThunk();
+            await thunk(dispatch, getState, extra);
+
+            expect(dispatch).toHaveBeenCalledWith(
+                tradingActions.setExchangeFlowApprovalStatus(undefined),
+            );
         });
     });
 
