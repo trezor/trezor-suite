@@ -65,3 +65,5 @@ export const selectIsAppsEmbeddingEnabled = (state: SuiteSettingsRootState) =>
 // Persisted settings from before the switch existed have no value, which means off.
 export const selectIsContactsEnabled = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.isContactsEnabled === true;
+export const selectContactsRelayUrlsSetting = (state: SuiteSettingsRootState) =>
+    state.suiteSettings.debug.contactsRelayUrls;

@@ -1,6 +1,10 @@
 import { type DebugRootState, selectIsDebugModeActive } from '@suite/debug';
-import { type SuiteSettingsRootState, selectIsContactsEnabled } from '@suite/settings';
-import { getContactsSlip44 } from '@suite-common/contacts';
+import {
+    type SuiteSettingsRootState,
+    selectContactsRelayUrlsSetting,
+    selectIsContactsEnabled,
+} from '@suite/settings';
+import { getContactsRelayUrls, getContactsSlip44 } from '@suite-common/contacts';
 import { type DeviceRootState } from '@suite-common/device';
 import {
     type SuiteSyncDataRootState,
@@ -42,3 +46,9 @@ export const selectContactUnspentAddressCount = (
         state,
         parseStaticSessionId(staticSessionId).walletDescriptor,
     ).filter(contactAddress => contactAddress.npub === npub && !contactAddress.isSpent).length;
+
+/** The relays of the contacts exchange, the same array as long as the setting stays. */
+export const selectContactsRelayUrls = createWeakMapSelector.withTypes<SuiteSettingsRootState>()(
+    [selectContactsRelayUrlsSetting],
+    getContactsRelayUrls,
+);

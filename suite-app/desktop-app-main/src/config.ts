@@ -17,6 +17,11 @@ const allowedDomainsDev = [
     'googleusercontent.com',
 ];
 
+// The public nostr relays of the contacts proof of concept (`DEFAULT_CONTACTS_RELAY_URLS` in
+// @suite-common/contacts). The feature is debug-gated and runs from the repository, so only
+// development builds let the renderer reach them.
+const contactsRelayDomainsDev = ['relay.primal.net', 'offchain.pub', 'relay.snort.social'];
+
 export const localhostDomains = ['localhost', '127.0.0.1'];
 
 export const electronOrigin = 'https://electron.trezor.io';
@@ -42,7 +47,7 @@ export const allowedDomains = [
     'xrplcluster.com', // XRP Ledger cluster, hosted by XRP Ledger Foundation
     'xrpl.ws', // XRP Ledger cluster, hosted by XRP Ledger Foundation
     's2.ripple.com', // XRP Ledger cluster, hosted by Ripple
-    ...(isDevEnv ? allowedDomainsDev : []),
+    ...(isDevEnv ? [...allowedDomainsDev, ...contactsRelayDomainsDev] : []),
 ];
 
 export const silentlyBlockedDomains = [

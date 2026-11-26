@@ -36,6 +36,8 @@ export interface DebugModeOptions {
     showTranslationKeys: boolean;
     isAppsEmbeddingEnabled: boolean;
     isContactsEnabled: boolean;
+    /** The nostr relays of the contacts exchange; the default relays when unset. */
+    contactsRelayUrls?: string[];
 }
 
 export interface AutodetectSettings {
