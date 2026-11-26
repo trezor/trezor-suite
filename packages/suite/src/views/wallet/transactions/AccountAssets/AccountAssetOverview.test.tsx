@@ -23,7 +23,7 @@ import {
 import { mockNetworkIcon, mockNetworksState } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import { type TokenAddress } from '@suite-common/tokens';
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type CurrentRate, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -48,8 +48,10 @@ const ETH = asNetworkSymbol('eth');
 const BTC = asNetworkSymbol('btc');
 const ADA = asNetworkSymbol('ada');
 
-const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
-const ONE_INCH = '0x111111111117dc0aa78b770fa6a738034120c302' as TokenAddress;
+const USDC = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+const ONE_INCH = toTokenAddress('0x111111111117dc0aa78b770fa6a738034120c302');
+/** No token definition vouches for it, so it is hidden as unrecognized. */
+const UNRECOGNIZED = toTokenAddress('0x00000000000000000000000000000000000000ff');
 
 const mockRate = (rate: number) => ({ rate, usdRate: rate }) as CurrentRate;
 
@@ -371,6 +373,29 @@ describe('the account overview with the asset-first Home', () => {
         );
     });
 
+    it('offers no menu on a Bitcoin account worth cents, which has nothing to hide', () => {
+        // 0.00001 BTC at $60,000 is 60c: the coin is never hidden and Bitcoin holds no tokens.
+        renderOverview([{ ...btcAccount, formattedBalance: '0.00001', balance: '1000' }], {
+            areSmallBalancesShown: false,
+        });
+
+        expect(rowTestIds()).toEqual(['@wallet/account-asset/btc/coin']);
+        expect(screen.queryByTestId('@dashboard/home-asset/grouping')).not.toBeInTheDocument();
+    });
+
+    it('keeps the coin listed while Home hides small balances, which hide only tokens', () => {
+        // 0.0002 ETH at $3,000 is 60c and 2.1 1INCH at 29c is 61c: both are small balances.
+        renderOverview([{ ...ethAccount, formattedBalance: '0.0002' }], {
+            areSmallBalancesShown: false,
+        });
+
+        expect(rowTestIds()).toEqual([
+            '@wallet/account-asset/eth/coin',
+            '@wallet/account-asset/eth/staking',
+            `@wallet/account-asset/eth/${USDC}`,
+        ]);
+    });
+
     it('shows the crypto balance under the fiat total on a network without tokens', () => {
         renderOverview([btcAccount]);
 
@@ -396,6 +421,38 @@ describe('the account overview with the asset-first Home', () => {
         expect(
             screen.queryByTestId('@wallet/account-assets/crypto-amount'),
         ).not.toBeInTheDocument();
+    });
+
+    it('keeps listing the coin, at zero, once everything the account held is spent', () => {
+        renderOverview([{ ...btcAccount, formattedBalance: '0', balance: '0' }]);
+
+        expect(rowTestIds()).toEqual(['@wallet/account-asset/btc/coin']);
+        expect(screen.getByTestId('@wallet/account-assets/count')).toHaveTextContent('0 assets');
+    });
+
+    it('keeps the hidden tokens reachable when they are all the account holds', () => {
+        const unrecognizedOnly = mockWalletAccount({
+            symbol: ETH,
+            deviceState: DEVICE_STATE,
+            index: 2,
+            descriptor: asAccountDescriptor('unrecognizedHolder'),
+            formattedBalance: '0',
+            tokens: [mockAccountToken({ symbol: 'SCAM', contract: UNRECOGNIZED, balance: '5' })],
+        });
+
+        renderOverview([unrecognizedOnly]);
+        fireEvent.click(screen.getByTestId('@dashboard/home-asset/grouping'));
+
+        expect(rowTestIds()).toEqual(['@wallet/account-asset/eth/coin']);
+        expect(screen.getByTestId('@dashboard/home-asset/hidden-tokens')).toHaveTextContent(
+            messages.TR_HIDDEN_TOKENS.defaultMessage,
+        );
+    });
+
+    it('leaves an unused account to the page, which offers the ways to fund it', () => {
+        renderOverview([{ ...btcAccount, formattedBalance: '0', balance: '0', empty: true }]);
+
+        expect(screen.queryByTestId('@wallet/account-assets/table')).not.toBeInTheDocument();
     });
 
     describe('what navigating away from it reports', () => {

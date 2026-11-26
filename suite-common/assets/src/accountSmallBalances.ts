@@ -32,8 +32,9 @@ const haveSameAccountSmallBalances = (left: AccountSmallBalances, right: Account
     haveSameSmallBalanceSummary(left.summary, right.summary);
 
 /**
- * What the account holds that is worth under a dollar, by the threshold the Home table uses. A
- * section without a rate is never small, so nothing is hidden by mistake.
+ * What the account holds that is worth under a dollar, by the threshold the Home table uses. The
+ * coin is never small: the account overview always lists it. A section without a rate is never
+ * small either, so nothing is hidden by mistake.
  */
 export const selectAccountSmallBalances = createMemoizedSelector(
     [
@@ -49,6 +50,10 @@ export const selectAccountSmallBalances = createMemoizedSelector(
 
         if (threshold !== undefined) {
             sections.forEach(section => {
+                if (section.type === 'account') {
+                    return;
+                }
+
                 const held = getAccountListSectionAmount(section);
 
                 if (held === undefined || !isPositiveBalance(held.amount)) {

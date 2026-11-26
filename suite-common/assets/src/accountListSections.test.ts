@@ -1,7 +1,7 @@
 import { mockStakingState } from '@suite-common/earn-staking/mocks';
 import { stakingAmountSchema } from '@suite-common/earn-staking-common';
 import { mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
-import { type TokenAddress, type TokenInfoBranded } from '@suite-common/tokens';
+import { type TokenInfoBranded, toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { fiatRatesInitialState, initialWalletSettingsState } from '@suite-common/wallet-core';
 import { mockStakeRootState } from '@suite-common/wallet-core/mocks';
@@ -236,8 +236,8 @@ describe('selectAccountListSectionsWithZeroBalanceGroup', () => {
 
 describe('selectAccountAssetOverview', () => {
     const ETH = asNetworkSymbol('eth');
-    const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
-    const ENS = '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72' as TokenAddress;
+    const USDC = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+    const ENS = toTokenAddress('0xc18360217d8f7ab5e7c516566761ea12ce7f9d72');
     const createState = (account: Account) => {
         const baseState = mockStakeRootState({ accounts: [account] });
 
@@ -266,18 +266,18 @@ describe('selectAccountAssetOverview', () => {
         const account = mockWalletAccount({ symbol: ETH, formattedBalance: '1.2', tokens });
         const overview = selectAccountAssetOverview(createState(account), account.key);
 
-        expect(typesOf(overview.heldSections)).toEqual(['account', 'token']);
+        expect(typesOf(overview.listedSections)).toEqual(['account', 'token']);
         expect(overview.zeroBalanceSections).toMatchObject([
             { type: 'token', token: { symbol: 'ENS' } },
         ]);
         expect(overview.assetCount).toBe(2);
     });
 
-    it('leaves out a coin the account holds none of', () => {
+    it('lists the coin the account holds none of, without counting it as an asset', () => {
         const account = mockWalletAccount({ symbol: ETH, formattedBalance: '0', tokens });
         const overview = selectAccountAssetOverview(createState(account), account.key);
 
-        expect(typesOf(overview.heldSections)).toEqual(['token']);
+        expect(typesOf(overview.listedSections)).toEqual(['account', 'token']);
         expect(overview.assetCount).toBe(1);
     });
 
@@ -285,7 +285,7 @@ describe('selectAccountAssetOverview', () => {
         const account = mockWalletAccount({ symbol: ETH, formattedBalance: '1.2', tokens });
 
         expect(selectAccountAssetOverview(createState(account), 'unknown' as AccountKey)).toEqual({
-            heldSections: [],
+            listedSections: [],
             zeroBalanceSections: [],
             assetCount: 0,
         });
@@ -294,8 +294,8 @@ describe('selectAccountAssetOverview', () => {
 
 describe(isAccountListSectionMatchingSearch.name, () => {
     const ETH = asNetworkSymbol('eth');
-    const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
-    const ENS = '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72' as TokenAddress;
+    const USDC = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+    const ENS = toTokenAddress('0xc18360217d8f7ab5e7c516566761ea12ce7f9d72');
     const usdc = mockAccountToken({
         symbol: 'USDC',
         contract: USDC,

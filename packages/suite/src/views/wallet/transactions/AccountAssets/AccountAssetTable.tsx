@@ -19,7 +19,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { AssetSearchInput } from '#src/components/wallet/assets/AssetSearchInput';
 import { AssetTableFilterHeader } from '#src/components/wallet/assets/AssetTableFilter';
-import { AssetTableSmallBalancesHiddenRow } from '#src/components/wallet/assets/AssetTableSmallBalancesHiddenRow';
 import { useAssetTableFolding } from '#src/components/wallet/assets/useAssetTableFolding';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { DropdownRow } from '#src/views/wallet/tokens/DropdownRow';
@@ -32,9 +31,10 @@ type AccountAssetTableProps = {
 };
 
 /**
- * What one account holds, as the mobile account overview lists it: its coin, its stake on a row
- * of its own, its tokens by value, and the tokens it holds none of in a group that opens. The
- * menu is the Home table's, without the grouping: every row is the account's network.
+ * What one account holds, as the mobile account overview lists it: its coin always, even at zero,
+ * its stake on a row of its own, its tokens by value, and the tokens it holds none of in a group
+ * that opens. The menu is the Home table's, without the grouping: every row is the account's
+ * network. Small balances hide tokens only, never the coin.
  */
 export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
@@ -42,14 +42,14 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
     const [searchQuery, setSearchQuery] = useState('');
     const account = useSelector(state => selectAccountByKey(state, accountKey));
     const hasTokens = useSelector(state => selectAreTokensSupportedByAccount(state, accountKey));
-    const { heldSections, zeroBalanceSections } = useSelector(state =>
+    const { listedSections, zeroBalanceSections } = useSelector(state =>
         selectAccountAssetOverview(state, accountKey),
     );
     const smallBalances = useSelector(state => selectAccountSmallBalances(state, accountKey));
     const areSmallBalancesShown = useSelector(selectAreAssetTableSmallBalancesDisplayed);
     const rows = areSmallBalancesShown
-        ? heldSections
-        : heldSections.filter(
+        ? listedSections
+        : listedSections.filter(
               section => !smallBalances.keys.has(getAccountListSectionKey(section)),
           );
     const isFoldable = rows.length > ASSET_TABLE_ROW_LIMIT;
@@ -68,17 +68,13 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
         dispatch(gotoThunk({ routeName: 'wallet-tokens-hidden', preserveParams: true }));
     };
 
-    if (account === null || (heldSections.length === 0 && zeroBalanceSections.length === 0)) {
+    // The page offers an unused account its own empty state, with the ways to fund it.
+    if (account === null || account.empty) {
         return null;
     }
 
     const listRows = (
         <>
-            {rows.length === 0 && heldSections.length > 0 && (
-                <AssetTableSmallBalancesHiddenRow
-                    onShowSmallBalances={() => changeSmallBalances(true)}
-                />
-            )}
             {shownRows.map(section => (
                 <AccountAssetSectionRow key={getAccountListSectionKey(section)} section={section} />
             ))}
@@ -139,7 +135,7 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
                 ) : (
                     <AccountAssetSearchRows
                         networkSymbol={account.symbol}
-                        sections={[...heldSections, ...zeroBalanceSections]}
+                        sections={[...listedSections, ...zeroBalanceSections]}
                         query={query}
                     />
                 )}
