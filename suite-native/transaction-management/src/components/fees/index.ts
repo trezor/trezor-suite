@@ -3,6 +3,7 @@ export * from './CustomFee/CustomFee';
 export * from './FeesContent';
 export * from './FeeLabelTranslation';
 export * from './FeeSummaryCard';
+export * from './FeeSummaryRow';
 export * from './TronFeeSummaryCard/TronFeeSummaryCard';
 export * from './CustomFee/CustomFeeContent';
 export * from './FeeSelector';
