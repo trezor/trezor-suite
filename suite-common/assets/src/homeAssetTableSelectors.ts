@@ -265,17 +265,48 @@ const selectAllowedNetworkSymbols = (state: AssetTableState): readonly NetworkSy
         ? selectSupportedNetworkSymbols(state)
         : selectEnabledSupportedNetworks(state);
 
+// Bitcoin-only firmware has no other asset to show, so a coin that was ever used keeps its row once
+// emptied: the row is what leads to its transaction history.
+const selectNetworkSymbolsShownWithoutBalance = createMemoizedSelector(
+    [selectHasBitcoinOnlyFirmware, selectVisibleDeviceAccounts],
+    (hasBitcoinOnlyFirmware, accounts): readonly NetworkSymbol[] => {
+        const usedAccounts = hasBitcoinOnlyFirmware
+            ? accounts.filter(account => !account.empty)
+            : [];
+
+        return returnStableArrayIfEmpty([...new Set(usedAccounts.map(account => account.symbol))]);
+    },
+    { memoizeOptions: { resultEqualityCheck: shallowEqual } },
+);
+
 export const selectShownWalletAssetKeys = createMemoizedSelector(
-    [selectWalletAssets, selectWalletAssetValues, selectAllowedNetworkSymbols],
-    (assets, values, allowedNetworks): readonly WalletAssetKey[] =>
+    [
+        selectWalletAssets,
+        selectWalletAssetValues,
+        selectAllowedNetworkSymbols,
+        selectNetworkSymbolsShownWithoutBalance,
+    ],
+    (assets, values, allowedNetworks, shownWithoutBalance): readonly WalletAssetKey[] =>
         returnStableArrayIfEmpty(
             [...assets.values()]
                 .filter(
                     asset =>
-                        allowedNetworks.includes(asset.networkSymbol) && asset.cryptoBalance.gt(0),
+                        allowedNetworks.includes(asset.networkSymbol) &&
+                        (asset.cryptoBalance.gt(0) ||
+                            shownWithoutBalance.includes(asset.networkSymbol)),
                 )
                 .map(asset => asset.assetKey)
                 .sort(byValue(values)),
+        ),
+    { memoizeOptions: { resultEqualityCheck: shallowEqual } },
+);
+
+// A coin shown without a balance has a row, but it is no small balance and no part of the total.
+const selectHeldWalletAssetKeys = createMemoizedSelector(
+    [selectShownWalletAssetKeys, selectWalletAssets],
+    (assetKeys, assets): readonly WalletAssetKey[] =>
+        returnStableArrayIfEmpty(
+            assetKeys.filter(assetKey => assets.get(assetKey)?.cryptoBalance.gt(0)),
         ),
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
@@ -337,7 +368,7 @@ export const selectSmallBalanceFiatThreshold = createMemoizedSelector(
  * small until the USD rate is known, so nothing is hidden by mistake.
  */
 const selectSmallBalanceAssetKeySet = createMemoizedSelector(
-    [selectShownWalletAssetKeys, selectWalletAssetValues, selectSmallBalanceFiatThreshold],
+    [selectHeldWalletAssetKeys, selectWalletAssetValues, selectSmallBalanceFiatThreshold],
     (assetKeys, values, threshold): ReadonlySet<WalletAssetKey> => {
         const small = new Set<WalletAssetKey>();
 
@@ -811,7 +842,7 @@ export type HomeAssetTotals = {
 };
 
 export const selectHomeAssetTotals = createMemoizedSelector(
-    [selectShownWalletAssetKeys, selectWalletAssetValues, selectWalletAssetWeekAgoValues],
+    [selectHeldWalletAssetKeys, selectWalletAssetValues, selectWalletAssetWeekAgoValues],
     (assetKeys, values, weekAgoValues): HomeAssetTotals => {
         if (assetKeys.length === 0) {
             return { fiatValue: ZERO, weekChange: ZERO, weekChangePercent: ZERO };

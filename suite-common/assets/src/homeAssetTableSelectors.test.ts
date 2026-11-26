@@ -91,6 +91,7 @@ type MockAccountParams = {
     symbol?: Account['symbol'];
     index?: number;
     balance?: string;
+    hasHistory?: boolean;
     isVisible?: boolean;
     tokens?: { contract: TokenAddress; balance: string; symbol?: string }[];
 };
@@ -100,6 +101,7 @@ const mockAccount = ({
     symbol = ETH,
     index = 0,
     balance = '1',
+    hasHistory = true,
     isVisible = true,
     tokens = [],
 }: MockAccountParams = {}): Account =>
@@ -110,6 +112,7 @@ const mockAccount = ({
         index,
         accountType: 'normal',
         formattedBalance: balance,
+        empty: !hasHistory,
         visible: isVisible,
         tokens,
     }) as unknown as Account;
@@ -309,6 +312,35 @@ describe('the rows the table is given', () => {
             `${ALICE}/eth/${USDC_ON_ETH}`,
         ]);
         expect(selectSmallBalanceSummary(priced)).toBeUndefined();
+    });
+
+    describe('a coin with nothing on it on Bitcoin-only firmware, which has no other asset to show', () => {
+        const stateWithAnEmptyBitcoin = (hasHistory: boolean) =>
+            createState({
+                accounts: [mockAccount({ symbol: BTC, balance: '0', hasHistory })],
+                rates: mockRate(BTC, 100000),
+                hasBitcoinOnlyFirmware: true,
+            });
+
+        it('keeps its row once it has a transaction history', () => {
+            expect(selectHomeAssetRowKeys(stateWithAnEmptyBitcoin(true))).toEqual([
+                `${ALICE}/btc/`,
+            ]);
+        });
+
+        it('is left out while it was never used', () => {
+            expect(selectHomeAssetRowKeys(stateWithAnEmptyBitcoin(false))).toEqual([]);
+        });
+
+        it('is no small balance and leaves the total of a wallet holding nothing alone', () => {
+            const state = stateWithAnEmptyBitcoin(true);
+            const { fiatValue, weekChange, weekChangePercent } = selectHomeAssetTotals(state);
+
+            expect(selectSmallBalanceSummary(state)).toBeUndefined();
+            expect(fiatValue?.toFixed()).toBe('0');
+            expect(weekChange?.toFixed()).toBe('0');
+            expect(weekChangePercent?.toFixed()).toBe('0');
+        });
     });
 
     it('leaves out a network the user has not enabled', () => {
