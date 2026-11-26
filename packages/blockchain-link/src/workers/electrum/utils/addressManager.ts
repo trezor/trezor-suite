@@ -22,8 +22,12 @@ export const createAddressManager = (getNetwork: () => Network | undefined) => {
         const toAdd = addresses.filter(arrayDistinct).filter(addr => !subscribedAddrs[addr]);
         const network = getNetwork();
 
-        subscribedAddrs = toAdd.reduce<AddressMap>((dic, addr) => {
-            dic[addr] = addressToScripthash(addr, network);
+        // Hash the whole batch before the first write, so a throwing address leaves the map
+        // untouched and a retry still subscribes the addresses before it.
+        const entries = toAdd.map(addr => [addr, addressToScripthash(addr, network)] as const);
+
+        subscribedAddrs = entries.reduce<AddressMap>((dic, [addr, scripthash]) => {
+            dic[addr] = scripthash;
 
             return dic;
         }, subscribedAddrs);
