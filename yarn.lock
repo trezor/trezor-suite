@@ -11763,7 +11763,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/contacts@workspace:suite-common/contacts"
   dependencies:
+    "@noble/ciphers": "npm:^2.3.0"
     "@noble/curves": "npm:^2.0.1"
+    "@noble/hashes": "npm:^2.0.1"
     "@reduxjs/toolkit": "npm:2.13.0"
     "@scure/base": "npm:^2.0.0"
     "@suite-common/device": "workspace:*"

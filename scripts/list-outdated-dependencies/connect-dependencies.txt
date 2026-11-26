@@ -6,6 +6,7 @@
 @codemirror/state
 @hbsnow/rehype-sectionize
 @headlessui/react
+@noble/ciphers
 @noble/curves
 @noble/post-quantum
 @reown/walletkit
