@@ -5,11 +5,11 @@ import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@trezor/components';
+import { Card, Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';
+import { CheckCircleFilledIcon } from '@trezor/icons';
 
-import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { EarnFlowComplete } from '#src/components/earn/common/EarnFlowComplete';
 
 import { useNavigateToAccountRoute } from './useNavigateToAccountRoute';
 
@@ -28,7 +28,6 @@ export const WrappedNativeFlowComplete = ({
     description,
     children,
 }: WrappedNativeFlowCompleteProps) => {
-    const { isBelowMobile } = useLayoutSize();
     const { analytics } = useServices(injectDesktopAnalytics);
     const navigateToOverview = useNavigateToAccountRoute(account, 'wallet-tokens');
 
@@ -46,17 +45,7 @@ export const WrappedNativeFlowComplete = ({
     };
 
     return (
-        <Column gap={16}>
-            <IconCircle icon={CheckIcon} intent="brand" size={isBelowMobile ? 64 : 96} />
-
-            <Column gap={4}>
-                <Text typographyStyle="headline-md">{heading}</Text>
-
-                <Text intent="neutral" priority="secondary">
-                    {description}
-                </Text>
-            </Column>
-
+        <EarnFlowComplete heading={heading} description={description} onBack={handleBackToOverview}>
             <Card type="contrast" paddingType="none">
                 <Column gap={0}>
                     <Row
@@ -83,10 +72,6 @@ export const WrappedNativeFlowComplete = ({
                     )}
                 </Column>
             </Card>
-
-            <Button intent="neutral" priority="secondary" onClick={handleBackToOverview}>
-                <Translation id="TR_EARN_YIELD_BACK_TO_OVERVIEW" />
-            </Button>
-        </Column>
+        </EarnFlowComplete>
     );
 };

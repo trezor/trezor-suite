@@ -5,13 +5,13 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { type Rating } from '@suite-common/feedback';
-import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@trezor/components';
+import { Card, Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';
+import { CheckCircleFilledIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { EarnFlowComplete } from '#src/components/earn/common/EarnFlowComplete';
 import { EarnFlowFeedbackCard } from '#src/components/earn/common/EarnFlowFeedbackCard';
-import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 type YieldFlowCompleteProps = {
     type: 'deposit' | 'withdraw' | 'claim';
@@ -31,7 +31,6 @@ export const YieldFlowComplete = ({
     children,
 }: YieldFlowCompleteProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const { isBelowMobile } = useLayoutSize();
 
     const handleBackToOverview = () => dispatch(gotoThunk({ routeName: 'suite-earn' }));
 
@@ -47,19 +46,25 @@ export const YieldFlowComplete = ({
     };
 
     return (
-        <Column gap={16}>
-            <IconCircle icon={CheckIcon} intent="brand" size={isBelowMobile ? 64 : 96} />
-
-            <Column gap={4}>
-                <Text typographyStyle="headline-md" data-testid="@yield/flow-complete/heading">
-                    {heading}
-                </Text>
-
-                <Text intent="neutral" priority="secondary">
-                    {description}
-                </Text>
-            </Column>
-
+        <EarnFlowComplete
+            heading={heading}
+            description={description}
+            onBack={handleBackToOverview}
+            headingTestId="@yield/flow-complete/heading"
+            backButtonTestId="@yield/flow-complete/back-to-overview-button"
+            feedback={
+                showFeedback && (
+                    <EarnFlowFeedbackCard
+                        featureTitleId="TR_EARN_DEFI_YIELD"
+                        analyticsCategory="yield"
+                        context={type}
+                        provider={vaultId}
+                        feature="yield"
+                        onSubmit={handleFeedbackSubmit}
+                    />
+                )
+            }
+        >
             <Card type="contrast" paddingType="none">
                 <Column gap={0}>
                     <Row
@@ -85,26 +90,6 @@ export const YieldFlowComplete = ({
                     {children}
                 </Column>
             </Card>
-
-            <Button
-                intent="neutral"
-                priority="secondary"
-                data-testid="@yield/flow-complete/back-to-overview-button"
-                onClick={handleBackToOverview}
-            >
-                <Translation id="TR_EARN_YIELD_BACK_TO_OVERVIEW" />
-            </Button>
-
-            {showFeedback && (
-                <EarnFlowFeedbackCard
-                    featureTitleId="TR_EARN_DEFI_YIELD"
-                    analyticsCategory="yield"
-                    context={type}
-                    provider={vaultId}
-                    feature="yield"
-                    onSubmit={handleFeedbackSubmit}
-                />
-            )}
-        </Column>
+        </EarnFlowComplete>
     );
 };

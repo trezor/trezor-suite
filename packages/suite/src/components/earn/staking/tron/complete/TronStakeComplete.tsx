@@ -1,16 +1,13 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { type TronFlow } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { Button, Column, IconCircle, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { CheckIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { EarnFlowComplete } from '#src/components/earn/common/EarnFlowComplete';
 import { EarnFlowFeedbackCard } from '#src/components/earn/common/EarnFlowFeedbackCard';
-import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 interface TronStakeCompleteProps {
     account: Account;
@@ -28,7 +25,6 @@ export const TronStakeComplete = ({
     children,
 }: TronStakeCompleteProps) => {
     const { dispatch } = useServices(injectDispatch);
-    const { isBelowMobile } = useLayoutSize();
 
     const handleBackToOverview = () =>
         dispatch(
@@ -43,39 +39,23 @@ export const TronStakeComplete = ({
         );
 
     return (
-        <Column gap={16}>
-            <IconCircle icon={CheckIcon} intent="brand" size={isBelowMobile ? 64 : 96} />
-
-            <Column gap={4}>
-                <Text typographyStyle="headline-md" data-testid="@staking/tron-complete/heading">
-                    {heading}
-                </Text>
-                <Text
-                    intent="neutral"
-                    priority="secondary"
-                    data-testid="@staking/tron-complete/description"
-                >
-                    {description}
-                </Text>
-            </Column>
-
+        <EarnFlowComplete
+            heading={heading}
+            description={description}
+            onBack={handleBackToOverview}
+            headingTestId="@staking/tron-complete/heading"
+            descriptionTestId="@staking/tron-complete/description"
+            backButtonTestId="@staking/tron-complete/back-to-overview-button"
+            feedback={
+                <EarnFlowFeedbackCard
+                    featureTitleId="TR_EARN_STAKING"
+                    analyticsCategory="staking"
+                    context={`tron-${flow}`}
+                    feature="staking"
+                />
+            }
+        >
             {children}
-
-            <Button
-                intent="neutral"
-                priority="secondary"
-                onClick={handleBackToOverview}
-                data-testid="@staking/tron-complete/back-to-overview-button"
-            >
-                <Translation id="TR_EARN_YIELD_BACK_TO_OVERVIEW" />
-            </Button>
-
-            <EarnFlowFeedbackCard
-                featureTitleId="TR_EARN_STAKING"
-                analyticsCategory="staking"
-                context={`tron-${flow}`}
-                feature="staking"
-            />
-        </Column>
+        </EarnFlowComplete>
     );
 };
