@@ -21,11 +21,10 @@ import { BigNumber } from '@trezor/utils';
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
-import type { DefinitionsVersion } from '../../../utils/definitionsUtils';
 import { getDefinitionsVersion } from '../../../utils/definitionsUtils';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { addHexPrefix, deepTransform, stripHexPrefix } from '../../../utils/formatUtils';
-import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
+import { validatePath } from '../../../utils/pathUtils';
 import {
     PAYMENT_REQUEST_AMOUNT_BYTES,
     encodePaymentRequestAmount,
@@ -33,7 +32,7 @@ import {
 import {
     decodeEthereumDefinition,
     ethereumNetworkInfoFromDefinition,
-    getEthereumDefinitions,
+    getEthereumTransactionDefinitions,
 } from '../ethereumDefinitions';
 import * as helper from '../ethereumSignTx';
 
@@ -173,29 +172,13 @@ export default class EthereumSignTransaction extends AbstractMethod<
         return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
-    private async getDefinitions(version?: DefinitionsVersion) {
-        // eth && token => yes
-        // evm && token => yes
-        // eth && !token => no
-        // evm && !token => yes
-        if (this.params.tx.chainId === 1 && !this.params.tx.data) {
-            return;
-        }
-        const slip44 = getSlip44ByPath(this.params.path);
-
-        return await getEthereumDefinitions({
-            chainId: this.params.tx.chainId,
-            slip44,
-            contractAddress:
-                this.params.tx.data && this.params.tx.to != null ? this.params.tx.to : undefined,
-            version,
-        });
-    }
-
     // Only `__info` names the network and token and previews the transfer, so only `__info`
     // downloads their definitions to decode them.
     async getMethodInfo() {
-        const definitions = await this.getDefinitions();
+        const definitions = await getEthereumTransactionDefinitions({
+            path: this.params.path,
+            transaction: this.params.tx,
+        });
         if (definitions) {
             this.params.definitions = definitions;
 
@@ -300,7 +283,11 @@ export default class EthereumSignTransaction extends AbstractMethod<
     async run() {
         const { type, tx, chunkify, auth7702 } = this.params;
         const definitionsVersion = getDefinitionsVersion(this.getDevice());
-        const definitions = await this.getDefinitions(definitionsVersion);
+        const definitions = await getEthereumTransactionDefinitions({
+            path: this.params.path,
+            transaction: tx,
+            version: definitionsVersion,
+        });
 
         const isLegacy = type === 'legacy';
 

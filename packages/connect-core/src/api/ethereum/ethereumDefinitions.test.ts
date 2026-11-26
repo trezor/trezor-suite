@@ -2,7 +2,7 @@ import fetch from 'cross-fetch';
 
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 
-import { getEthereumDefinitions } from './ethereumDefinitions';
+import { getEthereumDefinitions, getEthereumTransactionDefinitions } from './ethereumDefinitions';
 import * as settingsStore from '../../data/settingsStore';
 
 jest.mock('cross-fetch');
@@ -63,4 +63,41 @@ describe('getEthereumDefinitions', () => {
             ]);
         },
     );
+});
+
+describe('getEthereumTransactionDefinitions', () => {
+    const path = [2147483692, 2147483708, 2147483648, 0, 0];
+    const to = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+
+    beforeEach(() => {
+        settingsStore.set(parseConnectSettings({}));
+        mockedFetch.mockReset();
+        mockedFetch.mockResolvedValue({ status: 404 } as Response);
+    });
+
+    it('fetches nothing for a plain ether transfer', async () => {
+        await getEthereumTransactionDefinitions({ path, transaction: { chainId: 1, to } });
+
+        expect(getFetchedUrls()).toEqual([]);
+    });
+
+    it('fetches the network of a plain transfer on another chain', async () => {
+        await getEthereumTransactionDefinitions({ path, transaction: { chainId: 137, to } });
+
+        expect(getFetchedUrls()).toEqual([
+            'https://data.trezor.io/firmware/definitions/eth/chain-id/137/network.dat',
+        ]);
+    });
+
+    it('fetches the token of a contract call by its unprefixed address', async () => {
+        await getEthereumTransactionDefinitions({
+            path,
+            transaction: { chainId: 1, to, data: '0xa9059cbb' },
+        });
+
+        expect(getFetchedUrls()).toEqual([
+            'https://data.trezor.io/firmware/definitions/eth/chain-id/1/network.dat',
+            `https://data.trezor.io/firmware/definitions/eth/chain-id/1/token-${to.slice(2).toLowerCase()}.dat`,
+        ]);
+    });
 });
