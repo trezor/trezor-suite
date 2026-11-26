@@ -6,7 +6,7 @@
 // transitions column, so a proof could never be served from them. A rewrite must add
 // those columns first (planned_fixes Gap 5). Table kept for the root checkpoint schema shape.
 
-import { NonEmptyTrimmedString1000, id, nullOr, object } from '@evolu/common';
+import { NonEmptyTrimmedString1000, type ObjectType, id, nullOr, object } from '@evolu/common';
 
 /**
  * Per-owner WARD root checkpoint (the authenticated `TreeState`: root, counter, mac).
@@ -18,7 +18,7 @@ import { NonEmptyTrimmedString1000, id, nullOr, object } from '@evolu/common';
  * primitives used elsewhere here; root/mac are hex (mac/root null == empty tree).
  */
 export const WardRootId = id('WardRootId');
-export type WardRootId = typeof WardRootId.Type;
+export type WardRootId = typeof WardRootId.Output;
 
 const wardRootTableColumns = {
     id: WardRootId,
@@ -27,7 +27,8 @@ const wardRootTableColumns = {
     mac: nullOr(NonEmptyTrimmedString1000),
 };
 
-export const WardRootEvoluSchema = object(wardRootTableColumns);
+export const WardRootEvoluSchema: ObjectType<typeof wardRootTableColumns> =
+    object(wardRootTableColumns);
 
 export const WardRootTableSchema = {
     wardRoot: wardRootTableColumns,
