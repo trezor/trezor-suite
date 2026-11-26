@@ -171,3 +171,55 @@ describe('the Connect WARD adapter', () => {
         );
     });
 });
+
+describe('the per-conversation relay allowlist', () => {
+    const refusalOf = async (conversation: 'sync' | 'lookup' | 'update', name: string) => {
+        const cmd = fakeCmd({
+            [name]: () => Promise.resolve({ type: `${name}Ack`, message: {} }),
+        });
+        let reply: RelayMessage | undefined;
+        const { wardd } = fakeWardd(async relay => {
+            reply = await relay({ name, message: {} });
+
+            return {};
+        });
+        setWardd(wardd);
+
+        await callWard(cmd as any, 'wardTest', conversation, {});
+
+        return { reply, reachedDevice: cmd.relayCall.mock.calls.length > 0 };
+    };
+
+    it('keeps a non-WARD message off the device', async () => {
+        const { reply, reachedDevice } = await refusalOf('sync', 'GetPublicKey');
+
+        expect(reachedDevice).toBe(false);
+        expect(reply).toEqual({
+            name: 'Failure',
+            message: {
+                code: 'Failure_UnexpectedMessage',
+                message: 'wardd may not send GetPublicKey during sync',
+            },
+        });
+    });
+
+    it("keeps another flow's WARD message off the device", async () => {
+        const { reply, reachedDevice } = await refusalOf('lookup', 'WARDQueueUpdate');
+
+        expect(reachedDevice).toBe(false);
+        expect(reply?.name).toBe('Failure');
+    });
+
+    it("lets a write's own messages through", async () => {
+        const { reply, reachedDevice } = await refusalOf('update', 'WARDQueueUpdate');
+
+        expect(reachedDevice).toBe(true);
+        expect(reply).toEqual({ name: 'WARDQueueUpdateAck', message: {} });
+    });
+
+    it('keeps the recovery messages off the device during sync', async () => {
+        const { reachedDevice } = await refusalOf('sync', 'WARDPerformRevert');
+
+        expect(reachedDevice).toBe(false);
+    });
+});
