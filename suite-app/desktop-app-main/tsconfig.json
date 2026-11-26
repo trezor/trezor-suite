@@ -107,6 +107,12 @@
             "path": "../../packages/utils"
         },
         {
+            "path": "../../packages/ward"
+        },
+        {
+            "path": "../../packages/wardd"
+        },
+        {
             "path": "../../packages/dependency-injection"
         },
         {

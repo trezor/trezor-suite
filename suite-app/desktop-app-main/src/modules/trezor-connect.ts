@@ -1,3 +1,6 @@
+import { promises as fs } from 'fs';
+import os from 'os';
+
 import TrezorConnect, {
     type ConnectSettings,
     type ConnectSettingsTransport,
@@ -17,6 +20,7 @@ import type { ModuleInit, ModuleInitBackground } from './module';
 import { looselyTypedIpcMain } from '../ipcMain';
 import { APP_NAME } from '../libs/constants';
 import { getComputerName } from '../libs/info';
+import { createLocalWardd } from '../libs/local-wardd';
 import { getSwitchValue } from '../libs/process-switches';
 
 export const SERVICE_NAME = '@trezor/connect';
@@ -157,6 +161,16 @@ export const initBackground: ModuleInitBackground = ({
                         createLogger,
                         getUsbImplementation(),
                     );
+                    // The renderer cannot send wardd across IPC either. Only WARD methods and
+                    // signing with contact outputs reach it, and it reads nothing until then.
+                    settings.wardd = createLocalWardd({
+                        env: {
+                            WARDD_PORT: process.env.WARDD_PORT,
+                            WARDD_TOKEN_FILE: process.env.WARDD_TOKEN_FILE,
+                        },
+                        homeDir: os.homedir(),
+                        readFile: file => fs.readFile(file, 'utf8'),
+                    });
 
                     const response = await TrezorConnect.init(settings);
                     await setProxy();
