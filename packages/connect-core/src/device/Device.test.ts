@@ -1,4 +1,4 @@
-import { asDeviceUniquePath } from '@trezor/connect-common';
+import { ERRORS, asDeviceUniquePath } from '@trezor/connect-common';
 import { noopCreateLogger } from '@trezor/logger';
 import {
     AbstractTransport,
@@ -99,6 +99,10 @@ class ControllableTransport extends AbstractTransport {
         this.pendingReleases.shift()?.resolve(success(null));
         this.setSession(null);
     }
+
+    disconnect() {
+        this.handleDescriptorsChange([]);
+    }
 }
 
 const createDevice = () => {
@@ -149,5 +153,16 @@ describe('Device', () => {
         transport.completeRelease();
         await flush();
         expect(transport.pendingAcquires).toHaveLength(0);
+    });
+
+    it('refuses to run or handshake once disconnected', async () => {
+        const { transport, device } = createDevice();
+
+        transport.disconnect();
+        // The same path is live again, e.g. after a transport restart, and another client holds it.
+        transport.setSession(Session('2'));
+
+        expect(() => device.run()).toThrow(ERRORS.TypedError('Device_Disconnected'));
+        await expect(device.handshake()).resolves.toBe(false);
     });
 });
