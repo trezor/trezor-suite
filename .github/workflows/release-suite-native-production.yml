@@ -181,6 +181,7 @@ jobs:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
           permission-contents: write
+          permission-workflows: write
 
       - name: Prepare release notes
         run: |
