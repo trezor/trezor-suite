@@ -178,7 +178,7 @@ describe('Yield withdraw fee selection', () => {
         await settle();
         expect(mockCompose).toHaveBeenCalledTimes(2);
     });
-    it('falls back to Normal when a Custom limit no longer covers the composed gas', async () => {
+    it('keeps Custom selected when its limit does not cover the composed gas', async () => {
         const { result, rerender, store } = await renderFees();
         await settle();
         await act(() =>
@@ -197,11 +197,14 @@ describe('Yield withdraw fee selection', () => {
         await rerender({ ...initialProps, amount: '2' });
         await settle();
         expect(result.current.formDraft).toMatchObject({
-            selectedFee: 'normal',
-            feeLimit: '200000',
+            selectedFee: 'custom',
+            feeLimit: '45000',
         });
-        expect(store.getState().wallet.send.feeLevels.custom).toBeUndefined();
-        expect(result.current.preparedAction?.amount).toBe('2');
+        expect(store.getState().wallet.send.feeLevels.custom).toEqual({
+            type: 'error',
+            error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+        });
+        expect(result.current.isWithdrawFeeReady).toBe(false);
     });
     it.each(['0', '1600000000000000', '2000000000000000'])(
         'keeps an explanatory fee picker at ETH balance %s and allows exact coverage',

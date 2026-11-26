@@ -40,6 +40,7 @@ import { useEarnFeeAnalytics } from './useEarnFeeAnalytics';
 import { useEarnFeeEstimationError } from './useEarnFeeEstimationError';
 import { EARN_MODULE_PREFIX } from '../../constants';
 import { type EarnFormDraftPrefix } from '../../types';
+import { validateEarnCustomFee } from '../../utils/earn/validateEarnCustomFee';
 
 export type UpdateEarnSelectedFeeLevelThunkState = FormDraftRootState & NativeSendRootState;
 
@@ -190,10 +191,13 @@ export const useComposeEarnFees = ({
                     return;
                 }
 
+                const { custom } = response.payload;
+                const composedFeeLevels =
+                    account.networkType === 'ethereum' && isFinalPrecomposedTransaction(custom)
+                        ? { ...response.payload, custom: validateEarnCustomFee(custom) }
+                        : response.payload;
                 dispatch(
-                    transactionManagementActions.storeFeeLevels({
-                        feeLevels: response.payload,
-                    }),
+                    transactionManagementActions.storeFeeLevels({ feeLevels: composedFeeLevels }),
                 );
 
                 setComposedForm({ accountKey, formDraftPrefix, formState });

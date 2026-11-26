@@ -383,11 +383,11 @@ describe('useYieldClaimFees with shared fee preparation', () => {
     });
 
     it.each([
-        ['21000', 'custom', '42000', '3000000000'],
-        ['50000', 'normal', '50000', '4000000000'],
+        ['21000', false],
+        ['50000', true],
     ] as const)(
-        'uses %s estimated gas to retain or reset Custom after a rewards change',
-        async (gasLimit, selectedFee, selectedGasLimit, maxFeePerGas) => {
+        'keeps the selected Custom claim fee when estimated gas changes to %s',
+        async (gasLimit, isFeeUnavailable) => {
             const { result, store, rerender } = await renderFees();
             await settle();
             const custom = result.current.getCustomFeeLevel({
@@ -436,11 +436,16 @@ describe('useYieldClaimFees with shared fee preparation', () => {
             });
             await rerender({ accountRewards: createAccountRewards('200'), isEnabled: true });
             await settle();
-            expect(result.current.selectedFee).toBe(selectedFee);
-            expect(result.current.preparedAction?.unsignedTransaction).toMatchObject({
-                gasLimit: selectedGasLimit,
-                maxFeePerGas,
-            });
+            expect(result.current.selectedFee).toBe('custom');
+            expect(result.current.isFeeUnavailable).toBe(isFeeUnavailable);
+            if (isFeeUnavailable) {
+                expect(result.current.preparedAction).toBeNull();
+            } else {
+                expect(result.current.preparedAction?.unsignedTransaction).toMatchObject({
+                    gasLimit: '42000',
+                    maxFeePerGas: '3000000000',
+                });
+            }
         },
     );
 
