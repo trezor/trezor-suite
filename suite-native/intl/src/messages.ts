@@ -4445,6 +4445,8 @@ export const messages = {
             date: 'Date',
             transactionId: 'Transaction ID',
             exploreInBlockchain: 'Explore on blockchain',
+            approveHint: 'Don’t leave yet. You’ll sign the swap in a few seconds.',
+            revokeAndApproveHint: 'Don’t leave yet. You’ll sign the approval in a few seconds.',
             approvalPendingAlert:
                 'Your approval is still processing. When confirmed, you’ll be able to use this approval with the same provider.',
             revocationPendingAlert:
