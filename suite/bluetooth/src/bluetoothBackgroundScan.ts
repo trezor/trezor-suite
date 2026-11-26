@@ -44,7 +44,7 @@ export const createBackgroundScan = (deps: BackgroundScanDeps): BackgroundScan =
 
     const run = async (signal: AbortSignal) => {
         while (!signal.aborted && shouldScan()) {
-            const startedAt = Date.now();
+            const startedAt = performance.now();
 
             if (isWindowVisible()) {
                 try {
@@ -74,7 +74,7 @@ export const createBackgroundScan = (deps: BackgroundScanDeps): BackgroundScan =
                 }
             }
 
-            const elapsedTime = Date.now() - startedAt;
+            const elapsedTime = performance.now() - startedAt;
             const remainingDelay = Math.max(0, BACKGROUND_SCAN_INTERVAL - elapsedTime);
             await resolveAfter(remainingDelay, signal);
         }
