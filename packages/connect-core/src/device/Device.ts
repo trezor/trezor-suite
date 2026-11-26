@@ -395,7 +395,9 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     private async updateDescriptor(descriptor: Descriptor) {
         this.sessionDfd?.resolve(descriptor.session);
 
-        await Promise.all([this.acquirePromise, this.releasePromise]);
+        // Nothing awaits this event handler, and a failed acquire is already handled by the run,
+        // so only wait for the pending operations to settle.
+        await Promise.allSettled([this.acquirePromise, this.releasePromise]);
 
         // TODO improve these conditions
 
