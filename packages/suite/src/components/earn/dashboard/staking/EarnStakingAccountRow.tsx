@@ -393,17 +393,16 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         openTronFlow(event, 'withdraw');
     };
 
-    const apyAvailable =
-        stakingStatus !== 'staking-outdated-provider' &&
-        stakingStatus !== 'staking-remaining-votes';
-
     const rateLabel =
         notice?.kind === 'no-stake-pool' ? (
             <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                 <Translation id="TR_STAKING_REWARDS_REDUCED" />
             </Text>
         ) : (
-            <EarnStakingRateTooltip rateKind={rateKind} rate={apyAvailable ? rate : null} />
+            <EarnStakingRateTooltip
+                rateKind={rateKind}
+                rate={stakingStatus === 'staking-outdated-provider' ? null : rate}
+            />
         );
 
     const actionButtonsProps = {
@@ -445,7 +444,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                         )}
 
                         {stakingStatus === 'staking-remaining-votes' && (
-                            <EarnStakingRemainingVotes apr={rate} count={voteCount} />
+                            <EarnStakingRemainingVotes count={voteCount} />
                         )}
 
                         {(stakingStatus === 'staking-active' ||
@@ -609,7 +608,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                 {stakingStatus === 'staking-remaining-votes' && (
                     <>
                         <Table.Cell colSpan={2}>
-                            <EarnStakingRemainingVotes apr={rate} count={voteCount} />
+                            <EarnStakingRemainingVotes count={voteCount} />
                         </Table.Cell>
                         <Table.Cell align="end">
                             <EarnStakingActionButtons {...actionButtonsProps} />

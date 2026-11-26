@@ -11620,11 +11620,6 @@ export const messages = defineMessages({
         id: 'TR_EARN_STAKING_DASHBOARD_OUTDATED_PROVIDER_NO_APY',
         defaultMessage: 'Switch to Everstake to start earning again',
     },
-    TR_EARN_UNASSIGNED_VOTES_APR: {
-        id: 'TR_EARN_UNASSIGNED_VOTES_APR',
-        defaultMessage:
-            '{count, plural, one {# unassigned vote} other {# unassigned votes}}. Vote to earn ~{apr}% APR.',
-    },
     TR_EARN_UNASSIGNED_VOTES: {
         id: 'TR_EARN_UNASSIGNED_VOTES',
         defaultMessage:
