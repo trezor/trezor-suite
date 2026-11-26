@@ -17,6 +17,7 @@ export { Preloader } from './Preloader/Preloader';
 export { AppsEmbeddingPage } from './pages/AppsEmbeddingPage';
 export { AssetDetailPage } from './pages/AssetDetailPage';
 export { ConnectPopupPage } from './pages/ConnectPopupPage';
+export { ContactsPage } from './pages/ContactsPage';
 export { DashboardPage } from './pages/DashboardPage';
 export { DesktopSettingsGeneralPage } from './pages/DesktopSettingsGeneralPage';
 export { EarnClaimPage } from './pages/EarnClaimPage';

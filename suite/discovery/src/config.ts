@@ -14,6 +14,8 @@ export const SHOULD_ROUTER_APP_START_DISCOVERY: Record<RouterApp, boolean> = {
     'earn-staking': true,
 
     'apps-embedding': false,
+    // Paying a contact checks the wallet's own transactions for addresses it already paid.
+    contacts: true,
     version: false,
     'bridge-requested': false,
     bridge: false,

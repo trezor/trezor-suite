@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsAppsEmbeddingAvailable } from '@suite/apps-embedding-demo';
+import { selectIsContactsAvailable } from '@suite/contacts';
 import {
     NewContentIndicatorId,
     markNewContentIndicatorAsSeen,
@@ -15,7 +16,14 @@ import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/messag
 import { selectHasUnseenTransactionNotifications } from '@suite-common/toast-notifications';
 import { Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { AppWindowIcon, BellIcon, HouseIcon, PiggyBankIcon, RepeatIcon } from '@trezor/icons';
+import {
+    AddressBookIcon,
+    AppWindowIcon,
+    BellIcon,
+    HouseIcon,
+    PiggyBankIcon,
+    RepeatIcon,
+} from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { useResponsiveContext } from '@trezor/suite';
 
@@ -62,6 +70,7 @@ export const Navigation = ({ children }: NavigationProps) => {
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
     const isRegionRestricted = useSelector(selectIsRegionRestricted);
     const isAppsEmbeddingAvailable = useSelector(selectIsAppsEmbeddingAvailable);
+    const isContactsAvailable = useSelector(selectIsContactsAvailable);
 
     const hasUnseenNotifications = useSelector(selectHasUnseenTransactionNotifications);
     const isActivityNewContentIndicatorVisible = useSelector(
@@ -211,6 +220,17 @@ export const Navigation = ({ children }: NavigationProps) => {
                           } as NavigationItemProps,
                       ]
                     : []),
+                ...(isContactsAvailable
+                    ? [
+                          {
+                              nameId: 'TR_CONTACTS',
+                              icon: AddressBookIcon,
+                              goToRoute: 'contacts-index',
+                              routes: ['contacts-index'],
+                              'data-testid': '@suite/menu/contacts',
+                          } as NavigationItemProps,
+                      ]
+                    : []),
                 {
                     nameId: 'TR_NOTIFICATIONS',
                     icon: BellIcon,
@@ -230,6 +250,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                 isBtcOnly,
                 isRegionRestricted,
                 isAppsEmbeddingAvailable,
+                isContactsAvailable,
                 isTradingOpen,
                 handleSwapNavigation,
                 isSwapNewContentIndicatorVisible,

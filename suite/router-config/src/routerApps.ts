@@ -5,6 +5,7 @@ export type RouterApp =
     | 'earn-yield'
     | 'earn-staking'
     | 'apps-embedding'
+    | 'contacts'
     | 'version'
     | 'bridge-requested'
     | 'bridge'

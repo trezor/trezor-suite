@@ -1,4 +1,5 @@
 import { AppsEmbeddingSwitch } from '@suite/apps-embedding-demo';
+import { ContactsSwitch } from '@suite/contacts';
 import { Translation } from '@suite/intl';
 import {
     ContextMessage,
@@ -93,6 +94,11 @@ export const SettingsDebugPage = () => {
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Apps embedding">
                 <AppsEmbeddingSwitch />
             </SettingsSection>
+            {isDesktop() && (
+                <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Contacts">
+                    <ContactsSwitch />
+                </SettingsSection>
+            )}
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Earn">
                 <DebugEarnYieldApi />
                 <DebugEarnStakingApi />

@@ -5626,6 +5626,153 @@ export const messages = defineMessages({
         id: 'TR_APPS_EMBEDDING',
         defaultMessage: 'Apps embedding',
     },
+    TR_CONTACTS: {
+        id: 'TR_CONTACTS',
+        defaultMessage: 'Contacts',
+    },
+    TR_CONTACTS_UNAVAILABLE: {
+        id: 'TR_CONTACTS_UNAVAILABLE',
+        defaultMessage:
+            'Contacts need Trezor Suite desktop with debug mode on and the Contacts switch on in Debug settings.',
+    },
+    TR_CONTACTS_IDENTITY_TITLE: {
+        id: 'TR_CONTACTS_IDENTITY_TITLE',
+        defaultMessage: 'Your contact ID',
+    },
+    TR_CONTACTS_IDENTITY_DESCRIPTION: {
+        id: 'TR_CONTACTS_IDENTITY_DESCRIPTION',
+        defaultMessage:
+            'People who want to pay you by name add this ID. Ask them to compare it with the one your Trezor shows.',
+    },
+    TR_CONTACTS_IDENTITY_MISSING: {
+        id: 'TR_CONTACTS_IDENTITY_MISSING',
+        defaultMessage: 'Connect and unlock your Trezor to see your contact ID.',
+    },
+    TR_CONTACTS_SHOW_ON_TREZOR: {
+        id: 'TR_CONTACTS_SHOW_ON_TREZOR',
+        defaultMessage: 'Show on Trezor',
+    },
+    TR_CONTACTS_ADD: {
+        id: 'TR_CONTACTS_ADD',
+        defaultMessage: 'Add contact',
+    },
+    TR_CONTACTS_EMPTY: {
+        id: 'TR_CONTACTS_EMPTY',
+        defaultMessage:
+            'No contacts yet. Add a contact with their contact ID and the name your Trezor should show when you pay them.',
+    },
+    TR_CONTACTS_PASSPHRASE_WALLET: {
+        id: 'TR_CONTACTS_PASSPHRASE_WALLET',
+        defaultMessage:
+            'Your Trezor keeps the contacts you pay for the standard wallet only. Open the standard wallet to manage them.',
+    },
+    TR_CONTACTS_SUITE_SYNC_OFF: {
+        id: 'TR_CONTACTS_SUITE_SYNC_OFF',
+        defaultMessage:
+            'Contacts are kept in Suite Sync. Turn on Suite Sync as the labeling method to add contacts.',
+    },
+    TR_CONTACTS_WRITE_AGAIN: {
+        id: 'TR_CONTACTS_WRITE_AGAIN',
+        defaultMessage: 'Write again to Trezor',
+    },
+    TR_CONTACTS_REMOVE: {
+        id: 'TR_CONTACTS_REMOVE',
+        defaultMessage: 'Remove contact',
+    },
+    TR_CONTACTS_STATUS_QUEUED: {
+        id: 'TR_CONTACTS_STATUS_QUEUED',
+        defaultMessage: 'Waiting for the WARD Manager',
+    },
+    TR_CONTACTS_STATUS_WRITTEN: {
+        id: 'TR_CONTACTS_STATUS_WRITTEN',
+        defaultMessage: 'Saved on your Trezor',
+    },
+    TR_CONTACTS_NPUB_LABEL: {
+        id: 'TR_CONTACTS_NPUB_LABEL',
+        defaultMessage: 'Contact ID (npub)',
+    },
+    TR_CONTACTS_NAME_LABEL: {
+        id: 'TR_CONTACTS_NAME_LABEL',
+        defaultMessage: 'Name shown on your Trezor',
+    },
+    TR_CONTACTS_NAME_HINT: {
+        id: 'TR_CONTACTS_NAME_HINT',
+        defaultMessage: 'Up to {max} characters: English letters, digits, spaces and punctuation.',
+    },
+    TR_CONTACTS_ADD_CONFIRM_HINT: {
+        id: 'TR_CONTACTS_ADD_CONFIRM_HINT',
+        defaultMessage:
+            "Your Trezor asks you to confirm this name for the contact ID. Before you hold to confirm, compare the whole ID with the one your contact's Trezor shows.",
+    },
+    TR_CONTACTS_ADD_CONFIRM_ON_TREZOR: {
+        id: 'TR_CONTACTS_ADD_CONFIRM_ON_TREZOR',
+        defaultMessage: 'Compare the contact ID on your Trezor, then hold to confirm.',
+    },
+    TR_CONTACTS_ERROR_NO_DEVICE: {
+        id: 'TR_CONTACTS_ERROR_NO_DEVICE',
+        defaultMessage: 'Connect and unlock your Trezor.',
+    },
+    TR_CONTACTS_ERROR_INVALID_NPUB: {
+        id: 'TR_CONTACTS_ERROR_INVALID_NPUB',
+        defaultMessage: 'This is not a contact ID. It starts with npub1.',
+    },
+    TR_CONTACTS_ERROR_NAME_EMPTY: {
+        id: 'TR_CONTACTS_ERROR_NAME_EMPTY',
+        defaultMessage: 'Enter a name.',
+    },
+    TR_CONTACTS_ERROR_NAME_TOO_LONG: {
+        id: 'TR_CONTACTS_ERROR_NAME_TOO_LONG',
+        defaultMessage: 'Use {max} characters at most.',
+    },
+    TR_CONTACTS_ERROR_NAME_NOT_PLAIN_ASCII: {
+        id: 'TR_CONTACTS_ERROR_NAME_NOT_PLAIN_ASCII',
+        defaultMessage: 'Use only English letters, digits, spaces and punctuation.',
+    },
+    TR_CONTACTS_ERROR_NAME_SURROUNDING_SPACE: {
+        id: 'TR_CONTACTS_ERROR_NAME_SURROUNDING_SPACE',
+        defaultMessage: 'Remove the space at the start or the end.',
+    },
+    TR_CONTACTS_ERROR_OWN_NPUB: {
+        id: 'TR_CONTACTS_ERROR_OWN_NPUB',
+        defaultMessage: 'This is your own contact ID.',
+    },
+    TR_CONTACTS_ERROR_DUPLICATE: {
+        id: 'TR_CONTACTS_ERROR_DUPLICATE',
+        defaultMessage: 'You already have this contact.',
+    },
+    TR_CONTACTS_ERROR_UNKNOWN: {
+        id: 'TR_CONTACTS_ERROR_UNKNOWN',
+        defaultMessage: 'This contact is no longer in the list.',
+    },
+    TR_CONTACTS_ERROR_CANCELLED: {
+        id: 'TR_CONTACTS_ERROR_CANCELLED',
+        defaultMessage: 'Cancelled on your Trezor. Nothing was changed.',
+    },
+    TR_CONTACTS_ERROR_WALLET_CHANGED: {
+        id: 'TR_CONTACTS_ERROR_WALLET_CHANGED',
+        defaultMessage: 'You switched to another wallet, so nothing was changed. Try again.',
+    },
+    TR_CONTACTS_ERROR_WARD_CONFLICT: {
+        id: 'TR_CONTACTS_ERROR_WARD_CONFLICT',
+        defaultMessage: 'Your Trezor contacts were changed elsewhere at the same time. Try again.',
+    },
+    TR_CONTACTS_ERROR_WARD_FAILED: {
+        id: 'TR_CONTACTS_ERROR_WARD_FAILED',
+        defaultMessage: 'WARD is not available ({message}). Check that wardd is running.',
+    },
+    TR_CONTACTS_ERROR_DEVICE_FAILED: {
+        id: 'TR_CONTACTS_ERROR_DEVICE_FAILED',
+        defaultMessage: 'Your Trezor could not do it: {message}',
+    },
+    TR_CONTACTS_ERROR_SUITE_SYNC_FAILED: {
+        id: 'TR_CONTACTS_ERROR_SUITE_SYNC_FAILED',
+        defaultMessage: 'Suite Sync could not save the change.',
+    },
+    TR_CONTACTS_RESULT_QUEUED: {
+        id: 'TR_CONTACTS_RESULT_QUEUED',
+        defaultMessage:
+            'Your Trezor will apply the change once the WARD Manager confirms it. Keep wardd running.',
+    },
     TR_WALLET: {
         id: 'TR_WALLET',
         defaultMessage: 'Accounts',
