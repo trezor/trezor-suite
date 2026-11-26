@@ -1,4 +1,3 @@
-import type { PrecomposeResultFinal } from './api/bitcoin/composeTransaction';
 import type { CoinSymbol } from './coinInfo';
 
 /**
@@ -63,5 +62,4 @@ export const GRANTABLE_PERMISSIONS: readonly MethodPermission[] = [
 export type MethodInfo = {
     requiredPermissions: PermissionRequest[];
     info: string;
-    precomposed?: PrecomposeResultFinal;
 };
