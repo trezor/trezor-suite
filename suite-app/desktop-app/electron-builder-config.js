@@ -182,6 +182,11 @@ module.exports = {
         category: 'Utility',
         target: ['AppImage'],
     },
+    appImage: {
+        // Electron-builder 27 changed the default from gzip to zstd. Let's pin zstd explicitly, to keep flathub
+        // repackaging stable. Also, zstd is better – smaller file, faster startup.
+        compression: 'zstd',
+    },
     // TODO #14482: when Electron-main is migrated to ESM, and we declare whole desktop-app package as ESM, rename .mjs files to .js
     afterPack: '../desktop-app-main/scripts/setElectronFuses.mjs',
     afterSign: '../desktop-app-main/scripts/notarize.mjs',
