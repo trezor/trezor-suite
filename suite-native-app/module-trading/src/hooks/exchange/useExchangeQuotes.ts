@@ -8,6 +8,7 @@ import {
     exchangeThunks,
     selectTradingBtcSwapComposeTemplate,
     selectTradingExchangeIsLoading,
+    selectTradingExchangeQuotes,
 } from '@suite-common/trading';
 import {
     type FeesRootState,
@@ -18,7 +19,7 @@ import {
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useFormState, useWatch } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
-import { exchangeActions, selectExchangeQuotes } from '@suite-native/trading-state';
+import { exchangeActions } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -40,7 +41,7 @@ export const useExchangeQuotes = ({ getValues, control }: ExchangeFormType) => {
     const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, getSymbolFromTradeableAsset(sendAsset)),
     );
-    const quotes = useSelector(selectExchangeQuotes);
+    const quotes = useSelector(selectTradingExchangeQuotes);
     const isLoading = useSelector(selectTradingExchangeIsLoading);
 
     const isFetchAllowed =

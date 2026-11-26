@@ -5,7 +5,6 @@ import {
     selectTradingCoins,
     selectTradingExchangeAccountKey,
     selectTradingExchangeBuyCryptoIds,
-    selectTradingExchangeQuotes,
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeReceiveAddress,
 } from '@suite-common/trading';
@@ -86,8 +85,6 @@ export const selectExchangeBuyTradeableAssets = createTradingWithFeatureFlagsMem
             );
     },
 );
-
-export const selectExchangeQuotes = (state: TradingRootState) => selectTradingExchangeQuotes(state);
 
 export const selectExchangeAmountLimits = (state: TradingRootState) =>
     selectTradingExchange(state).amountLimits;
