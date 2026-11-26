@@ -141,9 +141,7 @@ export const submitYieldDepositThunk = createThunk<
                 getState,
                 selectedFee,
                 selectedFeeLevel,
-            });
-
-            userAcceptedTxSimulation.resolve();
+            }).finally(userAcceptedTxSimulation.resolve);
 
             // A deliberate user cancel — not reported as a failure.
             if (sendResult.status === 'cancelled') {

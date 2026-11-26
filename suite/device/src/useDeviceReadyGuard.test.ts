@@ -16,7 +16,6 @@ import {
     type DesktopDeviceRootState,
     initialState,
     prepareDesktopDeviceReducer,
-    setConnectionModal,
 } from './deviceSlice';
 import {
     type DeviceSessionError,
@@ -72,18 +71,6 @@ const runGuard = async (selectedDevice: TrezorDevice | undefined) => {
     };
 };
 
-// Starts the guard for a device that is not connected and waits for the connection modal.
-const runGuardUntilConnectionModal = async (selectedDevice: TrezorDevice | undefined) => {
-    const guard = renderGuard(selectedDevice);
-    let isReady: Promise<boolean> | undefined;
-
-    await act(() => {
-        isReady = guard.result.current();
-    });
-
-    return { ...guard, isReady };
-};
-
 describe('useDeviceReadyGuard', () => {
     afterEach(() => {
         jest.restoreAllMocks();
@@ -111,29 +98,11 @@ describe('useDeviceReadyGuard', () => {
     ])('opens the connection modal without asking the device when %s', async (_, device) => {
         const getDeviceState = jest.spyOn(TrezorConnect, 'getDeviceState');
 
-        const { store } = await runGuardUntilConnectionModal(device);
+        const { result, store } = renderGuard(device);
+        await expect(result.current()).resolves.toBe(false);
 
         expect(selectIsConnectionModalOpen(store.getState())).toBe(true);
         expect(getDeviceState).not.toHaveBeenCalled();
-    });
-
-    it('continues with the session check once the device is connected', async () => {
-        const getDeviceState = jest
-            .spyOn(TrezorConnect, 'getDeviceState')
-            .mockResolvedValue({ success: true, payload: { state: {} } });
-        const { store, isReady } = await runGuardUntilConnectionModal(
-            mockSuiteDevice({ connected: false, available: false }),
-        );
-
-        await act(() => {
-            store.dispatch(deviceActions.updateSelectedDevice(readyDevice));
-            store.dispatch(setConnectionModal(false));
-        });
-
-        await expect(isReady).resolves.toBe(true);
-        expect(getDeviceState).toHaveBeenCalledWith({
-            device: expect.objectContaining({ state: readyDevice.state }),
-        });
     });
 
     it('skips the PIN prompt if the connected wallet does not own the account', async () => {
@@ -198,26 +167,6 @@ describe('useDeviceReadyGuard', () => {
         expect(onFailed).toHaveBeenCalledWith(
             expect.objectContaining({ code: 'Device_Disconnected' }),
         );
-    });
-
-    it('stops the action when the connection modal is closed without a device', async () => {
-        const getDeviceState = jest.spyOn(TrezorConnect, 'getDeviceState');
-        const { store, isReady } = await runGuardUntilConnectionModal(undefined);
-
-        await act(() => {
-            store.dispatch(setConnectionModal(false));
-        });
-
-        await expect(isReady).resolves.toBe(false);
-        expect(getDeviceState).not.toHaveBeenCalled();
-    });
-
-    it('stops the action when the screen is left while waiting for the device', async () => {
-        const { unmount, isReady } = await runGuardUntilConnectionModal(undefined);
-
-        unmount();
-
-        await expect(isReady).resolves.toBe(false);
     });
 
     it.each([

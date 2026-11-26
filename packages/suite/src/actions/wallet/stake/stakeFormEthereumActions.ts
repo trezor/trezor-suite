@@ -2,7 +2,8 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
-import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectAccountSigningDevice } from '@suite-common/device';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -39,6 +40,7 @@ import {
     getAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
+import { ERRORS } from '@trezor/connect-common';
 import { type WithServices } from '@trezor/redux-utils';
 
 const calculateStakingTransaction = (
@@ -138,20 +140,20 @@ type SignTransactionThunkState = DeviceRootState &
 type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 type SignTransactionThunkParams = {
+    device: TrezorDevice;
     account: Account;
     formValues: StakeFormState;
     transactionInfo: PrecomposedTransactionFinal;
 };
 
 export const signTransactionThunk =
-    ({ account, formValues, transactionInfo }: SignTransactionThunkParams) =>
+    ({ account, device, formValues, transactionInfo }: SignTransactionThunkParams) =>
     async (
         dispatch: ThunkDispatch<SignTransactionThunkState, SignTransactionThunkDeps, UnknownAction>,
         getState: () => SignTransactionThunkState,
         extra: SignTransactionThunkDeps,
     ) => {
-        const device = selectSelectedDevice(getState());
-        if (!device || transactionInfo?.type !== 'final') return;
+        if (transactionInfo?.type !== 'final') return;
 
         const network = getNetwork(account.symbol);
         if (account.networkType !== 'ethereum' || !network.chainId) return;
@@ -244,12 +246,28 @@ export const signTransactionThunk =
             return;
         }
 
+        const signingDevice = selectAccountSigningDevice(
+            getState(),
+            account.deviceState,
+            device.path,
+        );
+        if (!signingDevice) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'sign-tx-error',
+                    error: ERRORS.ERROR_CODES.Device_NotFound,
+                }),
+            );
+
+            return;
+        }
+
         const signedTx = await TrezorConnect.ethereumSignTransaction({
             device: {
-                path: device.path,
-                instance: device.instance,
-                state: device.state,
-                useEmptyPassphrase: device.useEmptyPassphrase,
+                path: signingDevice.path,
+                instance: signingDevice.instance,
+                state: signingDevice.state,
+                useEmptyPassphrase: signingDevice.useEmptyPassphrase,
             },
             path: account.path,
             transaction: txData.tx,

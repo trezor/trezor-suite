@@ -5,6 +5,7 @@ import {
     openDeferredModal,
     selectUserContextModalPayload,
 } from '@suite/modal';
+import { deviceReducerInitialState } from '@suite-common/device';
 import { USER_CANCELLED_ERROR_CODES } from '@suite-common/earn-stablecoin';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -35,11 +36,6 @@ jest.mock('@suite-common/earn-stablecoin', () => ({
         mockBuildStablecoinYieldTransactionReview(payload),
 }));
 
-jest.mock('@suite-common/device', () => ({
-    ...jest.requireActual('@suite-common/device'),
-    selectSelectedDevice: () => mockDevice,
-}));
-
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     selectAddressDisplayType: () => 'original',
@@ -61,7 +57,7 @@ const createSigningStore = (isReviewModalConfirmed: boolean) => {
         SendYieldTransactionDeps,
         SendYieldTransactionState
     >({
-        preloadedState: {},
+        preloadedState: { device: { ...deviceReducerInitialState, selectedDevice: mockDevice } },
         reducer: (state, action) => ({
             ...state!,
             modal: modalReducer(state?.modal, action),

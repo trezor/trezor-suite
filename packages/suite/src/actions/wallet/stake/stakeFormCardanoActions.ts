@@ -5,7 +5,7 @@ import {
     type StakingCardanoPoolDelegationPayload,
     events,
 } from '@suite/analytics';
-import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectAccountSigningDevice } from '@suite-common/device';
 import {
     type StakingRootState,
     getCachedStakingProductInfo,
@@ -14,6 +14,7 @@ import {
 import { type AdaPools } from '@suite-common/earn-staking-api';
 import { type StakingProductTarget } from '@suite-common/earn-staking-common';
 import { type QueryClient, type QueryClientDep } from '@suite-common/react-query';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     EVERSTAKE_POOL_NAMES,
@@ -64,6 +65,7 @@ import {
 } from '@suite-common/wallet-utils';
 import type { CardanoProtocolParameters } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type FeeLevel, PROTO } from '@trezor/connect';
+import { ERRORS } from '@trezor/connect-common';
 import { type ErrorCode } from '@trezor/connect-common/src/constants/errors';
 import {
     getAddressParameters,
@@ -483,20 +485,20 @@ type SignTransactionThunkState = DeviceRootState &
 type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep & QueryClientDep>;
 
 type SignTransactionThunkParams = {
+    device: TrezorDevice;
     account: Account;
     formValues: StakeFormState;
     transactionInfo: PrecomposedTransactionFinal;
 };
 
 export const signTransactionThunk =
-    ({ account, formValues, transactionInfo }: SignTransactionThunkParams) =>
+    ({ account, device, formValues, transactionInfo }: SignTransactionThunkParams) =>
     async (
         dispatch: Dispatch<UnknownAction>,
         getState: () => SignTransactionThunkState,
         extra: SignTransactionThunkDeps,
     ) => {
-        const device = selectSelectedDevice(getState());
-        if (!device || transactionInfo?.type !== 'final') {
+        if (transactionInfo?.type !== 'final') {
             return;
         }
 
@@ -546,9 +548,25 @@ export const signTransactionThunk =
             return;
         }
 
+        const signingDevice = selectAccountSigningDevice(
+            getState(),
+            account.deviceState,
+            device.path,
+        );
+        if (!signingDevice) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'sign-tx-error',
+                    error: ERRORS.ERROR_CODES.Device_NotFound,
+                }),
+            );
+
+            return;
+        }
+
         const signedTx = await TrezorConnect.cardanoSignTransaction({
             signingMode: PROTO.CardanoTxSigningMode.ORDINARY_TRANSACTION,
-            device,
+            device: signingDevice,
             inputs: txPlan.inputs,
             outputs: txPlan.outputs,
             unsignedTx: txPlan.unsignedTx,

@@ -80,7 +80,6 @@ export type TransactionReviewModalBodyInnerProps = {
     account: Account;
     decision: Deferred<boolean, string | number | undefined> | undefined;
     txInfoState: TxInfoState;
-    tryAgainSignTx: () => void;
     cancelSignTx: () => void;
     precomposedForm: FormState;
     vaultName?: string;

@@ -1,9 +1,10 @@
+import { type DeviceRootState, selectAccountSigningDevice } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
-import { asCoinSymbol } from '@trezor/connect-common';
+import { ERRORS, asCoinSymbol } from '@trezor/connect-common';
 import * as tronUtils from '@trezor/network-tron/utils';
 
 import { isEarnSigningCancelled } from '../../../earn/earnTransactionAnalytics';
@@ -25,12 +26,14 @@ type SignTronContractResult = { serializedTx: string; txid: string } | { error: 
 type SignTronContractParams = {
     account: Account;
     device: TrezorDevice;
+    getState: () => DeviceRootState;
     contract: TronStakeContract;
 };
 
 const prepareAndSignTronContract = async ({
     account,
     device,
+    getState,
     contract,
 }: SignTronContractParams): Promise<SignTronContractResult> => {
     const blockchainInfo = await TrezorBlockchain.getInfo({
@@ -56,12 +59,17 @@ const prepareAndSignTronContract = async ({
 
     const { ref_block_bytes, ref_block_hash, expiration, timestamp } = composed.payload;
 
+    const currentDevice = selectAccountSigningDevice(getState(), account.deviceState, device.path);
+    if (!currentDevice) {
+        return { error: { kind: 'sign-failed', message: ERRORS.ERROR_CODES.Device_NotFound } };
+    }
+
     const signed = await TrezorConnect.tronSignTransaction({
         device: {
-            path: device.path,
-            instance: device.instance,
-            state: device.state,
-            useEmptyPassphrase: device.useEmptyPassphrase,
+            path: currentDevice.path,
+            instance: currentDevice.instance,
+            state: currentDevice.state,
+            useEmptyPassphrase: currentDevice.useEmptyPassphrase,
         },
         path: account.path,
         ref_block_bytes,

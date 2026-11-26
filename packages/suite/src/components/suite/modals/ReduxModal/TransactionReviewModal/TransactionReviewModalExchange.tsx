@@ -14,7 +14,10 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { useTradingExchangeTradeActions } from '#src/hooks/wallet/trading/useTradingExchangeTradeActions';
 
-import { TransactionReviewModalBody } from './TransactionReviewModalBody';
+import {
+    TransactionReviewModalBody,
+    type TransactionReviewRetry,
+} from './TransactionReviewModalBody';
 import { type TransactionReviewModalProps } from './TransactionReviewModalProps';
 import { TransactionReviewModalRefreshedQuoteGate } from './TransactionReviewModalRefreshedQuoteGate';
 import { type TxInfoState } from './utils';
@@ -53,7 +56,12 @@ export const TransactionReviewModalExchange = ({
         decision?.resolve(false);
     };
 
-    const handleTryAgainSignTx = async () => {
+    const handleTryAgainSignTx = async ({
+        cancelPendingSignature,
+        resetExpiredReview,
+    }: TransactionReviewRetry) => {
+        cancelPendingSignature();
+        resetExpiredReview();
         if (!isExpiringProviderTransaction) {
             dispatch(sendFormActions.discardTransaction());
             await sendTransaction();

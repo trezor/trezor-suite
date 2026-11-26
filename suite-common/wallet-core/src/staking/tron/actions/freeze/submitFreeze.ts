@@ -1,4 +1,5 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
+import { type DeviceRootState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getNetwork } from '@suite-common/wallet-config';
 import { asAmountUnit, getAccountIdentity, unitsToSubunits } from '@suite-common/wallet-utils';
@@ -27,7 +28,7 @@ interface SubmitFreezeThunkArguments extends FreezeThunkArguments {
     onSettled?: () => void;
 }
 
-type SubmitTronFreezeThunkState = AddFakePendingTronTxThunkState;
+type SubmitTronFreezeThunkState = AddFakePendingTronTxThunkState & DeviceRootState;
 
 type SubmitTronFreezeThunkDeps = WithServices<AnalyticsDep>;
 
@@ -39,7 +40,7 @@ export const submitTronFreezeThunk = createThunk<
     `${TRON_STAKE_MODULE}/submitTronFreezeThunk`,
     async (
         { account, device, amount, resourceType, requestPushApproval, onSigningStart, onSettled },
-        { dispatch, extra },
+        { dispatch, extra, getState },
     ) => {
         const { key: accountKey } = account;
         const flow: TronFlow = 'stake';
@@ -103,6 +104,7 @@ export const submitTronFreezeThunk = createThunk<
             onSigningStart?.();
 
             const signResult = await signTronContract({
+                getState,
                 account,
                 device,
                 contract,

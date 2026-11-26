@@ -8,14 +8,18 @@ import { getTxsPerPage } from '@suite-common/suite-utils';
 import { tradingActions } from '@suite-common/trading';
 import {
     type SendRootState,
+    type StakeSliceRootState,
     type SyncAccountsWithBlockchainThunkState,
     WALLET_SETTINGS,
     accountsActions,
     blockchainActions,
     convertSendFormDraftsBtcAmountUnitsThunk,
+    selectAccountByKey,
     selectAccounts,
     selectAllNetworkSymbolsOfVisibleAccounts,
     selectNetworksWithPendingTxs,
+    selectStakeAccount,
+    selectStakeVotingDelegation,
     sendFormActions,
     setCustomBackendThunk,
     stakeActions,
@@ -35,6 +39,7 @@ type WalletMiddlewareState = SyncSelectedAccountThunkState &
     SyncAccountsWithBlockchainThunkState &
     ConvertDraftsThunkState &
     SendRootState &
+    StakeSliceRootState &
     WindowRootState;
 
 const walletMiddleware =
@@ -116,8 +121,22 @@ const walletMiddleware =
             api.dispatch(accountsActions.disposeAccount());
             api.dispatch(sendFormActions.dispose());
             api.dispatch(tradingActions.setVerifiedAddress(undefined));
-            api.dispatch(stakeActions.dispose());
-            api.dispatch(stakeActions.clearAccountVotingDelegation());
+            // A device selection can reselect the wallet that already owns the staking review.
+            const selectedWallet = deviceActions.selectDevice.match(action)
+                ? action.payload?.state?.staticSessionId
+                : undefined;
+            if (!selectedWallet || selectedWallet !== selectStakeAccount(prevState)?.deviceState) {
+                api.dispatch(stakeActions.dispose());
+            }
+            const delegation = selectStakeVotingDelegation(prevState);
+            if (
+                delegation &&
+                (!selectedWallet ||
+                    selectAccountByKey(prevState, delegation.accountKey)?.deviceState !==
+                        selectedWallet)
+            ) {
+                api.dispatch(stakeActions.clearAccountVotingDelegation());
+            }
         }
 
         if (action.type === WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS) {

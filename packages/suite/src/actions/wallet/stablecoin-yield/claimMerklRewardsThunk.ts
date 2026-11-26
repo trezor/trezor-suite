@@ -1,7 +1,7 @@
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectAccountSigningDevice, selectSelectedDevice } from '@suite-common/device';
 import {
     buildClaimCalldata,
     buildClaimTransactionReview,
@@ -33,7 +33,6 @@ import {
     type SendYieldTransactionState,
     createYieldSigningDeviceError,
     getYieldSubmitErrorAnalyticsMessage,
-    isYieldSigningDevice,
     openYieldSimulationThunk,
     pushYieldTransaction,
     showYieldSubmitErrorThunk,
@@ -199,14 +198,19 @@ export const claimMerklRewardsThunk = createThunk<
                 return;
             }
 
-            const signingDevice = selectSelectedDevice(getState());
-            if (
-                !isYieldSigningDevice(signingDevice, account) ||
-                signingDevice.path !== device.path
-            ) {
+            const signingDevice = selectAccountSigningDevice(
+                getState(),
+                account.deviceState,
+                device.path,
+            );
+            if (!signingDevice) {
+                const error = createYieldSigningDeviceError(
+                    selectSelectedDevice(getState()),
+                    account,
+                );
                 userAcceptedTxSimulation.resolve();
 
-                throw createYieldSigningDeviceError(signingDevice, account);
+                throw error;
             }
 
             const { formState, precomposedTransaction, availableRewards, transactionForSigning } =

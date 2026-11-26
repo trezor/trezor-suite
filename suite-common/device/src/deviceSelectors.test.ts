@@ -5,6 +5,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { type DeviceRootState, deviceReducerInitialState } from './deviceReducer';
 import {
+    selectAccountSigningDevice,
     selectDeviceModelWithFlagshipFallback,
     selectStandardWalletByDeviceId,
     selectStandardWalletDescriptorByDeviceId,
@@ -119,5 +120,51 @@ describe(selectStandardWalletDescriptorByDeviceId.name, () => {
         expect(
             selectStandardWalletDescriptorByDeviceId(createState([hiddenWallet]), 'device-1'),
         ).toBeNull();
+    });
+});
+
+describe('selectAccountSigningDevice', () => {
+    const ownerState = 'test@owner:0';
+    const owner = mockSuiteDevice({
+        connected: true,
+        available: true,
+        path: 'usb-a',
+        state: { staticSessionId: ownerState },
+    });
+    const selected = (device?: typeof owner) => ({
+        device: { ...deviceReducerInitialState, selectedDevice: device },
+    });
+
+    it('uses the latest session for the verified wallet and device path', () => {
+        const current = mockSuiteDevice({
+            connected: true,
+            available: true,
+            path: 'usb-a',
+            instance: 1,
+            state: { staticSessionId: ownerState },
+        });
+        expect(selectAccountSigningDevice(selected(current), ownerState, owner.path)).toBe(current);
+    });
+
+    it.each([
+        undefined,
+        { ...owner, connected: false },
+        { ...owner, available: false },
+        mockSuiteDevice({
+            connected: true,
+            available: true,
+            path: 'usb-b',
+            state: { staticSessionId: ownerState },
+        }),
+        mockSuiteDevice({
+            connected: true,
+            available: true,
+            path: 'usb-a',
+            state: { staticSessionId: 'test@other:0' },
+        }),
+    ])('rejects a missing connection or a different wallet after composition', current => {
+        expect(
+            selectAccountSigningDevice(selected(current), ownerState, owner.path),
+        ).toBeUndefined();
     });
 });

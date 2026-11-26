@@ -8,7 +8,11 @@ import {
     preserveModal,
     selectIsTransactionReviewActive,
 } from '@suite/modal';
-import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    selectAccountSigningDevice,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import {
     type StablecoinYieldTxSimulationParams,
     buildStablecoinYieldTransactionReview,
@@ -100,14 +104,6 @@ export const createYieldSigningDeviceError = (
         ? new Error('Wallet mismatch', { cause: WALLET_MISMATCH_ERROR_CODE })
         : new Error(ERRORS.ERROR_CODES.Device_Disconnected, { cause: 'Device_Disconnected' });
 
-export const isYieldSigningDevice = (
-    device: TrezorDevice | undefined,
-    account: Pick<Account, 'deviceState'>,
-): device is TrezorDevice =>
-    !!device?.connected &&
-    device.available &&
-    device.state?.staticSessionId === account.deviceState;
-
 type OpenYieldSimulationThunkState = DeviceRootState;
 
 export const openYieldSimulationThunk =
@@ -119,16 +115,21 @@ export const openYieldSimulationThunk =
         dispatch: ThunkDispatch<OpenYieldSimulationThunkState, unknown, UnknownAction>,
         getState: () => OpenYieldSimulationThunkState,
     ) => {
-        const device = selectSelectedDevice(getState());
+        const device = selectAccountSigningDevice(
+            getState(),
+            data.account.deviceState,
+            owner?.path,
+        );
         if (
             !owner?.path ||
-            !isYieldSigningDevice(device, data.account) ||
-            device.path !== owner.path ||
+            !device ||
             device.instance !== owner.instance ||
             !device.state?.staticSessionId ||
             device.state.staticSessionId !== owner.state?.staticSessionId
         ) {
-            return Promise.reject(createYieldSigningDeviceError(device, data.account));
+            return Promise.reject(
+                createYieldSigningDeviceError(selectSelectedDevice(getState()), data.account),
+            );
         }
 
         return dispatch(
@@ -209,17 +210,17 @@ export const sendYieldTransaction = async ({
     selectedFee,
     selectedFeeLevel,
 }: SendYieldTransactionParams): Promise<SendYieldTransactionResult> => {
-    const device = selectSelectedDevice(getState());
-    const addressDisplayType = selectAddressDisplayType(getState());
+    const device = selectAccountSigningDevice(getState(), account.deviceState);
 
-    if (!isYieldSigningDevice(device, account)) {
-        throw createYieldSigningDeviceError(device, account);
+    if (!device) {
+        throw createYieldSigningDeviceError(selectSelectedDevice(getState()), account);
     }
 
     if (account.networkType !== 'ethereum') {
         throw new Error('Yield actions currently support only EVM accounts.');
     }
 
+    const addressDisplayType = selectAddressDisplayType(getState());
     const transactionReview = buildStablecoinYieldTransactionReview({
         unsignedTransaction,
         selectedFee,

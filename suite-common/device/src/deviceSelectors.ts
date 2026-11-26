@@ -21,7 +21,12 @@ import {
     getSortedDevicesWithoutInstances,
     getStatus,
 } from '@suite-common/suite-utils';
-import { type Device, type DeviceState, type StaticSessionId } from '@trezor/connect';
+import {
+    type Device,
+    type DeviceState,
+    type DeviceUniquePath,
+    type StaticSessionId,
+} from '@trezor/connect';
 import {
     DeviceModelInternal,
     type WalletDescriptor,
@@ -49,6 +54,23 @@ export const selectDevices = (state: DeviceRootState) => state.device?.devices;
 export const selectDevicesCount = (state: DeviceRootState) => state.device?.devices?.length;
 
 export const selectSelectedDevice = (state: DeviceRootState) => state.device.selectedDevice;
+
+export const selectAccountSigningDevice = (
+    state: DeviceRootState,
+    accountDeviceState: StaticSessionId,
+    devicePath?: DeviceUniquePath,
+) => {
+    const device = selectSelectedDevice(state);
+    if (
+        !device?.connected ||
+        !device.available ||
+        (devicePath && device.path !== devicePath) ||
+        device.state?.staticSessionId !== accountDeviceState
+    )
+        return undefined;
+
+    return device;
+};
 
 export const selectIsAnyDeviceSelected = createMemoizedSelector(
     [selectSelectedDevice],

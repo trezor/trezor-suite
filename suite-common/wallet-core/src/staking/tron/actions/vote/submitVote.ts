@@ -1,6 +1,7 @@
 import { captureException, withScope } from '@sentry/core';
 
 import { type AnalyticsDep, events } from '@suite-common/analytics';
+import { type DeviceRootState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
@@ -30,7 +31,7 @@ interface SubmitVoteThunkArguments extends VoteThunkArguments {
     onSettled?: () => void;
 }
 
-type SubmitTronVoteThunkState = AddFakePendingTronTxThunkState;
+type SubmitTronVoteThunkState = AddFakePendingTronTxThunkState & DeviceRootState;
 
 type SubmitTronVoteThunkDeps = WithServices<AnalyticsDep>;
 
@@ -51,7 +52,7 @@ export const submitTronVoteThunk = createThunk<
             onSigningStart,
             onSettled,
         },
-        { dispatch, extra },
+        { dispatch, extra, getState },
     ) => {
         const { key: accountKey } = account;
 
@@ -126,6 +127,7 @@ export const submitTronVoteThunk = createThunk<
             onSigningStart?.();
 
             const signResult = await signTronContract({
+                getState,
                 account,
                 device,
                 contract,

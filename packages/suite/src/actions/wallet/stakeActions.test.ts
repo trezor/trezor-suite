@@ -1,7 +1,13 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { modalReducer, openModal } from '@suite/modal';
+import {
+    MODAL_CONTEXT_NONE,
+    MODAL_CONTEXT_USER,
+    modalReducer,
+    openModal,
+    selectModal,
+} from '@suite/modal';
 import { deviceInitialState } from '@suite-common/device';
 import { mockStakingQueryClient } from '@suite-common/earn-staking/mocks';
 import { messageSystemInitialState } from '@suite-common/message-system';
@@ -29,6 +35,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { asGetter } from '@trezor/dependency-injection';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
+import { createDeferred } from '@trezor/utils';
 
 import {
     type SignTransactionThunkDeps,
@@ -137,11 +144,12 @@ const createStakeFlow = (stakeAccount = account) => {
 const signStakeTransaction = async (stakeForm = formValues) => {
     const flow = createStakeFlow();
 
-    await signTransactionThunk({ accountKey: account.key, formValues: stakeForm, transactionInfo })(
-        flow.dispatch,
-        flow.getState,
-        flow.extra,
-    );
+    await signTransactionThunk({
+        accountKey: account.key,
+        device: mockSuiteDevice(),
+        formValues: stakeForm,
+        transactionInfo,
+    })(flow.dispatch, flow.getState, flow.extra);
 
     return flow;
 };
@@ -165,6 +173,7 @@ describe('signTransactionThunk', () => {
             if (openModal.match(action) && action.payload.type === 'review-transaction') resolve();
         });
         const signing = signTransactionThunk({
+            device: mockSuiteDevice(),
             accountKey: ethAccount.key,
             formValues,
             transactionInfo,
@@ -184,6 +193,54 @@ describe('signTransactionThunk', () => {
         expect(selectStakeAccountKey(getState())).toBeUndefined();
         expect(actions).not.toContainEqual(sendFormActions.discardTransaction());
         expect(pushTransactionMock).not.toHaveBeenCalled();
+    });
+
+    it.each(['eth', 'ada'])('preserves a newer modal after a %s broadcast', async symbol => {
+        const stakeAccount = mockWalletAccount({ symbol: asNetworkSymbol(symbol) });
+        const flow = createStakeFlow(stakeAccount);
+        const getState = () => ({
+            ...flow.getState(),
+            modal: (flow.actions as UnknownAction[]).reduce(
+                modalReducer,
+                modalReducer(undefined, { type: 'init' }),
+            ),
+        });
+        const opened =
+            symbol === 'eth'
+                ? flow.onDispatch((action, resolve) => {
+                      if (openModal.match(action) && action.payload.type === 'review-transaction')
+                          resolve();
+                  })
+                : undefined;
+        const pushing = createDeferred<void>();
+        const broadcast = createDeferred<{ success: true; payload: { txid: string } }>();
+        pushTransactionMock.mockImplementationOnce(() => {
+            pushing.resolve();
+
+            return broadcast.promise;
+        });
+        const signing = signTransactionThunk({
+            device: mockSuiteDevice(),
+            accountKey: stakeAccount.key,
+            formValues,
+            transactionInfo,
+        })(flow.dispatch, getState, flow.extra);
+        if (opened) {
+            await opened;
+            const modal = selectModal(getState());
+            if (modal.context !== MODAL_CONTEXT_USER || modal.payload.type !== 'review-transaction')
+                throw new Error('Expected a staking review');
+            modal.payload.decision.resolve(true);
+        }
+        await pushing.promise;
+        if (opened) {
+            cancelSigningModalOnDisconnectThunk(mockSuiteDevice().path)(flow.dispatch, getState);
+            expect(selectModal(getState()).context).toBe(MODAL_CONTEXT_NONE);
+        }
+        flow.dispatch(openModal({ type: 'add-account', device: mockSuiteDevice() }));
+        broadcast.resolve({ success: true, payload: { txid: TXID } });
+        await signing;
+        expect(selectModal(getState())).toMatchObject({ payload: { type: 'add-account' } });
     });
 
     it('stores the account the transaction is reviewed for', async () => {

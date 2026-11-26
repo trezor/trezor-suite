@@ -3,6 +3,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import {
     MODAL_OPEN_USER_CONTEXT,
     type ModalRootState,
+    beginStakingDeviceCheck,
     closeModal,
     modalReducer,
     openDeferredModal,
@@ -14,6 +15,7 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { sendFormActions } from '@suite-common/wallet-core';
+import { UI_REQUESTS } from '@trezor/connect';
 
 import { cancelSigningModalOnDisconnectThunk } from './cancelSigningModalOnDisconnectThunk';
 
@@ -22,7 +24,7 @@ const createStore = () =>
         reducer: combineReducers({ modal: modalReducer }),
         serializableCheck: {
             ignoredActions: [MODAL_OPEN_USER_CONTEXT],
-            ignoredPaths: ['modal.payload.decision', 'modal.cancelOnDisconnect'],
+            ignoredPaths: ['modal'],
         },
     }).services.store;
 
@@ -122,6 +124,24 @@ describe('cancelSigningModalOnDisconnectThunk', () => {
         expect(selectUserContextModalPayload(store.getState())).toBe(modal);
         modal.decision.resolve(true);
         await expect(decision).resolves.toBe(true);
+    });
+
+    it('cancels the owning review behind a device confirmation prompt', async () => {
+        const store = createStore();
+        const decision = store.dispatch(
+            openDeferredModal(
+                { type: 'review-transaction' },
+                { devicePath: device.path, cancelWith: false },
+            ),
+        );
+        store.dispatch(beginStakingDeviceCheck());
+        store.dispatch({ type: UI_REQUESTS.REQUEST_CONFIRMATION, payload: { view: 'no-backup' } });
+        store.clearActions();
+
+        store.dispatch(cancelSigningModalOnDisconnectThunk(device.path));
+
+        await expect(decision).resolves.toBe(false);
+        expect(store.getActions()).toEqual([closeModal(), disconnectToast]);
     });
 
     it('does nothing when another modal is open', () => {

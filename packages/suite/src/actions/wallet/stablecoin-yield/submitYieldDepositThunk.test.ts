@@ -275,10 +275,15 @@ describe('submitYieldDepositThunk', () => {
 
     it('still reports submit-failed when the signing throws', async () => {
         const report = jest.fn();
+        const resolvePreview = jest.fn();
+        mockOpenDeferredModal.mockImplementationOnce(
+            () => () => Promise.resolve({ value: true, resolve: resolvePreview }),
+        );
         mockSendYieldTransaction.mockRejectedValue(new Error('boom'));
 
         const store = await dispatchDeposit(report);
 
+        expect(resolvePreview).toHaveBeenCalledTimes(1);
         expect(report).toHaveBeenCalledWith(
             expect.objectContaining({
                 type: events.yieldDepositEvent.name,

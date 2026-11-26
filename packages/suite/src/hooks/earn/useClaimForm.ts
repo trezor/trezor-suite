@@ -10,10 +10,8 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
-import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
 
-import { signTransactionThunk } from '#src/actions/wallet/stakeActions';
+import { useSignStakingTransaction } from '#src/hooks/earn/useSignStakingTransaction';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { type ClaimContextValues, type ClaimFormState } from '#src/types/earn/claimForm';
 import { CRYPTO_INPUT, OUTPUT_AMOUNT } from '#src/types/earn/earnFormFields';
@@ -30,7 +28,7 @@ type UseClaimFormsProps = {
 };
 
 export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValues => {
-    const { dispatch } = useServices(injectDispatch);
+    const signStakingTransaction = useSignStakingTransaction(account);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
 
@@ -126,36 +124,38 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
     });
     const selectedFee = _selectedFee ?? 'normal';
 
+    const { calculateFeeAndDeposit, withdrawingAvailable } = useCardanoStaking({ account });
+    const isClaimingDisabled = !withdrawingAvailable.status;
+
     // get response from TransactionReviewModal
     const signTx = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
 
-        if (composedTx?.type === 'final') {
-            try {
-                const result = await dispatch(
-                    signTransactionThunk({
-                        accountKey: account.key,
-                        formValues: values,
-                        transactionInfo: composedTx,
-                    }),
-                );
-
-                if (result?.success) {
-                    clearForm();
-                }
-            } catch (error) {
-                // The sign thunk reaches TrezorConnect, whose rejection messages may embed the
-                // composed account payload, and `signTx` is submitted fire-and-forget. Handling the
-                // rejection here keeps it from being reported verbatim by Sentry's global
-                // unhandled-rejection handler. Only the error name, never its message, is safe to log.
-                console.warn('Stake signing failed', error instanceof Error ? error.name : error);
-            }
-        }
-    }, [getValues, composedLevels, dispatch, account.key, clearForm, selectedFee]);
-
-    const { calculateFeeAndDeposit, withdrawingAvailable } = useCardanoStaking({ account });
-    const isClaimingDisabled = !withdrawingAvailable.status;
+        await signStakingTransaction({
+            formValues: values,
+            transactionInfo:
+                composedTx?.type === 'final' &&
+                (account.networkType !== 'cardano' || !isClaimingDisabled)
+                    ? composedTx
+                    : undefined,
+            refreshComposition: async () => {
+                await composeRequest();
+                if (account.networkType === 'cardano') await calculateFeeAndDeposit('withdrawal');
+            },
+            onSuccess: clearForm,
+        });
+    }, [
+        getValues,
+        composedLevels,
+        signStakingTransaction,
+        clearForm,
+        composeRequest,
+        selectedFee,
+        account.networkType,
+        calculateFeeAndDeposit,
+        isClaimingDisabled,
+    ]);
 
     useEffect(() => {
         calculateFeeAndDeposit('withdrawal');

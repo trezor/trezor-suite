@@ -9,7 +9,8 @@ type CancelSigningModalOnDisconnectThunkState = ModalRootState;
 export const cancelSigningModalOnDisconnectThunk =
     (devicePath: DeviceUniquePath) =>
     (dispatch: Dispatch, getState: () => CancelSigningModalOnDisconnectThunkState) => {
-        const modal = selectModal(getState());
+        const foreground = selectModal(getState());
+        const modal = foreground.stakingDeviceCheck?.background ?? foreground;
         if (modal.context !== MODAL_CONTEXT_USER) return;
 
         const result = modal.cancelOnDisconnect?.(devicePath);

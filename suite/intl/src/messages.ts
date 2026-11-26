@@ -13160,6 +13160,14 @@ export const messages = defineMessages({
         id: 'TR_TX_SEND_FAILED',
         defaultMessage: 'Send transaction failed',
     },
+    TR_TX_REVIEW_UNAVAILABLE: {
+        id: 'TR_TX_REVIEW_UNAVAILABLE',
+        defaultMessage: 'Transaction details unavailable',
+    },
+    TR_TX_REVIEW_UNAVAILABLE_DESCRIPTION: {
+        id: 'TR_TX_REVIEW_UNAVAILABLE_DESCRIPTION',
+        defaultMessage: 'Close this window and start the transaction again to review its details.',
+    },
     TR_TX_EXPIRED_MODAL_TITLE: {
         id: 'TR_TX_EXPIRED_MODAL_TITLE',
         defaultMessage: 'Transaction confirmation expired',

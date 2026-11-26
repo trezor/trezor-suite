@@ -3,6 +3,7 @@ import { useLayoutEffect, useMemo } from 'react';
 import { selectFullSelectedAccount } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { AssetSymbol } from '@suite/assets';
+import { useDevice } from '@suite/device';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
@@ -49,6 +50,7 @@ export const StakeChangeDelegateModalLoaded = ({
 }: StakeChangeDelegateModalProps) => {
     const { account } = selectedAccount;
     const deviceStatus = useEarnDeviceStatus();
+    const { device } = useDevice();
 
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
@@ -119,7 +121,7 @@ export const StakeChangeDelegateModalLoaded = ({
                 },
             });
 
-            signTx();
+            return signTx();
         })();
     };
 
@@ -170,7 +172,9 @@ export const StakeChangeDelegateModalLoaded = ({
     const composeErrorMessage = (errors[CRYPTO_INPUT] ?? errors.outputs?.[0]?.amount)?.message;
 
     const isDisabled =
-        isSelectionInvalid || isVotingDisabled || composedLevels?.[selectedFee]?.type !== 'final';
+        isSelectionInvalid ||
+        isVotingDisabled ||
+        (device?.connected && device.available && composedLevels?.[selectedFee]?.type !== 'final');
 
     const tooltipContent = useMemo(() => {
         if (isVotingDisabled) {
