@@ -5,6 +5,7 @@ import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockMigrateSuiteSyncLabelsForRbfTransaction } from '@suite-common/suite-rbf-labels-migrations-types/mocks';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import { mockGetIsWindowVisible } from '@suite-common/suite-types/mocks';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type SignTransactionError,
@@ -16,6 +17,7 @@ import { type FormState, type PrecomposedTransactionFinal } from '@suite-common/
 import { mockGetTradedAccountKeys, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mock } from '@trezor/dependency-injection';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
+import { err, ok } from '@trezor/type-utils';
 
 import {
     type SignAndPushSendFormTransactionThunkDeps,
@@ -26,6 +28,8 @@ import {
 const mockEnhanceTransaction = jest.fn();
 const mockSignTransaction = jest.fn();
 const mockOpenReview = jest.fn();
+const mockGetContactOutputs = jest.fn();
+const mockMarkContactAddressesSpent = jest.fn();
 let mockIsYieldTransaction = true;
 let mockApprovalType: 'approve' | 'revoke' = 'approve';
 let mockPushSuccess = false;
@@ -66,7 +70,22 @@ jest.mock('@suite-common/wallet-core', () => ({
             });
     },
     enhancePrecomposedTransactionThunk: () => mockEnhanceTransaction(),
-    signTransactionThunk: () => mockSignTransaction(),
+    signTransactionThunk: (params: unknown) => mockSignTransaction(params),
+}));
+jest.mock('@suite/contacts', () => ({
+    getSendFormContactOutputsThunk: (params: unknown) => () => {
+        const result = Promise.resolve(mockGetContactOutputs(params));
+
+        return Object.assign(result, { unwrap: () => result });
+    },
+}));
+jest.mock('@suite-common/contacts', () => ({
+    ...jest.requireActual('@suite-common/contacts'),
+    markContactAddressesSpentThunk: (params: unknown) => {
+        mockMarkContactAddressesSpent(params);
+
+        return { type: 'test/mark-contact-addresses-spent' };
+    },
 }));
 jest.mock('@suite/modal', () => ({
     ...jest.requireActual('@suite/modal'),
@@ -159,6 +178,7 @@ describe('Send device confirmation and Earn allowance cancellation', () => {
                 }),
         );
         mockOpenReview.mockImplementation(() => () => Promise.resolve(false));
+        mockGetContactOutputs.mockReturnValue(ok([]));
     });
 
     it('reports one cancellation when a signed Earn approval or revoke review is closed', async () => {
@@ -267,5 +287,72 @@ describe('Send device confirmation and Earn allowance cancellation', () => {
         await send();
         expect(cancelEvents()).toEqual([]);
         expect(confirmedEvents()).toEqual([]);
+    });
+});
+
+describe('Paying a contact', () => {
+    const contactOutput = {
+        address: 'tb1q03h9z6djyqnq6jklku9d7zwcg79cav6ye7q7ns',
+        contactPubkey: '17162c921dc4d2518f9a101db33695df1afb56ab82f5ff3e5da6eec3ca5cd917',
+        contactSignature: 'ab'.repeat(64),
+    };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockIsYieldTransaction = false;
+        mockPushSuccess = true;
+        mockEnhanceTransaction.mockImplementation(() => () => {
+            const result = Promise.resolve(precomposedTransaction);
+
+            return Object.assign(result, { unwrap: () => result });
+        });
+        mockSignTransaction.mockImplementation(
+            () => () =>
+                Promise.resolve({
+                    type: 'test/sign/fulfilled',
+                    payload: { serializedTx: 'signed' },
+                    meta: { requestStatus: 'fulfilled', requestId: 'test-sign' },
+                }),
+        );
+        mockOpenReview.mockImplementation(() => () => Promise.resolve(true));
+        mockGetContactOutputs.mockReturnValue(ok([contactOutput]));
+    });
+
+    it('signs with the attestations of the contact outputs and marks them paid after the push', async () => {
+        await send();
+
+        expect(mockGetContactOutputs).toHaveBeenCalledWith({
+            accountKey: account.key,
+            formState,
+            paymentRequests: undefined,
+        });
+        expect(mockSignTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({ contactOutputs: [contactOutput] }),
+        );
+        expect(mockMarkContactAddressesSpent).toHaveBeenCalledWith({
+            accountKey: account.key,
+            addresses: [contactOutput.address],
+        });
+    });
+
+    it('does not sign when the contact address was paid in the meantime', async () => {
+        mockGetContactOutputs.mockReturnValue(err({ type: 'ContactAddressPaid' }));
+
+        const actions = await send();
+
+        expect(mockSignTransaction).not.toHaveBeenCalled();
+        expect(actions.filter(notificationsActions.addToast.match)).toEqual([
+            expect.objectContaining({
+                payload: expect.objectContaining({ type: 'sign-tx-error' }),
+            }),
+        ]);
+    });
+
+    it('marks nothing paid when the push fails', async () => {
+        mockPushSuccess = false;
+
+        await send();
+
+        expect(mockMarkContactAddressesSpent).not.toHaveBeenCalled();
     });
 });

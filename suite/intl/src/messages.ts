@@ -5866,6 +5866,14 @@ export const messages = defineMessages({
         defaultMessage:
             'Your Trezor showed the address but did not sign it. Pick another account or update the firmware.',
     },
+    TR_CONTACTS_PAY_CONTACT: {
+        id: 'TR_CONTACTS_PAY_CONTACT',
+        defaultMessage: 'Pay a contact',
+    },
+    TR_CONTACTS_PICKER_QUEUED: {
+        id: 'TR_CONTACTS_PICKER_QUEUED',
+        defaultMessage: 'Waiting for the WARD Manager, your Trezor shows the bare address',
+    },
     TR_WALLET: {
         id: 'TR_WALLET',
         defaultMessage: 'Accounts',
