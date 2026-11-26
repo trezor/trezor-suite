@@ -41,5 +41,16 @@ export const parseNpub = (input: string): Result<string, NpubError> => {
     return ok(bech32.encodeFromBytes(NPUB_PREFIX, pubkey));
 };
 
+/** The 64-hex x-only public key of a canonical npub. */
+export const decodeNpub = (npub: string): Result<string, NpubError> => {
+    const canonicalNpub = parseNpub(npub);
+
+    if (!canonicalNpub.success || canonicalNpub.payload !== npub) {
+        return err('InvalidNpub');
+    }
+
+    return ok(hex.encode(bech32.decodeToBytes(npub).bytes));
+};
+
 /** `npub1qwer…asdf` for places where the whole npub does not fit. */
 export const shortenNpub = (npub: string) => `${npub.slice(0, 11)}…${npub.slice(-7)}`;

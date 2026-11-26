@@ -87,6 +87,15 @@ export const selectContactsIdentityNpub = (
 export const selectContactsWardId = (state: ContactsRootState, staticSessionId: StaticSessionId) =>
     state.contacts.wallets[staticSessionId]?.wardId;
 
+const EMPTY_WARD_STATUSES: Record<string, ContactWardStatus> = {};
+
+/** By npub; see `selectContactWardStatus`. */
+export const selectContactWardStatuses = (
+    state: ContactsRootState,
+    staticSessionId: StaticSessionId,
+): Record<string, ContactWardStatus> =>
+    state.contacts.wallets[staticSessionId]?.wardStatuses ?? EMPTY_WARD_STATUSES;
+
 export const selectContactWardStatus = (
     state: ContactsRootState,
     staticSessionId: StaticSessionId,
