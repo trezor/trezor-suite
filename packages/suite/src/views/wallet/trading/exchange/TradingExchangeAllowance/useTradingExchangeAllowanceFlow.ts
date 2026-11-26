@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { type ExchangeTrade } from 'invity-api';
+
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { gotoThunk } from '@suite/router';
 import { type EventInstance } from '@suite-common/analytics';
@@ -9,8 +11,9 @@ import {
     type TradingFormAccountRootState,
     type TradingRootState,
     getApprovalFlowSteps,
+    isApprovalConfirmed,
     parseCryptoId,
-    requiresTokenApproval,
+    requiresErc20Approval,
     selectTradingExchangeFormValues,
     selectTradingExchangeProviders,
     selectTradingExchangeSelectedQuote,
@@ -27,6 +30,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { selectExchangeQuoteThunk } from '#src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
 import { useExchangeApproval } from '#src/hooks/wallet/trading/form/exchange/useExchangeApproval';
 import { getTradingExchangeCryptoInfo } from '#src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { getTradingAllowanceProvider } from '#src/utils/wallet/trading/tradingUtils';
@@ -75,7 +79,8 @@ export const useTradingExchangeAllowanceFlow = () => {
         !quote?.send ||
         quote.status === 'ERROR' ||
         !!quote.error ||
-        !requiresTokenApproval(quote);
+        !quote.isDex ||
+        !requiresErc20Approval(quote.send);
 
     const isDataMissing = isFlowMissing || !token || !providerInfo;
 
@@ -87,15 +92,17 @@ export const useTradingExchangeAllowanceFlow = () => {
 
     const isSpenderUnknown = !isFlowMissing && allowanceKey === undefined;
     const hasRequestedRevokeQuoteRef = useRef(false);
+    const providerQuoteRef = useRef<ExchangeTrade>(undefined);
     const isUnmountedRef = useRef(false);
     const revokeApprovalRef = useCurrentRef(revokeApproval);
 
     useEffect(() => {
-        if (!isSpenderUnknown || !quote || hasRequestedRevokeQuoteRef.current) {
+        if (!isSpenderUnknown || !quote || providerQuoteRef.current) {
             return;
         }
 
         hasRequestedRevokeQuoteRef.current = true;
+        providerQuoteRef.current = quote;
 
         const borrowRevokeQuote = async () => {
             const isBorrowed = await revokeApprovalRef.current(quote);
@@ -108,13 +115,16 @@ export const useTradingExchangeAllowanceFlow = () => {
         borrowRevokeQuote();
     }, [isSpenderUnknown, quote, revokeApprovalRef, dispatch]);
 
-    const handBackProviderQuote = () =>
-        quote?.receiveAddress
+    const handBackProviderQuote = () => {
+        const providerQuote = providerQuoteRef.current;
+
+        return providerQuote?.receiveAddress
             ? confirmApproval({
-                  trade: { ...quote, approvalType: undefined },
-                  receiveAddress: quote.receiveAddress,
+                  trade: { ...providerQuote, approvalType: undefined },
+                  receiveAddress: providerQuote.receiveAddress,
               })
             : Promise.resolve(undefined);
+    };
 
     const restoreProviderQuote = () => {
         if (hasRequestedRevokeQuoteRef.current) {
@@ -176,8 +186,9 @@ export const useTradingExchangeAllowanceFlow = () => {
         }
 
         let flowQuote = quote;
+        const providerQuote = providerQuoteRef.current;
 
-        if (hasRequestedRevokeQuoteRef.current) {
+        if (hasRequestedRevokeQuoteRef.current && providerQuote) {
             const restoredQuote = await handBackProviderQuote();
 
             if (!restoredQuote || restoredQuote.status === 'ERROR') {
@@ -185,6 +196,19 @@ export const useTradingExchangeAllowanceFlow = () => {
             }
 
             hasRequestedRevokeQuoteRef.current = false;
+
+            if (isApprovalConfirmed(restoredQuote)) {
+                dispatch(
+                    selectExchangeQuoteThunk({
+                        quote: providerQuote,
+                        exchangeType: formValues?.exchangeType,
+                        rateType: formValues?.rateType,
+                    }),
+                );
+
+                return;
+            }
+
             flowQuote = restoredQuote;
         }
 

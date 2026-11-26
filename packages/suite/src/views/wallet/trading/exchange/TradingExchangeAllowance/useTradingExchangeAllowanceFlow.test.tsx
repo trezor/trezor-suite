@@ -1,3 +1,4 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
@@ -8,7 +9,12 @@ import {
     renderHookWithStoreProvider,
     waitFor,
 } from '@suite-common/test-utils';
-import { type TradingExchangeFormProps, initialState } from '@suite-common/trading';
+import {
+    type TradingExchangeFormProps,
+    initialState,
+    tradingExchangeActions,
+    tradingExchangeReducer,
+} from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mock } from '@trezor/dependency-injection';
@@ -79,6 +85,12 @@ const APPROVED_QUOTE: ExchangeTrade = {
     receiveAddress: '0xreceive',
 };
 
+const BORROWED_REVOKE_QUOTE: ExchangeTrade = {
+    ...APPROVED_QUOTE,
+    status: 'APPROVAL_REQ',
+    approvalType: 'ZERO',
+};
+
 const renderAllowanceFlow = () => {
     const analytics = mockDesktopAnalytics();
     const preloadedState: MockSuiteState = {
@@ -104,8 +116,24 @@ const renderAllowanceFlow = () => {
         { services: DesktopAnalyticsDep },
         MockSuiteState
     >({
+        reducer: (state: MockSuiteState = preloadedState, action: UnknownAction) => ({
+            ...state,
+            wallet: {
+                ...state.wallet,
+                trading: {
+                    ...state.wallet.trading,
+                    exchange: tradingExchangeReducer(state.wallet.trading.exchange, action),
+                },
+            },
+        }),
         preloadedState,
         services: () => ({ analytics }),
+    });
+
+    mockRevokeApproval.mockImplementation(() => {
+        services.store.dispatch(tradingExchangeActions.saveSelectedQuote(BORROWED_REVOKE_QUOTE));
+
+        return Promise.resolve(true);
     });
 
     return {
