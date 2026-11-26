@@ -1,9 +1,15 @@
 import { Translation } from '@suite-native/intl';
-import { ScreenHeader } from '@suite-native/navigation';
+import { type CloseActionType, ScreenHeader } from '@suite-native/navigation';
 
-export const ExchangeFlowScreenHeader = () => (
+export type ExchangeFlowScreenHeaderProps = {
+    closeActionType?: CloseActionType;
+};
+
+export const ExchangeFlowScreenHeader = ({
+    closeActionType = 'back',
+}: ExchangeFlowScreenHeaderProps) => (
     <ScreenHeader
-        closeActionType="back"
+        closeActionType={closeActionType}
         title={<Translation id="moduleTrading.tradingExchangeFlowScreen.screenTitle" />}
     />
 );

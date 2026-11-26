@@ -12,9 +12,8 @@ import { events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { type TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import { act, renderWithStoreProvider } from '@suite-native/test-utils-store';
-import { mockTransaction } from '@suite-native/tokens';
-import { exchangeQuotes } from '@suite-native/trading-fixtures';
+import { act, renderWithStoreProvider, userEvent, within } from '@suite-native/test-utils-store';
+import { eth1NormalAccount, exchangeQuotes } from '@suite-native/trading-fixtures';
 import { type TradingRootState } from '@suite-native/trading-state';
 import {
     useNavigationRemoveInterceptorAlert,
@@ -22,6 +21,8 @@ import {
 } from '@suite-native/transaction-management';
 
 import { TradingConfirmingScreen } from './TradingConfirmingScreen';
+import { EXCHANGE_CONFIRMATION_BUTTON_TEST_ID } from '../components/exchange/Confirmation/ExchangeConfirmationFooter';
+import { EXCHANGE_CONFIRMATION_TRANSACTION_ID_ROW_TEST_ID } from '../components/exchange/Confirmation/ExchangeConfirmationTransactionIdRow';
 import { createTradingTestStore } from '../test-utils/tradingTestUtils';
 
 type State = TradingRootState & AccountsRootState;
@@ -43,6 +44,7 @@ const mockUseTransactionDetails = useTransactionDetails as jest.Mock;
 const mockUseNavigationRemoveInterceptorAlert = jest.mocked(useNavigationRemoveInterceptorAlert);
 
 const testQuote = exchangeQuotes[0];
+const TXID = '0xapprovaltxid';
 
 const mockAddListener = jest.fn(
     (
@@ -153,13 +155,11 @@ describe('TradingConfirmingScreen', () => {
         setApprovalTxid: jest.fn(),
     };
 
-    it('should render approve header when variant is approve', async () => {
+    it('should render the trade header when variant is approve', async () => {
         const { getByTestId } = await renderScreen({ flowType: 'approve' });
 
         expect(getByTestId('@screen/sub-header/title')).toHaveTextContent(
-            getTranslation('moduleTrading.tradingConfirmationScreen.approveHeaderTitle', {
-                symbol: 'USDC',
-            }),
+            getTranslation('moduleTrading.tradingExchangeFlowScreen.screenTitle'),
         );
     });
 
@@ -271,30 +271,113 @@ describe('TradingConfirmingScreen', () => {
         expect(selectTradingExchangeSelectedQuote(store.getState())).toBeUndefined();
     });
 
-    it('should render the explore in blockchain button', async () => {
-        const { getByText } = await renderScreen();
+    it('approve: renders the approve step with the transaction ID row and no explore button', async () => {
+        mockUseAllowanceTxTracking.mockReturnValue({
+            status: mockAllowanceTxStatus,
+            approvalTxid: TXID,
+            setApprovalTxid: jest.fn(),
+        });
 
+        const { getByTestId, getByText, queryByText } = await renderScreen({
+            flowType: 'approve',
+        });
+
+        expect(getByTestId('@step-cards/current')).toHaveTextContent(
+            getTranslation('stepCards.stepper', { stepNumber: 1, stepCount: 2 }) +
+                getTranslation('moduleTrading.tradingExchangeFlowScreen.approveStep.title'),
+            { exact: false },
+        );
+        expect(within(getByTestId('@step-cards/current')).getByText(TXID)).toBeOnTheScreen();
         expect(
-            getByText(
+            getByText(getTranslation('moduleTrading.tradingConfirmationScreen.transactionId')),
+        ).toBeOnTheScreen();
+        expect(
+            queryByText(
                 getTranslation('moduleTrading.tradingConfirmationScreen.exploreInBlockchain'),
             ),
+        ).toBeNull();
+    });
+
+    it('approve: renders the increase step when the quote has a preapproved limit', async () => {
+        store.dispatch(
+            tradingExchangeActions.saveSelectedQuote({
+                ...testQuote,
+                preapprovedStringAmount: '10',
+            }),
+        );
+
+        const { getByTestId } = await renderScreen({ flowType: 'approve' });
+
+        expect(getByTestId('@step-cards/current')).toHaveTextContent(
+            getTranslation('moduleTrading.tradingExchangeFlowScreen.increaseStep.title'),
+            { exact: false },
+        );
+    });
+
+    it('revoke-and-approve: renders the revoke step as the first of three steps', async () => {
+        const { getByTestId, getAllByTestId } = await renderScreen({
+            flowType: 'revoke-and-approve',
+        });
+
+        expect(getByTestId('@step-cards/current')).toHaveTextContent(
+            getTranslation('stepCards.stepper', { stepNumber: 1, stepCount: 3 }) +
+                getTranslation('moduleTrading.tradingExchangeFlowScreen.revokeStep.title'),
+            { exact: false },
+        );
+        expect(getAllByTestId('@step-cards/next')).toHaveLength(2);
+    });
+
+    it('revoke: renders the transaction ID row without the step cards', async () => {
+        mockUseAllowanceTxTracking.mockReturnValue({
+            status: mockAllowanceTxStatus,
+            approvalTxid: TXID,
+            setApprovalTxid: jest.fn(),
+        });
+
+        store.dispatch(tradingExchangeActions.setTradingAccountKey(eth1NormalAccount.key));
+
+        const { getByText, queryByTestId } = await renderScreen({ flowType: 'revoke' });
+
+        expect(getByText(TXID)).toBeOnTheScreen();
+        expect(queryByTestId('@step-cards/current')).toBeNull();
+    });
+
+    it('opens the transaction on blockchain when the transaction ID row is pressed', async () => {
+        mockUseAllowanceTxTracking.mockReturnValue({
+            status: mockAllowanceTxStatus,
+            approvalTxid: TXID,
+            setApprovalTxid: jest.fn(),
+        });
+
+        const { getByTestId } = await renderScreen();
+
+        await userEvent.press(getByTestId(EXCHANGE_CONFIRMATION_TRANSACTION_ID_ROW_TEST_ID));
+
+        expect(mockOpenInBlockchain).toHaveBeenCalledTimes(1);
+    });
+
+    it('renders the confirming footer while the transaction is not failed', async () => {
+        const { getByTestId, getByText } = await renderScreen({ flowType: 'approve' });
+
+        expect(getByTestId(`${EXCHANGE_CONFIRMATION_BUTTON_TEST_ID}/loading`)).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingConfirmationScreen.approveHint')),
         ).toBeOnTheScreen();
     });
 
-    it('should render date when transaction has blockTime', async () => {
-        mockUseTransactionDetails.mockReturnValue({
-            transaction: mockTransaction,
-            openInBlockchain: mockOpenInBlockchain,
-            isPending: false,
-            tokenTransfer: undefined,
-            explorerUrl: 'https://etherscan.io/tx/test-txid',
+    it('renders the error banner instead of the footer when the transaction fails', async () => {
+        mockUseAllowanceTxTracking.mockReturnValue({
+            status: { isConfirmed: false, isFailed: true, isPending: false },
+            approvalTxid: TXID,
+            setApprovalTxid: jest.fn(),
         });
 
-        const { getByText } = await renderScreen();
+        const { getByText, queryByTestId } = await renderScreen({ flowType: 'approve' });
 
         expect(
-            getByText(getTranslation('moduleTrading.tradingConfirmationScreen.date')),
+            getByText(getTranslation('moduleTrading.tradingConfirmationScreen.error')),
         ).toBeOnTheScreen();
+        expect(queryByTestId(EXCHANGE_CONFIRMATION_BUTTON_TEST_ID)).toBeNull();
     });
 
     it('should clear selected quote on back navigation', async () => {
