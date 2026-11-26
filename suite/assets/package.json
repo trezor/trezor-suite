@@ -26,6 +26,7 @@
         "@suite/token": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/product-components": "workspace:*",
+        "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.3.0",
         "react-redux": "9.3.1"

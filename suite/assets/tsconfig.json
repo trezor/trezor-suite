@@ -28,6 +28,7 @@
         {
             "path": "../../packages/product-components"
         },
+        { "path": "../../packages/theme" },
         { "path": "../../packages/utils" }
     ]
 }

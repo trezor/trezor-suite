@@ -149,6 +149,8 @@ export { useEarnLayout } from './src/views/earn/yield/useEarnLayout';
 export { WrappedNativePageHeader } from './src/components/earn/yield/common/WrappedNativePageHeader';
 export { UnwrapNativeToken } from './src/components/earn/yield/unwrap/UnwrapNativeToken';
 export { YieldWithdraw } from './src/components/earn/yield/withdraw/YieldWithdraw';
+export { YieldVaultDetail } from './src/components/earn/yield/vault/YieldVaultDetail';
+export { YieldVaultDetailPageHeader } from './src/components/earn/yield/vault/YieldVaultDetailPageHeader';
 export { WrapNativeToken } from './src/components/earn/yield/wrap/WrapNativeToken';
 export { type NavigationItem } from './src/components/suite/layouts/SuiteLayout/SubpageNavigation';
 export { SubpageNavigation } from './src/components/suite/layouts/SuiteLayout/SubpageNavigation';

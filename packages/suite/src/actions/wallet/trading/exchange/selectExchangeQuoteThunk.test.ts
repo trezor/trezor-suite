@@ -96,6 +96,7 @@ const buildStore = (
             suiteRouterHistory: {
                 getLocation: jest.fn(),
                 navigate: jest.fn(),
+                back: jest.fn(() => false),
                 listen: jest.fn(() => jest.fn()),
             },
         }),

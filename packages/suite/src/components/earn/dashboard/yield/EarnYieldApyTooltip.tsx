@@ -8,6 +8,7 @@ import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Text, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { type TypographyStyle } from '@trezor/theme';
 
 import { ApyValue } from '#src/views/wallet/staking/components/ApyValue';
 
@@ -26,6 +27,7 @@ type EarnYieldApyTooltipProps = {
     vault: YieldDtoV2;
     apyPercentage: number | null;
     networkSymbol: NetworkSymbol;
+    typographyStyle?: TypographyStyle;
     children?: ReactNode;
 };
 
@@ -33,6 +35,7 @@ export const EarnYieldApyTooltip = ({
     vault,
     apyPercentage,
     networkSymbol,
+    typographyStyle = 'body-sm-strong',
     children,
 }: EarnYieldApyTooltipProps) => {
     const { analytics } = useServices(injectDesktopAnalytics);
@@ -49,7 +52,7 @@ export const EarnYieldApyTooltip = ({
 
     if (!children && !apyPercentage) {
         return (
-            <Text typographyStyle="body-sm-strong" intent="neutral" priority="primary">
+            <Text typographyStyle={typographyStyle} intent="neutral" priority="primary">
                 <ApyValue apy={apyPercentage} />
             </Text>
         );
@@ -91,7 +94,7 @@ export const EarnYieldApyTooltip = ({
             tooltipMaxWidth={600}
             placement="top"
         >
-            <Text typographyStyle="body-sm-strong" intent="neutral" priority="primary">
+            <Text typographyStyle={typographyStyle} intent="neutral" priority="primary">
                 <Abbr
                     data-testid="@earn/dashboard/apy-percentage"
                     onMouseEnter={handleMouseEnter}

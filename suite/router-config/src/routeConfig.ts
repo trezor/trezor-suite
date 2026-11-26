@@ -100,6 +100,12 @@ export const routes = [
         params: earnParams,
     },
     {
+        name: 'earn-yield-vault',
+        pattern: '/earn/yield/vault',
+        app: 'earn-yield',
+        params: earnParams,
+    },
+    {
         name: 'earn-tron',
         pattern: '/earn/tron',
         app: 'earn-staking',

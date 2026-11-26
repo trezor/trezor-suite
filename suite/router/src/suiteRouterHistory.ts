@@ -10,6 +10,8 @@ type Listener = (_: { location: RouterPath; action: 'PUSH' | 'POP' | 'REPLACE' }
 export type SuiteRouterHistory = {
     getLocation: () => RouterPath;
     navigate: (to: Partial<RouterPath>, state?: LocationPushState) => void;
+    // returns false when the current entry was not opened from Suite, so there is nothing to go back to
+    back: () => boolean;
     // calling .listen(listener) returns a cleanup function
     listen: (listener: Listener) => () => void;
 };

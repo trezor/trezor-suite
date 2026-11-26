@@ -3,17 +3,20 @@ import { useSelector } from 'react-redux';
 import { selectLanguage } from '@suite/settings';
 import { useCurrencyAmountParts } from '@suite-common/formatters';
 import { Row, Text } from '@trezor/components';
+import { type TypographyStyle } from '@trezor/theme';
 import { type BigNumber } from '@trezor/utils';
 
 type FiatAmountHeadlineProps = {
     fiatValue: BigNumber;
     isExact?: boolean;
+    typographyStyle?: TypographyStyle;
     'data-testid'?: string;
 };
 
 export const FiatAmountHeadline = ({
     fiatValue,
     isExact,
+    typographyStyle = 'headline-lg',
     'data-testid': dataTestId,
 }: FiatAmountHeadlineProps) => {
     const locale = useSelector(selectLanguage);
@@ -29,7 +32,7 @@ export const FiatAmountHeadline = ({
 
     // The space goes inside the symbol's text: on its own between the row's items it would collapse.
     const symbol = (
-        <Text typographyStyle="headline-lg" color="contentTertiary">
+        <Text typographyStyle={typographyStyle} color="contentTertiary">
             {isCurrencySymbolFirst
                 ? `${currencySymbol}${currencySymbolSeparator}`
                 : `${currencySymbolSeparator}${currencySymbol}`}
@@ -40,11 +43,11 @@ export const FiatAmountHeadline = ({
     return (
         <Row alignItems="baseline" data-testid={dataTestId}>
             {isCurrencySymbolFirst && symbol}
-            <Text typographyStyle="headline-lg" isTabular>
+            <Text typographyStyle={typographyStyle} isTabular>
                 {wholeNumber}
             </Text>
             {decimalNumber !== '' && (
-                <Text typographyStyle="headline-lg" color="contentTertiary" isTabular>
+                <Text typographyStyle={typographyStyle} color="contentTertiary" isTabular>
                     {decimalNumber}
                 </Text>
             )}

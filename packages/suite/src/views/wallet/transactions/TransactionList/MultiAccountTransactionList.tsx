@@ -31,6 +31,7 @@ import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { Pagination } from '#src/components/wallet/Pagination';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
+import { EmptyListMessage } from './EmptyListMessage';
 import { LoadOlderHistory } from './LoadOlderHistory';
 import { TransactionListActions } from './TransactionListActions/TransactionListActions';
 import { TransactionListBody } from './TransactionListBody';
@@ -39,20 +40,6 @@ import { useAccountsTransactions } from './useAccountsTransactions';
 import { useTransactionSearch } from './useTransactionSearch';
 
 const NO_TXIDS: string[] = [];
-
-type EmptyListMessageProps = {
-    id: 'TR_NO_TRANSACTIONS_YET' | 'TR_NO_VISIBLE_TRANSACTIONS' | 'TR_NO_RECENT_TRANSACTIONS';
-};
-
-const EmptyListMessage = ({ id }: EmptyListMessageProps) => (
-    <Card>
-        <Column alignItems="center">
-            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                <Translation id={id} />
-            </Text>
-        </Column>
-    </Card>
-);
 
 type LoadFailedMessageProps = {
     onRetry: () => void;

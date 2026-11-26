@@ -139,6 +139,32 @@ export const gotoThunk = createThunk<
     },
 );
 
+type GoBackPayload = {
+    fallback: GotoPayload;
+};
+
+type GoBackThunkState = GotoThunkState;
+
+type GoBackThunkDeps = GotoThunkDeps;
+
+/**
+ * Goes one entry back in the navigation history, so the previous page is restored exactly
+ * as the user left it; the router picks the new location up through RouterHandler.
+ * An entry opened directly (a bookmark, an external link) has no Suite page behind it, so the
+ * fallback route is opened instead.
+ */
+export const goBackThunk = createThunk<
+    void,
+    GoBackPayload,
+    { state: GoBackThunkState; extra: GoBackThunkDeps }
+>('@router/goBack', ({ fallback }, { dispatch, getState, extra }) => {
+    if (!selectCanNavigate(getState())) return;
+
+    if (!extra.services.suiteRouterHistory.back()) {
+        dispatch(gotoThunk(fallback));
+    }
+});
+
 /**
  * Used only in application modal.
  * Application modal does not push route into router history, it changes it only in reducer (see goto action).

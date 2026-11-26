@@ -17685,6 +17685,7 @@ __metadata:
     "@suite/token": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/product-components": "workspace:*"
+    "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.3.0"
     react-redux: "npm:9.3.1"

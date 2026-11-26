@@ -97,7 +97,7 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
         },
         to: {
             description:
-                'Navigation destination, including automatic onboarding skips. Mobile network activation uses enable-network-sheet; dismissing an entry sheet returns to earn-dashboard. Deposit, withdrawal and claim exits return to earn-dashboard on both platforms. Standalone wrap/unwrap exits use `account-detail`.',
+                'Navigation destination, including automatic onboarding skips. Mobile network activation uses enable-network-sheet; dismissing an entry sheet returns to earn-dashboard. Deposit, withdrawal and claim exits return to earn-dashboard on both platforms, or to `vault-detail` when the flow was opened from the vault detail. Standalone wrap/unwrap exits use `account-detail`.',
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 {
@@ -119,6 +119,10 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
                 {
                     version: '26.11.0',
                     notes: 'Added enable-network-sheet on mobile; claim-select-account-modal is now shared with mobile.',
+                },
+                {
+                    version: '26.12.0',
+                    notes: '`vault-detail` reported from desktop as well, for deposit and withdrawal exits back to the vault detail.',
                 },
             ],
         },

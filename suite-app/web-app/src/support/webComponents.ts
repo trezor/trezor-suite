@@ -76,6 +76,13 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             }),
         ),
     ),
+    'earn-yield-vault': lazy(() =>
+        import(
+            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnYieldVaultPage'
+        ).then(({ EarnYieldVaultPage }) => ({
+            default: EarnYieldVaultPage,
+        })),
+    ),
     'earn-tron': lazy(() =>
         import(
             /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronRedirectPage'

@@ -182,6 +182,7 @@ const SECTIONS = {
         '/earn/yield/claim',
         '/earn/yield/wrap',
         '/earn/yield/unwrap',
+        '/earn/yield/vault',
         '/earn/tron',
         '/earn/tron/stake',
         '/earn/tron/vote',

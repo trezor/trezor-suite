@@ -10,4 +10,5 @@ export { EarnTronWithdrawPage } from './pages/EarnTronWithdrawPage';
 export { EarnUnwrapPage } from './pages/EarnUnwrapPage';
 export { EarnWithdrawPage } from './pages/EarnWithdrawPage';
 export { EarnWrapPage } from './pages/EarnWrapPage';
+export { EarnYieldVaultPage } from './pages/EarnYieldVaultPage';
 export { WalletStakingPage } from './pages/WalletStakingPage';

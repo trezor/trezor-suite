@@ -35,7 +35,7 @@ export const EarnAccountPageHeader = ({
     actions,
     expandable,
 }: EarnAccountPageHeaderProps) => {
-    const { isBelowMobile } = useLayoutSize();
+    const { isBelowMobile, isBelowTablet } = useLayoutSize();
     const isCompactBalance = balanceFormat === 'compact';
     const backButton = <EarnPageHeaderBackButton onClick={onBack} />;
     const icon =
@@ -78,6 +78,7 @@ export const EarnAccountPageHeader = ({
                     balance={balance}
                     actions={actions}
                     isBelowMobile={isBelowMobile}
+                    isBelowTablet={isBelowTablet}
                 />
             ) : (
                 <Row width="100%" gap={16} alignItems="center">

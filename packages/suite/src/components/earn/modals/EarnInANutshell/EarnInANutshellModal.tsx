@@ -46,7 +46,7 @@ type YieldEarnInANutshellModalProps = EarnInANutshellBaseProps & {
     flow: EarnFlow.Yield;
     analyticsStep: Extract<
         EarnAnalyticsStep,
-        'earn-dashboard' | 'yield-deposit' | 'yield-withdraw'
+        'earn-dashboard' | 'vault-detail' | 'yield-deposit' | 'yield-withdraw'
     >;
 };
 

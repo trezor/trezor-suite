@@ -27,6 +27,7 @@ const EARN_ROUTES: Route['name'][] = [
     'earn-yield-claim',
     'earn-yield-unwrap',
     'earn-yield-wrap',
+    'earn-yield-vault',
     'earn-tron',
     'earn-tron-stake',
     'earn-tron-vote',

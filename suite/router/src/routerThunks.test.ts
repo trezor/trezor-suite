@@ -11,6 +11,7 @@ import {
     type GotoThunkDeps,
     type GotoThunkState,
     closeModalAppThunk,
+    goBackThunk,
     gotoThunk,
     initialRedirectionThunk,
     onLocationChangeThunk,
@@ -100,6 +101,39 @@ describe('Router thunks', () => {
                 ).toEqual(f.result);
             }
         });
+    });
+
+    const goBackToEarn = () => goBackThunk({ fallback: { routeName: 'suite-earn' } });
+
+    it('goBack: returns to the previous history entry', () => {
+        const state = getInitialState({ router: { loaded: true } });
+        const { store, suiteRouterHistory } = initStore(state);
+        suiteRouterHistory.navigate({ ...defaultLocation, pathname: '/' });
+        suiteRouterHistory.navigate({ ...defaultLocation, pathname: '/earn/yield/deposit' });
+
+        store.dispatch(goBackToEarn());
+
+        expect(suiteRouterHistory.getLocation().pathname).toEqual('/');
+    });
+
+    it('goBack: opens the fallback route when the entry was not opened from Suite', () => {
+        const state = getInitialState({ router: { loaded: true } });
+        const { store, suiteRouterHistory } = initStore(state);
+
+        store.dispatch(goBackToEarn());
+
+        expect(suiteRouterHistory.getLocation().pathname).toEqual('/earn');
+    });
+
+    it('goBack: stays on the current entry while the router is locked', () => {
+        const state = getInitialState({ locks: { router: 1 }, router: { loaded: true } });
+        const { store, suiteRouterHistory } = initStore(state);
+        suiteRouterHistory.navigate({ ...defaultLocation, pathname: '/earn' });
+        suiteRouterHistory.navigate({ ...defaultLocation, pathname: '/earn/yield/deposit' });
+
+        store.dispatch(goBackToEarn());
+
+        expect(suiteRouterHistory.getLocation().pathname).toEqual('/earn/yield/deposit');
     });
 
     it(`onLocationChange with lock`, () => {

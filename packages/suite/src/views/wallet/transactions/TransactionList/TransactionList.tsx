@@ -1,4 +1,4 @@
-import { type ReactElement, useEffect, useMemo, useRef, useState } from 'react';
+import { type ReactElement, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
@@ -32,6 +32,7 @@ interface TransactionListProps {
     customHeading?: ReactElement;
     isExportable?: boolean;
     isTxFilteringEnabled?: boolean;
+    customNoTransactions?: ReactNode;
 }
 
 export const TransactionList = ({
@@ -45,6 +46,7 @@ export const TransactionList = ({
     customTotalItems,
     isExportable = true,
     isTxFilteringEnabled = true,
+    customNoTransactions,
 }: TransactionListProps) => {
     const anchor = useSelector(selectRouterAnchor);
     const { dispatch } = useServices(injectDispatch);
@@ -184,6 +186,7 @@ export const TransactionList = ({
                     confirmedTxs={confirmedTxs}
                     accounts={accounts}
                     symbol={symbol}
+                    customNoTransactions={customNoTransactions}
                 />
 
                 <LoadOlderHistory accounts={accounts} />

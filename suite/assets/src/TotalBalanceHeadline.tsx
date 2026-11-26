@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Row, Text } from '@trezor/components';
+import { type TypographyStyle } from '@trezor/theme';
 import { type BigNumber } from '@trezor/utils';
 
 import { FiatAmountHeadline } from './FiatAmountHeadline';
@@ -14,6 +15,7 @@ type TotalBalanceHeadlineProps = {
     isExact?: boolean;
     /** What stands in for a total that nothing can be priced into; nothing by default. */
     fallback?: ReactNode;
+    typographyStyle?: TypographyStyle;
     'data-testid'?: string;
 };
 
@@ -22,13 +24,14 @@ export const TotalBalanceHeadline = ({
     isApproximate = false,
     isExact,
     fallback = null,
+    typographyStyle = 'headline-lg',
     'data-testid': dataTestId,
 }: TotalBalanceHeadlineProps) => {
     // Nothing held can be priced; a total of zero would say there is nothing held.
     if (fiatValue === undefined) {
         return fallback === null ? null : (
             <HiddenPlaceholder enforceIntensity={10}>
-                <Text typographyStyle="headline-lg">{fallback}</Text>
+                <Text typographyStyle={typographyStyle}>{fallback}</Text>
             </HiddenPlaceholder>
         );
     }
@@ -38,7 +41,7 @@ export const TotalBalanceHeadline = ({
             <Row alignItems="baseline" data-testid={dataTestId}>
                 {isApproximate && (
                     <Text
-                        typographyStyle="headline-lg"
+                        typographyStyle={typographyStyle}
                         color="contentTertiary"
                         margin={{ right: 8 }}
                         data-testid={
@@ -48,7 +51,11 @@ export const TotalBalanceHeadline = ({
                         ≈
                     </Text>
                 )}
-                <FiatAmountHeadline fiatValue={fiatValue} isExact={isExact} />
+                <FiatAmountHeadline
+                    fiatValue={fiatValue}
+                    isExact={isExact}
+                    typographyStyle={typographyStyle}
+                />
             </Row>
         </HiddenPlaceholder>
     );
