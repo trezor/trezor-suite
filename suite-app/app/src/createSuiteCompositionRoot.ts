@@ -18,6 +18,7 @@ import {
     type CreateTransports,
     type GetTransportsFactoriesDep,
 } from '@suite-common/connect-init';
+import { createContactsMessaging, createWebSocketRelaySocket } from '@suite-common/contacts';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import {
@@ -190,6 +191,9 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         connectInitDeviceEventHooks: createConnectInitDeviceEventHooks({
             dispatch: deps.dispatch,
             bluetooth,
+        }),
+        contactsMessaging: createContactsMessaging({
+            createRelaySocket: createWebSocketRelaySocket,
         }),
         transactionRetriever: createTransactionRetriever({
             fetchTransactionsPage: params =>

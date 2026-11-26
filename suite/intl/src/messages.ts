@@ -5866,6 +5866,24 @@ export const messages = defineMessages({
         defaultMessage:
             'Your Trezor showed the address but did not sign it. Pick another account or update the firmware.',
     },
+    TR_CONTACTS_ERROR_MESSAGING_UNAVAILABLE: {
+        id: 'TR_CONTACTS_ERROR_MESSAGING_UNAVAILABLE',
+        defaultMessage: 'Messaging is not on for this wallet. Connect your Trezor and try again.',
+    },
+    TR_CONTACTS_ERROR_HOT_KEY_NOT_PUBLISHED: {
+        id: 'TR_CONTACTS_ERROR_HOT_KEY_NOT_PUBLISHED',
+        defaultMessage:
+            'Publish your messaging key first, so your contact can send the address back.',
+    },
+    TR_CONTACTS_ERROR_CONTACT_NOT_REACHABLE: {
+        id: 'TR_CONTACTS_ERROR_CONTACT_NOT_REACHABLE',
+        defaultMessage:
+            'This contact has not published a messaging key yet. Ask them to open Contacts with their Trezor.',
+    },
+    TR_CONTACTS_ERROR_MESSAGE_NOT_DELIVERED: {
+        id: 'TR_CONTACTS_ERROR_MESSAGE_NOT_DELIVERED',
+        defaultMessage: 'No relay took the message. Check your connection and try again.',
+    },
     TR_CONTACTS_PAY_CONTACT: {
         id: 'TR_CONTACTS_PAY_CONTACT',
         defaultMessage: 'Pay a contact',
