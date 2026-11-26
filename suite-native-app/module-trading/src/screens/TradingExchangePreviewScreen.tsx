@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import { Box, Card, VStack } from '@suite-native/atoms';
 import { Screen, TradingStackRoutes } from '@suite-native/navigation';
 import { Footer } from '@suite-native/trading-provider-utils';
+import { selectExchangeFlowApprovalStatus } from '@suite-native/trading-state';
 import { type TradingStackScreenProps } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -24,6 +26,10 @@ export const TradingExchangePreviewScreen = ({
     route: { params },
 }: TradingExchangePreviewScreenProps) => {
     const { isApproved } = params;
+    // The status stored on quote selection covers the approval steps done before the swap.
+    const flowApprovalStatus =
+        useSelector(selectExchangeFlowApprovalStatus) ??
+        (isApproved ? 'needs_approval' : undefined);
     const { dispatch } = useServices(injectDispatch);
     const { quote, errorString, handleConfirmTrade, onSignTransactionNavigation } =
         useExchangePreviewStep({
@@ -54,11 +60,10 @@ export const TradingExchangePreviewScreen = ({
         />
     );
 
-    // TradingConfirmingScreen passes only isApproved, so a preceding revoke step is not shown yet.
-    if (isApproved) {
+    if (flowApprovalStatus) {
         return (
             <ExchangeFlowStepsLayout
-                approvalStatus="needs_approval"
+                approvalStatus={flowApprovalStatus}
                 currentStep="preview"
                 header={<ExchangePreviewScreenHeader />}
                 footer={footer}

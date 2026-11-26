@@ -25,7 +25,7 @@ import {
     mercuryoFixedWorstQuote,
     oneInchFusionPlusWithEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
-import { type TradingRootState } from '@suite-native/trading-state';
+import { type TradingRootState, tradingActions } from '@suite-native/trading-state';
 import { FEE_SELECTOR_ROW_TEST_ID } from '@suite-native/transaction-management';
 
 import {
@@ -273,6 +273,39 @@ describe('TradingExchangePreviewScreen', () => {
         );
         expect(result.queryByTestId('@step-cards/next')).toBeNull();
         expect(result.getByText(getTranslation('generic.buttons.continue'))).toBeOnTheScreen();
+    });
+
+    it.each([
+        ['needs_approval', 2],
+        ['needs_increase', 2],
+        ['needs_revoke', 3],
+    ] as const)(
+        'should render the swap as the last step for the stored %s flow',
+        async (flowApprovalStatus, stepCount) => {
+            store.dispatch(tradingActions.setExchangeFlowApprovalStatus(flowApprovalStatus));
+
+            const { result } = await renderTradingExchangePreviewScreen(true);
+
+            expect(result.getByTestId('@step-cards/current')).toHaveTextContent(
+                getTranslation('stepCards.stepper', { stepNumber: stepCount, stepCount }),
+                { exact: false },
+            );
+            expect(
+                within(result.getByTestId('@step-cards/finished')).getByText(
+                    getTranslation(
+                        'moduleTrading.tradingExchangeFlowScreen.approveStep.nextStepTitle',
+                    ),
+                ),
+            ).toBeOnTheScreen();
+        },
+    );
+
+    it('should render the step cards for a stored flow status even without isApproved', async () => {
+        store.dispatch(tradingActions.setExchangeFlowApprovalStatus('needs_approval'));
+
+        const { result } = await renderTradingExchangePreviewScreen(false);
+
+        expect(result.getByTestId('@step-cards/current')).toBeOnTheScreen();
     });
 
     it.each([false, true])(
