@@ -41,9 +41,9 @@ import { submitYieldDepositThunk } from '#src/actions/wallet/stablecoin-yield/su
 import { submitYieldWithdrawThunk } from '#src/actions/wallet/stablecoin-yield/submitYieldWithdrawThunk';
 import { submitUnwrapNativeTokenThunk } from '#src/actions/wallet/unwrapNativeTokenThunks';
 import { submitWrapNativeTokenThunk } from '#src/actions/wallet/wrapNativeTokenThunks';
+import { type EarnAmountCardFiatToggleProps } from '#src/components/earn/common/EarnAmountCard';
 import { useDeviceReadyGuardWithToast } from '#src/hooks/wallet/useDeviceReadyGuardWithToast';
 
-import { type YieldAmountCardFiatToggleProps } from '../common/YieldAmountCard';
 import {
     getYieldModifyAmountInput,
     isAmountGreaterThan,
@@ -110,7 +110,7 @@ export type UseYieldFlowResult = {
     handleApproveSuccessTxid: (txid: string) => void;
     openPendingTransaction: (txid: string) => void;
     retryInitAllowance: () => void;
-    fiatToggle: YieldAmountCardFiatToggleProps | undefined;
+    fiatToggle: EarnAmountCardFiatToggleProps | undefined;
     setMaxAmount: (cryptoMax: string) => void;
     methods: UseFormReturn<YieldFlowFormValues>;
     flow: YieldFlowStepState;

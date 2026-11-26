@@ -3,17 +3,19 @@ import { type ReactNode } from 'react';
 import { Translation } from '@suite/intl';
 import { Button, Row, Text } from '@trezor/components';
 
-type YieldAmountInputAddonProps = {
+type EarnAmountInputAddonProps = {
     unit: ReactNode;
     onMaxClick?: () => void;
+    maxButtonTestId: string;
     'data-testid'?: string;
 };
 
-export const YieldAmountInputAddon = ({
+export const EarnAmountInputAddon = ({
     unit,
     onMaxClick,
+    maxButtonTestId,
     'data-testid': dataTestId,
-}: YieldAmountInputAddonProps) => (
+}: EarnAmountInputAddonProps) => (
     <Row alignItems="center" gap={8}>
         <Text
             typographyStyle="body-md"
@@ -29,7 +31,7 @@ export const YieldAmountInputAddon = ({
                 size="small"
                 intent="neutral"
                 priority="secondary"
-                data-testid="@yield/form/max-button"
+                data-testid={maxButtonTestId}
                 onClick={onMaxClick}
             >
                 <Translation id="TR_FRACTION_BUTTONS_MAX" />

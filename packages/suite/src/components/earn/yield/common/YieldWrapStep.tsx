@@ -9,10 +9,13 @@ import type {
 import { Box, Button, Card, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
+import {
+    EarnAmountCard,
+    type EarnAmountCardFiatToggleProps,
+} from '#src/components/earn/common/EarnAmountCard';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 import { TruncatedAmount } from './TruncatedAmount';
-import { YieldAmountCard, type YieldAmountCardFiatToggleProps } from './YieldAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
 
 type YieldWrapStepProps = {
@@ -27,7 +30,7 @@ type YieldWrapStepProps = {
     isSubmitDisabled?: boolean;
     warning?: ReactNode;
     pendingTransaction?: YieldPendingTransactionState;
-    fiatToggle?: YieldAmountCardFiatToggleProps;
+    fiatToggle?: EarnAmountCardFiatToggleProps;
     onPendingTxClick?: (txid: string) => void;
 };
 
@@ -47,7 +50,8 @@ export const YieldWrapStep = ({
     onPendingTxClick,
 }: YieldWrapStepProps) => (
     <Column gap={16}>
-        <YieldAmountCard
+        <EarnAmountCard
+            testIdPrefix="@yield/form"
             tokenSymbol={<AssetSymbol networkSymbol={token.networkSymbol} />}
             decimals={token.decimals}
             isDisabled={!!pendingTransaction}

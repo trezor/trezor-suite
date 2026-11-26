@@ -4,20 +4,20 @@ import { Translation } from '@suite/intl';
 import type { YieldPendingTransactionState } from '@suite-common/wallet-core';
 import { Button, Column, Row } from '@trezor/components';
 
+import {
+    EarnAmountCard,
+    type EarnAmountCardFiatToggleProps,
+    type EarnApproxFiat,
+} from '#src/components/earn/common/EarnAmountCard';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
-import {
-    YieldAmountCard,
-    type YieldAmountCardFiatToggleProps,
-    type YieldApproxFiat,
-} from './YieldAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
 
 type YieldUnwrapStepProps = {
     tokenSymbol: string;
     tokenDecimals: number;
     tokenBalance: string;
-    approxFiat?: YieldApproxFiat;
+    approxFiat?: EarnApproxFiat;
     onMaxClick: () => void;
     onSubmit: () => void;
     onSkip?: () => void;
@@ -25,7 +25,7 @@ type YieldUnwrapStepProps = {
     isSubmitDisabled?: boolean;
     warning?: ReactNode;
     pendingTransaction?: YieldPendingTransactionState;
-    fiatToggle?: YieldAmountCardFiatToggleProps;
+    fiatToggle?: EarnAmountCardFiatToggleProps;
     onPendingTxClick?: (txid: string) => void;
 };
 
@@ -45,7 +45,8 @@ export const YieldUnwrapStep = ({
     onPendingTxClick,
 }: YieldUnwrapStepProps) => (
     <Column gap={16}>
-        <YieldAmountCard
+        <EarnAmountCard
+            testIdPrefix="@yield/form"
             tokenSymbol={tokenSymbol}
             decimals={tokenDecimals}
             isDisabled={!!pendingTransaction}

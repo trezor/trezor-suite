@@ -10,6 +10,7 @@ import { Banner, Button, Column, Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
+import { EarnAmountInputHeading } from '#src/components/earn/common/EarnAmountInputHeading';
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useSelector } from '#src/hooks/suite/useSelector';
@@ -77,43 +78,41 @@ export const TronUnstakeAmount = () => {
     const hasError = !!errors.amount || !!errors.fiatAmount;
     const errorMessage = errors.amount?.message ?? errors.fiatAmount?.message;
 
-    const numberInputProps = {
-        name: currency === 'crypto' ? 'amount' : 'fiatAmount',
-        locale,
-        control,
-        rules: currency === 'crypto' ? cryptoInputRules : fiatInputRules,
-        maxLength: AMOUNT_MAX_LENGTH,
-        isDisabled,
-        hasError,
-        onChange: currency === 'crypto' ? onCryptoAmountChange : onFiatAmountChange,
-        rightContent: (
-            <Text typographyStyle="body-md" intent="neutral" priority="secondary">
-                {currency === 'crypto' ? (
-                    <AssetSymbol networkSymbol={account.symbol} />
-                ) : (
-                    baseCurrencyCode.toUpperCase()
-                )}
-            </Text>
-        ),
-    } as const;
-
     return (
         <Column gap={8}>
-            <Row justifyContent="space-between" alignItems="center" gap={8}>
-                <Text typographyStyle="body-md">
-                    <Translation id="AMOUNT" />
-                </Text>
-
-                <TronCurrencySwitchButton
-                    rate={currentRate}
-                    currency={currency}
-                    setCurrency={setCurrency}
-                    fiatCurrencySymbol={baseCurrencyCode.toUpperCase()}
-                    networkSymbol={account.symbol}
-                />
-            </Row>
-
-            <NumberInput {...numberInputProps} data-testid="@staking/tron-unstake/amount-input" />
+            <EarnAmountInputHeading
+                label={<Translation id="AMOUNT" />}
+                gap={8}
+                currencySwitch={
+                    <TronCurrencySwitchButton
+                        rate={currentRate}
+                        currency={currency}
+                        setCurrency={setCurrency}
+                        fiatCurrencySymbol={baseCurrencyCode.toUpperCase()}
+                        networkSymbol={account.symbol}
+                    />
+                }
+            />
+            <NumberInput
+                name={currency === 'crypto' ? 'amount' : 'fiatAmount'}
+                locale={locale}
+                control={control}
+                rules={currency === 'crypto' ? cryptoInputRules : fiatInputRules}
+                maxLength={AMOUNT_MAX_LENGTH}
+                isDisabled={isDisabled}
+                hasError={hasError}
+                onChange={currency === 'crypto' ? onCryptoAmountChange : onFiatAmountChange}
+                rightContent={
+                    <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                        {currency === 'crypto' ? (
+                            <AssetSymbol networkSymbol={account.symbol} />
+                        ) : (
+                            baseCurrencyCode.toUpperCase()
+                        )}
+                    </Text>
+                }
+                data-testid="@staking/tron-unstake/amount-input"
+            />
 
             <Row justifyContent="space-between" alignItems="center" gap={8}>
                 <Row alignItems="center" gap={8}>

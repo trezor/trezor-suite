@@ -19,7 +19,8 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { useCurrentRef, useFreshRef } from '@trezor/react-utils';
 
-import { type YieldAmountCardFiatToggleProps } from '../common/YieldAmountCard';
+import { type EarnAmountCardFiatToggleProps } from '#src/components/earn/common/EarnAmountCard';
+
 import {
     getYieldFiatRateToken,
     getYieldStepEntryAmount,
@@ -47,7 +48,7 @@ type UseYieldFormResult = {
     setAmountInput: (amount: string) => void;
     amountIssues: AmountIssue[];
     nativeFeeStatus: YieldNativeFeeStatus;
-    fiatToggle: YieldAmountCardFiatToggleProps | undefined;
+    fiatToggle: EarnAmountCardFiatToggleProps | undefined;
     setMaxAmount: (cryptoMax: string) => void;
     resetAmounts: (cryptoAmount: string) => void;
 };

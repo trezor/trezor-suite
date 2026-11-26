@@ -1,8 +1,8 @@
 import { AssetSymbol } from '@suite/assets';
-import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Rate } from '@suite-common/wallet-types';
-import { TextButton } from '@trezor/components';
+
+import { EarnAmountCurrencySwitch } from '#src/components/earn/common/EarnAmountCurrencySwitch';
 
 interface TronCurrencySwitchButtonProps {
     rate?: Rate;
@@ -30,13 +30,10 @@ export const TronCurrencySwitchButton = ({
     };
 
     return (
-        <TextButton
-            type="button"
-            size="small"
+        <EarnAmountCurrencySwitch
+            currency={currencySymbol}
             onClick={onToggle}
             data-testid="@staking/tron-form/currency-switch-button"
-        >
-            <Translation id="TR_ENTER_AMOUNT_IN" values={{ currency: currencySymbol }} />
-        </TextButton>
+        />
     );
 };
