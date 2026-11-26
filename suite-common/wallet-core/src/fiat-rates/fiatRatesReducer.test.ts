@@ -7,6 +7,7 @@ import {
     asTimestamp,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { fiatRatesInitialState, prepareFiatRatesReducer } from './fiatRatesReducer';
 import { updateTxsFiatRatesThunk } from './fiatRatesThunks';
@@ -23,8 +24,8 @@ const HOUR_2 = asTimestamp(1700006400);
 const HOUR_3 = asTimestamp(1700010000);
 
 const fiatRatesReducer = prepareFiatRatesReducer({
-    actionTypes: { storageLoad: '@storage/load' },
-    reducers: { storageLoadHistoricRates: () => {} },
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadHistoricRates: mockReducer() },
 });
 
 const reduceTxsRates = (
