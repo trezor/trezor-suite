@@ -4,12 +4,26 @@ import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
 
-export const GetCoinInfoSchema = Type.Object({
+export const UsingCoinSchema = Type.Object({
     coin: Type.String({ description: 'Coin symbol (btc, eth, bch, ...)', example: 'btc' }),
 });
 
+export const UsingPathSchema = Type.Object({
+    path: Type.Union([Type.String(), Type.Array(Type.Number())], {
+        description: 'derivation path of the network, its second level is the slip44 coin type',
+        example: "m/84'/0'/0'",
+    }),
+    networkType: Type.Union([Type.Literal('bitcoin'), Type.Literal('ethereum')], {
+        description: 'network family the path is looked up in',
+        example: 'bitcoin',
+    }),
+});
+
 <ApiPlayground
-    options={[{ title: 'GetCoinInfo', schema: GetCoinInfoSchema, method: 'getCoinInfo' }]}
+    options={[
+        { title: 'GetCoinInfo', schema: UsingCoinSchema, method: 'getCoinInfo' },
+        { title: 'GetCoinInfo (path)', schema: UsingPathSchema, method: 'getCoinInfo' },
+    ]}
 />
 
 ## Get Coin Info
@@ -24,7 +38,13 @@ const result = await TrezorConnect.getCoinInfo(params);
 
 <CommonParamsLink />
 
-<ParamsTable schema={GetCoinInfoSchema} />
+#### Using coin
+
+<ParamsTable schema={UsingCoinSchema} />
+
+#### Using path
+
+<ParamsTable schema={UsingPathSchema} />
 
 ### Example
 
@@ -33,6 +53,15 @@ Get coin info for Bitcoin.
 ```javascript
 TrezorConnect.getCoinInfo({
     coin: 'btc',
+});
+```
+
+Get coin info of the bitcoin network a path belongs to.
+
+```javascript
+TrezorConnect.getCoinInfo({
+    path: "m/84'/0'/0'",
+    networkType: 'bitcoin',
 });
 ```
 
