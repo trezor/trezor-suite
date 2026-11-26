@@ -126,13 +126,14 @@ export const HowStakeWorksScreen = () => {
     };
 
     const { entryPeriodDays, exitPeriodDays } = useNetworkStakingPeriods(symbol);
-    const { rate } = useNetworkStakingRate({ networkSymbol: symbol });
+    const { rate, rateKind } = useNetworkStakingRate({ networkSymbol: symbol });
 
     const { benefitItems, timelineSections } = useHowStakeWorksPreset({
         symbol,
         entryPeriodInDays: entryPeriodDays,
         unstakingPeriodInDays: exitPeriodDays,
         apy: rate,
+        rateKind,
     });
 
     if (shouldSkipToEarnForm) {

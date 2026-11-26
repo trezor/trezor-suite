@@ -3912,6 +3912,13 @@ export const messages = {
         apyValueWithLabel: '{value} APY',
         aprValueWithLabel: '{value} APR',
         aprAbbr: 'APR',
+        stakingRate: {
+            apyTitle: 'Annual percentage yield (APY)',
+            aprTitle: 'Annual percentage rate (APR)',
+            apyDescription: 'Estimates yearly staking rewards with compounding.',
+            aprDescription: 'Estimates yearly staking rewards without compounding.',
+            aprFooter: 'APR may change over time.',
+        },
         tron: {
             votes: 'Votes',
             allVotesAssigned: '{count, plural, one {# vote assigned} other {All # votes assigned}}',

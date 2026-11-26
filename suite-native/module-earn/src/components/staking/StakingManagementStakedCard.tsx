@@ -46,6 +46,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
 import { CardanoAutoStakedModal } from './CardanoAutoStakedModal';
+import { StakingRateDetails } from './StakingRateDetails';
 import { useStakingTotalRewards } from '../../hooks/staking/useStakingTotalRewards';
 import { ApyValue } from '../earn/ApyValue';
 import { useEarnPortfolioTrackerGuard } from '../earn/EarnPortfolioTrackerGuard';
@@ -267,14 +268,20 @@ export const StakingManagementStakedCard = ({
                         hasBottomBorder: areStakeActionsShown,
                     })}
                 >
-                    <Text variant="body-sm">
-                        <ApyValue
-                            apy={rate}
-                            isNotEarning={hasOutdatedProvider}
-                            withLabel
-                            rateType={rateKind ?? 'apy'}
-                        />
-                    </Text>
+                    <StakingRateDetails
+                        networkSymbol={networkSymbol}
+                        rate={hasOutdatedProvider ? null : rate}
+                        rateKind={rateKind}
+                    >
+                        <Text variant="body-sm">
+                            <ApyValue
+                                apy={rate}
+                                isNotEarning={hasOutdatedProvider}
+                                withLabel
+                                rateType={rateKind ?? 'apy'}
+                            />
+                        </Text>
+                    </StakingRateDetails>
 
                     {rewardPeriodDays !== null ? (
                         <Text variant="body-sm">

@@ -12,6 +12,7 @@ import { type RootStackParamList, type RootStackRoutes } from '@suite-native/nav
 
 import { ApyValue } from '../../components/earn/ApyValue';
 import { EarnCompleteScreenContent } from '../../components/earn/EarnCompleteScreenContent';
+import { StakingRateDetails } from '../../components/staking/StakingRateDetails';
 import { getTransactionCompleteRows } from '../../components/staking/TransactionCompleteScreenPresets';
 import { type EarnFormDraftPrefix } from '../../types';
 
@@ -41,16 +42,21 @@ export const StakingTransactionCompleteScreen = () => {
     // Only a stake shows its rate and entry period.
     const stakedNetworkSymbol = stakeType === 'stake' ? (account?.symbol ?? null) : null;
     const { entryPeriodDays } = useNetworkStakingPeriods(stakedNetworkSymbol);
-    const { rate } = useNetworkStakingRate({ networkSymbol: stakedNetworkSymbol, accountKey });
+    const { rate, rateKind } = useNetworkStakingRate({
+        networkSymbol: stakedNetworkSymbol,
+        accountKey,
+    });
 
     const rows = useMemo(() => {
         if (!account) return [];
 
         const apyValue =
             stakeType === 'stake' && isApyAvailable(rate) ? (
-                <Text variant="body-md" color="contentBrand">
-                    <ApyValue apy={rate} />
-                </Text>
+                <StakingRateDetails networkSymbol={account.symbol} rate={rate} rateKind={rateKind}>
+                    <Text variant="body-md" color="contentBrand">
+                        <ApyValue apy={rate} />
+                    </Text>
+                </StakingRateDetails>
             ) : undefined;
 
         return getTransactionCompleteRows({
@@ -59,7 +65,7 @@ export const StakingTransactionCompleteScreen = () => {
             amountLabel: <Translation id={amountLabelTranslationId[stakeType]} />,
             apyValue,
         });
-    }, [stakeType, account, amountInBaseUnits, rate]);
+    }, [stakeType, account, amountInBaseUnits, rate, rateKind]);
 
     return (
         <EarnCompleteScreenContent
