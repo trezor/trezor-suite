@@ -70,6 +70,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
                 multisig: batch.multisig,
                 script_type: batch.scriptType,
                 chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
+                contact_attestation: batch.contactAttestation,
             };
 
             return {
@@ -130,12 +131,14 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         }
 
         const response = await cmd.getAddress(proto, coinInfo);
+        const { contact_signature: contactSignature, contact_pubkey: contactPubkey } = response;
 
         return {
             path: proto.address_n,
             serializedPath: getSerializedPath(proto.address_n),
             address: response.address,
             mac: response.mac,
+            ...(!!contactSignature && !!contactPubkey && { contactSignature, contactPubkey }),
         };
     }
 
@@ -149,9 +152,10 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
             // silently get address and compare with requested address
             // or display as default inside popup
             if (batch.proto.show_display) {
+                // The device attests only an address it shows.
                 const silent = await this._call({
                     ...batch,
-                    proto: { ...batch.proto, show_display: false },
+                    proto: { ...batch.proto, show_display: false, contact_attestation: undefined },
                 });
                 if (typeof batch.address === 'string') {
                     if (batch.address !== silent.address) {
