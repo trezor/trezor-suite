@@ -64,10 +64,10 @@ export const selectSelectedAccountStatus = (state: SelectedAccountRootState) =>
     state.wallet.selectedAccount.status;
 
 export const selectIsSelectedAccountLoaded = (state: SelectedAccountRootState) =>
-    state.wallet.selectedAccount.status === 'loaded';
+    selectSelectedAccountStatus(state) === 'loaded';
 
 export const selectIsSelectedAccountLoading = (state: SelectedAccountRootState) =>
-    state.wallet.selectedAccount.status === 'loading';
+    selectSelectedAccountStatus(state) === 'loading';
 
 /**
  * Mainly used for common modals, also used in the Trading section.

@@ -174,10 +174,10 @@ export const selectMetadataEditing = (state: MetadataSliceRootState) => state.me
  * @deprecated Legacy Labeling
  */
 export const selectIsMetadataEnabled = (state: MetadataRootState) =>
-    state.metadata.enabled && !state.metadata.initiating;
+    selectMetadataEnabled(state) && !selectMetadataInitiating(state);
 
 export const selectIsMetadataProviderConnected = (state: MetadataRootState) =>
-    state.metadata.enabled && !!state.metadata.providers[0];
+    selectMetadataEnabled(state) && !!state.metadata.providers[0];
 
 /**
  * Select currently selected provider for metadata of type 'labels'

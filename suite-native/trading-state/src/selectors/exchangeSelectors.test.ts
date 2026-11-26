@@ -2,6 +2,7 @@ import type { CryptoId } from 'invity-api';
 
 import { type NetworkSymbol, type NetworksRootState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
+import { selectTradingExchangeQuotes } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -17,7 +18,6 @@ import { type TradingRootState } from '../reducers';
 import {
     selectExchangeAmountLimits,
     selectExchangeBuyTradeableAssets,
-    selectExchangeQuotes,
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
     selectTradingExchange,
@@ -185,11 +185,11 @@ describe('exchangeSelectors', () => {
         });
     });
 
-    describe('selectExchangeQuotes', () => {
+    describe('selectTradingExchangeQuotes', () => {
         it('should return exchange.quotes', () => {
             state.wallet.trading.exchange.quotes = exchangeQuotes;
 
-            expect(selectExchangeQuotes(state)).toEqual(exchangeQuotes);
+            expect(selectTradingExchangeQuotes(state)).toEqual(exchangeQuotes);
         });
     });
 

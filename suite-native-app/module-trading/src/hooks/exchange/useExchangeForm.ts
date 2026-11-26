@@ -8,6 +8,7 @@ import {
     exchangeThunks,
     requiresTokenApproval,
     selectTradingExchangeProviders,
+    selectTradingExchangeQuotes,
     selectTradingExchangeQuotesRequest,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -19,7 +20,6 @@ import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import {
     exchangeActions,
     selectExchangeAmountLimits,
-    selectExchangeQuotes,
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
     selectGroupedExchangeQuotes,
@@ -218,7 +218,7 @@ const useValidations = ({
     maxSpendableAmount,
 }: UseValidationsParams) => {
     const { translate } = useTranslate();
-    const quotes = useSelector(selectExchangeQuotes);
+    const quotes = useSelector(selectTradingExchangeQuotes);
     const quoteRequest = useSelector(selectTradingExchangeQuotesRequest);
 
     const generalAlertMsg =
