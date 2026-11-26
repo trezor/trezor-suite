@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { selectSelectedAccount } from '@suite/account';
+import { selectSelectedAccountSymbol } from '@suite/account';
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouteName } from '@suite/router';
@@ -34,7 +34,7 @@ export const CoinProtocolRenderer = ({
     notification,
 }: NotificationRendererProps<'coin-scheme-protocol'>) => {
     const { dispatch } = useServices(injectDispatch);
-    const selectedAccount = useSelector(selectSelectedAccount);
+    const selectedAccountSymbol = useSelector(selectSelectedAccountSymbol);
     const routeName = useSelector(selectRouteName);
 
     const networkSymbol = useSelector(state =>
@@ -45,7 +45,7 @@ export const CoinProtocolRenderer = ({
     const networkAccounts = useSelector(state =>
         selectDeviceAccountsByNetworkSymbol(state, networkSymbol),
     ).filter(a => new BigNumber(a.balance).gt(0));
-    const isOnSendPage = routeName === 'wallet-send' && selectedAccount?.symbol === networkSymbol;
+    const isOnSendPage = routeName === 'wallet-send' && selectedAccountSymbol === networkSymbol;
 
     const onCancel = (reset: boolean = true) => {
         dispatch(notificationsActions.close(notification.id));
