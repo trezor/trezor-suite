@@ -164,6 +164,7 @@ jobs:
           PERF_COMMIT_ID: ${{ github.event.pull_request.head.sha || github.sha }}
         with:
           api-level: 34
+          emulator-build: "16740729" # 37.2.13
           profile: pixel_6
           arch: x86_64
           working-directory: suite-native-app/app
