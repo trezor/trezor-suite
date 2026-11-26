@@ -199,11 +199,17 @@ export const createCore = (
 
             return openDeviceResult;
         }
-        await sessionsClient.acquireDone({
+        const acquireDoneResult = await sessionsClient.acquireDone({
             path: acquireInput.path,
             session: acquireIntentResult.payload.session,
             sessionOwner: acquireInput.sessionOwner,
         });
+
+        // the session was not committed, e.g. the next acquire of this device took over after
+        // this one's lock timed out
+        if (!acquireDoneResult.success) {
+            return acquireDoneResult;
+        }
 
         return acquireIntentResult;
     };

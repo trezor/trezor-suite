@@ -148,11 +148,17 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     return openDeviceResult;
                 }
 
-                await this.sessionsClient.acquireDone({
+                const acquireDoneResponse = await this.sessionsClient.acquireDone({
                     path,
                     session: acquireIntentResponse.payload.session,
                     sessionOwner: this.id,
                 });
+
+                // the session was not committed, e.g. the next acquire of this device took over
+                // after this one's lock timed out
+                if (!acquireDoneResponse.success) {
+                    return error({ code: acquireDoneResponse.error.code });
+                }
 
                 return success(acquireIntentResponse.payload.session);
             },
