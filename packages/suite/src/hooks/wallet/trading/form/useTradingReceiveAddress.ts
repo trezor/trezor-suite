@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { type CryptoId } from 'invity-api';
 
-import { selectFullSelectedAccount } from '@suite/account';
+import { selectSelectedAccountKey } from '@suite/account';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectAddressValidator, selectSupportedNetworkSymbols } from '@suite-common/networks';
@@ -49,7 +49,7 @@ export const useTradingReceiveAddress = ({
 }: UseTradingReceiveAddressProps) => {
     const { addressValidator, dispatch } = useServices(injectAddressValidator, injectDispatch);
     const accounts = useSelector(selectAccounts);
-    const walletSelectedAccount = useSelector(selectFullSelectedAccount);
+    const walletSelectedAccountKey = useSelector(selectSelectedAccountKey);
     const device = useSelector(selectSelectedDevice);
     const sendAccountKey = useSelector(selectTradingExchangeAccountKey);
 
@@ -228,8 +228,7 @@ export const useTradingReceiveAddress = ({
             }
         }
 
-        const preferredReceiveAccountKey =
-            persistedReceiveAccountKey ?? walletSelectedAccount.account?.key;
+        const preferredReceiveAccountKey = persistedReceiveAccountKey ?? walletSelectedAccountKey;
         if (preferredReceiveAccountKey) {
             const preferredSuiteAccount = suiteReceiveAccounts?.find(
                 account => account.key === preferredReceiveAccountKey,
@@ -277,7 +276,7 @@ export const useTradingReceiveAddress = ({
         persistedReceiveAccountKey,
         persistedReceiveAddress,
         persistedExtraField,
-        walletSelectedAccount.account?.key,
+        walletSelectedAccountKey,
         selectSuiteAccount,
         selectNonSuiteAddress,
         canUseNonSuiteAccount,

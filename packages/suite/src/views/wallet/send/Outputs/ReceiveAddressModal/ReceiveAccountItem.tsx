@@ -1,4 +1,4 @@
-import { selectSelectedAccount } from '@suite/account';
+import { selectSelectedAccountKey } from '@suite/account';
 import { Address } from '@suite/address';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
@@ -23,7 +23,7 @@ interface ReceiveAccountItemProps {
 export const ReceiveAccountItem = ({ account, onAccountSelect }: ReceiveAccountItemProps) => {
     const baseCurrency = useSelector(selectBaseCurrency);
     const { BaseCurrencyAmountFormatter } = useFormatters();
-    const selectedAccount = useSelector(selectSelectedAccount);
+    const selectedAccountKey = useSelector(selectSelectedAccountKey);
 
     const { fiatAmount } = useFiatFromCryptoValue({
         amount: account.formattedBalance,
@@ -50,7 +50,7 @@ export const ReceiveAccountItem = ({ account, onAccountSelect }: ReceiveAccountI
                             />
                         </Text>
 
-                        {account.key === selectedAccount?.key && (
+                        {account.key === selectedAccountKey && (
                             <Badge intent="explore" size="small">
                                 Myself
                             </Badge>
