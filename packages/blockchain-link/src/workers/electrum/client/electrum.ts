@@ -35,6 +35,7 @@ const selectNetwork = (shortcut?: string) => {
 };
 
 export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI {
+    protected urgentMethods = ['blockchain.estimatefee', 'blockchain.transaction.broadcast'];
     private options?: ElectrumClientOptions;
     private network?: Network;
     private version?: Version;
