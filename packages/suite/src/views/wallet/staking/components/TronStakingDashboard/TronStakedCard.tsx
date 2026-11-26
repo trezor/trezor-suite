@@ -6,6 +6,7 @@ import { gotoThunk } from '@suite/router';
 import {
     formatStakingAmount,
     getStakingOperationAvailability,
+    selectStakingAccountNotice,
     selectStakingAccountPositionDetails,
     useNetworkStakingRate,
     useStakingAccountPosition,
@@ -88,6 +89,8 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
         selectStakingAccountPositionDetails(state, account.key, 'tron-staking'),
     );
 
+    const notice = useSelector(state => selectStakingAccountNotice(state, account.key));
+
     const stake = useTronStakingOperation(productId, 'stake');
     const unstake = useTronStakingOperation(productId, 'unstake');
     const vote = useTronStakingOperation(productId, 'vote');
@@ -112,13 +115,11 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
     const isOffered = (operation: StakingOperation) =>
         getStakingOperationAvailability({ position, access, operation }) !== 'unavailable';
 
-    const remainingVotes =
-        stakingDetails === null ? '0' : formatAmount(stakingDetails.unallocatedVotingPower);
+    const hasRemainingVotes = notice?.kind === 'votes-left';
+    const remainingVotes = hasRemainingVotes ? notice.count : '0';
     const totalVotes = stakingDetails === null ? '0' : formatAmount(stakingDetails.votingPower);
-    const hasRemainingVotes = isPositiveBalance(remainingVotes);
     const isVotingPrimary = hasRemainingVotes && isOffered('vote');
-    const shouldShowRemainingVotes =
-        isPositiveBalance(remainingVotes) || isPositiveBalance(totalVotes);
+    const shouldShowRemainingVotes = hasRemainingVotes || isPositiveBalance(totalVotes);
 
     const goToFlow = (routeName: TronFlowRoute) => {
         const flow = TRON_FLOWS[routeName];

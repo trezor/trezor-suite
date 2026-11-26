@@ -1,8 +1,5 @@
 import { Translation } from '@suite/intl';
-import {
-    selectHasStakingAccountWarning,
-    selectIsStakingAccountWithoutPool,
-} from '@suite-common/earn-staking';
+import { selectStakingAccountNotice } from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Icon, Paragraph, Row } from '@trezor/components';
@@ -18,12 +15,9 @@ type EarnStakingOutdatedProviderProps = {
 
 export const EarnStakingOutdatedProvider = ({ apy, account }: EarnStakingOutdatedProviderProps) => {
     const formatApyValue = useFormatApy();
-    const hasOutdatedProvider = useSelector(state =>
-        selectHasStakingAccountWarning(state, account.key, 'outdated-provider'),
-    );
+    const notice = useSelector(state => selectStakingAccountNotice(state, account.key));
+    const hasOutdatedProvider = notice?.kind === 'outdated-provider';
     const intent = hasOutdatedProvider ? 'warning' : 'info';
-
-    const hasNoPool = useSelector(state => selectIsStakingAccountWithoutPool(state, account.key));
 
     const description = isApyAvailable(apy) ? (
         <Translation
@@ -38,7 +32,11 @@ export const EarnStakingOutdatedProvider = ({ apy, account }: EarnStakingOutdate
         <Row gap={4}>
             <Icon as={hasOutdatedProvider ? WarningIcon : InfoIcon} size={20} intent={intent} />
             <Paragraph typographyStyle="body-sm" intent={intent}>
-                {hasNoPool ? <Translation id="TR_STAKING_NO_POOL_TITLE" /> : description}
+                {notice?.kind === 'no-stake-pool' ? (
+                    <Translation id="TR_STAKING_NO_POOL_TITLE" />
+                ) : (
+                    description
+                )}
             </Paragraph>
         </Row>
     );

@@ -1,12 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    type StakingRootState,
-    selectHasStakingAccountWarning,
-    selectIsStakingAccountDelegatedOutside,
-    selectIsStakingAccountWithoutPool,
-} from '@suite-common/earn-staking';
+import { type StakingRootState, selectStakingAccountNotice } from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
 import { IconCircle } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -34,30 +29,24 @@ export const AdaAccountsListStakingItem = ({
     badges,
     ...props
 }: AdaAccountsListStakingItemProps) => {
-    const hasNoPool = useSelector((state: StakingRootState) =>
-        selectIsStakingAccountWithoutPool(state, account.key),
-    );
-    const isDelegatedOutside = useSelector((state: StakingRootState) =>
-        selectIsStakingAccountDelegatedOutside(state, account.key),
-    );
-    const hasOutdatedProvider = useSelector((state: StakingRootState) =>
-        selectHasStakingAccountWarning(state, account.key, 'outdated-provider'),
+    const notice = useSelector((state: StakingRootState) =>
+        selectStakingAccountNotice(state, account.key),
     );
 
     const mainValue = useMemo(() => {
-        if (hasOutdatedProvider) {
+        if (notice?.kind === 'outdated-provider') {
             return <ZeroApyBadge />;
         }
-        if (isDelegatedOutside) {
+        if (notice?.kind === 'external-provider') {
             return <ExternalPoolBadge />;
         }
 
-        return hasNoPool ? (
+        return notice?.kind === 'no-stake-pool' ? (
             <Icon name="info" color="contentInfo" testID="@accountList/item/stakingNoPool" />
         ) : (
             <Icon name="check" color="contentBrand" />
         );
-    }, [isDelegatedOutside, hasOutdatedProvider, hasNoPool]);
+    }, [notice]);
 
     return (
         <AccountsListItemBase

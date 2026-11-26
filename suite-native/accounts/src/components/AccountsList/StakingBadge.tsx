@@ -4,8 +4,7 @@ import {
     type StakingDeviceRootState,
     type StakingPositionEntry,
     selectDeviceActiveStakingPositionEntriesBySymbol,
-    selectHasStakingAccountWarning,
-    selectIsStakingAccountDelegatedOutside,
+    selectStakingAccountNotice,
 } from '@suite-common/earn-staking';
 import { hasStakingPositionWarning } from '@suite-common/earn-staking-common';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -40,21 +39,17 @@ type StakingBadgeProps = {
 };
 
 export const StakingBadge = ({ networkSymbol, accountKey }: StakingBadgeProps) => {
-    // The badge of an account warns about that account; the badge of a network about any of its accounts.
-    const hasWarning = useSelector((state: StakingDeviceRootState) =>
-        accountKey === undefined
-            ? selectDeviceActiveStakingPositionEntriesBySymbol(state, networkSymbol).some(
-                  hasOutdatedProvider,
-              )
-            : selectHasStakingAccountWarning(state, accountKey, 'outdated-provider'),
+    const notice = useSelector((state: StakingDeviceRootState) =>
+        accountKey === undefined ? null : selectStakingAccountNotice(state, accountKey),
     );
-
-    const isDelegatedOutside = useSelector(
+    const hasNetworkWarning = useSelector(
         (state: StakingDeviceRootState) =>
-            networkSymbol === 'ada' &&
-            accountKey !== undefined &&
-            selectIsStakingAccountDelegatedOutside(state, accountKey),
+            accountKey === undefined &&
+            selectDeviceActiveStakingPositionEntriesBySymbol(state, networkSymbol).some(
+                hasOutdatedProvider,
+            ),
     );
+    const hasWarning = hasNetworkWarning || notice?.kind === 'outdated-provider';
 
     const stakingIcon = (
         <CompoundRoundedIcon
@@ -64,7 +59,9 @@ export const StakingBadge = ({ networkSymbol, accountKey }: StakingBadgeProps) =
     );
 
     if (hasWarning || accountKey === undefined) return stakingIcon;
-    if (isDelegatedOutside) return <ExternalPoolBadge showStakingIcon />;
+    if (networkSymbol === 'ada' && notice?.kind === 'external-provider') {
+        return <ExternalPoolBadge showStakingIcon />;
+    }
     if (networkSymbol === 'trx') {
         return (
             <TronUnassignedVotesBadge

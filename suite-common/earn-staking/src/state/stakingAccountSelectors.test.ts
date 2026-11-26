@@ -35,6 +35,7 @@ import {
     selectStakingAccountAmount,
     selectStakingAccountFiatAmount,
     selectStakingAccountLockup,
+    selectStakingAccountNotice,
     selectStakingAccountPositionDetails,
     selectStakingAccountPositionEntry,
     selectStakingPositionEntriesByAccount,
@@ -290,6 +291,76 @@ describe('selectStakingAccountPositionEntry', () => {
         expect(selectStakingAccountPositionEntry(state, ethAccount.key)).toBe(
             selectStakingAccountPositionEntry(state, ethAccount.key),
         );
+    });
+});
+
+describe('selectStakingAccountNotice', () => {
+    const externalProduct = mockStakingProductDescriptor({
+        networkSymbol: asNetworkSymbol('ada'),
+        providerId: stakingProviderIdSchema.parse('external'),
+        type: 'native',
+        operations: ['unstake', 'claim', 'vote'],
+    });
+
+    const selectCardanoNotice = (position: StakingPosition) =>
+        selectStakingAccountNotice(
+            createState({
+                descriptors: [externalProduct],
+                positions: { [adaAccount.key]: [position] },
+            }),
+            adaAccount.key,
+        );
+
+    it('distinguishes an external pool from a retired provider', () => {
+        const externalPosition = { ...adaPosition, productId: externalProduct.id };
+
+        expect(selectCardanoNotice(externalPosition)).toEqual({ kind: 'external-provider' });
+        expect(
+            selectCardanoNotice({
+                ...externalPosition,
+                warnings: [{ code: 'outdated-provider', providerId: externalProduct.providerId }],
+            }),
+        ).toEqual({ kind: 'outdated-provider' });
+    });
+
+    it('shows a missing pool until a delegation is pending', () => {
+        const noPoolPosition = mockStakingPosition({
+            productId: externalProduct.id,
+            targets: [],
+            warnings: [{ code: 'no-stake-pool' }],
+        });
+
+        expect(selectCardanoNotice(noPoolPosition)).toEqual({ kind: 'no-stake-pool' });
+        expect(
+            selectCardanoNotice({
+                ...noPoolPosition,
+                pendingTransactions: [{ txid: 'delegation', operation: 'stake' }],
+            }),
+        ).toBeNull();
+    });
+
+    it.each([
+        { votingPower: '2000000', expected: { kind: 'votes-left', count: '2' } },
+        { votingPower: '0', expected: null },
+    ])('reports remaining TRON votes for $votingPower sun', ({ votingPower, expected }) => {
+        const position = mockStakingPosition({
+            productId: trx.id,
+            details: {
+                kind: 'tron-staking',
+                frozen: { energy: amount('0'), bandwidth: amount('0') },
+                delegated: { energy: amount('0'), bandwidth: amount('0') },
+                votingPower: amount('5000000'),
+                unallocatedVotingPower: amount(votingPower),
+                rewardClaimAvailableAt: null,
+            },
+        });
+        const state = createState({ positions: { [trxAccount.key]: [position] } });
+
+        expect(selectStakingAccountNotice(state, trxAccount.key)).toEqual(expected);
+    });
+
+    it('is null without a position', () => {
+        expect(selectStakingAccountNotice(createState(), unknownAccountKey)).toBeNull();
     });
 });
 

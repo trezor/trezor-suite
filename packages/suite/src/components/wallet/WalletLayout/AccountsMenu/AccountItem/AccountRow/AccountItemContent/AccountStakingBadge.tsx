@@ -1,16 +1,12 @@
-import { shallowEqual, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import {
+    type StakingPositionNotice,
     type StakingRootState,
-    formatStakingAmount,
-    selectHasStakingAccountWarning,
-    selectIsStakingAccountDelegatedOutside,
-    selectIsStakingAccountWithoutPool,
-    selectStakingAccountPositionDetails,
+    selectStakingAccountNotice,
 } from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
-import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { type IconComponent, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { InfoIcon, PiggyBankIcon, WarningIcon } from '@trezor/icons';
 
@@ -30,11 +26,11 @@ type StakingBadgeContent = {
     voteCount?: string;
 };
 
-const selectStakingBadgeContent = (
-    state: StakingRootState,
-    { key, networkType, symbol }: Account,
+const getStakingBadgeContent = (
+    notice: StakingPositionNotice | null,
+    { networkType }: Account,
 ): StakingBadgeContent => {
-    if (selectHasStakingAccountWarning(state, key, 'outdated-provider')) {
+    if (notice?.kind === 'outdated-provider') {
         return {
             tooltipId: 'TR_STAKING_REWARDS_REDUCED',
             labelId: 'TR_STAKING_REWARDS_REDUCED',
@@ -43,7 +39,7 @@ const selectStakingBadgeContent = (
         };
     }
 
-    if (selectIsStakingAccountWithoutPool(state, key)) {
+    if (notice?.kind === 'no-stake-pool') {
         return {
             tooltipId: 'TR_STAKING_REWARDS_REDUCED',
             labelId: 'TR_STAKING_REWARDS_REDUCED',
@@ -52,7 +48,7 @@ const selectStakingBadgeContent = (
         };
     }
 
-    if (selectIsStakingAccountDelegatedOutside(state, key)) {
+    if (notice?.kind === 'external-provider') {
         if (networkType === 'cardano') {
             return {
                 tooltipId: 'TR_STAKING_EXTERNAL_POOL',
@@ -68,17 +64,12 @@ const selectStakingBadgeContent = (
         };
     }
 
-    const votes = selectStakingAccountPositionDetails(
-        state,
-        key,
-        'tron-staking',
-    )?.unallocatedVotingPower;
-    if (votes !== undefined && isPositiveBalance(votes)) {
+    if (notice?.kind === 'votes-left') {
         return {
             tooltipId: 'TR_EARN_TRON_VOTES_TO_ALLOCATE',
             labelId: 'TR_EARN_TRON_VOTES_LEFT_BADGE',
             intent: 'info',
-            voteCount: formatStakingAmount({ amount: votes, networkSymbol: symbol }),
+            voteCount: notice.count,
         };
     }
 
@@ -87,9 +78,12 @@ const selectStakingBadgeContent = (
 
 export const AccountStakingBadge = ({ account, isFocused }: AccountStakingBadgeProps) => {
     const { translationString } = useTranslation();
-    const { tooltipId, labelId, icon, additionalIcon, intent, voteCount } = useSelector(
-        (state: StakingRootState) => selectStakingBadgeContent(state, account),
-        shallowEqual,
+    const notice = useSelector((state: StakingRootState) =>
+        selectStakingAccountNotice(state, account.key),
+    );
+    const { tooltipId, labelId, icon, additionalIcon, intent, voteCount } = getStakingBadgeContent(
+        notice,
+        account,
     );
     const values = voteCount === undefined ? undefined : { count: voteCount };
     const tooltipLabel = translationString(tooltipId, values);

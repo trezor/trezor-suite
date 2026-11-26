@@ -27,6 +27,7 @@ import {
 import { type VersionArray, versionUtils } from '@trezor/utils';
 
 import {
+    isStakingPositionDelegatedOutside,
     selectCountedStakingPositionEntriesByAccount,
     selectStakingAccountPositionEntry,
 } from './stakingAccountSelectors';
@@ -261,8 +262,7 @@ export const selectIsStakingAccountDelegatedOutside = (
     accountKey: AccountKey,
 ): boolean =>
     selectCountedStakingPositionEntriesByAccount(state, accountKey).some(
-        ({ position, descriptor }) =>
-            position.targets.length > 0 && !descriptor.operations.includes('stake'),
+        isStakingPositionDelegatedOutside,
     );
 
 // Delegated to an operator Suite offers: the counted position targets one and the account is not

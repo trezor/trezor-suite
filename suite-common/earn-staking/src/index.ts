@@ -112,6 +112,7 @@ export {
     type StakingPromotionScope,
 } from './state/stakingAccessSelectors';
 export {
+    getStakingPositionNotice,
     selectAccountCryptoBalanceWithStaking,
     selectCountedStakingPositionEntriesByAccount,
     selectHasStakingAccountWarning,
@@ -121,12 +122,14 @@ export {
     selectStakingAccountAmount,
     selectStakingAccountFiatAmount,
     selectStakingAccountLockup,
+    selectStakingAccountNotice,
     selectStakingAccountPositionDetails,
     selectStakingAccountPositionEntry,
     selectStakingPositionEntriesByAccount,
     type StakingAccountFiatRootState,
     type StakingPositionDetailsOfKind,
     type StakingPositionEntry,
+    type StakingPositionNotice,
 } from './state/stakingAccountSelectors';
 export {
     selectDeviceActiveStakingPositionEntries,

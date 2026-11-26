@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import {
     type StakingRootState,
     formatStakingAmount,
+    selectStakingAccountNotice,
     selectStakingAccountPositionDetails,
 } from '@suite-common/earn-staking';
 import { type StakingAmount } from '@suite-common/earn-staking-common';
@@ -20,7 +21,6 @@ import {
     useBottomSheetModal,
 } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { BigNumber } from '@trezor/utils';
 
 import { TronStakingVotesBottomSheet } from './TronStakingVotesBottomSheet';
 
@@ -62,6 +62,10 @@ export const TronResourcesCard = ({ accountKey }: TronResourcesCardProps) => {
         selectStakingAccountPositionDetails(state, accountKey, 'tron-staking'),
     );
 
+    const notice = useSelector((state: StakingRootState) =>
+        selectStakingAccountNotice(state, accountKey),
+    );
+
     // Resource meters are account data, not staking state.
     const resources = getTronResources(account ?? undefined);
 
@@ -75,9 +79,6 @@ export const TronResourcesCard = ({ accountKey }: TronResourcesCardProps) => {
         formatStakingAmount({ amount, networkSymbol: account.symbol });
 
     const votingPower = stakingDetails === null ? '0' : formatVotes(stakingDetails.votingPower);
-    const unallocatedVotingPower =
-        stakingDetails === null ? '0' : formatVotes(stakingDetails.unallocatedVotingPower);
-    const hasRemainingVotes = new BigNumber(unallocatedVotingPower).gt(0);
 
     return (
         <VStack spacing="sp16">
@@ -100,7 +101,7 @@ export const TronResourcesCard = ({ accountKey }: TronResourcesCardProps) => {
                         <Text variant="body-sm" color="contentSecondary">
                             <Translation id="earn.tron.votes" />
                         </Text>
-                        {hasRemainingVotes ? (
+                        {notice?.kind === 'votes-left' ? (
                             <PressableOpacity onPress={votesModal.openModal}>
                                 <TronUnassignedVotesBadge accountKey={accountKey} />
                             </PressableOpacity>

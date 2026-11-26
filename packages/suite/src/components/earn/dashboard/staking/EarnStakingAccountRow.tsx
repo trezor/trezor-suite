@@ -8,10 +8,10 @@ import {
     formatStakingAmount,
     selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
-    selectIsStakingAccountWithoutPool,
     selectIsStakingOperationPending,
     selectStakeableStakingProductDescriptorBySymbol,
     selectStakingAccountAmount,
+    selectStakingAccountNotice,
     settleTronUnlocks,
     useNetworkStakingRate,
     useStakingAccess,
@@ -100,13 +100,8 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         account.key,
     );
 
-    const voteCount =
-        position?.details?.kind === 'tron-staking'
-            ? formatStakingAmount({
-                  amount: position.details.unallocatedVotingPower,
-                  networkSymbol: account.symbol,
-              })
-            : '0';
+    const notice = useSelector(state => selectStakingAccountNotice(state, account.key));
+    const voteCount = notice?.kind === 'votes-left' ? notice.count : '0';
 
     const stakeableDescriptor = useSelector(state =>
         selectStakeableStakingProductDescriptorBySymbol(state, account.symbol),
@@ -398,18 +393,18 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         openTronFlow(event, 'withdraw');
     };
 
-    const hasNoPool = useSelector(state => selectIsStakingAccountWithoutPool(state, account.key));
     const apyAvailable =
         stakingStatus !== 'staking-outdated-provider' &&
         stakingStatus !== 'staking-remaining-votes';
 
-    const rateLabel = hasNoPool ? (
-        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-            <Translation id="TR_STAKING_REWARDS_REDUCED" />
-        </Text>
-    ) : (
-        <EarnStakingRateTooltip rateKind={rateKind} rate={apyAvailable ? rate : null} />
-    );
+    const rateLabel =
+        notice?.kind === 'no-stake-pool' ? (
+            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                <Translation id="TR_STAKING_REWARDS_REDUCED" />
+            </Text>
+        ) : (
+            <EarnStakingRateTooltip rateKind={rateKind} rate={apyAvailable ? rate : null} />
+        );
 
     const actionButtonsProps = {
         stakingStatus,

@@ -5,8 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import {
     type StakingRootState,
     formatStakingAmount,
-    selectHasStakingAccountWarning,
-    selectIsStakingAccountWithoutPool,
+    selectStakingAccountNotice,
     useNetworkStakingRate,
     useStakingAccountPosition,
     useStakingDaysUntil,
@@ -103,12 +102,10 @@ export const StakingManagementStakedCard = ({
         access,
     } = useStakingAccountPosition(accountKey);
 
-    const hasOutdatedProvider = useSelector((state: StakingRootState) =>
-        selectHasStakingAccountWarning(state, accountKey, 'outdated-provider'),
+    const notice = useSelector((state: StakingRootState) =>
+        selectStakingAccountNotice(state, accountKey),
     );
-    const hasNoPool = useSelector((state: StakingRootState) =>
-        selectIsStakingAccountWithoutPool(state, accountKey),
-    );
+    const isNotEarning = notice?.kind === 'outdated-provider' || notice?.kind === 'no-stake-pool';
     const stakeMessage = useStakingOperationMessage(productId, 'stake');
     const unstakeMessage = useStakingOperationMessage(productId, 'unstake');
     const { rate, rateKind } = useNetworkStakingRate({ networkSymbol, accountKey });
@@ -274,7 +271,7 @@ export const StakingManagementStakedCard = ({
                     <Text variant="body-sm">
                         <ApyValue
                             apy={rate}
-                            isNotEarning={hasOutdatedProvider || hasNoPool}
+                            isNotEarning={isNotEarning}
                             withLabel
                             rateType={rateKind ?? 'apy'}
                         />
