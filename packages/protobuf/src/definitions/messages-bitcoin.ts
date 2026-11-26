@@ -84,6 +84,8 @@ export const Address = Type.Object(
     {
         address: Type.String(),
         mac: Type.Optional(Type.String()),
+        contact_signature: Type.Optional(Type.String()),
+        contact_pubkey: Type.Optional(Type.String()),
     },
     { $id: 'Address' },
 );
@@ -147,6 +149,7 @@ export const GetAddress = Type.Object(
         script_type: Type.Optional(InputScriptType),
         ignore_xpub_magic: Type.Optional(Type.Boolean()),
         chunkify: Type.Optional(Type.Boolean()),
+        contact_attestation: Type.Optional(Type.Boolean()),
     },
     { $id: 'GetAddress' },
 );
@@ -380,6 +383,8 @@ export const TxOutputType = Type.Union(
             orig_hash: Type.Optional(Type.String()),
             orig_index: Type.Optional(Type.Number()),
             payment_req_index: Type.Optional(Type.Number()),
+            contact_pubkey: Type.Optional(Type.String()),
+            contact_signature: Type.Optional(Type.String()),
         }),
         Type.Object({
             address: Type.Optional(Type.Never()),
@@ -390,6 +395,8 @@ export const TxOutputType = Type.Union(
             orig_hash: Type.Optional(Type.String()),
             orig_index: Type.Optional(Type.Number()),
             payment_req_index: Type.Optional(Type.Number()),
+            contact_pubkey: Type.Optional(Type.Never()),
+            contact_signature: Type.Optional(Type.Never()),
         }),
         Type.Object({
             address: Type.Optional(Type.Never()),
@@ -400,6 +407,8 @@ export const TxOutputType = Type.Union(
             orig_hash: Type.Optional(Type.String()),
             orig_index: Type.Optional(Type.Number()),
             payment_req_index: Type.Optional(Type.Number()),
+            contact_pubkey: Type.Optional(Type.Never()),
+            contact_signature: Type.Optional(Type.Never()),
         }),
     ],
     { $id: 'TxOutputType' },

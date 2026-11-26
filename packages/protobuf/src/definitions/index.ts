@@ -86,10 +86,10 @@ import {
     DebugLinkGcInfo,
     DebugLinkGetGcInfo,
     DebugLinkGetPairingInfo,
-    DebugLinkN1W1Connected,
-    DebugLinkN1W1Read,
-    DebugLinkN1W1Response,
-    DebugLinkN1W1Write,
+    DebugLinkK1N1Connected,
+    DebugLinkK1N1Read,
+    DebugLinkK1N1Response,
+    DebugLinkK1N1Write,
     DebugLinkOptigaSetSecMax,
     DebugLinkPairingInfo,
     DebugLinkResetDebugEvents,
@@ -368,6 +368,11 @@ import {
     WARDQueueUpdateAck,
     WARDReconcile,
     WARDReconcileAck,
+    WARDServiceDone,
+    WARDServiceOpen,
+    WARDServiceOpenAck,
+    WARDServiceSync,
+    WARDServiceSyncAck,
     WARDSync,
     WARDSyncAck,
     WARDValidateCache,
@@ -542,10 +547,10 @@ export const MessageType = Type.Object(
         DebugLinkGetGcInfo,
         DebugLinkGcInfo,
         DebugLinkSetLogFilter,
-        DebugLinkN1W1Connected,
-        DebugLinkN1W1Write,
-        DebugLinkN1W1Read,
-        DebugLinkN1W1Response,
+        DebugLinkK1N1Connected,
+        DebugLinkK1N1Write,
+        DebugLinkK1N1Read,
+        DebugLinkK1N1Response,
         WARDQueueUpdate,
         WARDQueueUpdateAck,
         WARDPerformUpdate,
@@ -592,6 +597,11 @@ export const MessageType = Type.Object(
         WARDCacheImportAck,
         WARDValidateCache,
         WARDValidateCacheAck,
+        WARDServiceOpen,
+        WARDServiceOpenAck,
+        WARDServiceDone,
+        WARDServiceSync,
+        WARDServiceSyncAck,
         DisplayAddress,
         DisplayAddressWithProof,
         EosGetPublicKey,
@@ -870,6 +880,9 @@ export type WireInMessage =
     | 'WARDCacheExport'
     | 'WARDCacheImport'
     | 'WARDValidateCache'
+    | 'WARDServiceOpen'
+    | 'WARDServiceDone'
+    | 'WARDServiceSync'
     | 'DisplayAddress'
     | 'DisplayAddressWithProof'
     | 'EosGetPublicKey'
@@ -1031,6 +1044,8 @@ export type WireOutMessage =
     | 'WARDCacheExportAck'
     | 'WARDCacheImportAck'
     | 'WARDValidateCacheAck'
+    | 'WARDServiceOpenAck'
+    | 'WARDServiceSyncAck'
     | 'EosPublicKey'
     | 'EosTxActionRequest'
     | 'EosSignedTx'
