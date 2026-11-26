@@ -279,6 +279,8 @@ const selectNetworkSymbolsShownWithoutBalance = createMemoizedSelector(
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
 
+const hasBalance = (asset: WalletAsset | undefined): boolean => asset?.cryptoBalance.gt(0) ?? false;
+
 export const selectShownWalletAssetKeys = createMemoizedSelector(
     [
         selectWalletAssets,
@@ -292,8 +294,7 @@ export const selectShownWalletAssetKeys = createMemoizedSelector(
                 .filter(
                     asset =>
                         allowedNetworks.includes(asset.networkSymbol) &&
-                        (asset.cryptoBalance.gt(0) ||
-                            shownWithoutBalance.includes(asset.networkSymbol)),
+                        (hasBalance(asset) || shownWithoutBalance.includes(asset.networkSymbol)),
                 )
                 .map(asset => asset.assetKey)
                 .sort(byValue(values)),
@@ -305,9 +306,7 @@ export const selectShownWalletAssetKeys = createMemoizedSelector(
 const selectHeldWalletAssetKeys = createMemoizedSelector(
     [selectShownWalletAssetKeys, selectWalletAssets],
     (assetKeys, assets): readonly WalletAssetKey[] =>
-        returnStableArrayIfEmpty(
-            assetKeys.filter(assetKey => assets.get(assetKey)?.cryptoBalance.gt(0)),
-        ),
+        returnStableArrayIfEmpty(assetKeys.filter(assetKey => hasBalance(assets.get(assetKey)))),
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
 
