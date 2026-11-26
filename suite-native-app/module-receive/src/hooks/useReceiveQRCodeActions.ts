@@ -11,18 +11,23 @@ import { useToast } from '@suite-native/toasts';
 import { useServices } from '@trezor/dependency-injection';
 import { exhaustive } from '@trezor/type-utils';
 
-import { getShareableFileURI } from '../utils/getShareableFileURI';
 import { saveQRCodeImageToPhotos } from '../utils/saveQRCodeImageToPhotos';
 // Metro resolves this to `shareQRCodeImage.android.ts` on Android. iOS, TypeScript and Jest use
 // the unsuffixed default.
 import { shareQRCodeImage } from '../utils/shareQRCodeImage';
 
-const captureQRCodeImageURI = (qrCodeView: ViewShotRef): Promise<string> =>
-    captureRef(qrCodeView, {
-        fileName: 'trezor-receive-address-qr',
-        format: 'png',
-        result: 'tmpfile',
-    });
+// The capture resolves to a bare path on iOS and to a `file://` URI on Android.
+const getShareableFileURI = (uri: string): string =>
+    uri.startsWith('file://') ? uri : `file://${uri}`;
+
+const captureQRCodeImageURI = async (qrCodeView: ViewShotRef): Promise<string> =>
+    getShareableFileURI(
+        await captureRef(qrCodeView, {
+            fileName: 'trezor-receive-address-qr',
+            format: 'png',
+            result: 'tmpfile',
+        }),
+    );
 
 const captureQRCodeImageBase64 = (qrCodeView: ViewShotRef): Promise<string> =>
     captureRef(qrCodeView, {
@@ -54,19 +59,27 @@ export const useReceiveQRCodeActions = () => {
 
         try {
             const qrCodeImageURI = await captureQRCodeImageURI(qrCodeViewRef.current);
-            const hasSharedQRCode = await shareQRCodeImage({
+            const shareResult = await shareQRCodeImage({
                 imageURI: qrCodeImageURI,
                 title: translate('moduleReceive.addressActions.shareQRCodeImage'),
             });
 
-            if (!hasSharedQRCode) {
-                return;
-            }
+            switch (shareResult) {
+                case 'shared':
+                case 'unknown':
+                    // Android reports `unknown` for both a completed and a dismissed share, so
+                    // every attempt is counted there.
+                    analytics.report({
+                        type: events.receiveQRCodeActionEvent.name,
+                        payload: { action: 'share' },
+                    });
 
-            analytics.report({
-                type: events.receiveQRCodeActionEvent.name,
-                payload: { action: 'share' },
-            });
+                    return;
+                case 'dismissed':
+                    return;
+                default:
+                    return exhaustive(shareResult);
+            }
         } catch {
             showGenericErrorAlert();
         }
@@ -106,9 +119,7 @@ export const useReceiveQRCodeActions = () => {
         }
 
         try {
-            const result = await saveQRCodeImageToPhotos(async () =>
-                getShareableFileURI(await captureQRCodeImageURI(qrCodeView)),
-            );
+            const result = await saveQRCodeImageToPhotos(() => captureQRCodeImageURI(qrCodeView));
 
             switch (result) {
                 case 'saved':

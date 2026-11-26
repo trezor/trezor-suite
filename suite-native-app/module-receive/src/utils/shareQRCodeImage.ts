@@ -2,14 +2,10 @@
 // `shareQRCodeImage.android.ts` on Android instead.
 import { Share } from 'react-native';
 
-import { getShareableFileURI } from './getShareableFileURI';
 import type { ShareQRCodeImage } from './shareQRCodeImage.types';
 
 export const shareQRCodeImage: ShareQRCodeImage = async ({ imageURI, title }) => {
-    const { action } = await Share.share({
-        url: getShareableFileURI(imageURI),
-        title,
-    });
+    const { action } = await Share.share({ url: imageURI, title });
 
-    return action !== Share.dismissedAction;
+    return action === Share.dismissedAction ? 'dismissed' : 'shared';
 };

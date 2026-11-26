@@ -15,10 +15,10 @@ describe('shareQRCodeImage', () => {
     it('shares a QR code image as PNG', async () => {
         await expect(
             shareQRCodeImage({
-                imageURI: '/cache/trezor-receive-address-qr.png',
+                imageURI: 'file:///cache/trezor-receive-address-qr.png',
                 title: 'Share QR code image',
             }),
-        ).resolves.toBe(true);
+        ).resolves.toBe('unknown');
 
         expect(mockShareAsync).toHaveBeenCalledWith('file:///cache/trezor-receive-address-qr.png', {
             dialogTitle: 'Share QR code image',

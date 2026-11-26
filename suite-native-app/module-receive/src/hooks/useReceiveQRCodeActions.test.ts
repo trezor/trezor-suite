@@ -79,6 +79,16 @@ describe('useReceiveQRCodeActions', () => {
         });
     });
 
+    it('does not report a dismissed share', async () => {
+        mockShare.mockResolvedValue({ action: Share.dismissedAction, activityType: undefined });
+        const { result } = await renderUseReceiveQRCodeActions();
+        result.current.qrCodeViewRef.current = qrCodeView;
+
+        await act(() => result.current.handleShareQRCode());
+
+        expect(mockAnalyticsReport).not.toHaveBeenCalled();
+    });
+
     it('copies the QR code image', async () => {
         mockCaptureRef.mockResolvedValue('base64-image');
         const { result } = await renderUseReceiveQRCodeActions();

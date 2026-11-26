@@ -3,4 +3,6 @@ export type ShareQRCodeImageParams = {
     title: string;
 };
 
-export type ShareQRCodeImage = (params: ShareQRCodeImageParams) => Promise<boolean>;
+type ShareQRCodeImageResult = 'shared' | 'dismissed' | 'unknown';
+
+export type ShareQRCodeImage = (params: ShareQRCodeImageParams) => Promise<ShareQRCodeImageResult>;
