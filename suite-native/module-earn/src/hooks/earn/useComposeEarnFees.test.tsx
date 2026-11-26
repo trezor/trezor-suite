@@ -595,6 +595,67 @@ describe('useComposeEarnFees recovery', () => {
         },
     );
 
+    it('keeps Custom selected when the staking gas limit is too low', async () => {
+        const { result, rerender, store } = await renderFees();
+        await settleDebounce();
+        const custom = { ...FEE_LEVELS.normal, feePerByte: '5', feeLimit: '22000' };
+        const customDraft = {
+            ...result.current.formDraft!,
+            selectedFee: 'custom' as const,
+            feePerUnit: custom.feePerByte,
+            feeLimit: custom.feeLimit,
+        };
+        mockCompose.mockResolvedValueOnce(fulfilled({ ...FEE_LEVELS, custom }));
+        await act(() => {
+            store.dispatch(
+                formDraftActions.storeDraft({
+                    key: result.current.formDraftKey,
+                    formDraft: customDraft,
+                }),
+            );
+        });
+        await settleDebounce();
+        expect(result.current.isFeeReady).toBe(true);
+
+        const normal = { ...FEE_LEVELS.normal, estimatedFeeLimit: '50000', feeLimit: '50000' };
+        mockCompose.mockResolvedValueOnce(
+            fulfilled({
+                normal,
+                custom: { ...custom, estimatedFeeLimit: normal.estimatedFeeLimit },
+            }),
+        );
+        await rerender({
+            accountKey: ACCOUNT.key,
+            formState: buildEarnComposeFormState(FORM_STATE.outputs[0]!.address, '2', '0x'),
+            formDraftPrefix: 'stake',
+        });
+        await settleDebounce();
+
+        expect(result.current.formDraft).toMatchObject({
+            selectedFee: 'custom',
+            feePerUnit: '5',
+            feeLimit: '22000',
+        });
+        expect(result.current.isFeeReady).toBe(false);
+        expect(store.getState().wallet.send.feeLevels.custom).toEqual({
+            type: 'error',
+            error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+        });
+
+        mockCompose.mockResolvedValueOnce(fulfilled({ normal }));
+        await act(async () => {
+            await updateEarnSelectedFeeLevelThunk({
+                accountKey: ACCOUNT.key,
+                formDraftKey: result.current.formDraftKey,
+                feeLevelLabel: 'normal',
+            })(store.dispatch, store.getState, {});
+        });
+        await settleDebounce();
+
+        expect(result.current.formDraft?.selectedFee).toBe('normal');
+        expect(result.current.isFeeReady).toBe(true);
+    });
+
     it('keeps the Custom preview local and uses the confirmed fee in staking Review', async () => {
         const store = createTestStore();
         const props: FeeFlowProps = {

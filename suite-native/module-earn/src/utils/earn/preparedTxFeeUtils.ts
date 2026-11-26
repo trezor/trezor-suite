@@ -13,6 +13,8 @@ import {
 import { calculateTotalGasCost, fromHex, isEip1559 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
+import { validateEarnCustomFee } from './validateEarnCustomFee';
+
 type ParsedUnsignedEvmTransaction = NonNullable<
     ReturnType<typeof parseUnsignedEvmTransactionForSigning>
 >;
@@ -289,21 +291,13 @@ export const buildPreparedTxFeeDraftState = ({
 }: BuildPreparedTxFeeDraftStateParams): BuildPreparedTxFeeDraftStateResult | null => {
     try {
         const feeLevels = buildPreparedTxFeeLevels(feeLevelParams);
-        let { selectedFee } = getPreparedTxFeeState(
+        const { selectedFee } = getPreparedTxFeeState(
             currentFormDraft,
             isPreparedTxEip1559FeeInfo(feeLevelParams.feeInfo),
         );
 
-        // An amount change may need more gas than the confirmed Custom limit.
-        if (
-            selectedFee === 'custom' &&
-            new BigNumber(currentFormDraft?.feeLimit ?? 0).lt(feeLevelParams.gasLimit)
-        ) {
-            selectedFee = 'normal';
-        }
-
         const selectedFeeUnsignedTransaction = buildPreparedTxSelectedFeeUnsignedTransaction({
-            currentFormDraft: currentFormDraft && { ...currentFormDraft, selectedFee },
+            currentFormDraft,
             feeInfo: feeLevelParams.feeInfo,
             unsignedTransaction: feeLevelParams.unsignedTransaction,
         });
@@ -325,14 +319,20 @@ export const buildPreparedTxFeeDraftState = ({
 
         return {
             feeLevels: Object.fromEntries(
-                Object.entries(previews).map(([label, preview]) => [
-                    label,
-                    applyPreparedTxFeeBalance(
+                Object.entries(previews).map(([label, preview]) => {
+                    const level = applyPreparedTxFeeBalance(
                         { ...preview, estimatedFeeLimit: feeLevelParams.gasLimit },
                         feeLevelParams.unsignedTransaction,
                         availableBalance,
-                    ),
-                ]),
+                    );
+
+                    return [
+                        label,
+                        label === 'custom' && level.type === 'final'
+                            ? validateEarnCustomFee(level)
+                            : level,
+                    ];
+                }),
             ),
             formDraft: { ...formState, estimatedFeeLimit: feeLevelParams.gasLimit },
             selectedFeeUnsignedTransaction,
