@@ -12,6 +12,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@noble/curves": "^2.0.1",
         "@reduxjs/toolkit": "2.13.0",
         "@scure/base": "^2.0.0",
         "@suite-common/device": "workspace:*",
@@ -22,6 +23,8 @@
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
-        "@trezor/type-utils": "workspace:*"
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "zod": "4.6.7"
     }
 }

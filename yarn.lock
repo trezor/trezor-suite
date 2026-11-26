@@ -11763,6 +11763,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/contacts@workspace:suite-common/contacts"
   dependencies:
+    "@noble/curves": "npm:^2.0.1"
     "@reduxjs/toolkit": "npm:2.13.0"
     "@scure/base": "npm:^2.0.0"
     "@suite-common/device": "workspace:*"
@@ -11774,6 +11775,8 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
