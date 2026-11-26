@@ -1,4 +1,5 @@
 import { type JSX, type ReactElement } from 'react';
+import { useSelector } from 'react-redux';
 
 import type { FormatNumberOptions } from '@formatjs/intl';
 import styled from 'styled-components';
@@ -6,16 +7,19 @@ import styled from 'styled-components';
 import { HiddenPlaceholder, type HiddenPlaceholderProps } from '@suite/discreet-mode';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { useFormatters } from '@suite-common/formatters';
-import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
+import {
+    type TokenDefinitionsRootState,
+    selectIsSpecificCoinDefinitionKnown,
+} from '@suite-common/token-definitions';
 import { type TokenAddress } from '@suite-common/tokens';
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '@suite-common/trading';
+import { type FiatRatesRootState, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { type RateTypeWithoutHistoric, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Skeleton } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import type { UseFiatFromCryptoValueParams } from '#src/hooks/suite/useFiatFromCryptoValue';
 import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
-import { useSelector } from '#src/hooks/suite/useSelector';
 
 // Do NOT use any prop from <HiddenPlaceholderProps>, its here just to fix types
 const SameWidthNums = styled.span<HiddenPlaceholderProps>`
@@ -74,7 +78,7 @@ export const BaseCurrencyValue = ({
 }: BaseCurrencyValueProps) => {
     const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
     const isNativeToken = !tokenAddress || tokenAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
-    const { baseCurrencyCode, fiatAmount, rate, currentRate } = useFiatFromCryptoValue({
+    const { baseCurrencyCode, fiatAmount, fiatRateKey, rate } = useFiatFromCryptoValue({
         amount,
         symbol,
         tokenAddress: isNativeToken ? undefined : tokenAddress,
@@ -82,6 +86,23 @@ export const BaseCurrencyValue = ({
         useHistoricRate,
         rateType,
     });
+
+    // Read the fetch status only where it is shown, so other fetches don't re-render this.
+    const isRateLoading = useSelector(
+        (state: FiatRatesRootState) =>
+            !!showLoadingSkeleton &&
+            !!selectFiatRatesByFiatRateKey(state, fiatRateKey, rateType)?.isLoading,
+    );
+    const hasRateError = useSelector(
+        (state: FiatRatesRootState) =>
+            !!showLoadingSkeleton &&
+            !!selectFiatRatesByFiatRateKey(state, fiatRateKey, rateType)?.error,
+    );
+    const lastTickerTimestamp = useSelector((state: FiatRatesRootState) =>
+        children
+            ? selectFiatRatesByFiatRateKey(state, fiatRateKey, rateType)?.lastTickerTimestamp
+            : undefined,
+    );
 
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
@@ -91,7 +112,7 @@ export const BaseCurrencyValue = ({
 
     const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : HiddenPlaceholder;
 
-    const isTokenKnown = useSelector(state =>
+    const isTokenKnown = useSelector((state: TokenDefinitionsRootState) =>
         selectIsSpecificCoinDefinitionKnown(state, symbol, tokenAddress || ('' as TokenAddress)),
     );
 
@@ -101,8 +122,8 @@ export const BaseCurrencyValue = ({
         showLoadingSkeleton &&
         isTokenKnown &&
         !isZeroAmount &&
-        !currentRate?.error &&
-        (currentRate?.isLoading || isLoading);
+        !hasRateError &&
+        (isRateLoading || isLoading);
 
     if (isLoadingSkeletonVisible) {
         return <Skeleton animate={shouldAnimate} />;
@@ -134,7 +155,7 @@ export const BaseCurrencyValue = ({
         return children({
             value: fiatValueComponent,
             rate: fiatRateComponent,
-            timestamp: historicRate ? null : (currentRate?.lastTickerTimestamp ?? null),
+            timestamp: historicRate ? null : (lastTickerTimestamp ?? null),
         });
     }
     if (!children) return null;
