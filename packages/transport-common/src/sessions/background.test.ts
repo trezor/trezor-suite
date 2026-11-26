@@ -333,6 +333,30 @@ describe('sessions', () => {
         expect(onReleaseIntent).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
     });
 
+    test('the lock timeout counts from when the lock is granted, not from when it is queued', async () => {
+        jest.useFakeTimers();
+        const client = new SessionsClient(background);
+        await client.enumerateDone({
+            descriptors: [usbDevice('1'), usbDevice('2'), usbDevice('3')],
+        });
+        await client.acquireIntent({ path: PathPublic('1'), previous: null });
+        const onSecondIntent = jest.fn();
+        client.acquireIntent({ path: PathPublic('2'), previous: null }).then(onSecondIntent);
+        const onThirdIntent = jest.fn();
+        client.acquireIntent({ path: PathPublic('3'), previous: null }).then(onThirdIntent);
+
+        // The holder finishes just within its timeout and the second intent gets the lock.
+        jest.advanceTimersByTime(lockDuration - 100);
+        await client.acquireDone({ path: PathPublic('1') });
+        await flushMicrotasks();
+        expect(onSecondIntent).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+
+        // The second intent has used only a fraction of its own timeout, so it still holds the lock.
+        jest.advanceTimersByTime(200);
+        await flushMicrotasks();
+        expect(onThirdIntent).not.toHaveBeenCalled();
+    });
+
     test('releaseDone of a device disconnected during the release still releases the lock', async () => {
         const client = new SessionsClient(background);
         await client.enumerateDone({ descriptors: [usbDevice('1')] });

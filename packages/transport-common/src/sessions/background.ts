@@ -30,7 +30,7 @@ import { error, success } from '../utils/result';
 
 type DescriptorsDict = Record<PathInternal, Descriptor>;
 
-type Lock = { id: TimerId; dfd: Deferred<void> };
+type Lock = { id?: TimerId; dfd: Deferred<void> };
 
 type PendingOperation = { lock: Lock; session: Session };
 
@@ -299,16 +299,7 @@ export class SessionsBackground
     }
 
     private startLock() {
-        // todo: create a deferred with built-in timeout functionality (util)
-        const dfd = createDeferred();
-
-        // To ensure that communication with device will not get stuck forever, the lock times
-        // out automatically. It also leaves the queue, so that the queue holds only the locks
-        // that are still held or awaited.
-        const lock: Lock = {
-            id: setTimeout(() => this.releaseLock(lock), lockDuration),
-            dfd,
-        };
+        const lock: Lock = { dfd: createDeferred() };
         this.locksQueue.push(lock);
 
         return lock;
@@ -332,6 +323,16 @@ export class SessionsBackground
     private async waitInQueue() {
         const lock = this.startLock();
         await this.waitForUnlocked(this.locksQueue.indexOf(lock));
+
+        // To ensure that communication with device will not get stuck forever, the lock times
+        // out automatically. It also leaves the queue, so that the queue holds only the locks
+        // that are still held or awaited. The timeout starts only now that the lock is granted:
+        // started at enqueue, it would count the wait behind a slow holder too and could expire
+        // while this lock's own operation runs, letting the next waiter in. A lock released
+        // while waiting (dispose) gets no timeout.
+        if (this.locksQueue.includes(lock)) {
+            lock.id = setTimeout(() => this.releaseLock(lock), lockDuration);
+        }
 
         return lock;
     }
