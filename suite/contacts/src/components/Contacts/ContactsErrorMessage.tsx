@@ -2,6 +2,7 @@ import { Translation } from '@suite/intl';
 import { type ContactsError } from '@suite-common/contacts';
 import { exhaustive } from '@trezor/type-utils';
 
+import { AddressShareErrorMessage } from './AddressShareErrorMessage';
 import { ContactNameErrorMessage } from './ContactNameErrorMessage';
 
 export type ContactsErrorMessageProps = {
@@ -46,6 +47,20 @@ export const ContactsErrorMessage = ({ error }: ContactsErrorMessageProps) => {
             );
         case 'SuiteSyncFailed':
             return <Translation id="TR_CONTACTS_ERROR_SUITE_SYNC_FAILED" />;
+        case 'InvalidAddressShare':
+            return <AddressShareErrorMessage reason={error.reason} />;
+        case 'OtherContactAddress':
+            return <Translation id="TR_CONTACTS_ERROR_OTHER_CONTACT" />;
+        case 'ContactAddressPaid':
+            return <Translation id="TR_CONTACTS_ERROR_ADDRESS_PAID" />;
+        case 'UnsupportedAccount':
+            return <Translation id="TR_CONTACTS_ERROR_UNSUPPORTED_ACCOUNT" />;
+        case 'WalletNotRemembered':
+            return <Translation id="TR_CONTACTS_SHARE_NOT_REMEMBERED" />;
+        case 'NoFreshAddress':
+            return <Translation id="TR_CONTACTS_ERROR_NO_FRESH_ADDRESS" />;
+        case 'NotAttested':
+            return <Translation id="TR_CONTACTS_ERROR_NOT_ATTESTED" />;
         default:
             return exhaustive(error);
     }
