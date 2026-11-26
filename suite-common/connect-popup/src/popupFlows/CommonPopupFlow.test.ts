@@ -82,4 +82,25 @@ describe('CommonPopupFlow', () => {
 
         await expect(flow.run()).rejects.toMatchObject({ code: 'Method_NotAllowed' });
     });
+
+    it.each(['wipeDevice', 'firmwareUpdate', 'cancelCoinjoinAuthorization'] as const)(
+        'rejects %s without describing the call',
+        async method => {
+            const flow = new CommonPopupFlow(
+                {
+                    method,
+                    payload: {},
+                    source: {
+                        type: 'walletconnect',
+                        origin: 'https://dapp.example',
+                        manifest: { appName: 'dapp' },
+                    },
+                },
+                { dispatch: jest.fn(), getState: jest.fn(), signal: new AbortController().signal },
+            );
+
+            await expect(flow.run()).rejects.toMatchObject({ code: 'Method_NotAllowed' });
+            expect(TrezorConnect.call).not.toHaveBeenCalled();
+        },
+    );
 });
