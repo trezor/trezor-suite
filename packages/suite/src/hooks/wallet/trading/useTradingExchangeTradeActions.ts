@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
 
+import { WALLET_MISMATCH_ERROR_CODE } from '@suite/device';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import {
@@ -9,6 +10,7 @@ import {
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TradingSignAndPushSendFormTransactionProps,
     exchangeThunks,
@@ -173,12 +175,19 @@ export const useTradingExchangeTradeActions = () => {
             commonFunctions;
 
         const device = selectSelectedDevice(getState());
-        if (
-            !device?.connected ||
-            !device.available ||
-            device.state?.staticSessionId !== account.deviceState
-        ) {
+        if (!device?.connected || !device.available) {
             showTradingErrorToast({ type: 'sign-tx-error', code: 'device-not-connected' });
+
+            return;
+        }
+
+        if (device.state?.staticSessionId !== account.deviceState) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'sign-tx-error',
+                    error: WALLET_MISMATCH_ERROR_CODE,
+                }),
+            );
 
             return;
         }

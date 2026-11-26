@@ -15,6 +15,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
+import { ERRORS } from '@trezor/connect-common';
 import { asGetter } from '@trezor/dependency-injection';
 import { type WithServices } from '@trezor/redux-utils';
 import { createDeferred } from '@trezor/utils';
@@ -75,6 +76,8 @@ const owner = mockSuiteDevice({
     state: { staticSessionId: account.deviceState },
 });
 
+const DEVICE_DISCONNECTED = ERRORS.ERROR_CODES.Device_Disconnected;
+
 const buildStore = (report: jest.Mock) =>
     createTestCompositionRoot<WrapNativeTokenThunkDeps, WrapNativeTokenThunkState>({
         preloadedState: { device: { ...deviceInitialState, selectedDevice: owner } },
@@ -113,18 +116,31 @@ describe('submitWrapNativeTokenThunk', () => {
     });
 
     it.each([
-        ['no original owner', undefined, owner],
-        ['disconnected', owner, undefined],
-        ['unavailable', owner, { ...owner, available: false }],
+        ['no original owner', undefined, owner, DEVICE_DISCONNECTED],
+        ['disconnected', owner, undefined, DEVICE_DISCONNECTED],
+        ['unavailable', owner, { ...owner, available: false }, DEVICE_DISCONNECTED],
         [
             'reconnected on a new path',
             owner,
-            mockSuiteDevice({ connected: true, available: true, path: 'new-path' }),
+            mockSuiteDevice({
+                connected: true,
+                available: true,
+                path: 'new-path',
+                instance: 0,
+                state: owner.state,
+            }),
+            DEVICE_DISCONNECTED,
         ],
-        ['switched wallet instance', owner, { ...owner, instance: 1 }],
+        [
+            'replaced by another wallet',
+            owner,
+            mockSuiteDevice({ connected: true, available: true, path: 'new-path' }),
+            'Wallet_Mismatch',
+        ],
+        ['switched wallet instance', owner, { ...owner, instance: 1 }, DEVICE_DISCONNECTED],
     ] as const)(
-        'cancels before showing simulation if the owner is %s during composition',
-        async (_, initial, current) => {
+        'reports a device error instead of a cancelled simulation if the owner is %s during composition',
+        async (_, initial, current, expectedError) => {
             const report = jest.fn();
             const store = buildStore(report);
             const initialState = store.getState();
@@ -151,11 +167,17 @@ describe('submitWrapNativeTokenThunk', () => {
 
             expect(mockOpenDeferredModal).not.toHaveBeenCalled();
             expect(mockSendYieldTransaction).not.toHaveBeenCalled();
-            expect(report).toHaveBeenCalledWith(
+            expect(report).not.toHaveBeenCalledWith(
                 expect.objectContaining({
+                    payload: expect.objectContaining({ type: 'tx-simulation-modal' }),
+                }),
+            );
+            expect(store.getActions()).toContainEqual(
+                expect.objectContaining({
+                    type: notificationsActions.addToast.type,
                     payload: expect.objectContaining({
-                        type: 'tx-simulation-modal',
-                        action: 'cancel',
+                        type: 'sign-tx-error',
+                        error: expectedError,
                     }),
                 }),
             );

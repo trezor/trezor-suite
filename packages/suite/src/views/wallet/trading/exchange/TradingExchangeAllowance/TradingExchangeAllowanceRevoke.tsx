@@ -52,7 +52,7 @@ export const TradingExchangeAllowanceRevoke = ({
     onContinueSwap,
 }: TradingExchangeAllowanceRevokeProps) => {
     const { dispatch } = useServices(injectDispatch);
-    const ensureDeviceReady = useDeviceReadyGuardWithToast();
+    const ensureDeviceReady = useDeviceReadyGuardWithToast(account.deviceState);
     const [isFeeModalOpen, setIsFeeModalOpen] = useState(false);
     const { handleClick: handleContinueSwapClick, disabled: isContinueSwapPending } =
         useAsyncClickHandler();

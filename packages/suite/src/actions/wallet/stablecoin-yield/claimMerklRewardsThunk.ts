@@ -31,6 +31,7 @@ import { createThunk } from '@trezor/redux-utils';
 import {
     PUSH_TRANSACTION_FAILED_CAUSE,
     type SendYieldTransactionState,
+    createYieldSigningDeviceError,
     getYieldSubmitErrorAnalyticsMessage,
     isYieldSigningDevice,
     openYieldSimulationThunk,
@@ -205,7 +206,7 @@ export const claimMerklRewardsThunk = createThunk<
             ) {
                 userAcceptedTxSimulation.resolve();
 
-                return null;
+                throw createYieldSigningDeviceError(signingDevice, account);
             }
 
             const { formState, precomposedTransaction, availableRewards, transactionForSigning } =

@@ -153,15 +153,15 @@ describe('sendYieldTransaction', () => {
     it('keeps an account from another wallet out of simulation and signing', async () => {
         const sourceAccount = { ...account, deviceState: 'another-wallet@device:0' } as const;
         const store = createSigningStore(false);
-        const decision = await openYieldSimulationThunk(
-            { flow: 'deposit', account: sourceAccount, unsignedTx: '{}' },
-            mockDevice,
-        )(store.dispatch, store.getState);
-        expect(decision).toEqual({ value: false });
+        await expect(
+            openYieldSimulationThunk(
+                { flow: 'deposit', account: sourceAccount, unsignedTx: '{}' },
+                mockDevice,
+            )(store.dispatch, store.getState),
+        ).rejects.toMatchObject({ cause: 'Wallet_Mismatch' });
         expect(store.getActions()).toEqual([]);
-        await expect(sendTransaction({ sourceAccount })).resolves.toEqual({
-            status: 'cancelled',
-            stage: 'signing',
+        await expect(sendTransaction({ sourceAccount })).rejects.toMatchObject({
+            cause: 'Wallet_Mismatch',
         });
         expect(TrezorConnect.ethereumSignTransaction).not.toHaveBeenCalled();
     });
