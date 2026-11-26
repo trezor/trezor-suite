@@ -90,7 +90,7 @@ const getSentTxOutcome = (tx: WalletAccountTransaction | undefined): SentTxOutco
     return isConfirmed && isEvmApprovalTx(tx?.ethereumSpecific?.data) ? 'done' : 'failed';
 };
 
-const isApprovalConfirmed = (quote: ExchangeTrade) =>
+export const isApprovalConfirmed = (quote: ExchangeTrade) =>
     quote.status === 'CONFIRM' || quote.status === 'SIGN_DATA';
 
 type IsStepDoneParams = {
