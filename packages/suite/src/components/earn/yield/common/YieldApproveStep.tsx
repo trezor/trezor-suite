@@ -11,10 +11,11 @@ import { WarningIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
 import {
-    YieldAmountCard,
-    type YieldAmountCardFiatToggleProps,
-    type YieldApproxFiat,
-} from './YieldAmountCard';
+    EarnAmountCard,
+    type EarnAmountCardFiatToggleProps,
+    type EarnApproxFiat,
+} from '#src/components/earn/common/EarnAmountCard';
+
 import { YieldApprovedAmountCard } from './YieldApprovedAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
 
@@ -36,7 +37,7 @@ const getApproveButtonTranslationId = (approvalAction: AllowanceAction) => {
 export type YieldApproveStepProps = {
     token: YieldFlowDisplayToken;
     summaryValue: ReactNode;
-    approxFiat?: YieldApproxFiat;
+    approxFiat?: EarnApproxFiat;
     isDisabled?: boolean;
     isLoading?: boolean;
     /** Current on-chain allowance amount fetched by RPC. */
@@ -47,7 +48,7 @@ export type YieldApproveStepProps = {
     canRevokeAllowance: boolean;
     warning?: ReactNode;
     pendingApproveTransaction?: YieldPendingTransactionState;
-    fiatToggle?: YieldAmountCardFiatToggleProps;
+    fiatToggle?: EarnAmountCardFiatToggleProps;
     onMaxClick?: () => void;
     onApprovalSubmit?: () => void;
     onSkip?: () => void;
@@ -90,7 +91,8 @@ export const YieldApproveStep = ({
                 onRevoke={onRevokeClick}
             />
 
-            <YieldAmountCard
+            <EarnAmountCard
+                testIdPrefix="@yield/form"
                 tokenSymbol={token.symbol}
                 decimals={token.decimals}
                 approxFiat={approxFiat}

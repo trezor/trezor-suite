@@ -10,6 +10,6 @@ export const NETWORK_FEE_WARNING_MULTIPLIER = 4;
 export const AMOUNT_INPUT_UNFOCUSED_OFFSET = 64;
 export const AMOUNT_INPUT_WRAPPER_HEIGHT = 128;
 
-// Mirrors the desktop YieldAmountCard input length caps.
+// Keep amount input limits aligned with desktop.
 export const AMOUNT_INPUT_MAX_LENGTH = 30;
 export const FIAT_INPUT_MAX_LENGTH = 18;

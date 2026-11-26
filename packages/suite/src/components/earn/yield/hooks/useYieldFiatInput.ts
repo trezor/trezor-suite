@@ -14,9 +14,9 @@ import {
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 
+import { type EarnAmountCardFiatToggleProps } from '#src/components/earn/common/EarnAmountCard';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
-import { type YieldAmountCardFiatToggleProps } from '../common/YieldAmountCard';
 import {
     getYieldCryptoInputValue,
     getYieldFiatInputValue,
@@ -35,7 +35,7 @@ type UseYieldFiatInputParams = {
 };
 
 export type UseYieldFiatInputResult = {
-    fiatToggle: YieldAmountCardFiatToggleProps | undefined;
+    fiatToggle: EarnAmountCardFiatToggleProps | undefined;
     // Fills the exact crypto max and, in fiat mode, the rounded-down max fiat display, without
     // switching the active unit.
     setMaxAmount: (cryptoMax: string) => void;
@@ -119,7 +119,7 @@ export const useYieldFiatInput = ({
         setCurrency(nextCurrency);
     }, [analytics, currency, symbol, vaultId]);
 
-    const fiatToggle: YieldAmountCardFiatToggleProps | undefined = hasFiatRate
+    const fiatToggle: EarnAmountCardFiatToggleProps | undefined = hasFiatRate
         ? {
               currency,
               fiatSymbol,

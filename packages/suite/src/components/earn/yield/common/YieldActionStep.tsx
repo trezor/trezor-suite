@@ -9,11 +9,12 @@ import type {
 import { Button, Column } from '@trezor/components';
 
 import {
-    YieldAmountCard,
-    type YieldAmountCardFiatToggleProps,
-    type YieldAmountCardUnitToggleProps,
-    type YieldApproxFiat,
-} from './YieldAmountCard';
+    EarnAmountCard,
+    type EarnAmountCardFiatToggleProps,
+    type EarnAmountCardUnitToggleProps,
+    type EarnApproxFiat,
+} from '#src/components/earn/common/EarnAmountCard';
+
 import { YieldPendingTransaction } from './YieldPendingTransaction';
 
 const actionStepTranslationMap = {
@@ -38,13 +39,13 @@ export type YieldActionStepProps = {
     flowType: YieldPositionFlowType;
     token: YieldFlowDisplayToken;
     summaryValue: ReactNode;
-    approxFiat?: YieldApproxFiat;
+    approxFiat?: EarnApproxFiat;
     isDisabled?: boolean;
     isPending?: boolean;
     warning?: ReactNode;
     pendingTransaction?: YieldPendingTransactionState;
-    unitToggle?: YieldAmountCardUnitToggleProps;
-    fiatToggle?: YieldAmountCardFiatToggleProps;
+    unitToggle?: EarnAmountCardUnitToggleProps;
+    fiatToggle?: EarnAmountCardFiatToggleProps;
     onMaxClick?: () => void;
     onSubmit: () => void;
     onPendingTxClick: (txid: string) => void;
@@ -70,7 +71,8 @@ export const YieldActionStep = ({
 
     return (
         <Column gap={16}>
-            <YieldAmountCard
+            <EarnAmountCard
+                testIdPrefix="@yield/form"
                 tokenSymbol={token.symbol}
                 decimals={token.decimals}
                 approxFiat={approxFiat}

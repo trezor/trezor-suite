@@ -6,15 +6,21 @@ import type { TranslationKey } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { toTokenAddress } from '@suite-common/tokens';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import type { YieldFlowFormValues } from '@suite-common/wallet-core';
-import { Banner, Card, Column, Row, Text, TextButton } from '@trezor/components';
+import { Banner, Card, Column, Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { validateDecimals } from '#src/utils/suite/validation';
 
-import { YieldAmountInputAddon } from './YieldAmountInputAddon';
+import { EarnAmountCurrencySwitch } from './EarnAmountCurrencySwitch';
+import { EarnAmountInputAddon } from './EarnAmountInputAddon';
+import { EarnAmountInputHeading } from './EarnAmountInputHeading';
+
+type EarnAmountFormValues = {
+    amountInput: string;
+    fiatInput?: string;
+};
 
 const FIAT_DECIMALS = 2;
 // Amount inputs never need the 255-char default; cap them so a long value can't stretch the field
@@ -22,47 +28,49 @@ const FIAT_DECIMALS = 2;
 const FIAT_INPUT_MAX_LENGTH = 18;
 const AMOUNT_INPUT_MAX_LENGTH = 30;
 
-type YieldAmountCardSummaryProps = {
+type EarnAmountCardSummaryProps = {
     value: ReactNode;
     labelTranslationId: TranslationKey;
     onMaxClick?: () => void;
 };
 
-type YieldAmountCardHeadingProps = {
+type EarnAmountCardHeadingProps = {
     amountLabelTranslationId?: TranslationKey;
 };
 
-export type YieldAmountCardUnitToggleProps = {
+export type EarnAmountCardUnitToggleProps = {
     otherTokenSymbol: string;
     onClick: () => void;
 };
 
-export type YieldApproxFiat = {
+export type EarnApproxFiat = {
     symbol: NetworkSymbol;
     tokenContractAddress?: string | null;
 };
 
-export type YieldAmountCardFiatToggleProps = {
+export type EarnAmountCardFiatToggleProps = {
     currency: 'crypto' | 'fiat';
     fiatSymbol: string;
     onToggle: () => void;
     onFiatAmountChange: (value: string) => void;
 };
 
-type YieldAmountCardProps = {
+type EarnAmountCardProps = {
     tokenSymbol: ReactNode;
+    testIdPrefix: string;
     decimals?: number;
-    summary?: YieldAmountCardSummaryProps;
-    heading?: YieldAmountCardHeadingProps;
-    unitToggle?: YieldAmountCardUnitToggleProps;
-    fiatToggle?: YieldAmountCardFiatToggleProps;
+    summary?: EarnAmountCardSummaryProps;
+    heading?: EarnAmountCardHeadingProps;
+    unitToggle?: EarnAmountCardUnitToggleProps;
+    fiatToggle?: EarnAmountCardFiatToggleProps;
     warning?: ReactNode;
     isDisabled?: boolean;
-    approxFiat?: YieldApproxFiat;
+    approxFiat?: EarnApproxFiat;
 };
 
-export const YieldAmountCard = ({
+export const EarnAmountCard = ({
     tokenSymbol,
+    testIdPrefix,
     decimals,
     summary,
     heading,
@@ -71,14 +79,14 @@ export const YieldAmountCard = ({
     warning,
     isDisabled = false,
     approxFiat,
-}: YieldAmountCardProps) => {
+}: EarnAmountCardProps) => {
     const locale = useSelector(selectLanguage);
     const { translationString } = useTranslation();
     const {
         control,
         formState: { errors },
         trigger,
-    } = useFormContext<YieldFlowFormValues>();
+    } = useFormContext<EarnAmountFormValues>();
 
     const isFiatMode = fiatToggle?.currency === 'fiat';
 
@@ -116,33 +124,21 @@ export const YieldAmountCard = ({
 
     // The switch offers the opposite unit to the one currently active.
     const fiatSwitch = fiatToggle ? (
-        <TextButton
-            type="button"
-            size="small"
+        <EarnAmountCurrencySwitch
+            currency={isFiatMode ? tokenSymbol : fiatToggle.fiatSymbol}
             onClick={fiatToggle.onToggle}
             isUnderlined
-            data-testid="@yield/form/fiat-switch"
-        >
-            <Translation
-                id="TR_ENTER_AMOUNT_IN"
-                values={{ currency: isFiatMode ? tokenSymbol : fiatToggle.fiatSymbol }}
-            />
-        </TextButton>
+            data-testid={`${testIdPrefix}/fiat-switch`}
+        />
     ) : undefined;
 
     const unitSwitch = unitToggle ? (
-        <TextButton
-            type="button"
-            size="small"
-            data-testid="@yield/form/unit-toggle-button"
+        <EarnAmountCurrencySwitch
+            currency={unitToggle.otherTokenSymbol}
             onClick={unitToggle.onClick}
             isUnderlined
-        >
-            <Translation
-                id="TR_ENTER_AMOUNT_IN"
-                values={{ currency: unitToggle.otherTokenSymbol }}
-            />
-        </TextButton>
+            data-testid={`${testIdPrefix}/unit-toggle-button`}
+        />
     ) : undefined;
 
     const activeError = isFiatMode ? errors.fiatInput : errors.amountInput;
@@ -150,47 +146,30 @@ export const YieldAmountCard = ({
     return (
         <Card paddingType="none">
             <Column gap={8} width="100%" padding={{ vertical: 16, horizontal: 20 }}>
-                <Row justifyContent="space-between" alignItems="center" gap={16}>
-                    <Text typographyStyle="body-md" data-testid="@yield/form/amount-label">
-                        <Translation id={heading?.amountLabelTranslationId ?? 'AMOUNT'} />
-                    </Text>
-                    {unitSwitch ?? fiatSwitch}
-                </Row>
-                {isFiatMode ? (
-                    <NumberInput
-                        name="fiatInput"
-                        data-testid="@yield/form/fiat-input"
-                        locale={locale}
-                        control={control}
-                        rules={fiatRules}
-                        onChange={fiatToggle?.onFiatAmountChange}
-                        maxLength={FIAT_INPUT_MAX_LENGTH}
-                        isDisabled={isDisabled}
-                        rightContent={
-                            <YieldAmountInputAddon
-                                unit={fiatToggle.fiatSymbol}
-                                onMaxClick={summary?.onMaxClick}
-                            />
-                        }
-                    />
-                ) : (
-                    <NumberInput
-                        name="amountInput"
-                        data-testid="@yield/form/amount-input"
-                        locale={locale}
-                        control={control}
-                        rules={rules}
-                        maxLength={AMOUNT_INPUT_MAX_LENGTH}
-                        isDisabled={isDisabled}
-                        rightContent={
-                            <YieldAmountInputAddon
-                                unit={tokenSymbol}
-                                onMaxClick={summary?.onMaxClick}
-                                data-testid="@yield/form/amount-unit"
-                            />
-                        }
-                    />
-                )}
+                <EarnAmountInputHeading
+                    label={<Translation id={heading?.amountLabelTranslationId ?? 'AMOUNT'} />}
+                    labelTestId={`${testIdPrefix}/amount-label`}
+                    gap={16}
+                    currencySwitch={unitSwitch ?? fiatSwitch}
+                />
+                <NumberInput
+                    name={isFiatMode ? 'fiatInput' : 'amountInput'}
+                    data-testid={`${testIdPrefix}/${isFiatMode ? 'fiat-input' : 'amount-input'}`}
+                    locale={locale}
+                    control={control}
+                    rules={isFiatMode ? fiatRules : rules}
+                    onChange={isFiatMode ? fiatToggle.onFiatAmountChange : undefined}
+                    maxLength={isFiatMode ? FIAT_INPUT_MAX_LENGTH : AMOUNT_INPUT_MAX_LENGTH}
+                    isDisabled={isDisabled}
+                    rightContent={
+                        <EarnAmountInputAddon
+                            unit={isFiatMode ? fiatToggle.fiatSymbol : tokenSymbol}
+                            onMaxClick={summary?.onMaxClick}
+                            maxButtonTestId={`${testIdPrefix}/max-button`}
+                            data-testid={isFiatMode ? undefined : `${testIdPrefix}/amount-unit`}
+                        />
+                    }
+                />
 
                 {summary && (
                     <Row alignItems="center" gap={8} width="100%" flexWrap="wrap">
@@ -233,14 +212,14 @@ export const YieldAmountCard = ({
                                 textWrap="nowrap"
                                 intent="neutral"
                                 priority="secondary"
-                                data-testid="@yield/form/summary-label"
+                                data-testid={`${testIdPrefix}/summary-label`}
                             >
                                 <Translation id={summary.labelTranslationId} />:
                             </Text>
                             <Text
                                 typographyStyle="body-sm"
                                 textWrap="nowrap"
-                                data-testid="@yield/form/summary-amount-with-symbol"
+                                data-testid={`${testIdPrefix}/summary-amount-with-symbol`}
                             >
                                 {summary.value}
                             </Text>
