@@ -275,13 +275,11 @@ export const signTx = async ({
     return processTxRequest({
         typedCall,
         txRequest: message,
-        refTxs: refTxs.reduce(
-            (record, tx) => ({
-                ...record,
-                [tx.hash.toLowerCase()]: tx,
-            }),
-            {},
-        ),
+        refTxs: refTxs.reduce<Record<string, RefTransaction>>((record, tx) => {
+            record[tx.hash.toLowerCase()] = tx;
+
+            return record;
+        }, {}),
         inputs,
         outputs,
         paymentRequests: paymentRequests || [],
