@@ -4440,7 +4440,6 @@ export const messages = {
             approveTitle: 'Confirming approval',
             revokeTitle: 'Confirming revoke',
             subtitle: 'This may take a few moments.',
-            pending: 'Pending',
             error: 'Failed to confirm transaction. Try again.',
             date: 'Date',
             transactionId: 'Transaction ID',
