@@ -429,14 +429,11 @@ const countAddressTransfers = (transactions: AccountTransaction[]) =>
                 .flatMap(({ addresses }) => addresses ?? [])
                 .filter(arrayDistinct),
         )
-        .reduce(
-            (transfers, address) => {
-                transfers[address] = (transfers[address] ?? 0) + 1;
+        .reduce<Record<string, number>>((transfers, address) => {
+            transfers[address] = (transfers[address] ?? 0) + 1;
 
-                return transfers;
-            },
-            {} as { [address: string]: number },
-        );
+            return transfers;
+        }, {});
 
 export const enhanceAddresses = (
     { addresses, history: { transactions = [] }, page }: AccountInfo,
