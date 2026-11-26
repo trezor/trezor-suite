@@ -25,6 +25,7 @@ export type AssetPickerInputContentProps = {} & (
 export function AssetPickerInputContent({ value }: AssetPickerInputContentProps) {
     const { networkSymbol } = value;
     const { contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(value.id);
+    const symbolContractAddress = value.isNativeToken ? undefined : value.contractAddress;
 
     return (
         <Row gap={8} alignItems="center">
@@ -37,7 +38,7 @@ export function AssetPickerInputContent({ value }: AssetPickerInputContentProps)
             <span data-testid="@asset-picker/display-symbol">
                 <AssetSymbol
                     networkSymbol={networkSymbol}
-                    contractAddress={contractAddress}
+                    contractAddress={symbolContractAddress}
                     isTruncated
                 />
             </span>
