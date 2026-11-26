@@ -27,7 +27,6 @@ export const TRADING_SLIP24_SUPPORTED_NETWORK_TYPES: NetworkType[] = [
     'bitcoin',
     'ethereum',
     'solana',
-    'stellar',
     'ripple',
 ];
 
