@@ -430,7 +430,11 @@ const countAddressTransfers = (transactions: AccountTransaction[]) =>
                 .filter(arrayDistinct),
         )
         .reduce(
-            (transfers, address) => ({ ...transfers, [address]: (transfers[address] ?? 0) + 1 }),
+            (transfers, address) => {
+                transfers[address] = (transfers[address] ?? 0) + 1;
+
+                return transfers;
+            },
             {} as { [address: string]: number },
         );
 
