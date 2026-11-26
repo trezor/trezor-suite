@@ -1,9 +1,8 @@
-import { Translation } from '@suite/intl';
 import { useNetworkStakingRate } from '@suite-common/earn-staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isApyAvailable } from '@suite-common/wallet-utils';
-import { Badge, Row } from '@trezor/components';
+import { Badge } from '@trezor/components';
 
 import { AssetTableRowView } from '#src/components/wallet/assets/AssetTableRowView';
 import { StakingRateText } from '#src/components/wallet/assets/StakingRateText';
@@ -17,8 +16,8 @@ type AccountStakingRowProps = {
 };
 
 /**
- * A Home asset row with what one account stakes of its coin, and the rate the stake earns, as the
- * mobile staking row has it; it opens the account's Staking.
+ * A Home asset row with what one account stakes of its coin, and the rate the stake earns, drawn as
+ * the mobile staking row is, with a piggy bank and no price; it opens the account's Staking.
  */
 export const AccountStakingRow = ({
     accountKey,
@@ -30,22 +29,15 @@ export const AccountStakingRow = ({
 
     return (
         <AssetTableRowView
+            variant="staking"
             networkSymbol={networkSymbol}
-            contractAddress={undefined}
-            tokenSymbol={null}
-            tokenDecimals={undefined}
             amount={amount}
             badge={
-                <Row gap={8} alignItems="center">
-                    <Badge size="small">
-                        <Translation id="TR_STAKE_STAKED" />
+                isApyAvailable(rate) && rateKind !== null ? (
+                    <Badge intent="brand" size="small">
+                        <StakingRateText rate={rate} rateKind={rateKind} />
                     </Badge>
-                    {isApyAvailable(rate) && rateKind !== null && (
-                        <Badge intent="brand" size="small">
-                            <StakingRateText rate={rate} rateKind={rateKind} />
-                        </Badge>
-                    )}
-                </Row>
+                ) : null
             }
             onOpen={() => openAccountStaking(networkSymbol)}
             data-testid={`@wallet/account-asset/${networkSymbol}/staking`}

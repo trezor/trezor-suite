@@ -213,8 +213,18 @@ describe('the account overview with the asset-first Home', () => {
             /\$3,600.*1\.2\d* ETH/,
         );
         expect(screen.getByTestId('@wallet/account-asset/eth/staking')).toHaveTextContent(
-            new RegExp(`${messages.TR_STAKE_STAKED.defaultMessage}.*\\$1,500.*0\\.5\\d* ETH`),
+            new RegExp(`${messages.TR_EARN_STAKING.defaultMessage}.*\\$1,500.*0\\.5\\d* ETH`),
         );
+    });
+
+    it('shows the price on the coin row only, not again on its stake', () => {
+        renderOverview([ethAccount]);
+
+        const getPriceText = (testId: string) =>
+            screen.getByTestId(testId).querySelectorAll('td')[1]?.textContent;
+
+        expect(getPriceText('@wallet/account-asset/eth/staking')).toBe('');
+        expect(getPriceText('@wallet/account-asset/eth/coin')).not.toBe('');
     });
 
     it('totals this account alone, its stake included, and counts its assets', () => {
@@ -248,7 +258,7 @@ describe('the account overview with the asset-first Home', () => {
         renderOverview([ethAccount], { ethStakingApy: 3.2 });
 
         expect(screen.getByTestId('@wallet/account-asset/eth/staking')).toHaveTextContent(
-            new RegExp(`${messages.TR_STAKE_STAKED.defaultMessage}.*3\\.2% APY`),
+            new RegExp(`${messages.TR_EARN_STAKING.defaultMessage}.*3\\.2% APY`),
         );
     });
 
@@ -258,7 +268,7 @@ describe('the account overview with the asset-first Home', () => {
         const stakingRow = screen.getByTestId('@wallet/account-asset/ada/staking');
         const balanceCell = (row: HTMLElement) => [...row.querySelectorAll('td')].at(-1);
 
-        expect(stakingRow).toHaveTextContent(messages.TR_STAKE_STAKED.defaultMessage);
+        expect(stakingRow).toHaveTextContent(messages.TR_EARN_STAKING.defaultMessage);
         expect(balanceCell(stakingRow)?.textContent).toBe('');
         // 100 ADA at 50c, counted once.
         expect(balanceCell(screen.getByTestId('@wallet/account-asset/ada/coin'))).toHaveTextContent(
