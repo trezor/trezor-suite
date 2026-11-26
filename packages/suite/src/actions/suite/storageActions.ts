@@ -10,10 +10,20 @@ import {
 import { type DebugRootState, selectDebug } from '@suite/debug';
 import { type FeedbackFeatureName } from '@suite/experimental';
 import { type FlagsRootState, selectFlags } from '@suite/flags';
-import { selectMetadata, selectMetadataError } from '@suite/metadata';
-import { type SuiteSettingsRootState, selectSuiteSettings } from '@suite/settings';
+import { selectMetadata, selectMetadataEnabled, selectMetadataError } from '@suite/metadata';
+import {
+    type SuiteSettingsRootState,
+    selectExperimentalFeatures,
+    selectSuiteSettings,
+} from '@suite/settings';
 import { type DesktopSuiteSyncRootState, selectSuiteSync } from '@suite/suite-sync';
-import { type AnalyticsRootState, selectAnalytics } from '@suite-common/analytics-redux';
+import {
+    type AnalyticsRootState,
+    selectAnalytics,
+    selectAnalyticsInstanceId,
+    selectCustomAnalyticsUrl,
+    selectLoggerEnabled,
+} from '@suite-common/analytics-redux';
 import { type WithBluetoothState, selectKnownDevices } from '@suite-common/bluetooth';
 import {
     type ConnectPopupStateRootState,
@@ -23,7 +33,15 @@ import { type DeviceRootState, deviceActions, selectDevices } from '@suite-commo
 import { type DiscreetModeRootState, selectDiscreetMode } from '@suite-common/discreet-mode';
 import { type FeatureFeedbackRootState, selectFeatureFeedback } from '@suite-common/feedback';
 import { type FirmwareRootState, selectFirmwareChannel } from '@suite-common/firmware';
-import { type MessageSystemRootState, selectMessageSystem } from '@suite-common/message-system';
+import {
+    type MessageSystemRootState,
+    selectAllManuallyAddedExperimentIds,
+    selectAllManuallyAddedMessageIds,
+    selectMessageSystem,
+    selectMessageSystemConfig,
+    selectMessageSystemConfigSource,
+    selectMessageSystemCurrentSequence,
+} from '@suite-common/message-system';
 import { type MetadataState } from '@suite-common/metadata-types';
 import {
     type PersistentDeviceDataRootState,
@@ -36,20 +54,24 @@ import {
     selectReferAFriendSettings,
     selectReferAFriendWallets,
 } from '@suite-common/refer-a-friend';
+import { selectIsSuiteSyncDebugEnabled } from '@suite-common/suite-sync';
 import {
     type WithSuiteSyncQuotaManagerState,
+    selectEnforceQuotaManager,
+    selectOwnersAllowance,
+    selectRegisteredDevices,
     selectSuiteSyncQuotaManager,
 } from '@suite-common/suite-sync-quota-manager';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { type ThpRootState, selectThp } from '@suite-common/thp';
+import { type ThpRootState, selectThpCredentials } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type DefinitionType,
     type TokenDefinitionsRootState,
     type TokenManagementAction,
-    selectTokenDefinitions,
+    selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
 import type { TradingTransaction } from '@suite-common/trading';
 import type { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
@@ -258,7 +280,7 @@ export const saveThpCredentialsThunk = createThunk<
     { state: SaveThpCredentialsThunkState; extra: SaveThpCredentialsThunkDeps }
 >(`${STORAGE.MODULE_PREFIX}/saveThpCredentials`, async (_, { getState, extra }) => {
     if (!extra.services.db.isAccessible()) return;
-    const { credentials } = selectThp(getState());
+    const credentials = selectThpCredentials(getState());
     await extra.services.db.addItem('thp', { credentials }, 'value', true);
 });
 
@@ -421,7 +443,7 @@ export const forgetDeviceThunk =
         const hasLegacyLabelsMigrated = cloneObject(metadata.hasLegacyLabelsMigrated);
         delete hasLegacyLabelsMigrated[walletDescriptor];
 
-        const metadataError = metadata.error;
+        const metadataError = selectMetadataError(getState());
         const error = metadataError ? cloneObject(metadataError) : undefined;
         delete error?.[staticSessionId];
 
@@ -700,7 +722,9 @@ export const saveSuiteSettingsThunk =
                 settings: {
                     ...suiteSettings,
                     // Temporary measure to always start Suite with password manager off
-                    experimental: suiteSettings.experimental?.filter(e => e !== 'password-manager'),
+                    experimental: selectExperimentalFeatures(getState())?.filter(
+                        e => e !== 'password-manager',
+                    ),
                 },
                 flags,
                 evmSettings,
@@ -760,9 +784,7 @@ export const saveTokenManagementThunk =
         extra: SaveTokenManagementThunkDeps,
     ) => {
         if (!extra.services.db.isAccessible()) return;
-        const tokenDefinitions = selectTokenDefinitions(getState());
-        const tokenDefinitionsType = tokenDefinitions[symbol]?.[type];
-        const data = tokenDefinitionsType?.[status];
+        const data = selectNetworkTokenDefinitions(getState(), symbol)?.[type]?.[status];
 
         const key = `${symbol}-${type}-${status}`;
 
@@ -789,10 +811,10 @@ export const saveAnalyticsThunk =
             'analytics',
             {
                 enabled: analytics.enabled,
-                instanceId: analytics.instanceId,
+                instanceId: selectAnalyticsInstanceId(getState()),
                 confirmed: analytics.confirmed,
-                customAnalyticsUrl: analytics.customAnalyticsUrl,
-                loggerEnabled: analytics.loggerEnabled,
+                customAnalyticsUrl: selectCustomAnalyticsUrl(getState()),
+                loggerEnabled: selectLoggerEnabled(getState()),
             },
             'suite',
             true,
@@ -845,7 +867,7 @@ export const saveMetadataSettingsThunk =
 
         await saveMetadata(extra.services, {
             providers: metadata.providers,
-            enabled: metadata.enabled,
+            enabled: selectMetadataEnabled(getState()),
             selectedProvider: metadata.selectedProvider,
             hasLegacyLabelsMigrated: metadata.hasLegacyLabelsMigrated,
         });
@@ -870,7 +892,7 @@ export const saveSuiteSyncSettingsThunk =
             'suiteSyncSettings',
             {
                 isSuiteSyncEnabled: suiteSync.settings.isSuiteSyncEnabled,
-                isSuiteSyncDebugEnabled: suiteSync.settings.isSuiteSyncDebugEnabled,
+                isSuiteSyncDebugEnabled: selectIsSuiteSyncDebugEnabled(getState()),
                 suiteSyncRelayUrl: suiteSync.settings.suiteSyncRelayUrl,
                 isUnsupportedDeviceBannerDismissed: suiteSync.isUnsupportedDeviceBannerDismissed,
             },
@@ -921,9 +943,9 @@ export const saveSuiteSyncQuotaManagerThunk =
             'suiteSyncQuotaManager',
             {
                 baseUrl: suiteSyncQuotaManager.baseUrl,
-                enforceQuotaManager: suiteSyncQuotaManager.enforceQuotaManager,
-                registeredDevices: suiteSyncQuotaManager.registeredDevices,
-                ownersAllowance: suiteSyncQuotaManager.ownersAllowance,
+                enforceQuotaManager: selectEnforceQuotaManager(getState()),
+                registeredDevices: selectRegisteredDevices(getState()),
+                ownersAllowance: selectOwnersAllowance(getState()),
             },
             'suiteSyncQuotaManager',
             true,
@@ -986,24 +1008,17 @@ export const saveMessageSystemThunk =
     ) => {
         if (!extra.services.db.isAccessible()) return;
 
-        const {
-            dismissedMessages,
-            config,
-            currentSequence,
-            configSource,
-            manuallyAddedMessageIds,
-            manuallyAddedExperimentIds,
-        } = selectMessageSystem(getState());
+        const { dismissedMessages } = selectMessageSystem(getState());
 
         extra.services.db.addItem(
             'messageSystem',
             {
-                config,
-                currentSequence,
+                config: selectMessageSystemConfig(getState()),
+                currentSequence: selectMessageSystemCurrentSequence(getState()),
                 dismissedMessages,
-                configSource,
-                manuallyAddedMessageIds,
-                manuallyAddedExperimentIds,
+                configSource: selectMessageSystemConfigSource(getState()),
+                manuallyAddedMessageIds: selectAllManuallyAddedMessageIds(getState()),
+                manuallyAddedExperimentIds: selectAllManuallyAddedExperimentIds(getState()),
             },
             'suite',
             true,
