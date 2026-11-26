@@ -14,10 +14,12 @@ import {
     accountsActions,
     blockchainActions,
     convertSendFormDraftsBtcAmountUnitsThunk,
+    selectAccountByKey,
     selectAccounts,
     selectAllNetworkSymbolsOfVisibleAccounts,
     selectNetworksWithPendingTxs,
     selectStakeAccount,
+    selectStakeVotingDelegation,
     sendFormActions,
     setCustomBackendThunk,
     stakeActions,
@@ -126,7 +128,15 @@ const walletMiddleware =
             if (!selectedWallet || selectedWallet !== selectStakeAccount(prevState)?.deviceState) {
                 api.dispatch(stakeActions.dispose());
             }
-            api.dispatch(stakeActions.clearAccountVotingDelegation());
+            const delegation = selectStakeVotingDelegation(prevState);
+            if (
+                delegation &&
+                (!selectedWallet ||
+                    selectAccountByKey(prevState, delegation.accountKey)?.deviceState !==
+                        selectedWallet)
+            ) {
+                api.dispatch(stakeActions.clearAccountVotingDelegation());
+            }
         }
 
         if (action.type === WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS) {

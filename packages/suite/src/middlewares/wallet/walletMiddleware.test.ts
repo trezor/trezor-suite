@@ -266,6 +266,23 @@ describe('walletMiddleware', () => {
         expect(store.getState().wallet.stake.serializedTx).toBeUndefined();
     });
 
+    it('keeps the Cardano voting choice on reconnect and clears it on wallet switch', () => {
+        const account = mockWalletAccount({ symbol: asNetworkSymbol('ada') });
+        const store = mockStore(getInitialState({ accounts: [account] }));
+        const delegation = { accountKey: account.key, option: { type: 'abstain' as const } };
+        store.dispatch(stakeActions.setAccountVotingDelegation(delegation));
+
+        store.dispatch(
+            deviceActions.selectDevice(
+                mockSuiteDevice({ state: { staticSessionId: account.deviceState } }),
+            ),
+        );
+        expect(store.getState().wallet.stake.votingDelegation).toEqual(delegation);
+
+        store.dispatch(deviceActions.selectDevice(mockSuiteDevice()));
+        expect(store.getState().wallet.stake.votingDelegation).toBeUndefined();
+    });
+
     describe('window visibility regain', () => {
         const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
         const pendingTx = { txid: 'abcd', blockHeight: -1, symbol: 'eth' };

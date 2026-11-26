@@ -505,10 +505,6 @@ export const useYieldFlow = ({
             return;
         }
 
-        if (!(await ensureDeviceReady())) {
-            return;
-        }
-
         const amount = methodsRef.current.getValues('amountInput');
 
         await dispatch(
@@ -519,17 +515,7 @@ export const useYieldFlow = ({
                 amount,
             }),
         );
-    }, [
-        account,
-        flowKey,
-        flowType,
-        receiptToken,
-        dispatch,
-        token,
-        vault,
-        methodsRef,
-        ensureDeviceReady,
-    ]);
+    }, [account, flowKey, flowType, receiptToken, dispatch, token, vault, methodsRef]);
 
     const revokeAllowance = useCallback(async () => {
         if (!token || !receiptToken) {
@@ -545,10 +531,6 @@ export const useYieldFlow = ({
         }
 
         const amount = session.approval.allowanceAmount || '0';
-
-        if (!(await ensureDeviceReady())) {
-            return;
-        }
 
         await dispatch(
             submitYieldRevokeThunk({
@@ -569,7 +551,6 @@ export const useYieldFlow = ({
         vault,
         resetAmountsRef,
         session.approval.allowanceAmount,
-        ensureDeviceReady,
     ]);
 
     const approvalAction = getAllowanceAction({
