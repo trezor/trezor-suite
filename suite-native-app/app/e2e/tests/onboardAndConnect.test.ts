@@ -1,5 +1,6 @@
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
+import { onHome } from '../pageObjects/homeActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
 import { openApp, prepareTrezorEmulator } from '../support/setup';
 
@@ -13,7 +14,8 @@ describe('Go through onboarding and connect Trezor. [@androidOnly @T3T1]', () =>
         await onOnboarding.finishOnboarding();
         await onDeviceOnboarding.passInitializedDeviceChecks();
 
-        // Without any enabled network, passing the interactive device checks leads directly to the coin enabling.
+        await onHome.waitForScreen();
+        await onHome.tapGetStartedButton();
         await onCoinEnabling.handleCoinEnablingInit();
     });
 });
