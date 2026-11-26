@@ -1,7 +1,7 @@
 import { isRejected } from '@reduxjs/toolkit';
 
 import { getTransactionCreatedEventPayload, events as sharedEvents } from '@suite-common/analytics';
-import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, deviceActions, selectDevicePath } from '@suite-common/device';
 import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
@@ -139,14 +139,14 @@ export const cleanupSendFormThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/cleanupSendFormThunk`,
     ({ accountKey, tokenContract, shouldDeleteDraft = true }, { dispatch, getState }) => {
-        const device = selectSelectedDevice(getState());
+        const devicePath = selectDevicePath(getState());
 
         dispatch(sendFormActions.dispose());
 
         if (shouldDeleteDraft) dispatch(sendFormActions.removeDraft({ accountKey, tokenContract }));
 
         // todo: maybe not needed anymore
-        dispatch(deviceActions.removeButtonRequests({ path: device?.path }));
+        dispatch(deviceActions.removeButtonRequests({ path: devicePath }));
     },
 );
 

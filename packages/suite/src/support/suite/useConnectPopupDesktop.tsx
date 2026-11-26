@@ -30,7 +30,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { isArrayMember } from '@trezor/utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { selectSuiteLifecycle } from '#src/selectors/suite/suiteSelectors';
+import { selectSuiteLifecycleStatus } from '#src/selectors/suite/suiteSelectors';
 
 // `connectionId` is undefined for MCP calls, so no connect-ws cancel can match them.
 type TrackedPopupCall = { connectionId?: string };
@@ -42,7 +42,7 @@ export const useConnectPopupDesktop = () => {
         injectDesktopApi,
     );
     const popupCall = useSelector(selectConnectPopupCall);
-    const lifecycle = useSelector(selectSuiteLifecycle);
+    const lifecycleStatus = useSelector(selectSuiteLifecycleStatus);
     const initialized = useRef(false);
 
     const queuedPopupCalls = useRef(new Set<TrackedPopupCall>());
@@ -50,7 +50,7 @@ export const useConnectPopupDesktop = () => {
 
     useEffect(() => {
         const init = async () => {
-            if (lifecycle.status !== 'ready') return;
+            if (lifecycleStatus !== 'ready') return;
             if (!desktopApi.available || !(await desktopApi.connectPopupEnabled())) return;
 
             desktopApi.on('connect-popup/call', async params => {
@@ -150,7 +150,7 @@ export const useConnectPopupDesktop = () => {
                 desktopApi.removeAllListeners('app/auto-start/popup-request');
             }
         };
-    }, [desktopApi, dispatch, analytics, lifecycle.status]);
+    }, [desktopApi, dispatch, analytics, lifecycleStatus]);
 
     // App focus control
     const callOrigin = popupCall && 'source' in popupCall ? popupCall.source.origin : undefined;

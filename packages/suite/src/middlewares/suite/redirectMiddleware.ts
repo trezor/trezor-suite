@@ -13,7 +13,7 @@ import {
 import {
     type DeviceRootState,
     deviceActions,
-    selectDevices,
+    selectDevicesCount,
     selectSelectedDevice,
 } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -31,11 +31,11 @@ const handleDeviceRedirect = (
         return;
     }
 
-    const devices = selectDevices(state);
+    const devicesCount = selectDevicesCount(state);
 
     // more then one device is connected, user might be working with previously connected device.
     // redirect is not desirable here
-    if (devices.length > 1) {
+    if (devicesCount > 1) {
         return;
     }
 
