@@ -3,6 +3,7 @@ export {
     selectAccountIncludingChosenInTrading,
     selectFullSelectedAccount,
     selectIsSelectedAccountLoaded,
+    selectIsSelectedAccountLoading,
     selectSelectedAccount,
     selectSelectedAccountKey,
     selectSelectedAccountStatus,
