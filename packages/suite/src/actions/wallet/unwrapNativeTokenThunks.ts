@@ -141,9 +141,7 @@ export const submitUnwrapNativeTokenThunk = createThunk<
                 getState,
                 selectedFee: userAcceptedTxSimulation.selectedFee,
                 selectedFeeLevel: userAcceptedTxSimulation.selectedFeeLevel,
-            });
-
-            userAcceptedTxSimulation.resolve();
+            }).finally(userAcceptedTxSimulation.resolve);
 
             if (sendResult.status === 'cancelled') {
                 extra.services.analytics.report({

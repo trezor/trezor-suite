@@ -136,9 +136,7 @@ export const submitYieldWithdrawThunk = createThunk<
                 getState,
                 selectedFee,
                 selectedFeeLevel,
-            });
-
-            userAcceptedTxSimulation.resolve();
+            }).finally(userAcceptedTxSimulation.resolve);
 
             // A deliberate user cancel — not reported as a failure.
             if (result.status === 'cancelled') {

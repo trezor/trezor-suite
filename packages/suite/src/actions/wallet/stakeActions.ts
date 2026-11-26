@@ -13,6 +13,7 @@ import {
     openModal,
     preserveModal,
     selectIsTransactionReviewActive,
+    selectModal,
 } from '@suite/modal';
 import { getTransactionCreatedEventPayload } from '@suite-common/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
@@ -179,9 +180,6 @@ const pushTransactionThunk =
 
         const flow = stakeType === 'change-delegate' ? 'vote' : stakeType;
 
-        // close modal regardless result
-        dispatch(closeModal());
-
         if (sentTx.success) {
             const { txid } = sentTx.payload;
 
@@ -287,9 +285,6 @@ const pushTransactionThunk =
             );
         }
 
-        dispatch(cancelSignTxThunk(sentTx.success, account));
-
-        // resolve sign process
         return sentTx;
     };
 
@@ -323,16 +318,11 @@ export const signTransactionThunk =
 
         if (!account) return;
 
-        const enhancedTxInfo: PrecomposedTransactionFinal = {
-            ...transactionInfo,
-            ...(account.networkType === 'solana' ? { createdTimestamp: Date.now() } : {}),
-        };
-
         // store formValues and transactionInfo in send reducer to be used by TransactionReviewModal
         dispatch(
             stakeActions.requestSignTransaction({
                 formValues,
-                transactionInfo: enhancedTxInfo,
+                transactionInfo,
                 accountKey: account.key,
             }),
         );
@@ -350,7 +340,7 @@ export const signTransactionThunk =
                     device,
                     account,
                     formValues,
-                    transactionInfo: enhancedTxInfo,
+                    transactionInfo,
                 }),
             );
         }
@@ -361,7 +351,7 @@ export const signTransactionThunk =
                     device,
                     account,
                     formValues,
-                    transactionInfo: enhancedTxInfo,
+                    transactionInfo,
                 }),
             );
         }
@@ -373,7 +363,7 @@ export const signTransactionThunk =
                     device,
                     account,
                     formValues,
-                    transactionInfo: enhancedTxInfo,
+                    transactionInfo,
                 }),
             );
 
@@ -409,6 +399,7 @@ export const signTransactionThunk =
             }),
         );
 
+        let reviewDecision: Promise<boolean> | undefined;
         if (account.networkType === 'cardano') {
             extra.services.analytics.report({
                 type: events.transactionCreatedEvent.name,
@@ -420,34 +411,50 @@ export const signTransactionThunk =
                     txType: 'stake',
                 }),
             });
+        } else {
+            reviewDecision = dispatch(
+                openDeferredModal(
+                    { type: 'review-transaction' },
+                    {
+                        devicePath: device.path,
+                        cancelWith: false,
+                        onDisconnect: () => dispatch(stakeActions.dispose()),
+                    },
+                ),
+            );
+            if (!(await reviewDecision)) {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: { txType: 'stake', networkSymbol: account.symbol, stage: 'review' },
+                });
 
-            return dispatch(pushTransactionThunk(formValues.stakeType, cardanoPoolDelegation));
-        }
-
-        // Open a deferred modal and get the decision
-        const reviewDecision = dispatch(
-            openDeferredModal(
-                { type: 'review-transaction' },
-                {
-                    devicePath: device.path,
-                    cancelWith: false,
-                    onDisconnect: () => dispatch(stakeActions.dispose()),
-                },
-            ),
-        );
-        if (await reviewDecision) {
-            try {
-                return await dispatch(pushTransactionThunk(formValues.stakeType));
-            } finally {
-                // A rejected transport or a wallet forgotten before push can leave this review open.
-                if (selectIsTransactionReviewActive(getState(), reviewDecision)) {
-                    dispatch(closeModal());
-                }
+                return;
             }
         }
 
-        extra.services.analytics.report({
-            type: events.transactionCancelEvent.name,
-            payload: { txType: 'stake', networkSymbol: account.symbol, stage: 'review' },
-        });
+        const signed = selectStake(getState()).serializedTx;
+        const signingModal = selectModal(getState());
+        let restoreForm = false;
+        try {
+            const result = await dispatch(
+                pushTransactionThunk(formValues.stakeType, cardanoPoolDelegation),
+            );
+            restoreForm = result?.success === false;
+
+            return result;
+        } finally {
+            const ownsTransaction = selectStake(getState()).serializedTx === signed;
+            if (ownsTransaction) {
+                dispatch(stakeActions.requestSignTransaction());
+                dispatch(stakeActions.requestPushTransaction());
+            }
+
+            const ownsModal = reviewDecision
+                ? selectIsTransactionReviewActive(getState(), reviewDecision)
+                : ownsTransaction && selectModal(getState()) === signingModal;
+            if (ownsModal) {
+                dispatch(closeModal());
+                if (restoreForm) dispatch(openStakingModal(formValues.stakeType, account));
+            }
+        }
     };
