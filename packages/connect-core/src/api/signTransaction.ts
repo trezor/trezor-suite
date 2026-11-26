@@ -17,11 +17,10 @@ import { promiseAllSequence } from '@trezor/utils/src/promiseAllSequence';
 
 import {
     applyZcashSignTxDefaultsIfZcash,
-    assertRefTransactions,
     createPendingTransaction,
     deriveOutputScript,
+    getRefTransactions,
     signTx,
-    transformRawTransactions,
     validateTrezorInputs,
     validateTrezorOutputs,
     verifyTx,
@@ -114,26 +113,14 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         const prevTxids = getPreviousTxids(inputs, payload.coin, { version: payload.version });
         const origTxids = getOriginalTxids(inputs, outputs);
 
-        let refTxs: RefTransaction[] | undefined;
-
-        if (payload.refTxs?.length) {
-            if (payload.account?.transactions) {
-                console.warn(
-                    'two sources of referential transactions were passed. payload.refTxs have precedence',
-                );
-            }
-            assertRefTransactions({ transactions: payload.refTxs, origTxids });
-
-            refTxs = payload.refTxs;
-        } else if (payload.account?.transactions?.length) {
-            refTxs = transformRawTransactions({
-                transactions: payload.account.transactions,
-                inputs,
-                origTxids,
-                coinInfo,
-                addresses: payload.account?.addresses,
-            });
-        } else if (!payload.__info) {
+        let refTxs = getRefTransactions({
+            refTxs: payload.refTxs,
+            account: payload.account,
+            inputs,
+            origTxids,
+            coinInfo,
+        });
+        if (!refTxs && !payload.__info) {
             // Because of this, ref tx validation is relaxed for __info calls from popup
             refTxs = [];
         }
