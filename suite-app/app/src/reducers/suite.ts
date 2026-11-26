@@ -15,6 +15,7 @@ import { type SuiteSettingsState, prepareSuiteSettingsReducer } from '@suite/set
 import { type TorState, torReducer } from '@suite/tor';
 import { type AnalyticsState, prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { type ConnectPopupState, prepareConnectPopupReducer } from '@suite-common/connect-popup';
+import { type ContactsState, contactsReducer } from '@suite-common/contacts';
 import { type DiscreetModeState, discreetModeReducer } from '@suite-common/discreet-mode';
 import { type FeatureFeedbackState } from '@suite-common/feedback';
 import { type LogsSliceState, logsSlice } from '@suite-common/logger';
@@ -70,6 +71,7 @@ export type SuiteReducersState = {
     featureFeedback: FeatureFeedbackState<FeedbackFeatureName>;
     connectPopup: ConnectPopupState;
     walletConnect: WalletConnectState;
+    contacts: ContactsState;
 };
 
 export const suiteReducers: ReducersMapObject<SuiteReducersState, UnknownAction> = {
@@ -95,4 +97,5 @@ export const suiteReducers: ReducersMapObject<SuiteReducersState, UnknownAction>
     featureFeedback: featureFeedbackReducer,
     connectPopup: connectPopupReducer,
     walletConnect: walletConnectReducer,
+    contacts: contactsReducer,
 };

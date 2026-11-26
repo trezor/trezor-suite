@@ -1,0 +1,27 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/contacts" },
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/suite-sync"
+        },
+        { "path": "../debug" },
+        { "path": "../intl" },
+        { "path": "../settings" },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/dom-utils" },
+        { "path": "../../packages/env-utils" },
+        {
+            "path": "../../packages/product-components"
+        },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/type-utils" }
+    ]
+}

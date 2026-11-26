@@ -59,12 +59,15 @@ export const clearAppCache = () =>
  * It's overwritten in electron-builder-config.js for builds. And here for local development.
  * Default (codesigned builds): @trezor/suite-desktop,
  * Dev (non-production builds): @trezor/suite-desktop-dev
- * Local development: @trezor/suite-desktop-local
+ * Local development: @trezor/suite-desktop-poc
  *
  * These directory names are the on-disk identity of existing installations, so they keep
  * the original package name and are spelled out rather than derived from it.
+ *
+ * The pay-to-contact PoC runs from its own local directory: a dev Suite from another branch
+ * would otherwise reset its IndexedDB and pick up its relaxed security checks.
  */
-const LOCAL_USER_DATA_DIR = '@trezor/suite-desktop-local';
+const LOCAL_USER_DATA_DIR = '@trezor/suite-desktop-poc';
 
 export const initUserData = () => {
     if (isDevEnv) {

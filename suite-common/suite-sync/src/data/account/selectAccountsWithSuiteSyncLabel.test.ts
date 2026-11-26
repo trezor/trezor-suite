@@ -51,6 +51,8 @@ const createState = (suiteSyncAccounts: SuiteSyncAccount[]): SuiteSyncDataRootSt
                 accounts: createSuiteSyncAccountsRecord(suiteSyncAccounts),
                 addresses: {},
                 outputs: {},
+                contacts: {},
+                contactAddresses: {},
             },
         },
     },

@@ -5,6 +5,7 @@ import {
     AppsEmbeddingPage,
     AssetDetailPage,
     ConnectPopupPage,
+    ContactsPage,
     DashboardPage,
     DesktopSettingsGeneralPage,
     EarnClaimPage,
@@ -87,6 +88,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'earn-tron-withdraw': EarnTronWithdrawPage,
     'earn-tron-claim': EarnTronClaimPage,
     'apps-embedding-index': AppsEmbeddingPage,
+    'contacts-index': ContactsPage,
     'suite-connect-popup': ConnectPopupPage,
     'notifications-index': NotificationPage,
 

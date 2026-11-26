@@ -130,6 +130,7 @@ const SECTIONS = {
         '/switch-device',
         '/password-manager',
         '/apps-embedding',
+        '/contacts',
         '/coinmarket-redirect',
     ],
     onboarding: [

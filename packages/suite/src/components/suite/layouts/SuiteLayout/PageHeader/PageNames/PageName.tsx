@@ -79,6 +79,14 @@ export const PageName = () => {
         );
     }
 
+    if (currentRoute === 'contacts-index') {
+        return (
+            <BasicName>
+                <Translation id="TR_CONTACTS" />
+            </BasicName>
+        );
+    }
+
     if (selectedAccount && isAccountTabPage) {
         return <AccountName key={selectedAccount.key} selectedAccount={selectedAccount} />;
     }

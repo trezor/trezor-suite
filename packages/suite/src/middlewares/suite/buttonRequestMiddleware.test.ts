@@ -1,3 +1,5 @@
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
+
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import {
     type ConnectInitThunkDeps,
@@ -130,5 +132,54 @@ describe('buttonRequest middleware', () => {
             { type: defaultTrezorUIEventHandlerThunk.fulfilled.type },
             { type: deviceActions.removeButtonRequests.type, payload: { path: device.path } },
         ]);
+    });
+});
+
+describe('buttonRequest middleware and WARD writes', () => {
+    type MiddlewareApi = Parameters<typeof buttonRequestMiddleware>[0];
+
+    const runMiddleware = (name: string) => {
+        const dispatched: UnknownAction[] = [];
+        const forwarded: UnknownAction[] = [];
+        const api: MiddlewareApi = {
+            dispatch: action => {
+                dispatched.push(action);
+
+                return action;
+            },
+            getState: mock<MiddlewareApi['getState']>(),
+        };
+        const next: Dispatch<UnknownAction> = action => {
+            forwarded.push(action);
+
+            return action;
+        };
+        const action = {
+            type: UI_EVENTS.BUTTON_REQUEST,
+            payload: { code: 'ButtonRequest_ConfirmOutput' as const, name, device },
+        };
+
+        buttonRequestMiddleware(api)(next)(action);
+
+        return { dispatched, forwarded, action };
+    };
+
+    it.each(['ward_update', 'ward_delete'])(
+        'shows the %s confirmation as a plain device confirmation',
+        name => {
+            const { dispatched, forwarded, action } = runMiddleware(name);
+
+            expect(dispatched).toEqual([
+                { ...action, payload: { ...action.payload, code: 'ButtonRequest_Other' } },
+            ]);
+            expect(forwarded).toEqual([]);
+        },
+    );
+
+    it('leaves the confirmation of a transaction output as it is', () => {
+        const { dispatched, forwarded, action } = runMiddleware('confirm_output');
+
+        expect(dispatched).toEqual([]);
+        expect(forwarded).toEqual([action]);
     });
 });

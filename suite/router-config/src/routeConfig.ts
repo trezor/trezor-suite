@@ -140,6 +140,11 @@ export const routes = [
         app: 'apps-embedding',
     },
     {
+        name: 'contacts-index',
+        pattern: '/contacts',
+        app: 'contacts',
+    },
+    {
         name: 'suite-version',
         pattern: '/version',
         app: 'version',

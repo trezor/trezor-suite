@@ -1,0 +1,27 @@
+{
+    "name": "@suite-common/contacts",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "type": "module",
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "2.13.0",
+        "@scure/base": "^2.0.0",
+        "@suite-common/device": "workspace:*",
+        "@suite-common/suite-sync": "workspace:*",
+        "@suite-common/suite-sync-storage": "workspace:*",
+        "@suite-common/suite-sync-types": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
+        "@trezor/type-utils": "workspace:*"
+    }
+}

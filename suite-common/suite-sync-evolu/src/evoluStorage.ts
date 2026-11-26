@@ -5,6 +5,11 @@ import { type CreateSuiteStorage, type SuiteSyncStorage } from '@suite-common/su
 import { type EvoluInstanceFactoryDep } from './createEvoluInstance';
 import { type AccountTableSchema, EvoluAccountTable } from './data/accountTable';
 import { AddressEvoluTable, type AddressTableSchema } from './data/addressTable';
+import {
+    ContactAddressEvoluTable,
+    type ContactAddressTableSchema,
+} from './data/contactAddressTable';
+import { ContactEvoluTable, type ContactTableSchema } from './data/contactTable';
 import { OutputEvoluTable, type OutputTableSchema } from './data/outputTable';
 import { EvoluWalletTable, type WalletTableSchema } from './data/walletTable';
 
@@ -71,6 +76,12 @@ export const createEvoluStorageFactory =
                 outputs: new OutputEvoluTable(evolu as unknown as Evolu<typeof OutputTableSchema>),
                 addresses: new AddressEvoluTable(
                     evolu as unknown as Evolu<typeof AddressTableSchema>,
+                ),
+                contacts: new ContactEvoluTable(
+                    evolu as unknown as Evolu<typeof ContactTableSchema>,
+                ),
+                contactAddresses: new ContactAddressEvoluTable(
+                    evolu as unknown as Evolu<typeof ContactAddressTableSchema>,
                 ),
             },
 

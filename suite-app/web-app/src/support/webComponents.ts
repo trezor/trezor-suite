@@ -123,6 +123,11 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             /* webpackChunkName: "apps-embedding" */ '@suite-app/app/pages/AppsEmbeddingPage'
         ).then(({ AppsEmbeddingPage }) => ({ default: AppsEmbeddingPage })),
     ),
+    'contacts-index': lazy(() =>
+        import(/* webpackChunkName: "contacts" */ '@suite-app/app/pages/ContactsPage').then(
+            ({ ContactsPage }) => ({ default: ContactsPage }),
+        ),
+    ),
     'suite-connect-popup': lazy(() =>
         import(
             /* webpackChunkName: "connect-popup" */ '@suite-app/app/pages/ConnectPopupPage'

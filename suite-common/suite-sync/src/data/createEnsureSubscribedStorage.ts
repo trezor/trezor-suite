@@ -60,6 +60,14 @@ export const createEnsureSubscribedStorage =
                 onChange: entities =>
                     listener.onEntityChange.outputs(deviceStaticSessionId, entities),
             }),
+            contacts: data.contacts.subscribe({
+                onChange: entities =>
+                    listener.onEntityChange.contacts(deviceStaticSessionId, entities),
+            }),
+            contactAddresses: data.contactAddresses.subscribe({
+                onChange: entities =>
+                    listener.onEntityChange.contactAddresses(deviceStaticSessionId, entities),
+            }),
         };
 
         deps.subscriptionStorage.add({
