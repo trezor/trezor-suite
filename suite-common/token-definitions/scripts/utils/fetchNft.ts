@@ -10,6 +10,9 @@ import {
 import { NFTS_PER_PAGE } from '../constants';
 import { type NftData, nftListSchema } from '../schemas';
 
+// TODO: Remove once CoinGecko lists Lido's Ethereum withdrawal NFT.
+const UNSTETH_WITHDRAWAL_QUEUE = '0x889edc2edab5f40e902b864ad4d7ade8e412f9b1';
+
 const fetchNftList = coinGeckoApi('/nfts/list', {
     method: 'GET',
     schema: nftListSchema,
@@ -48,5 +51,16 @@ export const fetchNftData = async (assetPlatformId: string, structure: TokenStru
         }, {});
     }
 
-    return unique(allData.map(item => item.contract_address)) as SimpleTokenStructure;
+    const contractAddresses: SimpleTokenStructure = unique(
+        allData.map(item => item.contract_address),
+    );
+    if (
+        assetPlatformId === 'ethereum' &&
+        contractAddresses.length > 0 &&
+        !contractAddresses.some(address => address.toLowerCase() === UNSTETH_WITHDRAWAL_QUEUE)
+    ) {
+        contractAddresses.push(UNSTETH_WITHDRAWAL_QUEUE);
+    }
+
+    return contractAddresses;
 };
