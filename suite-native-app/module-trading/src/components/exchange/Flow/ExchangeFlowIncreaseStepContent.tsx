@@ -1,7 +1,7 @@
 import type { DexApprovalType } from 'invity-api';
 
 import { type AccountKey } from '@suite-common/wallet-types';
-import { Text } from '@suite-native/atoms';
+import { Divider, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { CurrentStepCardHeader } from '@suite-native/step-cards';
 
@@ -34,6 +34,7 @@ export const ExchangeFlowIncreaseStepContent = ({
         </CurrentStepCardHeader>
         <OriginalLimit />
         <LimitPicker onApprovalTypeChange={onApprovalTypeChange} />
+        <Divider testID="@exchange-flow/increase/fee-divider" />
         <ExchangeFlowApprovalFeeSelectorRow accountKey={accountKey} />
     </>
 );

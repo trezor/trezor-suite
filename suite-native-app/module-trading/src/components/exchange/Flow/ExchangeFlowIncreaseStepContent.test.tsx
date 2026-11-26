@@ -61,4 +61,10 @@ describe('ExchangeFlowIncreaseStepContent', () => {
         expect(screen.getByText('Limit picker')).toBeOnTheScreen();
         expect(screen.getByText(`Fee row: ${eth1NormalAccount.key}`)).toBeOnTheScreen();
     });
+
+    it('renders a divider above the fee row', async () => {
+        await renderContent();
+
+        expect(screen.getByTestId('@exchange-flow/increase/fee-divider')).toBeOnTheScreen();
+    });
 });
