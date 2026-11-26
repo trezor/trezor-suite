@@ -66,6 +66,9 @@ export const selectSelectedAccountStatus = (state: SelectedAccountRootState) =>
 export const selectIsSelectedAccountLoaded = (state: SelectedAccountRootState) =>
     state.wallet.selectedAccount.status === 'loaded';
 
+export const selectIsSelectedAccountLoading = (state: SelectedAccountRootState) =>
+    state.wallet.selectedAccount.status === 'loading';
+
 /**
  * Mainly used for common modals, also used in the Trading section.
  * @returns account from stablecoin yield tx review if set, then tron stake tx review, then stake tx
