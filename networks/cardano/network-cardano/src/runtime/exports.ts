@@ -1,4 +1,4 @@
-import * as cbor from 'cbor';
+import cbor from 'cbor';
 
 import { CoinSelectionError } from '@trezor/network-cardano-coin-selection/runtime';
 
