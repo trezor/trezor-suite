@@ -1,12 +1,18 @@
-import { getNetwork } from '@suite-common/wallet-config';
+import {
+    asNetworkSymbol,
+    getNetwork,
+    registerLegacyCustomEvmNetwork,
+    unregisterLegacyNetwork,
+} from '@suite-common/wallet-config';
 
 import {
+    getNetworkByBlockaidChain,
     resolveBlockaidEvmChain,
     resolveBlockaidSolanaChain,
     resolveBlockaidStellarChain,
 } from './chains';
 
-describe('resolveBlockaidEvmChain', () => {
+describe(resolveBlockaidEvmChain.name, () => {
     it.each([
         [getNetwork('eth').chainId, 'ethereum'],
         [getNetwork('hype').chainId, 'hyperevm'],
@@ -31,6 +37,51 @@ describe('resolveBlockaidEvmChain', () => {
 
     it('returns null for a chainId Suite does not know', () => {
         expect(resolveBlockaidEvmChain(1234567)).toBeNull();
+    });
+
+    describe('with a user-added network', () => {
+        const symbol = asNetworkSymbol('evm100');
+
+        beforeEach(() => {
+            registerLegacyCustomEvmNetwork({
+                symbol,
+                chainId: 100,
+                name: 'Gnosis',
+                displaySymbol: 'XDAI',
+                explorerUrl: 'https://gnosisscan.io',
+                testnet: false,
+            });
+        });
+
+        afterEach(() => {
+            unregisterLegacyNetwork(symbol);
+        });
+
+        it('passes its chain ID to Blockaid as hex', () => {
+            expect(resolveBlockaidEvmChain(100)).toBe('0x64');
+        });
+
+        it('returns null again once the network is removed', () => {
+            unregisterLegacyNetwork(symbol);
+
+            expect(resolveBlockaidEvmChain(100)).toBeNull();
+        });
+    });
+});
+
+describe(getNetworkByBlockaidChain.name, () => {
+    it('finds a network by its named chain', () => {
+        expect(getNetworkByBlockaidChain('ethereum')?.symbol).toBe('eth');
+    });
+
+    it('finds a network by its hex chain id', () => {
+        const arc = getNetwork('arc');
+
+        expect(getNetworkByBlockaidChain(`0x${arc.chainId.toString(16)}`)?.symbol).toBe('arc');
+    });
+
+    it.each(['0xzz', '0x1zz', '0x', 'unknown-chain'])('finds nothing for %s', chain => {
+        expect(getNetworkByBlockaidChain(chain)).toBeUndefined();
     });
 });
 

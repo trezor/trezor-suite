@@ -1,6 +1,7 @@
-import { commonQueryKeys, useQuery } from '@suite-common/react-query';
+import { commonQueryKeys, useQuery, useQueryClient } from '@suite-common/react-query';
 import { exhaustive } from '@trezor/type-utils';
 
+import { isHexBlockaidChain, markBlockaidChainUnsupported } from '../chains';
 import { getBlockaidClient } from '../client';
 import {
     type NetworkTxSimulationResult,
@@ -41,6 +42,32 @@ const getStellarNeedsDisclaimer = (response: StellarTxScanResponse): boolean => 
     );
 };
 
+/** Blockaid does not cover the chain of a user-added network; the transaction can go on unscanned. */
+export class TxSimulationChainUnsupportedError extends Error {
+    constructor() {
+        super('Transaction simulation is not available on this network.');
+        this.name = 'TxSimulationChainUnsupportedError';
+    }
+}
+
+// A 4xx answer rejects the request itself, so asking again would get the same answer.
+const isRejectedRequest = (error: unknown) => {
+    const status = (error as { status?: unknown } | null)?.status;
+
+    return typeof status === 'number' && status >= 400 && status < 500 && status !== 429;
+};
+
+/** A user-added chain Blockaid rejects is remembered, so its next transactions skip the scan. */
+export const toEvmScanError = (chain: string | undefined, error: unknown) => {
+    if (chain && isHexBlockaidChain(chain) && isRejectedRequest(error)) {
+        markBlockaidChainUnsupported(chain);
+
+        return new TxSimulationChainUnsupportedError();
+    }
+
+    return error;
+};
+
 async function handleTxScan(input: GetTxSimulationParams): Promise<NetworkTxSimulationResult> {
     if (!input) {
         throw new Error('TX Simulation params are missing.');
@@ -51,8 +78,11 @@ async function handleTxScan(input: GetTxSimulationParams): Promise<NetworkTxSimu
     switch (input.method) {
         case 'ethereumSignTransaction':
         case 'ethereumSignTypedData': {
-            const isChainSupported = Boolean(input.params.chain);
-            const scanResult = await client.evm.jsonRpc.scan(input.params);
+            const { chain } = input.params;
+            const isChainSupported = Boolean(chain);
+            const scanResult = await client.evm.jsonRpc.scan(input.params).catch(error => {
+                throw toEvmScanError(chain, error);
+            });
 
             const result: TxSimulationEVMResult = {
                 ...scanResult,
@@ -107,10 +137,19 @@ export function useNetworkTxSimulation(
     input: GetTxSimulationParams,
     { onSuccess }: UseTxSimulationProps = {},
 ) {
+    const defaultRetry = useQueryClient().getDefaultOptions().queries?.retry;
+
     // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is input.params; onSuccess is a side-effect callback and input.method is derived from the same params — neither belongs in the key
     return useQuery({
         enabled: Boolean(input),
         queryKey: commonQueryKeys.networkTxSimulation(input?.params),
+        retry: (failureCount, error) => {
+            if (error instanceof TxSimulationChainUnsupportedError) return false;
+            if (typeof defaultRetry === 'function') return defaultRetry(failureCount, error);
+            if (typeof defaultRetry === 'number') return failureCount < defaultRetry;
+
+            return defaultRetry ?? true;
+        },
         queryFn: async () => {
             const result = await handleTxScan(input);
 

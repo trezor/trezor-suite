@@ -3,6 +3,7 @@ import { type ReactNode, useState } from 'react';
 import { useFormatters } from '@suite-common/formatters';
 import {
     type NetworkTxSimulationResult,
+    TxSimulationChainUnsupportedError,
     getSolanaAssetDiffs,
     getStellarAssetDiffs,
     getTxSimulationRiskSummary,
@@ -123,10 +124,12 @@ export function EvmTxSimulationReviewContent({
     const { validationRisk, simulationFailure } = getTxSimulationRiskSummary(
         simulationData ?? undefined,
     );
+    // A chain Blockaid does not cover has nothing to review, so the transaction goes on unscanned.
+    const isChainUnsupported = txSimulationQuery.error instanceof TxSimulationChainUnsupportedError;
     const isConfirmButtonDisabled =
-        !simulationData ||
+        (!simulationData && !isChainUnsupported) ||
         txSimulationQuery.isLoading ||
-        !!(simulationData.payload.needsDisclaimer && !disclaimerAccepted) ||
+        !!(simulationData?.payload.needsDisclaimer && !disclaimerAccepted) ||
         isConfirmDisabled;
     const contractInfoItems =
         targetContract && evmSimulation?.status === 'Success'
