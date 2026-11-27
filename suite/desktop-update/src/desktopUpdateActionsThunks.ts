@@ -12,6 +12,7 @@ import {
     desktopUpdateActions,
     selectDesktopUpdate,
     selectDesktopUpdateAllowPrerelease,
+    selectDesktopUpdateAutomaticUpdateEnabled,
 } from './desktopUpdateReducer';
 
 type AvailableThunkState = DesktopUpdateRootState;
@@ -50,11 +51,11 @@ type DownloadThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const downloadThunk =
     () => (dispatch: Dispatch, getState: () => DownloadThunkState, extra: DownloadThunkDeps) => {
-        const { latest, allowPrerelease } = selectDesktopUpdate(getState());
+        const { latest } = selectDesktopUpdate(getState());
 
         const payload = getAppUpdatePayload({
             status: AppUpdateEventStatus.Download,
-            earlyAccessProgram: allowPrerelease,
+            earlyAccessProgram: selectDesktopUpdateAllowPrerelease(getState()),
             updateInfo: latest,
         });
         extra.services.analytics.report({
@@ -72,13 +73,13 @@ type ReadyThunkDeps = WithServices<DesktopAnalyticsDep>;
 export const readyThunk =
     (info: UpdateInfo) =>
     (dispatch: Dispatch, getState: () => ReadyThunkState, extra: ReadyThunkDeps) => {
-        const { latest, allowPrerelease } = selectDesktopUpdate(getState());
+        const { latest } = selectDesktopUpdate(getState());
 
         // update can fail even if it was downloaded successfully
         // TODO: Update successful status from electron layer
         const payload = getAppUpdatePayload({
             status: AppUpdateEventStatus.Downloaded,
-            earlyAccessProgram: allowPrerelease,
+            earlyAccessProgram: selectDesktopUpdateAllowPrerelease(getState()),
             updateInfo: latest,
         });
         extra.services.analytics.report({
@@ -100,15 +101,13 @@ type InstallUpdateThunkParams = { installNow: boolean };
 export const installUpdateThunk =
     ({ installNow }: InstallUpdateThunkParams) =>
     (_: Dispatch, getState: () => InstallUpdateThunkState, extra: InstallUpdateThunkDeps) => {
-        const desktopUpdate = selectDesktopUpdate(getState());
-
         const payload = getAppUpdatePayload({
             status: installNow
                 ? AppUpdateEventStatus.InstallAndRestart
                 : AppUpdateEventStatus.InstallOnQuit,
-            earlyAccessProgram: desktopUpdate.allowPrerelease,
-            updateInfo: desktopUpdate.latest,
-            isAutoUpdated: desktopUpdate.isAutomaticUpdateEnabled,
+            earlyAccessProgram: selectDesktopUpdateAllowPrerelease(getState()),
+            updateInfo: selectDesktopUpdate(getState()).latest,
+            isAutoUpdated: selectDesktopUpdateAutomaticUpdateEnabled(getState()),
         });
 
         extra.services.analytics.report({
@@ -132,7 +131,7 @@ type ErrorThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const errorThunk =
     () => (dispatch: Dispatch, getState: () => ErrorThunkState, extra: ErrorThunkDeps) => {
-        const { state, latest, allowPrerelease } = selectDesktopUpdate(getState());
+        const { state, latest } = selectDesktopUpdate(getState());
 
         // Ignore displaying errors while checking
         if (state !== UpdateState.Checking) {
@@ -140,7 +139,7 @@ export const errorThunk =
 
             const payload = getAppUpdatePayload({
                 status: AppUpdateEventStatus.Error,
-                earlyAccessProgram: allowPrerelease,
+                earlyAccessProgram: selectDesktopUpdateAllowPrerelease(getState()),
                 updateInfo: latest,
             });
             extra.services.analytics.report({

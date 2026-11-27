@@ -8,7 +8,7 @@ import { isDesktop } from '@trezor/env-utils';
 import { TrezorLogoIcon } from '@trezor/icons';
 import { TooltipRow, mapTrezorModelToIcon } from '@trezor/product-components';
 
-import { type DesktopUpdateRootState } from '../desktopUpdateReducer';
+import { type DesktopUpdateRootState, selectDesktopUpdate } from '../desktopUpdateReducer';
 import {
     type UpdateStatus,
     type UpdateStatusDevice,
@@ -66,8 +66,7 @@ type SuiteRowProps = {
 
 const SuiteRow = ({ updateStatus, onClick }: SuiteRowProps) => {
     const suiteNewVersion = useSelector(
-        // eslint-disable-next-line no-restricted-syntax
-        (state: DesktopUpdateRootState) => state.desktopUpdate.latest?.version,
+        (state: DesktopUpdateRootState) => selectDesktopUpdate(state).latest?.version,
     );
     const suiteCurrentVersion = process.env.VERSION || '';
 

@@ -5,6 +5,7 @@ import {
     desktopUpdateActions,
     installUpdateThunk,
     selectDesktopUpdate,
+    selectDesktopUpdateEnabled,
 } from '@suite/desktop-update';
 import { useExternalLink } from '@suite/external-links';
 import { getReleaseUrl } from '@suite/github';
@@ -91,6 +92,7 @@ const Description = ({ desktopUpdateState, openUpdateModal }: DescriptionProps) 
 
 export const VersionWithUpdate = () => {
     const desktopUpdateState = useSelector(selectDesktopUpdate);
+    const isDesktopUpdateEnabled = useSelector(selectDesktopUpdateEnabled);
     const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
 
     const checkForUpdates = () => desktopApi.checkForUpdates({ isManual: true });
@@ -112,7 +114,7 @@ export const VersionWithUpdate = () => {
                         />
                     }
                     actions={
-                        desktopUpdateState.enabled ? (
+                        isDesktopUpdateEnabled ? (
                             <>
                                 {desktopUpdateState.state === UpdateState.Checking && (
                                     <SectionItem.Button isDisabled intent="brand">
