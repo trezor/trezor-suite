@@ -129,3 +129,12 @@ export const selectDesktopUpdateAllowPrerelease = (state: DesktopUpdateRootState
 
 export const selectDesktopUpdateAutomaticUpdateEnabled = (state: DesktopUpdateRootState) =>
     state.desktopUpdate.isAutomaticUpdateEnabled;
+
+export const selectDesktopUpdateProgress = (state: DesktopUpdateRootState) =>
+    selectDesktopUpdate(state).progress;
+
+export const selectIsDesktopUpdateModalVisible = (state: DesktopUpdateRootState) =>
+    selectDesktopUpdate(state).isModalVisible;
+
+export const selectIsDesktopVersionInfoModalVisible = (state: DesktopUpdateRootState) =>
+    selectDesktopUpdate(state).isVersionInfoModalVisible;

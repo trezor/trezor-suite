@@ -28,6 +28,7 @@ export type MethodRootState = {
 };
 
 export const selectMethod = (state: MethodRootState) => state.method;
+export const selectMethodParams = (state: MethodRootState) => selectMethod(state).params;
 
 // Recursively find a field in the schema (inner function)
 const findFieldsNested = (

@@ -6,7 +6,9 @@ import { type StakeSliceRootState } from '../stakingReducerTypes';
 
 export const selectStake = (state: StakeSliceRootState) => state.wallet.stake;
 
-export const selectStakeData = (state: StakeSliceRootState) => selectStake(state).data.data;
+export const selectStakeDataState = (state: StakeSliceRootState) => selectStake(state).data;
+
+export const selectStakeData = (state: StakeSliceRootState) => selectStakeDataState(state).data;
 
 export const selectStakeAccountKey = (state: StakeSliceRootState) => selectStake(state).accountKey;
 

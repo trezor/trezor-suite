@@ -1,4 +1,4 @@
-import { selectFlags, setFlag } from '@suite/flags';
+import { selectFlag, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -10,7 +10,9 @@ import { CloseableBanner } from './CloseableBanner';
 
 export const StellarLimitedHistoryBanner = () => {
     const { dispatch } = useServices(injectDispatch);
-    const { stellarLimitedHistoryBannerClosed } = useSelector(selectFlags);
+    const stellarLimitedHistoryBannerClosed = useSelector(state =>
+        selectFlag(state, 'stellarLimitedHistoryBannerClosed'),
+    );
 
     if (stellarLimitedHistoryBannerClosed) {
         return null;

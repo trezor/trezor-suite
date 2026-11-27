@@ -1,4 +1,4 @@
-import { selectFlags, setFlag } from '@suite/flags';
+import { selectFlag, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
@@ -17,7 +17,9 @@ const SOLANA_TX_HISTORY_LIMIT = 100;
 
 export const SolanaLimitedHistoryBanner = ({ account }: SolanaLimitedHistoryBannerProps) => {
     const { dispatch } = useServices(injectDispatch);
-    const { solanaLimitedHistoryBannerClosed } = useSelector(selectFlags);
+    const solanaLimitedHistoryBannerClosed = useSelector(state =>
+        selectFlag(state, 'solanaLimitedHistoryBannerClosed'),
+    );
 
     const isSolanaAccount = account.networkType === 'solana';
     const hasTxCountAboveLimit = account.history.total > SOLANA_TX_HISTORY_LIMIT;

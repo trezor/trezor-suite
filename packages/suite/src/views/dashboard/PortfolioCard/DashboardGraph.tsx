@@ -19,7 +19,12 @@ import { typography } from '@trezor/theme';
 import { updateGraphDataThunk } from '#src/actions/wallet/graphActions';
 import { TransactionsGraphLoader } from '#src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { selectGraph, selectGraphSelectedRange } from '#src/reducers/wallet/graphReducer';
+import {
+    selectGraph,
+    selectGraphError,
+    selectGraphSelectedRange,
+    selectIsGraphLoading,
+} from '#src/reducers/wallet/graphReducer';
 import { type AggregatedDashboardHistory } from '#src/types/wallet/graph';
 import { getMinMaxValueFromData } from '#src/utils/wallet/graph/utils';
 import { prepareGraphDataAsync } from '#src/utils/wallet/graph/utilsWorker';
@@ -55,6 +60,8 @@ type DashboardGraphProps = {
 export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
     const graph = useSelector(selectGraph);
     const selectedRange = useSelector(selectGraphSelectedRange);
+    const graphError = useSelector(selectGraphError);
+    const isGraphLoading = useSelector(selectIsGraphLoading);
     const selectedDevice = useSelector(selectSelectedDevice);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const { dispatch } = useServices(injectDispatch);
@@ -64,7 +71,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
     const [xTicks, setXticks] = useState<number[]>([]);
 
     const selectedDeviceState = selectedDevice?.state?.staticSessionId;
-    const failedAccounts = graph.error?.filter(a => a.deviceState === selectedDeviceState);
+    const failedAccounts = graphError?.filter(a => a.deviceState === selectedDeviceState);
     const allFailed =
         failedAccounts !== undefined &&
         accounts.every(a => failedAccounts.some(fa => fa.descriptor === a.descriptor));
@@ -98,7 +105,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
     );
 
     useEffect(() => {
-        if (!graph.isLoading) {
+        if (!isGraphLoading) {
             setIsProcessing(true);
 
             prepareGraphDataAsync({ graph, deviceState: selectedDeviceState }).then(
@@ -116,7 +123,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                 },
             );
         }
-    }, [graph, selectedRange, selectedDeviceState]);
+    }, [graph, isGraphLoading, selectedRange, selectedDeviceState]);
 
     return (
         <Wrapper data-testid="@dashboard/graph">
@@ -138,7 +145,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                         <TransactionsGraphLoader
                             variant="all-assets"
                             onRefresh={onRefresh}
-                            isLoading={graph.isLoading || isProcessing}
+                            isLoading={isGraphLoading || isProcessing}
                             localCurrency={baseCurrencyCode}
                             xTicks={xTicks}
                             minMaxValues={[minMaxValues[0].toNumber(), minMaxValues[1].toNumber()]}

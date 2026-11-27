@@ -135,3 +135,6 @@ export const selectTronStakeSession = (
 
 export const selectTronStakeTxReview = (state: TronStakeRootState): TronStakeTxReviewState =>
     state.wallet.tronStake.txReview;
+
+export const selectTronStakeTxReviewSerializedTx = (state: TronStakeRootState) =>
+    selectTronStakeTxReview(state).serializedTx;

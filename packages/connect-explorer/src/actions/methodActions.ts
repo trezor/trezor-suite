@@ -5,8 +5,8 @@ import TrezorConnectMobile from '@trezor/connect-mobile';
 import TrezorConnect from '@trezor/connect-web';
 import { getDeepValue } from '@trezor/schema-utils/src/utils';
 
-import { type MethodRootState, selectMethod } from '../reducers/methodReducer';
-import { type ConnectRootState, selectConnect } from '../reducers/trezorConnectReducer';
+import { type MethodRootState, selectMethod, selectMethodParams } from '../reducers/methodReducer';
+import { type ConnectRootState, selectConnectOptions } from '../reducers/trezorConnectReducer';
 import type { Dispatch, Field } from '../types';
 import {
     ADD_BATCH,
@@ -70,11 +70,12 @@ type OnSubmitThunkState = ConnectRootState & MethodRootState;
 export const onSubmitThunk =
     () => async (dispatch: Dispatch, getState: () => OnSubmitThunkState) => {
         const method = selectMethod(getState());
-        const connect = selectConnect(getState());
         if (!method?.name) throw new Error('method name not specified');
         dispatch({ type: SET_METHOD_PROCESSING, payload: true });
         const trezorConnectImpl =
-            connect.options?.coreMode === 'deeplink' ? TrezorConnectMobile : TrezorConnect;
+            selectConnectOptions(getState())?.coreMode === 'deeplink'
+                ? TrezorConnectMobile
+                : TrezorConnect;
         const connectMethod = trezorConnectImpl[method.name];
         if (typeof connectMethod !== 'function') {
             dispatch(
@@ -88,7 +89,7 @@ export const onSubmitThunk =
 
         // @ts-expect-error params type is unknown
         const response = await connectMethod({
-            ...method.params,
+            ...selectMethodParams(getState()),
         });
         dispatch({ type: SET_METHOD_PROCESSING, payload: false });
         dispatch(onResponse(response));

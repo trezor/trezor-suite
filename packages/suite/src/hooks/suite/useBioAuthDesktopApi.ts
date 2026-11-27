@@ -9,16 +9,19 @@ import {
     requestBioAuthChangeThunk,
     requestBioAuthValidationThunk,
 } from '#src/actions/suite/bioAuthThunks';
-import { selectBioAuth, selectIsBioAuthEnabled } from '#src/reducers/bioAuth/bioAuthReducer';
+import {
+    selectIsBioAuthAvailable,
+    selectIsBioAuthCancelled,
+    selectIsBioAuthEnabled,
+    selectIsBioAuthValidationRequired,
+} from '#src/reducers/bioAuth/bioAuthReducer';
 
 import { useSelector } from './useSelector';
 
 export const useBioAuthDesktopApi = () => {
-    const {
-        bioAuthAvailable: isBioAuthAvailable,
-        bioAuthValidationRequired: isBioAuthValidationRequired,
-        cancelled,
-    } = useSelector(selectBioAuth);
+    const isBioAuthAvailable = useSelector(selectIsBioAuthAvailable);
+    const isBioAuthValidationRequired = useSelector(selectIsBioAuthValidationRequired);
+    const cancelled = useSelector(selectIsBioAuthCancelled);
     const isBioAuthEnabled = useSelector(selectIsBioAuthEnabled);
 
     const { translationString } = useTranslation();

@@ -14,6 +14,9 @@ import {
     selectDesktopUpdate,
     selectDesktopUpdateAllowPrerelease,
     selectDesktopUpdateEnabled,
+    selectDesktopUpdateProgress,
+    selectIsDesktopUpdateModalVisible,
+    selectIsDesktopVersionInfoModalVisible,
 } from '@suite/desktop-update';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -39,6 +42,9 @@ export const DesktopUpdater = () => {
     const desktopUpdate = useSelector(selectDesktopUpdate);
     const isDesktopUpdateEnabled = useSelector(selectDesktopUpdateEnabled);
     const allowPrerelease = useSelector(selectDesktopUpdateAllowPrerelease);
+    const progress = useSelector(selectDesktopUpdateProgress);
+    const isModalVisible = useSelector(selectIsDesktopUpdateModalVisible);
+    const isVersionInfoModalVisible = useSelector(selectIsDesktopVersionInfoModalVisible);
     const { desktopApi, analytics, dispatch } = useServices(
         injectDesktopAnalytics,
         injectDispatch,
@@ -109,13 +115,13 @@ export const DesktopUpdater = () => {
         dispatch(desktopUpdateActions.setIsVersionInfoModalVisible(false));
     };
 
-    if (desktopUpdate.isVersionInfoModalVisible) {
+    if (isVersionInfoModalVisible) {
         return <VersionInfoModal onCancel={hideVersionInfoModal} />;
     }
 
     const isUpdateInfoAvailable = desktopUpdate.latest !== undefined;
     const isAlwaysOpenState = isArrayMember(desktopUpdateState, alwaysOpenStates);
-    const isVisible = desktopUpdate.isModalVisible && (isAlwaysOpenState || isUpdateInfoAvailable);
+    const isVisible = isModalVisible && (isAlwaysOpenState || isUpdateInfoAvailable);
 
     const updateModalMap: Record<UpdateState, JSX.Element | null> = {
         'early-access-disable': <EarlyAccessDisable hideWindow={hideWindow} />,
@@ -124,7 +130,7 @@ export const DesktopUpdater = () => {
         'not-available': null,
         available: <Available onCancel={hideWindow} latest={desktopUpdate.latest} />,
         checking: null,
-        downloading: <Downloading hideWindow={hideWindow} progress={desktopUpdate.progress} />,
+        downloading: <Downloading hideWindow={hideWindow} progress={progress} />,
         ready: <Ready hideWindow={hideWindow} />,
     };
 

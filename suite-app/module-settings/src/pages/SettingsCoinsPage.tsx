@@ -5,7 +5,7 @@ import { AnimatePresence, type MotionProps, motion } from 'framer-motion';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { isCoinjoinSupportedSymbol } from '@suite/coinjoin';
 import { useDevice } from '@suite/device';
-import { selectFlags } from '@suite/flags';
+import { selectFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { openModal } from '@suite/modal';
@@ -52,7 +52,9 @@ const discoveryButtonAnimationConfig: MotionProps = {
 export const SettingsCoinsPage = () => {
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.tablet);
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const { firmwareTypeBannerClosed } = useSelector(selectFlags);
+    const firmwareTypeBannerClosed = useSelector(state =>
+        selectFlag(state, 'firmwareTypeBannerClosed'),
+    );
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const {
         showUnsupportedCoins,

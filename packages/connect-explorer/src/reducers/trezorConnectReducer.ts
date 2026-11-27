@@ -15,6 +15,7 @@ export type ConnectRootState = {
 };
 
 export const selectConnect = (state: ConnectRootState) => state.connect;
+export const selectConnectOptions = (state: ConnectRootState) => selectConnect(state)?.options;
 export const selectIsConnectInitializing = (state: ConnectRootState) =>
     state.connect?.isInitializing ?? false;
 export const selectIsConnectInitSuccess = (state: ConnectRootState) =>

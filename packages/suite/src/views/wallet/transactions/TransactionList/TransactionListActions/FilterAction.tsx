@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { selectFlags, setFlag } from '@suite/flags';
+import { selectFlag, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectHasActiveModal } from '@suite/modal';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -72,7 +72,9 @@ type FilterActionProps = {
 };
 
 export const FilterAction = ({ symbol }: FilterActionProps) => {
-    const { suspiciousTransactionsTooltipClosed } = useSelector(selectFlags);
+    const suspiciousTransactionsTooltipClosed = useSelector(state =>
+        selectFlag(state, 'suspiciousTransactionsTooltipClosed'),
+    );
     const suspiciousTransactionsFilter = useSelector(state =>
         selectSuspiciousTransactionsFilter(state, symbol),
     );

@@ -9,7 +9,7 @@ import {
     type WalletSettingsRootState,
     selectEnabledNetworks,
 } from '../settings/walletSettingsReducer';
-import { selectStake } from './shared/stakingSelectors';
+import { selectStakeDataState } from './shared/stakingSelectors';
 
 const STAKE_MODULE = '@common/wallet-core/stake';
 
@@ -37,7 +37,7 @@ export const initStakeDataThunk = createThunk<void, void, { state: InitStakeData
         if (isBtcOnly) return;
 
         // because fetch only happens every 5 minutes we fetch according all devices in case a device is changed within those 5 minutes
-        const needsRefetch = stakingDataNeedsRefetch(selectStake(getState()).data);
+        const needsRefetch = stakingDataNeedsRefetch(selectStakeDataState(getState()));
 
         if (!needsRefetch) return;
 

@@ -16,7 +16,11 @@ import {
     selectExperimentalFeatures,
     selectSuiteSettings,
 } from '@suite/settings';
-import { type DesktopSuiteSyncRootState, selectSuiteSync } from '@suite/suite-sync';
+import {
+    type DesktopSuiteSyncRootState,
+    selectIsUnsupportedDeviceBannerDismissed,
+    selectSuiteSync,
+} from '@suite/suite-sync';
 import {
     type AnalyticsRootState,
     selectAnalytics,
@@ -37,7 +41,7 @@ import {
     type MessageSystemRootState,
     selectAllManuallyAddedExperimentIds,
     selectAllManuallyAddedMessageIds,
-    selectMessageSystem,
+    selectDismissedMessages,
     selectMessageSystemConfig,
     selectMessageSystemConfigSource,
     selectMessageSystemCurrentSequence,
@@ -59,8 +63,8 @@ import {
     type WithSuiteSyncQuotaManagerState,
     selectEnforceQuotaManager,
     selectOwnersAllowance,
+    selectQuotaManagerBaseUrl,
     selectRegisteredDevices,
-    selectSuiteSyncQuotaManager,
 } from '@suite-common/suite-sync-quota-manager';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import type { TrezorDevice } from '@suite-common/suite-types';
@@ -894,7 +898,8 @@ export const saveSuiteSyncSettingsThunk =
                 isSuiteSyncEnabled: suiteSync.settings.isSuiteSyncEnabled,
                 isSuiteSyncDebugEnabled: selectIsSuiteSyncDebugEnabled(getState()),
                 suiteSyncRelayUrl: suiteSync.settings.suiteSyncRelayUrl,
-                isUnsupportedDeviceBannerDismissed: suiteSync.isUnsupportedDeviceBannerDismissed,
+                isUnsupportedDeviceBannerDismissed:
+                    selectIsUnsupportedDeviceBannerDismissed(getState()),
             },
             'suiteSyncSettings',
             true,
@@ -937,12 +942,10 @@ export const saveSuiteSyncQuotaManagerThunk =
     ) => {
         if (!extra.services.db.isAccessible()) return;
 
-        const suiteSyncQuotaManager = selectSuiteSyncQuotaManager(getState());
-
         return extra.services.db.addItem(
             'suiteSyncQuotaManager',
             {
-                baseUrl: suiteSyncQuotaManager.baseUrl,
+                baseUrl: selectQuotaManagerBaseUrl(getState()),
                 enforceQuotaManager: selectEnforceQuotaManager(getState()),
                 registeredDevices: selectRegisteredDevices(getState()),
                 ownersAllowance: selectOwnersAllowance(getState()),
@@ -1008,14 +1011,12 @@ export const saveMessageSystemThunk =
     ) => {
         if (!extra.services.db.isAccessible()) return;
 
-        const { dismissedMessages } = selectMessageSystem(getState());
-
         extra.services.db.addItem(
             'messageSystem',
             {
                 config: selectMessageSystemConfig(getState()),
                 currentSequence: selectMessageSystemCurrentSequence(getState()),
-                dismissedMessages,
+                dismissedMessages: selectDismissedMessages(getState()),
                 configSource: selectMessageSystemConfigSource(getState()),
                 manuallyAddedMessageIds: selectAllManuallyAddedMessageIds(getState()),
                 manuallyAddedExperimentIds: selectAllManuallyAddedExperimentIds(getState()),

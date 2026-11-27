@@ -1,7 +1,7 @@
 import { memo, useMemo } from 'react';
 
 import { useDevice } from '@suite/device';
-import { selectFlags, setFlag } from '@suite/flags';
+import { selectFlag, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { networksCollection } from '@suite-common/wallet-config';
 import {
@@ -53,7 +53,7 @@ export const PortfolioCard = memo(() => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
 
     const accounts = useSelector(selectAllAccountsToList);
-    const { dashboardGraphHidden } = useSelector(selectFlags);
+    const dashboardGraphHidden = useSelector(state => selectFlag(state, 'dashboardGraphHidden'));
     const { dispatch } = useServices(injectDispatch);
     const { device } = useDevice();
     const isBelowLaptop = useIsContentBelowBreakpoint(breakpoints.laptop);

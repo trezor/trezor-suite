@@ -175,6 +175,7 @@ export const flagsActions = flagsSlice.actions;
 export const prepareFlagsReducer = flagsSlice.prepareReducer;
 
 export const selectFlags = (state: FlagsRootState) => state.flags;
+export const selectFlag = (state: FlagsRootState, key: BooleanFlagKey) => selectFlags(state)[key];
 export const selectIsTokenYieldBannerClosed = (state: FlagsRootState, bannerKey: string) =>
     state.flags.closedTokenYieldBanners[bannerKey] === true;
 export const selectAssetPriceChartRange = (state: FlagsRootState) =>

@@ -19,6 +19,7 @@ export {
 export {
     selectEnforceQuotaManager,
     selectOwnersAllowance,
+    selectQuotaManagerBaseUrl,
     selectRegisteredDevices,
     selectShouldDisplayOutOfQuotaAlert,
     selectSuiteSyncQuotaManager,

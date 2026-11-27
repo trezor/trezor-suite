@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { selectFlags, setFlag } from '@suite/flags';
+import { selectFlag, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
 import { getBip43Type } from '@suite-common/wallet-utils';
@@ -21,7 +21,7 @@ const Dark = styled.span`
 `;
 
 export const TaprootBanner = ({ account }: TaprootBannerProps) => {
-    const { taprootBannerClosed } = useSelector(selectFlags);
+    const taprootBannerClosed = useSelector(state => selectFlag(state, 'taprootBannerClosed'));
     const { dispatch } = useServices(injectDispatch);
 
     const isVisible =

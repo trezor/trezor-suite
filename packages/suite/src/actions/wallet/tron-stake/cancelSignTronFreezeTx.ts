@@ -2,7 +2,7 @@ import { closeModal } from '@suite/modal';
 import {
     TRON_STAKE_PREFIX,
     type TronStakeRootState,
-    selectTronStakeTxReview,
+    selectTronStakeTxReviewSerializedTx,
 } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { createThunk } from '@trezor/redux-utils';
@@ -14,7 +14,7 @@ export const cancelSignTronFreezeTxThunk = createThunk<
     void,
     { state: CancelSignTronFreezeTxThunkState }
 >(`${TRON_STAKE_PREFIX}/thunk/cancelSignTronFreezeTx`, (_params, { dispatch, getState }) => {
-    const { serializedTx } = selectTronStakeTxReview(getState());
+    const serializedTx = selectTronStakeTxReviewSerializedTx(getState());
 
     if (!serializedTx) {
         TrezorConnect.cancel({ reason: 'tx-cancelled' });
