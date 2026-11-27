@@ -38,7 +38,7 @@ export const PortfolioAssetsNewBanner = () => {
         <CollapsibleBox
             isCollapsed={isClosed}
             paddingHorizontal="sp16"
-            paddingBottom="sp12"
+            paddingBottom="sp16"
             testID="@home/portfolio-assets/new-banner"
         >
             <HStack spacing="sp12" alignItems="center" style={applyStyle(bannerStyle)}>
