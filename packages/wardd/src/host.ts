@@ -120,6 +120,15 @@ const isCounter = (n: number) => Number.isInteger(n) && n >= 0 && n <= 0xfffffff
 const opt = (key: string, v: Uint8Array | null | undefined): Json =>
     v?.length ? { [key]: toHex(v) } : {};
 
+const liveStep = (a: Attestation) => ({
+    from_counter: a.fromCounter,
+    ...opt('from_root', rootOf(toHex(a.fromRoot))),
+    to_counter: a.toCounter,
+    ...opt('to_root', rootOf(toHex(a.toRoot))),
+    wm_signature: toHex(a.signature),
+    timestamp: a.timestamp,
+});
+
 export interface HostSyncResult {
     counter: number;
     root: string | null;
@@ -577,7 +586,7 @@ export class WardHost {
                 signature: toHex(att.signature),
             };
             // One per step. A newer one replaces it: a WM restored from a backup re-accepts a
-            // step later, and catch-up's timestamp floor wants the latest acceptance.
+            // step later, so retain the latest signed date for display.
             const key = attestationStepKey(proof);
             const kept = await this.backend.loadAttestations();
             if (
@@ -972,25 +981,7 @@ export class WardHost {
         return byStep;
     }
 
-    /**
-     * One sync round: the device's nonce, the WM's attestation of the step to its head, and then
-     * whichever adoption the two heads call for.
-     *
-     * - the device is AT the head, or ONE STEP behind it: `WardReconcile` with the link into it;
-     * - it is further behind ON THE SAME LINE: `WardVerifyChain`, the device walking back;
-     * - it is OFF the line (a fork): `WardRejoin`, ONLY when the caller says so -- it discards
-     *   the device's changes above the fork, and the user confirms that on the device;
-     * - it is AHEAD of the WM: the WM's register regressed, which only a rollback repairs.
-     */
-    private async syncInner(device: Device, opts: { rejoin?: boolean }): Promise<HostSyncResult> {
-        const { wm } = this;
-        if (!wm) {
-            // WITHOUT A WM a sync is a catch-up to the replica's head, which the device persists:
-            // genesis on first use, and after every write this host has stored
-            const r = await this.catchUpInner(device);
-
-            return { counter: r.counter, root: r.root, how: 'catchUp' };
-        }
+    private async openManagerRound(device: Device, wm: WmClient) {
         const challenge = await wm.challenge(this.wardId);
         const ack = expectReply(
             await device({ name: 'WardSync', message: { wm_challenge: toHex(challenge) } }),
@@ -1020,22 +1011,190 @@ export class WardHost {
             await this.onWmChange();
         }
         const nonce = toBytes(ack.nonce ?? '');
+        const att = await this.attestSession(wm, wardId, nonce, toBytes(ack.session_proof ?? ''));
+
+        return { dev, nonce, att };
+    }
+
+    recoveryTargets() {
+        return this.exclusive(async () => {
+            const head = await this.wm?.head(this.wardId);
+            if (!head) return [];
+            const rows = await this.backend.load();
+            const records = await this.receiptsByStep();
+            const targets = [];
+            const seen = new Set<string>();
+            for (const a of records.values()) {
+                if (a.toCounter >= head.counter) continue;
+                const key = `${a.toCounter}/${a.toRoot ?? ''}`;
+                if (seen.has(key)) continue;
+                const built = materialize(rows, { counter: a.toCounter, root: rootOf(a.toRoot) });
+                if (built.behind) continue;
+                const [link] = serveChain(built.trie, a.toCounter, a.toRoot, 1);
+                if (
+                    link &&
+                    stepKeyOf(link) !==
+                        stepKeyOf({
+                            from_counter: a.fromCounter,
+                            from_root: a.fromRoot ?? undefined,
+                            to_counter: a.toCounter,
+                            to_root: a.toRoot ?? undefined,
+                        })
+                )
+                    continue;
+                seen.add(key);
+                targets.push({ counter: a.toCounter, root: a.toRoot, timestamp: a.timestamp });
+            }
+
+            return targets.sort((a, b) => b.counter - a.counter);
+        });
+    }
+
+    revert(device: Device, counter: number, root: string | null) {
+        return this.exclusive(async () => {
+            const { wm } = this;
+            if (!wm || !isCounter(counter) || (root !== null && !/^[a-f0-9]{64}$/i.test(root))) {
+                throw new RelayFailure(
+                    'bad_request',
+                    'revert requires a manager and a target counter and root',
+                );
+            }
+            const target = { counter, root: rootOf(root) };
+            const rows = await this.backend.load();
+            const built = materialize(rows, target);
+            if (built.behind)
+                throw new RelayFailure('bad_request', 'missing records for the recovery target');
+
+            const link = serveChain(built.trie, counter, target.root, 1)[0];
+            if (counter && !link)
+                throw new RelayFailure('bad_request', 'missing target transition');
+            const step = link ?? { from_counter: 0, to_counter: 0 };
+            const receipt = (await this.receiptsByStep()).get(stepKeyOf(step));
+            if (!receipt)
+                throw new RelayFailure(
+                    'bad_request',
+                    'missing signed manager record for the target',
+                );
+
+            const { att, nonce } = await this.openManagerRound(device, wm);
+            if (target.counter >= att.toCounter) {
+                throw new RelayFailure(
+                    'bad_request',
+                    'the recovery target must precede the current manager head',
+                );
+            }
+            const reply = expectReply(
+                await this.answerChain(
+                    device,
+                    built.trie,
+                    await device({
+                        name: 'WardRollback',
+                        message: {
+                            ...liveStep(att),
+                            recovered_counter: counter,
+                            ...opt('recovered_root', target.root),
+                            attested_target: {
+                                ...step,
+                                acceptance: {
+                                    nonce: receipt.nonce,
+                                    wm_signature: receipt.signature,
+                                    timestamp: receipt.timestamp,
+                                },
+                            },
+                        },
+                    }),
+                ),
+                'WardRollbackAck',
+            );
+            const next = att.toCounter + 1;
+            const sig = toBytes(reply.wm_sig ?? '');
+            if (
+                reply.counter !== next ||
+                !sameRoot(rootOf(reply.new_root), target.root) ||
+                toBytes(reply.auth_commit ?? '').length !== 32 ||
+                !verifyWmSig(
+                    this.wardId,
+                    att.toCounter,
+                    att.toRoot,
+                    next,
+                    target.root,
+                    sig,
+                    TAG_WM_REVERT,
+                    nonce,
+                )
+            ) {
+                throw new RelayFailure(
+                    'device_failure',
+                    'invalid device authorization for the revert',
+                );
+            }
+            await this.backend.append({
+                fromCounter: att.toCounter,
+                fromRoot: hexOrNull(rootOf(toHex(att.toRoot))),
+                toCounter: next,
+                toRoot: hexOrNull(target.root),
+                operation: 'revert',
+                authCommit: reply.auth_commit,
+                wmSig: reply.wm_sig,
+                recoveredCounter: counter,
+                changes: [],
+            });
+            try {
+                const { acceptance } = await wm.advance({
+                    wardId: this.wardId,
+                    fromCounter: att.toCounter,
+                    fromRoot: att.toRoot,
+                    toCounter: next,
+                    toRoot: target.root,
+                    wmSig: sig,
+                    session: nonce,
+                });
+                await this.keepAttestation(acceptance, acceptance.nonce);
+            } catch (e) {
+                if (e instanceof WmConflict)
+                    throw new RelayFailure('wm_conflict', 'manager head changed during revert');
+                throw e;
+            }
+            await this.onWmChange();
+            const synced = await this.syncInner(device, { approvedRevert: next });
+
+            return { counter: next, root: hexOrNull(target.root), synced };
+        });
+    }
+
+    /**
+     * One sync round: the device's nonce, the WM's attestation of the step to its head, and then
+     * whichever adoption the two heads call for.
+     *
+     * - the device is AT the head, or ONE STEP behind it: `WardReconcile` with the link into it;
+     * - it is further behind ON THE SAME LINE: `WardVerifyChain`, the device walking back;
+     * - it is OFF the line (a fork): `WardRejoin`, ONLY when the caller says so -- it discards
+     *   the device's changes above the fork, and the user confirms that on the device;
+     * - it is AHEAD of the WM: the WM's register regressed, which only a rollback repairs.
+     */
+    private async syncInner(
+        device: Device,
+        opts: { rejoin?: boolean; approvedRevert?: number },
+    ): Promise<HostSyncResult> {
+        const { wm } = this;
+        if (!wm) {
+            // WITHOUT A WM a sync is a catch-up to the replica's head, which the device persists:
+            // genesis on first use, and after every write this host has stored
+            const r = await this.catchUpInner(device);
+
+            return { counter: r.counter, root: r.root, how: 'catchUp' };
+        }
+        const round = await this.openManagerRound(device, wm);
+        const { nonce, dev } = round;
         const ingest = async (a: Attestation) =>
             expectReply(
                 await device({
                     name: 'WardIngestAttestation',
-                    message: {
-                        from_counter: a.fromCounter,
-                        ...opt('from_root', rootOf(toHex(a.fromRoot))),
-                        to_counter: a.toCounter,
-                        ...opt('to_root', rootOf(toHex(a.toRoot))),
-                        wm_signature: toHex(a.signature),
-                        timestamp: a.timestamp,
-                    },
+                    message: liveStep(a),
                 }),
                 'WardIngestAttestationAck',
             );
-        let att = await this.attestSession(wm, wardId, nonce, toBytes(ack.session_proof ?? ''));
+        let { att } = round;
         let ingested = await ingest(att);
         // THE DEVICE DETECTS a WM restored below its head; the round stays open for the roll-forward
         let rolledForward: RollForwardResult | undefined;
@@ -1096,7 +1255,20 @@ export class WardHost {
             // AT THE HEAD, OR ONE STEP BELOW IT: the link into the head. At the same counter on
             // another branch, or one below it on another branch, the device refuses -- it holds
             // the root this host was not told.
-            if (dev.counter === to.counter || dev.counter === from.counter) {
+            // A caller may have lost the publication reply. If the history has a gap,
+            // the device can still recognize the exact revert it approved in this session.
+            const missingRevertHistory =
+                into?.operation === 'revert' &&
+                dev.counter < from.counter &&
+                !trie
+                    .linksEndingAt(from.counter, from.root, trie.links.length)
+                    .some(link => link.fromCounter === dev.counter);
+            if (
+                dev.counter === to.counter ||
+                dev.counter === from.counter ||
+                (opts.approvedRevert === to.counter && into?.operation === 'revert') ||
+                missingRevertHistory
+            ) {
                 const r = expectReply(
                     await device({
                         name: 'WardReconcile',

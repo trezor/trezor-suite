@@ -175,6 +175,7 @@ export const WardRollback = Type.Object(
         timestamp: Type.Optional(Type.Number()),
         recovered_root: Type.Optional(Type.String()),
         recovered_counter: Type.Optional(Type.Number()),
+        attested_target: Type.Optional(WardChainLink),
     },
     { $id: 'WardRollback' },
 );

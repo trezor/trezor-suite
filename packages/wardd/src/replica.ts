@@ -27,14 +27,44 @@ const sameRoot = (a: Uint8Array | null, b: Uint8Array | null) =>
 const showRoot = (root: Uint8Array | null) =>
     !root || equalBytes(root, EMPTY_ROOT) ? 'empty' : `${toHex(root).slice(0, 12)}…`;
 
-/** Genesis-to-head, oldest first; null if the walk back does not reach the empty tree at 0. */
-const chainTo = (trie: WardTrie, head: Head): Link[] | null => {
-    if (head.counter === 0) return sameRoot(head.root, null) ? [] : null;
-    const back = trie.linksEndingAt(head.counter, head.root, Number.MAX_SAFE_INTEGER);
-    const oldest = back[back.length - 1];
-    if (oldest?.fromCounter !== 0 || !sameRoot(oldest.fromRoot, null)) return null;
+const headKey = (counter: number, root: Uint8Array | null) =>
+    `${counter}/${toHex(root ?? EMPTY_ROOT)}`;
 
-    return back.reverse();
+/** Replay builds a revert from its target's leaves. The history served to devices
+ * still records the actual transition from the manager's predecessor. */
+const chainTo = (
+    incoming: Map<string, Link>,
+    stored: Map<Link, StoredLink>,
+    head: Head,
+): Link[] | null => {
+    const back: Link[] = [];
+    let { counter, root } = head;
+    while (counter > 0) {
+        const link = incoming.get(headKey(counter, root));
+        if (!link || link.fromCounter >= counter || link.fromCounter < 0) return null;
+        back.push(link);
+        if (link.operation === 'revert') {
+            const row = stored.get(link)!;
+            const target = row.recoveredCounter;
+            if (
+                target === undefined ||
+                !Number.isInteger(target) ||
+                target < 0 ||
+                target > link.fromCounter ||
+                counter !== link.fromCounter + 1 ||
+                row.changes.length
+            ) {
+                return null;
+            }
+            counter = target;
+            root = link.toRoot;
+        } else {
+            counter = link.fromCounter;
+            root = link.fromRoot;
+        }
+    }
+
+    return counter === 0 && sameRoot(root, null) ? back.reverse() : null;
 };
 
 /** One attempt: the replica, or the first row on the chosen chain that is corrupt. */
@@ -45,6 +75,7 @@ const build = (
 ): Omit<Replica, 'corrupt'> | { corrupt: StoredLink } => {
     const trie = new WardTrie();
     const stored = new Map<Link, StoredLink>();
+    const incoming = new Map<string, Link>();
     for (const s of links) {
         const link = trie.record(
             {
@@ -58,10 +89,11 @@ const build = (
             s.wmSig ? toBytes(s.wmSig) : undefined,
         );
         stored.set(link, s);
+        incoming.set(headKey(link.toCounter, link.toRoot), link);
     }
 
     let head: Head = { counter: 0, root: null };
-    let chain: Link[] | null = want ? chainTo(trie, want) : null;
+    let chain: Link[] | null = want ? chainTo(incoming, stored, want) : null;
     const behind = !!want && !chain;
     if (want && chain) {
         head = want;
@@ -69,7 +101,7 @@ const build = (
         const candidates = [...trie.links].sort((a, b) => b.toCounter - a.toCounter);
         chain = [];
         for (const c of candidates) {
-            const reach = chainTo(trie, { counter: c.toCounter, root: c.toRoot });
+            const reach = chainTo(incoming, stored, { counter: c.toCounter, root: c.toRoot });
             if (reach) {
                 head = { counter: c.toCounter, root: c.toRoot };
                 chain = reach;

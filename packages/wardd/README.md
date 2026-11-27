@@ -1,7 +1,8 @@
 # The local WARD service
 
 wardd runs separately from Suite desktop on the machine connected to the Trezor. It stores encrypted
-changes in an Evolu replica and rebuilds the wallet tree to serve proofs. Wallet integrations reach
+changes in its local Evolu database, which Evolu synchronizes between hosts, and rebuilds the wallet
+tree from the records its host has received to serve proofs. Wallet integrations reach
 it through the [WARD relay](../ward-core/relay.md).
 
 ## Publication

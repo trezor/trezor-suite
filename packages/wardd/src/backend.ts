@@ -36,6 +36,8 @@ export interface StoredLink {
     toRoot: string | null;
     authCommit: string;
     operation: 'commit' | 'revert';
+    /** A revert rebuilds the prior tree at (recoveredCounter, toRoot). */
+    recoveredCounter?: number;
     /** the device's WM authorisation for this step, kept so it can be (re)published */
     wmSig: string | null;
     changes: StoredChange[];

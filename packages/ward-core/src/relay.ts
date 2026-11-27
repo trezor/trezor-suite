@@ -42,6 +42,10 @@ export type RelayMethod =
      * (`WardCatchUp`). Reads stay "not proven current"; nothing is persisted on the device.
      */
     | 'catchUp'
+    /** Confirm and publish a revert to a locally buildable, attested { counter, root }. */
+    | 'revert'
+    /** Buildable historical targets with their manager-signed display dates. */
+    | 'recoveryTargets'
     /**
      * ADVERSARIAL TESTS, on a wardd started with `--adversarial-tests` only: offer the device an
      * older head (`{ counter }`), or answer a pull from the tree at one (`{ request, counter }`).

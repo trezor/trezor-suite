@@ -391,7 +391,7 @@ export class FakeDevice {
 
     /**
      * WardCatchUp: like the firmware, the named head must carry a cached WM attestation (verified
-     * over the nonce the host supplies, no older than the stored head's), and the walk back from
+     * over the nonce the host supplies), and the walk back from
      * it must land on the stored head. The fake keeps the head it reads from apart.
      */
     *onWardCatchUp(m: Json): Workflow {
@@ -432,9 +432,6 @@ export class FakeDevice {
         const preimage = attestationPreimage(toBytes(m.nonce), this.wardId, body);
         if (!ed25519.verify(toBytes(m.wm_signature), preimage, this.wmPubkey)) {
             throw new Error('the WM never attested that head');
-        }
-        if (this.headTime !== null && m.timestamp < this.headTime) {
-            throw new Error("that head was attested before this device's head");
         }
         const landed = yield* this.walk(to, this.head.counter);
         if (!same(landed, this.head)) throw new Error('that head does not descend');

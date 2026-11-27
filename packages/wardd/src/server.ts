@@ -265,6 +265,17 @@ export const startServer = async (opts: ServerOptions) => {
                 }
                 case 'sync':
                     return { ...(await host.sync(device, { rejoin: !!p.rejoin })) };
+                case 'recoveryTargets':
+                    return { targets: await host.recoveryTargets() };
+                case 'revert':
+                    if (
+                        typeof p.counter !== 'number' ||
+                        (p.root !== null && typeof p.root !== 'string')
+                    ) {
+                        throw new RelayFailure('bad_request', 'supply the target counter and root');
+                    }
+
+                    return { ...(await host.revert(device, p.counter, p.root)) };
                 case 'catchUp':
                     return { ...(await host.catchUp(device)) };
                 case 'flush':

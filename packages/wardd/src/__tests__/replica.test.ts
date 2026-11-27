@@ -92,13 +92,46 @@ it('characterizes predecessor lookup work during a linear replica rebuild', () =
                 changes: [],
             }));
             expect(materialize(links, { counter: count, root: null }).head.counter).toBe(count);
-            // Current cost, independent of machine speed. Replace this with a linear
-            // bound when predecessor lookup is indexed.
-            expect(inspected).toBe((count * (count + 1)) / 2 + count);
+            // Rebuild indexes the incoming transitions before following the tree dependencies.
+            expect(inspected).toBeLessThanOrEqual(count);
         }
     } finally {
         walk.mockRestore();
     }
+});
+
+it('rebuilds the reverted tree with or without the discarded records', async () => {
+    const { a, backend, host } = setup({ wm: false });
+    a.enqueue('alice', 'kept');
+    await host.flush(a.call);
+    const target = await rowInto(backend, 1);
+    a.enqueue('bob', 'later');
+    await host.flush(a.call);
+    const late = await rowInto(backend, 2);
+    const revert: StoredLink = {
+        operation: 'revert',
+        recoveredCounter: 1,
+        fromCounter: 2,
+        fromRoot: late.toRoot,
+        toCounter: 3,
+        toRoot: target.toRoot,
+        changes: [],
+        authCommit: hex(32),
+        wmSig: null,
+    };
+    const want = { counter: 3, root: Uint8Array.from(Buffer.from(target.toRoot!, 'hex')) };
+    for (const rows of [
+        [revert, target],
+        [late, revert, target],
+    ]) {
+        const rebuilt = materialize(rows, want);
+        expect(rebuilt.behind).toBe(false);
+        expect(rebuilt.trie.root()).toEqual(want.root);
+        expect(rebuilt.trie.size).toBe(1);
+        expect(rebuilt.trie.linksEndingAt(3, want.root, 1)[0]?.fromCounter).toBe(2);
+    }
+    expect(materialize([revert, late], want).behind).toBe(true);
+    expect(materialize([target, { ...revert, recoveredCounter: 3 }], want).behind).toBe(true);
 });
 
 describe('the replica with a corrupt row', () => {
