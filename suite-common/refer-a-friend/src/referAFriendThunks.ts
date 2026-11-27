@@ -18,7 +18,10 @@ import {
     referralProgramSchema,
     referralVouchersResponseSchema,
 } from './referAFriendSchemas';
-import { selectDoesReferralRecordExistForWalletDescriptor } from './referAFriendSelectors';
+import {
+    selectDoesReferralRecordExistForWalletDescriptor,
+    selectReferralAccountStateByWalletDescriptor,
+} from './referAFriendSelectors';
 import { type ReferAFriendRootState, referAFriendActions } from './referAFriendSlice';
 import { type ReferralError } from './referAFriendTypes';
 import { type ReferralKey } from './referralKey';
@@ -35,6 +38,11 @@ type DeviceIdParams = {
 
 type WalletDescriptorParams = {
     walletDescriptor: WalletDescriptor;
+};
+
+export type ReferralBackgroundRefreshParams = {
+    // Refreshes data already on screen: no loading state, and failures keep the previous data.
+    isBackgroundRefresh?: boolean;
 };
 
 type ReferralActionResult = Result<void, ReferralError>;
@@ -111,7 +119,14 @@ type ReferralAccountRequestParams = WalletDescriptorParams & {
     referAFriend: ReferAFriendDep['referAFriend'];
 };
 
-type ApplyReferralAccountParams = ReferralAccountRequestParams & {
+type ReferralAccountSyncOptions = ReferralBackgroundRefreshParams & {
+    // A response arriving after the user left the program must not bring the account back.
+    isWalletRecordRemoved?: () => boolean;
+};
+
+type SyncReferralAccountParams = ReferralAccountRequestParams & ReferralAccountSyncOptions;
+
+type ApplyReferralAccountParams = SyncReferralAccountParams & {
     account: ReferralAccount;
 };
 
@@ -125,6 +140,8 @@ const applyReferralAccount = async ({
     referralKey,
     dispatch,
     referAFriend,
+    isBackgroundRefresh = false,
+    isWalletRecordRemoved = () => false,
 }: ApplyReferralAccountParams): Promise<ReferralActionResult> => {
     switch (account.status) {
         case 'none':
@@ -168,10 +185,19 @@ const applyReferralAccount = async ({
         referralKey,
     });
 
+    if (isWalletRecordRemoved()) {
+        return ok(undefined);
+    }
+
     if (!vouchersResult.success) {
-        dispatch(
-            referAFriendActions.accountFailed({ walletDescriptor, error: vouchersResult.error }),
-        );
+        if (!isBackgroundRefresh) {
+            dispatch(
+                referAFriendActions.accountFailed({
+                    walletDescriptor,
+                    error: vouchersResult.error,
+                }),
+            );
+        }
 
         return vouchersResult;
     }
@@ -195,7 +221,7 @@ const applyReferralAccount = async ({
 };
 
 const syncReferralAccount = async (
-    params: ReferralAccountRequestParams,
+    params: SyncReferralAccountParams,
 ): Promise<ReferralActionResult> => {
     const accountResult = await params.referAFriend.referralApiFetch({
         method: 'GET',
@@ -203,13 +229,19 @@ const syncReferralAccount = async (
         referralKey: params.referralKey,
     });
 
+    if (params.isWalletRecordRemoved?.()) {
+        return ok(undefined);
+    }
+
     if (!accountResult.success) {
-        params.dispatch(
-            referAFriendActions.accountFailed({
-                walletDescriptor: params.walletDescriptor,
-                error: accountResult.error,
-            }),
-        );
+        if (!params.isBackgroundRefresh) {
+            params.dispatch(
+                referAFriendActions.accountFailed({
+                    walletDescriptor: params.walletDescriptor,
+                    error: accountResult.error,
+                }),
+            );
+        }
 
         return accountResult;
     }
@@ -269,10 +301,14 @@ export type FetchReferralProgramThunkDeps = ReferAFriendThunkDeps;
 
 export const fetchReferralProgramThunk = createThunk<
     void,
-    void,
+    ReferralBackgroundRefreshParams | undefined,
     { extra: FetchReferralProgramThunkDeps }
->(`${REFER_A_FRIEND_MODULE}/fetchReferralProgramThunk`, async (_, { dispatch, extra }) => {
-    dispatch(referAFriendActions.programRequested());
+>(`${REFER_A_FRIEND_MODULE}/fetchReferralProgramThunk`, async (params, { dispatch, extra }) => {
+    const isBackgroundRefresh = params?.isBackgroundRefresh ?? false;
+
+    if (!isBackgroundRefresh) {
+        dispatch(referAFriendActions.programRequested());
+    }
 
     const result = await extra.services.referAFriend.referralApiFetch({
         method: 'GET',
@@ -280,7 +316,9 @@ export const fetchReferralProgramThunk = createThunk<
     });
 
     if (!result.success) {
-        dispatch(referAFriendActions.programFailed(result.error));
+        if (!isBackgroundRefresh) {
+            dispatch(referAFriendActions.programFailed(result.error));
+        }
 
         return;
     }
@@ -290,7 +328,10 @@ export const fetchReferralProgramThunk = createThunk<
     if (!programResult.success) {
         // Program data is public, nothing sensitive, we can dump it to Sentry as is.
         console.error('Referral API: invalid GET v1/program response', result.payload);
-        dispatch(referAFriendActions.programFailed({ message: 'Invalid program response' }));
+
+        if (!isBackgroundRefresh) {
+            dispatch(referAFriendActions.programFailed({ message: 'Invalid program response' }));
+        }
 
         return;
     }
@@ -309,11 +350,11 @@ export type FetchReferralAccountThunkDeps = ReferAFriendThunkDeps;
  */
 export const fetchReferralAccountThunk = createThunk<
     void,
-    DeviceIdParams,
+    DeviceIdParams & ReferralBackgroundRefreshParams,
     { state: FetchReferralAccountThunkState; extra: FetchReferralAccountThunkDeps }
 >(
     `${REFER_A_FRIEND_MODULE}/fetchReferralAccountThunk`,
-    async ({ deviceId }, { dispatch, getState, extra }) => {
+    async ({ deviceId, isBackgroundRefresh = false }, { dispatch, getState, extra }) => {
         const { referAFriend } = extra.services;
         const walletDescriptor = selectStandardWalletDescriptorByDeviceId(getState(), deviceId);
 
@@ -325,7 +366,17 @@ export const fetchReferralAccountThunk = createThunk<
             return;
         }
 
-        dispatch(referAFriendActions.accountRequested({ walletDescriptor }));
+        if (isBackgroundRefresh) {
+            // Join, key derivation and leave load or remove the account themselves.
+            const { pendingAction } = selectReferralAccountStateByWalletDescriptor(
+                getState(),
+                walletDescriptor,
+            );
+
+            if (pendingAction !== null) return;
+        } else {
+            dispatch(referAFriendActions.accountRequested({ walletDescriptor }));
+        }
 
         const referralKey = await referAFriend.loadReferralKey({ walletDescriptor });
 
@@ -335,7 +386,15 @@ export const fetchReferralAccountThunk = createThunk<
             return;
         }
 
-        await syncReferralAccount({ walletDescriptor, referralKey, dispatch, referAFriend });
+        await syncReferralAccount({
+            walletDescriptor,
+            referralKey,
+            dispatch,
+            referAFriend,
+            isBackgroundRefresh,
+            isWalletRecordRemoved: () =>
+                !selectDoesReferralRecordExistForWalletDescriptor(getState(), walletDescriptor),
+        });
     },
 );
 

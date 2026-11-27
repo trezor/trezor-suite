@@ -5,6 +5,7 @@ export {
     createReferAFriendCompositionRoot,
 } from './createReferAFriendCompositionRoot';
 export { getReferralRewardsSummary } from './getReferralRewardsSummary';
+export { REFER_A_FRIEND_REFRESH_INTERVAL_MS } from './referAFriendConstants';
 export {
     type ReferAFriendRootState,
     type ReferAFriendState,

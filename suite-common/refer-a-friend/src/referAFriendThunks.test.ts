@@ -13,6 +13,7 @@ import {
 } from './referAFriendSchemas';
 import {
     type ReferAFriendState,
+    initialAccountState,
     referAFriendActions,
     referAFriendInitialState,
 } from './referAFriendSlice';
@@ -120,11 +121,15 @@ const setup = ({
     apiResponses = {},
 }: SetupParams = {}) => {
     // The account loading needs the records, the actions only the devices.
-    const state: FetchReferralAccountThunkState = {
+    let state: FetchReferralAccountThunkState = {
         referAFriend: { ...referAFriendInitialState, wallets: walletRecords },
         device: { ...deviceInitialState, devices },
     };
     const getState = () => state;
+    // A new state object like a real store would create, so that memoized selectors notice the change.
+    const setReferAFriendState = (referAFriendState: Partial<ReferAFriendState>) => {
+        state = { ...state, referAFriend: { ...state.referAFriend, ...referAFriendState } };
+    };
     const extra = createMockDeps<JoinReferralProgramThunkDeps>({
         services: {
             referAFriend: {
@@ -145,7 +150,15 @@ const setup = ({
     const getRequests = () =>
         referAFriend.referralApiFetch.mock.calls.map(([params]) => getRequestName(params));
 
-    return { actions, dispatch, getState, extra, referAFriend, getRequests };
+    return {
+        actions,
+        dispatch,
+        getState,
+        setReferAFriendState,
+        extra,
+        referAFriend,
+        getRequests,
+    };
 };
 
 describe('fetchReferralProgramThunk', () => {
@@ -199,6 +212,32 @@ describe('fetchReferralProgramThunk', () => {
 
         expect(actions).toContainEqual(
             referAFriendActions.programFailed({ message: 'Invalid program response' }),
+        );
+    });
+
+    it('refreshes the program in the background without the loading state', async () => {
+        const { actions, dispatch, getState, extra } = setup({
+            apiResponses: { 'GET v1/program': ok(program) },
+        });
+
+        await fetchReferralProgramThunk({ isBackgroundRefresh: true })(dispatch, getState, extra);
+
+        expect(actions).not.toContainEqual(referAFriendActions.programRequested());
+        expect(actions).toContainEqual(referAFriendActions.programLoaded(program));
+    });
+
+    it('keeps the previous program when a background refresh fails', async () => {
+        const { actions, dispatch, getState, extra } = setup({
+            apiResponses: { 'GET v1/program': err({ message: 'Network error' }) },
+        });
+
+        await fetchReferralProgramThunk({ isBackgroundRefresh: true })(dispatch, getState, extra);
+
+        expect(actions).not.toContainEqual(
+            expect.objectContaining({ type: referAFriendActions.programRequested.type }),
+        );
+        expect(actions).not.toContainEqual(
+            expect.objectContaining({ type: referAFriendActions.programFailed.type }),
         );
     });
 });
@@ -354,6 +393,111 @@ describe('fetchReferralAccountThunk', () => {
         expect(actions).toContainEqual(
             referAFriendActions.accountFailed({ walletDescriptor: WALLET_DESCRIPTOR, error }),
         );
+    });
+
+    it('discards the response when the wallet record is removed during the request', async () => {
+        const { actions, dispatch, getState, setReferAFriendState, extra, referAFriend } = setup();
+        // Simulates leaving the program while the request is in flight.
+        referAFriend.referralApiFetch.mockImplementation(() => {
+            setReferAFriendState({ wallets: {} });
+
+            return Promise.resolve(ok(activeAccount));
+        });
+
+        await fetchReferralAccountThunk({ deviceId: DEVICE_ID })(dispatch, getState, extra);
+
+        expect(actions).not.toContainEqual(
+            expect.objectContaining({ type: referAFriendActions.setReferralLink.type }),
+        );
+        expect(actions).not.toContainEqual(
+            expect.objectContaining({ type: referAFriendActions.accountLoaded.type }),
+        );
+    });
+
+    it('discards the vouchers when the wallet record is removed during their request', async () => {
+        const { actions, dispatch, getState, setReferAFriendState, extra, referAFriend } = setup();
+        referAFriend.referralApiFetch.mockImplementation(({ endpoint }) => {
+            if (endpoint === 'v1/account') return Promise.resolve(ok(activeAccount));
+
+            setReferAFriendState({ wallets: {} });
+
+            return Promise.resolve(err({ message: 'Network error' }));
+        });
+
+        await fetchReferralAccountThunk({ deviceId: DEVICE_ID })(dispatch, getState, extra);
+
+        expect(actions).not.toContainEqual(
+            expect.objectContaining({ type: referAFriendActions.accountFailed.type }),
+        );
+    });
+
+    describe('background refresh', () => {
+        it('reloads the account without the loading state', async () => {
+            const { actions, dispatch, getState, extra } = setup({
+                apiResponses: {
+                    'GET v1/account': ok(activeAccount),
+                    'GET v1/vouchers': ok({ vouchers }),
+                },
+            });
+
+            await fetchReferralAccountThunk({ deviceId: DEVICE_ID, isBackgroundRefresh: true })(
+                dispatch,
+                getState,
+                extra,
+            );
+
+            expect(actions).not.toContainEqual(
+                referAFriendActions.accountRequested({ walletDescriptor: WALLET_DESCRIPTOR }),
+            );
+            expect(actions).toContainEqual(
+                referAFriendActions.accountLoaded({
+                    walletDescriptor: WALLET_DESCRIPTOR,
+                    account: activeAccount,
+                    vouchers,
+                }),
+            );
+        });
+
+        it.each([
+            ['account', { 'GET v1/account': err({ message: 'Network error' }) }],
+            [
+                'vouchers',
+                {
+                    'GET v1/account': ok(activeAccount),
+                    'GET v1/vouchers': err({ message: 'Network error' }),
+                },
+            ],
+        ])('keeps the previous data when the %s request fails', async (_, apiResponses) => {
+            const { actions, dispatch, getState, extra } = setup({ apiResponses });
+
+            await fetchReferralAccountThunk({ deviceId: DEVICE_ID, isBackgroundRefresh: true })(
+                dispatch,
+                getState,
+                extra,
+            );
+
+            expect(actions).not.toContainEqual(
+                expect.objectContaining({ type: referAFriendActions.accountFailed.type }),
+            );
+        });
+
+        it('skips the refresh while an action on the account is pending', async () => {
+            const { dispatch, getState, setReferAFriendState, extra, referAFriend } = setup();
+            setReferAFriendState({
+                accounts: {
+                    [WALLET_DESCRIPTOR]: { ...initialAccountState, pendingAction: 'leave' },
+                },
+            });
+
+            await fetchReferralAccountThunk({ deviceId: DEVICE_ID, isBackgroundRefresh: true })(
+                dispatch,
+                getState,
+                extra,
+            );
+
+            expect(referAFriend.loadReferralKey).not.toHaveBeenCalled();
+            expect(referAFriend.referralApiFetch).not.toHaveBeenCalled();
+        });
     });
 });
 
