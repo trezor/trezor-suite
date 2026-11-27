@@ -1,16 +1,26 @@
+import { mockCustomEvmNetworkConfigParams } from '@trezor/network-ethereum-suite-common/mocks';
+
+import { registerLegacyCustomEvmNetwork } from './customEvmNetworks';
 import { type Network, asNetworkSymbol } from './networkTypes';
 import {
     filterNetworksByName,
     getDisplaySymbol,
     getMainnets,
+    getNetworkByEvmChainId,
+    getNetworkOptional,
     getNetworks,
     getNetworksWithMevProtection,
     getNetworksWithNativeTokenReserve,
+    getSupportedNetworks,
     getTestnets,
     isAccountBasedNetwork,
     isAccountOfNetwork,
+    isNetworkSymbol,
     isNetworkUsingExternalBackend,
     isSingleAccountType,
+    networksCollection,
+    registerLegacyNetwork,
+    unregisterLegacyNetwork,
 } from './utils';
 
 // The legacy configs carry plain literal symbols; the shared Network API takes branded ones.
@@ -190,5 +200,58 @@ describe(getDisplaySymbol.name, () => {
 
     it('returns long token symbols whole', () => {
         expect(getDisplaySymbol('SUPERLONGTOKEN')).toBe('SUPERLONGTOKEN');
+    });
+});
+
+describe('runtime networks', () => {
+    const symbol = asNetworkSymbol('evm4242');
+    const definition = { symbol, ...mockCustomEvmNetworkConfigParams() };
+
+    afterEach(() => unregisterLegacyNetwork(symbol));
+
+    it('shows a registered network to every registry reader, including earlier references', () => {
+        const supportedNetworks = getSupportedNetworks();
+        const collectionLength = networksCollection.length;
+
+        registerLegacyCustomEvmNetwork(definition);
+
+        expect(isNetworkSymbol(symbol)).toBe(true);
+        expect(getNetworkOptional(symbol)?.name).toBe('Custom Chain');
+        expect(getNetworkOptional(symbol)?.symbol).toBe(symbol);
+        expect(getNetworkByEvmChainId(4242)?.symbol).toBe(symbol);
+        expect(supportedNetworks).toContain(symbol);
+        expect(networksCollection).toHaveLength(collectionLength + 1);
+        expect(getMainnets().map(n => n.symbol)).toContain(symbol);
+        expect(isNetworkUsingExternalBackend(symbol)).toBe(false);
+        expect(isAccountBasedNetwork(symbol)).toBe(true);
+    });
+
+    it('replaces a network registered twice instead of duplicating it', () => {
+        registerLegacyCustomEvmNetwork(definition);
+        registerLegacyCustomEvmNetwork({ ...definition, name: 'Renamed' });
+
+        expect(getSupportedNetworks().filter(s => s === symbol)).toHaveLength(1);
+        expect(networksCollection.filter(n => n.symbol === symbol)).toHaveLength(1);
+        expect(getNetworkOptional(symbol)?.name).toBe('Renamed');
+    });
+
+    it('forgets an unregistered network everywhere', () => {
+        const collectionLength = networksCollection.length;
+
+        registerLegacyCustomEvmNetwork(definition);
+        unregisterLegacyNetwork(symbol);
+
+        expect(isNetworkSymbol(symbol)).toBe(false);
+        expect(getNetworkOptional(symbol)).toBeUndefined();
+        expect(getSupportedNetworks()).not.toContain(symbol);
+        expect(networksCollection).toHaveLength(collectionLength);
+    });
+
+    it('refuses to replace or remove a predefined network', () => {
+        expect(() =>
+            registerLegacyNetwork(ethereum.symbol, { ...legacyEthereum, ...ethereum }),
+        ).toThrow('is predefined');
+        expect(() => unregisterLegacyNetwork(ethereum.symbol)).toThrow('is predefined');
+        expect(isNetworkSymbol(ethereum.symbol)).toBe(true);
     });
 });

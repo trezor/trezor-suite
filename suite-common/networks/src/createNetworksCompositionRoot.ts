@@ -1,5 +1,6 @@
 import type { Dispatch } from '@reduxjs/toolkit';
 
+import type { CreateCustomEvmNetworkModuleDep } from './CreateCustomEvmNetworkModule';
 import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
 import type { NetworksServices } from './NetworksServices';
 import { createAddressValidator } from './createAddressValidator';
@@ -12,8 +13,11 @@ import { createGetNetworkConfigs } from './createGetNetworkConfigs';
 import { createIsWrappedNativeToken } from './createIsWrappedNativeToken';
 import { createLoadNetworkModules } from './createLoadNetworkModules';
 import { createNetworkIcon } from './createNetworkIcon';
+import { createRegisterCustomEvmNetwork } from './createRegisterCustomEvmNetwork';
+import { createUnregisterCustomEvmNetwork } from './createUnregisterCustomEvmNetwork';
 
-export type NetworksCompositionRootDeps = NetworkModuleRepositoryDep & { dispatch: Dispatch };
+export type NetworksCompositionRootDeps = NetworkModuleRepositoryDep &
+    CreateCustomEvmNetworkModuleDep & { dispatch: Dispatch };
 
 export const createNetworksCompositionRoot = (
     deps: NetworksCompositionRootDeps,
@@ -41,6 +45,19 @@ export const createNetworksCompositionRoot = (
         loadNetworkModules: createLoadNetworkModules({
             dispatch: deps.dispatch,
             getNetworkConfigs,
+            networkModuleRepository,
+            createCustomEvmNetworkModule: deps.createCustomEvmNetworkModule,
+        }),
+        registerCustomEvmNetwork: createRegisterCustomEvmNetwork({
+            dispatch: deps.dispatch,
+            getNetworkConfigs,
+            networkModuleRepository,
+            createCustomEvmNetworkModule: deps.createCustomEvmNetworkModule,
+        }),
+        unregisterCustomEvmNetwork: createUnregisterCustomEvmNetwork({
+            dispatch: deps.dispatch,
+            getNetworkConfigs,
+            networkModuleRepository,
         }),
     };
 };

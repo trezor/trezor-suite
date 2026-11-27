@@ -1,4 +1,5 @@
 export * from './backends';
+export * from './customEvmNetworks';
 export * from './earnRewardsProvider';
 export * from './legacyNetworks';
 export * from './representativeAssets';

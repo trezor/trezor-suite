@@ -1,5 +1,11 @@
 export { networks, type LegacyNetworkSymbol } from './networksConfig';
 export {
+    getRuntimeLegacyNetworks,
+    registerLegacyNetwork,
+    unregisterLegacyNetwork,
+    type RuntimeNetwork,
+} from './runtimeNetworks';
+export {
     TREZOR_CONNECT_BACKENDS,
     type AccountType,
     type BackendOption,
