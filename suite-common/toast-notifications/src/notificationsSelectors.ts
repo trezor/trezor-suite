@@ -19,7 +19,7 @@ export const selectTransactionNotifications = createMemoizedSelector(
 );
 
 export const selectHasUnseenTransactionNotifications = (state: NotificationsRootState): boolean =>
-    state.notifications?.some(n => !n.seen && isTransactionNotification(n)) ?? false;
+    selectNotifications(state)?.some(n => !n.seen && isTransactionNotification(n)) ?? false;
 
 type EarnTransactionNotification = Extract<NotificationEntry, { stage: EarnTransactionStage }>;
 
@@ -32,7 +32,7 @@ export const selectEarnTransactionNotifications = (
     state: NotificationsRootState,
     { descriptor, symbol, txid }: EarnTransactionNotificationRef,
 ): EarnTransactionNotification[] =>
-    state.notifications?.filter(
+    selectNotifications(state)?.filter(
         (notification): notification is EarnTransactionNotification =>
             'stage' in notification &&
             notification.txid === txid &&
