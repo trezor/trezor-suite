@@ -1,4 +1,9 @@
-import { type AnalyticsDep } from '@suite-common/analytics';
+import {
+    type AnalyticsDep,
+    type DeviceTutorialResult,
+    type DeviceTutorialSource,
+    events,
+} from '@suite-common/analytics';
 import {
     type BluetoothDeviceCommon,
     type ForgetBluetoothDeviceDep,
@@ -634,3 +639,54 @@ export const wipeDeviceThunk = createThunk<
         return rejectWithValue(result.error.message);
     }
 });
+
+const getDeviceTutorialResult = (
+    response: Awaited<ReturnType<typeof TrezorConnect.showDeviceTutorial>>,
+): DeviceTutorialResult => {
+    if (response.success) return 'completed';
+
+    if (
+        response.error.code === 'Method_Cancel' ||
+        response.error.code === 'Failure_ActionCancelled'
+    ) {
+        return 'cancelled';
+    }
+
+    return 'failed';
+};
+
+type ShowDeviceTutorialThunkParams = {
+    source: DeviceTutorialSource;
+};
+
+export type ShowDeviceTutorialThunkState = DeviceRootState;
+
+export type ShowDeviceTutorialThunkDeps = WithServices<AnalyticsDep>;
+
+export const showDeviceTutorialThunk = createThunk<
+    void,
+    ShowDeviceTutorialThunkParams,
+    { state: ShowDeviceTutorialThunkState; extra: ShowDeviceTutorialThunkDeps }
+>(
+    `${DEVICE_MODULE_PREFIX}/showDeviceTutorial`,
+    async ({ source }, { dispatch, getState, extra }) => {
+        const device = selectSelectedDevice(getState());
+        if (!device) return;
+
+        const response = await TrezorConnect.showDeviceTutorial({
+            device: { path: device.path },
+        });
+        const result = getDeviceTutorialResult(response);
+
+        if (!response.success && result === 'failed') {
+            dispatch(
+                notificationsActions.addToast({ type: 'error', error: response.error.message }),
+            );
+        }
+
+        extra.services.analytics.report({
+            type: events.deviceLaunchTutorialEvent.name,
+            payload: { source, result },
+        });
+    },
+);
