@@ -61,7 +61,7 @@ model. A **network instance** is a Network in one runtime configuration.
 7. **Shared code MUST NOT branch on network identity.** It branches on capability presence. A
    per-family screen narrows to its family and may use its family's types.
 8. **Capability inputs and outputs are plain data,** with no UI elements, class instances or app
-   objects, so an instance can be tested without React and could run behind a worker boundary.
+   objects, so an instance can be tested without React.
 9. **The application supplies the rest:** Trezor Connect, translation, analytics, notifications and
    layout. A network never imports a catalog or reports an event.
 
@@ -155,16 +155,10 @@ headless contract of decision 5. Per-family UI from ADR-003 stays, as Suite pack
 - **Harder:** an operation needs a typed capability before a second caller can use it, and changing
   a required member touches every family, which the compiler lists. All UI, including per-family
   screens, is Suite code reviewed by Suite teams.
-- **Possible later:** a family is a framework-free package with its own dependencies, so it can be
-  built and reviewed on its own, for example in a separate repository pinned by commit. This ADR
-  does not decide that. If network modules are ever maintained outside Trezor, what they depend on
-  is the capability contract, not lego components: a redesign or a de-duplication of Suite UI does
-  not become a breaking change for them, and a new host needs no change in them.
 - **Confirmation:** `forbidden-deps` for `networks/` bans React, Redux and `@suite*` again, and each
   capability keeps a test that it is present exactly where the old feature flag was, for every
   network, account type and backend.
-- **Revisit when** the capability contract is offered to anyone outside Trezor: it then needs a
-  version and a conformance suite.
+- **Revisit when** changing a capability regularly touches most families.
 
 [subscribe-blocks]: https://github.com/trezor/trezor-suite/blob/bd3630cfba27da8033d77ebb6a808f3784b41d74/suite-common/wallet-utils/src/backendUtils.ts#L79
 [reference]: https://github.com/trezor/trezor-suite/compare/develop...b5f7c559e7e851667288f95acd2632381d9443bd
