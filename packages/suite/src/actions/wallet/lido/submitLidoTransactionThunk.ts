@@ -1,4 +1,3 @@
-import { type DebugRootState } from '@suite/debug';
 import { selectSelectedDevice } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -12,7 +11,6 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { createThunk } from '@trezor/redux-utils';
 
-import { selectIsLidoStakingEnabled } from './lidoStakingAccess';
 import {
     type SendYieldTransactionDeps,
     type SendYieldTransactionState,
@@ -59,8 +57,7 @@ export type SubmitLidoTransactionResult = {
 };
 
 export type SubmitLidoTransactionThunkState = ComposeYieldEvmTransactionThunkState &
-    SendYieldTransactionState &
-    DebugRootState;
+    SendYieldTransactionState;
 
 export type SubmitLidoTransactionThunkDeps = SendYieldTransactionDeps;
 
@@ -77,19 +74,6 @@ export const submitLidoTransactionThunk = createThunk<
     async ({ account, kind, transaction, amount, token }, { dispatch, getState }) => {
         const flowType = YIELD_FLOW_TYPE_BY_KIND[kind];
         const device = selectSelectedDevice(getState());
-
-        // The pages are closed without the opt-in; this holds for whatever reaches the thunk
-        // around them.
-        if (!selectIsLidoStakingEnabled(getState())) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-tx-error',
-                    error: 'Lido staking is not enabled.',
-                }),
-            );
-
-            return undefined;
-        }
 
         try {
             const composed = await dispatch(
