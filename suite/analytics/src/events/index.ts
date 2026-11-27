@@ -61,7 +61,6 @@ export { menuNotificationsToggleEvent } from './menuNotificationsToggleEvent';
 export { menuToggleDiscreetEvent } from './menuToggleDiscreetEvent';
 export { promoDesktopEvent } from './promoDesktopEvent';
 export { promoMobileEvent } from './promoMobileEvent';
-export { promoReferralButtonEvent } from './promoReferralButtonEvent';
 export { receiveAddAddressEvent } from './receiveAddAddressEvent';
 export { receiveCopyAddressEvent } from './receiveCopyAddressEvent';
 export { receiveShareAddressEvent } from './receiveShareAddressEvent';

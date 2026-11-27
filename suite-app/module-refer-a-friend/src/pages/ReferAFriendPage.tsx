@@ -38,7 +38,7 @@ import {
     ReferralLoading,
     ReferralOtherWalletBanner,
     ReferralUnavailable,
-    selectIsReferAFriendAvailableInApp,
+    selectIsReferAFriendDisabledByMessageSystem,
     useLayout,
     useModal,
     useReferralActions,
@@ -60,12 +60,17 @@ type ReferralFAQ = {
 export const ReferAFriendPage = () => {
     const device = useSelector(selectSelectedDevice);
     const deviceId = device?.id ?? undefined;
-    const isReferralAvailable = useSelector(selectIsReferAFriendAvailableInApp);
     const program = useSelector(selectReferralProgram);
     const annualRewardLimit = useSelector(selectReferralAnnualRewardLimit);
     const isReferralWalletDescriptorAvailable = useSelector(
         selectIsReferralWalletDescriptorAvailable,
     );
+    const isReferralDisabledByMessageSystem = useSelector(
+        selectIsReferAFriendDisabledByMessageSystem,
+    );
+    const isReferralAvailable =
+        isReferralWalletDescriptorAvailable && !isReferralDisabledByMessageSystem;
+
     const walletRecord = useSelector(selectReferralWalletRecord);
     const accountState = useSelector(selectReferralAccountState);
     const doesReferralAccountExistOnlyForOtherWalletDescriptors = useSelector(
@@ -85,22 +90,16 @@ export const ReferAFriendPage = () => {
     useLayout('Refer-A-Friend', <PageHeader />);
 
     useEffect(() => {
-        if (!isReferralAvailable) return;
-
-        dispatch(fetchReferralProgramThunk());
+        if (isReferralAvailable) {
+            dispatch(fetchReferralProgramThunk());
+        }
     }, [isReferralAvailable, dispatch]);
 
     useEffect(() => {
-        if (
-            !isReferralAvailable ||
-            deviceId === undefined ||
-            !isReferralWalletDescriptorAvailable
-        ) {
-            return;
+        if (isReferralAvailable && deviceId !== undefined) {
+            dispatch(fetchReferralAccountThunk({ deviceId }));
         }
-
-        dispatch(fetchReferralAccountThunk({ deviceId }));
-    }, [isReferralAvailable, deviceId, isReferralWalletDescriptorAvailable, dispatch]);
+    }, [isReferralAvailable, deviceId, dispatch]);
 
     useEffect(() => {
         if (!isReferralAvailable || !isJoined) {
@@ -108,7 +107,7 @@ export const ReferAFriendPage = () => {
         }
     }, [isReferralAvailable, isJoined, closeLeaveModal]);
 
-    if (!isReferralAvailable) {
+    if (isReferralDisabledByMessageSystem) {
         return <ReferralUnavailable description="TR_REFERRAL_UNAVAILABLE" />;
     }
 

@@ -174,7 +174,7 @@ export { ReferralLoading } from './src/views/refer-a-friend/ReferralLoading';
 export { ReferralOtherWalletBanner } from './src/views/refer-a-friend/ReferralOtherWalletBanner';
 export { ReferralUnavailable } from './src/views/refer-a-friend/ReferralUnavailable';
 export { useReferralActions } from './src/views/refer-a-friend/useReferralActions';
-export { selectIsReferAFriendAvailableInApp } from '#src/views/refer-a-friend/selectIsReferAFriendAvailableInApp';
+export { selectIsReferAFriendDisabledByMessageSystem } from '#src/views/refer-a-friend/selectIsReferAFriendDisabledByMessageSystem';
 export { SettingsLayout } from './src/components/settings/SettingsLayout';
 export { NetworkList } from './src/components/suite/NetworkList/NetworkList';
 export { NetworkSettingsSearchInput } from './src/components/suite/NetworkList/NetworkSettingsSearchInput';

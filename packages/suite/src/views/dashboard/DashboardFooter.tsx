@@ -13,7 +13,6 @@ import { SUITE_MOBILE_APP_STORE, SUITE_MOBILE_PLAY_STORE, SUITE_URL } from '@tre
 import { useGuide } from '#src/hooks/guide/useGuide';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
-import { ReferralButton } from './ReferralButton';
 import { StoreBadge } from '../../components/suite/StoreBadge';
 import { ContentFlex, useIsContentBelowBreakpoint } from '../../support/suite/ContentFlex';
 
@@ -70,11 +69,6 @@ const StoreBadgeWithQr = ({ url, image, analyticsPayload }: StoreBadgeWithQrProp
 
 const DesktopAppPromoButton = () => {
     const { analytics } = useServices(injectDesktopAnalytics);
-    const { isBelowTablet } = useLayoutSize();
-
-    if (!isWeb() || isBelowTablet) {
-        return null;
-    }
 
     return (
         <Button
@@ -99,6 +93,7 @@ export const DashboardFooter = () => {
     const isVerticalLayout = useIsContentBelowBreakpoint(breakpoint);
     const { isBelowTablet } = useLayoutSize();
     const { isGuideOpen } = useGuide();
+    const isDesktopAppPromoButtonVisible = isWeb() && !isBelowTablet;
 
     return (
         <Container>
@@ -111,16 +106,15 @@ export const DashboardFooter = () => {
                 alignItems="stretch"
                 breakpoint={breakpoint}
             >
-                <Row
-                    flex="1 1 50%"
-                    gap={isVerticalLayout ? 12 : 16}
-                    justifyContent={isVerticalLayout ? 'center' : 'flex-start'}
-                    padding={{ vertical: 12 }}
-                    flexWrap="wrap"
-                >
-                    <ReferralButton />
-                    <DesktopAppPromoButton />
-                </Row>
+                {isDesktopAppPromoButtonVisible && (
+                    <Row
+                        flex="1 1 50%"
+                        justifyContent={isVerticalLayout ? 'center' : 'flex-start'}
+                        padding={{ vertical: 12 }}
+                    >
+                        <DesktopAppPromoButton />
+                    </Row>
+                )}
                 <Row
                     flex="1 1 50%"
                     padding={{
