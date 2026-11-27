@@ -17,6 +17,7 @@ import {
     isYieldSupported,
     selectYieldSession,
     selectYieldTxReview,
+    selectYieldTxReviewAccountKey,
     yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -54,12 +55,13 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         useFirmwareUpgradeModal();
 
     const yieldTxReview = useSelector(selectYieldTxReview);
+    const yieldTxReviewAccountKey = useSelector(selectYieldTxReviewAccountKey);
     const claimSession = useSelector((state: YieldRootState) =>
         selectYieldSession(state, 'claim', flowKey),
     );
     const isClaimSubmitting =
         claimSession.action.isSubmitting ||
-        (!!yieldTxReview.precomposedTx && yieldTxReview.accountKey === account.key);
+        (!!yieldTxReview.precomposedTx && yieldTxReviewAccountKey === account.key);
     const isClaiming = isClaimSubmitting || !!claimSession.action.pendingTransaction;
     // A flow that is already signing or has broadcast keeps its form, so the pending transaction
     // and the completion stay visible after the feature is disabled remotely.

@@ -27,8 +27,11 @@ export type BioAuthRootState = {
     bioAuth: BioAuthState;
 };
 
-export const selectBioAuth = (state: BioAuthRootState) => state.bioAuth;
 export const selectIsBioAuthEnabled = (state: BioAuthRootState) => state.bioAuth.bioAuthEnabled;
+export const selectIsBioAuthAvailable = (state: BioAuthRootState) => state.bioAuth.bioAuthAvailable;
+export const selectIsBioAuthValidationRequired = (state: BioAuthRootState) =>
+    state.bioAuth.bioAuthValidationRequired;
+export const selectIsBioAuthCancelled = (state: BioAuthRootState) => state.bioAuth.cancelled;
 
 const initialState: BioAuthState = {
     bioAuthEnabled: false,

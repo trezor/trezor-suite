@@ -47,6 +47,9 @@ export const selectYieldSession = (
 export const selectYieldTxReview = (state: YieldRootState): YieldTxReviewState =>
     state.wallet.stablecoinYield.txReview;
 
+export const selectYieldTxReviewAccountKey = (state: YieldRootState) =>
+    selectYieldTxReview(state).accountKey;
+
 /**
  * The send form handles both trading and yield approvals. The open yield modal identifies
  * the owner and approval type without decoding calldata.

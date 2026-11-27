@@ -7,7 +7,10 @@ import { clamp } from '@trezor/utils';
 
 import { TRADE_API_RELOAD_QUOTES_AFTER_SECONDS } from '../constants';
 import { tradingActions } from '../reducers/tradingCommonReducer';
-import { selectTradingQuoteRefetchingState } from '../selectors/tradingSelectors';
+import {
+    selectTradingQuoteLastFetchTimestamp,
+    selectTradingQuoteRefetchingStatus,
+} from '../selectors/tradingSelectors';
 
 type UseTradingRefetchSchedulerProps = {
     onRefetch: () => void;
@@ -15,7 +18,8 @@ type UseTradingRefetchSchedulerProps = {
 
 export const useTradingRefetchScheduler = ({ onRefetch }: UseTradingRefetchSchedulerProps) => {
     const { dispatch } = useServices(injectDispatch);
-    const { lastFetchTimestamp, status } = useSelector(selectTradingQuoteRefetchingState);
+    const lastFetchTimestamp = useSelector(selectTradingQuoteLastFetchTimestamp);
+    const status = useSelector(selectTradingQuoteRefetchingStatus);
     const onRefetchRef = useRef(onRefetch);
     onRefetchRef.current = onRefetch;
 

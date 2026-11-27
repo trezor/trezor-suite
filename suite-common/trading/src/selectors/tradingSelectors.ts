@@ -209,6 +209,9 @@ export const selectTradingBtcSwapComposeTemplate = (state: TradingRootState) =>
 export const selectTradingCoins = (state: TradingRootState): Coins | undefined =>
     state.wallet.trading.info.coins;
 
+export const selectTradingPlatforms = (state: TradingRootState) =>
+    selectTradingInfo(state).platforms;
+
 /** Catalog tokens as token metadata, so a token the user does not hold has a name and symbol. */
 export const selectTradingTokenMetadataSources = createMemoizedSelector(
     [selectTradingCoins],
@@ -1460,3 +1463,9 @@ export const selectTradingProviderMetadata = (state: TradingRootState) =>
 
 export const selectTradingQuoteRefetchingState = (state: TradingRootState) =>
     state.wallet.trading.quoteRefetchingState;
+
+export const selectTradingQuoteRefetchingStatus = (state: TradingRootState) =>
+    selectTradingQuoteRefetchingState(state).status;
+
+export const selectTradingQuoteLastFetchTimestamp = (state: TradingRootState) =>
+    selectTradingQuoteRefetchingState(state).lastFetchTimestamp;

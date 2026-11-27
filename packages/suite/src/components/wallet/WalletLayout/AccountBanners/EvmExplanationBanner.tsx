@@ -7,7 +7,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { closeEvmExplanationBanner } from '#src/actions/suite/suiteActions';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { selectEvmSettings } from '#src/selectors/suite/suiteSelectors';
+import { selectIsEvmExplanationBannerClosed } from '#src/selectors/suite/suiteSelectors';
 
 import { BannerPoints } from './BannerPoints';
 import { CloseableBanner } from './CloseableBanner';
@@ -17,7 +17,9 @@ interface EvmExplanationBannerProps {
 }
 
 export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => {
-    const { explanationBannerClosed } = useSelector(selectEvmSettings);
+    const isExplanationBannerClosed = useSelector(
+        state => account !== undefined && selectIsEvmExplanationBannerClosed(state, account.symbol),
+    );
     const routeName = useSelector(selectRouteName);
     const { dispatch } = useServices(injectDispatch);
 
@@ -25,7 +27,7 @@ export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => 
 
     const isVisible =
         account &&
-        !explanationBannerClosed[account.symbol] &&
+        !isExplanationBannerClosed &&
         account.symbol !== 'eth' &&
         getNetwork(account.symbol).networkType === 'ethereum' &&
         !isReceiveRoute;

@@ -23,6 +23,8 @@ import {
 
 export const selectGraph = (state: GraphRootState) => state.wallet.graph;
 export const selectGraphSelectedRange = (state: GraphRootState) => state.wallet.graph.selectedRange;
+export const selectGraphError = (state: GraphRootState) => selectGraph(state).error;
+export const selectIsGraphLoading = (state: GraphRootState) => selectGraph(state).isLoading;
 
 const initialState: GraphState = {
     data: [],

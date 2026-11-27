@@ -25,3 +25,16 @@ export const selectBlockchainUrl = (
     state: BlockchainRootState,
     symbol: NetworkSymbol,
 ): string | undefined => state.wallet.blockchain[symbol as LegacyNetworkSymbol].url;
+
+export const selectBlockchainError = (state: BlockchainRootState, symbol: NetworkSymbol) =>
+    selectNetworkBlockchainInfo(state, symbol).error;
+
+export const selectBlockchainReconnectionTime = (
+    state: BlockchainRootState,
+    symbol: NetworkSymbol,
+) => selectNetworkBlockchainInfo(state, symbol).reconnectionTime;
+
+export const selectBlockchainIdentityConnections = (
+    state: BlockchainRootState,
+    symbol: NetworkSymbol,
+) => selectNetworkBlockchainInfo(state, symbol).identityConnections;

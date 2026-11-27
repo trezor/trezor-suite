@@ -1,6 +1,7 @@
 import { type RouterRootState, selectRouter } from '@suite/router';
 import { type DeviceRootState, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TransportInfo } from '@trezor/connect';
 import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
@@ -23,6 +24,10 @@ export const selectSeenDisconnectNotificationForDeviceIds = (state: {
 }) => state.suite.seenDisconnectNotificationForDeviceIds;
 export const selectEvmSettings = (state: { suite: Pick<SuiteState, 'evmSettings'> }) =>
     state.suite.evmSettings;
+export const selectIsEvmExplanationBannerClosed = (
+    state: { suite: Pick<SuiteState, 'evmSettings'> },
+    symbol: NetworkSymbol,
+) => selectEvmSettings(state).explanationBannerClosed[symbol] === true;
 export const selectConfirmExplanationModalClosed = (state: SuiteRootState) =>
     state.suite.evmSettings.confirmExplanationModalClosed;
 export const selectSendFormPrefill = (state: SuiteRootState) => state.suite.prefillFields.sendForm;
