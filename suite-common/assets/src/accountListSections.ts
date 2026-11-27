@@ -10,7 +10,7 @@ import {
     type TokenDefinitionsRootState,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { type TokenAddress, type TokenInfoBranded } from '@suite-common/tokens';
+import { type TokenAddress, type TokenInfoBranded, toTokenAddress } from '@suite-common/tokens';
 import { getNetworkDisplaySymbol, isNetworkWithTokens } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -161,7 +161,7 @@ export const getAccountListSections = ({
             const fiatRateKey = getFiatRateKey(
                 account.symbol,
                 localCurrency,
-                token.contract as TokenAddress,
+                toTokenAddress(token.contract),
             );
             const rate = fiatRates[fiatRateKey]?.rate;
             if (!rate || !token.balance) return 0;
@@ -230,8 +230,7 @@ export const selectAccountListSectionsWithZeroBalanceGroup =
 export const selectAccountListSectionsWithVaultTokens = createAccountListSectionsSelector(true);
 
 export type AccountAssetOverview = {
-    /** The coin, the stake and the tokens the account holds something of, in the list's order. */
-    heldSections: readonly AccountListSection[];
+    listedSections: readonly AccountListSection[];
     /** The known tokens it holds none of, each as a token section. */
     zeroBalanceSections: readonly AccountListSection[];
     /** The coin once, whether it is held, staked or both, and each token held. */
@@ -243,19 +242,18 @@ const isCoinSectionHeld = (section: AccountListSection) =>
     (section.type === 'account' && isPositiveBalance(section.account.formattedBalance)) ||
     (section.type === 'staking' && isPositiveBalance(section.stakingCryptoBalance));
 
-/**
- * What the desktop account overview shows of the list: one place that says what counts as held,
- * so the table, the balance card and the count cannot disagree.
- */
 export const selectAccountAssetOverview = createMemoizedSelector(
     [selectAccountListSectionsWithVaultTokens],
     (sections): AccountAssetOverview => {
-        const heldSections = sections.filter(
-            section => isCoinSectionHeld(section) || section.type === 'token',
+        const listedSections = sections.filter(
+            section =>
+                section.type === 'account' ||
+                section.type === 'token' ||
+                isCoinSectionHeld(section),
         );
 
         return {
-            heldSections,
+            listedSections,
             zeroBalanceSections: sections.flatMap((section): AccountListSection[] =>
                 section.type === 'zeroBalance'
                     ? section.tokens.map(token => ({
@@ -266,8 +264,8 @@ export const selectAccountAssetOverview = createMemoizedSelector(
                     : [],
             ),
             assetCount:
-                heldSections.filter(section => section.type === 'token').length +
-                (heldSections.some(isCoinSectionHeld) ? 1 : 0),
+                listedSections.filter(section => section.type === 'token').length +
+                (listedSections.some(isCoinSectionHeld) ? 1 : 0),
         };
     },
 );

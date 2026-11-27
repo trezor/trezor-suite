@@ -1,7 +1,7 @@
 import { mockStakingState } from '@suite-common/earn-staking/mocks';
 import { stakingAmountSchema } from '@suite-common/earn-staking-common';
 import { mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
-import { type TokenAddress } from '@suite-common/tokens';
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
@@ -14,8 +14,8 @@ import { type AssetTableState } from './homeAssetTableSelectors';
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
 const ETH = asNetworkSymbol('eth');
 const ADA = asNetworkSymbol('ada');
-const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
-const ENS = '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72' as TokenAddress;
+const USDC = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+const ENS = toTokenAddress('0xc18360217d8f7ab5e7c516566761ea12ce7f9d72');
 
 const mockToken = (contract: TokenAddress, symbol: string, balance: string, decimals: number) =>
     ({ standard: 'ERC20', contract, symbol, balance, decimals }) satisfies TokenInfo;
@@ -96,14 +96,13 @@ describe('the small balances of an account', () => {
         expect(summary?.fiatValue.toFixed()).toBe('0.2');
     });
 
-    it('count a stake inside the balance once, with the coin', () => {
-        // 1 ADA at 50c, all of it delegated.
+    it('never count the coin, which the account overview always lists', () => {
         const state = createState({ ...mockRate(0.5, undefined, 0.5, ADA) });
-        const { keys, summary } = selectAccountSmallBalances(state, adaAccount.key);
 
-        expect([...keys]).toEqual(['coin']);
-        expect(summary?.assetCount).toBe(1);
-        expect(summary?.fiatValue.toFixed()).toBe('0.5');
+        expect(selectAccountSmallBalances(state, adaAccount.key)).toEqual({
+            keys: new Set(),
+            summary: undefined,
+        });
     });
 
     it('never count what has no rate, so nothing is hidden by mistake', () => {
