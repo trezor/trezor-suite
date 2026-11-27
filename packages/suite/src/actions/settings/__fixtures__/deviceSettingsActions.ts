@@ -353,6 +353,34 @@ const fixture: Fixture[] = [
         initialState: {},
     },
     {
+        description: 'Show device tutorial - connect error',
+        action: () => deviceSettingsActions.showDeviceTutorialThunk(),
+        mocks: { success: false, error: { message: 'eeeh', code: 'Failure_UnknownCode' } },
+        result: {
+            actions: [
+                {
+                    type: notificationsActions.addToast.type,
+                    payload: {
+                        type: 'error',
+                        error: 'eeeh',
+                        context: 'toast',
+                        id: expect.any(Number),
+                    },
+                } satisfies ReturnType<typeof notificationsActions.addToast>,
+            ],
+        },
+        initialState: {},
+    },
+    {
+        description: 'Show device tutorial - cancelled',
+        action: () => deviceSettingsActions.showDeviceTutorialThunk(),
+        mocks: { success: false, error: { message: 'Cancelled', code: 'Method_Cancel' } },
+        result: {
+            actions: [],
+        },
+        initialState: {},
+    },
+    {
         description: 'Reset device - Cancel - Entropy check not triggered',
         action: () => deviceSettingsActions.resetDeviceThunk(),
         mocks: { success: false, error: { message: 'Canceled', code: 'Method_Cancel' } },

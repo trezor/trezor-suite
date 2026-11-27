@@ -22,6 +22,10 @@ export * as events from './events';
 export { type DeviceOnboardingStepName } from './events/onboardingStepViewedEvent';
 export { promoDashboardBannerEvent } from './events/promoDashboardBannerEvent';
 export { type ReceiveEntryInteractionAction } from './events/receiveEntryInteractionEvent';
+export {
+    type DeviceTutorialResult,
+    type DeviceTutorialSource,
+} from './events/deviceLaunchTutorialEvent';
 
 export type AnalyticsDep = {
     analytics: Analytics<AnalyticsSharedEvents>;

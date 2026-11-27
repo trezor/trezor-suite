@@ -223,6 +223,7 @@ export { CheckRecoverySeed } from './src/views/settings/SettingsDevice/CheckReco
 export { CustomFirmware } from './src/views/settings/SettingsDevice/CustomFirmware';
 export { DeviceAuthenticityOptOut } from './src/views/settings/SettingsDevice/DeviceAuthenticityOptOut';
 export { DeviceLabel } from './src/views/settings/SettingsDevice/DeviceLabel';
+export { DeviceTutorial } from './src/views/settings/SettingsDevice/DeviceTutorial';
 export { DisplayRotation } from './src/views/settings/SettingsDevice/DisplayRotation';
 export { FirmwareAuthenticityChecks } from './src/views/settings/SettingsDevice/FirmwareAuthenticityChecks';
 export { FirmwareTypeChange } from './src/views/settings/SettingsDevice/FirmwareTypeChange';

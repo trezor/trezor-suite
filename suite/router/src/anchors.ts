@@ -57,6 +57,7 @@ export const SettingsAnchor = {
     Autolock: '@device-settings/autolock',
     WipeDevice: '@device-settings/wipe-device',
     CustomFirmware: '@device-settings/custom-firmware',
+    DeviceTutorial: '@device-settings/device-tutorial',
 
     Crypto: '@coin-settings/crypto',
     TestnetCrypto: '@coin-settings/testnet-crypto',

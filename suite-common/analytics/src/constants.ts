@@ -15,6 +15,7 @@ export enum EventType {
     DeviceConnectionDeviceFound = 'device-connection/device-found',
     // eslint-disable-next-line local-rules/analytics-event-name
     DeviceConnectionDevicePaired = 'device-connection/device-paired',
+    DeviceLaunchTutorial = 'device/launch-tutorial',
     SettingsAppLogExported = 'settings/app-log/exported',
     SettingsDeviceChangeLabel = 'settings/device/change-label',
     SettingsDeviceWipe = 'settings/device/wipe',

@@ -17,6 +17,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { isBitcoinOnlyDevice } from '@trezor/device-utils';
 import {
     GhostIcon,
+    GraduationCapIcon,
     NewspaperIcon,
     PaletteIcon,
     PasswordIcon,
@@ -39,6 +40,7 @@ import {
     DeviceAuthenticityOptOut,
     DeviceBanner,
     DeviceLabel,
+    DeviceTutorial,
     DisplayRotation,
     FirmwareAuthenticityChecks,
     FirmwareTypeChange,
@@ -143,6 +145,7 @@ export const SettingsDevicePage = () => {
         isNormalMode || (initializeMode && supportsDeviceAuthentication);
 
     const isThpDevice = device?.thp !== undefined;
+    const isDeviceTutorialSupported = !device.unavailableCapabilities?.tutorial;
 
     const bootloaderDescription = getHowToGetFromBootloaderInstructionsMap({ deviceModelInternal });
 
@@ -237,6 +240,16 @@ export const SettingsDevicePage = () => {
                     <Brightness isDeviceLocked={isDeviceLocked} />
                     <HapticFeedback isDeviceLocked={isDeviceLocked} />
                     {pinProtection && <AutoLock isDeviceLocked={isDeviceLocked} />}
+                </SettingsSection>
+            )}
+
+            {isNormalMode && isDeviceTutorialSupported && (
+                <SettingsSection
+                    hasVerticalLayout={hasContentBelowTabletWidth}
+                    title={<Translation id="TR_DEVICE_SETTINGS_TUTORIAL" />}
+                    icon={GraduationCapIcon}
+                >
+                    <DeviceTutorial isDeviceLocked={isDeviceLocked} />
                 </SettingsSection>
             )}
 

@@ -69,6 +69,7 @@ describe('DeviceSettings Actions', () => {
             jest.spyOn(TrezorConnect, 'applySettings').mockImplementation(mock);
             jest.spyOn(TrezorConnect, 'wipeDevice').mockImplementation(mock);
             jest.spyOn(TrezorConnect, 'changePin').mockImplementation(mock);
+            jest.spyOn(TrezorConnect, 'showDeviceTutorial').mockImplementation(mock);
             const onSpy = jest.spyOn(TrezorConnect, 'on');
             jest.spyOn(TrezorConnect, 'resetDevice').mockImplementation(() => {
                 const { xpubHashes } = f;
