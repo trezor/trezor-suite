@@ -220,8 +220,8 @@ export const messages = {
             },
             onboardingFeedbackBanner: {
                 title: 'Help us improve',
-                subtitle: 'Share onboarding feedback and get a 50 USD e-shop voucher',
-                button: 'Give feedback',
+                subtitle: 'Tell us about your Trezor setup experience.',
+                button: 'Take the survey',
             },
         },
         buttons: {

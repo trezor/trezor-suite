@@ -14542,6 +14542,7 @@ __metadata:
     "@suite-native/trading-shared": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
