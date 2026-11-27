@@ -29,8 +29,10 @@ The callers of that contract already exist, and each of them works around its ab
 - **Network packages depend on the app.** `develop` now lets every package under `networks/` import
   `@suite/*`, `@suite-common/*` and `@suite-native/*` ([#34986](https://github.com/trezor/trezor-suite/pull/34986)),
   and ADR-003 adds React and React Native layers to each family. The code that builds device
-  messages and transactions then shares a package graph with screens, and each family ships its
-  logic twice for desktop and mobile behind components.
+  messages and transactions then shares a package graph with screens: testing it means mocking the
+  UI dependencies it pulls in, and a change to a shared component touches every family's diff. Each
+  host is another UI layer in every family: desktop and web, mobile, and any host added later, such
+  as a browser extension.
 
 ## Decision
 
@@ -155,7 +157,9 @@ headless contract of decision 5. Per-family UI from ADR-003 stays, as Suite pack
   screens, is Suite code reviewed by Suite teams.
 - **Possible later:** a family is a framework-free package with its own dependencies, so it can be
   built and reviewed on its own, for example in a separate repository pinned by commit. This ADR
-  does not decide that.
+  does not decide that. If network modules are ever maintained outside Trezor, what they depend on
+  is the capability contract, not lego components: a redesign or a de-duplication of Suite UI does
+  not become a breaking change for them, and a new host needs no change in them.
 - **Confirmation:** `forbidden-deps` for `networks/` bans React, Redux and `@suite*` again, and each
   capability keeps a test that it is present exactly where the old feature flag was, for every
   network, account type and backend.
