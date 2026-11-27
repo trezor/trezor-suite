@@ -68,54 +68,102 @@ family's functions and properties that shared code uses, in
 
 ## Examples
 
-The headless API, with illustrative names:
+The names are illustrative. A family's network module exposes its headless API like this:
 
 ```ts
-type NetworkApi = {
-    dataPolicy: { follow: 'subscription' | 'poll'; minIntervalMs: number };
-    signMessage?(params: SignMessageParams): Promise<Result<SignedMessage, SignError>>;
-    verifyMessage?(params: VerifyMessageParams): Promise<Result<void, VerifyError>>; // absent: cannot verify
-    estimateFee?(params: EstimateFeeParams): Promise<Result<FeeEstimate, FeeError>>;
-};
-
 type SuiteCommonNetworkModule = {
-    getSupportedNetworks(): readonly NetworkSymbol[];
-    getNetworkApi(context: NetworkContext): NetworkApi; // the module reads its backend
+    signVerify?: {
+        signMessage(
+            symbol: NetworkSymbol,
+            params: SignMessageParams,
+        ): Promise<Result<SignedMessage, SignError>>;
+        verifyMessage?(
+            symbol: NetworkSymbol,
+            params: VerifyMessageParams,
+        ): Promise<Result<void, VerifyError>>; // absent: cannot verify
+    };
+    fees?: {
+        getRefreshPolicy(symbol: NetworkSymbol): {
+            follow: 'subscription' | 'poll';
+            minIntervalMs: number;
+        };
+        estimateFeeLevels(symbol: NetworkSymbol): Promise<Result<FeeLevels, FeeError>>;
+    };
 };
 ```
 
-**Sign & verify.** The shared `signMessage` takes no signature format, so the union of every
-network's formats goes away (rules 2 and 3). A thunk or WalletConnect signs with the family's
-default; the family's own component, under ADR-003, picks a format from the family's own type.
+**Sign & verify.** The shared `signMessage` takes no signature format (rules 2 and 3), so the union of
+every network's formats on `develop` goes away. A thunk or WalletConnect signs with the family's
+default; the family's own component, under ADR-003, picks a format from the family's own type. Both
+end in the same family function (rule 10).
 
 ```ts
 // shared code: any network
-const api = getNetworkApi({ symbol, account });
-const signed = await api.signMessage?.({ device, account, path, message, hex });
-const canVerify = api.verifyMessage !== undefined;
+const signed = await networkModule.signVerify?.signMessage(symbol, { device, path, message, hex });
+const canVerify = networkModule.signVerify?.verifyMessage !== undefined;
 
 // Bitcoin's own Sign & Verify component: Bitcoin's types
-await bitcoinSignVerify.signMessage({ device, account, path, message, hex, format: 'electrum' });
-await bitcoinSignVerify.signMessage({ ...params, format: 'cose' }); // ✗ not a Bitcoin format
+await signBitcoinMessage(symbol, { device, path, message, hex, format: 'electrum' }); // ✓
+await signBitcoinMessage(symbol, { device, path, message, hex, format: 'cose' }); // ✗ not Bitcoin's
 ```
 
-Both calls end in the same Bitcoin function (rule 10). A module with no Suite bindings gets the lego
-default Sign & Verify, which needs only `signMessage` and `verifyMessage` (rule 9).
-
-**Fees.** Send, Trading, staking and Earn read one entry per network context, refreshed as the
-network says. A thunk reads the same entry. Fee selection, whose UI differs per network, stays the
-family's component and reads the same entry too.
+**Fees with Redux.** The thunk asks the network for its levels and stores them in the fees slice; the
+refetch hook that Send, Trading and Earn share refreshes as the network says. The service comes
+from `extra.services` in the thunk and from `useServices` in the hook.
 
 ```ts
-export const getFeeQueryOptions = (api: NetworkApi, { symbol, account, priority }: FeeContext) =>
-    queryOptions({
-        queryKey: ['fee', symbol, account.key, priority], // identity as an opaque key (rule 11)
-        queryFn: () => api.estimateFee!({ account, priority }),
-        refetchInterval: api.dataPolicy.follow === 'poll' ? api.dataPolicy.minIntervalMs : false,
-    });
+export const updateFeeInfoThunk = createThunk<FeeInfo, { symbol: NetworkSymbol }, FeeThunkConfig>(
+    'fees/update',
+    async ({ symbol }, { extra, rejectWithValue }) => {
+        const result = await extra.services.networks
+            .getNetworkFees(symbol)
+            ?.estimateFeeLevels(symbol);
 
-useQuery(getFeeQueryOptions(api, context)); // Send, Trading, staking, Earn
-await queryClient.ensureQueryData(getFeeQueryOptions(api, context)); // a thunk
+        return result?.success ? result.payload : rejectWithValue(undefined);
+    },
+);
+
+export const useRefetchFees = (symbol: NetworkSymbol) => {
+    const { dispatch } = useServices(injectDispatch);
+    const { getNetworkFees } = useServices(injectGetNetworkFees);
+
+    useEffect(() => {
+        const intervalMs = getNetworkFees(symbol)?.getRefreshPolicy(symbol).minIntervalMs;
+        if (intervalMs === undefined) return;
+
+        const id = setInterval(() => dispatch(updateFeeInfoThunk({ symbol })), intervalMs);
+
+        return () => clearInterval(id);
+    }, [dispatch, getNetworkFees, symbol]);
+};
+```
+
+**Fees with TanStack Query.** The same two functions as one query per network. Components subscribe
+with `useQuery`; a thunk or service reads the same cache entry.
+
+```ts
+export const getFeeLevelsQueryOptions = (
+    { getNetworkFees }: GetNetworkFeesDep,
+    symbol: NetworkSymbol,
+) => {
+    const fees = getNetworkFees(symbol);
+
+    return queryOptions({
+        queryKey: ['fee-levels', symbol], // identity as an opaque key (rule 11)
+        queryFn: fees
+            ? async () => {
+                  const result = await fees.estimateFeeLevels(symbol);
+                  if (!result.success) throw new Error(result.error.message);
+
+                  return result.payload;
+              }
+            : skipToken, // the network has no fee estimate
+        refetchInterval: fees?.getRefreshPolicy(symbol).minIntervalMs,
+    });
+};
+
+const { data: feeLevels } = useQuery(getFeeLevelsQueryOptions(networks, symbol)); // Send, Trading, Earn
+const feeLevels = await queryClient.ensureQueryData(getFeeLevelsQueryOptions(networks, symbol)); // a thunk
 ```
 
 This ADR does not decide which functions exist beyond those shared code uses, how Suite caches
