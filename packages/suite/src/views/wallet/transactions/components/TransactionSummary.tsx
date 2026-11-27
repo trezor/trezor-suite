@@ -17,7 +17,7 @@ import { updateGraphDataThunk } from '#src/actions/wallet/graphActions';
 import { GraphRangeSelector } from '#src/components/suite/graph/GraphRangeSelector';
 import { TransactionsGraphLoader } from '#src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { selectGraph, selectGraphSelectedRange } from '#src/reducers/wallet/graphReducer';
+import { selectGraph, selectGraphSelectedRange } from '#src/selectors/wallet/graphSelectors';
 import { getGraphDataForInterval, getMinMaxValueFromData } from '#src/utils/wallet/graph/utils';
 import { aggregateBalanceHistory } from '#src/utils/wallet/graph/utilsWorker';
 
