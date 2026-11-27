@@ -6,7 +6,7 @@
 # the launcher needs more than 5 s to get focus, Android raises an ANR for it and the
 # "Quickstep isn't responding" dialog then covers the app in every test of the shard.
 #
-# Wait until the launcher is focused and dismiss an ANR dialog that the boot left behind.
+# Wait until the launcher has input focus and dismiss an ANR dialog that the boot left behind.
 set -euo pipefail
 
 SERIAL=${ANDROID_SERIAL:-emulator-5554}
@@ -17,6 +17,12 @@ LAUNCHER_PACKAGE=com.android.launcher3
 
 current_focus() {
     adb -s "$SERIAL" shell dumpsys window displays | tr -d '\r' | grep -m1 'mCurrentFocus=' || true
+}
+
+# The focused window as the input dispatcher sees it. It lags seconds behind the window manager
+# focus on a busy emulator, and only this one decides whether a key event has to wait.
+input_focus() {
+    adb -s "$SERIAL" shell dumpsys input | tr -d '\r' | grep -A 1 'FocusedWindows:' | tr '\n' ' ' || true
 }
 
 # Logged synchronously by the input dispatcher, so it is present before the unlock command returns.
@@ -40,7 +46,7 @@ while ((SECONDS < TIMEOUT_SECONDS)); do
         adb -s "$SERIAL" shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS > /dev/null
         dismissed=$((dismissed + 1))
         stable=0
-    elif [[ $focus == *"Window{"*" $LAUNCHER_PACKAGE/"* ]]; then
+    elif [[ $focus == *"Window{"*" $LAUNCHER_PACKAGE/"* && $(input_focus) == *"name='"*" $LAUNCHER_PACKAGE/"* ]]; then
         if ((anr_reported == 1 && dismissed == 0 && SECONDS < ANR_DIALOG_GRACE_SECONDS)); then
             stable=0
         else
