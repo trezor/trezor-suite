@@ -26,8 +26,9 @@ input_focus() {
 }
 
 # Logged synchronously by the input dispatcher, so it is present before the unlock command returns.
+# Covers both a missing focused window (ActivityRecord) and an unresponsive one (Window).
 boot_anr_reported() {
-    [[ -n $(adb -s "$SERIAL" logcat -d -b system -s WindowManager | grep 'ANR in ActivityRecord' || true) ]]
+    [[ -n $(adb -s "$SERIAL" logcat -d -b system -s WindowManager | grep 'WindowManager: ANR in ' || true) ]]
 }
 
 dismissed=0
