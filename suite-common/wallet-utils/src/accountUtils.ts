@@ -1327,6 +1327,8 @@ type PrepareNewAccountPayloadParams = {
     selectedAccount?: NetworkAccount;
     accountTypes?: NetworkAccount[];
     device: TrezorDevice;
+    // Names the call for `TrezorConnect.cancel`, which then ends this work on the device as well.
+    callId?: string;
 };
 
 export const prepareNewAccountPayload = async ({
@@ -1337,6 +1339,7 @@ export const prepareNewAccountPayload = async ({
     selectedAccount,
     accountTypes,
     device,
+    callId,
 }: PrepareNewAccountPayloadParams) => {
     const network = getNetwork(networkSymbol);
     const networkAccount =
@@ -1360,6 +1363,7 @@ export const prepareNewAccountPayload = async ({
             state: device.state,
             useEmptyPassphrase: device.useEmptyPassphrase,
         },
+        callId,
     });
 
     if (!descriptorResult.success) return new Error(descriptorResult.error.message);
