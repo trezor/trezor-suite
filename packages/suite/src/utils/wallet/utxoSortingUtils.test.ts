@@ -1,4 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import { sortUtxos } from './utxoSortingUtils';
 
@@ -64,6 +65,42 @@ describe(sortUtxos.name, () => {
             'txid2:0',
             'txid2:1',
             'txid3:0',
+        ]);
+    });
+
+    it('sorts pending UTXOs by the block time of the first transaction with their txid', () => {
+        const utxos = [
+            testMocks.getUtxo({ blockHeight: 0, txid: 'txid1', vout: 0 }),
+            testMocks.getUtxo({ blockHeight: 0, txid: 'txid2', vout: 0 }),
+        ];
+        const transactions = [
+            testMocks.getWalletTransaction({ txid: 'txid1', blockTime: 1 }),
+            testMocks.getWalletTransaction({ txid: 'txid2', blockTime: 2 }),
+            testMocks.getWalletTransaction({ txid: 'txid1', blockTime: 3 }),
+        ];
+
+        expect(sortUtxos(utxos, 'newestFirst', transactions).map(it => it.txid)).toEqual([
+            'txid2',
+            'txid1',
+        ]);
+    });
+
+    it('skips placeholders of transactions that are not fetched yet', () => {
+        const utxos = [
+            testMocks.getUtxo({ blockHeight: 0, txid: 'txid1', vout: 0 }),
+            testMocks.getUtxo({ blockHeight: 0, txid: 'txid2', vout: 0 }),
+        ];
+        // A page that is not fetched yet is a hole or a nullish value in the stored list.
+        const transactions: (WalletAccountTransaction | null | undefined)[] = [
+            testMocks.getWalletTransaction({ txid: 'txid1', blockTime: 1 }),
+            null,
+            undefined,
+        ];
+        transactions[4] = testMocks.getWalletTransaction({ txid: 'txid2', blockTime: 2 });
+
+        expect(sortUtxos(utxos, 'oldestFirst', transactions).map(it => it.txid)).toEqual([
+            'txid1',
+            'txid2',
         ]);
     });
 

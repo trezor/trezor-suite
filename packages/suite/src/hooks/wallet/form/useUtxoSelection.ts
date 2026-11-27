@@ -108,11 +108,16 @@ export const useUtxoSelection = ({
     const lowAnonymityUtxos: AccountUtxo[] = [];
     const dustUtxos: AccountUtxo[] = [];
 
+    const accountUtxos = account?.utxo;
+
     // Skip sorting and categorizing UTXOs if coin control is not enabled.
-    const utxos =
-        options?.includes('utxoSelection') && account?.utxo
-            ? sortUtxos(account?.utxo, utxoSorting, accountTransactions)
-            : account?.utxo;
+    const utxos = useMemo(
+        () =>
+            options?.includes('utxoSelection') && accountUtxos
+                ? sortUtxos(accountUtxos, utxoSorting, accountTransactions)
+                : accountUtxos,
+        [accountUtxos, accountTransactions, options, utxoSorting],
+    );
 
     if (utxos?.length) {
         utxos?.forEach(utxo => {
