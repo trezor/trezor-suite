@@ -39,6 +39,13 @@ export {
     type DecodedClearSignedSwap,
     type ClearSignedSwapLeg,
 } from './calldata/clearSigningSwap';
+export {
+    resolveDisplayFormat,
+    type DisplayFormatRow,
+    type DisplayFormatSubcallPosition,
+    type DisplayFormatValue,
+    type ResolvedDisplayFormat,
+} from './calldata/displayFormat/resolveDisplayFormat';
 
 export {
     createSignEthereumMessage,

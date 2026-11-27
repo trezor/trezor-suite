@@ -6,6 +6,7 @@ import type {
     AccountTransaction,
     AccountUtxo,
     ComposeOutput,
+    EthereumDisplayFormat,
     FeeLevel,
     PROTO,
     PrecomposedTransactionErrorCardano as PrecomposedTransactionCardanoConnectResponseError,
@@ -186,6 +187,10 @@ type PrecomposedTransactionBase = PrecomposedTransactionConnectResponseFinal & {
     maxPriorityFeePerGas?: string;
     solanaTxMeta?: SolanaTxMeta;
     isDeviceReviewOnly?: boolean;
+    /** Clear-signing definition the device displays the contract call with */
+    displayFormat?: EthereumDisplayFormat;
+    /** Definitions of the calls the contract call embeds, which the device requests as well */
+    subcallDisplayFormats?: EthereumDisplayFormat[];
 };
 
 // base of PrecomposedTransactionFinal

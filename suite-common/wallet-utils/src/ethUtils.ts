@@ -1,13 +1,19 @@
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type Account,
     type EvmTransactionPurpose,
+    type GeneralPrecomposedTransactionFinal,
     type PrecomposedTransactionFinal,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { type EthereumSpecific, type TokenInfo } from '@trezor/blockchain-link-types';
-import { Calldata, isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
-import { BigNumber } from '@trezor/utils';
+import {
+    Calldata,
+    isWrappedNativeToken,
+    resolveDisplayFormat,
+} from '@trezor/network-ethereum-suite-common';
+import { BigNumber, type VersionArray } from '@trezor/utils';
 
 export const isEip1559 = (
     tx: Record<string, any> | null | undefined,
@@ -132,6 +138,52 @@ export const getPrecomposedTxWithAccountToken = ({
         token,
         isTokenKnown: false,
     };
+};
+
+type GetResolvedDisplayFormatParams = {
+    account: Pick<Account, 'networkType' | 'path'>;
+    precomposedTx: GeneralPrecomposedTransactionFinal;
+    transactionData?: string;
+    firmwareVersion: VersionArray | string;
+};
+
+/** The contract call the way the device clear-signs it, when Connect found its definition. */
+export const getResolvedDisplayFormat = ({
+    account,
+    precomposedTx,
+    transactionData,
+    firmwareVersion,
+}: GetResolvedDisplayFormatParams) => {
+    if (
+        account.networkType !== 'ethereum' ||
+        !('displayFormat' in precomposedTx) ||
+        !precomposedTx.displayFormat ||
+        // A decoded token transfer replaces the call's value with the token amount.
+        precomposedTx.token ||
+        !transactionData
+    ) {
+        return undefined;
+    }
+    const { displayFormat, outputs } = precomposedTx;
+    // Connect previews any other contract call as a payment of its value to the contract.
+    const value = new BigNumber(outputs[0]?.amount ?? 0);
+    if (!value.isInteger()) {
+        return undefined;
+    }
+
+    return resolveDisplayFormat(
+        displayFormat,
+        {
+            fromPath: account.path,
+            to: displayFormat.address,
+            value: BigInt(value.toFixed()),
+            data: transactionData,
+        },
+        {
+            subcallDisplayFormats: precomposedTx.subcallDisplayFormats,
+            firmwareVersion,
+        },
+    );
 };
 
 // Amount (in wei) unwrapped by a WETH withdraw(uint256) call, or null when data is not one.
