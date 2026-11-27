@@ -11,6 +11,7 @@ import { type State as ModalState } from '@suite/modal';
 import { type RecoveryState } from '@suite/recovery';
 import { type RouterState } from '@suite/router';
 import { suiteSettingsInitialState } from '@suite/settings';
+import { suiteLifecycleInitialState } from '@suite/suite-lifecycle';
 import { initialSuiteSyncDesktopState } from '@suite/suite-sync';
 import { type TorState, TorStatus } from '@suite/tor';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
@@ -51,6 +52,7 @@ const walletReducers = createWalletReducer(mockExtraDependenciesForReducers);
 export const mockInitialAppState = {
     networks: null as NetworksState,
     suite: suiteInitialState,
+    suiteLifecycle: suiteLifecycleInitialState,
     discreetMode: {
         isActive: false,
     },

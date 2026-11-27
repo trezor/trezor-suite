@@ -3,6 +3,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 import { type SelectedAccountRootState, selectedAccountReducer } from '@suite/account';
 import { type LocksRootState, locksReducer } from '@suite/locks';
 import { type State as ModalReducerState, modalReducer } from '@suite/modal';
+import { updateOnlineStatus } from '@suite/suite-lifecycle';
 import { type TorRootState, TorStatus, torActions, torReducer } from '@suite/tor';
 import { type DeviceReducerState } from '@suite-common/device';
 import {
@@ -388,7 +389,7 @@ describe('coinjoinClientActions', () => {
 
         if (!cli) throw new Error('Client not initialized');
 
-        store.dispatch({ type: '@suite/online-status', payload: false });
+        store.dispatch(updateOnlineStatus(false));
         expect(cli.client.emit).toHaveBeenCalledTimes(1);
 
         // restore session after previous action, and set phase to critical again
