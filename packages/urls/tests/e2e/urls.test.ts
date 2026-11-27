@@ -26,8 +26,6 @@ const skippedUrls = [
  * Remove from the list when the URL becomes reachable and fails the test suite.
  */
 const expectedFailingUrls = [
-    // The holiday landing page is not published yet (404).
-    URLS.DASHBOARD_BANNER_HOLIDAY_DEALS_URL,
     // DATA_URL because it returns 404 on itself (forbidden listing)
     URLS.DATA_URL,
     // captcha, returning 403 in ci
