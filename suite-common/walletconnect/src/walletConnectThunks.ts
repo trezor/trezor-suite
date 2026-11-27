@@ -2,7 +2,7 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import { type IWalletKit, type WalletKitTypes } from '@reown/walletkit';
 
 import { type AnalyticsDep, events } from '@suite-common/analytics';
-import * as trezorConnectPopupActions from '@suite-common/connect-popup';
+import { type RequestPopupCallDep } from '@suite-common/connect-popup';
 import { type DeviceRootState } from '@suite-common/device';
 import { type NetworksRootState } from '@suite-common/networks';
 import { isDevEnv } from '@suite-common/suite-utils';
@@ -14,7 +14,6 @@ import {
     selectAllSuccessfulAccountsToList,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { type CallMethodResponse } from '@trezor/connect';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import {
@@ -37,10 +36,9 @@ type SuccessfulAccountsThunkState = AccountsRootState &
     WalletSettingsRootState &
     NetworksRootState;
 
-type SessionAuthenticateThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
-    SuccessfulAccountsThunkState;
+type SessionAuthenticateThunkState = SuccessfulAccountsThunkState;
 
-type SessionAuthenticateThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
+type SessionAuthenticateThunkDeps = WithServices<RequestPopupCallDep>;
 
 const sessionAuthenticateThunk = createThunk<
     void,
@@ -48,34 +46,35 @@ const sessionAuthenticateThunk = createThunk<
         event: WalletKitTypes.SessionAuthenticate;
     },
     { state: SessionAuthenticateThunkState; extra: SessionAuthenticateThunkDeps }
->(`${WALLETCONNECT_MODULE}/sessionAuthenticateThunk`, async ({ event }, { getState, dispatch }) => {
-    const { buildAuthObject, getSdkError, populateAuthPayload } =
-        await import('@walletconnect/utils');
+>(
+    `${WALLETCONNECT_MODULE}/sessionAuthenticateThunk`,
+    async ({ event }, { getState, dispatch, extra }) => {
+        const { buildAuthObject, getSdkError, populateAuthPayload } =
+            await import('@walletconnect/utils');
 
-    // Support for Sign-In with Ethereum (SIWE) message, enhanced by ReCaps (ReCap Capabilities)
-    try {
-        const accounts = selectAllSuccessfulAccountsToList(getState());
-        const supportedNamespaces = getNamespaces(accounts);
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const eip155Namespace: (typeof supportedNamespaces)[keyof typeof supportedNamespaces] =
-            supportedNamespaces.eip155;
-        const authPayload = populateAuthPayload({
-            authPayload: event.params.authPayload,
-            chains: eip155Namespace.chains,
-            methods: eip155Namespace.methods,
-        });
-        const ethAccount = accounts.find(a => a.symbol === 'eth');
-        if (!ethAccount) {
-            throw new Error('No ETH account');
-        }
-        const iss = `eip155:1:${ethAccount.descriptor}`;
-        const message = walletKit.formatAuthMessage({
-            request: authPayload,
-            iss,
-        });
+        // Support for Sign-In with Ethereum (SIWE) message, enhanced by ReCaps (ReCap Capabilities)
+        try {
+            const accounts = selectAllSuccessfulAccountsToList(getState());
+            const supportedNamespaces = getNamespaces(accounts);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const eip155Namespace: (typeof supportedNamespaces)[keyof typeof supportedNamespaces] =
+                supportedNamespaces.eip155;
+            const authPayload = populateAuthPayload({
+                authPayload: event.params.authPayload,
+                chains: eip155Namespace.chains,
+                methods: eip155Namespace.methods,
+            });
+            const ethAccount = accounts.find(a => a.symbol === 'eth');
+            if (!ethAccount) {
+                throw new Error('No ETH account');
+            }
+            const iss = `eip155:1:${ethAccount.descriptor}`;
+            const message = walletKit.formatAuthMessage({
+                request: authPayload,
+                iss,
+            });
 
-        dispatch(
-            trezorConnectPopupActions.connectPopupCallThunk({
+            const response = await extra.services.requestPopupCall({
                 source: {
                     type: 'walletconnect' as const,
                     origin: event.verifyContext.verified.origin,
@@ -89,48 +88,46 @@ const sessionAuthenticateThunk = createThunk<
                     path: ethAccount.path,
                     message,
                 },
-            }),
-        );
-        const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
-        if (!response.success) {
-            throw new Error('Sign message error');
-        }
-        const typedPayload = response.payload as CallMethodResponse<'ethereumSignMessage'>;
+            });
+            if (!response.success) {
+                throw new Error('Sign message error');
+            }
 
-        const auth = buildAuthObject(
-            authPayload,
-            {
-                t: 'eip191',
-                s: `0x${typedPayload.signature}`,
-            },
-            iss,
-        );
+            const auth = buildAuthObject(
+                authPayload,
+                {
+                    t: 'eip191',
+                    s: `0x${response.payload.signature}`,
+                },
+                iss,
+            );
 
-        const { session } = await walletKit.approveSessionAuthenticate({
-            id: event.id,
-            auths: [auth],
-        });
-        if (session) {
+            const { session } = await walletKit.approveSessionAuthenticate({
+                id: event.id,
+                auths: [auth],
+            });
+            if (session) {
+                dispatch(
+                    walletConnectActions.saveSession({
+                        ...session,
+                        validation: event.verifyContext.verified.validation,
+                    }),
+                );
+            }
+        } catch (error) {
             dispatch(
-                walletConnectActions.saveSession({
-                    ...session,
-                    validation: event.verifyContext.verified.validation,
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: error.message,
                 }),
             );
+            await walletKit.rejectSessionAuthenticate({
+                id: event.id,
+                reason: getSdkError('USER_REJECTED'),
+            });
         }
-    } catch (error) {
-        dispatch(
-            notificationsActions.addToast({
-                type: 'error',
-                error: error.message,
-            }),
-        );
-        await walletKit.rejectSessionAuthenticate({
-            id: event.id,
-            reason: getSdkError('USER_REJECTED'),
-        });
-    }
-});
+    },
+);
 
 type SessionProposalThunkState = SuccessfulAccountsThunkState;
 
@@ -170,7 +167,7 @@ const sessionProposalThunk = createThunk<
 
 type SessionRequestThunkState = WalletConnectRequestThunkState;
 
-type SessionRequestThunkDeps = WalletConnectRequestThunkDeps;
+type SessionRequestThunkDeps = WalletConnectRequestThunkDeps & WithServices<AnalyticsDep>;
 
 const sessionRequestThunk = createThunk<
     void,

@@ -8,10 +8,7 @@ import {
     CALL_SOURCE_DESKTOP_WS,
     CALL_SOURCE_MCP,
     UNKNOWN_PROCESS,
-    connectPopupCallThunk,
-    connectPopupCancelThunk,
-    getPopupCallDeferred,
-    queuePopupCall,
+    injectRequestPopupCall,
     selectConnectPopupCall,
     selectIsConnectAppSilentModeByOrigin,
     toConnectV9ErrorPayload,
@@ -22,7 +19,6 @@ import {
     UI_EVENTS,
     UI_REQUESTS,
 } from '@trezor/connect';
-import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
 import { useServices } from '@trezor/dependency-injection';
 import { isMacOs } from '@trezor/env-utils';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -33,20 +29,34 @@ import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectSuiteLifecycleStatus } from '#src/selectors/suite/suiteSelectors';
 
 // `connectionId` is undefined for MCP calls, so no connect-ws cancel can match them.
-type TrackedPopupCall = { connectionId?: string };
+type PendingPopupCall = {
+    connectionId?: string;
+    // The id the client gave the call, by which its cancel names it. Suite runs the call under an
+    // id of its own.
+    callId?: string;
+    abortController: AbortController;
+};
+
+const getClientCallId = (payload: unknown) =>
+    typeof payload === 'object' &&
+    payload !== null &&
+    'callId' in payload &&
+    typeof payload.callId === 'string'
+        ? payload.callId
+        : undefined;
 
 export const useConnectPopupDesktop = () => {
-    const { desktopApi, analytics, dispatch } = useServices(
+    const { desktopApi, analytics, dispatch, requestPopupCall } = useServices(
         injectDesktopAnalytics,
         injectDispatch,
         injectDesktopApi,
+        injectRequestPopupCall,
     );
     const popupCall = useSelector(selectConnectPopupCall);
     const lifecycleStatus = useSelector(selectSuiteLifecycleStatus);
     const initialized = useRef(false);
 
-    const queuedPopupCalls = useRef(new Set<TrackedPopupCall>());
-    const activePopupCall = useRef<TrackedPopupCall | undefined>(undefined);
+    const pendingPopupCalls = useRef(new Set<PendingPopupCall>());
 
     useEffect(() => {
         const init = async () => {
@@ -54,53 +64,36 @@ export const useConnectPopupDesktop = () => {
             if (!desktopApi.available || !(await desktopApi.connectPopupEnabled())) return;
 
             desktopApi.on('connect-popup/call', async params => {
-                queuedPopupCalls.current.add(params);
-                await queuePopupCall();
-                const isCanceled = !queuedPopupCalls.current.delete(params);
-
-                // Removed by a cancel while queued: don't open the popup or start a device flow
-                // for a client that already gave up.
-                if (isCanceled) {
-                    const error = serializeError(TypedError('Method_Cancel'));
-                    desktopApi.connectPopupResponse({
-                        success: false,
-                        error,
-                        payload: toConnectV9ErrorPayload(error),
-                        id: params.id,
-                    });
-
-                    return;
-                }
-
-                const deferred = getPopupCallDeferred(true);
                 const isMcp = params.sourceType === CALL_SOURCE_MCP;
-                dispatch(
-                    connectPopupCallThunk({
-                        method: params.method as CallMethodKeys,
-                        payload: params.payload,
-                        source: isMcp
-                            ? {
-                                  type: CALL_SOURCE_MCP,
-                                  process: params.process,
-                                  origin: params.origin,
-                                  manifest: params.manifest,
-                              }
-                            : {
-                                  type: CALL_SOURCE_DESKTOP_WS,
-                                  process: params.process ?? UNKNOWN_PROCESS,
-                                  origin: params.origin,
-                                  manifest: params.manifest,
-                                  // Cast across the IPC boundary, same as `params.method` above.
-                                  requestedPermissions: params.requestedPermissions as
-                                      PermissionRequest[] | undefined,
-                              },
-                    }),
-                );
-                activePopupCall.current = params;
-                const response = await deferred.promise;
-                if (activePopupCall.current === params) {
-                    activePopupCall.current = undefined;
-                }
+                const pendingCall: PendingPopupCall = {
+                    connectionId: params.connectionId,
+                    callId: getClientCallId(params.payload),
+                    abortController: new AbortController(),
+                };
+                pendingPopupCalls.current.add(pendingCall);
+                const response = await requestPopupCall({
+                    method: params.method as CallMethodKeys,
+                    payload: params.payload,
+                    source: isMcp
+                        ? {
+                              type: CALL_SOURCE_MCP,
+                              process: params.process,
+                              origin: params.origin,
+                              manifest: params.manifest,
+                          }
+                        : {
+                              type: CALL_SOURCE_DESKTOP_WS,
+                              process: params.process ?? UNKNOWN_PROCESS,
+                              origin: params.origin,
+                              manifest: params.manifest,
+                              // Cast across the IPC boundary, same as `params.method` above.
+                              requestedPermissions: params.requestedPermissions as
+                                  PermissionRequest[] | undefined,
+                          },
+                    signal: pendingCall.abortController.signal,
+                });
+                pendingPopupCalls.current.delete(pendingCall);
+
                 if (response.success) {
                     desktopApi.connectPopupResponse({ ...response, id: params.id });
                 } else {
@@ -112,19 +105,17 @@ export const useConnectPopupDesktop = () => {
                     });
                 }
             });
-            desktopApi.on('connect-popup/cancel', params => {
-                const { connectionId } = params;
-                queuedPopupCalls.current.forEach(queuedPopupCall => {
-                    if (queuedPopupCall.connectionId === connectionId) {
-                        queuedPopupCalls.current.delete(queuedPopupCall);
+            desktopApi.on('connect-popup/cancel', ({ connectionId, callId, error }) => {
+                // A client cancels only the calls of its own connection: the one it names, or all
+                // of them when it names none (a closed connection, an older client).
+                pendingPopupCalls.current.forEach(pendingCall => {
+                    if (
+                        pendingCall.connectionId === connectionId &&
+                        (!callId || pendingCall.callId === callId)
+                    ) {
+                        pendingCall.abortController.abort(error);
                     }
                 });
-                // One client must not be able to cancel another client's active call.
-                if (activePopupCall.current?.connectionId === connectionId) {
-                    dispatch(
-                        connectPopupCancelThunk({ error: params.error, callId: params.callId }),
-                    );
-                }
             });
             desktopApi.on('app/auto-start/popup-request', () => {
                 dispatch(openModal({ type: 'auto-start-before-quit' }));
@@ -150,7 +141,7 @@ export const useConnectPopupDesktop = () => {
                 desktopApi.removeAllListeners('app/auto-start/popup-request');
             }
         };
-    }, [desktopApi, dispatch, analytics, lifecycleStatus]);
+    }, [desktopApi, dispatch, analytics, requestPopupCall, lifecycleStatus]);
 
     // App focus control
     const callOrigin = popupCall && 'source' in popupCall ? popupCall.source.origin : undefined;

@@ -1,3 +1,4 @@
+import { type RequestPopupCallDep } from '@suite-common/connect-popup';
 import { type CommonServices } from '@suite-common/extra-dependencies';
 import { type ReferAFriendDep } from '@suite-common/refer-a-friend';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
@@ -8,4 +9,5 @@ export type NativeServices = CommonServices &
     GetSignVerifyDep &
     NativeAnalyticsDep &
     GetMMKVStorageDep &
-    ReferAFriendDep;
+    ReferAFriendDep &
+    RequestPopupCallDep;

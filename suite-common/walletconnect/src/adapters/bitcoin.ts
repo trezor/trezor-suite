@@ -1,17 +1,17 @@
 import { type WalletKitTypes } from '@reown/walletkit';
 import type { ProposalTypes } from '@walletconnect/types';
 
-import * as trezorConnectPopupActions from '@suite-common/connect-popup';
-import { selectSelectedDevice } from '@suite-common/device';
+import { type RequestPopupCallDep } from '@suite-common/connect-popup';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity, getUnusedChangeAddress } from '@suite-common/wallet-utils';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
-import TrezorConnect, { type CallMethodResponse, type ComposeOutput } from '@trezor/connect';
+import TrezorConnect, { type ComposeOutput } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
-import { createThunk } from '@trezor/redux-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { type WalletConnectStateRootState, selectSessionByTopic } from '../walletConnectReducer';
@@ -39,11 +39,11 @@ const findAccount = (accounts: Account[], firstAddress: string) =>
         return usedAddresses.includes(firstAddress) || unusedAddresses.includes(firstAddress);
     });
 
-export type BitcoinRequestThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
+export type BitcoinRequestThunkState = DeviceRootState &
     AccountsRootState &
     WalletConnectStateRootState;
 
-export type BitcoinRequestThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
+export type BitcoinRequestThunkDeps = WithServices<RequestPopupCallDep>;
 
 const bitcoinRequestThunk = createThunk<
     | { address: string; publicKey: string; path: Bip43Path }[]
@@ -54,7 +54,7 @@ const bitcoinRequestThunk = createThunk<
         event: WalletKitTypes.SessionRequest;
     },
     { state: BitcoinRequestThunkState; extra: BitcoinRequestThunkDeps }
->(`${WALLETCONNECT_MODULE}/bitcoinRequest`, async ({ event }, { dispatch, getState }) => {
+>(`${WALLETCONNECT_MODULE}/bitcoinRequest`, async ({ event }, { getState, extra }) => {
     const device = selectSelectedDevice(getState());
     const session = selectSessionByTopic(getState(), event.topic);
     if (!session) {
@@ -98,27 +98,23 @@ const bitcoinRequestThunk = createThunk<
                 ...account.addresses.unused,
             ].find(a => a.address === address || !address);
             if (!addressInfo) throw new Error('Address not found');
-            dispatch(
-                trezorConnectPopupActions.connectPopupCallThunk({
-                    method: 'signMessage',
-                    payload: {
-                        path: addressInfo.path,
-                        coin: asCoinSymbol(account.symbol),
-                        message,
-                        hex: true,
-                        device,
-                    },
-                    ...popupCallCommonParams,
-                }),
-            );
-            const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+            const response = await extra.services.requestPopupCall({
+                method: 'signMessage',
+                payload: {
+                    path: addressInfo.path,
+                    coin: asCoinSymbol(account.symbol),
+                    message,
+                    hex: true,
+                    device,
+                },
+                ...popupCallCommonParams,
+            });
             if (!response.success) {
                 console.error('signMessage error', response);
                 throw new Error('signMessage error');
             }
-            const typedPayload = response.payload as CallMethodResponse<'signMessage'>;
 
-            return { signature: typedPayload.signature, address: typedPayload.address };
+            return { signature: response.payload.signature, address: response.payload.address };
         }
         case 'sendTransfer': {
             const {
@@ -181,34 +177,30 @@ const bitcoinRequestThunk = createThunk<
                 console.error('composeTransaction error', precomposedTransaction);
                 throw new Error('composeTransaction error');
             }
-            dispatch(
-                trezorConnectPopupActions.connectPopupCallThunk({
-                    method: 'signTransaction',
-                    payload: {
-                        inputs: firstResult.inputs,
-                        outputs: firstResult.outputs,
-                        account: {
-                            addresses: account.addresses!,
-                        },
-                        coin: asCoinSymbol(account.symbol),
-                        chunkify: true,
-                        unlockPath: account.unlockPath,
-                        version: 2,
+            const signResponse = await extra.services.requestPopupCall({
+                method: 'signTransaction',
+                payload: {
+                    inputs: firstResult.inputs,
+                    outputs: firstResult.outputs,
+                    account: {
+                        addresses: account.addresses!,
                     },
-                    ...popupCallCommonParams,
-                }),
-            );
-            const signResponse = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+                    coin: asCoinSymbol(account.symbol),
+                    chunkify: true,
+                    unlockPath: account.unlockPath,
+                    version: 2,
+                },
+                ...popupCallCommonParams,
+            });
             if (!signResponse.success) {
                 console.error('signTransaction error', signResponse);
                 throw new Error('signTransaction error');
             }
-            const typedPayload = signResponse.payload as CallMethodResponse<'signTransaction'>;
 
             const pushResponse = await TrezorBlockchain.pushTransaction({
                 coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
-                tx: typedPayload.serializedTx,
+                tx: signResponse.payload.serializedTx,
             });
             if (!pushResponse.success) {
                 console.error('eth_sendTransaction push error', pushResponse);

@@ -28,7 +28,6 @@
             "path": "../../networks/stellar/network-stellar"
         },
         { "path": "../../packages/redux-utils" },
-        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]
 }

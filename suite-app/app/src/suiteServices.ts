@@ -5,6 +5,7 @@ import { type MetadataMigrationDep } from '@suite/metadata-migration';
 import { type SuiteRouterHistoryDep } from '@suite/router';
 import { type ReduxLoggerControlDep } from '@suite/settings';
 import { type TransportsDep } from '@suite-common/connect-init';
+import { type RequestPopupCallDep } from '@suite-common/connect-popup';
 import { type CommonServices } from '@suite-common/extra-dependencies';
 import { type ReferAFriendDep } from '@suite-common/refer-a-friend';
 import { type TransactionRetrieverDep } from '@suite-common/wallet-core';
@@ -22,4 +23,5 @@ export type SuiteServices = CommonServices &
     ReferAFriendDep &
     TransactionRetrieverDep &
     ReduxLoggerControlDep &
-    GetSignVerifyDep;
+    GetSignVerifyDep &
+    RequestPopupCallDep;

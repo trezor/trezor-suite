@@ -20,6 +20,7 @@ import {
     type CreateTransports,
     type GetTransportsFactoriesDep,
 } from '@suite-common/connect-init';
+import { createRequestPopupCall } from '@suite-common/connect-popup';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import {
@@ -293,6 +294,11 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         lockDevice: isLocked => {
             deps.dispatch(lockDevice(isLocked));
         },
+        requestPopupCall: createRequestPopupCall({
+            dispatch: deps.dispatch,
+            getState: deps.getState,
+            shouldReplacePendingCalls: false,
+        }),
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,

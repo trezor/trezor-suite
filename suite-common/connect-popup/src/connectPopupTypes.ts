@@ -187,6 +187,9 @@ type ConnectPopupCallLoaded = {
     };
     source: ConnectCallSource;
     selectedFee?: SelectedFee;
+    // Id of the popup call in its queue (see connectPopupCallQueue), which finds the caller to
+    // answer. A retry of the call keeps it.
+    callId?: string;
 } & (
     | {
           method: CallMethodKeys;

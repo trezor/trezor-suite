@@ -1,16 +1,15 @@
 import { type WalletKitTypes } from '@reown/walletkit';
 import type { ProposalTypes } from '@walletconnect/types';
 
-import * as trezorConnectPopupActions from '@suite-common/connect-popup';
-import { selectSelectedDevice } from '@suite-common/device';
+import { type RequestPopupCallDep } from '@suite-common/connect-popup';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
-import { type CallMethodResponse } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import loadStellar from '@trezor/network-stellar/runtime';
-import { createThunk } from '@trezor/redux-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { type WalletConnectStateRootState, selectSessionByTopic } from '../walletConnectReducer';
@@ -39,10 +38,9 @@ const resolveStellarRequestContext = (event: WalletKitTypes.SessionRequest) => {
     };
 };
 
-type StellarSignXDRThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
-    AccountsRootState;
+type StellarSignXDRThunkState = DeviceRootState & AccountsRootState;
 
-type StellarSignXDRThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
+type StellarSignXDRThunkDeps = WithServices<RequestPopupCallDep>;
 
 const stellarSignXDRThunk = createThunk<
     { signedXDR: string },
@@ -55,7 +53,7 @@ const stellarSignXDRThunk = createThunk<
     { state: StellarSignXDRThunkState; extra: StellarSignXDRThunkDeps }
 >(
     `${WALLETCONNECT_MODULE}/stellarSignXDR`,
-    async ({ session, xdrBase64, origin, event }, { dispatch, getState }) => {
+    async ({ session, xdrBase64, origin, event }, { getState, extra }) => {
         const { testnet } = resolveStellarRequestContext(event);
 
         const { parseTransactionFromXDR } = await loadStellar();
@@ -71,34 +69,29 @@ const stellarSignXDRThunk = createThunk<
             throw new Error('Account not found');
         }
 
-        dispatch(
-            trezorConnectPopupActions.connectPopupCallThunk({
-                method: 'stellarSignTransaction',
-                payload: {
-                    xdrBase64,
-                    testnet,
-                    path: account.path,
-                    device,
+        const response = await extra.services.requestPopupCall({
+            method: 'stellarSignTransaction',
+            payload: {
+                xdrBase64,
+                testnet,
+                path: account.path,
+                device,
+            },
+            source: {
+                type: 'walletconnect' as const,
+                origin,
+                manifest: {
+                    appName: session.peer.metadata.name,
+                    appIcon: session.peer.metadata.icons?.[0],
                 },
-                source: {
-                    type: 'walletconnect' as const,
-                    origin,
-                    manifest: {
-                        appName: session.peer.metadata.name,
-                        appIcon: session.peer.metadata.icons?.[0],
-                    },
-                },
-            }),
-        );
-
-        const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+            },
+        });
         if (!response.success) {
             console.error('stellar_signXDR error', response);
             throw new Error('Stellar signing error');
         }
-        const typedPayload = response.payload as CallMethodResponse<'stellarSignTransaction'>;
 
-        const signature = Buffer.from(typedPayload.signature, 'hex').toString('base64');
+        const signature = Buffer.from(response.payload.signature, 'hex').toString('base64');
         transaction.addSignature(account.descriptor, signature);
 
         return {

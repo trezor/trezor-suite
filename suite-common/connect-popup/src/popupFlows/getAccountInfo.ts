@@ -35,6 +35,7 @@ const getAccount = async (
                   path,
                   coin: asNetworkSymbol(request.coin),
                   derivationType: request.derivationType,
+                  callId: request.callId,
               }).then(getPayloadOrThrow)
             : undefined;
 

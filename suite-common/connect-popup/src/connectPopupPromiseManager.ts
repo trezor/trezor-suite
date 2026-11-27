@@ -1,45 +1,28 @@
-import { type CallMethodAnyResponse } from '@trezor/connect';
 import { type Deferred, createDeferred } from '@trezor/utils';
 
 import { type SelectFeeChoice } from './connectPopupTypes';
 
-type GetDeferred<Resolve> = (clear?: boolean) => Deferred<Resolve>;
-type AwaitDeferred = () => Promise<void>;
+type PermissionDeferred = Deferred<SelectFeeChoice | void>;
 
-// Custom helper, createDeferredManager didn't fit the needs here
-const createDeferredWrapper = <Resolve = void>(id: string) => {
-    let _deferred: Deferred<Resolve> | undefined;
+let permissionDeferred: PermissionDeferred | undefined;
 
-    const getDeferred = (clear: boolean = false) => {
-        if (!_deferred || clear) {
-            _deferred = createDeferred(id);
-            // Reset when the call is finished. Swallow here — this internal cleanup chain has no
-            // consumer of its own; without the catch, a rejection (e.g. Method_Cancel) becomes an
-            // unhandled promise rejection even though callers of `.promise` handle it themselves.
-            _deferred.promise
-                .finally(() => {
-                    _deferred = undefined;
-                })
-                .catch(() => {});
-        }
+/**
+ * Deferred for the permission request and the following user interactions of the call. There is
+ * only one, because only one popup call runs at a time (see connectPopupCallQueue).
+ */
+export const getPermissionDeferred = (clear: boolean = false): PermissionDeferred => {
+    if (!permissionDeferred || clear) {
+        const deferred: PermissionDeferred = createDeferred();
+        permissionDeferred = deferred;
+        // Reset when the interaction is finished. Swallow here — this internal cleanup chain has no
+        // consumer of its own; without the catch, a rejection (e.g. Method_Cancel) becomes an
+        // unhandled promise rejection even though callers of `.promise` handle it themselves.
+        deferred.promise
+            .finally(() => {
+                if (permissionDeferred === deferred) permissionDeferred = undefined;
+            })
+            .catch(() => {});
+    }
 
-        return _deferred;
-    };
-
-    const awaitDeferred = async () => {
-        await _deferred?.promise;
-    };
-
-    return { getDeferred, awaitDeferred };
+    return permissionDeferred;
 };
-
-// Deferred for the entire Connect call
-const callDeferredWrapper = createDeferredWrapper<Awaited<CallMethodAnyResponse>>('popup-call');
-export const getPopupCallDeferred: GetDeferred<Awaited<CallMethodAnyResponse>> =
-    callDeferredWrapper.getDeferred;
-export const queuePopupCall: AwaitDeferred = callDeferredWrapper.awaitDeferred;
-
-// Deferred for the permission request and the following user interactions of the call
-const permissionDeferredWrapper = createDeferredWrapper<SelectFeeChoice | void>('popup-permission');
-export const getPermissionDeferred: GetDeferred<SelectFeeChoice | void> =
-    permissionDeferredWrapper.getDeferred;

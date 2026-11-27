@@ -4,6 +4,7 @@ import RNRestart from 'react-native-restart';
 import * as Device from 'expo-device';
 
 import { createBip329CompositionRoot } from '@suite-common/bip329';
+import { createRequestPopupCall } from '@suite-common/connect-popup';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { createStakingCompositionRoot } from '@suite-common/earn-staking';
 import { createStakingProductsCompositionRoot } from '@suite-common/earn-staking-products';
@@ -228,6 +229,12 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
             deps.dispatch(rerunFwAuthenticityChecksThunk());
         },
         lockDevice: () => {},
+        requestPopupCall: createRequestPopupCall({
+            dispatch: deps.dispatch,
+            getState: deps.getState,
+            // The popup screen can be left with nothing said to the call it shows.
+            shouldReplacePendingCalls: true,
+        }),
         getBinFilesBaseUrl: asGetter(() => resolveConnectPath('data')),
 
         // Not implemented. We assume those are NEVER called on Native.
