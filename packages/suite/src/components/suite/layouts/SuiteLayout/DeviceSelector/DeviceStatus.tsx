@@ -23,7 +23,9 @@ export const DeviceStatus = ({
     forceConnectionInfo = false,
     isDeviceDetailVisible = true,
 }: DeviceStatusProps) => {
-    const deviceLabel = useSelector(state => selectDeviceLabelOrNameById(state, device?.id));
+    const deviceLabelById = useSelector(state => selectDeviceLabelOrNameById(state, device?.id));
+    // Devices without an id (unacquired, bootloader) would all match the first id-less device.
+    const deviceLabel = device?.id ? deviceLabelById : (device?.name ?? '');
 
     const image = (
         <Row justifyContent="center" width={24} opacity={deviceNeedsRefresh ? 0.4 : 1}>
