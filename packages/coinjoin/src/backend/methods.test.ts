@@ -1,4 +1,4 @@
-import { arrayDistinct } from '@trezor/utils';
+import { unique } from '@trezor/utils';
 import { networks } from '@trezor/utxo-lib';
 
 import { CoinjoinFilterController } from './CoinjoinFilterController';
@@ -34,11 +34,7 @@ describe(`CoinjoinBackend methods`, () => {
                     .flatMap(res => res.filters.map(filter => filter.blockHeight as number)),
         );
 
-    const getRequestedBlocks = () =>
-        fetchBlockMock.mock.calls
-            .map(call => call[0])
-            .filter(arrayDistinct)
-            .sort();
+    const getRequestedBlocks = () => unique(fetchBlockMock.mock.calls.map(call => call[0])).sort();
 
     const getContext = (onProgress: (t: ScanAccountProgress) => void) => ({
         client,

@@ -35,7 +35,7 @@ import { asCoinSymbol } from '@trezor/connect-common';
 import { type Getter } from '@trezor/dependency-injection';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 import type { TimerId } from '@trezor/type-utils';
-import { BigNumber, arrayDistinct, arrayToDictionary } from '@trezor/utils';
+import { BigNumber, arrayToDictionary, unique } from '@trezor/utils';
 
 import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions';
 import {
@@ -216,7 +216,7 @@ export const unsubscribeBlockchainThunk = createThunk<
     { state: UnsubscribeBlockchainThunkState }
 >(`${BLOCKCHAIN_MODULE_PREFIX}/unsubscribeBlockchainThunk`, (removedAccounts, { getState }) => {
     // collect unique symbols
-    const symbols = removedAccounts.map(({ symbol }) => symbol).filter(arrayDistinct);
+    const symbols = unique(removedAccounts.map(({ symbol }) => symbol));
     const allAccounts = selectAccounts(getState());
     const paramsArray = symbols.flatMap<{
         symbol: NetworkSymbol;
@@ -235,16 +235,14 @@ export const unsubscribeBlockchainThunk = createThunk<
                 true,
             );
 
-            const transformedRemovedAccounts = removedAccounts
-                .filter(acc => acc.symbol === symbol)
-                .map(getAccountIdentity)
-                .filter(arrayDistinct)
-                .map(identity => ({
-                    symbol,
-                    identity,
-                    blocks: false,
-                    accounts: accountIdentities[identity] ?? [],
-                }));
+            const transformedRemovedAccounts = unique(
+                removedAccounts.filter(acc => acc.symbol === symbol).map(getAccountIdentity),
+            ).map(identity => ({
+                symbol,
+                identity,
+                blocks: false,
+                accounts: accountIdentities[identity] ?? [],
+            }));
 
             return [...transformedRemovedAccounts, { symbol, blocks: true, accounts: [] }];
         } else {

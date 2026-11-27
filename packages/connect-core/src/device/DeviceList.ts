@@ -20,11 +20,11 @@ import {
 } from '@trezor/transport-common';
 import {
     TypedEmitter,
-    arrayDistinct,
     getSynchronize,
     isNotUndefined,
     resolveAfter,
     typedObjectKeys,
+    unique,
 } from '@trezor/utils';
 
 import { Device } from './Device';
@@ -235,15 +235,13 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         // throws when unknown transport is requested, in that case nothing is changed
         this.transports = createTransportList(this.transports, transports);
 
-        const promises = this.transports
-            .map(t => t.apiType)
-            .concat(typedObjectKeys(this.transportManagers))
-            .filter(arrayDistinct)
-            .map(apiType =>
-                this.getOrCreateTransportManager(apiType).init({
-                    transports: this.transports.filter(t => t.apiType === apiType),
-                }),
-            );
+        const promises = unique(
+            this.transports.map(t => t.apiType).concat(typedObjectKeys(this.transportManagers)),
+        ).map(apiType =>
+            this.getOrCreateTransportManager(apiType).init({
+                transports: this.transports.filter(t => t.apiType === apiType),
+            }),
+        );
 
         await Promise.all(promises);
     }

@@ -34,7 +34,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { RoundPhase, SessionPhase } from '@trezor/coinjoin';
 import { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 import { type Dispatch } from '@trezor/redux-utils';
-import { arrayDistinct, typedObjectKeys } from '@trezor/utils';
+import { typedObjectKeys, unique } from '@trezor/utils';
 
 import * as coinjoinAccountActions from './coinjoinAccountActions';
 import * as coinjoinClientActions from './coinjoinClientActions';
@@ -96,15 +96,15 @@ export const coinjoinMiddleware =
         next(action);
 
         if (accountsActions.removeAccount.match(action)) {
-            action.payload
-                .filter(({ accountType }) => accountType === 'coinjoin')
-                .map(({ symbol }) => symbol)
-                .filter(arrayDistinct)
-                .forEach(
-                    symbol =>
-                        isCoinjoinSupportedSymbol(symbol) &&
-                        api.dispatch(coinjoinAccountActions.clearCoinjoinInstancesThunk(symbol)),
-                );
+            unique(
+                action.payload
+                    .filter(({ accountType }) => accountType === 'coinjoin')
+                    .map(({ symbol }) => symbol),
+            ).forEach(
+                symbol =>
+                    isCoinjoinSupportedSymbol(symbol) &&
+                    api.dispatch(coinjoinAccountActions.clearCoinjoinInstancesThunk(symbol)),
+            );
         }
 
         // catch broadcasted transactions and create prepending transaction(s) for each account

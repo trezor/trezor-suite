@@ -1,4 +1,4 @@
-import { arrayDistinct } from '@trezor/utils';
+import { unique } from '@trezor/utils';
 import {
     type Network,
     address as btcAddress,
@@ -18,10 +18,7 @@ export const isTxConfirmed = ({ blockHeight = -1 }: { blockHeight?: number }) =>
 type VinVoutAddressTx = { vin: Pick<VinVout, 'addresses'>[]; vout: Pick<VinVout, 'addresses'>[] };
 
 export const getAllTxAddresses = ({ vin, vout }: VinVoutAddressTx) =>
-    vin
-        .concat(vout)
-        .flatMap(({ addresses = [] }) => addresses)
-        .filter(arrayDistinct);
+    unique(vin.concat(vout).flatMap(({ addresses = [] }) => addresses));
 
 const doesAnyAddressFulfill = (
     { vin, vout }: VinVoutAddressTx,

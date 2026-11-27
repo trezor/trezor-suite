@@ -1,6 +1,6 @@
 /* eslint no-underscore-dangle: ["error", { "allowAfterThis": true }] */
 
-import { arrayDistinct, createCooldown, promiseAllSequence } from '@trezor/utils';
+import { createCooldown, promiseAllSequence, unique } from '@trezor/utils';
 import type { Network } from '@trezor/utxo-lib';
 
 import { getAllTxAddresses, getTxIdentityIndex, isDoublespend } from './backendUtils';
@@ -55,9 +55,9 @@ export class CoinjoinMempoolController implements MempoolControllerShape {
     private onTransactionAdd(tx: BlockbookTransaction) {
         const filteredAddresses = getAllTxAddresses(tx).filter(this.filter ?? (() => true));
         if (filteredAddresses.length) {
-            const collidingTxids = filteredAddresses
-                .flatMap(address => this.addressTxids.get(address) ?? [])
-                .filter(arrayDistinct)
+            const collidingTxids = unique(
+                filteredAddresses.flatMap(address => this.addressTxids.get(address) ?? []),
+            )
                 .map(txid => this.mempool.get(txid)!)
                 .filter(t => isDoublespend(tx, t))
                 .map(t => t.txid);
