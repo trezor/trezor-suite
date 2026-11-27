@@ -96,6 +96,15 @@ run_boot() {
         > "$dir/avdmanager.log" 2>&1
     printf 'hw.cpu.ncore=4\nhw.ramSize=4096M\nhw.heapSize=512M\n' >> "$ANDROID_AVD_HOME/$AVD.avd/config.ini"
 
+    # Optional host CPU contention (STRESS=<busy loops>) to make the launcher start slower.
+    local hogs=() hog
+    if [[ $extra_env == STRESS=* ]]; then
+        for ((hog = 0; hog < ${extra_env#STRESS=}; hog++)); do
+            (while :; do :; done) &
+            hogs+=($!)
+        done
+    fi
+
     local t_launch emulator_pid
     t_launch=$(now_ms)
     # shellcheck disable=SC2086
@@ -149,6 +158,11 @@ run_boot() {
         adb_s shell settings put secure spell_checker_enabled 0
 
         sleep 20
+        if ((${#hogs[@]} > 0)); then
+            kill "${hogs[@]}" 2> /dev/null
+            hogs=()
+            sleep 10
+        fi
 
         focus_state > "$dir/focus.txt"
         focus=$(grep -m1 'mCurrentFocus=' "$dir/focus.txt" | sed 's/^ *//')
@@ -201,6 +215,9 @@ run_boot() {
         fi
     fi
 
+    if ((${#hogs[@]} > 0)); then
+        kill "${hogs[@]}" 2> /dev/null
+    fi
     adb_s emu kill > /dev/null 2>&1
     local tick
     for ((tick = 0; tick < 30; tick++)); do

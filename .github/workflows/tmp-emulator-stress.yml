@@ -1,15 +1,15 @@
-name: "[TMP] Android emulator GPU modes (Quickstep ANR)"
+name: "[TMP] Android emulator boot race under CPU contention (Quickstep ANR)"
 
 # Temporary experiment, not meant to be merged. See .github/tmp-emulator-boot-race.sh.
 on:
   push:
     branches:
-      - tmp/quickstep-anr-gpu-modes
+      - tmp/quickstep-anr-stress
 
 permissions: {}
 
 jobs:
-  gpu_modes:
+  stress:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     permissions:
@@ -42,8 +42,8 @@ jobs:
       - name: Repeat cold boots
         env:
           REPLICA: ${{ matrix.REPLICA }}
-          BOOT_ATTEMPTS: 90
-          VARIANTS_SPEC: "37.2.13 immediate lavapipe;37.3.10 immediate lavapipe;37.3.10 immediate swiftshader_indirect;37.3.10 immediate lavapipe ANGLE_PREFERRED_DEVICE=llvmpipe;37.3.10 immediate lavapipe ANGLE_DEFAULT_PLATFORM=vulkan;37.3.10 immediate swangle_indirect;37.2.13 immediate swiftshader_indirect"
+          BOOT_ATTEMPTS: 200
+          VARIANTS_SPEC: "37.3.10 immediate lavapipe STRESS=8;37.3.10 wait lavapipe STRESS=8;37.2.13 immediate lavapipe STRESS=8"
           OUT: ${{ runner.temp }}/boot-race
         run: bash .github/tmp-emulator-boot-race.sh
 
@@ -51,6 +51,6 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: gpu-modes-${{ matrix.REPLICA }}
+          name: stress-${{ matrix.REPLICA }}
           path: ${{ runner.temp }}/boot-race
           retention-days: 7
