@@ -12,6 +12,7 @@ import {
     createAccountKey,
 } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import type { AccountInfo } from '@trezor/connect';
 
 import * as fixtures from './__fixtures__/accountUtils';
 import {
@@ -580,6 +581,42 @@ describe('account utils', () => {
         accountInfo.addresses.change = [];
         account.addresses = enhanceAddresses(accountInfo, account);
         expect(account.addresses.change).toEqual([]);
+    });
+
+    it('enhanceAddresses: count each pending tx once per address', () => {
+        const getAddr = (address: string, transfers: number) => ({ address, transfers });
+        const account: Pick<Account, 'networkType' | 'index' | 'addresses'> = {
+            networkType: 'bitcoin',
+            index: 0,
+            addresses: undefined,
+        };
+        const accountInfo = {
+            addresses: {
+                change: [getAddr('A', 0), getAddr('B', 0), getAddr('C', 0)],
+            },
+            history: {
+                transactions: [
+                    // A is in an input and twice in the outputs of one tx
+                    {
+                        blockHeight: 0,
+                        details: {
+                            vin: [{ addresses: ['A'] }, {}],
+                            vout: [{ addresses: ['A', 'B'] }, { addresses: ['A'] }],
+                        },
+                    },
+                    { blockHeight: -1, details: { vin: [{ addresses: ['B', 'B'] }], vout: [] } },
+                    // confirmed, not counted
+                    { blockHeight: 1, details: { vin: [{ addresses: ['C'] }], vout: [] } },
+                ],
+            },
+            page: { index: 1 },
+        } as Partial<AccountInfo> as AccountInfo;
+
+        expect(enhanceAddresses(accountInfo, account)?.change).toEqual([
+            getAddr('A', 1),
+            getAddr('B', 2),
+            getAddr('C', 0),
+        ]);
     });
 });
 

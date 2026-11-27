@@ -50,10 +50,10 @@ import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls
 import {
     BigNumber,
     type FirmwareDescriptor,
-    arrayDistinct,
     bufferUtils,
     toFirmwareDescriptor,
     typedObjectKeys,
+    unique,
 } from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
@@ -424,10 +424,9 @@ export const enhanceTokens = (tokens: Account['tokens']) => {
 const countAddressTransfers = (transactions: AccountTransaction[]) =>
     transactions
         .flatMap(tx =>
-            tx.details.vin
-                .concat(tx.details.vout)
-                .flatMap(({ addresses }) => addresses ?? [])
-                .filter(arrayDistinct),
+            unique(
+                tx.details.vin.concat(tx.details.vout).flatMap(({ addresses }) => addresses ?? []),
+            ),
         )
         .reduce(
             (transfers, address) => {
