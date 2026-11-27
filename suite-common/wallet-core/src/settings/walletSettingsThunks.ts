@@ -2,7 +2,7 @@ import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type DiscoveryTrigger } from '@suite-common/wallet-types';
+import { type DiscoveryTrigger, isCustomEvmNetworkSymbol } from '@suite-common/wallet-types';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { createThunk } from '@trezor/redux-utils';
@@ -47,8 +47,9 @@ export const changeCoinVisibilityThunk = createThunk<
 
         // Declare an enabled coin to Connect (one-way widening — disabling is intentionally not
         // propagated; Connect keeps deriving until the next init). Right after the Redux update (not
-        // at the end) so it runs before any later state read.
-        if (shouldBeVisible && !isAlreadyEnabled) {
+        // at the end) so it runs before any later state read. Connect keeps only its predefined coins
+        // in this list, so a custom network is not declared.
+        if (shouldBeVisible && !isAlreadyEnabled && !isCustomEvmNetworkSymbol(symbol)) {
             await TrezorConnect.updateConnectSettings({
                 enabledNetworks: [{ coin: asCoinSymbol(symbol) }],
             });

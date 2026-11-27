@@ -185,6 +185,36 @@ describe('Blockchain Actions', () => {
         });
     });
 
+    it('init: registers the custom networks in the backends before preloading the fees', async () => {
+        const definition = testMocks.getCustomEvmNetworkDefinition({ blockTimeSeconds: 2.5 });
+        const initialState = getInitialState();
+        const store = mockStore({
+            ...initialState,
+            wallet: {
+                ...initialState.wallet,
+                settings: {
+                    ...initialState.wallet.settings,
+                    enabledNetworks: [definition.symbol],
+                    customEvmNetworks: [definition],
+                },
+            },
+        });
+
+        await store.dispatch(initBlockchainThunk());
+
+        expect(TrezorBlockchain.registerEvmNetwork).toHaveBeenCalledWith({
+            symbol: definition.symbol,
+            name: definition.name,
+            rpcUrls: definition.rpcUrls,
+            blockTimeSeconds: 2.5,
+        });
+        expect(
+            jest.mocked(TrezorBlockchain.registerEvmNetwork).mock.invocationCallOrder[0],
+        ).toBeLessThan(
+            jest.mocked(TrezorBlockchain.estimateFeeLevels).mock.invocationCallOrder[0] ?? Infinity,
+        );
+    });
+
     it('init: dispatches the events of the backends', async () => {
         const store = mockStore(getInitialState());
         await store.dispatch(initBlockchainThunk());
