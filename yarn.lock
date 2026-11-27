@@ -11462,6 +11462,7 @@ __metadata:
     "@trezor/network-bitcoin-suite": "workspace:*"
     "@trezor/network-cardano-suite": "workspace:*"
     "@trezor/network-ethereum-suite": "workspace:*"
+    "@trezor/network-ethereum-suite-common": "workspace:*"
     "@trezor/network-module-suite-types": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     "@trezor/network-ripple-suite": "workspace:*"
@@ -12138,7 +12139,6 @@ __metadata:
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
-    viem: "npm:^2.57.16"
   languageName: unknown
   linkType: soft
 
@@ -13477,6 +13477,7 @@ __metadata:
     "@suite-common/earn-stablecoin-defs": "workspace:*"
     "@suite-common/legacy-network-config": "workspace:*"
     "@suite-common/networks": "workspace:*"
+    "@trezor/network-ethereum-suite-common": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -15118,6 +15119,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/network-bitcoin-suite-native": "workspace:*"
     "@trezor/network-cardano-suite-native": "workspace:*"
+    "@trezor/network-ethereum-suite-common": "workspace:*"
     "@trezor/network-ethereum-suite-native": "workspace:*"
     "@trezor/network-module-suite-native-types": "workspace:*"
     "@trezor/network-ripple-suite-native": "workspace:*"
@@ -21162,6 +21164,7 @@ __metadata:
     styled-components: "npm:^6.5.3"
     stylelint: "npm:^17.16.0"
     stylelint-config-standard: "npm:^40.0.0"
+    viem: "npm:^2.57.16"
   languageName: unknown
   linkType: soft
 
