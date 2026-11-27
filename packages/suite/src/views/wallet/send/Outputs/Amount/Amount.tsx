@@ -88,6 +88,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const error = outputError ? outputError.amount : undefined;
 
     const selectedBaseCurrency = watch(currencyInputName);
+    const nftTokenId = watch(`outputs.${outputId}.nftTokenId`);
 
     // corner-case: do not display "setMax" button if FormState got ANY error (setMax probably cannot be calculated)
     const isSendMaxVisible = isSendMaxActive && !error && !Object.keys(errors).length;
@@ -204,6 +205,16 @@ export const Amount = ({ output, outputId }: AmountProps) => {
             onChange={onSwitchChange}
         />
     );
+
+    // An NFT output always sends exactly one item, set with the token id. Compose errors still
+    // land on the amount field, so keep showing them.
+    if (nftTokenId !== undefined) {
+        return bottomText ? (
+            <Text intent="critical" typographyStyle="body-sm">
+                {bottomText}
+            </Text>
+        ) : null;
+    }
 
     return (
         <>

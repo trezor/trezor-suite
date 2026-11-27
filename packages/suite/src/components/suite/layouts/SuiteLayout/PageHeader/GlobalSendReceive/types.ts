@@ -5,3 +5,9 @@ export type GlobalSendTarget = {
     account: Account;
     contractAddress?: TokenAddress;
 };
+
+export type SendTargetNFT = {
+    account: Account;
+    contractAddress: TokenAddress;
+    tokenId: string;
+};

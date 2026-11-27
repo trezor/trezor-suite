@@ -278,6 +278,7 @@ const TokenRowBasicActions = ({
     const onSendButtonClick = () => {
         dispatch(
             setSendFormPrefill({
+                type: 'token',
                 contractAddress: token.contract,
             }),
         );

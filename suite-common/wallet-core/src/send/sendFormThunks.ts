@@ -22,7 +22,6 @@ import {
     asAmountSubunit,
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
-    formatNetworkAmount,
     getAccountDecimals,
     getEvmTransactionTextSignature,
     getPendingAccount,
@@ -55,6 +54,7 @@ import { type ActionsFromAsyncThunk, createThunk } from '@trezor/redux-utils';
 import { type Ok, exhaustive } from '@trezor/type-utils';
 import { BigNumber, cloneObject, typedObjectEntries } from '@trezor/utils';
 
+import { getSentTransactionAsset } from './getSentTransactionAsset';
 import { sendFormActions } from './sendFormActions';
 import {
     composeBitcoinTransactionFeeLevelsThunk,
@@ -527,11 +527,6 @@ export const pushSendFormTransactionThunk = createThunk<
         dispatch(onModalCancel());
 
         const { token } = precomposedTransaction;
-        const spentWithoutFee = !token
-            ? new BigNumber(precomposedTransaction.totalSpent)
-                  .minus(precomposedTransaction.fee)
-                  .toString()
-            : '0';
 
         const evmApprovalData = Calldata.evm.erc20.approve.decode(precomposedForm?.transactionData);
         const hasEarnToast =
@@ -589,20 +584,15 @@ export const pushSendFormTransactionThunk = createThunk<
                     }),
                 );
             } else if (!hasEarnToast) {
-                // The token amount, or the total amount without the fee, in main units.
-                const sentAmount = token
-                    ? subunitsToUnits({
-                          value: asAmountSubunit(new BigNumber(precomposedTransaction.totalSpent)),
-                          decimals: token.decimals,
-                      }).toString()
-                    : formatNetworkAmount(spentWithoutFee, selectedAccount.symbol);
-
                 dispatch(
                     notificationsActions.addToast({
                         type: 'tx-sent',
-                        amount: sentAmount,
+                        ...getSentTransactionAsset({
+                            precomposedTransaction,
+                            precomposedForm,
+                            symbol: selectedAccount.symbol,
+                        }),
                         device,
-                        token,
                         descriptor: selectedAccount.descriptor,
                         symbol: selectedAccount.symbol,
                         txid,

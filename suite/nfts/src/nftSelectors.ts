@@ -34,6 +34,7 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<NftState>();
 
 type NftHolding = {
     assetKey: WalletAssetKey;
+    account: Account;
     symbol: NetworkSymbol;
     contractAddress: TokenAddress;
     token: TokenInfo;
@@ -44,15 +45,18 @@ type PartitionedNftHoldings = {
     hidden: readonly NftHolding[];
 };
 
-type ToNftHoldingParams = Pick<Account, 'deviceState' | 'symbol'> & {
+type ToNftHoldingParams = {
+    account: Account;
     token: TokenInfo;
 };
 
-const toNftHolding = ({ deviceState, symbol, token }: ToNftHoldingParams): NftHolding => {
+const toNftHolding = ({ account, token }: ToNftHoldingParams): NftHolding => {
+    const { deviceState, symbol } = account;
     const contractAddress = token.contract as TokenAddress;
 
     return {
         assetKey: getWalletAssetKey({ deviceState, networkSymbol: symbol, contractAddress }),
+        account,
         symbol,
         contractAddress,
         token,
@@ -64,15 +68,15 @@ const selectPartitionedNftHoldings = createMemoizedSelector(
     (accounts, tokenDefinitions, enabledNetworks): PartitionedNftHoldings => {
         const partitions = accounts
             .filter(({ symbol }) => enabledNetworks.includes(symbol))
-            .map(({ deviceState, symbol, tokens }) => {
+            .map(account => {
+                const { symbol, tokens } = account;
                 const { shownWithBalance, hiddenWithBalance, unverifiedWithBalance } = getTokens({
                     tokens: tokens ?? [],
                     symbol,
                     tokenDefinitions: tokenDefinitions?.[symbol]?.nft,
                     isNft: true,
                 });
-                const toHolding = (token: TokenInfo) =>
-                    toNftHolding({ deviceState, symbol, token });
+                const toHolding = (token: TokenInfo) => toNftHolding({ account, token });
 
                 return {
                     shown: shownWithBalance.map(toHolding),
@@ -91,6 +95,9 @@ export type NftItem = {
     id: string;
     amount: string;
     explorerUrl: string | undefined;
+    // The account holding this item: one collection can span several accounts.
+    account: Account;
+    contractAddress: TokenAddress;
 };
 
 export type NftCollectionItems = {
@@ -117,7 +124,7 @@ const getNftItems = (
     limit: number,
     explorer: Explorer | undefined,
 ): NftCollectionItems => ({
-    items: held.reduce<NftItem[]>((items, { token }) => {
+    items: held.reduce<NftItem[]>((items, { token, account, contractAddress }) => {
         const { ids, multiTokenValues } = token;
         const getExplorerUrl = (id: string) =>
             explorer === undefined ? undefined : getNftExplorerUrl(explorer, token, id);
@@ -127,9 +134,13 @@ const getNftItems = (
             return items;
         }
 
-        const idItems = (ids ?? [])
-            .slice(0, room)
-            .map(id => ({ id, amount: '1', explorerUrl: getExplorerUrl(id) }));
+        const idItems = (ids ?? []).slice(0, room).map(id => ({
+            id,
+            amount: '1',
+            explorerUrl: getExplorerUrl(id),
+            account,
+            contractAddress,
+        }));
         const multiTokenItems = (multiTokenValues ?? [])
             .filter((value): value is MultiTokenValue & { id: string } => value.id !== undefined)
             .slice(0, room - idItems.length)
@@ -137,6 +148,8 @@ const getNftItems = (
                 id,
                 amount: value ?? '1',
                 explorerUrl: getExplorerUrl(id),
+                account,
+                contractAddress,
             }));
 
         return items.concat(idItems, multiTokenItems);

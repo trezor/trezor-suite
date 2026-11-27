@@ -28,10 +28,24 @@ type TransactionNotificationPayload = {
 
 type BaseTransactionNotificationPayload = Omit<TransactionNotificationPayload, 'amount'>;
 
+type SentFungibleAsset = {
+    /** The amount in main units, unformatted: the notification is rendered, not the string. */
+    amount: string;
+    token?: TokenInfo;
+};
+
+// An NFT transfer always moves one item, so it names the item instead of an amount.
+type SentNFTAsset = {
+    token: TokenInfo;
+    nftTokenId: string;
+};
+
+export type SentTransactionAsset = SentFungibleAsset | SentNFTAsset;
+
 type SentTransactionNotification = {
     type: 'tx-sent';
-    token?: TokenInfo;
-} & TransactionNotificationPayload;
+} & BaseTransactionNotificationPayload &
+    SentTransactionAsset;
 
 type RawSentTransactionNotification = {
     type: 'raw-tx-sent';

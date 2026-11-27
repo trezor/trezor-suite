@@ -10,6 +10,10 @@ import { buildEnsText } from './builder/evm/ens/text';
 import { buildClaimWithdrawRequest } from './builder/evm/everstake/claimWithdrawRequest';
 import { buildStake } from './builder/evm/everstake/stake';
 import { buildUnstake } from './builder/evm/everstake/unstake';
+import {
+    buildErc1155SafeTransferFrom,
+    buildErc721SafeTransferFrom,
+} from './builder/evm/nft/safeTransferFrom';
 import { buildRedeem } from './builder/evm/redeem';
 import { buildTransfer } from './builder/evm/transfer';
 import { buildWethDeposit } from './builder/evm/weth/deposit';
@@ -29,6 +33,18 @@ export const Calldata = {
             transfer: {
                 encode: buildTransfer,
                 decode: createEvmDecoder(EVM_ABI.erc20.transfer),
+            },
+        },
+        erc721: {
+            safeTransferFrom: {
+                encode: buildErc721SafeTransferFrom,
+                decode: createEvmDecoder(EVM_ABI.erc721.safeTransferFrom),
+            },
+        },
+        erc1155: {
+            safeTransferFrom: {
+                encode: buildErc1155SafeTransferFrom,
+                decode: createEvmDecoder(EVM_ABI.erc1155.safeTransferFrom),
             },
         },
         erc4626: {

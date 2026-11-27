@@ -6,6 +6,7 @@ export const SET_RECENTLY_DISCONNECTED_DEVICE = '@suite/set-recently-disconnecte
 export const ADD_DEVICE_ID_TO_SEEN_DISCONNECT_NOTIFICATION =
     '@suite/add-device-id-to-seen-disconnect-notification';
 export const SET_SEND_FORM_PREFILL = '@suite/set-send-form-prefill';
+export const CLEAR_SEND_FORM_PREFILL = '@suite/clear-send-form-prefill';
 export const SET_TRANSACTION_HISTORY_PREFILL = '@suite/set-transaction-history-prefill';
 export const EVM_CONFIRM_EXPLANATION_MODAL = '@suite/evm-confirm-explanation-modal';
 export const EVM_CLOSE_EXPLANATION_BANNER = '@suite/evm-close-explanation-banner';

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { type TokenAddress } from '@suite-common/tokens';
@@ -10,6 +10,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { SearchAsset } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { AssetGroupLabel } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupLabel';
+import { AssetGroupSpace } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupSpace';
 import { AssetGroupsCard } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupsCard';
 import { AssetRowAccountWithBalance } from '#src/components/suite/asset-picker/components/AssetRow/AssetRowAccount/AssetRowAccountWithBalance';
 import { AssetRowToken } from '#src/components/suite/asset-picker/components/AssetRow/AssetRowToken/AssetRowToken';
@@ -20,13 +22,20 @@ import { AssetsModal } from '#src/components/suite/asset-picker/components/Asset
 import { useExpandableGroups } from '#src/components/suite/asset-picker/hooks/useExpandableGroups';
 import { useFilterAccountsWithTokens } from '#src/components/suite/asset-picker/hooks/useFilterAccountsWithTokens';
 import { useListScrollReset } from '#src/components/suite/asset-picker/hooks/useListScrollReset';
-import { type AssetPickerListItem } from '#src/components/suite/asset-picker/types';
 import { createTokenOption } from '#src/components/suite/asset-picker/utils/assetOptions';
-import { getAssetPickerItemHeight } from '#src/components/suite/asset-picker/utils/assetPickerItemHeights';
 import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 import { type TokensWithRates } from '#src/utils/wallet/tokenUtils';
 
+import { AssetRowNFT } from './AssetRowNFT/AssetRowNFT';
 import { useBuildTokenOptions } from './hooks/useBuildTokenOptions';
+import { useNFTOptions } from './hooks/useNFTOptions';
+import {
+    type NFTOption,
+    type SendTokenPickerItem,
+    filterNFTOptions,
+    getSendTokenPickerItemHeight,
+    withNFTGroupLabel,
+} from './nftOptions';
 
 interface SelectTokenAssetModalProps {
     onModalClose: () => void;
@@ -79,22 +88,26 @@ export function SelectTokenAssetModal({
         expandedHiddenTokensGroups: expandedGroupKeys,
     });
     const filteredOptions = useFilterAccountsWithTokens({ accountsWithTokens: options, search });
+    const nftOptions = useNFTOptions(account);
+    const listItems = useMemo(
+        (): SendTokenPickerItem[] => [
+            ...filteredOptions,
+            ...withNFTGroupLabel(filterNFTOptions(nftOptions, search)),
+        ],
+        [filteredOptions, nftOptions, search],
+    );
 
     useListScrollReset(listRef, search);
 
-    const handleSelectChange = useCallback(
-        async (newlySelectedToken?: TokensWithRates) => {
+    // Returns whether set-max was on; selecting any asset turns it off.
+    const replaceSelectedAsset = useCallback(
+        (contract: string | null, nftTokenId: string | undefined, amount: string) => {
             resetDraft();
 
-            setValue(tokenInputName, newlySelectedToken?.contract || null, {
-                shouldDirty: true,
-            });
-            setValue(amountInputName, '', {
-                shouldDirty: true,
-            });
-            setValue(fiatInputName, '', {
-                shouldDirty: true,
-            });
+            setValue(tokenInputName, contract, { shouldDirty: true });
+            setValue(`outputs.${outputId}.nftTokenId`, nftTokenId, { shouldDirty: true });
+            setValue(amountInputName, amount, { shouldDirty: true });
+            setValue(fiatInputName, '', { shouldDirty: true });
 
             const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
 
@@ -103,6 +116,29 @@ export function SelectTokenAssetModal({
             }
 
             onModalClose();
+
+            return isSetMaxActive;
+        },
+        [
+            amountInputName,
+            fiatInputName,
+            getDefaultValue,
+            onModalClose,
+            outputId,
+            resetDraft,
+            setMax,
+            setValue,
+            tokenInputName,
+        ],
+    );
+
+    const handleSelectChange = useCallback(
+        async (newlySelectedToken?: TokensWithRates) => {
+            const isSetMaxActive = replaceSelectedAsset(
+                newlySelectedToken?.contract || null,
+                undefined,
+                '',
+            );
 
             await dispatch(
                 updateFiatRatesThunk({
@@ -135,23 +171,35 @@ export function SelectTokenAssetModal({
             currencyValue.value,
             dataEnabled,
             dispatch,
-            fiatInputName,
-            getDefaultValue,
-            onModalClose,
             outputId,
-            resetDraft,
+            replaceSelectedAsset,
             setAmount,
-            setMax,
-            setValue,
             toggleOption,
-            tokenInputName,
+        ],
+    );
+
+    // Always one item for now, also for ERC-1155. NFTs have no fiat rate to fetch.
+    const handleNFTSelect = useCallback(
+        ({ token, tokenId }: NFTOption) => {
+            replaceSelectedAsset(token.contract, tokenId, '1');
+            clearErrors(amountInputName);
+            if (dataEnabled) toggleOption('transactionData');
+            composeTransaction(amountInputName);
+        },
+        [
+            amountInputName,
+            clearErrors,
+            composeTransaction,
+            dataEnabled,
+            replaceSelectedAsset,
+            toggleOption,
         ],
     );
 
     const handleAccountClick = useCallback(() => handleSelectChange(), [handleSelectChange]);
 
     const renderItem = useCallback(
-        (item: AssetPickerListItem) => {
+        (item: SendTokenPickerItem) => {
             switch (item.type) {
                 case 'account':
                     return (
@@ -174,7 +222,7 @@ export function SelectTokenAssetModal({
 
                 case 'hidden-tokens':
                     return (
-                        <AssetGroupsCard height={getAssetPickerItemHeight(item)}>
+                        <AssetGroupsCard height={getSendTokenPickerItemHeight(item)}>
                             <ExpandableAssetRowGroup
                                 label="TR_HIDDEN_TOKENS"
                                 account={item.account}
@@ -200,13 +248,26 @@ export function SelectTokenAssetModal({
                         </AssetGroupsCard>
                     );
 
+                case 'nft':
+                    return (
+                        <AssetRowNFT
+                            dataTestId={`@asset-picker/send-token/option/${item.account.symbol}/nft/${item.token.contract}/${item.tokenId}`}
+                            option={item}
+                            onClick={handleNFTSelect}
+                        />
+                    );
+
                 case 'group-label':
+                    return <AssetGroupLabel label={item.label} />;
+
                 case 'group-space':
+                    return <AssetGroupSpace size={item.size} />;
+
                 case 'asset-groups':
                     return null;
             }
         },
-        [handleAccountClick, handleSelectChange, toggleGroup],
+        [handleAccountClick, handleNFTSelect, handleSelectChange, toggleGroup],
     );
 
     return (
@@ -224,15 +285,15 @@ export function SelectTokenAssetModal({
             <Divider margin={{ top: 16 }} />
 
             <AssetsListEmpty
-                isEmpty={filteredOptions.length === 0}
+                isEmpty={listItems.length === 0}
                 heading="TR_TOKEN_NOT_FOUND"
                 description={search ? 'TR_TOKEN_TRY_DIFFERENT_SEARCH' : undefined}
                 height={LIST_HEIGHT}
             >
                 <AssetsList
-                    items={filteredOptions}
+                    items={listItems}
                     renderItem={renderItem}
-                    getItemHeight={getAssetPickerItemHeight}
+                    getItemHeight={getSendTokenPickerItemHeight}
                     height={LIST_HEIGHT}
                     ref={listRef}
                 />
