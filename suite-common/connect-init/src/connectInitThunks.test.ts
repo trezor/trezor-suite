@@ -46,8 +46,9 @@ const state: ConnectInitThunkState = {
 
 const createThunkDeps = (
     services: Partial<ConnectInitThunkDeps['services']> = {},
+    settings: ConnectInitThunkState['wallet']['settings'] = initialWalletSettingsState,
 ): ConnectInitThunkTestDeps => {
-    const getState = () => state;
+    const getState = () => ({ ...state, wallet: { settings } });
     const extra: ConnectInitThunkDeps = {
         services: {
             analytics: { report: jest.fn() },
@@ -131,6 +132,82 @@ describe('TrezorConnect Actions', () => {
         expect(initSpy).toHaveBeenCalledWith(
             expect.objectContaining({ firmwareChannel: 'production' }),
         );
+    });
+
+    describe('custom EVM networks', () => {
+        type NetworkSymbol = (typeof initialWalletSettingsState.enabledNetworks)[number];
+
+        const definition = testMocks.getCustomEvmNetworkDefinition({
+            testnet: true,
+            blockTimeSeconds: 2.5,
+        });
+        const settings = {
+            ...initialWalletSettingsState,
+            enabledNetworks: ['btc' as NetworkSymbol, definition.symbol],
+            customEvmNetworks: [definition],
+        };
+
+        it('registers them in Connect after init without declaring them', async () => {
+            const initSpy = jest.spyOn(TrezorConnect, 'init');
+            const registerSpy = jest
+                .spyOn(TrezorConnect, 'registerEvmNetwork')
+                .mockResolvedValue({ success: true, payload: { symbol: definition.symbol } });
+            const updateSpy = jest.spyOn(TrezorConnect, 'updateConnectSettings');
+            const { dispatch, getState, extra } = createThunkDeps({}, settings);
+
+            await connectInitThunk()(dispatch, getState, extra);
+
+            expect(initSpy).toHaveBeenCalledWith(
+                expect.objectContaining({ enabledNetworks: [{ coin: 'btc' }] }),
+            );
+            expect(registerSpy).toHaveBeenCalledWith({
+                symbol: definition.symbol,
+                name: 'Custom Chain',
+                chainId: 4242,
+            });
+            expect(initSpy.mock.invocationCallOrder[0]).toBeLessThan(
+                registerSpy.mock.invocationCallOrder[0] ?? 0,
+            );
+            expect(updateSpy).not.toHaveBeenCalled();
+        });
+
+        it.each([
+            {
+                description: 'rejected',
+                mock: () =>
+                    Promise.resolve({
+                        success: false as const,
+                        error: { code: 'Failure_UnknownCode' as const, message: 'no' },
+                    }),
+            },
+            { description: 'throwing', mock: () => Promise.reject(new Error('boom')) },
+        ])(
+            'carries on when Connect registration is $description',
+            async ({ mock: registration }) => {
+                jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+                jest.spyOn(TrezorConnect, 'registerEvmNetwork').mockImplementation(registration);
+                const updateSpy = jest.spyOn(TrezorConnect, 'updateConnectSettings');
+                const { actions, dispatch, getState, extra } = createThunkDeps({}, settings);
+
+                await connectInitThunk()(dispatch, getState, extra);
+
+                expect(actions).toEqual([
+                    expect.objectContaining({ type: connectInitThunk.pending.type }),
+                    expect.objectContaining({ type: connectInitThunk.fulfilled.type }),
+                ]);
+                expect(updateSpy).not.toHaveBeenCalled();
+            },
+        );
+
+        it('does not register anything without custom networks', async () => {
+            const registerSpy = jest.spyOn(TrezorConnect, 'registerEvmNetwork');
+            registerSpy.mockClear();
+            const { dispatch, getState, extra } = createThunkDeps();
+
+            await connectInitThunk()(dispatch, getState, extra);
+
+            expect(registerSpy).not.toHaveBeenCalled();
+        });
     });
 
     it('forces the early access firmware channel for a prerelease-allowing user', async () => {
