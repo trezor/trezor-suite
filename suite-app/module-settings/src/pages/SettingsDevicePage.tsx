@@ -31,6 +31,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import {
     AuthenticateDevice,
     AutoLock,
+    AutoLockBattery,
     Brightness,
     ChangeLanguage,
     ChangePin,
@@ -237,6 +238,7 @@ export const SettingsDevicePage = () => {
                     <Brightness isDeviceLocked={isDeviceLocked} />
                     <HapticFeedback isDeviceLocked={isDeviceLocked} />
                     {pinProtection && <AutoLock isDeviceLocked={isDeviceLocked} />}
+                    {pinProtection && <AutoLockBattery isDeviceLocked={isDeviceLocked} />}
                 </SettingsSection>
             )}
 

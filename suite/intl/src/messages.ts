@@ -3001,6 +3001,19 @@ export const messages = defineMessages({
         defaultMessage: 'Set the time when your device locks automatically.',
         id: 'TR_DEVICE_SETTINGS_AUTO_LOCK_SUBHEADING',
     },
+    TR_DEVICE_SETTINGS_AUTO_LOCK_USB_SUBHEADING: {
+        defaultMessage: 'Set the time when your device locks automatically while connected to USB.',
+        id: 'TR_DEVICE_SETTINGS_AUTO_LOCK_USB_SUBHEADING',
+    },
+    TR_DEVICE_SETTINGS_AUTO_LOCK_BATTERY: {
+        defaultMessage: 'Auto-lock on battery',
+        id: 'TR_DEVICE_SETTINGS_AUTO_LOCK_BATTERY',
+    },
+    TR_DEVICE_SETTINGS_AUTO_LOCK_BATTERY_SUBHEADING: {
+        defaultMessage:
+            'Set the time when your device locks automatically while on battery or a wireless charger.',
+        id: 'TR_DEVICE_SETTINGS_AUTO_LOCK_BATTERY_SUBHEADING',
+    },
     TR_DEVICE_SETTINGS_AFTER_DELAY: {
         defaultMessage: 'Auto-lock after',
         id: 'TR_DEVICE_SETTINGS_AFTER_DELAY',

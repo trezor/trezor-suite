@@ -1,16 +1,13 @@
-import type { Locale } from 'date-fns';
-
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { Anchor, SettingsAnchor } from '@suite/router';
-import { formatDurationStrict } from '@suite-common/suite-utils';
+import { SettingsAnchor } from '@suite/router';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { applySettingsThunk } from '#src/actions/settings/deviceSettingsActions';
-import { useConnectedDateFnsLocale } from '#src/hooks/suite/useConnectedDateFnsLocale';
+
+import { AutoLockSelect } from './AutoLockSelect';
 
 // auto lock times in seconds; allowed lock times by device: <1 minute, 6 days>
 const AUTO_LOCK_TIMES = {
@@ -21,71 +18,51 @@ const AUTO_LOCK_TIMES = {
     '6_DAYS': 60 * 60 * 24 * 6,
 } as const;
 
-const buildAutoLockOption = (seconds: number, locale?: Locale) => ({
-    label: formatDurationStrict(seconds, locale),
-    value: seconds,
-});
-
 interface AutoLockProps {
     isDeviceLocked: boolean;
 }
 
 export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
     const { device } = useDevice();
-    const locale = useConnectedDateFnsLocale();
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const autoLockDelay = device?.features?.auto_lock_delay_ms;
+    // A device that runs on battery has a separate auto-lock delay for that, so this one applies
+    // only while it is connected to USB.
+    const hasBatteryAutoLock = typeof device?.features?.auto_lock_delay_battery_ms === 'number';
 
     if (typeof autoLockDelay !== 'number') {
         return null;
     }
 
-    const AUTO_LOCK_OPTIONS = {
-        label: <Translation id="TR_DEVICE_SETTINGS_AFTER_DELAY" />,
-        options: Object.values(AUTO_LOCK_TIMES).map(time => buildAutoLockOption(time, locale)),
-    };
-
-    const handleChange = (option: { value: number; label: string }) => {
-        const value = option.value * 1000;
-
+    const handleChange = (value: number) => {
         dispatch(applySettingsThunk({ auto_lock_delay_ms: value }));
         analytics.report({
             type: events.settingsDeviceUpdateAutoLockEvent.name,
             payload: {
                 value,
+                powerSource: 'usb',
             },
         });
     };
 
     return (
-        <Anchor anchorId={SettingsAnchor.Autolock}>
-            {({ anchorId, anchorRef, shouldHighlight }) => (
-                <SectionItem
-                    data-testid={anchorId}
-                    ref={anchorRef}
-                    shouldHighlight={shouldHighlight}
-                    title={<Translation id="TR_DEVICE_SETTINGS_AUTO_LOCK" />}
-                    description={<Translation id="TR_DEVICE_SETTINGS_AUTO_LOCK_SUBHEADING" />}
-                    actions={
-                        <SectionItem.Select
-                            placeholder=""
-                            onChange={handleChange}
-                            options={[AUTO_LOCK_OPTIONS]}
-                            value={AUTO_LOCK_OPTIONS.options.find(
-                                option => autoLockDelay && autoLockDelay / 1000 === option.value,
-                            )}
-                            isDisabled={isDeviceLocked}
-                            tooltip={{
-                                isActive: isDeviceLocked,
-                                content: (
-                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                                ),
-                            }}
-                            data-testid="@settings/auto-lock-select"
-                        />
+        <AutoLockSelect
+            anchorId={SettingsAnchor.Autolock}
+            title={<Translation id="TR_DEVICE_SETTINGS_AUTO_LOCK" />}
+            description={
+                <Translation
+                    id={
+                        hasBatteryAutoLock
+                            ? 'TR_DEVICE_SETTINGS_AUTO_LOCK_USB_SUBHEADING'
+                            : 'TR_DEVICE_SETTINGS_AUTO_LOCK_SUBHEADING'
                     }
                 />
-            )}
-        </Anchor>
+            }
+            presetAutoLockTimes={Object.values(AUTO_LOCK_TIMES)}
+            autoLockDelay={autoLockDelay}
+            isDeviceLocked={isDeviceLocked}
+            onChange={handleChange}
+            data-testid="@settings/auto-lock-select"
+        />
     );
 };

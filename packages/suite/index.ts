@@ -224,6 +224,7 @@ export { selectHasActiveTransport } from './src/selectors/suite/suiteSelectors';
 export { getHowToGetFromBootloaderInstructionsMap } from './src/utils/device/bootloader';
 export { AuthenticateDevice } from './src/views/settings/SettingsDevice/AuthenticateDevice';
 export { AutoLock } from './src/views/settings/SettingsDevice/AutoLock';
+export { AutoLockBattery } from './src/views/settings/SettingsDevice/AutoLockBattery';
 export { Brightness } from './src/views/settings/SettingsDevice/Brightness';
 export { ChangeLanguage } from './src/views/settings/SettingsDevice/ChangeLanguage';
 export { ChangePin } from './src/views/settings/SettingsDevice/ChangePin';
