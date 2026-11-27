@@ -127,6 +127,12 @@ has one. The names follow the reference implementation, whose type tests check e
 exact API is not part of this decision. There, Sign & Verify went from 41 network checks to 0, the
 transaction detail from 28 to 1, and WalletConnect signs through the same capability.
 
+The capabilities are not designed ahead of the networks. The logic already exists for every
+supported network, in what ADR-003 counts as about 510 `networkType` branches in shared code. A
+capability reads the common shape from that code, which is how ADR-003 says an abstraction should be
+lowered: "we see it in real code and read the common shape from it instead of guessing it up front".
+A network whose shape differs keeps its own types and, where needed, its own screen.
+
 What this ADR leaves open: whether a given feature uses a shared screen or screens per family, which
 capabilities exist beyond the ones features need, and where per-family UI packages live in Suite.
 
