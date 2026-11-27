@@ -6,22 +6,25 @@ import { gotoThunk } from '@suite/router';
 import {
     ASSET_TABLE_ROW_LIMIT,
     getAccountListSectionKey,
+    normalizeAssetSearchQuery,
     selectAccountAssetOverview,
     selectAccountSmallBalances,
     selectAreAssetTableSmallBalancesDisplayed,
 } from '@suite-common/assets';
-import { selectAreTokensSupportedByAccount } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectAreTokensSupportedByAccount } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { Table } from '@trezor/components';
+import { Column, Row, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { AssetSearchInput } from '#src/components/wallet/assets/AssetSearchInput';
 import { AssetTableFilterHeader } from '#src/components/wallet/assets/AssetTableFilter';
 import { AssetTableSmallBalancesHiddenRow } from '#src/components/wallet/assets/AssetTableSmallBalancesHiddenRow';
 import { useAssetTableFolding } from '#src/components/wallet/assets/useAssetTableFolding';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { DropdownRow } from '#src/views/wallet/tokens/DropdownRow';
 
+import { AccountAssetSearchRows } from './AccountAssetSearchRows';
 import { AccountAssetSectionRow } from './AccountAssetSectionRow';
 
 type AccountAssetTableProps = {
@@ -36,6 +39,8 @@ type AccountAssetTableProps = {
 export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [isZeroBalanceOpen, setIsZeroBalanceOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const account = useSelector(state => selectAccountByKey(state, accountKey));
     const hasTokens = useSelector(state => selectAreTokensSupportedByAccount(state, accountKey));
     const { heldSections, zeroBalanceSections } = useSelector(state =>
         selectAccountAssetOverview(state, accountKey),
@@ -52,6 +57,7 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
         isFoldable,
     });
     const shownRows = rowLimit === undefined ? rows : rows.slice(0, rowLimit);
+    const query = normalizeAssetSearchQuery(searchQuery);
 
     // The account's own hidden tokens, so the list stays scoped to it and Back returns here.
     const openHiddenTokens = () => {
@@ -62,22 +68,12 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
         dispatch(gotoThunk({ routeName: 'wallet-tokens-hidden', preserveParams: true }));
     };
 
-    if (heldSections.length === 0 && zeroBalanceSections.length === 0) {
+    if (account === null || (heldSections.length === 0 && zeroBalanceSections.length === 0)) {
         return null;
     }
 
-    return (
-        <AssetTableFrame
-            assetHeader={
-                <AssetTableFilterHeader
-                    areSmallBalancesShown={areSmallBalancesShown}
-                    smallBalances={smallBalances.summary}
-                    onSmallBalancesChange={changeSmallBalances}
-                    onOpenHiddenTokens={hasTokens ? openHiddenTokens : undefined}
-                />
-            }
-            data-testid="@wallet/account-assets/table"
-        >
+    const listRows = (
+        <>
             {rows.length === 0 && heldSections.length > 0 && (
                 <AssetTableSmallBalancesHiddenRow
                     onShowSmallBalances={() => changeSmallBalances(true)}
@@ -112,6 +108,42 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
                         section={section}
                     />
                 ))}
-        </AssetTableFrame>
+        </>
+    );
+
+    return (
+        <Column gap={12} alignItems="stretch">
+            {hasTokens && (
+                <Row justifyContent="flex-end">
+                    <AssetSearchInput
+                        value={searchQuery}
+                        onChange={setSearchQuery}
+                        placeholder="TR_SEARCH_TOKENS"
+                        data-testid="@wallet/account-assets/search"
+                    />
+                </Row>
+            )}
+            <AssetTableFrame
+                assetHeader={
+                    <AssetTableFilterHeader
+                        areSmallBalancesShown={areSmallBalancesShown}
+                        smallBalances={smallBalances.summary}
+                        onSmallBalancesChange={changeSmallBalances}
+                        onOpenHiddenTokens={hasTokens ? openHiddenTokens : undefined}
+                    />
+                }
+                data-testid="@wallet/account-assets/table"
+            >
+                {query === '' ? (
+                    listRows
+                ) : (
+                    <AccountAssetSearchRows
+                        networkSymbol={account.symbol}
+                        sections={[...heldSections, ...zeroBalanceSections]}
+                        query={query}
+                    />
+                )}
+            </AssetTableFrame>
+        </Column>
     );
 };
