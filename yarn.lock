@@ -12997,7 +12997,6 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/device-utils": "workspace:*"
-    "@trezor/env-utils": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"

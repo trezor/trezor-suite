@@ -1,4 +1,3 @@
-import { isCodesignBuild } from '@trezor/env-utils';
 import { TOR_URLS } from '@trezor/urls';
 import { urlToOnion } from '@trezor/utils';
 
@@ -47,15 +46,10 @@ type GetReferAFriendApiUrlParams = {
 export const getReferAFriendApiUrl = ({ env, isTorEnabled }: GetReferAFriendApiUrlParams) =>
     REFER_A_FRIEND_API_URL[env][isTorEnabled ? 'onion' : 'clearnet'];
 
-// TODO: when Access control headers allow it, make production backend default even on local or dev Suite builds.
-const getReferAFriendApiDefaultEnvironment = (): ReferAFriendApiEnvironment =>
-    isCodesignBuild() ? 'prod' : 'dev';
-
 type GetReferAFriendApiDefaultUrlParams = {
     isTorEnabled: boolean;
 };
 
 export const getReferAFriendApiDefaultUrl = ({
     isTorEnabled,
-}: GetReferAFriendApiDefaultUrlParams) =>
-    getReferAFriendApiUrl({ env: getReferAFriendApiDefaultEnvironment(), isTorEnabled });
+}: GetReferAFriendApiDefaultUrlParams) => getReferAFriendApiUrl({ env: 'prod', isTorEnabled });
