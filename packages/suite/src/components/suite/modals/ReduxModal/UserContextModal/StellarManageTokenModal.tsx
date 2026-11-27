@@ -256,6 +256,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                         isDisabled={isProcessing || !!insufficientBalanceInfo}
                         isLoading={isProcessing}
                         intent="brand"
+                        data-testid="@wallet/stellar-token/continue"
                     >
                         <Translation id="TR_CONTINUE" />
                     </Button>
@@ -272,7 +273,12 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
         >
             <Form form={methods} formState={formState}>
                 <Column gap={20}>
-                    <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                    <Text
+                        typographyStyle="body-md"
+                        intent="neutral"
+                        priority="secondary"
+                        data-testid="@wallet/stellar-token/description"
+                    >
                         {mode === 'activate' ? (
                             <Translation
                                 id={descriptionId}
