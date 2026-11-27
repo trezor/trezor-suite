@@ -1,5 +1,6 @@
 import {
     type GeolocationRootState,
+    type PresenceEstimate,
     type PresenceSignals,
     estimatePresence,
     selectCountryCode,
@@ -15,33 +16,42 @@ import {
 import { type Feature as FeatureConfig } from '@suite-common/suite-types';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 
-type RegionsRootState = MessageSystemRootState & GeolocationRootState;
+export type RegionsRootState = MessageSystemRootState & GeolocationRootState;
 
-const createMemoizedSelector = createWeakMapSelector.withTypes<RegionsRootState>();
+export const createRegionsSelector = createWeakMapSelector.withTypes<RegionsRootState>();
 
-const isRestrictedByPresence = (
+export type PresenceRestriction = { estimate: PresenceEstimate | null; isRestricted: boolean };
+
+const NOT_EVALUATED: PresenceRestriction = { estimate: null, isRestricted: false };
+
+const getPresenceRestriction = (
     feature: FeatureConfig | undefined,
     signals: PresenceSignals,
-): boolean => {
+): PresenceRestriction => {
     if (!feature?.flag) {
-        return false;
+        return NOT_EVALUATED;
     }
 
     const countries = getRegionRestrictedCountries(feature);
 
     if (countries.length === 0) {
-        return false;
+        return NOT_EVALUATED;
     }
 
-    const { score, evidence } = estimatePresence(countries, signals);
+    const estimate = estimatePresence(countries, signals);
 
-    return evidence !== 'none' && score >= getRegionRestrictionThreshold(feature);
+    return {
+        estimate,
+        isRestricted:
+            estimate.evidence !== 'none' &&
+            estimate.score >= getRegionRestrictionThreshold(feature),
+    };
 };
 
-const selectPresenceRestrictionFeature = (state: MessageSystemRootState) =>
+export const selectPresenceRestrictionFeature = (state: MessageSystemRootState) =>
     selectFeatureConfig(state, Feature.regions.presenceRestriction);
 
-const selectPresenceSignals = createMemoizedSelector(
+export const selectPresenceSignals = createRegionsSelector(
     [selectCountryCode, selectDevicePresenceSignals],
     (ipCountry, deviceSignals): PresenceSignals => ({
         ipCountry,
@@ -51,7 +61,10 @@ const selectPresenceSignals = createMemoizedSelector(
     }),
 );
 
-export const selectIsRegionRestricted = createMemoizedSelector(
+export const selectPresenceRestriction = createRegionsSelector(
     [selectPresenceRestrictionFeature, selectPresenceSignals],
-    isRestrictedByPresence,
+    getPresenceRestriction,
 );
+
+export const selectIsRegionRestricted = (state: RegionsRootState) =>
+    selectPresenceRestriction(state).isRestricted;

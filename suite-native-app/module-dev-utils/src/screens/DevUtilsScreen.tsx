@@ -13,6 +13,7 @@ import { FeatureFlagsCard } from '../components/FeatureFlagsCard';
 import { FirmwareSourceCard } from '../components/FirmwareSourceCard';
 import { InfoCard } from '../components/InfoCard';
 import { MessageSystemCard } from '../components/MessageSystemCard';
+import { PresenceDetectionCard } from '../components/PresenceDetectionCard';
 import { SuiteSyncQuotaManager } from '../components/SuiteSyncQuotaManager';
 import { SuiteSyncRelaySettings } from '../components/SuiteSyncRelaySettings';
 import { TradingCard } from '../components/TradingCard';
@@ -34,6 +35,7 @@ export const DevUtilsScreen = () => (
             <TradingCard />
             <EarnCard />
             <MessageSystemCard />
+            <PresenceDetectionCard />
             {isDevelopOrDebugEnv() && <AppsEmbeddingCard />}
             <FirmwareSourceCard />
             <SuiteSyncRelaySettings />

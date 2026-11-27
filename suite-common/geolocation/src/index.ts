@@ -4,3 +4,4 @@ export * from './geolocationSelectors';
 export * from './countries';
 export type * from './presence/presenceTypes';
 export { estimatePresence } from './presence/estimatePresence';
+export { getTimeZoneCountry } from './presence/getTimeZoneCountry';

@@ -54,6 +54,7 @@ import {
 } from '@trezor/suite';
 import { breakpoints } from '@trezor/theme';
 
+import { PresenceDetection } from '../SettingsDebug/PresenceDetection';
 import { ReduxLogger } from '../SettingsDebug/ReduxLogger';
 
 export const SettingsDebugPage = () => {
@@ -93,6 +94,12 @@ export const SettingsDebugPage = () => {
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Trade">
                 <DebugTradeApi />
+            </SettingsSection>
+            <SettingsSection
+                hasVerticalLayout={hasContentBelowTabletWidth}
+                title="Presence detection"
+            >
+                <PresenceDetection />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Apps embedding">
                 <AppsEmbeddingSwitch />
