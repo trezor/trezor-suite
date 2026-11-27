@@ -3,7 +3,7 @@ import type { MiddlewareAPI, Dispatch as ReduxDispatch, UnknownAction } from 're
 
 import { type SelectedAccountRootState } from '@suite/account';
 import { type LocksRootState, lockDevice, selectIsDeviceOrUiLocked } from '@suite/locks';
-import { type ModalRootState } from '@suite/modal';
+import { type ModalRootState, selectModal } from '@suite/modal';
 import {
     type RouterRootState,
     routerLocationChange,
@@ -27,6 +27,7 @@ import {
     blockchainActions,
     discoveryActions,
     selectAccountByKey,
+    selectAccounts,
     transactionsActions,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -41,6 +42,7 @@ import {
     type CoinjoinRootState,
     type SuiteOnlineRootState,
     selectCoinjoinAccountByKey,
+    selectCoinjoinAccounts,
     selectCoinjoinSessionBlockerByAccountKey,
     selectIsAccountWithSessionInCriticalPhaseByAccountKey,
     selectIsAnySessionInCriticalPhase,
@@ -69,7 +71,7 @@ export const coinjoinMiddleware =
         }
 
         // do not close success and critical phase modals when they are open, similar to discovery middleware
-        const { modal } = api.getState();
+        const modal = selectModal(api.getState());
         const allowedModals = ['coinjoin-success', 'more-rounds-needed', 'critical-coinjoin-phase'];
 
         if (
@@ -152,7 +154,7 @@ export const coinjoinMiddleware =
             const isCoinjoinBlockedByTor = !selectIsTorEnabled(state);
             if (!isCoinjoinBlockedByTor) {
                 // find all coinjoin accounts (for specific network when initiating action is network-specific)
-                const coinjoinAccounts = state.wallet.accounts.filter(
+                const coinjoinAccounts = selectAccounts(state).filter(
                     a => a.accountType === 'coinjoin' && (!symbol || a.symbol === symbol),
                 );
                 coinjoinAccounts.forEach(a =>
@@ -309,10 +311,9 @@ export const coinjoinMiddleware =
 
         if (coinjoinClientActions.clientSessionPhase.match(action)) {
             const { accountKeys } = action.payload;
-            const isAlreadyPaused = api
-                .getState()
-                .wallet.coinjoin.accounts.find(({ key }) => key === accountKeys[0])
-                ?.session?.paused;
+            const isAlreadyPaused = selectCoinjoinAccounts(api.getState()).find(
+                ({ key }) => key === accountKeys[0],
+            )?.session?.paused;
 
             if (action.payload.phase === SessionPhase.CriticalError && !isAlreadyPaused) {
                 action.payload.accountKeys.forEach((key: string) =>

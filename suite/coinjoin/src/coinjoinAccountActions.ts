@@ -2,7 +2,7 @@ import { createAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { type SelectedAccountRootState } from '@suite/account';
 import { type LocksRootState, selectIsDeviceLocked } from '@suite/locks';
-import { type ModalRootState, openModal } from '@suite/modal';
+import { type ModalRootState, openModal, selectModal } from '@suite/modal';
 import { type RouterRootState, gotoThunk, selectRouteName } from '@suite/router';
 import { type TorRootState } from '@suite/tor';
 import { type DeviceRootState, selectDevices, selectSelectedDevice } from '@suite-common/device';
@@ -17,7 +17,9 @@ import {
     type TransactionsRootState,
     accountsActions,
     selectAccountByKey,
+    selectAccounts,
     selectNetworkBlockchainInfo,
+    selectTransactions,
     transactionsActions,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
@@ -251,7 +253,8 @@ export const updateClientAccountThunk =
             dispatch(coinjoinClientActions.endCoinjoinSession(account.key));
             // In an edge case when multiple coinjoin sessions finish in the same round, the result modal is shown only for one of them.
             // Nice to have TODO: display results per account in one modal.
-            if (!('payload' in state.modal && state.modal.payload.type === 'coinjoin-success')) {
+            const modal = selectModal(state);
+            if (!('payload' in modal && modal.payload.type === 'coinjoin-success')) {
                 dispatch(
                     openModal({
                         type: 'coinjoin-success',
@@ -267,8 +270,8 @@ type CoinjoinAccountCheckReorgThunkState = CoinjoinRootState & TransactionsRootS
 const coinjoinAccountCheckReorgThunk =
     (account: Account, checkpoint: ScanAccountProgress['checkpoint']) =>
     (dispatch: Dispatch, getState: () => CoinjoinAccountCheckReorgThunkState) => {
-        const state = getState();
-        const previousCheckpoint = selectCoinjoinAccountByKey(state, account.key)?.checkpoints?.[0];
+        const previousCheckpoint = selectCoinjoinAccountByKey(getState(), account.key)
+            ?.checkpoints?.[0];
         if (!previousCheckpoint) return;
         if (
             checkpoint.blockHeight < previousCheckpoint.blockHeight ||
@@ -278,10 +281,7 @@ const coinjoinAccountCheckReorgThunk =
             log(
                 `CoinjoinAccount reorg: ${previousCheckpoint.blockHeight}:${previousCheckpoint.blockHash} -> ${checkpoint.blockHeight}:${checkpoint.blockHash}`,
             );
-            const txs = getAccountTransactions(
-                account.key,
-                state.wallet.transactions.transactions,
-            ).filter(
+            const txs = getAccountTransactions(account.key, selectTransactions(getState())).filter(
                 ({ blockHeight }) =>
                     !blockHeight || blockHeight >= checkpoint.blockHeight || blockHeight < 0,
             );
@@ -322,7 +322,7 @@ export const updatePendingAccountInfoThunk =
         if (!api) return;
 
         const { backend, client } = api;
-        const transactions = state.wallet.transactions.transactions[account.key] ?? [];
+        const transactions = selectTransactions(state)[account.key] ?? [];
         const checkpoint = coinjoinAccount.checkpoints[0];
         if (!checkpoint) return;
 
@@ -392,11 +392,7 @@ type CleanPendingTransactionsThunkState = BlockchainRootState & TransactionsRoot
 const cleanPendingTransactionsThunk =
     (account: Account, pending: { txid: string }[]) =>
     (dispatch: Dispatch, getState: () => CleanPendingTransactionsThunkState) => {
-        const {
-            wallet: {
-                transactions: { transactions },
-            },
-        } = getState();
+        const transactions = selectTransactions(getState());
         const { blockHeight } = selectNetworkBlockchainInfo(getState(), account.symbol);
         const pendingTxids = pending.map(({ txid }) => txid);
         const txs = getAccountTransactions(account.key, transactions).filter(tx =>
@@ -450,7 +446,7 @@ export const fetchAndUpdateAccountThunk =
         try {
             backend.on(`progress/${progressHandle}`, onProgress);
 
-            const prevTransactions = state.wallet.transactions.transactions[account.key];
+            const prevTransactions = selectTransactions(state)[account.key];
 
             const { pending, checkpoint, cache } = await backend.scanAccount({
                 descriptor: account.descriptor,
@@ -464,7 +460,7 @@ export const fetchAndUpdateAccountThunk =
             dispatch(cleanPendingTransactionsThunk(account, pending));
 
             // get fresh state
-            const transactions = getState().wallet.transactions.transactions[account.key];
+            const transactions = selectTransactions(getState())[account.key];
             const hasAnonymityError = selectHasAnonymitySetError(getState());
 
             if (transactions !== prevTransactions || isInitialUpdate || hasAnonymityError) {
@@ -907,7 +903,7 @@ export const stopCoinjoinSessionByDeviceIdThunk =
         const devices = selectDevices(state);
         const disconnectedDevices = devices.filter(d => d.id === deviceID && d.remember);
         const affectedAccounts = disconnectedDevices.flatMap(d =>
-            state.wallet.accounts.filter(
+            selectAccounts(state).filter(
                 a => a.accountType === 'coinjoin' && a.deviceState === d.state?.staticSessionId,
             ),
         );
@@ -937,10 +933,10 @@ type RestoreCoinjoinAccountsThunkState = CoinjoinRootState;
 
 export const restoreCoinjoinAccountsThunk =
     () => (dispatch: Dispatch, getState: () => RestoreCoinjoinAccountsThunkState) => {
-        const { coinjoin } = getState().wallet;
+        const coinjoinAccounts = selectCoinjoinAccounts(getState());
 
         // find all networks to restore
-        const coinjoinSymbols = coinjoin.accounts.reduce<NetworkSymbol[]>((res, account) => {
+        const coinjoinSymbols = coinjoinAccounts.reduce<NetworkSymbol[]>((res, account) => {
             if (!res.includes(account.symbol)) {
                 return res.concat(account.symbol);
             }
@@ -976,11 +972,9 @@ type LogCoinjoinAccountsThunkState = CoinjoinRootState & TransactionsRootState;
 
 export const logCoinjoinAccountsThunk =
     () => (_: Dispatch, getState: () => LogCoinjoinAccountsThunkState) => {
-        const {
-            accounts,
-            coinjoin: { accounts: cjAccounts },
-            transactions: { transactions },
-        } = getState().wallet;
+        const accounts = selectAccounts(getState());
+        const cjAccounts = selectCoinjoinAccounts(getState());
+        const transactions = selectTransactions(getState());
         accounts
             .filter(({ accountType }) => accountType === 'coinjoin')
             .forEach(account => {
