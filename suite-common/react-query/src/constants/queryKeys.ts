@@ -88,6 +88,7 @@ export const desktopQueryKeys = {
     defaultUrls: (symbol: string) => ['default-urls', symbol],
     rankedTokenDefinitions: () => ['ranked-token-definitions'],
     proxyImage: (src?: string) => ['proxy-image', src],
+    viemChainCatalogue: () => ['viem-chain-catalogue'],
     inactiveTokens: (symbol: string, accountKey?: string) =>
         accountKey ? ['inactive-tokens', symbol, accountKey] : ['inactive-tokens', symbol],
 } as const satisfies Record<string, AllowedQueryKey>;

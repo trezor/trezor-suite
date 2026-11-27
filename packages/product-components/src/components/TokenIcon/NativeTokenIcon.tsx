@@ -1,11 +1,14 @@
+import { useSelector } from 'react-redux';
 import { ReactSVG } from 'react-svg';
 
 import styled from 'styled-components';
 
 import { useServices } from '@trezor/dependency-injection';
-import type { NetworkSymbol } from '@trezor/network-module-types';
+import type { NetworkConfigState, NetworkSymbol } from '@trezor/network-module-types';
 
+import { TokenInitials } from './TokenInitials';
 import { type TokenIconSize } from './tokenIconTypes';
+import { selectNetworkConfig } from '../../network-display/networkDisplaySelectors';
 import { injectGetCryptoIcon } from '../../services/networkServices';
 
 const SvgContainer = styled.div<{ $size: TokenIconSize }>`
@@ -45,9 +48,18 @@ export const NativeTokenIcon = ({
     'data-testid': dataTestId,
 }: NativeTokenIconProps) => {
     const { getCryptoIcon } = useServices(injectGetCryptoIcon);
+    const displaySymbol = useSelector(
+        (state: NetworkConfigState) => selectNetworkConfig(state, symbol)?.displaySymbol,
+    );
     const src = getCryptoIcon(symbol);
 
-    if (typeof src !== 'string' || !src) return null;
+    if (typeof src !== 'string' || !src) {
+        return (
+            <TokenInitials size={size} withTooltip={false}>
+                {displaySymbol ?? symbol}
+            </TokenInitials>
+        );
+    }
 
     return (
         <SvgContainer $size={size} data-testid={dataTestId}>
