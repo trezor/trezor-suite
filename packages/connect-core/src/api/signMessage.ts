@@ -15,7 +15,7 @@ import { validateCoinPath } from './common/paramsValidator';
 import { getBitcoinNetwork, getBitcoinNetworkOrThrow } from '../data/coinInfo';
 import { validateModelOneMessageSize } from '../device/validateMessageSize';
 import { hexToText, messageToHex } from '../utils/formatUtils';
-import { getLabel, getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
+import { getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
 
 type Params = { proto: PROTO.SignMessage; readableMessage: string };
 
@@ -62,10 +62,6 @@ export default class SignMessage extends AbstractMethod<'signMessage', Params> {
 
     get requiredPermissions(): PermissionRequest[] {
         return [this.coinPerm('sign_message', this.coinInfo)];
-    }
-
-    get info() {
-        return getLabel('Sign #NETWORK message', this.coinInfo);
     }
 
     getButtonRequestData(code: DeviceButtonRequestCode, name?: string) {

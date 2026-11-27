@@ -13,10 +13,9 @@ const createMethod = () =>
     });
 
 describe(GetAccountInfo.name, () => {
-    it('describes the account by its network', () => {
+    it('requires a permission of its network', () => {
         const method = createMethod();
 
-        expect(method.info).toBe('Export Stellar account info');
         expect(method.requiredPermissions).toEqual([
             { permission: 'read_account_info', coin: 'xlm' },
         ]);

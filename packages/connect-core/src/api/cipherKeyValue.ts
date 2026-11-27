@@ -46,10 +46,6 @@ export default class CipherKeyValue extends AbstractMethod<
         return [{ permission: 'sign' }];
     }
 
-    get info() {
-        return 'Cipher key value';
-    }
-
     async run({ sendCoreMessage }: MethodContext) {
         const responses: PROTO.CipheredKeyValue[] = [];
         const cmd = this.getDevice().getCommands();

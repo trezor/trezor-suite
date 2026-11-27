@@ -19,7 +19,6 @@ import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
 import { getDefinitionsVersion } from '../../../utils/definitionsUtils';
-import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { messageToHex } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import { getEthereumDefinitions } from '../ethereumDefinitions';
@@ -120,13 +119,6 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
 
     get requiredPermissions(): PermissionRequest[] {
         return this.coinPerms('sign', this.requiredFirmwareCoins);
-    }
-
-    get info() {
-        return getNetworkLabel(
-            'Sign #NETWORK typed data',
-            getEthereumNetwork(this.params.address_n),
-        );
     }
 
     getButtonRequestData(code: DeviceButtonRequestCode, name?: string) {

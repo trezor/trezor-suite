@@ -7,7 +7,6 @@ import {
     ExperimentalMethod,
 } from '@trezor/connect-common';
 import type {
-    EthereumNetworkInfo,
     EthereumTransaction,
     EthereumTransactionEIP1559,
     PermissionRequest,
@@ -20,7 +19,6 @@ import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
 import { getDefinitionsVersion } from '../../../utils/definitionsUtils';
-import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { addHexPrefix, deepTransform, stripHexPrefix } from '../../../utils/formatUtils';
 import { validatePath } from '../../../utils/pathUtils';
 import {
@@ -32,7 +30,6 @@ import * as helper from '../ethereumSignTx';
 
 type Params = {
     path: number[];
-    network?: EthereumNetworkInfo;
     chunkify: boolean;
     auth7702?: MessagesSchema.EthereumSignTxEIP1559['auth7702'];
 } & (
@@ -123,7 +120,6 @@ export default class EthereumSignTransaction extends AbstractMethod<
 
         const params = {
             path,
-            network,
             type: isEIP1559 ? 'eip1559' : 'legacy',
             tx: {
                 ...strip(txToStrip),
@@ -160,10 +156,6 @@ export default class EthereumSignTransaction extends AbstractMethod<
 
     get requiredPermissions(): PermissionRequest[] {
         return this.coinPerms('sign', this.requiredFirmwareCoins);
-    }
-
-    get info() {
-        return getNetworkLabel('Sign #NETWORK transaction', this.params.network);
     }
 
     async run() {

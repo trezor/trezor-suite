@@ -11,7 +11,6 @@ import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 import { validateParams } from './common/paramsValidator';
-import { getLabel } from '../utils/pathUtils';
 
 type Params = GetAccountInfoParams & { descriptor: string; coinInfo: CoinInfo };
 
@@ -57,10 +56,6 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Par
 
     get requiredPermissions(): PermissionRequest[] {
         return [this.coinPerm('read_account_info', this.params.coinInfo)];
-    }
-
-    get info() {
-        return getLabel('Export #NETWORK account info', this.params.coinInfo);
     }
 
     // Read by Trezor Suite's backends instead, see its getAccountInfo popup flow.

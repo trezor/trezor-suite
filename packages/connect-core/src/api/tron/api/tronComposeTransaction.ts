@@ -25,10 +25,6 @@ export default class TronComposeTransaction extends AbstractMethod<
     get requiredPermissions(): PermissionRequest[] {
         return [];
     }
-    get info() {
-        return 'Compose Tron transaction';
-    }
-
     // eslint-disable-next-line require-await
     async run() {
         const { contract, blockHash, blockHeight, fee_limit, data } = this.params;

@@ -182,10 +182,6 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
         this.requiredFirmwareCoins = [getMiscNetwork('xmr')];
     }
 
-    get info() {
-        return 'Sign Monero transaction';
-    }
-
     async run(): Promise<MethodReturnType<typeof this.name>> {
         // Step 1: Init - Send transaction data
         const initResponse = await this.getDevice()

@@ -7,7 +7,6 @@ import {
     createUiEventMessage,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { fromHardenedPathPart } from '@trezor/crypto-utils';
 import { Assert } from '@trezor/schema-utils';
 
 import { bundlify } from './paramsValidator';
@@ -57,21 +56,6 @@ export abstract class AbstractMiscGetAddress<
 
     get requiredPermissions(): PermissionRequest[] {
         return this.coinPerms('read_address', this.requiredFirmwareCoins);
-    }
-
-    protected getInfo(coinName: string) {
-        if (this.params.length > 1) {
-            return `Export multiple ${coinName} addresses`;
-        }
-
-        const { params } = this;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstParam: (typeof params)[number] = params[0];
-        const { address_n } = firstParam.proto;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const accountIndex: number = address_n[2];
-
-        return `Export ${coinName} address for account #${fromHardenedPathPart(accountIndex) + 1}`;
     }
 
     getButtonRequestData(code: DeviceButtonRequestCode) {

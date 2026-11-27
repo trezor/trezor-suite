@@ -15,13 +15,8 @@ import { Assert } from '@trezor/schema-utils';
 import { bundlify, validateCoinPath } from './common/paramsValidator';
 import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import {
-    fixCoinInfoNetwork,
-    getBitcoinNetwork,
-    getBitcoinNetworkOrThrow,
-    getUniqueNetworks,
-} from '../data/coinInfo';
-import { getLabel, getSerializedPath, validatePath } from '../utils/pathUtils';
+import { fixCoinInfoNetwork, getBitcoinNetwork, getBitcoinNetworkOrThrow } from '../data/coinInfo';
+import { getSerializedPath, validatePath } from '../utils/pathUtils';
 
 type Params = {
     proto: PROTO.GetAddress;
@@ -89,24 +84,6 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
 
     get requiredPermissions(): PermissionRequest[] {
         return this.coinPerms('read_address', this.requiredFirmwareCoins);
-    }
-
-    get info() {
-        // set info
-        if (this.params.length === 1) {
-            const { params } = this;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const first: (typeof params)[number] = params[0];
-
-            return getLabel('Export #NETWORK address', first.coinInfo);
-        }
-        const requestedNetworks = this.params.map(b => b.coinInfo);
-        const uniqNetworks = getUniqueNetworks(requestedNetworks);
-        if (uniqNetworks.length === 1 && uniqNetworks[0]) {
-            return getLabel('Export multiple #NETWORK addresses', uniqNetworks[0]);
-        }
-
-        return 'Export multiple addresses';
     }
 
     getButtonRequestData(code: DeviceButtonRequestCode) {

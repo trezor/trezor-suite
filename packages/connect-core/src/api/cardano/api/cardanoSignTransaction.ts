@@ -240,10 +240,6 @@ export default class CardanoSignTransaction extends AbstractMethod<
         return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
-    get info() {
-        return 'Sign Cardano transaction';
-    }
-
     _isFeatureSupported(feature: keyof typeof CardanoSignTransactionFeatures) {
         return this.getDevice().atLeast(CardanoSignTransactionFeatures[feature]);
     }

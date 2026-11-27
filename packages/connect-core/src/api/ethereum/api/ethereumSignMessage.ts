@@ -14,7 +14,6 @@ import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
 import { validateModelOneMessageSize } from '../../../device/validateMessageSize';
 import { getDefinitionsVersion } from '../../../utils/definitionsUtils';
-import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { hexToText, messageToHex } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import { getEthereumDefinitions } from '../ethereumDefinitions';
@@ -50,10 +49,6 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
 
     get requiredPermissions(): PermissionRequest[] {
         return this.coinPerms('sign', this.requiredFirmwareCoins);
-    }
-
-    get info() {
-        return getNetworkLabel('Sign #NETWORK message', this.params.network);
     }
 
     getButtonRequestData(code: DeviceButtonRequestCode, name?: string) {

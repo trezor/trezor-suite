@@ -69,12 +69,6 @@ export default class GetOwnershipProof extends AbstractMethod<
         return permissions;
     }
 
-    get info() {
-        return this.params.length > 1
-            ? 'Export multiple ownership proofs'
-            : 'Export ownership proof';
-    }
-
     async run({ sendCoreMessage }: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];
         const cmd = this.getDevice().getCommands();

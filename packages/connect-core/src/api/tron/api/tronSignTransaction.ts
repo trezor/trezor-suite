@@ -140,10 +140,6 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
         return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
-    get info() {
-        return 'Sign Tron transaction';
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
 

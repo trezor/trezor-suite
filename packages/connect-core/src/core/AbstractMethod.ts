@@ -116,10 +116,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public readonly name: Name; // method name
 
-    protected get info() {
-        return '';
-    } // method info, displayed in popup info-panel
-
     public useDevice: boolean; // use device
 
     public useDeviceState: boolean; // should validate device state?

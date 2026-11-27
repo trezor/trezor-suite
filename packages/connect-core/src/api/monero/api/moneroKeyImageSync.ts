@@ -122,10 +122,6 @@ export default class MoneroKeyImageSyncMethod extends AbstractMethod<'moneroKeyI
         return this.coinPerms('read_account_info', this.requiredFirmwareCoins);
     }
 
-    get info() {
-        return 'Export Monero key images for spent output tracking';
-    }
-
     async run(): Promise<MoneroKeyImageSyncResult> {
         const cmd = this.getDevice().getCommands();
 

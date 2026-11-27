@@ -28,7 +28,6 @@ import {
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetworkOrThrow } from '../data/coinInfo';
-import { getLabel } from '../utils/pathUtils';
 import { PAYMENT_REQUEST_AMOUNT_BYTES, encodePaymentRequestAmount } from '../utils/paymentRequest';
 import { validateParams } from './common/paramsValidator';
 
@@ -194,10 +193,6 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         }
 
         return permissions;
-    }
-
-    get info() {
-        return getLabel('Sign #NETWORK transaction', this.params.coinInfo);
     }
 
     async run() {

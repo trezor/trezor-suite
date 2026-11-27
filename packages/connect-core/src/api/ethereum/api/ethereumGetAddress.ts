@@ -17,9 +17,8 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodContext, MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
+import { getEthereumNetwork } from '../../../data/coinInfo';
 import { getDefinitionsVersion } from '../../../utils/definitionsUtils';
-import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { stripHexPrefix } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import { bundlify } from '../../common/paramsValidator';
@@ -64,23 +63,6 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
 
     get requiredPermissions(): PermissionRequest[] {
         return this.coinPerms('read_address', this.requiredFirmwareCoins);
-    }
-
-    get info() {
-        if (this.params.length === 1) {
-            const { params } = this;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const first: (typeof params)[number] = params[0];
-
-            return getNetworkLabel('Export #NETWORK address', first.network);
-        }
-        const requestedNetworks = this.params.map(b => b.network);
-        const uniqNetworks = getUniqueNetworks(requestedNetworks);
-        if (uniqNetworks.length === 1 && uniqNetworks[0]) {
-            return getNetworkLabel('Export multiple #NETWORK addresses', uniqNetworks[0]);
-        }
-
-        return 'Export multiple addresses';
     }
 
     getButtonRequestData(code: DeviceButtonRequestCode) {

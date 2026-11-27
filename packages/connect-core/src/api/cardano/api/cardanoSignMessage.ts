@@ -124,8 +124,4 @@ export default class CardanoSignMessage extends AbstractMethod<
             },
         };
     }
-
-    get info() {
-        return 'Sign Cardano message';
-    }
 }

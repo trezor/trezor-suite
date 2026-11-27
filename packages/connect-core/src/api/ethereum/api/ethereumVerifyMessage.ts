@@ -39,10 +39,6 @@ export default class EthereumVerifyMessage extends AbstractMethod<
         return [{ permission: 'verify_message' }];
     }
 
-    get info() {
-        return 'Verify message';
-    }
-
     async run() {
         validateModelOneMessageSize(this.getDevice(), this.params.message);
 

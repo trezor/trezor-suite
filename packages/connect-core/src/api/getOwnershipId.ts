@@ -57,12 +57,6 @@ export default class GetOwnershipId extends AbstractMethod<
         return this.coinPerms('read_account_info', this.requiredFirmwareCoins);
     }
 
-    get info() {
-        return this.params.length > 1
-            ? 'Export multiple ownership proof ids'
-            : 'Export ownership id';
-    }
-
     async run({ sendCoreMessage }: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];
         const cmd = this.getDevice().getCommands();

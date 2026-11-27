@@ -9,7 +9,6 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetworkOrThrow } from '../data/coinInfo';
 import { validateModelOneMessageSize } from '../device/validateMessageSize';
 import { messageToHex } from '../utils/formatUtils';
-import { getLabel } from '../utils/pathUtils';
 
 type Params = {
     proto: PROTO.VerifyMessage;
@@ -45,10 +44,6 @@ export default class VerifyMessage extends AbstractMethod<'verifyMessage', Param
 
     get requiredPermissions(): PermissionRequest[] {
         return [this.coinPerm('verify_message', this.params.coinInfo)];
-    }
-
-    get info() {
-        return getLabel('Verify #NETWORK message', this.params.coinInfo);
     }
 
     async run() {

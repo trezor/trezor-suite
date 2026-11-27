@@ -71,10 +71,6 @@ export default class CardanoGetNativeScriptHash extends AbstractMethod<
         return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
-    get info() {
-        return 'Get Cardano native script hash';
-    }
-
     async run() {
         const { message } = await this.getDevice()
             .getCommands()

@@ -194,6 +194,65 @@ describe('getMethodInfo', () => {
         ]);
     });
 
+    it.each([
+        [
+            'Export public key of Bitcoin native segwit account #1',
+            { method: 'getPublicKey', path: "m/84'/0'/0'" },
+        ],
+        // A path of no bitcoin network, which Connect accepts for a host of Connect 9.
+        [
+            'Export public key of Ethereum account #1',
+            { method: 'getPublicKey', path: "m/44'/60'/0'", _v9_compat: true },
+        ],
+        ['Export Stellar account info', { method: 'getAccountInfo', coin: 'xlm', descriptor: 'G' }],
+        [
+            'Export Solana address for account #2',
+            { method: 'solanaGetAddress', path: "m/44'/501'/1'/0'" },
+        ],
+        [
+            'Export multiple Solana public keys',
+            {
+                method: 'solanaGetPublicKey',
+                bundle: [{ path: "m/44'/501'/0'/0'" }, { path: "m/44'/501'/1'/0'" }],
+            },
+        ],
+        [
+            'Export Cardano address for account #1',
+            {
+                method: 'cardanoGetAddress',
+                addressParameters: { addressType: 8, path: "m/1852'/1815'/0'/0/0" },
+                protocolMagic: 764824073,
+                networkId: 1,
+            },
+        ],
+        [
+            'Export multiple Ethereum addresses',
+            {
+                method: 'ethereumGetAddress',
+                bundle: [{ path: "m/44'/60'/0'/0/0" }, { path: "m/44'/60'/1'/0/0" }],
+            },
+        ],
+        [
+            'Sign Ethereum typed data',
+            {
+                method: 'ethereumSignTypedData',
+                path: "m/44'/60'/0'/0/0",
+                data: {} as never,
+                metamask_v4_compat: true,
+            },
+        ],
+        [
+            'Send maximum amount',
+            {
+                method: 'sendTransaction',
+                coin: 'btc',
+                outputs: [{ type: 'send-max', address: BTC_ADDRESS }],
+            },
+        ],
+    ] satisfies [string, CallMethodPayload][])('titles the call %s', async (title, call) => {
+        await expect(getMethodInfo(call)).resolves.toMatchObject({ info: title });
+    });
+
     it('rejects an account of an unknown coin, as Connect does', async () => {
         await expect(
             getMethodInfo({ method: 'selectAccount', coin: asCoinSymbol('nope') }),

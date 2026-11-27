@@ -63,10 +63,6 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
         return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
-    get info() {
-        return 'Export Monero address';
-    }
-
     getButtonRequestData(code: DeviceButtonRequestCode) {
         if (code === 'ButtonRequest_Address') {
             const { params } = this;

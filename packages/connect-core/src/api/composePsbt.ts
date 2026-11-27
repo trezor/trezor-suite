@@ -56,10 +56,6 @@ export default class ComposePsbt extends AbstractMethod<'composePsbt', Params> {
         return [];
     }
 
-    get info() {
-        return `Compose PSBT transaction`;
-    }
-
     run() {
         const tx = parsePsbt({
             psbtTransactionData: this.params.psbtData,

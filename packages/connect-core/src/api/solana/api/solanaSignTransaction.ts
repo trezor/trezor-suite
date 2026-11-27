@@ -83,10 +83,6 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
         return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
-    get info() {
-        return 'Sign Solana transaction';
-    }
-
     // The definition version depends on the device firmware, so it is fetched in run(), once the
     // device is known.
     private async setTokenDefinition() {

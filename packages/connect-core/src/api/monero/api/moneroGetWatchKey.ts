@@ -43,10 +43,6 @@ export default class MoneroGetWatchKeyMethod extends AbstractMethod<'moneroGetWa
         return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
     }
 
-    get info() {
-        return 'Export Monero watch-only credentials';
-    }
-
     async run(): Promise<MoneroWatchKey> {
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall(

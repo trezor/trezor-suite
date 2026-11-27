@@ -74,10 +74,6 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         return [];
     }
 
-    get info() {
-        return `Compose transaction`;
-    }
-
     run(): Promise<PrecomposedResult[]> {
         const { coinInfo, outputs, baseFee, sortingStrategy, path, utxo, feeLevels } = this.params;
         const { changeAddress } = this.params;

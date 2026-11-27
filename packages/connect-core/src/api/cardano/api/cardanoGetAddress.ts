@@ -9,7 +9,6 @@ import {
     createUiEventMessage,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { fromHardenedPathPart } from '@trezor/crypto-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -68,22 +67,6 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
 
     get requiredPermissions(): PermissionRequest[] {
         return this.coinPerms('read_address', this.requiredFirmwareCoins);
-    }
-
-    get info() {
-        if (this.params.length === 1) {
-            const { params } = this;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const first: (typeof params)[number] = params[0];
-
-            const addressN = first.proto.address_parameters.address_n;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const accountIndex: number = addressN[2];
-
-            return `Export Cardano address for account #${fromHardenedPathPart(accountIndex) + 1}`;
-        }
-
-        return 'Export multiple Cardano addresses';
     }
 
     getButtonRequestData(code: DeviceButtonRequestCode) {

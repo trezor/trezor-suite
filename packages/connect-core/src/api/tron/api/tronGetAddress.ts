@@ -10,10 +10,6 @@ export default class TronGetAddress extends AbstractMiscGetAddress<'tronGetAddre
         this.requiredFirmwareCoins = [getMiscNetwork('trx')];
     }
 
-    get info() {
-        return this.getInfo('Tron');
-    }
-
     async _call({ proto }: MiscGetAddressParams) {
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('TronGetAddress', 'TronAddress', proto);

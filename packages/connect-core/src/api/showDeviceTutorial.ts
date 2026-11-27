@@ -14,10 +14,6 @@ export default class ShowDeviceTutorial extends AbstractMethod<'showDeviceTutori
         return [];
     }
 
-    get info() {
-        return 'Show device tutorial';
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
 

@@ -58,10 +58,6 @@ export default class RippleSignTransaction extends AbstractMethod<
         return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
-    get info() {
-        return 'Sign Ripple transaction';
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
         const { message } = await cmd.typedCall('RippleSignTx', 'RippleSignedTx', this.params);

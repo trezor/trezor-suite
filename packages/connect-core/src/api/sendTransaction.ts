@@ -5,13 +5,11 @@ import {
     type PermissionRequest,
     type SignedTransaction,
 } from '@trezor/connect-common';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import type { ComposeOutput } from '@trezor/utxo-lib';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetworkOrThrow } from '../data/coinInfo';
-import { formatAmount } from '../utils/formatUtils';
 import { validateHDOutput } from './bitcoin/outputs';
 import { validateParams } from './common/paramsValidator';
 
@@ -20,7 +18,6 @@ type Params = Omit<ComposeParams, 'outputs'> & {
     coinInfo: BitcoinNetworkInfo;
     push: boolean;
     identity?: string;
-    total: BigNumber;
 };
 
 export default class SendTransaction extends AbstractMethod<'sendTransaction', Params> {
@@ -40,15 +37,7 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
         const coinInfo = getBitcoinNetworkOrThrow(payload.coin);
 
         // validate each output and transform into @trezor/utxo-lib/compose format
-        const outputs: ComposeOutput[] = [];
-        let total = new BigNumber(0);
-        payload.outputs.forEach(out => {
-            const output = validateHDOutput(out, coinInfo);
-            if ('amount' in output && typeof output.amount === 'string') {
-                total = total.plus(output.amount);
-            }
-            outputs.push(output);
-        });
+        const outputs = payload.outputs.map(out => validateHDOutput(out, coinInfo));
 
         const params = {
             outputs,
@@ -59,7 +48,6 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
             sequence: payload.sequence,
             sortingStrategy: payload.sortingStrategy,
             push: typeof payload.push === 'boolean' ? payload.push : false,
-            total,
         };
 
         super(message, params);
@@ -76,16 +64,6 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
         }
 
         return permissions;
-    }
-
-    get info() {
-        const sendMax = this.params.outputs.some(o => o.type === 'send-max');
-
-        if (sendMax) {
-            return 'Send maximum amount';
-        }
-
-        return `Send ${formatAmount(this.params.total.toString(), this.params.coinInfo)}`;
     }
 
     // Composed, selected and signed by Trezor Suite instead, see its sendTransaction popup flow.

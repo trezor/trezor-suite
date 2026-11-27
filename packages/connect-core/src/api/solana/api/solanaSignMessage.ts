@@ -41,10 +41,6 @@ export default class SolanaSignMessage extends AbstractMethod<'solanaSignMessage
         return this.coinPerms('sign_message', this.requiredFirmwareCoins);
     }
 
-    get info() {
-        return 'Sign Solana message';
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
 

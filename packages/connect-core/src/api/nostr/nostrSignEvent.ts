@@ -33,10 +33,6 @@ export default class NostrSignEvent extends AbstractMethod<'nostrSignEvent', PRO
         return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
-    get info() {
-        return 'Sign Nostr event';
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
         const { message } = await cmd.typedCall(

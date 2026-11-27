@@ -56,10 +56,6 @@ export default class StellarSignTransaction extends AbstractMethod<
         return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
-    get info() {
-        return 'Sign Stellar transaction';
-    }
-
     private _isFeatureSupported(feature: keyof typeof StellarSignTransactionFeatures) {
         return this.getDevice().atLeast(StellarSignTransactionFeatures[feature]);
     }

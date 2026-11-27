@@ -10,7 +10,6 @@ import type { MethodMessage, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 import { isUtxoBased } from '../utils/accountUtils';
-import { getLabel } from '../utils/pathUtils';
 
 type Params = {
     coinInfo: CoinInfo;
@@ -67,10 +66,6 @@ export default class SelectAccount extends AbstractMethod<'selectAccount', Param
             isUtxoBased(this.params.coinInfo) && isFullAccount ? 'read_xpub' : 'read_address';
 
         return this.coinPerms(permission, this.requiredFirmwareCoins);
-    }
-
-    get info() {
-        return getLabel('Select #NETWORK account', this.params.coinInfo);
     }
 
     run(): Promise<MethodReturnType<'selectAccount'>> {

@@ -14,7 +14,6 @@ import type { MethodContext, MethodMessage, MethodReturnType } from '../core/Abs
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetwork, getBitcoinNetworkOrThrow } from '../data/coinInfo';
 import { bundlify, validateCoinPath } from './common/paramsValidator';
-import { getPublicKeyLabel } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
 
 type Params = {
@@ -96,17 +95,6 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             'read_xpub',
             this.params.map(({ permissionCoinInfo }) => permissionCoinInfo),
         );
-    }
-
-    get info() {
-        if (this.params.length > 1) {
-            return 'Export multiple public keys';
-        }
-        const { params } = this;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const first: (typeof params)[number] = params[0];
-
-        return getPublicKeyLabel(first.proto.address_n, first.permissionCoinInfo);
     }
 
     async run({ sendCoreMessage }: MethodContext) {

@@ -29,10 +29,6 @@ export default class CardanoComposeTransaction extends AbstractMethod<
         return [];
     }
 
-    get info() {
-        return 'Compose Cardano transaction';
-    }
-
     async run() {
         const {
             feeLevels = [{}],

@@ -28,10 +28,6 @@ export default class SolanaComposeTransaction extends AbstractMethod<
         return [];
     }
 
-    get info() {
-        return 'Compose Solana transaction';
-    }
-
     async run() {
         // If serializedTx is provided, preserve token metadata for the signing step so
         // firmware can display the recipient's base address instead of the token account.
