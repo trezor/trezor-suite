@@ -17,7 +17,7 @@ import {
     getStakingPositionPrincipal,
 } from '@suite-common/earn-staking-common';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
-import { selectAccountStakeTypeTransactions, stakeActions } from '@suite-common/wallet-core';
+import { stakeActions, useCardanoStakingActivation } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import {
@@ -104,6 +104,7 @@ export const StakingCard = ({
 }: StakingCardProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isBelowLaptop } = useLayoutSize();
+    const isCardanoNetworkType = account.networkType === 'cardano';
 
     const { productId, descriptor, position, totals, access } = useStakingAccountPosition(
         account.key,
@@ -118,7 +119,10 @@ export const StakingCard = ({
         selectIsStakingOperationPending(state, account.key),
     );
 
-    const stakeTxs = useSelector(state => selectAccountStakeTypeTransactions(state, account.key));
+    const { isActivating, lastConfirmedStakeType } = useCardanoStakingActivation({
+        account,
+        rewards: totals.rewards,
+    });
 
     const { totalRewards, isTotalRewardsLoading } = useStakingTotalRewards(account);
 
@@ -143,13 +147,7 @@ export const StakingCard = ({
     const totalPendingStakeBalance = formatAmount(totals.pending);
     const unstakingBalance = formatAmount(totals.unstaking);
 
-    const isCardanoNetworkType = account.networkType === 'cardano';
-
-    // A registered Cardano key reports no pending balance; legacy read a delegation as activating
-    // until its first reward, which keeps the timeline on the tab until then.
-    const isCardanoActivating =
-        isCardanoNetworkType && isStakedWithProvider && !isPositiveBalance(totals.rewards);
-
+    const isCardanoActivating = isStakedWithProvider && isActivating;
     const isStakePending = isPositiveBalance(totalPendingStakeBalance) || isCardanoActivating;
     const isPendingUnstakeShown = isPositiveBalance(unstakingBalance);
 
@@ -175,7 +173,7 @@ export const StakingCard = ({
         isStakePending,
         account,
         position,
-        stakeTxs,
+        lastTxStakeType: lastConfirmedStakeType,
         isStakedWithProvider,
     });
 
