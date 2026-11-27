@@ -11,7 +11,8 @@ export const useTradingErrorToast = () => {
     const { translationString } = useTranslation();
 
     const showTradingErrorToast = (tradingError: TradingError) => {
-        if (isSilentTradingError(tradingError)) {
+        // The shared push thunk already reports broadcast failures.
+        if (isSilentTradingError(tradingError) || tradingError.code === 'push-transaction-failed') {
             return;
         }
 

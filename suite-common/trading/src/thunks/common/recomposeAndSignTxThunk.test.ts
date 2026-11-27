@@ -781,7 +781,7 @@ describe('recomposeAndSignTxThunk', () => {
                     message: 'Blockhash not found',
                 },
             },
-            expectedType: 'sign-tx-error',
+            expectedType: 'error',
             expectedCode: 'push-transaction-failed',
         },
         {
@@ -789,7 +789,7 @@ describe('recomposeAndSignTxThunk', () => {
                 success: false,
                 error: { error: 'push-transaction-pending-conflict', message: 'Pending conflict' },
             },
-            expectedType: 'sign-tx-error',
+            expectedType: 'error',
             expectedCode: 'push-transaction-failed',
         },
         {
