@@ -34,6 +34,7 @@ export { useDappScan } from './hooks/useDappScan';
 export {
     useNetworkTxSimulation,
     isTxSimulationResultWithMethods,
+    TxSimulationChainUnsupportedError,
 } from './hooks/useNetworkTxSimulation';
 export { useTxSimulation } from './hooks/useTxSimulation';
 
