@@ -1,6 +1,6 @@
 import '@suite-common/test-utils/globalOverrides';
 
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, within } from '@testing-library/react';
 
 import { initialState as selectedAccountInitialState } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
@@ -59,7 +59,13 @@ const ethAccount = mockWalletAccount({
     deviceState: DEVICE_STATE,
     formattedBalance: '1.2',
     tokens: [
-        mockAccountToken({ symbol: 'USDC', contract: USDC, balance: '1000', decimals: 6 }),
+        mockAccountToken({
+            name: 'USD Coin',
+            symbol: 'USDC',
+            contract: USDC,
+            balance: '1000',
+            decimals: 6,
+        }),
         mockAccountToken({ symbol: '1INCH', contract: ONE_INCH, balance: '2.1', decimals: 18 }),
     ],
 });
@@ -208,6 +214,10 @@ describe('the account overview with the asset-first Home', () => {
             `@wallet/account-asset/eth/${USDC}`,
             `@wallet/account-asset/eth/${ONE_INCH}`,
         ]);
+        const tokenRow = within(screen.getByTestId(`@wallet/account-asset/eth/${USDC}`));
+        expect(tokenRow.getByTestId('@dashboard/home-asset/name')).toHaveTextContent('USD Coin');
+        expect(tokenRow.getAllByRole('cell').at(-1)).toHaveTextContent(/\$1,000.*1,000.* USDC/);
+
         // 1.2 ETH held and 0.5 ETH staked, at $3,000.
         expect(screen.getByTestId('@wallet/account-asset/eth/coin')).toHaveTextContent(
             /\$3,600.*1\.2\d* ETH/,
@@ -333,6 +343,9 @@ describe('the account overview with the asset-first Home', () => {
                 [getFiatRateKey(ETH, 'usd', USDC)]: mockRate(1),
             },
         });
+
+        const unpricedRow = within(screen.getByTestId(`@wallet/account-asset/eth/${ONE_INCH}`));
+        expect(unpricedRow.getAllByRole('cell').at(-1)).toHaveTextContent(/^2\.10* 1INCH$/);
 
         // 1.2 ETH + 0.5 ETH staked at $3,000 and 1,000 USDC at $1; the 1INCH has no rate.
         expect(screen.getByTestId('@wallet/account-assets/fiat-amount')).toHaveTextContent(

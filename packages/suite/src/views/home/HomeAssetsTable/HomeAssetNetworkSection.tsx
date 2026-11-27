@@ -1,6 +1,5 @@
 import { memo } from 'react';
 
-import { ASSET_TABLE_CELL_PADDING } from '@suite/assets';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import {
     selectDisplayedWalletAssetKeysOfNetwork,
@@ -37,12 +36,12 @@ export const HomeAssetNetworkSection = memo(
                     isHighlightedOnHover={false}
                     data-testid={`@dashboard/home-asset-group/${symbol}`}
                 >
-                    <Table.Cell colSpan={2} padding={ASSET_TABLE_CELL_PADDING.first}>
+                    <Table.Cell colSpan={2}>
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                             {name ?? symbol.toUpperCase()}
                         </Text>
                     </Table.Cell>
-                    <Table.Cell align="end" padding={ASSET_TABLE_CELL_PADDING.last}>
+                    <Table.Cell align="end">
                         {fiatValue !== undefined && (
                             <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                                 <HiddenPlaceholder>

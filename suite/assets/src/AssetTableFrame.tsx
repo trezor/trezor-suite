@@ -3,8 +3,6 @@ import { type ReactNode } from 'react';
 import { Translation } from '@suite/intl';
 import { Card, Table } from '@trezor/components';
 
-import { ASSET_TABLE_CELL_PADDING, ASSET_TABLE_COL_WIDTHS } from './assetTableLayout';
-
 type AssetTableFrameProps = {
     /** What heads the asset column: its label, and the table's menu where it has one. */
     assetHeader: ReactNode;
@@ -24,14 +22,17 @@ export const AssetTableFrame = ({
 }: AssetTableFrameProps) => (
     <Card paddingType="none" data-testid={dataTestId}>
         {banner}
-        <Table isRowHighlightedOnHover colWidths={ASSET_TABLE_COL_WIDTHS}>
+        <Table
+            isRowHighlightedOnHover
+            colWidths={[{ minWidth: '200px' }, { width: '25%' }, { width: '25%' }]}
+        >
             <Table.Header>
                 <Table.Row>
-                    <Table.Cell padding={ASSET_TABLE_CELL_PADDING.first}>{assetHeader}</Table.Cell>
+                    <Table.Cell>{assetHeader}</Table.Cell>
                     <Table.Cell align="end">
                         <Translation id="TR_EXCHANGE_RATE" />
                     </Table.Cell>
-                    <Table.Cell align="end" padding={ASSET_TABLE_CELL_PADDING.last}>
+                    <Table.Cell align="end">
                         <Translation id="TR_BALANCE" />
                     </Table.Cell>
                 </Table.Row>

@@ -27,7 +27,9 @@ export const useFiatFromCryptoValue = ({
     historicRate,
     useHistoricRate,
     rateType,
-}: UseFiatFromCryptoValueParams) => {
+}: Omit<UseFiatFromCryptoValueParams, 'amount'> & {
+    amount: CommonOwnProps['amount'] | undefined;
+}) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, baseCurrencyCode, tokenAddress);
 
@@ -37,7 +39,7 @@ export const useFiatFromCryptoValue = ({
 
     const rate = useHistoricRate ? historicRate : currentRate?.rate;
     const fiatAmount = useMemo(
-        () => (rate ? toFiatCurrency({ amount, rate }) : null),
+        () => (rate && amount !== undefined ? toFiatCurrency({ amount, rate }) : null),
         [amount, rate],
     );
 

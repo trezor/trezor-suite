@@ -1,6 +1,6 @@
 import { useNetworkStakingRate } from '@suite-common/earn-staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type AssetBalance } from '@suite-common/wallet-types';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Badge } from '@trezor/components';
 
@@ -12,7 +12,7 @@ type AccountStakingRowProps = {
     accountKey: AccountKey;
     networkSymbol: NetworkSymbol;
     /** Left out for a stake inside the balance, which the coin's row already shows. */
-    amount: string | undefined;
+    balance: AssetBalance | null;
 };
 
 /**
@@ -22,23 +22,24 @@ type AccountStakingRowProps = {
 export const AccountStakingRow = ({
     accountKey,
     networkSymbol,
-    amount,
+    balance,
 }: AccountStakingRowProps) => {
     const openAccountStaking = useOpenAccountStaking({ from: 'account-overview' });
     const { rate, rateKind } = useNetworkStakingRate({ networkSymbol, accountKey });
 
     return (
         <AssetTableRowView
-            variant="staking"
+            isStaking
             networkSymbol={networkSymbol}
-            amount={amount}
             badge={
-                isApyAvailable(rate) && rateKind !== null ? (
+                isApyAvailable(rate) &&
+                rateKind !== null && (
                     <Badge intent="brand" size="small">
                         <StakingRateText rate={rate} rateKind={rateKind} />
                     </Badge>
-                ) : null
+                )
             }
+            balance={balance}
             onOpen={() => openAccountStaking(networkSymbol)}
             data-testid={`@wallet/account-asset/${networkSymbol}/staking`}
         />

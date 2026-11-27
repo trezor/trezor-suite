@@ -1,12 +1,14 @@
 import {
     selectWalletAssetAmount,
     selectWalletAssetContractAddress,
+    selectWalletAssetFiatValue,
     selectWalletAssetNetworkSymbol,
     selectWalletAssetTokenDecimals,
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 
+import { AssetApyBadge } from '#src/components/wallet/assets/AssetApyBadge';
 import { AssetTableRowView } from '#src/components/wallet/assets/AssetTableRowView';
 import { useOpenAsset } from '#src/components/wallet/assets/useOpenAsset';
 import { useSelector } from '#src/hooks/suite/useSelector';
@@ -29,6 +31,8 @@ export const HomeAssetRowContainer = ({
     const tokenDecimals = useSelector(state => selectWalletAssetTokenDecimals(state, assetKey));
     const amount = useSelector(state => selectWalletAssetAmount(state, assetKey));
 
+    const fiatAmount = useSelector(state => selectWalletAssetFiatValue(state, assetKey));
+
     if (networkSymbol === undefined) {
         return null;
     }
@@ -37,9 +41,19 @@ export const HomeAssetRowContainer = ({
         <AssetTableRowView
             networkSymbol={networkSymbol}
             contractAddress={contractAddress}
-            tokenSymbol={tokenSymbol}
-            tokenDecimals={tokenDecimals}
-            amount={amount}
+            badge={
+                <AssetApyBadge
+                    symbol={networkSymbol}
+                    contractAddress={contractAddress}
+                    tokenSymbol={tokenSymbol}
+                    tokenDecimals={tokenDecimals}
+                />
+            }
+            balance={
+                amount === undefined
+                    ? null
+                    : { cryptoAmount: amount, fiatAmount: fiatAmount ?? null }
+            }
             onOpen={() => openAsset({ networkSymbol, contractAddress })}
             hasBorderTop={hasBorderTop}
             assetNameTestId={assetNameTestId}

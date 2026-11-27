@@ -283,6 +283,24 @@ describe('the home-asset table', () => {
         expect(screen.getByTestId('@dashboard/home-asset-item/btc/coin')).toBeInTheDocument();
     });
 
+    it('tries the logo for a token in the definitions', () => {
+        renderTable(getInitialState());
+
+        const tokenRow = screen.getByTestId(`@dashboard/home-asset-item/eth/${USDC_ON_ETH}`);
+        expect(within(tokenRow).getByAltText('U')).toHaveAttribute('src');
+    });
+
+    it('shows the wallet balance in fiat and crypto', () => {
+        renderTable(getInitialState());
+
+        const tokenRow = screen.getByTestId(`@dashboard/home-asset-item/eth/${USDC_ON_ETH}`);
+        const cells = within(tokenRow).getAllByRole('cell');
+        const balanceCell = cells.at(-1);
+
+        expect(balanceCell).toHaveTextContent('$2,400.00');
+        expect(balanceCell).toHaveTextContent('2,400.00 USDC');
+    });
+
     it('puts the most valuable asset first', () => {
         renderTable(getInitialState());
 
@@ -290,7 +308,7 @@ describe('the home-asset table', () => {
             .getAllByTestId('@dashboard/home-asset/name')
             .map(element => element.textContent);
 
-        expect(assetNames).toEqual(['BTC', 'ETH', 'USDC']);
+        expect(assetNames).toEqual(['Bitcoin', 'Ethereum', 'USD Coin']);
     });
 
     it('says the wallet holds nothing once every balance is zero, and keeps the menu over it', () => {
@@ -308,7 +326,7 @@ describe('the home-asset table', () => {
         expect(screen.getByTestId('@dashboard/home-asset/grouping')).toBeInTheDocument();
     });
 
-    describe('the APY badge next to the ticker', () => {
+    describe('the APY badge', () => {
         it('offers a coin its staking rate, and nothing to what cannot earn', () => {
             renderTable(getInitialState(), { ethStakingApy: 3.2 });
 

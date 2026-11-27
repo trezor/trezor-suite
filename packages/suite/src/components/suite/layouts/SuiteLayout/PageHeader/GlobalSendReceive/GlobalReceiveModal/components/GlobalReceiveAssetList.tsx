@@ -1,5 +1,6 @@
 import { type RefObject, useCallback, useMemo } from 'react';
 
+import { ASSET_ITEM_HEIGHT, AssetItem } from '@suite/assets';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type GlobalReceiveAssetListItem } from '@suite-common/receive';
 import { type TradingAssetOption } from '@suite-common/trading';
@@ -8,11 +9,9 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { AssetGroupLabel } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupLabel';
 import { AssetGroupSpace } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupSpace';
-import { AssetRowAsset } from '#src/components/suite/asset-picker/components/AssetRow/AssetRowAsset/AssetRowAsset';
 import { AssetsList } from '#src/components/suite/asset-picker/components/AssetsList/AssetsList';
 import {
     ASSET_ROW_GROUP_LABEL_HEIGHT,
-    ASSET_ROW_HEIGHT,
     ASSET_ROW_HEIGHTS_BY_SIZE,
 } from '#src/components/suite/asset-picker/constants';
 
@@ -39,7 +38,7 @@ const getItemHeight = (item: GlobalReceiveListItem): number => {
         case 'group-space':
             return ASSET_ROW_HEIGHTS_BY_SIZE.lg;
         case 'asset':
-            return ASSET_ROW_HEIGHT;
+            return ASSET_ITEM_HEIGHT;
         default:
             return exhaustive(item);
     }
@@ -97,12 +96,17 @@ export const GlobalReceiveAssetList = ({
                             width="100%"
                             offset={-200}
                         >
-                            <AssetRowAsset
-                                asset={item.asset}
+                            <AssetItem
+                                networkSymbol={item.asset.networkSymbol}
+                                contractAddress={
+                                    item.asset.isNativeToken
+                                        ? undefined
+                                        : item.asset.contractAddress
+                                }
                                 balance={item.balance}
-                                dataTestId={`@global-receive/asset/${item.asset.id}`}
+                                data-testid={`@global-receive/asset/${item.asset.id}`}
                                 isDisabled={isDisabled}
-                                onClick={onAssetClick}
+                                onClick={() => onAssetClick(item.asset)}
                             />
                         </Tooltip>
                     );

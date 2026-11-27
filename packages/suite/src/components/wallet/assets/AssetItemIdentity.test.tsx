@@ -2,6 +2,7 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
+import { AssetItem } from '@suite/assets';
 import { mockNetworkIcon, mockNetworksState } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TokenAddress } from '@suite-common/tokens';
@@ -9,7 +10,6 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
-import { AssetIdentity } from './AssetIdentity';
 import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 global.ResizeObserver = class MockedResizeObserver {
@@ -38,7 +38,11 @@ const renderIdentity = (contractAddress: TokenAddress) => {
 
     renderWithProviders(
         { ...services, networks: { networkIcon: mockNetworkIcon() } },
-        <AssetIdentity symbol={ETH} contractAddress={contractAddress} />,
+        <AssetItem.Identity
+            networkSymbol={ETH}
+            showNetworkIcon
+            contractAddress={contractAddress}
+        />,
     );
 };
 

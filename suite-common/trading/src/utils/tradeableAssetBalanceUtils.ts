@@ -2,17 +2,14 @@ import { type CryptoId } from 'invity-api';
 
 import { type TokenAddress } from '@suite-common/tokens';
 import { getNetwork } from '@suite-common/wallet-config';
-import { type Account, type BaseCurrencyAmount, type RatesByKey } from '@suite-common/wallet-types';
+import { type Account, type AssetBalance, type RatesByKey } from '@suite-common/wallet-types';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
 import { getCryptoId } from '../utils';
 
-export type TradeableAssetBalance = {
-    cryptoAmount: string;
-    fiatAmount: BaseCurrencyAmount | null;
-};
+export type TradeableAssetBalance = AssetBalance;
 
 export type TradeableAssetBalances = ReadonlyMap<CryptoId, TradeableAssetBalance>;
 

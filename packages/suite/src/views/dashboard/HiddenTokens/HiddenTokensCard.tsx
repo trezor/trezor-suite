@@ -9,7 +9,6 @@ import { useSelector } from '#src/hooks/suite/useSelector';
 
 import {
     HIDDEN_TOKEN_BALANCE_WIDTH,
-    HIDDEN_TOKEN_PRICE_WIDTH,
     HIDDEN_TOKEN_ROW_HEIGHT,
     HIDDEN_TOKEN_ROW_PADDING,
     HiddenTokenRow,
@@ -64,7 +63,7 @@ export const HiddenTokensCard = ({
         <Card paddingType="none" data-testid={dataTestId}>
             <Column alignItems="stretch">
                 <Text
-                    typographyStyle="body-sm"
+                    typographyStyle="body-sm-strong"
                     intent="neutral"
                     priority="secondary"
                     margin={{ top: 16, left: 20 }}
@@ -73,7 +72,11 @@ export const HiddenTokensCard = ({
                 </Text>
                 <Box overflow="auto">
                     <Column minWidth={LIST_MIN_WIDTH}>
-                        <Row gap={16} padding={HIDDEN_TOKEN_ROW_PADDING}>
+                        <Row
+                            gap={16}
+                            padding={HIDDEN_TOKEN_ROW_PADDING}
+                            justifyContent="space-between"
+                        >
                             <Text
                                 typographyStyle="body-sm"
                                 intent="neutral"
@@ -81,15 +84,6 @@ export const HiddenTokensCard = ({
                                 flex="1"
                             >
                                 <Translation id="TR_ASSET" />
-                            </Text>
-                            <Text
-                                typographyStyle="body-sm"
-                                intent="neutral"
-                                priority="secondary"
-                                width={HIDDEN_TOKEN_PRICE_WIDTH}
-                                align="end"
-                            >
-                                <Translation id="TR_EXCHANGE_RATE" />
                             </Text>
                             <Text
                                 typographyStyle="body-sm"

@@ -1,80 +1,100 @@
 import { type ReactNode } from 'react';
 
-import { ASSET_TABLE_CELL_PADDING, ASSET_TABLE_LINE_GAP } from '@suite/assets';
-import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
+import { AssetItem } from '@suite/assets';
+import { Translation } from '@suite/intl';
+import { useFormatters } from '@suite-common/formatters';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Column, Table } from '@trezor/components';
+import { type AssetBalance } from '@suite-common/wallet-types';
+import {
+    Column,
+    IconCircle,
+    Row,
+    TOOLTIP_DELAY_LONG,
+    Table,
+    Text,
+    TruncateWithTooltip,
+} from '@trezor/components';
+import { PiggyBankFilledIcon } from '@trezor/icons';
 
 import { PriceTicker } from '#src/components/suite/Ticker/PriceTicker';
 import { TrendTicker } from '#src/components/suite/Ticker/TrendTicker';
 
-import { AssetApyBadge } from './AssetApyBadge';
-import { AssetIdentity } from './AssetIdentity';
-import { AssetTableAmount } from './AssetTableAmount';
-
-type AssetRowProps = {
-    variant?: 'asset';
-    contractAddress: TokenAddress | undefined;
-    tokenSymbol: TokenSymbol | null;
-    tokenDecimals: number | undefined;
-};
-
-/** A stake of the coin: no token of its own, and no price, which the coin's own row shows. */
-type StakingRowProps = {
-    variant: 'staking';
-};
-
-type AssetTableRowViewProps = (AssetRowProps | StakingRowProps) & {
+type AssetTableRowViewProps = {
     networkSymbol: NetworkSymbol;
-    amount: string | undefined;
-    /** Shown by the asset's name in place of the rate it can earn; `null` shows none. */
+    contractAddress?: TokenAddress;
+    isStaking?: boolean;
     badge?: ReactNode;
+    balance: AssetBalance | null;
     onOpen: () => void;
     hasBorderTop?: boolean;
     assetNameTestId?: string;
     'data-testid': string;
 };
 
-/** A row of an asset table: the asset, its price and trend, and how much of it is held. */
-export const AssetTableRowView = (props: AssetTableRowViewProps) => {
-    const { networkSymbol, amount, badge, onOpen, hasBorderTop, assetNameTestId } = props;
-    const isStaking = props.variant === 'staking';
-    const contractAddress = isStaking ? undefined : props.contractAddress;
-    const rateBadge = isStaking ? null : (
-        <AssetApyBadge
-            symbol={networkSymbol}
-            contractAddress={props.contractAddress}
-            tokenSymbol={props.tokenSymbol}
-            tokenDecimals={props.tokenDecimals}
-        />
-    );
+export const AssetTableRowView = ({
+    networkSymbol,
+    contractAddress,
+    isStaking,
+    badge,
+    balance,
+    onOpen,
+    hasBorderTop,
+    assetNameTestId,
+    'data-testid': testId,
+}: AssetTableRowViewProps) => {
+    const { NetworkNameFormatter } = useFormatters();
 
     return (
-        <Table.Row hasBorderTop={hasBorderTop} onClick={onOpen} data-testid={props['data-testid']}>
-            <Table.Cell padding={ASSET_TABLE_CELL_PADDING.first} data-testid={assetNameTestId}>
-                <AssetIdentity
-                    symbol={networkSymbol}
-                    contractAddress={contractAddress}
-                    variant={isStaking ? 'staking' : 'asset'}
-                    badge={badge === undefined ? rateBadge : badge}
-                />
+        <Table.Row hasBorderTop={hasBorderTop} onClick={onOpen} data-testid={testId}>
+            <Table.Cell data-testid={assetNameTestId}>
+                {isStaking ? (
+                    <Row gap={12} minWidth={0}>
+                        <IconCircle icon={PiggyBankFilledIcon} size={32} intent="neutral" />
+                        <Column alignItems="flex-start" flex="1" minWidth={0}>
+                            <Row gap={8} maxWidth="100%">
+                                <Text
+                                    typographyStyle="body-md"
+                                    ellipsisLineCount={1}
+                                    minWidth={0}
+                                    data-testid="@dashboard/home-asset/name"
+                                >
+                                    <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
+                                        <Translation id="TR_EARN_STAKING" />
+                                    </TruncateWithTooltip>
+                                </Text>
+                                {badge}
+                            </Row>
+                            <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
+                                <NetworkNameFormatter value={networkSymbol} />
+                            </Text>
+                        </Column>
+                    </Row>
+                ) : (
+                    <AssetItem.Identity
+                        networkSymbol={networkSymbol}
+                        contractAddress={contractAddress}
+                        showNetworkIcon
+                        badge={badge}
+                        data-testid="@dashboard/home-asset/name"
+                    />
+                )}
             </Table.Cell>
-
             <Table.Cell align="end">
                 {!isStaking && (
-                    <Column alignItems="flex-end" gap={ASSET_TABLE_LINE_GAP}>
+                    <Column alignItems="flex-end">
                         <PriceTicker symbol={networkSymbol} contractAddress={contractAddress} />
                         <TrendTicker symbol={networkSymbol} contractAddress={contractAddress} />
                     </Column>
                 )}
             </Table.Cell>
-
-            <Table.Cell align="end" padding={ASSET_TABLE_CELL_PADDING.last}>
-                {amount !== undefined && (
-                    <AssetTableAmount
-                        symbol={networkSymbol}
+            <Table.Cell align="end">
+                {balance !== null && (
+                    <AssetItem.Balance
+                        networkSymbol={networkSymbol}
                         contractAddress={contractAddress}
-                        amount={amount}
+                        balance={balance}
+                        maxWidth={180}
                     />
                 )}
             </Table.Cell>

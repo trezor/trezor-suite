@@ -95,10 +95,10 @@ test.describe('Asset home', { tag: ['@noDevice'] }, () => {
                 await expect(homeAssetsSection.networkGroup(arbSymbol)).toBeHidden();
                 await expect
                     .poll(() => homeAssetsSection.networkAssetNames(ethSymbol).allInnerTexts())
-                    .toEqual(expect.arrayContaining(['ETH', 'USDC', 'USDT']));
+                    .toEqual(expect.arrayContaining(['Ethereum', 'USD Coin', 'Tether USD']));
                 await expect
                     .poll(() => homeAssetsSection.networkAssetNames(solSymbol).allInnerTexts())
-                    .toEqual(expect.arrayContaining(['SOL', 'USDT']));
+                    .toEqual(expect.arrayContaining(['Solana', 'Tether']));
             });
 
             await test.step('View unrecognized tokens', async () => {

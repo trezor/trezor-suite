@@ -1,5 +1,6 @@
 export * from './account';
 export type * from './allowance';
+export type * from './assetBalance';
 export type * from './backend';
 export * from './baseCurrency';
 export * from './cardanoStaking';

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { ASSET_TABLE_CELL_PADDING, AssetTableExpandRow, AssetTableFrame } from '@suite/assets';
+import { AssetTableExpandRow, AssetTableFrame } from '@suite/assets';
 import { gotoThunk } from '@suite/router';
 import {
     ASSET_TABLE_ROW_LIMIT,
@@ -94,7 +94,7 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
                     onClick={() => setIsZeroBalanceOpen(!isZeroBalanceOpen)}
                     data-testid="@wallet/account-assets/zero-balance"
                 >
-                    <Table.Cell colSpan={3} padding={ASSET_TABLE_CELL_PADDING.first}>
+                    <Table.Cell colSpan={3}>
                         <DropdownRow
                             isActive={isZeroBalanceOpen}
                             text="ZERO_BALANCE_TOKENS"

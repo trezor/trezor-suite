@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/discreet-mode"
+        },
+        {
             "path": "../../suite-common/formatters"
         },
         { "path": "../../suite-common/networks" },
@@ -18,6 +21,9 @@
             "path": "../../suite-common/wallet-core"
         },
         {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../discreet-mode" },
@@ -26,8 +32,42 @@
         { "path": "../token" },
         { "path": "../../packages/components" },
         {
+            "path": "../../networks/network-module/network-module-types"
+        },
+        {
             "path": "../../packages/product-components"
         },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        {
+            "path": "../../networks/network-module/network-assets-types"
+        },
+        {
+            "path": "../../networks/bitcoin/network-bitcoin-assets"
+        },
+        {
+            "path": "../../networks/cardano/network-cardano-assets"
+        },
+        {
+            "path": "../../networks/ethereum/network-ethereum-assets"
+        },
+        {
+            "path": "../../networks/ripple/network-ripple-assets"
+        },
+        {
+            "path": "../../networks/solana/network-solana-assets"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar-assets"
+        },
+        {
+            "path": "../../networks/tron/network-tron-assets"
+        }
     ]
 }
