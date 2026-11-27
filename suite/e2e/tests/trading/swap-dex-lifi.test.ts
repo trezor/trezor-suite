@@ -8,9 +8,11 @@ import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { dexSwapStatusFlow } from '../../fixtures/trading/statusFlow';
 import { expect, test } from '../../support/fixtures';
+import { getAddressProviderName } from '../../support/helpers/ethereumDefinitions';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const ethSymbol = asNetworkSymbol('eth');
+const ethereumChainId = 1;
 
 const sendAmount = '0.08';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
@@ -188,7 +190,22 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
             });
 
             await test.step('Confirm the DEX transaction on device', async () => {
-                const { receiveAddress } = await tradingResponses.swap.trade();
+                const { receiveAddress, dexTx } = await tradingResponses.swap.trade();
+                if (!dexTx?.to) {
+                    throw new Error('The LI.FI trade has no router address');
+                }
+
+                const { major_version, minor_version, patch_version } = await page.getReduxObject(
+                    'device.selectedDevice.features',
+                );
+                const contractProviderName = await getAddressProviderName({
+                    chainId: ethereumChainId,
+                    address: dexTx.to,
+                    firmwareVersion: [major_version, minor_version, patch_version],
+                });
+                if (!contractProviderName) {
+                    throw new Error(`data.trezor.io has no provider name for ${dexTx.to}`);
+                }
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
 
@@ -196,7 +213,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: deviceReview.contractAddressTitle },
-                        body: [[dexProvider]],
+                        body: [[contractProviderName]],
                         actions: { right_button: deviceReview.confirmButton },
                     },
                 });
