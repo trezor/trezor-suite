@@ -157,7 +157,9 @@ headless contract of decision 5. Per-family UI from ADR-003 stays, as Suite pack
 - **Easier:** every caller of an operation calls the same capability. What a network offers, per
   configuration, is `network.capabilities`, and tests list it. Remote metadata or a different
   backend changes the capabilities without a release, within what the code ships. Network behavior
-  is tested without React, and its review does not involve UI.
+  is tested without React, and its review does not involve UI. A capability's operation is a plain
+  function over plain data, so the same one serves a thunk, a service, or a cached query or mutation,
+  with the instance's configuration as part of its cache key.
 - **Harder:** an operation needs a typed capability before a second caller can use it, and changing
   a required member touches every family, which the compiler lists. All UI, including per-family
   screens, is Suite code reviewed by Suite teams.
