@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import {
     disconnectProviderThunk,
-    selectMetadata,
+    selectMetadataEnabled,
     selectSelectedProviderForLabels,
 } from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
@@ -13,17 +13,17 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const DisconnectLabelingProvider = () => {
-    const metadata = useSelector(selectMetadata);
+    const isMetadataEnabled = useSelector(selectMetadataEnabled);
     const selectedProvider = useSelector(selectSelectedProviderForLabels);
 
     const { dispatch } = useServices(injectDispatch);
 
-    if (!metadata.enabled || !selectedProvider) return null;
+    if (!isMetadataEnabled || !selectedProvider) return null;
 
     const handleClick = () =>
         dispatch(
             disconnectProviderThunk({
-                clientId: metadata.selectedProvider.labels,
+                clientId: selectedProvider.clientId,
                 dataType: 'labels',
             }),
         );
