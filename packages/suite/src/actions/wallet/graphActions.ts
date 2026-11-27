@@ -13,6 +13,7 @@ import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { createThunk } from '@trezor/redux-utils';
 
+import { selectGraph } from '#src/selectors/wallet/graphSelectors';
 import {
     type AccountHistoryWithBalance,
     type GraphData,
@@ -46,7 +47,6 @@ const selectAccountGraphData = (state: GraphRootState, account: Account) =>
             d.account.descriptor === account.descriptor &&
             d.account.symbol === account.symbol,
     )?.data;
-const selectGraph = (state: GraphRootState) => state.wallet.graph;
 
 export const accountGraphSuccess = createAction<GraphData>(ACCOUNT_GRAPH_SUCCESS);
 export const accountGraphFail = createAction<Omit<GraphData, 'data'>>(ACCOUNT_GRAPH_FAIL);
