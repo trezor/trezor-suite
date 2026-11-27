@@ -44,6 +44,8 @@ import {
     useReferralActions,
 } from '@trezor/suite';
 
+import { useReferAFriendAutoRefresh } from '../hooks/useReferAFriendAutoRefresh';
+
 const referralSteps: { title: TranslationKey; description: TranslationKey }[] = [
     { title: 'TR_REFERRAL_GET_LINK', description: 'TR_REFERRAL_GET_LINK_DESCRIPTION' },
     { title: 'TR_REFERRAL_INVITE_FRIENDS', description: 'TR_REFERRAL_INVITE_FRIENDS_DESCRIPTION' },
@@ -83,6 +85,7 @@ export const ReferAFriendPage = () => {
     const closeLeaveModal = leaveModal.closeModal;
 
     useLayout('Refer-A-Friend', <PageHeader />);
+    useReferAFriendAutoRefresh({ isEnabled: isReferralAvailable, deviceId });
 
     useEffect(() => {
         if (!isReferralAvailable) return;

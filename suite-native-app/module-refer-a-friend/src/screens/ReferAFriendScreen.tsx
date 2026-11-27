@@ -11,10 +11,12 @@ import {
     ReferAFriendContentActive,
     ReferAFriendContentInactive,
     useReferAFriend,
+    useReferAFriendAutoRefresh,
 } from '@suite-native/refer-a-friend';
 
 export const ReferAFriendScreen = () => {
     const { isReferAFriendFeatureAvailable } = useReferAFriend();
+    useReferAFriendAutoRefresh({ isEnabled: isReferAFriendFeatureAvailable });
 
     const programData = useSelector(selectReferralProgramData);
     const referralLink = useSelector(selectReferralLink);
