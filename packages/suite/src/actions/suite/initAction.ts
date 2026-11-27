@@ -17,7 +17,13 @@ import {
     selectLanguage,
     suiteSettingsActions,
 } from '@suite/settings';
-import { onSuiteInit, onSuiteReady, setSuiteError } from '@suite/suite-lifecycle';
+import {
+    type SuiteLifecycleRootState,
+    onSuiteInit,
+    onSuiteReady,
+    selectSuiteLifecycleStatus,
+    setSuiteError,
+} from '@suite/suite-lifecycle';
 import * as trezorConnectActions from '@suite-common/connect-init';
 import { type ConnectInitThunkDeps, type ConnectInitThunkState } from '@suite-common/connect-init';
 import { type DeviceRootState } from '@suite-common/device';
@@ -56,8 +62,6 @@ import { isDesktop } from '@trezor/env-utils';
 import { type WithServices } from '@trezor/redux-utils';
 
 import * as bioAuthThunks from '#src/actions/suite/bioAuthThunks';
-import { type SuiteRootState } from '#src/reducers/suite/suiteReducer';
-import { selectSuiteLifecycleStatus } from '#src/selectors/suite/suiteSelectors';
 
 export type InitThunkState = ConnectInitThunkState &
     DeviceRootState &
@@ -68,7 +72,7 @@ export type InitThunkState = ConnectInitThunkState &
     MessageSystemRootState &
     MetadataRootState &
     PeriodicFetchFiatRatesThunkState &
-    SuiteRootState &
+    SuiteLifecycleRootState &
     SuiteSettingsRootState &
     UpdateMissingTxFiatRatesThunkState &
     WalletConnectInitThunkState &

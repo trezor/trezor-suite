@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { selectSuiteLifecycleStatus } from '@suite/suite-lifecycle';
 import {
     CALL_SOURCE_WEB,
     type ManifestPartial,
@@ -21,7 +22,6 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { selectSuiteLifecycleStatus } from '#src/selectors/suite/suiteSelectors';
 
 /**
  * Normalized incoming message from either the web or webextension popup link.

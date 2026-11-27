@@ -27,6 +27,7 @@ import {
     onSuiteReady,
     setSuiteError,
     suiteLifecycleInitialState,
+    suiteLifecycleReducer,
 } from '@suite/suite-lifecycle';
 import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
 import {
@@ -86,7 +87,6 @@ import {
     initThunk,
 } from '#src/actions/suite/initAction';
 import { prepareSuiteMiddleware } from '#src/middlewares/suite/suiteMiddleware';
-import suiteReducer from '#src/reducers/suite/suiteReducer';
 import { createWalletReducer } from '#src/reducers/wallet/walletReducer';
 
 import { mockExtraDependenciesForReducers } from '../../../mocks/mockExtraDependenciesForReducers';
@@ -128,7 +128,6 @@ const EMPTY_ACTION = { type: 'foo' } as any;
 
 const getInitialState = (): InitThunkState => ({
     networks: mockNetworksState(mockGetSupportedNetworks()),
-    suite: suiteReducer(undefined, EMPTY_ACTION),
     suiteLifecycle: suiteLifecycleInitialState,
     suiteSettings: suiteSettingsInitialState,
     flags: flagsReducer(undefined, EMPTY_ACTION),
@@ -331,7 +330,7 @@ const initStore = (state: InitThunkState) => {
         ],
         reducer: (currentState = state, action) => ({
             ...currentState,
-            suite: suiteReducer(currentState.suite, action),
+            suiteLifecycle: suiteLifecycleReducer(currentState.suiteLifecycle, action),
             suiteSettings: suiteSettingsReducer(currentState.suiteSettings, action),
             router: routerReducer(currentState.router, action),
             locks: locksReducer(currentState.locks, action),

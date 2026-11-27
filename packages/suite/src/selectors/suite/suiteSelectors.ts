@@ -11,9 +11,6 @@ import {
     isPrerequisiteGloballyExcluded,
 } from '#src/utils/suite/prerequisites';
 
-export const selectSuiteLifecycle = (state: SuiteRootState) => state.suite.lifecycle;
-export const selectSuiteLifecycleStatus = (state: { suite: Pick<SuiteState, 'lifecycle'> }) =>
-    state.suite.lifecycle.status;
 export const selectSuiteTransport = (state: SuiteRootState) => state.suite.transport;
 export const selectRecentlyDisconnectedDevice = (state: SuiteRootState) =>
     state.suite.recentlyDisconnectedDevice;

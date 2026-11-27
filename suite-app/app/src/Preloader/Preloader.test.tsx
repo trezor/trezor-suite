@@ -8,6 +8,7 @@ import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type DesktopDeviceState } from '@suite/device';
 import { type RouterState, type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { type SuiteLifecycleState } from '@suite/suite-lifecycle';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
 import { mockNetworkIcon } from '@suite-common/networks/mocks';
 import {
@@ -107,6 +108,7 @@ const compromisedDevice: AcquiredDevice = {
 
 type GetInitialStateProps = {
     suite?: Partial<SuiteState>;
+    suiteLifecycle?: Partial<SuiteLifecycleState>;
     router?: Partial<RouterState>;
     // I am not happy about `DeepPartial` here, but it would be hell to fix all the fixtures
     device?: DeepPartial<DesktopDeviceState>;
@@ -116,6 +118,7 @@ type GetInitialStateProps = {
 
 const getInitialState = ({
     suite,
+    suiteLifecycle,
     router,
     device,
     analytics,
@@ -129,11 +132,15 @@ const getInitialState = ({
     persistentDeviceData,
     suite: {
         ...mockInitialAppState.suite,
+        transport: { transports: [] },
+        ...suite,
+    },
+    suiteLifecycle: {
+        ...mockInitialAppState.suiteLifecycle,
         lifecycle: {
             status: 'ready',
         },
-        transport: { transports: [] },
-        ...suite,
+        ...suiteLifecycle,
     },
     wallet: {
         ...mockInitialAppState.wallet,
@@ -197,7 +204,7 @@ describe(`${Preloader.name} component`, () => {
     it('Loading: suite is loading', () => {
         const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
-                suite: {
+                suiteLifecycle: {
                     lifecycle: {
                         status: 'loading',
                     },

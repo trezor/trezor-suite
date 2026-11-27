@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { injectDesktopApi } from '@suite/desktop-app-api';
 import { openModal, selectDeviceContextWindowType } from '@suite/modal';
+import { selectSuiteLifecycleStatus } from '@suite/suite-lifecycle';
 import { events } from '@suite-common/analytics';
 import {
     CALL_SOURCE_DESKTOP_WS,
@@ -30,7 +31,6 @@ import { exhaustive } from '@trezor/type-utils';
 import { isArrayMember } from '@trezor/utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { selectSuiteLifecycleStatus } from '#src/selectors/suite/suiteSelectors';
 
 // `connectionId` is undefined for MCP calls, so no connect-ws cancel can match them.
 type TrackedPopupCall = { connectionId?: string };
