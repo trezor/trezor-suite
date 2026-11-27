@@ -10516,9 +10516,9 @@ export const messages = defineMessages({
         id: 'TR_REFER_A_FRIEND',
         defaultMessage: 'Refer-A-Friend',
     },
-    TR_DASHBOARD_REFERRAL_BUTTON: {
-        id: 'TR_DASHBOARD_REFERRAL_BUTTON',
-        defaultMessage: 'Earn $20 per referral',
+    TR_REFER_A_FRIEND_NO_WALLET_TOOLTIP: {
+        id: 'TR_REFER_A_FRIEND_NO_WALLET_TOOLTIP',
+        defaultMessage: 'Switch to your standard wallet to see your referral link and rewards.',
     },
     TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_ACCESSORY_PACK_TITLE: {
         id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_ACCESSORY_PACK_TITLE',

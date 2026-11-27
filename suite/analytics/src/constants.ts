@@ -53,7 +53,6 @@ export enum EventType {
     PromoDesktop = 'promo/desktop',
     PromoDashboardBanner = 'promo/dashboard-banner',
     PromoMobile = 'promo/mobile',
-    PromoReferralButton = 'promo/referral-button',
     ReceiveAddAddress = 'receive/add-address',
     ReceiveCopyAddress = 'receive/copy-address',
     ReceiveShareAddress = 'receive/share-address',

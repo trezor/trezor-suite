@@ -6,12 +6,14 @@ import {
     markNewContentIndicatorAsSeen,
     selectIsNewContentIndicatorVisible,
 } from '@suite/flags';
+import { Translation } from '@suite/intl';
 import { type Route, selectRouteName } from '@suite/router';
+import { selectIsReferralWalletDescriptorAvailable } from '@suite-common/refer-a-friend';
 import { Column, Divider } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { GearSixIcon, GiftIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
-import { selectIsReferAFriendAvailableInApp, useResponsiveContext } from '@trezor/suite';
+import { selectIsReferAFriendDisabledByMessageSystem, useResponsiveContext } from '@trezor/suite';
 
 import { NavigationItem } from './NavigationItem';
 
@@ -26,7 +28,16 @@ const SETTINGS_ROUTES: Route['name'][] = [
 export const BottomNavigation = () => {
     const { isSidebarCollapsed } = useResponsiveContext();
     const { dispatch } = useServices(injectDispatch);
-    const isReferralAvailable = useSelector(selectIsReferAFriendAvailableInApp);
+
+    const isReferralDisabledByMessageSystem = useSelector(
+        selectIsReferAFriendDisabledByMessageSystem,
+    );
+    const isReferralWalletDescriptorAvailable = useSelector(
+        selectIsReferralWalletDescriptorAvailable,
+    );
+    const isReferralAvailable =
+        isReferralWalletDescriptorAvailable && !isReferralDisabledByMessageSystem;
+
     const routeName = useSelector(selectRouteName);
     const isReferralNewContentIndicatorVisible = useSelector(
         selectIsNewContentIndicatorVisible(NewContentIndicatorId.ReferAFriend26_10),
@@ -50,13 +61,23 @@ export const BottomNavigation = () => {
                 as="nav"
                 data-testid="@suite/menu/bottom-navigation"
             >
-                {isReferralAvailable && (
+                {!isReferralDisabledByMessageSystem && (
                     <NavigationItem
                         nameId="TR_REFER_A_FRIEND"
                         icon={GiftIcon}
                         goToRoute="suite-refer-a-friend"
                         routes={['suite-refer-a-friend']}
-                        hasNewContentIndicator={isReferralNewContentIndicatorVisible}
+                        hasNewContentIndicator={
+                            // Avoid New indicator if the feature isn't currently available.
+                            isReferralWalletDescriptorAvailable &&
+                            isReferralNewContentIndicatorVisible
+                        }
+                        isDisabled={!isReferralWalletDescriptorAvailable}
+                        tooltipContent={
+                            isReferralWalletDescriptorAvailable ? undefined : (
+                                <Translation id="TR_REFER_A_FRIEND_NO_WALLET_TOOLTIP" />
+                            )
+                        }
                     />
                 )}
                 <NavigationItem
