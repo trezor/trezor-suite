@@ -13012,6 +13012,7 @@ __metadata:
   dependencies:
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/message-system": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -13712,6 +13713,7 @@ __metadata:
     "@suite-common/earn-staking": "workspace:*"
     "@suite-common/firmware-authenticity": "workspace:*"
     "@suite-common/formatters": "workspace:*"
+    "@suite-common/geolocation": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/networks": "workspace:*"
     "@suite-common/react-query": "workspace:^"
@@ -14567,6 +14569,7 @@ __metadata:
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.13.0"
     "@suite-common/analytics": "workspace:*"
+    "@suite-common/geolocation": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-native-app/app-init": "workspace:*"
     "@suite-native/analytics": "workspace:*"
@@ -15494,6 +15497,7 @@ __metadata:
     "@suite-common/device": "workspace:*"
     "@suite-common/earn-stablecoin": "workspace:*"
     "@suite-common/earn-staking": "workspace:*"
+    "@suite-common/geolocation": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -16394,6 +16398,7 @@ __metadata:
     "@suite-common/earn-staking-common": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/formatters": "workspace:*"
+    "@suite-common/geolocation": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/mev": "workspace:*"
     "@suite-common/networks": "workspace:*"
@@ -16623,11 +16628,10 @@ __metadata:
   resolution: "@suite-native/regions@workspace:suite-native/regions"
   dependencies:
     "@suite-common/geolocation": "workspace:*"
-    "@suite-common/message-system": "workspace:*"
     "@suite-common/regions": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
-    "@suite-native/intl": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
+    expo-localization: "npm:~58.0.5"
   languageName: unknown
   linkType: soft
 
@@ -16824,6 +16828,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.13.0"
     "@suite-common/earn-staking": "workspace:*"
+    "@suite-common/geolocation": "workspace:*"
     "@suite-native/formatters-config": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@testing-library/react-native": "npm:14.1.0"
@@ -17276,6 +17281,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.13.0"
     "@suite-common/device": "workspace:*"
+    "@suite-common/geolocation": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/networks": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
@@ -17290,7 +17296,6 @@ __metadata:
     "@suite-native/accounts": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
-    "@suite-native/intl": "workspace:*"
     "@suite-native/labeling": "workspace:*"
     "@suite-native/regions": "workspace:*"
     "@suite-native/sentry": "workspace:*"
@@ -18399,12 +18404,13 @@ __metadata:
   resolution: "@suite/regions@workspace:suite/regions"
   dependencies:
     "@suite-common/geolocation": "workspace:*"
-    "@suite-common/locale": "workspace:*"
-    "@suite-common/message-system": "workspace:*"
     "@suite-common/regions": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
-    "@suite/settings": "workspace:*"
+    "@suite/desktop-app-api": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

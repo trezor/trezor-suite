@@ -4,6 +4,7 @@ import { type Feature, type MessageSystem } from '@suite-common/suite-types';
 
 import {
     getRegionRestrictedCountries,
+    getRegionRestrictionThreshold,
     getTradingResidenceWhitelist,
     isYieldFeatureApplicableForVault,
     parseTimeoutThresholdsPerModel,
@@ -163,6 +164,37 @@ describe(getRegionRestrictedCountries.name, () => {
         'returns countries for %s',
         (_description, feature, expected) => {
             expect(getRegionRestrictedCountries(feature)).toEqual(expected);
+        },
+    );
+});
+
+describe(getRegionRestrictionThreshold.name, () => {
+    const regionsFeature = (payload?: Feature['payload']): Feature => ({
+        domain: FeatureDefinitions.regions.presenceRestriction,
+        flag: true,
+        payload,
+    });
+
+    it.each([
+        ['undefined feature', undefined, 0.499],
+        ['feature without payload', regionsFeature(), 0.499],
+        ['payload without threshold', regionsFeature({ countries: ['AU'] }), 0.499],
+        ['valid threshold', regionsFeature({ threshold: 0.6 }), 0.6],
+        ['string threshold', regionsFeature({ threshold: '0.6' }), 0.499],
+        ['NaN threshold', regionsFeature({ threshold: NaN }), 0.499],
+        ['threshold of 0', regionsFeature({ threshold: 0 }), 0.499],
+        ['threshold of 1', regionsFeature({ threshold: 1 }), 0.499],
+        ['negative threshold', regionsFeature({ threshold: -0.1 }), 0.499],
+        ['threshold above 1', regionsFeature({ threshold: 1.1 }), 0.499],
+        [
+            'legacy thresholds object',
+            regionsFeature({ thresholds: { strong: 0.6, weak: 0.4 } }),
+            0.499,
+        ],
+    ] as const satisfies [string, Feature | undefined, number][])(
+        'returns the threshold for %s',
+        (_description, feature, expected) => {
+            expect(getRegionRestrictionThreshold(feature)).toBe(expected);
         },
     );
 });

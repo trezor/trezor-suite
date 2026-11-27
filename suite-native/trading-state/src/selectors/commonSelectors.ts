@@ -1,6 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
 import { type DeviceRootState } from '@suite-common/device';
+import { type GeolocationRootState } from '@suite-common/geolocation';
 import {
     Feature,
     type MessageSystemRootState,
@@ -49,7 +50,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { selectAccountLabel, sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
-import { type LocaleSliceRootState } from '@suite-native/intl';
 import { type CombinedLabelingState } from '@suite-native/labeling';
 import { selectIsRegionRestricted } from '@suite-native/regions';
 import {
@@ -148,7 +148,7 @@ export const selectIsTradingSlip24Enabled = (
 };
 
 export const selectIsTradingEnabled = (
-    state: MessageSystemRootState & FeatureFlagsRootState & TradingRootState & LocaleSliceRootState,
+    state: MessageSystemRootState & FeatureFlagsRootState & TradingRootState & GeolocationRootState,
 ) => {
     if (selectIsRegionRestricted(state) || !selectIsTradingEnabledForCountry(state)) {
         return false;

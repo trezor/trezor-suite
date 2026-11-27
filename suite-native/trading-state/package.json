@@ -17,6 +17,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.13.0",
         "@suite-common/device": "workspace:*",
+        "@suite-common/geolocation": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
@@ -31,7 +32,6 @@
         "@suite-native/accounts": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
-        "@suite-native/intl": "workspace:*",
         "@suite-native/labeling": "workspace:*",
         "@suite-native/regions": "workspace:*",
         "@suite-native/sentry": "workspace:*",

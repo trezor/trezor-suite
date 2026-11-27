@@ -20,6 +20,7 @@ import {
     type LoggerConfig,
     type Status,
     type SuiteThemeVariant,
+    type SystemLocale,
     type TorSettings,
     type TorStatusEvent,
     type TraySettings,
@@ -154,6 +155,7 @@ export interface InvokeChannels {
     'connect-popup/ready': () => void;
     'connect-popup/response': (response: ConnectPopupResponse) => void;
     'system/open-settings': (settings: 'bluetooth' | 'bluetooth-permissions') => InvokeResult;
+    'system/get-locale': () => SystemLocale;
     'bio-auth/set-bio-auth-settings': (settings: BioAuthSettings) => void;
     'bio-auth/get-bio-auth-settings': () => BioAuthSettings;
     'bio-auth/is-bio-auth-available': () => boolean;
@@ -268,6 +270,7 @@ export type DesktopApi = {
     connectPopupResponse: DesktopApiInvoke<'connect-popup/response'>;
     //system
     openSystemSettings: DesktopApiInvoke<'system/open-settings'>;
+    getSystemLocale: DesktopApiInvoke<'system/get-locale'>;
     // bioAuth
     setBioAuthSettings: DesktopApiInvoke<'bio-auth/set-bio-auth-settings'>;
     getBioAuthSettings: DesktopApiInvoke<'bio-auth/get-bio-auth-settings'>;

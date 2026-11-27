@@ -15,6 +15,7 @@
     "dependencies": {
         "@suite-common/geolocation": "workspace:*",
         "@suite-common/message-system": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
         "@trezor/redux-utils": "workspace:*"
     }
 }

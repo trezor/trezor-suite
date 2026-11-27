@@ -3,6 +3,7 @@ export type { SendMethod, ListenerMethod, InvokeMethod, HandleMethod } from './m
 export type { StrictIpcMain, StrictIpcRenderer, StrictBrowserWindow } from './ipc';
 export type {
     SuiteThemeVariant,
+    SystemLocale,
     UpdateInfo,
     UpdateProgress,
     InvokeResult,

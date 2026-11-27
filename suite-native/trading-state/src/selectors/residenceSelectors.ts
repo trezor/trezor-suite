@@ -1,3 +1,4 @@
+import { type GeolocationRootState } from '@suite-common/geolocation';
 import {
     Feature,
     type MessageSystemRootState,
@@ -5,7 +6,6 @@ import {
     selectFeatureConfig,
 } from '@suite-common/message-system';
 import { type TradingCountryCode, isCountrySubdivisionEmpty } from '@suite-common/trading';
-import { type LocaleSliceRootState } from '@suite-native/intl';
 import { selectIsRegionRestricted } from '@suite-native/regions';
 import { type TradingResidenceRootState } from '@suite-native/trading-types';
 import { createWeakMapSelector } from '@trezor/redux-utils';
@@ -64,11 +64,11 @@ export const selectIsTradingCountrySet = (state: TradingResidenceRootState) => {
 };
 
 export const selectIsTradingResidenceSelectionAvailable = (
-    state: MessageSystemRootState & LocaleSliceRootState,
+    state: MessageSystemRootState & GeolocationRootState,
 ) => selectIsTradingResidenceWhitelistRequired(state) && !selectIsRegionRestricted(state);
 
 export const selectShouldDisplayTradingResidenceOnboarding = (
-    state: TradingResidenceRootState & MessageSystemRootState & LocaleSliceRootState,
+    state: TradingResidenceRootState & MessageSystemRootState & GeolocationRootState,
 ) => {
     const isResidenceSelectionAvailable = selectIsTradingResidenceSelectionAvailable(state);
     const wasOnboardingVisited = selectWasTradingResidenceOnboardingVisited(state);

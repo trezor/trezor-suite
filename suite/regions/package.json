@@ -14,11 +14,14 @@
     },
     "dependencies": {
         "@suite-common/geolocation": "workspace:*",
-        "@suite-common/locale": "workspace:*",
-        "@suite-common/message-system": "workspace:*",
         "@suite-common/regions": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
-        "@suite/settings": "workspace:*",
-        "@trezor/redux-utils": "workspace:*"
+        "@suite/desktop-app-api": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
+        "@trezor/utils": "workspace:*"
+    },
+    "devDependencies": {
+        "@trezor/dependency-injection": "workspace:*"
     }
 }

@@ -61,6 +61,7 @@ export const createWebDesktopApi = (): DesktopApi => ({
     connectPopupReady: unavailableAsync('connectPopupReady'),
     connectPopupResponse: unavailableAsync('connectPopupResponse'),
     openSystemSettings: unavailableAsync('openSystemSettings'),
+    getSystemLocale: unavailableAsync('getSystemLocale'),
     setBioAuthSettings: unavailableAsync('setBioAuthSettings'),
     getBioAuthSettings: unavailableAsync('getBioAuthSettings'),
     isBioAuthAvailable: unavailableAsync('isBioAuthAvailable'),
