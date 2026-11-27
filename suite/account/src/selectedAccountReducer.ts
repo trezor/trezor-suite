@@ -4,12 +4,14 @@ import { type ConnectPopupState, selectConnectPopupCall } from '@suite-common/co
 import { type TradingState, selectTradingModalAccountKey } from '@suite-common/trading';
 import {
     type AccountsRootState,
+    type BlockchainRootState,
     type SendRootState,
     type StakeSliceRootState,
     type TronStakeReducerState,
     type YieldState,
     accountsActions,
     selectAccountByKey,
+    selectNetworkBlockchainInfo,
     selectSendFormAccountKey,
     selectStakeAccount,
 } from '@suite-common/wallet-core';
@@ -68,6 +70,14 @@ export const selectIsSelectedAccountLoaded = (state: SelectedAccountRootState) =
 
 export const selectIsSelectedAccountLoading = (state: SelectedAccountRootState) =>
     selectSelectedAccountStatus(state) === 'loading';
+
+export const selectSelectedAccountBlockchainInfo = (
+    state: SelectedAccountRootState & BlockchainRootState,
+) => {
+    const symbol = selectSelectedAccountSymbol(state);
+
+    return symbol ? selectNetworkBlockchainInfo(state, symbol) : undefined;
+};
 
 /**
  * Mainly used for common modals, also used in the Trading section.

@@ -1,6 +1,5 @@
 import { type AnalyticsDep } from '@suite-common/analytics';
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
-import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type GetAccountSyncIntervalDep, type NetworksRootState } from '@suite-common/networks';
 import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -41,7 +40,6 @@ import { BigNumber, arrayDistinct, arrayToDictionary } from '@trezor/utils';
 import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions';
 import {
     type BlockchainRootState,
-    selectBlockchainState,
     selectCardanoProtocolParameters,
     selectCustomBackends,
     selectIsCustomBackendConfigured,
@@ -99,9 +97,8 @@ export const setCustomBackendThunk = createThunk<
     NetworkSymbol,
     { state: SetCustomBackendThunkState }
 >(`${BLOCKCHAIN_MODULE_PREFIX}/setCustomBackendThunk`, async (symbol, { dispatch, getState }) => {
-    const blockchain = selectBlockchainState(getState());
     const backends = [
-        getBackendFromSettings(symbol, blockchain[symbol as LegacyNetworkSymbol].backends),
+        getBackendFromSettings(symbol, selectNetworkBlockchainInfo(getState(), symbol).backends),
     ];
     const result = await setBackendsToConnect(backends);
 
@@ -296,7 +293,6 @@ export const syncAccountsWithBlockchainThunk = createThunk<
     `${BLOCKCHAIN_MODULE_PREFIX}/syncAccountsThunk`,
     async (symbol, { getState, dispatch, extra }) => {
         const accounts = selectAccounts(getState());
-        const blockchain = selectBlockchainState(getState());
         const {
             services: {
                 getIsWindowVisible,
@@ -306,7 +302,7 @@ export const syncAccountsWithBlockchainThunk = createThunk<
         const isWindowVisible = getIsWindowVisible();
 
         // First clear, to cancel last planned sync
-        tryClearTimeout(blockchain[symbol as LegacyNetworkSymbol].syncTimeout);
+        tryClearTimeout(selectNetworkBlockchainInfo(getState(), symbol).syncTimeout);
 
         // Sync only when the app window is active
         const shouldSync = isWindowVisible;
@@ -523,7 +519,7 @@ export const onBlockchainDisconnectThunk = createThunk<
         if (!network) return;
 
         const { symbol } = network;
-        const blockchain = selectBlockchainState(getState())[symbol as LegacyNetworkSymbol];
+        const blockchain = selectNetworkBlockchainInfo(getState(), symbol);
         const hasAccounts = findAccountsByNetwork(symbol, selectAccounts(getState())).length > 0;
 
         /**
