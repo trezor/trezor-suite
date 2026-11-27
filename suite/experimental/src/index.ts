@@ -4,7 +4,8 @@ export type ExperimentalFeature =
     | 'slip24'
     | 'experimental-networks'
     | 'mcp-server'
-    | 'gap-limit';
+    | 'gap-limit'
+    | 'custom-evm-networks';
 
 /**
  * Set of features that are truly experimental (as opposed to regular features
@@ -16,6 +17,7 @@ export const experimentalFeedbackFeatureSet: ReadonlySet<ExperimentalFeature> =
         'tor-external',
         'slip24',
         'experimental-networks',
+        'custom-evm-networks',
     ]);
 
 export type FeedbackFeatureName = ExperimentalFeature | 'suite-sync' | 'stablecoin-yield';
