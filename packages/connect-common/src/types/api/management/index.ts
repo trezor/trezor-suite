@@ -12,6 +12,7 @@ import type { getSettings } from './getSettings';
 import type { loadDevice } from './loadDevice';
 import type { pingDevice } from './pingDevice';
 import type { recoveryDevice } from './recoveryDevice';
+import type { registerEvmNetwork } from './registerEvmNetwork';
 import type { resetDevice } from './resetDevice';
 import type { setBrightness } from './setBrightness';
 import type { setBusy } from './setBusy';
@@ -44,6 +45,7 @@ type TrezorConnectManagementBase = {
     pingDevice: typeof pingDevice;
     getNonce: typeof getNonce;
     getSettings: typeof getSettings;
+    registerEvmNetwork: typeof registerEvmNetwork;
 };
 
 // Evolu identity operations export secret key material, so they belong to the privileged tier and
