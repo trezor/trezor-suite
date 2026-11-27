@@ -1,5 +1,5 @@
 import type { Logger } from '@trezor/logger';
-import { TypedEmitter, arrayDistinct, arrayPartition, scheduleAction } from '@trezor/utils';
+import { TypedEmitter, arrayPartition, scheduleAction, unique } from '@trezor/utils';
 
 import { ACCOUNT_BUSY_TIMEOUT, ROUND_PHASE_PROCESS_TIMEOUT } from '../constants';
 import { type EndRoundState, RoundPhase, SessionPhase } from '../enums';
@@ -131,10 +131,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
     }
 
     setSessionPhase(phase: SessionPhase) {
-        const accountKeys = this.inputs
-            .concat(this.failed)
-            .map(input => input.accountKey)
-            .filter(arrayDistinct);
+        const accountKeys = unique(this.inputs.concat(this.failed).map(input => input.accountKey));
 
         this.options.setSessionPhase({
             phase,
@@ -222,7 +219,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
         if (this.phase === RoundPhase.InputRegistration && failed.length > 0) {
             // strictly follow the result of `middleware.selectInputsForRound` algorithm
             // if **any** input registration fails for **any** reason exclude all inputs related to this account
-            const failedAccounts = failed.map(input => input.accountKey).filter(arrayDistinct);
+            const failedAccounts = unique(failed.map(input => input.accountKey));
             this.inputs = inputs.filter(input => {
                 const shouldBeExcluded = failedAccounts.includes(input.accountKey);
                 if (shouldBeExcluded) {

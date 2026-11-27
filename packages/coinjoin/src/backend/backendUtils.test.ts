@@ -1,6 +1,6 @@
 import { deriveAddresses as deriveAddressesOriginal } from '@trezor/utxo-lib';
 
-import { deriveAddresses, doesTxContainAddress } from './backendUtils';
+import { deriveAddresses, doesTxContainAddress, getAllTxAddresses } from './backendUtils';
 import { SEGWIT_RECEIVE_ADDRESSES, SEGWIT_XPUB } from '../__fixtures__/methods.fixture';
 
 const PARAMS = [SEGWIT_XPUB, 'receive', 0, 10] as const;
@@ -60,6 +60,17 @@ describe('backendUtils', () => {
 
         it('not containing', () => {
             expect(doesTxContainAddress(TAPROOT_ADDRESS)(NON_TAPROOT_TX)).toBe(false);
+        });
+    });
+
+    describe('getAllTxAddresses', () => {
+        it('lists each address once, in first-seen order', () => {
+            const tx = {
+                vin: [{ addresses: ['A', 'B'] }, {}, { addresses: ['A'] }],
+                vout: [{ addresses: ['C', 'B'] }, { addresses: ['A'] }],
+            };
+
+            expect(getAllTxAddresses(tx)).toEqual(['A', 'B', 'C']);
         });
     });
 });

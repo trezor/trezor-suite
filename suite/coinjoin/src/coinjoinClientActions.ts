@@ -33,7 +33,7 @@ import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { getOsName } from '@trezor/env-utils';
 import { type Dispatch } from '@trezor/redux-utils';
-import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
+import { arrayToDictionary, promiseAllSequence, unique } from '@trezor/utils';
 
 import * as COINJOIN from './coinjoinConstants';
 import {
@@ -350,10 +350,9 @@ export const onCoinjoinRoundChangedThunk =
         const coinjoinAccounts = selectCoinjoinAccounts(getState());
         const roundsDurationInHours = selectRoundsDurationInHours(getState());
         // collect all account.keys from the round including failed one
-        const accountKeys = round.inputs
-            .concat(round.failed)
-            .map(input => input.accountKey as AccountKey)
-            .filter(arrayDistinct);
+        const accountKeys = unique(
+            round.inputs.concat(round.failed).map(input => input.accountKey as AccountKey),
+        );
 
         const currentTimestamp = Date.now();
 
