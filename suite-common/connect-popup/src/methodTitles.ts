@@ -46,7 +46,7 @@ export const getPublicKeyLabel = ({ path, coinInfo, coinName }: GetPublicKeyLabe
     if (purpose === 45342) {
         const copayPurpose = fromHardenedPathPart(path[1] ?? 0);
         account = fromHardenedPathPart(path[3] ?? 0);
-        prefix = 'Export Copay ID of';
+        prefix = 'Export Copay ID';
         if (copayPurpose === 48) {
             accountType = 'multisig';
         } else if (copayPurpose === 44) {

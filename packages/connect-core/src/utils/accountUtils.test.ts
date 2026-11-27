@@ -9,7 +9,4 @@ describe('utils/accountUtils', () => {
             });
         });
     });
-
-    // todo:
-    describe.skip('getPublicKeyLabel', () => {});
 });
