@@ -6,7 +6,6 @@ import {
     selectWalletAssetContractAddress,
     selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
-import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Box, Column, type Padding, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -18,6 +17,7 @@ import { TrendTicker } from '#src/components/suite/Ticker/TrendTicker';
 import { AssetIdentity } from '#src/components/wallet/assets/AssetIdentity';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { HomeAssetBalanceContainer } from '#src/views/home/HomeAssetsTable/HomeAssetBalanceContainer';
+import { useIsAssetFirstHome } from '#src/views/home/useIsAssetFirstHome';
 
 export const HIDDEN_TOKEN_ROW_PADDING = { vertical: 12, horizontal: 20 } satisfies Padding;
 
@@ -42,10 +42,7 @@ export const HiddenTokenRow = memo(function HiddenTokenRow({
     onSelect,
 }: HiddenTokenRowProps) {
     const { dispatch } = useServices(injectDispatch);
-    const isAssetDetailEnabled = useIsExperimentVariantActive({
-        experimentId: ExperimentId.assetFirstHomeTable,
-        variant: 'B',
-    });
+    const isAssetDetailEnabled = useIsAssetFirstHome();
     const networkSymbol = useSelector(state =>
         selectWalletAssetNetworkSymbol(state, assetKey, true),
     );

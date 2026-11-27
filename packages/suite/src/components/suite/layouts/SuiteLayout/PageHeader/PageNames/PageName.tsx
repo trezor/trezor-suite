@@ -6,10 +6,10 @@ import {
     resolveEffectiveBackgroundRouteName,
     selectRoute,
 } from '@suite/router';
-import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
+import { useIsAssetFirstHome } from '#src/views/home/useIsAssetFirstHome';
 
 import { AccountName } from './AccountName/AccountName';
 import { AccountSubpageName } from './AccountName/AccountSubpageName';
@@ -20,10 +20,7 @@ import { HiddenTokensName } from './HiddenTokensName';
 import { SettingsName } from './SettingsName';
 
 export const PageName = () => {
-    const isHomeTableActive = useIsExperimentVariantActive({
-        experimentId: ExperimentId.assetFirstHomeTable,
-        variant: 'B',
-    });
+    const isHomeTableActive = useIsAssetFirstHome();
     const route = useSelector(selectRoute);
     const { suiteRouterHistory } = useServices(injectSuiteRouterHistory);
     const currentRoute = resolveEffectiveBackgroundRouteName(

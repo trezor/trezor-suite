@@ -11,13 +11,12 @@ import { selectIsRegionRestricted } from '@suite/regions';
 import { type Route, isTradingRoute, selectRouteName } from '@suite/router';
 import { selectIsAppsEmbeddingAvailable } from '@suite-app/apps-embedding-demo';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { selectHasUnseenTransactionNotifications } from '@suite-common/toast-notifications';
 import { Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { AppWindowIcon, BellIcon, HouseIcon, PiggyBankIcon, RepeatIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
-import { useResponsiveContext } from '@trezor/suite';
+import { useIsAssetFirstHome, useResponsiveContext } from '@trezor/suite';
 
 import { NavigationItem, type NavigationItemProps } from './NavigationItem';
 
@@ -55,10 +54,7 @@ export const Navigation = ({ children }: NavigationProps) => {
 
     const startRoute: Route['name'] = 'suite-index';
 
-    const isHomeTableActive = useIsExperimentVariantActive({
-        experimentId: ExperimentId.assetFirstHomeTable,
-        variant: 'B',
-    });
+    const isHomeTableActive = useIsAssetFirstHome();
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
     const isRegionRestricted = useSelector(selectIsRegionRestricted);
     const isAppsEmbeddingAvailable = useSelector(selectIsAppsEmbeddingAvailable);

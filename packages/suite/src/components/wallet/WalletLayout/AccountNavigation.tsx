@@ -5,7 +5,6 @@ import { gotoThunk, selectRouterParams } from '@suite/router';
 import { type WalletParams } from '@suite/router';
 import { selectIsNftSectionEnabled } from '@suite/settings';
 import { selectIsStakingSupportedSymbol } from '@suite-common/earn-staking';
-import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
@@ -18,6 +17,7 @@ import {
     SubpageNavigation,
 } from '#src/components/suite/layouts/SuiteLayout/SubpageNavigation';
 import { useSelector } from '#src/hooks/suite/useSelector';
+import { useIsAssetFirstHome } from '#src/views/home/useIsAssetFirstHome';
 
 type AccountNavigationProps = {
     account?: Account;
@@ -28,10 +28,7 @@ export const AccountNavigation = ({ account }: AccountNavigationProps) => {
     const routerParams = useSelector(selectRouterParams) as WalletParams;
     const enabledNftSection = useSelector(selectIsNftSectionEnabled);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    const isAssetFirstHome = useIsExperimentVariantActive({
-        experimentId: ExperimentId.assetFirstHomeTable,
-        variant: 'B',
-    });
+    const isAssetFirstHome = useIsAssetFirstHome();
 
     const isStakingSupported = useSelector(
         state => account !== undefined && selectIsStakingSupportedSymbol(state, account.symbol),
