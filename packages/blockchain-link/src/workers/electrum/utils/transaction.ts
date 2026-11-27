@@ -4,7 +4,7 @@ import type {
     ElectrumTypes,
     ElectrumHistoryTx as HistoryTx,
 } from '@trezor/blockchain-link-types';
-import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
+import { arrayToDictionary, unique } from '@trezor/utils';
 
 import { btcToSat } from './transform';
 
@@ -100,7 +100,7 @@ export const getTransactions = async (
     client: ElectrumAPI,
     history: HistoryTx[],
 ): Promise<BlockbookTransaction[]> => {
-    const txids = history.map(({ tx_hash }) => tx_hash).filter(arrayDistinct);
+    const txids = unique(history.map(({ tx_hash }) => tx_hash));
 
     // TODO optimize blockchain.transaction.get to not use verbose mode but parse
     // binary data locally instead. Then the transaction could be cached indefinitely.
@@ -110,9 +110,11 @@ export const getTransactions = async (
     ).then(txs => arrayToDictionary(txs, ({ txid }) => txid));
 
     const prevTxs = await Promise.all(
-        Object.values(origTxs)
-            .flatMap(({ vin }) => vin.filter(isNotCoinbase).map(({ txid }) => txid))
-            .filter(arrayDistinct)
+        unique(
+            Object.values(origTxs).flatMap(({ vin }) =>
+                vin.filter(isNotCoinbase).map(({ txid }) => txid),
+            ),
+        )
             .filter(txid => !origTxs[txid])
             .map(txid => client.request('blockchain.transaction.get', txid, true)),
     ).then(txs => arrayToDictionary(txs, ({ txid }) => txid));
