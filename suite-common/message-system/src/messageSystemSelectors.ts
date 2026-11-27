@@ -256,10 +256,9 @@ export const selectAllManuallyAddedExperimentIds = (state: MessageSystemRootStat
 const selectValidMessages = (state: MessageSystemRootState) => state.messageSystem.validMessages;
 const selectValidExperiments = (state: MessageSystemRootState) =>
     state.messageSystem.validExperiments;
-const selectConfig = (state: MessageSystemRootState) => state.messageSystem.config;
 
 export const selectAllValidMessages = createMemoizedSelector(
-    [selectValidMessages, selectConfig],
+    [selectValidMessages, selectMessageSystemConfig],
     (validMessages, config) => {
         const allValidMessages = [
             ...validMessages.banner,
@@ -275,7 +274,7 @@ export const selectAllValidMessages = createMemoizedSelector(
 );
 
 export const selectAllValidExperiments = createMemoizedSelector(
-    [selectConfig, selectValidExperiments],
+    [selectMessageSystemConfig, selectValidExperiments],
     (config, validExperiments) => {
         if (!config?.experiments) return [];
 
@@ -289,8 +288,9 @@ export const selectAllValidExperiments = createMemoizedSelector(
     },
 );
 
-export const selectAllConfigExperiments = createMemoizedSelector([selectConfig], config =>
-    returnStableArrayIfEmpty(config?.experiments),
+export const selectAllConfigExperiments = createMemoizedSelector(
+    [selectMessageSystemConfig],
+    config => returnStableArrayIfEmpty(config?.experiments),
 );
 
 export const selectAllValidConfigExperiments = createMemoizedSelector(
