@@ -1,6 +1,7 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import {
+    type StorageCorruptedPayload,
     type StorageErrorPayload,
     storageCorrupted,
     storageError,
@@ -16,7 +17,7 @@ export type SuiteLifecycle =
     // blocking in case instance is running older version thus blocking other instance
     | { status: 'db-error'; error: StorageErrorPayload }
     // inconsistent IDB state detected, need to reset storage
-    | { status: 'db-corrupted'; error: unknown };
+    | { status: 'db-corrupted'; error: StorageCorruptedPayload };
 
 export type SuiteLifecycleState = {
     online: boolean;
