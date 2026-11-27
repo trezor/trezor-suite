@@ -3,6 +3,15 @@ export {
     type EthereumSuiteCommonNetworkModuleDeps,
     createEthereumSuiteCommonNetworkModule,
 } from './createEthereumSuiteCommonNetworkModule';
+export {
+    EVM_NATIVE_CURRENCY_DECIMALS,
+    buildCustomEvmNetworkConfig,
+    createCustomEvmNetworkModule,
+    type CustomEvmNetworkConfigParams,
+    type CustomEvmNetworkModule,
+    type CustomEvmNetworkModuleDeps,
+    type CustomEvmNetworkModuleParams,
+} from './customEvmNetwork';
 
 // These exports are temporary migration aids. Once network modularization is complete,
 // wrapped-native token configuration shall remain private to the Ethereum network module.

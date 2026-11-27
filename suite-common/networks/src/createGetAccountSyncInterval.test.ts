@@ -8,10 +8,12 @@ import {
     injectGetAccountSyncInterval,
 } from './createGetAccountSyncInterval';
 import { createNetworksCompositionRoot } from './createNetworksCompositionRoot';
+import { mockCreateCustomEvmNetworkModule } from '../mocks/mockCreateCustomEvmNetworkModule';
 import { mockNetworkModule } from '../mocks/mockNetworkModule';
 
 it('exposes the service through the networks composition root and injector', () => {
     const networks = createNetworksCompositionRoot({
+        createCustomEvmNetworkModule: mockCreateCustomEvmNetworkModule(),
         networkModuleRepository: createNetworkModuleRepository({
             networkModules: [
                 mockNetworkModule({

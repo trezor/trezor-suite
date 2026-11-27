@@ -74,6 +74,7 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/network-bitcoin-suite-native": "workspace:*",
         "@trezor/network-cardano-suite-native": "workspace:*",
+        "@trezor/network-ethereum-suite-common": "workspace:*",
         "@trezor/network-ethereum-suite-native": "workspace:*",
         "@trezor/network-module-suite-native-types": "workspace:*",
         "@trezor/network-ripple-suite-native": "workspace:*",
