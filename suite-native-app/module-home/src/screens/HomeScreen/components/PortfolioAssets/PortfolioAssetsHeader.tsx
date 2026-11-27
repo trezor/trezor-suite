@@ -1,4 +1,4 @@
-import { Divider, VStack } from '@suite-native/atoms';
+import { VStack } from '@suite-native/atoms';
 
 import { HomescreenAlerts } from '../HomescreenAlerts';
 import { PortfolioActionButtons } from './PortfolioActionButtons';
@@ -11,8 +11,6 @@ export const PortfolioAssetsHeader = () => (
             <HomescreenAlerts />
             <PortfolioAssetsTotalBalance />
         </VStack>
-
-        <Divider />
         <PortfolioActionButtons />
         <PortfolioPromoBanners />
     </VStack>
