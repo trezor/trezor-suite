@@ -1,5 +1,6 @@
 import { commonQueryKeys, skipToken, useQuery } from '@suite-common/react-query';
 import {
+    LIDO_WITHDRAWAL_REFRESH_INTERVAL_MS,
     type LidoWithdrawalQueue,
     type LidoWithdrawals,
     fetchLidoClaims,
@@ -7,9 +8,6 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getLidoDeployment } from '@trezor/network-ethereum-suite-common';
-
-// The queue finalizes requests with the daily oracle report, so a slow poll is enough.
-const REFETCH_INTERVAL_MS = 5 * 60 * 1000;
 
 const EMPTY_QUEUE: LidoWithdrawalQueue = { pendingRequests: [], finalizedRequests: [] };
 const EMPTY_CLAIMS: LidoWithdrawals['claimableRequests'] = [];
@@ -33,7 +31,7 @@ export const useLidoWithdrawalRequests = (account: Account): LidoWithdrawalReque
             deployment === null
                 ? skipToken
                 : () => fetchLidoWithdrawalRequests({ account, deployment }),
-        refetchInterval: REFETCH_INTERVAL_MS,
+        refetchInterval: LIDO_WITHDRAWAL_REFRESH_INTERVAL_MS,
     });
     const { pendingRequests, finalizedRequests } = queue.data ?? EMPTY_QUEUE;
     const hasFinalizedRequests = finalizedRequests.length > 0;
@@ -45,7 +43,7 @@ export const useLidoWithdrawalRequests = (account: Account): LidoWithdrawalReque
             deployment === null || !hasFinalizedRequests
                 ? skipToken
                 : () => fetchLidoClaims({ account, deployment, requests: finalizedRequests }),
-        refetchInterval: REFETCH_INTERVAL_MS,
+        refetchInterval: LIDO_WITHDRAWAL_REFRESH_INTERVAL_MS,
     });
 
     return {

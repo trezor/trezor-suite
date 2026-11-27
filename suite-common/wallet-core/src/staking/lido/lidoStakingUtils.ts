@@ -293,18 +293,28 @@ export const buildLidoClaimWithdrawalsTransaction = ({
 type ToLidoWithdrawalRequestsParams = {
     requestIds: readonly bigint[];
     statuses: readonly LidoWithdrawalRequestStatus[];
+    owner: string;
 };
 
 /** The requests still to be finalized or claimed, in the ascending order a claim needs. */
 export const toLidoWithdrawalRequests = ({
     requestIds,
     statuses,
-}: ToLidoWithdrawalRequestsParams): LidoWithdrawalRequest[] =>
-    requestIds
+    owner,
+}: ToLidoWithdrawalRequestsParams): LidoWithdrawalRequest[] => {
+    const expectedOwner = owner.toLowerCase();
+
+    return requestIds
         .flatMap((id, index) => {
             const status = statuses[index];
 
-            if (status === undefined || status.isClaimed) return [];
+            if (
+                status === undefined ||
+                status.isClaimed ||
+                status.owner.toLowerCase() !== expectedOwner
+            ) {
+                return [];
+            }
 
             return [{ id, status }];
         })
@@ -315,6 +325,7 @@ export const toLidoWithdrawalRequests = ({
             requestedAt: Number(status.timestamp) * 1000,
             isFinalized: status.isFinalized,
         }));
+};
 
 type ToClaimableLidoWithdrawalRequestsParams = {
     // The finalized requests in the order the queue was asked about them.

@@ -16,7 +16,9 @@ import {
 } from './productInfo';
 import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
 
-export type EthereumLidoLiquidProductDeps = EthereumLidoLiquidProductInfoDeps;
+export type EthereumLidoLiquidProductDeps = EthereumLidoLiquidProductInfoDeps & {
+    fetchWithdrawalBalances: NonNullable<StakingProductAdapter['fetchWithdrawalBalances']>;
+};
 
 export type CreateEthereumLidoLiquidProductParams = EthereumLidoLiquidProductDeps & {
     networkSymbol: NetworkSymbol;
@@ -46,5 +48,12 @@ export const createEthereumLidoLiquidProduct = ({
     // The flows compose, sign and broadcast through their own thunks until the product kit lands.
     const operations = createUnimplementedStakingOperations();
 
-    return { descriptor, fetchProductInfo, getPosition, getAmountBounds, ...operations };
+    return {
+        descriptor,
+        fetchProductInfo,
+        getPosition,
+        getAmountBounds,
+        fetchWithdrawalBalances: deps.fetchWithdrawalBalances,
+        ...operations,
+    };
 };

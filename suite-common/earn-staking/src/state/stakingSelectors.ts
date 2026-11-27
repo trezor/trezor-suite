@@ -90,25 +90,30 @@ const selectCountedStakingPositions = createWeakMapSelector(
 );
 
 const getStakingAmountOutsideBalance = (
-    countedPositions: readonly StakingPosition[],
+    positions: readonly StakingPosition[],
     products: StakingProductsState,
 ): StakingAmount =>
     stakingAmountSchema.parse(
-        countedPositions
+        positions
             .reduce((sum, position) => {
                 const descriptor = products[position.productId];
 
-                return descriptor === undefined
-                    ? sum
-                    : sum.plus(
+                if (descriptor === undefined) return sum;
+                if (position.amountOutsideBalance !== undefined) {
+                    return sum.plus(position.amountOutsideBalance);
+                }
+
+                return descriptor.isCountedInAccountTotals
+                    ? sum.plus(
                           getStakingPositionAmountOutsideBalance(position, descriptor.rewardsKind),
-                      );
+                      )
+                    : sum;
             }, new BigNumber(0))
             .toFixed(0),
     );
 
 export const selectStakingAccountAmountOutsideBalance = createWeakMapSelector(
-    [selectCountedStakingPositions, selectStakingProducts],
+    [selectStakingPositionsByAccount, selectStakingProducts],
     getStakingAmountOutsideBalance,
 );
 
@@ -119,9 +124,7 @@ export const selectStakingAmountsOutsideBalance = createWeakMapSelector(
             (amounts, [accountKey, accountPositions]) => {
                 if (accountPositions !== undefined) {
                     amounts[accountKey] = getStakingAmountOutsideBalance(
-                        Object.values(accountPositions)
-                            .filter(isNotUndefined)
-                            .filter(isCountedStakingPosition(products)),
+                        Object.values(accountPositions).filter(isNotUndefined),
                         products,
                     );
                 }

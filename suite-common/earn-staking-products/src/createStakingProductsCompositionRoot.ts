@@ -5,7 +5,6 @@ import {
     getTronStakingStats,
 } from '@suite-common/earn-staking-api';
 import type { StakingProductAdapter } from '@suite-common/earn-staking-common';
-import type { GetTrezorBlockchainDep } from '@trezor/blockchain-core';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { createCardanoEverstakeNativeProduct } from './products/cardano/everstake-native/product';
@@ -16,8 +15,10 @@ import {
     CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
 } from './products/cardano/messageSystemFeatures';
 import { createEthereumEverstakePooledProduct } from './products/ethereum/everstake-pooled/product';
-import { createEthereumLidoLiquidProduct } from './products/ethereum/lido-liquid/product';
-import type { FetchLidoApi } from './products/ethereum/lido-liquid/productInfo';
+import {
+    type EthereumLidoLiquidProductDeps,
+    createEthereumLidoLiquidProduct,
+} from './products/ethereum/lido-liquid/product';
 import { SOLANA_EVERSTAKE_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './products/solana/everstake-native/messageSystemFeatures';
 import { createSolanaEverstakeNativeProduct } from './products/solana/everstake-native/product';
 import { createSolanaExternalNativeProduct } from './products/solana/external-native/product';
@@ -29,9 +30,7 @@ import { luganodesProvider } from './providers/luganodes';
 import { p2pProvider } from './providers/p2p';
 import { getStakingProvider } from './providers/stakingProviders';
 
-export type StakingProductsCompositionRootDeps = GetTrezorBlockchainDep<'evmRpcCall'> & {
-    fetch: FetchLidoApi;
-};
+export type StakingProductsCompositionRootDeps = EthereumLidoLiquidProductDeps;
 
 type EthereumStakingProductsDeps = StakingProductsCompositionRootDeps;
 

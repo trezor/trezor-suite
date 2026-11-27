@@ -48,6 +48,7 @@ import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/sui
 import { type ThpHostNameDep, selectThpCredentials } from '@suite-common/thp';
 import { selectTradedAccountKeys } from '@suite-common/trading';
 import {
+    createFetchLidoWithdrawalBalances,
     createTransactionRetriever,
     fetchAllTransactionsForAccountThunk,
     fetchTransactionsPageThunk,
@@ -189,11 +190,14 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
     });
 
+    const queryClient = createQueryClient({ shouldRefetchOnEvents: true });
+
     const staking = createStakingCompositionRoot({
         platform: 'desktop',
         adapters: createStakingProductsCompositionRoot({
             getTrezorBlockchain: () => TrezorBlockchain,
             fetch: globalThis.fetch.bind(globalThis),
+            fetchWithdrawalBalances: createFetchLidoWithdrawalBalances(queryClient),
         }),
         deviceAccess: createStakingDeviceAccess({
             getTrezorConnect: deps.getTrezorConnect,
@@ -201,8 +205,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         }),
         dispatch: deps.dispatch,
     });
-
-    const queryClient = createQueryClient({ shouldRefetchOnEvents: true });
 
     const createTransports: CreateTransports = transports => {
         const factories = deps.getTransportsFactories();

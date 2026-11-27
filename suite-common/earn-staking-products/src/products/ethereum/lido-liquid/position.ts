@@ -59,6 +59,7 @@ export const getEthereumLidoLiquidProductPosition = ({
     account,
     productInfo,
     transactions,
+    withdrawalBalances,
 }: GetEthereumLidoLiquidProductPositionParams): StakingPosition | null => {
     const tokenBalance = getWstETHBalance(account, deployment);
     const pendingTransactions = getLidoPendingTransactions(transactions);
@@ -67,31 +68,33 @@ export const getEthereumLidoLiquidProductPosition = ({
 
     const hasTokens = isPositiveStakingAmount(tokenBalance);
 
-    if (!hasTokens && !hasPendingOperation('stake')) {
+    const unstaking = withdrawalBalances?.unstaking ?? ZERO_STAKING_AMOUNT;
+    const withdrawable = withdrawalBalances?.withdrawable ?? ZERO_STAKING_AMOUNT;
+    const amountOutsideBalance = toStakingAmount(BigNumber.sum(unstaking, withdrawable));
+
+    if (
+        !hasTokens &&
+        !hasPendingOperation('stake') &&
+        !isPositiveStakingAmount(amountOutsideBalance)
+    ) {
         return null;
     }
 
-    // The stake is the worth of the tokens in ETH, which only the product info knows.
-    const liquidTokenValue = productInfo?.liquidTokenValue ?? null;
-
-    if (hasTokens && liquidTokenValue === null) {
-        return null;
-    }
+    // Position value uses the current wstETH rate. Withdrawal value comes from the queue.
+    const liquidTokenValue = productInfo?.liquidTokenValue ?? 0;
 
     const staked = toStakingAmount(
         new BigNumber(tokenBalance)
-            .times(liquidTokenValue ?? 0)
+            .times(liquidTokenValue)
             .shiftedBy(-WSTETH_DECIMALS)
             .integerValue(BigNumber.ROUND_DOWN),
     );
 
-    // The withdrawal requests live in the queue contract, which the account data does not carry,
-    // so the flows read them from the chain.
     const balances = {
         staked,
         pending: ZERO_STAKING_AMOUNT,
-        unstaking: ZERO_STAKING_AMOUNT,
-        withdrawable: ZERO_STAKING_AMOUNT,
+        unstaking,
+        withdrawable,
         rewards: ZERO_STAKING_AMOUNT,
     };
 
@@ -102,11 +105,16 @@ export const getEthereumLidoLiquidProductPosition = ({
         operations.push('unstake');
     }
 
+    if (isPositiveStakingAmount(withdrawable) && pendingTransactions.length === 0) {
+        operations.push('withdraw');
+    }
+
     return {
         productId,
         status: positionStatus === 'inactive' ? 'activating' : positionStatus,
         lockup: 'liquid',
         balances,
+        amountOutsideBalance,
         activations: [],
         unlocks: [],
         targets: hasTokens

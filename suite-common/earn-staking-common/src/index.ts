@@ -130,6 +130,8 @@ export type {
     FetchProductInfoParams,
     GetAmountBoundsParams,
     GetPositionParams,
+    StakingPositionAccount,
+    StakingWithdrawalBalances,
     PlanOperationParams,
     SignStepParams,
     StakingAmountBounds,
