@@ -45,7 +45,7 @@ import {
     selectSuiteSyncWalletLabel,
 } from '@suite-common/suite-sync';
 import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/suite-types';
-import { type ThpHostNameDep } from '@suite-common/thp';
+import { type ThpHostNameDep, selectThpCredentials } from '@suite-common/thp';
 import { selectTradedAccountKeys } from '@suite-common/trading';
 import {
     createTransactionRetriever,
@@ -55,6 +55,7 @@ import {
     selectAccountTransactionsFetchStatus,
     selectAccountsByDeviceState,
     selectAccountsTransactions,
+    selectWalletSettings,
 } from '@suite-common/wallet-core';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
@@ -265,7 +266,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         createTransports,
         getTokenDefinitionsEnabledNetworks: toGetter(
             deps.getState,
-            (state: AppState) => state.wallet.settings.enabledNetworks,
+            (state: AppState) => selectWalletSettings(state).enabledNetworks,
         ),
         // TODO: Coinjoin has not been moved to @suite-common yet, so its debug settings type is not available here.
         getDebugSettings: toGetter(deps.getState, selectDebugSettings),
@@ -278,7 +279,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         getThpSettings: toGetter(deps.getState, (state: AppState) => ({
             appName: 'Trezor Suite', // NOTE: this is displayed on Trezor. not the same as manifest.appName
             pairingMethods: ['CodeEntry'],
-            knownCredentials: state.thp?.credentials,
+            knownCredentials: selectThpCredentials(state),
         })),
         getAllowPrerelease: toGetter(deps.getState, selectDesktopUpdateAllowPrerelease),
         shouldRetryFirmwareRevisionCheckError: toGetter(

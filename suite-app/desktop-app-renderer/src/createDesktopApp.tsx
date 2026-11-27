@@ -17,6 +17,7 @@ import {
     LoadingScreen,
     storageConstants as STORAGE,
     desktopHandshake,
+    selectIsBioAuthEnabled,
 } from '@trezor/suite';
 
 import { MainDesktop } from './MainDesktop';
@@ -82,7 +83,7 @@ export const createDesktopApp =
         }
 
         const loadModules = await deps.desktopApi.loadModules({
-            legacyBioAuthEnabled: deps.services.store.getState()?.bioAuth?.bioAuthEnabled,
+            legacyBioAuthEnabled: selectIsBioAuthEnabled(deps.services.store.getState()),
         });
         if (!loadModules.success) {
             // loading failed, render error with theme provider without redux and do not continue

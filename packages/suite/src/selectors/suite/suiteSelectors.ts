@@ -13,7 +13,8 @@ import {
 
 export const selectIsSuiteOnline = (state: SuiteRootState) => state.suite.online;
 export const selectSuiteLifecycle = (state: SuiteRootState) => state.suite.lifecycle;
-export const selectSuiteLifecycleStatus = (state: SuiteRootState) => state.suite.lifecycle.status;
+export const selectSuiteLifecycleStatus = (state: { suite: Pick<SuiteState, 'lifecycle'> }) =>
+    state.suite.lifecycle.status;
 export const selectSuiteTransport = (state: SuiteRootState) => state.suite.transport;
 export const selectRecentlyDisconnectedDevice = (state: SuiteRootState) =>
     state.suite.recentlyDisconnectedDevice;

@@ -58,7 +58,7 @@ export const isAccountStaleSelector = (
     state: AccountsRefreshTimeRootState,
     accountKey: Account['key'],
 ) => {
-    const accountLastRefreshTime = state.wallet.accountsRefreshTime[accountKey];
+    const accountLastRefreshTime = selectAccountRefreshTime(state, accountKey);
 
     if (accountLastRefreshTime === undefined) return true;
 

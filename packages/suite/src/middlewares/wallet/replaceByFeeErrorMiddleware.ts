@@ -1,7 +1,7 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
-import { type SendRootState } from '@suite-common/wallet-core';
+import { type SendRootState, selectSendPrecomposedTx } from '@suite-common/wallet-core';
 import { transactionsActions } from '@suite-common/wallet-core/';
 import { isPending, isRbfTransaction } from '@suite-common/wallet-utils';
 import { type Dispatch } from '@trezor/redux-utils';
@@ -19,7 +19,7 @@ export const replaceByFeeErrorMiddleware =
         }
 
         const { transactions } = action.payload;
-        const precomposedTx = api.getState().wallet.send?.precomposedTx;
+        const precomposedTx = selectSendPrecomposedTx(api.getState());
 
         if (precomposedTx === undefined) {
             return action;

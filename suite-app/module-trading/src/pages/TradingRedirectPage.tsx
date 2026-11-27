@@ -8,7 +8,7 @@ import {
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { selectRouter } from '@suite/router';
+import { selectRouterHash } from '@suite/router';
 import { updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type FeeLevel } from '@trezor/connect';
@@ -33,13 +33,13 @@ export const TradingRedirectPage = () => {
         redirectToSellOffers,
         redirectToExchangeOffers,
     } = useTradingRedirect();
-    const router = useSelector(selectRouter);
+    const routerHash = useSelector(selectRouterHash);
 
     const { dispatch } = useServices(injectDispatch);
 
     useEffect(() => {
         // get rid of parameters appended by some partners to url which we pass to them
-        const hashPart = router?.hash?.replace(/^#/, '').split('?')[0];
+        const hashPart = routerHash?.replace(/^#/, '').split('?')[0];
         const params = hashPart?.split('/');
         if (!params) return;
 
@@ -140,7 +140,7 @@ export const TradingRedirectPage = () => {
         redirectToBuyDetail,
         redirectToSellOffers,
         redirectToExchangeOffers,
-        router,
+        routerHash,
         dispatch,
     ]);
 

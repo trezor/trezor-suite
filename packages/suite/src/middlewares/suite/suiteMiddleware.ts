@@ -1,6 +1,6 @@
 import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
-import { type FlagsRootState } from '@suite/flags';
+import { type FlagsRootState, selectHasSeenDisconnectTooltip } from '@suite/flags';
 import { METADATA } from '@suite/metadata';
 import { type ModalRootState } from '@suite/modal';
 import { recoveryActions } from '@suite/recovery';
@@ -44,9 +44,9 @@ type SuiteMiddlewareState = AccountsRootState &
     DeviceRootState &
     EndUnfinishedDiscoveryThunkState &
     RouterRootState &
-    WalletSettingsRootState & {
-        flags: Pick<FlagsRootState['flags'], 'hasSeenDisconnectTooltip'>;
-    } & ModalRootState;
+    WalletSettingsRootState &
+    FlagsRootState &
+    ModalRootState;
 
 const isActionDeviceRelated = (action: UnknownAction): boolean => {
     if (
@@ -127,7 +127,7 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
                     const isModalActive = hasModalContext || isForegroundApp;
 
                     if (
-                        !state.flags.hasSeenDisconnectTooltip &&
+                        !selectHasSeenDisconnectTooltip(state) &&
                         selectAccounts(state).length > 0 &&
                         !isModalActive
                     ) {

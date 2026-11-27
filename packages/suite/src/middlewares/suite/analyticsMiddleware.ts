@@ -34,6 +34,7 @@ import {
 import { type WithServices, createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
 import { type SuiteRootState } from '#src/reducers/suite/suiteReducer';
+import { selectSuiteLifecycleStatus } from '#src/selectors/suite/suiteSelectors';
 import {
     type GetSuiteReadyPayloadState,
     getSuiteReadyPayload,
@@ -161,8 +162,8 @@ export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
             });
         } else if (routerLocationChange.match(action)) {
             if (
-                state.suite.lifecycle.status !== 'initial' &&
-                state.suite.lifecycle.status !== 'loading'
+                selectSuiteLifecycleStatus(state) !== 'initial' &&
+                selectSuiteLifecycleStatus(state) !== 'loading'
             ) {
                 analytics.report({
                     type: events.routerLocationChangeEvent.name,

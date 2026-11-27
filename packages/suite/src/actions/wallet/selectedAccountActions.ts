@@ -26,7 +26,10 @@ import {
 import { type SelectedAccountStatus, type WalletParams } from '@suite-common/wallet-types';
 import { isChanged } from '@trezor/utils';
 
-import { accountSearchActions } from '#src/reducers/wallet/accountSearchReducer';
+import {
+    accountSearchActions,
+    selectAccountSearch,
+} from '#src/reducers/wallet/accountSearchReducer';
 import { type AccountSearchState } from '#src/reducers/wallet/accountSearchReducer';
 import { getSelectedAccount } from '#src/utils/wallet/accountUtils';
 
@@ -249,7 +252,7 @@ export const syncSelectedAccountThunk =
             dispatch(accountsActions.updateSelectedAccount(newState));
 
             // reset filter if user selects a different coin
-            const coinFilter = state.wallet.accountSearch?.coinFilter;
+            const coinFilter = selectAccountSearch(state)?.coinFilter;
             if (
                 coinFilter?.length !== 0 &&
                 newState.status !== 'none' &&

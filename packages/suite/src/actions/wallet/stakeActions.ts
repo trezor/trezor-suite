@@ -43,6 +43,7 @@ import {
     selectIsMevProtectionEnabled,
     selectStake,
     selectStakeAccount,
+    selectStakePrecomposedForm,
     stakeActions,
     syncAccountsWithBlockchainThunk,
     transactionsActions,
@@ -125,7 +126,8 @@ type CancelSignTxThunkState = StakeRootState;
 export const cancelSignTxThunk =
     (isSuccessTx?: boolean, account?: Account) =>
     (dispatch: Dispatch<UnknownAction>, getState: () => CancelSignTxThunkState) => {
-        const { serializedTx, precomposedForm } = selectStake(getState());
+        const { serializedTx } = selectStake(getState());
+        const precomposedForm = selectStakePrecomposedForm(getState());
         dispatch(stakeActions.requestSignTransaction());
         dispatch(stakeActions.requestPushTransaction());
         // if transaction is not signed yet interrupt signing in TrezorConnect

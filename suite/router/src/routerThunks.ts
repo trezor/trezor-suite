@@ -20,6 +20,7 @@ import {
     selectRouter,
     selectRouterApp,
     selectRouterHash,
+    selectRouterLoaded,
 } from './routerReducer';
 import { type RouteParams } from './routes';
 import { type SuiteRouterHistoryDep } from './suiteRouterHistory';
@@ -41,7 +42,7 @@ export const onLocationChangeThunk = createThunk<
 >('@router/onLocationChange', (location, { dispatch, getState }) => {
     const unlocked = selectCanNavigate(getState());
     const router = selectRouter(getState());
-    if (!unlocked && router.loaded) return;
+    if (!unlocked && selectRouterLoaded(getState())) return;
 
     if (isEqualLocation(router, location) && router.app !== 'unknown') {
         return null;

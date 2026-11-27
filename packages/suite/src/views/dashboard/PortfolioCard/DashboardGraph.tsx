@@ -19,7 +19,7 @@ import { typography } from '@trezor/theme';
 import { updateGraphDataThunk } from '#src/actions/wallet/graphActions';
 import { TransactionsGraphLoader } from '#src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { selectGraph } from '#src/reducers/wallet/graphReducer';
+import { selectGraph, selectGraphSelectedRange } from '#src/reducers/wallet/graphReducer';
 import { type AggregatedDashboardHistory } from '#src/types/wallet/graph';
 import { getMinMaxValueFromData } from '#src/utils/wallet/graph/utils';
 import { prepareGraphDataAsync } from '#src/utils/wallet/graph/utilsWorker';
@@ -54,6 +54,7 @@ type DashboardGraphProps = {
 
 export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
     const graph = useSelector(selectGraph);
+    const selectedRange = useSelector(selectGraphSelectedRange);
     const selectedDevice = useSelector(selectSelectedDevice);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const { dispatch } = useServices(injectDispatch);
@@ -103,12 +104,11 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
             prepareGraphDataAsync({ graph, deviceState: selectedDeviceState }).then(
                 aggregatedData => {
                     const graphTicks =
-                        graph.selectedRange.label === 'all'
+                        selectedRange.label === 'all'
                             ? calcTicksFromData(aggregatedData).map(getUnixTime)
-                            : calcTicks(
-                                  graph.selectedRange.startDate,
-                                  graph.selectedRange.endDate,
-                              ).map(getUnixTime);
+                            : calcTicks(selectedRange.startDate, selectedRange.endDate).map(
+                                  getUnixTime,
+                              );
 
                     setData(aggregatedData);
                     setXticks(graphTicks);
@@ -116,7 +116,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                 },
             );
         }
-    }, [graph, selectedDeviceState]);
+    }, [graph, selectedRange, selectedDeviceState]);
 
     return (
         <Wrapper data-testid="@dashboard/graph">
@@ -143,7 +143,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                             xTicks={xTicks}
                             minMaxValues={[minMaxValues[0].toNumber(), minMaxValues[1].toNumber()]}
                             data={data}
-                            selectedRange={graph.selectedRange}
+                            selectedRange={selectedRange}
                             receivedValueFn={receivedValueFn}
                             sentValueFn={sentValueFn}
                             balanceValueFn={balanceValueFn}

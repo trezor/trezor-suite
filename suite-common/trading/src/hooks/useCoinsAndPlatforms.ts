@@ -1,17 +1,18 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectTradingInfo } from '../selectors/tradingSelectors';
+import { selectTradingCoins, selectTradingInfo } from '../selectors/tradingSelectors';
 
 export function useCoinsAndPlatforms() {
     const info = useSelector(selectTradingInfo);
+    const tradingCoins = useSelector(selectTradingCoins);
 
     const getCoinsAndPlatforms = useCallback(() => {
-        const coins = info.coins ?? {};
+        const coins = tradingCoins ?? {};
         const platforms = info.platforms ?? {};
 
         return { coins, platforms };
-    }, [info]);
+    }, [info, tradingCoins]);
 
     return getCoinsAndPlatforms;
 }

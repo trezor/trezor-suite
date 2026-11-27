@@ -11,7 +11,6 @@ import { useFieldArray, useForm } from 'react-hook-form';
 
 import { type SelectedAccountState } from '@suite/account';
 import { gotoThunk } from '@suite/router';
-import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { useExcludedUtxos } from '@suite-common/transaction-search';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type FeesState, type FormState } from '@suite-common/wallet-types';
@@ -35,7 +34,10 @@ import {
     signAndPushSendFormTransactionThunk,
 } from '#src/actions/wallet/send/sendFormThunks';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { selectProtocol } from '#src/selectors/suite/protocolSelectors';
+import {
+    selectProtocol,
+    selectProtocolSendFormNetworkSymbol,
+} from '#src/selectors/suite/protocolSelectors';
 import { type SendContextValues, type UseSendFormState } from '#src/types/wallet/sendForm';
 
 import { useFees } from './form/useFees';
@@ -304,9 +306,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     }, [getValues, composedLevels, dispatch, resetContext, selectedAccount.account]);
 
     const protocol = useSelector(selectProtocol);
-    const protocolNetworkSymbol = useSelector(state =>
-        selectNetworkSymbolForProtocol(state, protocol.sendForm.scheme),
-    );
+    const protocolNetworkSymbol = useSelector(selectProtocolSendFormNetworkSymbol);
 
     // fill form using data from URI protocol handler e.g. 'bitcoin:address?amount=0.01'
     useEffect(() => {

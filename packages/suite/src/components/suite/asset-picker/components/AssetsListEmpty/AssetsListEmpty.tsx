@@ -4,14 +4,16 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useFormatters } from '@suite-common/formatters';
-import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Column, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { selectProtocolSendFormScheme } from '#src/selectors/suite/protocolSelectors';
+import {
+    selectProtocolSendFormNetworkSymbol,
+    selectProtocolSendFormScheme,
+} from '#src/selectors/suite/protocolSelectors';
 
 interface AssetsListEmptyProps {
     heading: TranslationKey;
@@ -34,9 +36,7 @@ export const AssetsListEmpty = ({
     const device = useSelector(selectSelectedDevice);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const protocolSymbol = useSelector(state =>
-        selectNetworkSymbolForProtocol(state, protocolScheme),
-    );
+    const protocolSymbol = useSelector(selectProtocolSendFormNetworkSymbol);
     const network = protocolSymbol ? <NetworkNameFormatter value={protocolSymbol} /> : undefined;
 
     const openActivateNetworkModal = () => {

@@ -2,7 +2,6 @@ import { type RefObject, memo, useMemo } from 'react';
 
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
@@ -10,7 +9,7 @@ import { SearchAsset } from '@trezor/product-components';
 
 import { useListScrollReset } from '#src/components/suite/asset-picker/hooks/useListScrollReset';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { selectProtocolSendFormScheme } from '#src/selectors/suite/protocolSelectors';
+import { selectProtocolSendFormNetworkSymbol } from '#src/selectors/suite/protocolSelectors';
 
 import { useNetworkFilter } from './hooks/useNetworkFilter';
 import { useSearchFilter } from './hooks/useSearchFilter';
@@ -44,12 +43,9 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
         availableNetworks: providedNetworks,
         shouldResetSearchOnNetworkChange,
     });
-    const protocolScheme = useSelector(selectProtocolSendFormScheme);
     const enabledNetworks = useSelector(selectEnabledNetworks);
 
-    const protocolSymbol = useSelector(state =>
-        selectNetworkSymbolForProtocol(state, protocolScheme),
-    );
+    const protocolSymbol = useSelector(selectProtocolSendFormNetworkSymbol);
 
     // Keep the protocol array stable for selectNetworkOptions and the option/icon memoization.
     // useNetworkSelect depends on individual fields, so recreating selectConfig does not
