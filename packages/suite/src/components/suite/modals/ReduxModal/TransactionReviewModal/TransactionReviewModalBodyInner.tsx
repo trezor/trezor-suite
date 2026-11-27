@@ -31,6 +31,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { Modal, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { type ResolvedDisplayFormat } from '@trezor/network-ethereum-suite-common';
 import { injectDispatch } from '@trezor/redux-utils';
 import { type Deferred } from '@trezor/utils';
 
@@ -77,6 +78,7 @@ const shouldShowTxValidityTimer = ({
 
 export type TransactionReviewModalBodyInnerProps = {
     outputs: TransactionReviewOutput[];
+    displayFormat: ResolvedDisplayFormat | undefined;
     account: Account;
     decision: Deferred<boolean, string | number | undefined> | undefined;
     txInfoState: TxInfoState;
@@ -98,6 +100,7 @@ export type TransactionReviewModalBodyInnerProps = {
 export const TransactionReviewModalBodyInner = ({
     account,
     outputs,
+    displayFormat,
     decision,
     handleTryAgain,
     precomposedTx,
@@ -313,6 +316,7 @@ export const TransactionReviewModalBodyInner = ({
                     account={account}
                     precomposedTx={precomposedTx}
                     precomposedForm={precomposedForm}
+                    displayFormat={displayFormat}
                     vaultName={vaultName}
                     availableRewards={availableRewards}
                     serializedTx={serializedTx}

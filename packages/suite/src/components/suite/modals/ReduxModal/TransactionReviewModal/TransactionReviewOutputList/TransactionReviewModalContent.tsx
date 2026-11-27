@@ -22,6 +22,7 @@ import {
     isRbfTransaction,
 } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
+import { type ResolvedDisplayFormat } from '@trezor/network-ethereum-suite-common';
 
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../../UserContextModal/TxDetailModal/ReplaceByFeeFailedOriginalTxConfirmed';
 import { TransactionReviewDetails } from '../TransactionReviewDetails';
@@ -32,6 +33,7 @@ type TransactionReviewModalContentProps = {
     account: Account;
     precomposedTx: GeneralPrecomposedTransactionFinal;
     precomposedForm: FormState;
+    displayFormat: ResolvedDisplayFormat | undefined;
     vaultName?: string;
     availableRewards?: YieldClaimReward[];
     isSending: boolean;
@@ -51,6 +53,7 @@ export const TransactionReviewModalContent = ({
     serializedTx,
     reviewStep,
     precomposedForm,
+    displayFormat,
     vaultName,
     availableRewards,
     onTryAgain,
@@ -82,6 +85,7 @@ export const TransactionReviewModalContent = ({
                 precomposedTx,
                 vaultName,
                 swapSlippage,
+                displayFormat,
             }),
         [
             account,
@@ -92,6 +96,7 @@ export const TransactionReviewModalContent = ({
             precomposedTx,
             vaultName,
             swapSlippage,
+            displayFormat,
         ],
     );
 
@@ -122,6 +127,7 @@ export const TransactionReviewModalContent = ({
                 precomposedForm={precomposedForm}
                 signedTx={serializedTx}
                 outputs={outputs}
+                displayFormat={displayFormat}
                 buttonRequestsCount={buttonRequestsCount}
                 isRbfAction={isBumpFeeRbfAction}
                 reviewStep={reviewStep}

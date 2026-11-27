@@ -14199,6 +14199,43 @@ export const messages = defineMessages({
         id: 'TR_APPROVE_AMOUNT_UNLIMITED',
         defaultMessage: 'Unlimited',
     },
+    TR_DISPLAY_FORMAT_UNKNOWN_TOKEN: {
+        id: 'TR_DISPLAY_FORMAT_UNKNOWN_TOKEN',
+        defaultMessage: 'Unknown token',
+    },
+    TR_DISPLAY_FORMAT_SUBCALL: {
+        id: 'TR_DISPLAY_FORMAT_SUBCALL',
+        defaultMessage: 'Subcall',
+        description: 'A contract call embedded in the transaction, shown as the device shows it.',
+    },
+    TR_DISPLAY_FORMAT_NUMBERED_SUBCALL: {
+        id: 'TR_DISPLAY_FORMAT_NUMBERED_SUBCALL',
+        defaultMessage: 'Subcall #{index}',
+        description: 'One of several contract calls embedded in the transaction (a multicall).',
+    },
+    TR_DISPLAY_FORMAT_SUBCALL_PROVIDER: {
+        id: 'TR_DISPLAY_FORMAT_SUBCALL_PROVIDER',
+        defaultMessage: '({subcall}) Provider',
+    },
+    TR_DISPLAY_FORMAT_SUBCALL_INTENT: {
+        id: 'TR_DISPLAY_FORMAT_SUBCALL_INTENT',
+        defaultMessage: '({subcall}) Intent',
+    },
+    TR_DISPLAY_FORMAT_SUBCALL_TO: {
+        id: 'TR_DISPLAY_FORMAT_SUBCALL_TO',
+        defaultMessage: '({subcall}) To',
+    },
+    TR_DISPLAY_FORMAT_SUBCALL_FIELD: {
+        id: 'TR_DISPLAY_FORMAT_SUBCALL_FIELD',
+        defaultMessage: '({subcall}) {label}',
+        description:
+            'Label of a field of an embedded contract call; {label} comes from its definition.',
+    },
+    TR_DISPLAY_FORMAT_SINGLE_SUBCALL_TO: {
+        id: 'TR_DISPLAY_FORMAT_SINGLE_SUBCALL_TO',
+        defaultMessage: 'Subcall to',
+        description: 'The contract an embedded call goes to, when the call cannot be decoded.',
+    },
     TR_APPROVE_AMOUNT_TITLE: {
         id: 'TR_APPROVE_AMOUNT_TITLE',
         defaultMessage: 'Amount allowance',
