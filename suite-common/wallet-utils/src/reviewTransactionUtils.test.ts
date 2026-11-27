@@ -11,7 +11,11 @@ import {
     type StakeFormState,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import type { TokenInfo } from '@trezor/connect';
+import type { EthereumDisplayFormat, TokenInfo } from '@trezor/connect';
+import {
+    mockEthereumDisplayFormat,
+    mockEthereumDisplayFormatField,
+} from '@trezor/connect-common/mocks';
 import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
@@ -19,6 +23,8 @@ import { buildApprovalTransactionData } from './allowanceUtils';
 import { getPrecomposedTxWithAccountToken } from './ethUtils';
 import {
     constructTransactionReviewOutputs,
+    constructTransactionReviewOutputsOptional,
+    getClearSignedDisplayFormat,
     getIsClearSignedEvmClaimFlow,
     isClearSignedEvmTradingSwapTransaction,
     isClearSignedWrappedNativeTransaction,
@@ -812,6 +818,149 @@ describe('constructTransactionReviewOutputs', () => {
                 expect.objectContaining({ type: 'data', value: WETH_DEPOSIT_DATA }),
             ]),
         );
+    });
+
+    describe('contract call with a display format from connect', () => {
+        const gateway = '0x721B9abAb6511b46b9ee83A1aba23BDAcB004149';
+        // depositETH(gateway, gateway, 0)
+        const transactionData = `0x474cf53d${gateway.slice(2).toLowerCase().padStart(64, '0').repeat(2)}${'0'.repeat(64)}`;
+        const amountField = mockEthereumDisplayFormatField({
+            label: 'Amount to supply',
+            formatter: 'FORMATTER_AMOUNT',
+            path: { type: 'container', container: 'VALUE' },
+        });
+        const buildReview = (displayFormat: EthereumDisplayFormat, reviewDevice = device) => ({
+            account,
+            device: reviewDevice,
+            precomposedForm: buildFormState({ transactionData }),
+            precomposedTx: {
+                ...buildPrecomposedTransaction({ to: gateway }),
+                displayFormat,
+            } as GeneralPrecomposedTransactionFinal,
+        });
+        // As the desktop review composes it: resolved once, then passed to the outputs.
+        const buildOutputs = (displayFormat: EthereumDisplayFormat, reviewDevice = device) => {
+            const review = buildReview(displayFormat, reviewDevice);
+
+            return constructTransactionReviewOutputs({
+                ...review,
+                decreaseOutputId: undefined,
+                displayFormat: getClearSignedDisplayFormat({
+                    ...review,
+                    transactionData: review.precomposedForm.transactionData,
+                }),
+            });
+        };
+
+        it('mirrors the device screens: provider, intent, then the decoded fields', () => {
+            // `confirm_ethereum_clear_signing` walks provider → intent → fields → summary; the
+            // summary is the review's own total row.
+            expect(buildOutputs(mockEthereumDisplayFormat({ fields: [amountField] }))).toEqual([
+                { type: 'recipient_name', value: 'Aave' },
+                { type: 'contract_intent', value: 'Supply' },
+                { type: 'data', value: transactionData },
+            ]);
+        });
+
+        it('names the contract by its address without a provider name', () => {
+            expect(
+                buildOutputs(
+                    mockEthereumDisplayFormat({ fields: [amountField], providerName: undefined }),
+                )[0],
+            ).toEqual({
+                type: 'recipient_name',
+                value: gateway,
+            });
+        });
+
+        it('skips the fields step when the definition has no fields, as the device does', () => {
+            expect(buildOutputs(mockEthereumDisplayFormat({ fields: [] }))).toEqual([
+                { type: 'recipient_name', value: 'Aave' },
+                { type: 'contract_intent', value: 'Supply' },
+            ]);
+        });
+
+        it('passes the decoded call through the wrapper the desktop review calls', () => {
+            const review = buildReview(mockEthereumDisplayFormat({ fields: [amountField] }));
+
+            expect(
+                constructTransactionReviewOutputsOptional({
+                    ...review,
+                    decreaseOutputId: undefined,
+                    displayFormat: getClearSignedDisplayFormat({
+                        ...review,
+                        transactionData: review.precomposedForm.transactionData,
+                    }),
+                }),
+            ).toContainEqual({ type: 'contract_intent', value: 'Supply' });
+        });
+
+        it('keeps the previous rows for a review that does not pass the decoded call', () => {
+            // The mobile reviews do not render the decoded call yet.
+            const outputs = constructTransactionReviewOutputs({
+                ...buildReview(mockEthereumDisplayFormat()),
+                decreaseOutputId: undefined,
+            });
+
+            expect(outputs).not.toEqual(
+                expect.arrayContaining([expect.objectContaining({ type: 'contract_intent' })]),
+            );
+        });
+
+        it.each([
+            [
+                'without clear signing',
+                mockSuiteDevice(
+                    { unavailableCapabilities: { evmClearSigning: 'update-required' } },
+                    { major_version: 2, minor_version: 8, patch_version: 0 },
+                ),
+                [amountField],
+            ],
+            [
+                'that misreads arrays (before 2.12.4)',
+                mockSuiteDevice(undefined, {
+                    major_version: 2,
+                    minor_version: 12,
+                    patch_version: 3,
+                }),
+                [amountField],
+            ],
+            [
+                'without a formatter the definition uses',
+                buildUpdatedDevice(),
+                [
+                    mockEthereumDisplayFormatField({
+                        ...amountField,
+                        formatter: 'FORMATTER_DURATION',
+                    }),
+                ],
+            ],
+        ])('keeps the blind-signing rows on firmware %s', (_name, reviewDevice, fields) => {
+            const outputs = buildOutputs(mockEthereumDisplayFormat({ fields }), reviewDevice);
+
+            expect(outputs).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({ type: 'data', value: transactionData }),
+                    expect.objectContaining({ type: 'contract', value: gateway }),
+                ]),
+            );
+            expect(outputs).not.toEqual(
+                expect.arrayContaining([expect.objectContaining({ type: 'contract_intent' })]),
+            );
+        });
+
+        it('counts calldata by its bytes, with or without the 0x prefix', () => {
+            const review = buildReview(mockEthereumDisplayFormat());
+            // 6144 bytes: the most the device clear-signs.
+            const longest = `0x474cf53d${'00'.repeat(6140)}`;
+
+            expect(
+                getClearSignedDisplayFormat({ ...review, transactionData: longest }),
+            ).toMatchObject({ intent: 'Supply' });
+            expect(
+                getClearSignedDisplayFormat({ ...review, transactionData: `${longest}00` }),
+            ).toBeUndefined();
+        });
     });
 
     it('renders one tron-vote line per representative with its own vote count', () => {

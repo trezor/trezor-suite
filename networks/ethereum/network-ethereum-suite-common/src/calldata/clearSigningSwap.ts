@@ -1,6 +1,8 @@
 import { decodeFunctionData, parseAbi } from 'viem';
 
-import { MAX_CLEAR_SIGNING_DATA_LENGTH, ONEINCH_SWAP_SELECTOR } from './clearSigning';
+import { MAX_CLEAR_SIGNING_DATA_LENGTH } from '@trezor/connect-common';
+
+import { ONEINCH_SWAP_SELECTOR } from './clearSigning';
 
 // Decodes swap legs from calldata. Mirrors firmware DisplayFormat field_definitions:
 // https://github.com/trezor/trezor-firmware/blob/main/core/src/apps/ethereum/clear_signing_definitions.py

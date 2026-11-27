@@ -1,9 +1,8 @@
+import { MAX_CLEAR_SIGNING_DATA_LENGTH, getBuiltInDisplayFormat } from '@trezor/connect-common';
 import { versionUtils } from '@trezor/utils';
 
 // Mirrors firmware clear signing definitions:
 // https://github.com/trezor/trezor-firmware/blob/main/core/src/apps/ethereum/clear_signing_definitions.py
-
-export const MAX_CLEAR_SIGNING_DATA_LENGTH = 6144; // 6 KB, FW memory limit for clear signing data
 
 const CLEAR_SIGNING_BATCH_1_FW = '2.12.1'; // LI.FI, Uniswap
 const CLEAR_SIGNING_BATCH_2_FW = '2.12.2'; // 1inch Aggregation Router V6
@@ -14,12 +13,6 @@ type SelectorDef = {
     coverage: ClearSigningCoverage;
     minFirmware: string;
 };
-
-// ERC-20 standard functions — clear signing applies to any contract address
-const GLOBAL_SELECTORS: ReadonlySet<string> = new Set([
-    '095ea7b3', // approve(address,uint256)
-    'a9059cbb', // transfer(address,uint256)
-]);
 
 type Deployment = {
     chainId: number;
@@ -83,38 +76,6 @@ const LIFI_MOVED_DEPLOYMENTS: ReadonlyArray<Deployment> = [
 // https://github.com/LedgerHQ/clear-signing-erc7730-registry/blob/master/registry/uniswap/calldata-UniswapV3Router02.json
 const UNISWAP_V3_ROUTER_ADDRESS = '68b3465833fb72a70ecdf485e0e4c7bd8665fc45';
 const UNISWAP_V3_ROUTER_CHAINS = [1];
-
-// Canonical WETH (Wrapped Ether) deposit()/withdraw() — "Wrap ETH to WETH" / "Unwrap WETH
-// to ETH". Mirrors firmware's WETH definition set (trezor-firmware#7252, its
-// sc_constants.py `weth_deployments` + clear_signing_definitions.py). Shipped in firmware
-// 2.12.4. Firmware clear-signs ONLY these canonical WETH contracts — NOT other wrapped-native
-// tokens (WBNB / WPOL / WAVAX / WETC), so do not add those here. Unlike the swap
-// CONTRACT_DEFINITIONS below, wrap/unwrap is not a swap (no receive leg / coverage), so it
-// lives in its own table consulted only by the version-agnostic isEvmClearSigningTx — no
-// minFirmware gate is applied (matching how swaps are matched in that predicate; device-version
-// gating lives in getEvmClearSignedSwapCoverage, which wrap/unwrap deliberately does not feed,
-// nor the swap decoder drift guards). Addresses lowercase & 0x-stripped, mirroring firmware.
-const WETH_WRAP_UNWRAP_SELECTORS: ReadonlySet<string> = new Set([
-    'd0e30db0', // deposit() — wrap
-    '2e1a7d4d', // withdraw(uint256) — unwrap
-]);
-
-const WETH_DEPLOYMENTS: ReadonlyArray<Deployment> = [
-    { chainId: 1, address: 'c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' }, // ethereum
-    { chainId: 10, address: '4200000000000000000000000000000000000006' }, // optimism
-    { chainId: 42161, address: '82af49447d8a07e3bd95bd0d56f35241523fbab1' }, // arbitrum
-    { chainId: 8453, address: '4200000000000000000000000000000000000006' }, // base
-    { chainId: 11155111, address: '7b79995e5f793a07bc00c21412e50ecae098e7f9' }, // sepolia (testnet)
-    { chainId: 17000, address: '94373a4919b3240d86ea41593d5eba789fef3848' }, // holesky (testnet)
-];
-
-const isWethWrapUnwrapClearSigningTx = (
-    chainId: number,
-    toAddr: string,
-    funcSig: string,
-): boolean =>
-    WETH_WRAP_UNWRAP_SELECTORS.has(funcSig) &&
-    WETH_DEPLOYMENTS.some(d => d.chainId === chainId && d.address === toAddr);
 
 const deploymentsFor = (
     address: string,
@@ -257,11 +218,14 @@ export const isEvmClearSigningTx = (
         return false;
     }
 
-    if (GLOBAL_SELECTORS.has(parsed.funcSig)) {
-        return true;
-    }
-
-    if (isWethWrapUnwrapClearSigningTx(chainId, parsed.toAddr, parsed.funcSig)) {
+    // ERC-20 approve/transfer on any contract, and WETH deposit/withdraw.
+    if (
+        getBuiltInDisplayFormat({
+            chainId,
+            address: parsed.toAddr,
+            functionSignature: parsed.funcSig,
+        })
+    ) {
         return true;
     }
 

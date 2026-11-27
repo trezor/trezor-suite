@@ -14,10 +14,12 @@ import {
     type YieldClaimReward,
 } from '@suite-common/wallet-types';
 import type { CardanoOutput } from '@trezor/connect';
+import { MAX_CLEAR_SIGNING_DATA_LENGTH } from '@trezor/connect-common';
 import { getFirmwareVersion, getFirmwareVersionArray } from '@trezor/device-utils';
 import {
     Calldata,
     type ClearSigningCoverage,
+    type ResolvedDisplayFormat,
     getEvmClearSignedSwapCoverage,
     getWrappedNativeSymbol,
     isEvmClearSigningTx,
@@ -33,6 +35,7 @@ import {
 import { fromGwei, fromWei } from './ethConverter';
 import {
     getEvmTransactionPurpose,
+    getResolvedDisplayFormat,
     isEvmApprovalTx,
     isEvmYieldTxByTextSignature,
     isUnwrapNativeTx,
@@ -140,6 +143,37 @@ const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
     }
 };
 
+type ClearSignedDisplayFormatParams = {
+    account: Pick<Account, 'networkType' | 'path'>;
+    device: TrezorDevice | undefined;
+    precomposedTx: GeneralPrecomposedTransactionFinal;
+    transactionData?: string;
+};
+
+/**
+ * The contract call decoded with the display format Connect found for it, when the device will
+ * clear-sign the call with that definition rather than blind-sign it.
+ */
+export const getClearSignedDisplayFormat = ({
+    account,
+    device,
+    precomposedTx,
+    transactionData,
+}: ClearSignedDisplayFormatParams): ResolvedDisplayFormat | undefined => {
+    const firmwareVersion = getFirmwareVersionArray(device);
+    const dataHexLength = transactionData?.replace(/^0x/i, '').length ?? 0;
+    if (
+        !firmwareVersion ||
+        !isEvmClearSigningSupportedByDevice(device) ||
+        // The firmware blind-signs calldata it cannot keep in memory whole.
+        dataHexLength > MAX_CLEAR_SIGNING_DATA_LENGTH * 2
+    ) {
+        return undefined;
+    }
+
+    return getResolvedDisplayFormat({ account, precomposedTx, transactionData, firmwareVersion });
+};
+
 type ConstructOutputsParams = {
     precomposedTx: GeneralPrecomposedTransactionFinal;
     decreaseOutputId: number | undefined;
@@ -150,6 +184,8 @@ type ConstructOutputsParams = {
     swapSlippage?: string;
     // undefined when the device will not clear-sign the transaction as a swap
     clearSignedSwapCoverage: ClearSigningCoverage | undefined;
+    // Opt-in: only a review that renders the decoded call passes it (`getClearSignedDisplayFormat`).
+    displayFormat?: ResolvedDisplayFormat;
 };
 
 type ClearSignedEvmTradingSwapParams = {
@@ -452,6 +488,7 @@ const constructNewFlow = ({
     isClearSignedEvmClaimFlow,
     isUpdatedEthereumSendFlow,
     isUpdatedStellarSendFlow,
+    displayFormat,
 }: ConstructOutputsParams & {
     isClearSignedWrapUnwrap: boolean;
     isUpdatedEthereumSendFlow: boolean;
@@ -519,6 +556,24 @@ const constructNewFlow = ({
                 outputs.push({ type: 'amount', value: o.amount.toString() });
             }
         });
+
+        return outputs;
+    }
+
+    if (displayFormat) {
+        // The firmware shows a clear-signed call as the provider, the intent, all decoded fields
+        // on one screen, then the fee summary (`confirm_ethereum_clear_signing`). The summary is
+        // the review's own total row, and the `data` row shows the decoded fields.
+        outputs.push(
+            {
+                type: 'recipient_name',
+                value: displayFormat.providerName ?? displayFormat.contractAddress,
+            },
+            { type: 'contract_intent', value: displayFormat.intent },
+        );
+        if (displayFormat.rows.length > 0) {
+            outputs.push({ type: 'data', value: precomposedForm.transactionData ?? '' });
+        }
 
         return outputs;
     }
@@ -895,6 +950,7 @@ export const constructTransactionReviewOutputsOptional = ({
     precomposedTx,
     vaultName,
     swapSlippage,
+    displayFormat,
 }: Partial<ConstructTransactionReviewOutputsProps>): TransactionReviewOutput[] => {
     if (
         account === undefined ||
@@ -914,5 +970,6 @@ export const constructTransactionReviewOutputsOptional = ({
         precomposedTx,
         vaultName,
         swapSlippage,
+        displayFormat,
     });
 };
