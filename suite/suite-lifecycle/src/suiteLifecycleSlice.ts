@@ -11,8 +11,7 @@ export type SuiteLifecycle =
     | { status: 'initial' }
     | { status: 'loading' }
     | { status: 'ready' }
-    // errors set from connect, should be renamed
-    | { status: 'error'; error: string }
+    | { status: 'connect-error'; error: string }
     // blocked if the instance cannot upgrade due to older version running,
     // blocking in case instance is running older version thus blocking other instance
     | { status: 'db-error'; error: StorageErrorPayload }
@@ -43,8 +42,8 @@ const suiteLifecycleSlice = createSlice({
         onSuiteReady(state: SuiteLifecycleState) {
             state.lifecycle = { status: 'ready' };
         },
-        setSuiteError(state: SuiteLifecycleState, { payload }: PayloadAction<string>) {
-            state.lifecycle = { status: 'error', error: payload };
+        setConnectInitError(state: SuiteLifecycleState, { payload }: PayloadAction<string>) {
+            state.lifecycle = { status: 'connect-error', error: payload };
         },
         updateOnlineStatus(state: SuiteLifecycleState, { payload }: PayloadAction<boolean>) {
             state.online = payload;
@@ -61,7 +60,7 @@ const suiteLifecycleSlice = createSlice({
     },
 });
 
-export const { onSuiteInit, onSuiteReady, setSuiteError, updateOnlineStatus } =
+export const { onSuiteInit, onSuiteReady, setConnectInitError, updateOnlineStatus } =
     suiteLifecycleSlice.actions;
 export const suiteLifecycleReducer = suiteLifecycleSlice.reducer;
 

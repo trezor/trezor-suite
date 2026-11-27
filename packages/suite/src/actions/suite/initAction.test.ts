@@ -25,7 +25,7 @@ import {
 import {
     onSuiteInit,
     onSuiteReady,
-    setSuiteError,
+    setConnectInitError,
     suiteLifecycleInitialState,
     suiteLifecycleReducer,
 } from '@suite/suite-lifecycle';
@@ -276,7 +276,7 @@ const fixtures: Fixture[] = [
             gotoThunk.fulfilled.type,
             initialRedirectionThunk.fulfilled.type,
             connectInitThunk.rejected.type,
-            setSuiteError.type,
+            setConnectInitError.type,
         ],
     },
 ];

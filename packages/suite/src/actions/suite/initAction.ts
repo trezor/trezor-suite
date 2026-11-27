@@ -22,7 +22,7 @@ import {
     onSuiteInit,
     onSuiteReady,
     selectSuiteLifecycleStatus,
-    setSuiteError,
+    setConnectInitError,
 } from '@suite/suite-lifecycle';
 import * as trezorConnectActions from '@suite-common/connect-init';
 import { type ConnectInitThunkDeps, type ConnectInitThunkState } from '@suite-common/connect-init';
@@ -152,7 +152,7 @@ export const initThunk =
             // see more details here: https://redux-toolkit.js.org/api/createAsyncThunk#unwrapping-result-actions
             await dispatch(trezorConnectActions.connectInitThunk()).unwrap();
         } catch (err) {
-            dispatch(setSuiteError(err.message));
+            dispatch(setConnectInitError(err.message));
 
             return;
         }

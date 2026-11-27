@@ -124,7 +124,7 @@ export const Preloader = memo(({ children }: PropsWithChildren) => {
         return <AnalyticsConsentScreen />;
     }
 
-    if (lifecycle.status === 'error') {
+    if (lifecycle.status === 'connect-error') {
         throw new Error(lifecycle.error);
     }
 

@@ -4,7 +4,7 @@ import {
     onSuiteReady,
     selectIsSuiteOnline,
     selectSuiteLifecycle,
-    setSuiteError,
+    setConnectInitError,
     suiteLifecycleInitialState,
     suiteLifecycleReducer,
     updateOnlineStatus,
@@ -32,7 +32,7 @@ describe('suiteLifecycleReducer', () => {
     it.each([
         [onSuiteInit(), { status: 'loading' }],
         [onSuiteReady(), { status: 'ready' }],
-        [setSuiteError('Error'), { status: 'error', error: 'Error' }],
+        [setConnectInitError('Error'), { status: 'connect-error', error: 'Error' }],
         [storageError('blocked'), { status: 'db-error', error: 'blocked' }],
         [storageCorrupted('Corrupted'), { status: 'db-corrupted', error: 'Corrupted' }],
     ])('sets lifecycle on %o', (action, lifecycle) => {
