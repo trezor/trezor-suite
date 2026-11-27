@@ -1,6 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
-import { type YieldPendingTransactionState } from '@suite-common/wallet-core';
+import {
+    type TransactionsRootState,
+    type YieldPendingTransactionState,
+    selectTransactionByAccountKeyAndTxid,
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useBottomSheetModal } from '@suite-native/atoms';
 
@@ -14,6 +19,7 @@ type UseYieldPendingTransactionParams = {
     isFocused: boolean;
     pendingTransaction: YieldPendingTransactionState | null | undefined;
     transactionType: YieldPendingTransactionType;
+    trackedTxid?: string | null;
     vaultId?: string;
 };
 
@@ -33,6 +39,7 @@ export const useYieldPendingTransaction = ({
     isFocused,
     pendingTransaction,
     transactionType,
+    trackedTxid,
     vaultId,
 }: UseYieldPendingTransactionParams) => {
     const {
@@ -40,10 +47,20 @@ export const useYieldPendingTransaction = ({
         closeModal: closePendingBottomSheet,
         openModal: openPendingBottomSheet,
     } = useBottomSheetModal();
-    const matchingPendingTransaction = getPendingTransactionByType(
-        pendingTransaction,
-        transactionType,
+    const replacementTxid =
+        pendingTransaction && trackedTxid !== pendingTransaction.txid ? trackedTxid : undefined;
+    const replacementFee = useSelector((state: TransactionsRootState) =>
+        accountKey && replacementTxid
+            ? selectTransactionByAccountKeyAndTxid(state, accountKey, replacementTxid)?.fee
+            : undefined,
     );
+    const matchingPendingTransaction = useMemo(() => {
+        const transaction = getPendingTransactionByType(pendingTransaction, transactionType);
+
+        return transaction && replacementTxid
+            ? { ...transaction, txid: replacementTxid, fee: replacementFee }
+            : transaction;
+    }, [pendingTransaction, replacementFee, replacementTxid, transactionType]);
     const { displayedPendingTransaction, isSheetPresented, handleSheetDismissed } =
         useYieldPendingSheet(matchingPendingTransaction);
     const { explorerUrl, openInBlockchain } = useYieldPendingTransactionDetails({
@@ -65,15 +82,17 @@ export const useYieldPendingTransaction = ({
               }
             : null;
 
+    const hasPendingTransaction = matchingPendingTransaction !== undefined;
+
     useEffect(() => {
-        if (!isFocused || matchingPendingTransaction === undefined) {
+        if (!isFocused || !hasPendingTransaction) {
             closePendingBottomSheet();
 
             return;
         }
 
         openPendingBottomSheet();
-    }, [closePendingBottomSheet, isFocused, matchingPendingTransaction, openPendingBottomSheet]);
+    }, [closePendingBottomSheet, isFocused, hasPendingTransaction, openPendingBottomSheet]);
 
     return {
         displayedPendingTransaction,

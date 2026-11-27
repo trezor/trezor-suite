@@ -43,7 +43,7 @@ type SubmitUnwrapNativeTokenThunkDeps = SendYieldTransactionDeps & {
 };
 
 export const submitUnwrapNativeTokenThunk = createThunk<
-    { txid: string; fee: string } | undefined,
+    { txid: string; fee: string; nonce: number } | undefined,
     UnwrapNativeTokenPayload,
     { state: SubmitUnwrapNativeTokenThunkState; extra: SubmitUnwrapNativeTokenThunkDeps }
 >(
@@ -203,7 +203,7 @@ export const submitUnwrapNativeTokenThunk = createThunk<
                 }),
             );
 
-            return { txid: sendResult.txid, fee: sendResult.fee };
+            return { txid: sendResult.txid, fee: sendResult.fee, nonce: sendResult.nonce };
         } catch (error) {
             if (isYieldPushError(error)) {
                 dispatch(

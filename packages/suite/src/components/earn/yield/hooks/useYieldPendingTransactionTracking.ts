@@ -200,7 +200,7 @@ export const useYieldPendingTransactionTracking = ({
     const pendingTransaction = useSelector(
         state => selectYieldSession(state, flowType, flowKey).action.pendingTransaction,
     );
-    const pendingTxStatus = useYieldPendingTxStatus({
+    const { status: pendingTxStatus, txid: trackedTxid } = useYieldPendingTxStatus({
         account,
         flowType,
         flowKey,
@@ -381,4 +381,6 @@ export const useYieldPendingTransactionTracking = ({
         },
         [analytics, latestRef],
     );
+
+    return trackedTxid;
 };

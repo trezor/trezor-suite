@@ -46,7 +46,7 @@ type SubmitWrapNativeTokenThunkDeps = SendYieldTransactionDeps & {
 };
 
 export const submitWrapNativeTokenThunk = createThunk<
-    { txid: string; fee: string } | undefined,
+    { txid: string; fee: string; nonce: number } | undefined,
     WrapNativeTokenPayload,
     { state: SubmitWrapNativeTokenThunkState; extra: SubmitWrapNativeTokenThunkDeps }
 >(
@@ -239,7 +239,7 @@ export const submitWrapNativeTokenThunk = createThunk<
                 }),
             );
 
-            return { txid: sendResult.txid, fee: sendResult.fee };
+            return { txid: sendResult.txid, fee: sendResult.fee, nonce: sendResult.nonce };
         } catch (error) {
             if (isYieldPushError(error)) {
                 dispatch(

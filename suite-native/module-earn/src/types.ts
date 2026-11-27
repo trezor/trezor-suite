@@ -31,6 +31,7 @@ export type YieldReviewSigningResult =
 export type YieldBroadcastTransaction = {
     txid: string;
     fee?: string;
+    nonce?: number;
 };
 
 export type ChooseAccountTokenBalance = {

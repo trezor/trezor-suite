@@ -276,11 +276,12 @@ describe('sendYieldTransaction', () => {
         );
     });
 
-    it('returns sent with the txid and the precomposed fee after broadcast', async () => {
+    it('returns the txid, fee and signed nonce after broadcast', async () => {
         await expect(sendTransaction()).resolves.toEqual({
             status: 'sent',
             txid: '0xtxid',
             fee: '31500000000',
+            nonce: 1,
         });
     });
 });

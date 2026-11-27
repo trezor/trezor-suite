@@ -13,41 +13,79 @@ export interface TrackedEvmTransaction {
     isReplacement: boolean;
 }
 
+export type EvmTransactionCall = {
+    to: string;
+    data: string;
+    /** Native value in decimal base units. */
+    value: string;
+};
+
+const matchesEvmTransactionCall = (
+    transaction: WalletAccountTransaction,
+    expectedCall: EvmTransactionCall,
+): boolean => {
+    // Display targets can omit zero-value outputs or include internal transfers. The first
+    // raw output is the top-level EVM call, including its native value.
+    const output = transaction.details.vout[0];
+
+    return (
+        output?.value === expectedCall.value &&
+        output.addresses?.[0]?.toLowerCase() === expectedCall.to.toLowerCase() &&
+        transaction.ethereumSpecific?.data?.toLowerCase() === expectedCall.data.toLowerCase()
+    );
+};
+
 interface FindTrackedEvmTransactionParams {
     transactions: WalletAccountTransaction[];
     txid: string;
     nonce?: number;
+    expectedCall?: EvmTransactionCall;
 }
 
 export const findTrackedEvmTransaction = ({
     transactions,
     txid,
     nonce,
+    expectedCall,
 }: FindTrackedEvmTransactionParams): TrackedEvmTransaction | undefined => {
-    const originalTransaction = transactions.find(transaction => transaction.txid === txid);
+    const original = transactions.find(transaction => transaction.txid === txid);
+    const originalMatch = original ? { transaction: original, isReplacement: false } : undefined;
 
-    if (originalTransaction) {
-        return { transaction: originalTransaction, isReplacement: false };
+    if (original && (!expectedCall || !isPending(original))) {
+        return originalMatch;
     }
 
-    if (nonce === undefined) {
-        return undefined;
+    const trackedNonce = original?.ethereumSpecific?.nonce ?? nonce;
+
+    if (trackedNonce === undefined) {
+        return originalMatch;
     }
 
-    // A replacement must have been signed by this account: only then is `ethereumSpecific.nonce`
-    // this account's nonce counter. A foreign transaction that merely names the account carries the
-    // *signer's* nonce, which can coincide with ours and would resolve the flow as a false failure.
-    // Deliberately not `type !== 'recv'`: an incoming transaction that reverted on-chain is
-    // relabelled 'failed' (see isTxFailed in blockchain-link-utils), so the display type alone
-    // leaves that hole open.
-    const replacementTransaction = transactions.find(
-        transaction =>
-            transaction.ethereumSpecific?.nonce === nonce && isSignedByAccount(transaction),
-    );
+    // The account's own signed transactions share its nonce counter. In particular, a reverted
+    // incoming transaction can be labelled 'failed' and still carry the other signer's nonce.
+    let pendingReplacement: TrackedEvmTransaction | undefined;
+    for (const transaction of transactions) {
+        if (
+            transaction.txid === txid ||
+            transaction.ethereumSpecific?.nonce !== trackedNonce ||
+            !isSignedByAccount(transaction)
+        ) {
+            continue;
+        }
 
-    return replacementTransaction
-        ? { transaction: replacementTransaction, isReplacement: true }
-        : undefined;
+        const replacement = { transaction, isReplacement: true };
+
+        // A mined replacement consumed the nonce, even if stale pending entries remain.
+        if (!expectedCall || !isPending(transaction)) {
+            return replacement;
+        }
+
+        if (!pendingReplacement && matchesEvmTransactionCall(transaction, expectedCall)) {
+            pendingReplacement = replacement;
+        }
+    }
+
+    return pendingReplacement ?? originalMatch;
 };
 
 export const getConfirmedEvmTransactionPurpose = (
@@ -59,9 +97,24 @@ export const getConfirmedEvmTransactionPurpose = (
         data: transaction.ethereumSpecific?.data,
     });
 
-type GetEvmPendingTxStatusParams = {
+type GetTrackedWrappedNativeTxidParams = {
     txid: string | null;
     trackedTransaction?: TrackedEvmTransaction;
+    expectedCall?: EvmTransactionCall;
+};
+
+export const getTrackedWrappedNativeTxid = ({
+    txid,
+    trackedTransaction,
+    expectedCall,
+}: GetTrackedWrappedNativeTxidParams): string | null =>
+    trackedTransaction?.isReplacement &&
+    expectedCall &&
+    matchesEvmTransactionCall(trackedTransaction.transaction, expectedCall)
+        ? trackedTransaction.transaction.txid
+        : txid;
+
+type GetEvmPendingTxStatusParams = GetTrackedWrappedNativeTxidParams & {
     expectedPurpose: EvmTransactionPurpose;
 };
 
@@ -69,6 +122,7 @@ export const getEvmPendingTxStatus = ({
     txid,
     trackedTransaction,
     expectedPurpose,
+    expectedCall,
 }: GetEvmPendingTxStatusParams): EvmPendingTxStatus | null => {
     if (!txid) return null;
 
@@ -79,11 +133,15 @@ export const getEvmPendingTxStatus = ({
     // Only a replacement needs checking: a transaction confirmed under the tracked txid can only
     // carry the calldata that was signed, while a replacement is a different transaction that
     // merely reuses the nonce.
+    const { transaction, isReplacement } = trackedTransaction;
+    const isWrappedNative = expectedPurpose === 'wrap' || expectedPurpose === 'unwrap';
     const didOperationChange =
-        trackedTransaction.isReplacement &&
-        getConfirmedEvmTransactionPurpose(trackedTransaction.transaction) !== expectedPurpose;
+        isReplacement &&
+        (isWrappedNative
+            ? !expectedCall || !matchesEvmTransactionCall(transaction, expectedCall)
+            : getConfirmedEvmTransactionPurpose(transaction) !== expectedPurpose);
 
-    if (trackedTransaction.transaction.type === 'failed' || didOperationChange) {
+    if (transaction.type === 'failed' || didOperationChange) {
         return 'failed';
     }
 

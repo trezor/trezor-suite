@@ -79,6 +79,16 @@ export const useYieldWrappedNativeStep = ({
         formState: { isValid },
     } = form.form;
 
+    const sessionPendingTx = session?.action.pendingTransaction;
+    const trackedTxid = useYieldPendingTransactionTracking({
+        account,
+        flowKey,
+        flowType,
+        isScreenFocused: isFocused,
+        pendingTransaction: sessionPendingTx?.type === step ? sessionPendingTx : undefined,
+        vault,
+    });
+
     const {
         displayedPendingTransaction,
         isSheetPresented,
@@ -88,8 +98,9 @@ export const useYieldWrappedNativeStep = ({
     } = useYieldPendingTransaction({
         accountKey: account?.key,
         isFocused,
-        pendingTransaction: session?.action.pendingTransaction,
+        pendingTransaction: sessionPendingTx,
         transactionType: step,
+        trackedTxid,
         vaultId: vault?.id,
     });
     const isStepPending = !!pendingTransaction;
@@ -117,15 +128,6 @@ export const useYieldWrappedNativeStep = ({
         flowKey,
         flowType,
         isEnabled: isFocused,
-    });
-
-    useYieldPendingTransactionTracking({
-        account,
-        flowKey,
-        flowType,
-        isScreenFocused: isFocused,
-        pendingTransaction,
-        vault,
     });
 
     const handleSkip = useCallback(() => {

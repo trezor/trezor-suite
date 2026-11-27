@@ -15,8 +15,8 @@ import {
     type YieldFlowDisplayToken,
     type YieldFlowFormValues,
     selectBaseCurrency,
-    useEvmPendingTxStatus,
     useMissingRateTickersQuery,
+    useYieldEvmPendingTxStatus,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Text } from '@trezor/components';
@@ -49,6 +49,7 @@ type UnwrapNativeTokenProps = {
 type BroadcastUnwrap = {
     txid: string;
     amount: string;
+    nonce: number;
 };
 
 export const UnwrapNativeToken = ({
@@ -81,10 +82,9 @@ export const UnwrapNativeToken = ({
         decimals: tokenDecimals,
     });
 
-    const { status: pendingTxStatus } = useEvmPendingTxStatus(
+    const { status: pendingTxStatus, txid: trackedTxid } = useYieldEvmPendingTxStatus(
         account,
-        broadcast?.txid ?? null,
-        'unwrap',
+        broadcast && { ...broadcast, type: 'unwrap' },
     );
     const isFlowComplete = !!broadcast && pendingTxStatus === 'confirmed';
 
@@ -149,7 +149,7 @@ export const UnwrapNativeToken = ({
             ).unwrap(),
         onSuccess: (result, unwrapAmount) => {
             if (result) {
-                setBroadcast({ txid: result.txid, amount: unwrapAmount });
+                setBroadcast({ txid: result.txid, amount: unwrapAmount, nonce: result.nonce });
             }
         },
     });
@@ -257,8 +257,8 @@ export const UnwrapNativeToken = ({
                             ) : undefined
                         }
                         pendingTransaction={
-                            broadcast
-                                ? { type: 'unwrap', txid: broadcast.txid, amount: broadcast.amount }
+                            broadcast && trackedTxid
+                                ? { type: 'unwrap', txid: trackedTxid, amount: broadcast.amount }
                                 : undefined
                         }
                         fiatToggle={fiatToggle}

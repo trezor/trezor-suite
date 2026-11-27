@@ -74,7 +74,7 @@ export const YieldDepositWrapReviewScreen = () => {
     }, [navigation, resolutionStatus, review, route.params, session?.step]);
 
     const handleBroadcast = useCallback(
-        ({ txid, fee }: YieldBroadcastTransaction) => {
+        ({ txid, fee, nonce }: YieldBroadcastTransaction) => {
             if (!flowKey || !review) {
                 return;
             }
@@ -88,6 +88,7 @@ export const YieldDepositWrapReviewScreen = () => {
                         txid,
                         amount: review.amount,
                         fee,
+                        nonce,
                         submittedAt: Date.now(),
                     },
                 }),

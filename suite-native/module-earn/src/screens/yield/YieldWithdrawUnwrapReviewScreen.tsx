@@ -78,7 +78,7 @@ export const YieldWithdrawUnwrapReviewScreen = () => {
     }, [navigation, resolutionStatus, review, route.params, session?.step]);
 
     const handleBroadcast = useCallback(
-        ({ txid, fee }: YieldBroadcastTransaction) => {
+        ({ txid, fee, nonce }: YieldBroadcastTransaction) => {
             if (!flowKey || !review) {
                 return;
             }
@@ -92,6 +92,7 @@ export const YieldWithdrawUnwrapReviewScreen = () => {
                         txid,
                         amount: review.amount,
                         fee,
+                        nonce,
                         submittedAt: Date.now(),
                     },
                 }),

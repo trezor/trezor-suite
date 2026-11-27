@@ -2,11 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 
-import {
-    type WrappedNativeFlowType,
-    type YieldPendingTransactionState,
-    useEvmPendingTxStatus,
-} from '@suite-common/wallet-core';
+import { type WrappedNativeFlowType, useYieldEvmPendingTxStatus } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     type StackNavigationProps,
@@ -57,10 +53,13 @@ export const useStandaloneWrappedNativeFlow = ({
         networkSymbol,
     });
 
-    const { status: pendingStatus } = useEvmPendingTxStatus(
+    const pendingTransaction = useMemo(
+        () => pendingParam && { ...pendingParam, type: flowType },
+        [flowType, pendingParam],
+    );
+    const { status: pendingStatus, txid: trackedTxid } = useYieldEvmPendingTxStatus(
         account,
-        pendingParam?.txid ?? null,
-        flowType,
+        pendingTransaction,
     );
 
     useWrappedNativeFlowResolutionAnalytics({
@@ -71,23 +70,11 @@ export const useStandaloneWrappedNativeFlow = ({
         submittedAt: pendingParam?.submittedAt,
     });
 
-    const pendingTransaction: YieldPendingTransactionState | null = useMemo(
-        () =>
-            pendingParam
-                ? {
-                      type: flowType,
-                      txid: pendingParam.txid,
-                      amount: pendingParam.amount,
-                      fee: pendingParam.fee,
-                      submittedAt: pendingParam.submittedAt,
-                  }
-                : null,
-        [flowType, pendingParam],
-    );
     const { pendingBottomSheetRef, pendingModalProps } = useYieldPendingTransaction({
         accountKey,
         isFocused,
         pendingTransaction,
+        trackedTxid,
         transactionType: flowType,
     });
 

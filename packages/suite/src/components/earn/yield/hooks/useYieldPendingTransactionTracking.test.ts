@@ -24,7 +24,7 @@ const mockGetPendingTxStatus = jest.fn<string | null, []>();
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
-    useYieldPendingTxStatus: () => mockGetPendingTxStatus(),
+    useYieldPendingTxStatus: () => ({ status: mockGetPendingTxStatus(), txid: null }),
 }));
 
 const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });

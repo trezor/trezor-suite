@@ -17,8 +17,8 @@ import {
     getWrapReserveStatus,
     getWrappableNativeBalance,
     getYieldNativeFeeStatus,
-    useEvmPendingTxStatus,
     useFetchFees,
+    useYieldEvmPendingTxStatus,
     useYieldGasReserve,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -50,6 +50,7 @@ type WrapNativeTokenProps = {
 type BroadcastWrap = {
     txid: string;
     amount: string;
+    nonce: number;
 };
 
 export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNativeTokenProps) => {
@@ -70,10 +71,9 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
         },
     });
 
-    const { status: pendingTxStatus } = useEvmPendingTxStatus(
+    const { status: pendingTxStatus, txid: trackedTxid } = useYieldEvmPendingTxStatus(
         account,
-        broadcast?.txid ?? null,
-        'wrap',
+        broadcast && { ...broadcast, type: 'wrap' },
     );
     const isFlowComplete = !!broadcast && pendingTxStatus === 'confirmed';
 
@@ -166,7 +166,7 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
             dispatch(submitWrapNativeTokenThunk({ account, token, wrapAmount })).unwrap(),
         onSuccess: (result, wrapAmount) => {
             if (result) {
-                setBroadcast({ txid: result.txid, amount: wrapAmount });
+                setBroadcast({ txid: result.txid, amount: wrapAmount, nonce: result.nonce });
             }
         },
     });
@@ -311,8 +311,8 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
                         isSubmitDisabled={!isAmountValid || isDisabled || isNativeFeeInsufficient}
                         warning={renderWrapWarning()}
                         pendingTransaction={
-                            broadcast
-                                ? { type: 'wrap', txid: broadcast.txid, amount: broadcast.amount }
+                            broadcast && trackedTxid
+                                ? { type: 'wrap', txid: trackedTxid, amount: broadcast.amount }
                                 : undefined
                         }
                         fiatToggle={fiatToggle}

@@ -137,6 +137,7 @@ export type YieldClaimParams = {
 export type WrappedNativeTokenPendingTxParams = {
     amount: string;
     fee?: string;
+    nonce?: number;
     submittedAt: number;
     txid: string;
 };
