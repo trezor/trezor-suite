@@ -1358,7 +1358,7 @@ export const messages = defineMessages({
         id: 'TR_TRADING_REFRESH_TRANSACTION',
     },
     TR_TRADING_REFRESH_TRANSACTION_FAILED: {
-        defaultMessage: 'The transaction could not be refreshed. Go back and get a new quote.',
+        defaultMessage: "The transaction couldn't be refreshed. Go back and get a new quote.",
         id: 'TR_TRADING_REFRESH_TRANSACTION_FAILED',
     },
     TR_TRADING_SIMULATING: {
@@ -1627,7 +1627,7 @@ export const messages = defineMessages({
     TR_TRADING_SELL_CONFIRM_DESCRIPTION: {
         id: 'TR_TRADING_SELL_CONFIRM_DESCRIPTION',
         defaultMessage:
-            'Complete all the steps on the {providerName} website, then come back here to confirm the transaction on your Trezor.',
+            'Complete all the steps on the {providerName} website, then return here to confirm the transaction on your Trezor.',
     },
     TR_TRADING_SELL_SEND_TITLE: {
         id: 'TR_TRADING_SELL_SEND_TITLE',
@@ -1961,7 +1961,7 @@ export const messages = defineMessages({
     },
     TR_HOME_ASSET_EMPTY_DESCRIPTION: {
         defaultMessage:
-            'Your balance is now 0. Receive crypto from another wallet or buy some to fill it up again.',
+            'Your balance is zero. Receive crypto from another wallet or buy more to add funds.',
         id: 'TR_HOME_ASSET_EMPTY_DESCRIPTION',
     },
     TR_HOME_ASSET_GROUPING_DEFAULT: {
@@ -1978,7 +1978,7 @@ export const messages = defineMessages({
         id: 'TR_HOME_ASSET_NFT_SUMMARY',
     },
     TR_HOME_ASSET_NFT_VIEW_ONLY: {
-        defaultMessage: 'View-only · Not included in total',
+        defaultMessage: 'View-only. Not included in total',
         id: 'TR_HOME_ASSET_NFT_VIEW_ONLY',
     },
     TR_HOME_ASSET_NFT_ITEMS: {
@@ -2003,7 +2003,7 @@ export const messages = defineMessages({
         id: 'TR_HOME_ASSET_BANNER_TEXT',
     },
     TR_HOME_ASSET_FEEDBACK_TITLE: {
-        defaultMessage: 'How do you like the new asset table?',
+        defaultMessage: 'What do you think of the new asset table?',
         id: 'TR_HOME_ASSET_FEEDBACK_TITLE',
     },
     TR_ASSET_DETAIL_MARKET_PRICE: {
@@ -2064,7 +2064,7 @@ export const messages = defineMessages({
         id: 'TR_HOME_ASSET_SMALL_BALANCES_SUMMARY',
     },
     TR_HOME_ASSET_ONLY_SMALL_BALANCES: {
-        defaultMessage: 'All your assets are small balances, which are hidden.',
+        defaultMessage: 'All your assets have small balances and are currently hidden.',
         id: 'TR_HOME_ASSET_ONLY_SMALL_BALANCES',
     },
     TR_HOME_ASSET_UNHIDE: {
@@ -2081,7 +2081,7 @@ export const messages = defineMessages({
     },
     TR_HOME_ASSET_UNHIDE_UNRECOGNIZED_TEXT: {
         defaultMessage:
-            'This token appears to be suspicious and may be a scam. Unhiding will show it in your asset list again.',
+            'This token looks suspicious and may be a scam. If you unhide it, it will appear in your asset list again.',
         id: 'TR_HOME_ASSET_UNHIDE_UNRECOGNIZED_TEXT',
     },
     TR_ACCOUNT_ASSETS_BALANCE: {
@@ -6324,7 +6324,7 @@ export const messages = defineMessages({
     TR_TRON_STAKE_CONSENT_MODAL_CONSENT_TEXT: {
         id: 'TR_TRON_STAKE_CONSENT_MODAL_CONSENT_TEXT',
         defaultMessage:
-            'I acknowledge the Terms of Service of <p2p>P2P.org</p2p> and <luganodes>Luganodes</luganodes> and consent to freeze my TRX and vote for these representatives.',
+            'I accept the Terms of Service of <p2p>P2P.org</p2p> and <luganodes>Luganodes</luganodes> and agree to freeze my TRX and vote for these representatives.',
     },
     TR_TRON_VOTE_CONSENT_MODAL_HEADING: {
         id: 'TR_TRON_VOTE_CONSENT_MODAL_HEADING',
@@ -8961,8 +8961,7 @@ export const messages = defineMessages({
     },
     TR_ONBOARDING_SECURITY_CHECK_PACKAGE: {
         id: 'TR_ONBOARDING_SECURITY_CHECK_PACKAGE',
-        defaultMessage:
-            'The package was factory sealed and intact, with no signs of tampering before unboxing.',
+        defaultMessage: 'The device package was intact and untampered with.',
     },
     TR_ONBOARDING_SECURITY_CHECK_CONFIRM_TOOLTIP: {
         id: 'TR_ONBOARDING_SECURITY_CHECK_CONFIRM_TOOLTIP',
@@ -10916,15 +10915,16 @@ export const messages = defineMessages({
     },
     TR_ONBOARDING_FEEDBACK_BANNER_TITLE: {
         id: 'TR_ONBOARDING_FEEDBACK_BANNER_TITLE',
-        defaultMessage: 'Help us improve',
+        defaultMessage: 'Before you get started',
     },
     TR_ONBOARDING_FEEDBACK_BANNER_DESCRIPTION: {
         id: 'TR_ONBOARDING_FEEDBACK_BANNER_DESCRIPTION',
-        defaultMessage: 'Share onboarding feedback and get a 50 USD e-shop voucher',
+        defaultMessage:
+            "Tell us what you plan to do. You won't see this survey after you click Get started.",
     },
     TR_ONBOARDING_FEEDBACK_BANNER_BUTTON: {
         id: 'TR_ONBOARDING_FEEDBACK_BANNER_BUTTON',
-        defaultMessage: 'Give feedback',
+        defaultMessage: 'Take the survey',
     },
     TR_NO_DEVICE_ESHOP_BANNER_HEADING: {
         id: 'TR_NO_DEVICE_ESHOP_BANNER_HEADING',
