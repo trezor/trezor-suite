@@ -166,9 +166,9 @@ const { data: feeLevels } = useQuery(getFeeLevelsQueryOptions(networks, symbol))
 const feeLevels = await queryClient.ensureQueryData(getFeeLevelsQueryOptions(networks, symbol)); // a thunk
 ```
 
-**Signing as a mutation.** A thunk keeps the app's side effects (device state, analytics, toasts)
-and calls the network's headless function; a component runs that thunk with `useMutation` to get
-pending and error state. A device action is never retried.
+**Signing with Redux.** A thunk keeps the app's side effects (device state, analytics, toasts) and
+calls the network's headless function; a component runs that thunk with `useMutation` to get pending
+and error state. A device action is never retried.
 
 ```tsx
 export const signMessageThunk = createThunk<SignedMessage, SignMessageArgs, SignThunkConfig>(
@@ -188,6 +188,38 @@ const signMutation = useMutation({
 });
 
 signMutation.mutate({ symbol, device, path, message, hex }); // isPending and error drive the form
+```
+
+**Signing without Redux.** The headless functions are plain async functions, so a component binds
+them with `useMutation` and the app's injected services: toasts and analytics go in its callbacks.
+Data stays in queries over the same functions, and an action that changes it invalidates them.
+
+```tsx
+const { networks, toasts, analytics } = useServices(injectSignVerifyServices);
+const queryClient = useQueryClient();
+const signVerify = networks.getNetworkModule(symbol).signVerify;
+
+const signMutation = useMutation({
+    mutationFn: async (params: SignMessageParams) => {
+        if (!signVerify) throw new SignError('unsupported'); // the network cannot sign
+
+        const result = await signVerify.signMessage(symbol, params);
+        if (!result.success) throw result.error;
+
+        return result.payload;
+    },
+    retry: false, // a retry would prompt on the device again
+    onSuccess: ({ signature }) => {
+        setValue('signature', signature);
+        toasts.show({ type: 'sign-message-success' });
+    },
+    onError: (error: SignError) => toasts.show({ type: 'sign-message-error', reason: error.type }),
+    onSettled: (_, error) => analytics.report({ type: 'sign-message', success: !error }), // no account data
+});
+
+// a send form: the fee query from above, refetched after a broadcast
+const { data: feeLevels } = useQuery(getFeeLevelsQueryOptions(networks, symbol));
+const onBroadcast = () => queryClient.invalidateQueries({ queryKey: ['fee-levels', symbol] });
 ```
 
 This ADR does not decide which functions exist beyond those shared code uses, how Suite caches
