@@ -147,6 +147,27 @@ export const others = async (api: TrezorBlockchainApi) => {
         coin: 'btc',
     });
 
+    const registered = await api.registerEvmNetwork({
+        symbol: 'evm146',
+        name: 'Sonic',
+        rpcUrls: ['https://rpc.soniclabs.com'],
+        blockTimeSeconds: 1,
+    });
+    if (registered.success) {
+        return registered.payload.symbol === 'evm146' ? 0 : 1;
+    }
+
+    // @ts-expect-error: rpcUrls are required
+    api.registerEvmNetwork({ symbol: 'evm146', name: 'Sonic' });
+
+    const chainId = await api.evmRpcGetChainId({
+        url: 'https://rpc.example',
+        measureBlockTime: true,
+    });
+    if (chainId.success) {
+        return chainId.payload.blockTimeSeconds ?? chainId.payload.chainId;
+    }
+
     api.setCustomBackend({
         coin: 'btc',
         blockchainLink: {

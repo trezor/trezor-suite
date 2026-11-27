@@ -20,4 +20,5 @@ export const SUBSCRIBE = 'm_subscribe';
 export const UNSUBSCRIBE = 'm_unsubscribe';
 export const PUSH_TRANSACTION = 'm_push_tx';
 export const GET_EVM_CHAIN_ID = 'm_get_evm_chain_id';
+export const GET_EVM_BLOCK_TIME = 'm_get_evm_block_time';
 export const TERMINATE = 'terminate';
