@@ -11,6 +11,7 @@ import {
     markNewContentIndicatorAsSeen,
     prepareFlagsReducer,
     selectAssetPriceChartRange,
+    selectFlag,
     selectFlags,
     selectIsNewContentIndicatorVisible,
     selectIsTokenYieldBannerClosed,
@@ -58,6 +59,14 @@ describe('flagsSlice', () => {
         expect(state.taprootBannerClosed).toBe(true);
         expect(state.initialRun).toBe(flagsInitialState.initialRun);
         expect(state.dashboardAssetsGridMode).toBe(flagsInitialState.dashboardAssetsGridMode);
+    });
+
+    it('selects a single flag by its key', () => {
+        const store = initStore();
+        store.dispatch(setFlag({ key: 'taprootBannerClosed', value: true }));
+
+        expect(selectFlag(store.getState(), 'taprootBannerClosed')).toBe(true);
+        expect(selectFlag(store.getState(), 'firmwareTypeBannerClosed')).toBe(false);
     });
 
     it('remembers a closed token yield banner for that token only', () => {

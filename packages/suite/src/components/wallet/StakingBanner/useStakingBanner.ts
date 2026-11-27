@@ -1,4 +1,4 @@
-import { type BooleanFlagKey, selectFlags, setFlag } from '@suite/flags';
+import { type BooleanFlagKey, selectFlag, setFlag } from '@suite/flags';
 import {
     selectIsStakingAccountActive,
     selectStakeableStakingProductDescriptorBySymbol,
@@ -46,7 +46,7 @@ const getStakingBannerClosedFlag = (account: Account): BooleanFlagKey | undefine
 export const useStakingBanner = (accounts: StakingBannerAccounts) => {
     const [account] = accounts;
     const { dispatch } = useServices(injectDispatch);
-    const flags = useSelector(selectFlags);
+    const isEarnEthBannerClosed = useSelector(state => selectFlag(state, 'earnEthBannerClosed'));
 
     const isStakingActive = useSelector(state =>
         accounts.every(({ key }) => selectIsStakingAccountActive(state, key)),
@@ -59,6 +59,9 @@ export const useStakingBanner = (accounts: StakingBannerAccounts) => {
     const earnEthBanner = useEarnEthBanner(account);
 
     const stakingClosedFlag = getStakingBannerClosedFlag(account);
+    const isStakingBannerClosed = useSelector(
+        state => stakingClosedFlag !== undefined && selectFlag(state, stakingClosedFlag),
+    );
 
     const getKind = (): StakingBannerKind | undefined => {
         if (earnEthBanner.isResolving) {
@@ -68,12 +71,12 @@ export const useStakingBanner = (accounts: StakingBannerAccounts) => {
         // The earn promo has its own dismissal flag and is shown even to users who
         // already stake or closed the staking banner before the promo existed.
         if (earnEthBanner.hasYieldOption) {
-            return flags.earnEthBannerClosed ? undefined : 'earnEth';
+            return isEarnEthBannerClosed ? undefined : 'earnEth';
         }
 
         if (
             stakingClosedFlag === undefined ||
-            flags[stakingClosedFlag] ||
+            isStakingBannerClosed ||
             isStakingActive ||
             !hasStakeableProduct
         ) {

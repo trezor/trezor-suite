@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { selectFlags, setFlag } from '@suite/flags';
+import { selectFlag, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { selectIsRegionRestricted } from '@suite/regions';
@@ -92,7 +92,9 @@ const useAssetsFiatBalances = (
     }, []);
 
 export const AssetsView = () => {
-    const { dashboardAssetsGridMode } = useSelector(selectFlags);
+    const dashboardAssetsGridMode = useSelector(state =>
+        selectFlag(state, 'dashboardAssetsGridMode'),
+    );
     const enabledNetworks = useSelector(selectEnabledNetworks);
 
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
