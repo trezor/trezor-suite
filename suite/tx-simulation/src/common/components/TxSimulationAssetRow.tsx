@@ -14,6 +14,7 @@ interface TxSimulationAssetRowProps {
         prefix?: '+' | '-';
     };
     dataTestId: string;
+    hasDedicatedRow?: boolean;
     children: ReactNode;
 }
 
@@ -22,17 +23,31 @@ export function TxSimulationAssetRow({
     priority,
     fiatAmount,
     dataTestId,
+    hasDedicatedRow = false,
     children,
 }: TxSimulationAssetRowProps) {
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
     return (
         <>
-            <Text intent={intent} priority={priority} data-testid={dataTestId} flex="1">
+            <Text
+                intent={intent}
+                priority={priority}
+                data-testid={dataTestId}
+                flex="1"
+                minWidth={hasDedicatedRow ? 0 : undefined}
+                overflowWrap={hasDedicatedRow ? 'anywhere' : undefined}
+            >
                 {children}
             </Text>
             {fiatAmount && (
-                <Text intent="neutral" priority="secondary" data-testid={`${dataTestId}/fiat`}>
+                <Text
+                    intent="neutral"
+                    priority="secondary"
+                    data-testid={`${dataTestId}/fiat`}
+                    flex={hasDedicatedRow ? 'none' : undefined}
+                    textWrap={hasDedicatedRow ? 'nowrap' : undefined}
+                >
                     {fiatAmount.prefix}
                     <BaseCurrencyAmountFormatter
                         value={asBaseCurrencyAmount(new BigNumber(fiatAmount.value))}
