@@ -14,6 +14,7 @@ import {
     updateBackupType,
 } from '#src/actions/onboarding/onboardingActions';
 import * as STEP from '#src/constants/onboarding/steps';
+import { selectOnboarding } from '#src/selectors/onboarding/onboardingSelectors';
 import type { AnyPath } from '#src/types/onboarding';
 
 import { type OnboardingRootState, type OnboardingState } from './onboardingState';
@@ -78,6 +79,7 @@ const onboarding = (state: OnboardingState = initialState, action: UnknownAction
     });
 };
 
-export const selectIsOnboardingActive = (state: OnboardingRootState) => state.onboarding.isActive;
+export const selectIsOnboardingActive = (state: OnboardingRootState) =>
+    selectOnboarding(state).isActive;
 
 export default onboarding;

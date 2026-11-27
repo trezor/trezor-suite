@@ -1,5 +1,5 @@
 import { type RouterRootState, selectRouter } from '@suite/router';
-import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type TransportInfo } from '@trezor/connect';
 import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
@@ -63,7 +63,7 @@ export const selectRecentlyConnectedDevice = (
     state: SuiteRootState & DeviceRootState,
 ): TrezorDevice | undefined =>
     state.suite.recentlyConnectedDeviceRef !== null
-        ? state.device.devices.find(
+        ? selectDevices(state).find(
               device =>
                   state.suite.recentlyConnectedDeviceRef === device?.id ||
                   state.suite.recentlyConnectedDeviceRef === device.path,

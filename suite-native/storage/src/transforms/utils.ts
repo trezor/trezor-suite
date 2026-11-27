@@ -1,13 +1,13 @@
 import { A, D, O } from '@mobily/ts-belt';
 
-import type { DeviceRootState } from '@suite-common/device';
+import { type DeviceRootState, selectDevices } from '@suite-common/device';
 
 /**
  * Beware, if you want to persist some part of state outside device reducer,
  * redux-persist will not automatically check for changes of device.remember property!
  */
 export const selectDeviceStatesNotRemembered = (state: DeviceRootState) =>
-    A.filterMap(state.device.devices, device =>
+    A.filterMap(selectDevices(state), device =>
         device.remember || !device.state?.staticSessionId
             ? O.None
             : O.Some(
