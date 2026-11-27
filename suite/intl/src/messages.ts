@@ -6464,6 +6464,15 @@ export const messages = defineMessages({
         defaultMessage:
             'Allow your Trezor to scan wallet addresses beyond the default 20 unused addresses during recovery if transactions are missing.',
     },
+    TR_EXPERIMENTAL_CUSTOM_EVM_NETWORKS: {
+        id: 'TR_EXPERIMENTAL_CUSTOM_EVM_NETWORKS',
+        defaultMessage: 'Custom EVM networks',
+    },
+    TR_EXPERIMENTAL_CUSTOM_EVM_NETWORKS_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_CUSTOM_EVM_NETWORKS_DESCRIPTION',
+        defaultMessage:
+            'Add EVM networks that Trezor Suite does not support yet and use them with your own RPC endpoint.',
+    },
     TR_ADD_CUSTOM_NETWORK: {
         id: 'TR_ADD_CUSTOM_NETWORK',
         defaultMessage: 'Add custom network',
