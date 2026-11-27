@@ -142,7 +142,8 @@ const applyReferralAccount = async ({
 
             return ok(undefined);
         case 'left':
-            // Left on another device, forget everything including the key.
+        case 'suspended':
+            // Program was left on another device, or suspended by the administrator, then forget everything including the key.
             referAFriend.removeReferralKeyFromSession(walletDescriptor);
             dispatch(referAFriendActions.removeReferralWallet({ walletDescriptor }));
             dispatch(

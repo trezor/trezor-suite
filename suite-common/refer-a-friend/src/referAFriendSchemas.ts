@@ -30,7 +30,7 @@ export const referralProgramSchema = z.object({
 export type ReferralProgram = z.infer<typeof referralProgramSchema>;
 
 const inactiveReferralAccountSchema = z.object({
-    status: z.enum(['none', 'left']),
+    status: z.enum(['none', 'left', 'suspended']),
     joinedAt: z.null(),
     code: z.null(),
     shareUrl: z.null(),
