@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Button, Card, CenteredTitleHeader, HStack, VStack } from '@suite-native/atoms';
+import { Button, CenteredTitleHeader, HStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -12,10 +12,8 @@ import {
 } from '@suite-native/navigation';
 import { selectIsTradingBuyEnabled, selectIsTradingEnabled } from '@suite-native/trading-shared';
 
-import { AssetsGetSvg } from '../../../../assets/AssetsGetSvg';
+import { PortfolioAssetsEmptyStateContainer } from './PortfolioAssetsEmptyStateContainer';
 import { useReceiveNavigation } from '../../useReceiveNavigation';
-
-const ILLUSTRATION_SIZE = 120;
 
 export const PortfolioAssetsEmptyState = () => {
     const { isReceiveAvailable, navigateToReceive } = useReceiveNavigation();
@@ -33,41 +31,36 @@ export const PortfolioAssetsEmptyState = () => {
     const isBuyVisible = isTradingEnabled && isTradingBuyEnabled;
 
     return (
-        <Box marginHorizontal="sp16">
-            <Card testID="@home/portfolio-assets/empty-state">
-                <VStack margin="sp8" spacing="sp20" alignItems="center">
-                    <AssetsGetSvg width={ILLUSTRATION_SIZE} height={ILLUSTRATION_SIZE} />
-                    <CenteredTitleHeader
-                        title={<Translation id="moduleHome.assets.emptyState.title" />}
-                        subtitle={<Translation id="moduleHome.assets.emptyState.subtitle" />}
-                        subtitleVariant="body-sm"
-                        titleSpacing="sp4"
-                    />
-                    <HStack spacing="sp12">
-                        {isReceiveAvailable && (
-                            <Button
-                                size="medium"
-                                iconLeft="arrowDown"
-                                onPress={navigateToReceive}
-                                testID="@home/portfolio-assets/empty-state/receive-button"
-                            >
-                                <Translation id="moduleHome.buttons.receive" />
-                            </Button>
-                        )}
-                        {isBuyVisible && (
-                            <Button
-                                size="medium"
-                                priority="secondary"
-                                iconLeft="plus"
-                                onPress={navigateToBuy}
-                                testID="@home/portfolio-assets/empty-state/buy-button"
-                            >
-                                <Translation id="moduleHome.buttons.buy" />
-                            </Button>
-                        )}
-                    </HStack>
-                </VStack>
-            </Card>
-        </Box>
+        <PortfolioAssetsEmptyStateContainer testID="@home/portfolio-assets/empty-state">
+            <CenteredTitleHeader
+                title={<Translation id="moduleHome.assets.emptyState.title" />}
+                subtitle={<Translation id="moduleHome.assets.emptyState.subtitle" />}
+                subtitleVariant="body-sm"
+                titleSpacing="sp4"
+            />
+            <HStack spacing="sp12">
+                {isReceiveAvailable && (
+                    <Button
+                        size="medium"
+                        iconLeft="arrowDown"
+                        onPress={navigateToReceive}
+                        testID="@home/portfolio-assets/empty-state/receive-button"
+                    >
+                        <Translation id="moduleHome.buttons.receive" />
+                    </Button>
+                )}
+                {isBuyVisible && (
+                    <Button
+                        size="medium"
+                        priority="secondary"
+                        iconLeft="plus"
+                        onPress={navigateToBuy}
+                        testID="@home/portfolio-assets/empty-state/buy-button"
+                    >
+                        <Translation id="moduleHome.buttons.buy" />
+                    </Button>
+                )}
+            </HStack>
+        </PortfolioAssetsEmptyStateContainer>
     );
 };
