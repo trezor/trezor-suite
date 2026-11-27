@@ -23,7 +23,12 @@ import { copyToClipboard, download } from '@trezor/dom-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { type Deferred } from '@trezor/utils';
 
-import { type TxInfoState, hasTxValidityExpired, selectTxType } from '../utils';
+import {
+    type TransactionReviewSource,
+    type TxInfoState,
+    hasTxValidityExpired,
+    selectTxType,
+} from '../utils';
 
 const mapRbfTypeToReporting: Record<RbfTransactionType, TransactionCreatedEventAction> = {
     'bump-fee': 'replaced',
@@ -36,6 +41,7 @@ type TransactionReviewModalBottomContentProps = {
     onSend: (send: boolean) => void;
     onCancel: () => void;
     handleTryAgain: (close: boolean) => void;
+    source: TransactionReviewSource;
     txInfoState: TxInfoState;
     actionTranslation: ExtendedMessageDescriptor;
     hasTxReviewExpired: boolean;
@@ -54,6 +60,7 @@ export const TransactionReviewModalBottomContent = ({
     onSend,
     onCancel,
     handleTryAgain,
+    source,
     txInfoState,
     actionTranslation,
     hasTxReviewExpired,
@@ -72,7 +79,7 @@ export const TransactionReviewModalBottomContent = ({
 
     const isBroadcastEnabled = options.includes('broadcast');
     const txType = useSelector((state: YieldRootState) =>
-        selectTxType(state, txInfoState, precomposedForm),
+        selectTxType(state, source, precomposedForm),
     );
 
     const isCancelRbfAction = precomposedTx ? isRbfCancelTransaction(precomposedTx) : false;

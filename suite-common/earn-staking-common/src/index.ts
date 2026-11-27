@@ -190,4 +190,8 @@ export {
     type StakingProviderLinks,
     type StakingProviderStatus,
 } from './stakingProvider';
+export {
+    estimateStakingRewards,
+    type EstimateStakingRewardsParams,
+} from './utils/stakingRewardsUtils';
 export { isPendingStakingTransaction, type StakingTransaction } from './stakingTransaction';

@@ -7,7 +7,6 @@ import {
     getStakingProviderByTronSrAddress,
 } from '@suite-common/wallet-config';
 import {
-    CARDANO_EPOCH_DAYS,
     CARDANO_STAKING_REGISTRATION_DEPOSIT,
     MIN_ETH_BALANCE_FOR_FEE_BUFFER,
 } from '@suite-common/wallet-constants';
@@ -16,21 +15,14 @@ import {
     type PrecomposedLevels,
     type StakeType,
     type StakingLimits,
-    type StakingPoolExtended,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
-    asAmountSubunit,
-    getAccountEverstakeStakingPool,
     getAccountTotalStakingBalance,
-    getTronAccountTotalStakingBalance,
-    isPending,
     isStakeTypeTx,
     isStakingNetworkType,
     isStakingSymbol,
-    secondsToDays,
     signatureToStakeTypeMap,
-    subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import {
     MAX_SOL_AMOUNT_FOR_STAKING,
@@ -38,7 +30,6 @@ import {
     MIN_SOL_BALANCE_FOR_FEE_BUFFER,
     MIN_SOL_BALANCE_FOR_STAKING,
     MIN_SOL_FOR_WITHDRAWALS,
-    SOLANA_EPOCH_DAYS,
 } from '@trezor/network-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
 import {
@@ -55,12 +46,7 @@ import {
     MIN_CARDANO_BALANCE_FOR_STAKING,
     MIN_CARDANO_FOR_WITHDRAWALS,
 } from '../cardano/cardanoStakingConstants';
-import {
-    isCardanoStakingActive,
-    isCardanoStakingTx,
-    isSupportedAdaStakingNetworkSymbol,
-    subtypeToStakeTypeMap,
-} from '../cardano/cardanoStakingUtils';
+import { isCardanoStakingTx, subtypeToStakeTypeMap } from '../cardano/cardanoStakingUtils';
 import { getEthereumStakingAddressByType } from '../ethereum/ethereumStaking';
 import {
     MAX_ETH_AMOUNT_FOR_STAKING,
@@ -69,37 +55,15 @@ import {
     MIN_ETH_FOR_WITHDRAWALS,
     MIN_THOD_AMOUNT_FOR_STAKING,
     MIN_THOD_BALANCE_FOR_STAKING,
-    UNSTAKING_ETH_PERIOD,
 } from '../ethereum/ethereumStakingConstants';
-import { isSupportedEthStakingNetworkSymbol } from '../ethereum/ethereumStakingUtils';
-import {
-    getSolStakingAccountsInfo,
-    isSupportedSolStakingNetworkSymbol,
-} from '../solana/solanaStakingUtils';
 import {
     MAX_TRON_AMOUNT_FOR_STAKING,
     MIN_TRON_AMOUNT_FOR_STAKING,
     MIN_TRON_BALANCE_FOR_FEE_BUFFER,
     MIN_TRON_BALANCE_FOR_STAKING,
     MIN_TRON_FOR_WITHDRAWALS,
-    TRON_UNFREEZE_DELAY_DAYS,
 } from '../tron/tronStakingConstants';
-import {
-    getTronStakingRewards,
-    getTronUnstakingBalance,
-    getTronVotes,
-    isSupportedTronStakingNetworkSymbol,
-    isTronStakingTx,
-} from '../tron/tronStakingUtils';
-
-export const isSupportedStakingNetworkSymbol = (symbol: NetworkSymbol) =>
-    isSupportedEthStakingNetworkSymbol(symbol) ||
-    isSupportedSolStakingNetworkSymbol(symbol) ||
-    isSupportedAdaStakingNetworkSymbol(symbol) ||
-    isSupportedTronStakingNetworkSymbol(symbol);
-
-export const isSupportedNativeStakingManagementSymbol = (symbol: NetworkSymbol) =>
-    isSupportedEthStakingNetworkSymbol(symbol) || isSupportedSolStakingNetworkSymbol(symbol);
+import { getTronVotes, isTronStakingTx } from '../tron/tronStakingUtils';
 
 export const getStakingLimitsByNetworkSymbol = (
     symbol: NetworkSymbol | undefined,
@@ -188,121 +152,6 @@ export const getMaxStakeAmount = ({ balance, symbol }: GetMaxStakeAmount): strin
     return BigNumber.min(maxAmount, limits.MAX_AMOUNT_FOR_STAKING).toFixed();
 };
 
-export const getStakingDataForNetwork = (
-    account?: Account,
-): Omit<StakingPoolExtended, 'contract' | 'name'> | undefined => {
-    if (!account || !isStakingNetworkType(account.networkType)) return;
-
-    switch (account.networkType) {
-        case 'ethereum':
-            return getAccountEverstakeStakingPool(account);
-        case 'solana': {
-            const {
-                canClaimSol,
-                solClaimableBalance,
-                solStakedBalance,
-                solPendingStakeBalance,
-                solPendingUnstakeBalance,
-            } = getSolStakingAccountsInfo(account);
-
-            //@ts-expect-error: indexing with noUncheckedIndexedAccess
-            const stakedBalance: string = solStakedBalance;
-            //@ts-expect-error: indexing with noUncheckedIndexedAccess
-            const claimableBalance: string = solClaimableBalance;
-            //@ts-expect-error: indexing with noUncheckedIndexedAccess
-            const pendingStakeBalance: string = solPendingStakeBalance;
-            //@ts-expect-error: indexing with noUncheckedIndexedAccess
-            const pendingUnstakeBalance: string = solPendingUnstakeBalance;
-
-            return {
-                autocompoundBalance: stakedBalance,
-                claimableAmount: claimableBalance,
-                depositedBalance: stakedBalance,
-                pendingBalance: '',
-                pendingDepositedBalance: '',
-                totalPendingStakeBalance: pendingStakeBalance,
-                restakedReward: '',
-                withdrawTotalAmount: pendingUnstakeBalance,
-                canClaim: canClaimSol,
-            };
-        }
-
-        case 'cardano': {
-            const { isActive, rewards } = account.misc.staking;
-            const totalStakedBalance = isActive ? account.formattedBalance : '';
-
-            const formattedRewards = subunitsToUnits({
-                value: asAmountSubunit(new BigNumber(rewards)),
-                symbol: account.symbol,
-            }).toString();
-
-            const canClaim = new BigNumber(rewards).gt(0);
-            const totalPendingStakeBalance = !canClaim ? account.formattedBalance : '';
-
-            return {
-                autocompoundBalance: totalStakedBalance,
-                claimableAmount: '',
-                depositedBalance: canClaim ? totalStakedBalance : '',
-                pendingBalance: '',
-                pendingDepositedBalance: '',
-                totalPendingStakeBalance,
-                restakedReward: formattedRewards,
-                withdrawTotalAmount: '',
-                canClaim,
-            };
-        }
-
-        case 'tron': {
-            const stakedBalance = getTronAccountTotalStakingBalance(account) ?? '';
-
-            return {
-                autocompoundBalance: stakedBalance,
-                claimableAmount: '',
-                depositedBalance: stakedBalance,
-                pendingBalance: '',
-                pendingDepositedBalance: '',
-                totalPendingStakeBalance: '',
-                restakedReward: getTronStakingRewards(account),
-                withdrawTotalAmount: getTronUnstakingBalance(account),
-                canClaim: false,
-            };
-        }
-
-        default:
-            return exhaustive(account.networkType);
-    }
-};
-
-interface GetUnstakingPeriodInDays {
-    withdrawTime?: number | null; // in seconds
-    exitTime?: number | null; // in seconds
-}
-
-export const getUnstakingPeriodInDays = (
-    networkType: NetworkType | undefined,
-    { withdrawTime, exitTime }: GetUnstakingPeriodInDays = {},
-) => {
-    if (networkType === 'solana') {
-        return SOLANA_EPOCH_DAYS;
-    }
-
-    if (networkType === 'cardano') {
-        return CARDANO_EPOCH_DAYS;
-    }
-
-    if (networkType === 'tron') {
-        return TRON_UNFREEZE_DELAY_DAYS;
-    }
-
-    if (typeof withdrawTime !== 'number' || typeof exitTime !== 'number') {
-        return UNSTAKING_ETH_PERIOD;
-    }
-
-    const unstakingPeriodInSeconds = new BigNumber(withdrawTime).plus(exitTime).toNumber();
-
-    return secondsToDays(unstakingPeriodInSeconds);
-};
-
 export const getStakingHelpCenterLink = (networkType?: NetworkType) => {
     switch (networkType) {
         case 'ethereum':
@@ -322,32 +171,6 @@ export const getOutputTxAmount = (composedLevels?: PrecomposedLevels) => {
     if (precomposedTx?.type !== 'final') return null;
 
     return precomposedTx?.outputs?.[0]?.amount ?? null;
-};
-
-export const calculateRewards = (amount: string, apyPercent: number | null, days = 365) => {
-    if (apyPercent === null) return '0';
-
-    const apy = apyPercent / 100;
-    const factor = Math.pow(1 + apy, days / 365) - 1;
-    const currentRewards = new BigNumber(amount).multipliedBy(factor).toString();
-
-    return currentRewards;
-};
-
-export const calculateGains = (amount: string, apy: number | null, days: number) => {
-    const rewards = calculateRewards(amount, apy, days);
-
-    return new BigNumber(rewards).toFixed(5, 1);
-};
-
-export const getNetworkAdjustedStakingBalance = (amount: string, account?: Account) => {
-    if (account?.networkType === 'cardano') {
-        const adjusted = new BigNumber(amount).minus(CARDANO_STAKING_REGISTRATION_DEPOSIT);
-
-        return BigNumber.max(adjusted, 0).toString();
-    }
-
-    return amount;
 };
 
 export const getStakingContractAddress = (account: Account, stakeType: StakeType) => {
@@ -487,45 +310,4 @@ export const isStakingTransaction = (transaction: WalletAccountTransaction) => {
     }
 
     return false;
-};
-
-export const isAccountStakingActive = (
-    account: Account | null,
-    claimTransactions: WalletAccountTransaction[],
-) => {
-    if (!account) return false;
-
-    if (!isSupportedStakingNetworkSymbol(account.symbol)) return false;
-
-    if (account.networkType === 'cardano') {
-        return isCardanoStakingActive(account);
-    }
-
-    const {
-        totalPendingStakeBalance = '0',
-        withdrawTotalAmount = '0',
-        claimableAmount = '0',
-        canClaim = false,
-        depositedBalance = '0',
-    } = getStakingDataForNetwork(account) ?? {};
-
-    const pendingClaimTxs = claimTransactions.filter(tx => isPending(tx));
-
-    const isStakePending = new BigNumber(totalPendingStakeBalance).gt(0);
-    const isUnstakePending = new BigNumber(withdrawTotalAmount).gt(0);
-    const isClaimPending = new BigNumber(claimableAmount).gt(0) && pendingClaimTxs.length > 0;
-    const hasDepositedBalance = new BigNumber(depositedBalance).gt(0);
-
-    return hasDepositedBalance || isStakePending || isUnstakePending || isClaimPending || canClaim;
-};
-
-export const isAccountStakingActiveByHistory = (
-    account: Account,
-    transactions: WalletAccountTransaction[],
-) => {
-    if (!isSupportedStakingNetworkSymbol(account.symbol)) return false;
-
-    const claimTransactions = transactions.filter(tx => getTxStakeType(tx) === 'claim');
-
-    return isAccountStakingActive(account, claimTransactions);
 };

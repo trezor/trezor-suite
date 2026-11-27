@@ -2,14 +2,12 @@ import { createReducerWithExtraDeps } from '@trezor/redux-utils';
 import { cloneObject } from '@trezor/utils';
 
 import { stakeActions } from './stakingActions';
-import { stakeDataInitialState, stakeDataReducer } from './stakingDataSlice';
 import type { StakeState } from './stakingReducerTypes';
 
 export const stakeInitialState: StakeState = {
     precomposedTx: undefined,
     serializedTx: undefined,
     votingDelegation: undefined,
-    data: stakeDataInitialState,
 };
 
 export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState, builder => {
@@ -57,8 +55,5 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
             delete state.accountKey;
             delete state.serializedTx;
             delete state.resolvedEthereumNonce;
-        })
-        .addDefaultCase((state, action) => {
-            state.data = stakeDataReducer(state.data, action);
         });
 });

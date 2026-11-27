@@ -79,6 +79,7 @@ const renderReview = ({ txType, tokenSymbol, outputs }: RenderReviewParams) => {
             onCancel={mock()}
             handleTryAgain={mock()}
             txInfoState={{ precomposedTx, serializedTx: { tx: 'private-signed-tx', symbol } }}
+            source={txType === 'yield' ? 'yield' : 'send'}
             actionTranslation={{ id: 'SEND_TRANSACTION' }}
             hasTxReviewExpired={false}
             deadline={0}

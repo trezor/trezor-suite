@@ -42,7 +42,7 @@ import { TransactionReviewModalConfirmOnDevice } from './TransactionReviewOutput
 import { TransactionReviewModalContent } from './TransactionReviewOutputList/TransactionReviewModalContent';
 import { TransactionReviewOutputTimer } from './TransactionReviewOutputList/TransactionReviewOutputTimer';
 import { TransactionReviewSummary } from './TransactionReviewSummary';
-import { type TxInfoState } from './utils';
+import { type TransactionReviewSource, type TxInfoState } from './utils';
 
 export const hasTxValidityExpired = (deadline: number) => deadline <= Date.now();
 
@@ -79,6 +79,7 @@ export type TransactionReviewModalBodyInnerProps = {
     outputs: TransactionReviewOutput[];
     account: Account;
     decision: Deferred<boolean, string | number | undefined> | undefined;
+    source: TransactionReviewSource;
     txInfoState: TxInfoState;
     tryAgainSignTx: () => void;
     cancelSignTx: () => void;
@@ -101,6 +102,7 @@ export const TransactionReviewModalBodyInner = ({
     decision,
     handleTryAgain,
     precomposedTx,
+    source,
     txInfoState,
     isRbfConfirmedError,
     cancelSignTx,
@@ -296,6 +298,7 @@ export const TransactionReviewModalBodyInner = ({
                             onCancel={onCancel}
                             handleTryAgain={handleTryAgain}
                             txInfoState={txInfoState}
+                            source={source}
                             actionTranslation={actionTranslation('button')}
                             hasTxReviewExpired={hasTxReviewExpired}
                             deadline={deadline}

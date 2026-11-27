@@ -1,15 +1,9 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
-import {
-    calculateTotalSolStakingBalance,
-    formatNetworkAmount,
-    getSolAccountTotalStakingBalance,
-    networkAmountToSmallestUnit,
-} from '@suite-common/wallet-utils';
+import { formatNetworkAmount, networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
 import {
     MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
     MIN_STAKE_DELEGATION,
-    SOLANA_EPOCH_DAYS,
     StakeState,
 } from '@trezor/network-solana/constants';
 import { type SolanaNetworkSymbol, isSupportedSolanaNetwork } from '@trezor/network-solana-types';
@@ -21,24 +15,6 @@ export function isSupportedSolStakingNetworkSymbol(
     return isSupportedSolanaNetwork(symbol);
 }
 
-export const getSolanaCryptoBalanceWithStaking = (account: Account) => {
-    const stakingBalance = getSolAccountTotalStakingBalance(account);
-
-    return new BigNumber(account.formattedBalance).plus(stakingBalance ?? 0).toString();
-};
-
-export const calculateSolanaStakingReward = (accountBalance?: string, apy?: string) => {
-    if (!accountBalance || !apy) return '0';
-
-    return new BigNumber(accountBalance ?? '')
-        .multipliedBy(apy ?? '0')
-        .dividedBy(100)
-        .dividedBy(365)
-        .multipliedBy(SOLANA_EPOCH_DAYS)
-        .toFixed(9)
-        .toString();
-};
-
 export const getSolanaStakingAccountsByStatus = (account: Account, status: string) => {
     if (account?.networkType !== 'solana') return [];
 
@@ -46,28 +22,6 @@ export const getSolanaStakingAccountsByStatus = (account: Account, status: strin
     if (!solStakingAccounts) return [];
 
     return solStakingAccounts.filter(solStakingAccount => solStakingAccount.status === status);
-};
-
-export const getStakingAccountCurrentStatus = (account?: Account) => {
-    if (account?.networkType !== 'solana') return null;
-
-    const statusesToCheck = [StakeState.Inactive, StakeState.Activating];
-
-    for (const status of statusesToCheck) {
-        const stakingAccounts = getSolanaStakingAccountsByStatus(account, status);
-        if (stakingAccounts.length) return status;
-    }
-
-    return null;
-};
-
-export const getSolStakingAccountTotalBalanceByStatus = (account: Account, status: string) => {
-    if (account.networkType !== 'solana') return '0';
-
-    const selectedStakingAccounts = getSolanaStakingAccountsByStatus(account, status);
-    const stakingBalance = calculateTotalSolStakingBalance(selectedStakingAccounts) ?? '0';
-
-    return formatNetworkAmount(stakingBalance, account.symbol);
 };
 
 export type SolanaUnstakeAmountBounds = {
@@ -138,39 +92,4 @@ export const getSolanaUnstakeAmountBounds = (
     }
 
     return null;
-};
-
-type StakeStateType = (typeof StakeState)[keyof typeof StakeState];
-
-export const getSolStakingAccountsInfo = (account: Account) => {
-    const balanceResults = Object.values(StakeState).map(status => {
-        const balance = getSolStakingAccountTotalBalanceByStatus(account, status);
-
-        return [status, balance];
-    });
-
-    const balances: Record<StakeStateType, string> = balanceResults.reduce((acc, entry) => {
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const status: StakeStateType = entry[0];
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const balance: string = entry[1];
-
-        return { ...acc, [status]: balance };
-    }, {});
-
-    const deactivatedIndex = StakeState.Deactivated;
-    const stakeIndex = StakeState.Active;
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const deactivatedBalance: string = balances[deactivatedIndex];
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const activeBalance: string = balances[stakeIndex];
-
-    return {
-        solStakedBalance: balances[StakeState.Active],
-        solClaimableBalance: balances[StakeState.Deactivated],
-        solPendingStakeBalance: balances[StakeState.Activating],
-        solPendingUnstakeBalance: balances[StakeState.Deactivating],
-        canClaimSol: new BigNumber(deactivatedBalance).gt(0),
-        canUnstakeSol: new BigNumber(activeBalance).gt(0),
-    };
 };

@@ -197,15 +197,6 @@ export const isCardanoStakedWithEverstake = (
     return cardanoStakingPools?.some(pool => pool.id === accountPoolId) ?? false;
 };
 
-export const isCardanoStakedOutsideEverstake = (
-    account: Account,
-    cardanoStakingPools: AdaPools['pools'],
-) => {
-    if (!getCardanoAccountPoolId(account)) return false;
-
-    return !isCardanoStakedWithEverstake(account, cardanoStakingPools);
-};
-
 export const isCardanoStakedWithFiveBinaries = (account: Account) => {
     const accountPoolId = getCardanoAccountPoolId(account);
     if (!accountPoolId) return false;

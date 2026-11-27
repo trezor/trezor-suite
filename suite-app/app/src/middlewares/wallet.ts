@@ -17,7 +17,6 @@ import {
     prepareBlockchainSubscriptionMiddleware,
     prepareEarnTransactionsMiddleware,
     prepareFiatRatesMiddleware,
-    prepareStakeMiddleware,
 } from '@suite-common/wallet-core';
 import {
     type WalletConnectMiddlewareDeps,
@@ -48,7 +47,6 @@ export const getWalletMiddlewares = (
     prepareDiscoveryMiddleware(getExtra),
     prepareFiatRatesMiddleware(getExtra),
     prepareTokenDefinitionsMiddleware(getExtra),
-    prepareStakeMiddleware(getExtra),
     prepareStakingMiddleware(getExtra),
     prepareStorageMiddleware(getExtra),
     graphMiddleware,

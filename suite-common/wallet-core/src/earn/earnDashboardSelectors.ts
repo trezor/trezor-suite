@@ -1,10 +1,6 @@
 import { type DeviceRootState } from '@suite-common/device';
 import { type ChainRewardsWithFiat, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import {
-    type NetworksRootState,
-    asNetworkSymbol,
-    selectSupportedNetworkSymbols,
-} from '@suite-common/networks';
+import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import {
     type TokenAddress,
     type TokenSymbol,
@@ -13,8 +9,6 @@ import {
 } from '@suite-common/tokens';
 import {
     type NetworkSymbol,
-    PROD_STAKING_SYMBOLS,
-    STAKING_SYMBOLS,
     getNetworkByYieldXyzId,
     isEarnYieldClaimSupported,
 } from '@suite-common/wallet-config';
@@ -30,11 +24,8 @@ import {
     asAmountSubunit,
     compareEarnByApyDesc,
     compareEarnByNetworkTokenOrder,
-    getAccountTotalStakingBalance,
     getContractAddressForNetworkSymbol,
     getFiatRateKey,
-    isStakingSymbol,
-    sortByCoin,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -47,7 +38,6 @@ import { BigNumber, isNotNull } from '@trezor/utils';
 
 import { hasPositiveContractTokenBalance } from './contractTokenBalanceUtils';
 import {
-    type StakingListItem,
     type YieldClaimAccountItem,
     type YieldClaimListItem,
     type YieldClaimRewardToken,
@@ -77,7 +67,6 @@ import {
     type WalletSettingsRootState,
     selectBaseCurrency,
 } from '../settings/walletSettingsReducer';
-import { isCardanoStakedWithFiveBinaries } from '../staking/cardano/cardanoStakingUtils';
 import {
     getAccountChainRewards,
     getChainsRewardsByAccountKey,
@@ -96,73 +85,6 @@ export type EarnListRootState = AccountsRootState &
 const createMemoizedSelector = createWeakMapSelector.withTypes<EarnListRootState>();
 
 const createStableArray = weakMapMemoize(<T>(...items: T[]) => items);
-
-const createStakingListItem = weakMapMemoize(
-    (symbol: NetworkSymbol, accountKey: AccountKey, balance: string): StakingListItem => ({
-        symbol,
-        accountKey,
-        balance,
-    }),
-);
-
-const getStakingPositionBalance = (account: Account): string | null => {
-    const stakingBalance = getAccountTotalStakingBalance(account);
-
-    if (stakingBalance === null || new BigNumber(stakingBalance).isZero()) return null;
-
-    return stakingBalance;
-};
-
-const selectStakingSymbolAccounts = createMemoizedSelector(
-    [selectVisibleDeviceAccounts, selectSupportedNetworkSymbols],
-    (accounts, supportedNetworks): Account[] =>
-        returnStableArrayIfEmpty(
-            createStableArray(
-                ...sortByCoin(
-                    accounts.filter(account => isStakingSymbol(account.symbol)),
-                    supportedNetworks,
-                ),
-            ),
-        ),
-);
-
-export const selectStakingListItems = createMemoizedSelector(
-    [selectStakingSymbolAccounts],
-    (stakingSymbolAccounts): StakingListItem[] =>
-        returnStableArrayIfEmpty(
-            createStableArray(
-                ...stakingSymbolAccounts.flatMap(account => {
-                    const balance = getStakingPositionBalance(account);
-
-                    if (balance === null) return [];
-
-                    return [createStakingListItem(account.symbol, account.key, balance)];
-                }),
-            ),
-        ),
-);
-
-const shouldShowFiveBinariesBanner = (account: Account) =>
-    isCardanoStakedWithFiveBinaries(account) && new BigNumber(account.balance).gt(0);
-
-export const selectCardanoAccountForFiveBinariesBanner = createMemoizedSelector(
-    [selectVisibleDeviceAccounts],
-    accounts => accounts.find(shouldShowFiveBinariesBanner) ?? null,
-);
-
-export const selectCardanoStakedWithFiveBinariesAccountKey = createMemoizedSelector(
-    [selectStakingSymbolAccounts],
-    (stakingSymbolAccounts): AccountKey | null =>
-        stakingSymbolAccounts.find(shouldShowFiveBinariesBanner)?.key ?? null,
-);
-
-export const selectStakingListSymbols = createMemoizedSelector(
-    [selectStakingListItems],
-    (stakingItems): NetworkSymbol[] =>
-        returnStableArrayIfEmpty(
-            createStableArray(...new Set(stakingItems.map(stakingItem => stakingItem.symbol))),
-        ),
-);
 
 export const selectYieldClaimAccounts = createMemoizedSelector(
     [selectVisibleDeviceAccounts],
@@ -554,11 +476,6 @@ export const selectYieldClaimAccountItems = createMemoizedSelector(
         ),
 );
 
-export const getStakingPromoListSymbols = weakMapMemoize(
-    (areTestnetsEnabled: boolean): NetworkSymbol[] =>
-        (areTestnetsEnabled ? STAKING_SYMBOLS : PROD_STAKING_SYMBOLS).map(asNetworkSymbol),
-);
-
 const createStableEarnFiatPosition = weakMapMemoize(
     (
         tickerId: TickerId,
@@ -596,16 +513,6 @@ const createEarnFiatPosition = ({
 const createStableEarnFiatPositions = (positions: (EarnFiatPosition | null)[]) =>
     returnStableArrayIfEmpty(createStableArray(...positions.filter(isNotNull)));
 
-export const selectStakingFiatPositions = createMemoizedSelector(
-    [selectStakingListItems, selectBaseCurrency],
-    (stakingPositions, baseCurrency): EarnFiatPosition[] =>
-        createStableEarnFiatPositions(
-            stakingPositions.map(({ symbol, balance }) =>
-                createEarnFiatPosition({ symbol, balance, baseCurrency }),
-            ),
-        ),
-);
-
 export const selectYieldFiatPositions = createMemoizedSelector(
     [selectYieldListItems, selectBaseCurrency],
     (yieldPositions, baseCurrency): EarnFiatPosition[] =>
@@ -626,18 +533,10 @@ export const selectYieldFiatPositions = createMemoizedSelector(
 const getStableEarnFiatRateKeys = (positions: readonly EarnFiatPosition[]) =>
     createStableFiatRateKeys(...new Set(positions.map(({ fiatRateKey }) => fiatRateKey)));
 
-export const selectStakingFiatRateKeys = createMemoizedSelector(
-    [selectStakingFiatPositions],
-    getStableEarnFiatRateKeys,
-);
-
 export const selectYieldFiatRateKeys = createMemoizedSelector(
     [selectYieldFiatPositions],
     getStableEarnFiatRateKeys,
 );
-
-export const selectStakingCurrentFiatRates = (state: EarnListRootState) =>
-    selectCurrentFiatRatesByFiatRateKeys(state, selectStakingFiatRateKeys(state));
 
 export const selectYieldCurrentFiatRates = (
     state: EarnListRootState,
@@ -656,29 +555,14 @@ const createEarnFiatValuations = (
         })),
     );
 
-export const selectStakingFiatValuations = createMemoizedSelector(
-    [selectStakingFiatPositions, selectStakingCurrentFiatRates],
-    createEarnFiatValuations,
-);
-
 export const selectYieldFiatValuations = createMemoizedSelector(
     [selectYieldFiatPositions, selectYieldCurrentFiatRates],
     createEarnFiatValuations,
 );
 
-export const selectStakingTotalFiatAmount = createMemoizedSelector(
-    [selectStakingFiatValuations],
-    sumEarnFiatValuations,
-);
-
 export const selectYieldTotalFiatAmount = createMemoizedSelector(
     [selectYieldFiatValuations],
     sumEarnFiatValuations,
-);
-
-export const selectStakingPositionsCount = createMemoizedSelector(
-    [selectStakingListItems],
-    stakingPositions => stakingPositions.length,
 );
 
 export const selectYieldPositionsCount = createMemoizedSelector(

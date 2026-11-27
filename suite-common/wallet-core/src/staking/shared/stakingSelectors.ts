@@ -1,60 +1,47 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
-import { getCardanoAccountPoolId, selectBestCardanoPool } from '../cardano/cardanoStakingUtils';
+import { type AccountsRootState } from '../../accounts/accountsReducer';
+import { selectAccountByKey } from '../../accounts/accountsSelectors';
+import { DEFAULT_VOTING_OPTION } from '../cardano/cardanoStakingConstants';
+import type {
+    AccountVotingDelegation,
+    VotingDelegationOption,
+} from '../cardano/cardanoStakingTypes';
 import { type StakeSliceRootState } from '../stakingReducerTypes';
 
 export const selectStake = (state: StakeSliceRootState) => state.wallet.stake;
 
-export const selectStakeData = (state: StakeSliceRootState) => selectStake(state).data.data;
-
 export const selectStakeAccountKey = (state: StakeSliceRootState) => selectStake(state).accountKey;
 
-interface SelectPoolStatsApyProps {
-    account?: Account;
-    networkSymbol?: NetworkSymbol;
-}
+export const selectStakePrecomposedForm = (state: StakeSliceRootState) =>
+    selectStake(state).precomposedForm;
 
-export const selectPoolStatsApy = (
+export const selectStakeAccount = (
+    state: StakeSliceRootState & AccountsRootState,
+): Account | undefined => {
+    const accountKey = selectStakeAccountKey(state);
+
+    if (!accountKey) return undefined;
+
+    return selectAccountByKey(state, accountKey) ?? undefined;
+};
+
+/**
+ * The selection the user last confirmed, together with the account it was confirmed for. Composing
+ * paths pass it to `prepareTxPlan`, which honours it only for that very account; anything reading it
+ * to render a selection wants `selectVotingDelegationOption` instead.
+ */
+export const selectStakeVotingDelegation = (
     state: StakeSliceRootState,
-    { account, networkSymbol }: SelectPoolStatsApyProps,
-) => {
-    const data = selectStakeData(state);
-    const symbol = account?.symbol ?? networkSymbol;
+): AccountVotingDelegation | undefined => selectStake(state).votingDelegation;
 
-    if (!symbol || !data) {
-        return null;
-    }
+export const selectVotingDelegationOption = (
+    state: StakeSliceRootState,
+    accountKey: AccountKey,
+): VotingDelegationOption => {
+    const votingDelegation = selectStakeVotingDelegation(state);
 
-    switch (symbol) {
-        case 'eth':
-            return data.eth?.stats?.apy ?? null;
-
-        case 'sol':
-            return data.sol?.stats?.apy ?? null;
-
-        case 'ada': {
-            const poolStats = data.ada?.pools ?? [];
-            const accountPoolId = getCardanoAccountPoolId(account);
-
-            if (accountPoolId) {
-                // The account's own APY, or null when staked outside Everstake (no pool stats).
-                // For the promoted APY, query by networkSymbol instead.
-                const poolFromAccount = poolStats.find(pool => pool.id === accountPoolId);
-
-                return poolFromAccount?.apy ?? null;
-            }
-
-            // No active delegation (not staking yet, or queried by network) → promote best pool.
-            const bestPoolId = selectBestCardanoPool(poolStats).bech32;
-            const bestPool = bestPoolId
-                ? poolStats.find(pool => pool.id === bestPoolId)
-                : undefined;
-
-            return bestPool?.apy ?? null;
-        }
-
-        default:
-            return null;
-    }
+    return votingDelegation?.accountKey === accountKey
+        ? votingDelegation.option
+        : DEFAULT_VOTING_OPTION;
 };

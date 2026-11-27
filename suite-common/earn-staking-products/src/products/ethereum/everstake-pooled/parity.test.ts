@@ -23,10 +23,10 @@ import {
     createEthereumEverstakePooledProduct,
 } from './product';
 
-// The oracle is the P0.1 characterization suite in wallet-core
-// (src/staking/stakingSelectors.characterization.test.ts and the ethereum details suite next to
-// it), whose literals are copied here. Products cannot import the legacy selectors, so this file
-// derives the same readings from the position and the product info the way P2.5 will, in ether.
+// The oracle was the P0.1 characterization suite of wallet-core's staking selectors and the
+// ethereum details suite next to it, whose literals are copied here; the legacy read side went
+// with them in P2.5. This file derives the same readings from the position and the product info,
+// in ether.
 const SECONDS_IN_DAY = 24 * 60 * 60;
 
 const stats: EthOrSolStats = { symbol: 'eth', apy: 3.08, nextRewardPayout: 5 * SECONDS_IN_DAY };

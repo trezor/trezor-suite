@@ -3,11 +3,9 @@ import {
     selectIsStakingAccountActive,
     selectStakeableStakingProductDescriptorBySymbol,
 } from '@suite-common/earn-staking';
-import { isSupportedStakingNetworkSymbol } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
-import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
 
@@ -32,13 +30,6 @@ const getStakingBannerClosedFlag = (account: Account): BooleanFlagKey | undefine
         case 'tron':
             return 'stakeTronBannerClosed';
         default:
-            if (isSupportedStakingNetworkSymbol(account.symbol)) {
-                exhaustive(
-                    account.networkType as never,
-                    `Add missing case for ${account.symbol} network type`,
-                );
-            }
-
             return undefined;
     }
 };

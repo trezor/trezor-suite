@@ -1,4 +1,3 @@
-import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
@@ -15,9 +14,6 @@ import {
     claimFixture,
     getAdjustedGasLimitConsumptionFixture,
     getChangedInternalTxFixture,
-    getDaysToAddToPoolFixture,
-    getDaysToAddToPoolInitialFixture,
-    getDaysToUnstakeFixture,
     getEthNetworkForWalletSdkFixture,
     getInstantStakeTypeFixture,
     getStakeFormsDefaultValuesFixture,
@@ -35,9 +31,6 @@ import {
     claimWithdrawRequest,
     getAdjustedGasLimitConsumption,
     getChangedInternalTx,
-    getDaysToAddToPool,
-    getDaysToAddToPoolInitial,
-    getDaysToUnstake,
     getEthNetworkForWalletSdk,
     getInstantStakeType,
     getStakeFormsDefaultValues,
@@ -85,10 +78,6 @@ const mockTrezorConnect = (test: Record<string, any>) => {
             Promise.resolve(estimatedFee as EstimateFeeResult),
         );
     }
-};
-
-const mockCurrentTime = (timestampInSeconds: number) => {
-    jest.spyOn(Date, 'now').mockImplementation(() => timestampInSeconds * 1000);
 };
 
 type StakeTxArgs = StakeTxBaseArgs & { amount: string };
@@ -177,43 +166,6 @@ describe('getStakeTxGasLimit', () => {
         it(test.description, async () => {
             mockTrezorConnect(test);
             const result = await getStakeTxGasLimit(test.args as GetStakeTxGasLimitParams);
-            expect(result).toEqual(test.result);
-        });
-    });
-});
-
-type GetDaysArgs = {
-    unstakeTxs: WalletAccountTransaction[];
-    stakeTxs: WalletAccountTransaction[];
-    validatorsQueue?: EthValidatorsQueue;
-};
-describe('getDaysToAddToPool', () => {
-    getDaysToAddToPoolFixture.forEach(test => {
-        it(test.description, () => {
-            const { stakeTxs, validatorsQueue } = test.args as GetDaysArgs;
-            mockCurrentTime(1720615417); // mock current time to 2024-07-10
-            const result = getDaysToAddToPool(stakeTxs, validatorsQueue);
-            expect(result).toEqual(test.result);
-        });
-    });
-});
-
-describe('getDaysToUnstake', () => {
-    getDaysToUnstakeFixture.forEach(test => {
-        it(test.description, () => {
-            const { unstakeTxs, validatorsQueue } = test.args as GetDaysArgs;
-            mockCurrentTime(1720615417); // mock current time to 2024-07-10
-            const result = getDaysToUnstake(unstakeTxs, validatorsQueue);
-            expect(result).toEqual(test.result);
-        });
-    });
-});
-
-describe('getDaysToAddToPoolInitial', () => {
-    getDaysToAddToPoolInitialFixture.forEach(test => {
-        it(test.description, () => {
-            const { validatorsQueue } = test.args as GetDaysArgs;
-            const result = getDaysToAddToPoolInitial(validatorsQueue);
             expect(result).toEqual(test.result);
         });
     });

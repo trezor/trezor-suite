@@ -15,10 +15,3 @@ export const MIN_THOD_AMOUNT_FOR_STAKING = new BigNumber(0.1);
 export const MIN_THOD_BALANCE_FOR_STAKING =
     MIN_THOD_AMOUNT_FOR_STAKING.plus(MIN_ETH_FOR_WITHDRAWALS);
 export const UNSTAKE_INTERCHANGES = 5;
-
-export const BACKUP_REWARD_PAYOUT_DAYS = 7;
-
-// Used when Everstake unstaking period is not available from the API.
-export const UNSTAKING_ETH_PERIOD = 3;
-
-export const DAYS_TO_ADD_TO_POOL_DEFAULT = 30;

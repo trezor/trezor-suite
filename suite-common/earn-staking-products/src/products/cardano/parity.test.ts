@@ -38,13 +38,10 @@ import {
 import { everstakeProvider } from '../../providers/everstake';
 import { fivebinariesProvider } from '../../providers/fivebinaries';
 
-// The oracle is the four P0.1 suites that read Cardano: in wallet-core
-// src/staking/stakingSelectors.characterization.test.ts,
-// src/staking/cardano/cardanoStakingUtils.characterization.test.ts and
-// src/staking/shared/stakingUtils.characterization.test.ts, and in wallet-utils
-// src/stakingUtils.characterization.test.ts, whose literals are copied here. Products cannot
-// import the legacy code, so this file derives the same readings from the three Cardano positions
-// and the product info the way P2.5 will, in ADA.
+// The oracle was the four P0.1 suites that read Cardano, the characterization suites of
+// wallet-core's staking selectors, Cardano utils and shared utils and of wallet-utils' staking
+// utils, whose literals are copied here; the legacy read side went with them in P2.5. This file
+// derives the same readings from the three Cardano positions and the product info, in ADA.
 const adaPools: AdaPools = {
     pools: [
         { apy: 2.4, saturation: 80.77, id: MOCK_CARDANO_EVERSTAKE_OTHER_POOL },

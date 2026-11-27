@@ -1,7 +1,6 @@
 import { createHttpClient } from '@suite-common/http-client';
 
 import { getSuiteInfo } from './getSuiteInfo';
-import { resilientStakingBatchResponse } from './resilientStakingBatchResponse';
 import {
     reportStakingTxIdsResponse,
     stakingCardanoPoolsResponse,
@@ -18,8 +17,6 @@ import type {
     ReportStakingTxIds,
     SolRewardsHistory,
     SolRewardsTotal,
-    StakingBatch,
-    StakingBatchParams,
     StakingCardanoPoolsParams,
     StakingEthereumValidatorsQueueParams,
     StakingSolanaRewardsHistoryParams,
@@ -34,19 +31,6 @@ export const earnHttpClient = createHttpClient({
 });
 
 type RequestOptions = { signal?: AbortSignal };
-type StakingBatchNetwork = Exclude<StakingBatchParams['networks'], string | undefined>[number];
-type StakingBatchRequestParams = Omit<StakingBatchParams, 'networks'> & {
-    networks?: StakingBatchParams['networks'] | readonly StakingBatchNetwork[];
-};
-
-export const getStakingBatch: (
-    options?: RequestOptions & { params?: StakingBatchRequestParams },
-) => Promise<StakingBatch> = earnHttpClient('/', {
-    method: 'GET',
-    schema: resilientStakingBatchResponse,
-    timeout: 60_000,
-});
-
 export const getStakingStats: (
     options: RequestOptions & { routeParams: { networkSymbol: 'eth' | 'sol' } },
 ) => Promise<EthOrSolStats> = earnHttpClient('/:networkSymbol/stats', {

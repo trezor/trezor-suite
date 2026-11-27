@@ -11,7 +11,6 @@ import {
     getCardanoCurrentVotingOption,
     hasCardanoLiveVoteDelegation,
     isCardanoDrepIdCip129,
-    isCardanoStakedOutsideEverstake,
     isCardanoStakedWithEverstake,
     isCardanoStakedWithFiveBinaries,
     isCardanoWithdrawalBlockedByMissingDrep,
@@ -65,14 +64,6 @@ describe('cardano staking utils', () => {
         it(`isCardanoStakedWithEverstake: ${f.description}`, () => {
             expect(
                 isCardanoStakedWithEverstake(f.account as Account, f.pools as AdaPools['pools']),
-            ).toBe(f.result);
-        });
-    });
-
-    fixtures.isCardanoStakedOutsideEverstake.forEach(f => {
-        it(`isCardanoStakedOutsideEverstake: ${f.description}`, () => {
-            expect(
-                isCardanoStakedOutsideEverstake(f.account as Account, f.pools as AdaPools['pools']),
             ).toBe(f.result);
         });
     });

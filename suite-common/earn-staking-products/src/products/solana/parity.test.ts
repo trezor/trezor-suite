@@ -27,12 +27,10 @@ import {
 import { createSolanaExternalNativeProduct } from './external-native/product';
 import { everstakeProvider } from '../../providers/everstake';
 
-// The oracle is the P0.1 characterization suites in wallet-core
-// (src/staking/stakingSelectors.characterization.test.ts,
-// src/staking/solana/solanaStakingUtils.characterization.test.ts and the limits and maximum stake
-// amounts in src/staking/shared/stakingUtils.characterization.test.ts), whose literals are copied
-// here. Products cannot import the legacy selectors, so this file derives the same readings from
-// the Everstake and the external position and the product info the way P2.5 will, in SOL.
+// The oracle was the P0.1 characterization suites of wallet-core's staking selectors and Solana
+// utils, and the limits and maximum stake amounts in the shared utils suite, whose literals are
+// copied here; the legacy read side went with them in P2.5. This file derives the same readings
+// from the Everstake and the external position and the product info, in SOL.
 const stats: EthOrSolStats = { symbol: 'sol', apy: 6.24 };
 
 type SolanaProducts = {

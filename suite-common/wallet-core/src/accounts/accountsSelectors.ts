@@ -15,7 +15,6 @@ import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-u
 
 import { getFormattedAccountType, getFormattedAccountTypeWithDefault } from './accountsConstants';
 import { type AccountsRootState } from './accountsReducer';
-import { isCardanoStakingActive } from '../staking/cardano/cardanoStakingUtils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
     AccountsRootState & DeviceRootState
@@ -326,39 +325,6 @@ export const selectAccountsSymbols = createMemoizedSelector([selectAccounts], ac
 export const selectIsDeviceAccountless = createMemoizedSelector(
     [selectVisibleDeviceAccounts],
     accounts => accounts.length === 0,
-);
-
-export const selectSolAccountHasStaked = createMemoizedSelector([selectAccountByKey], account => {
-    if (!account?.misc || account.networkType !== 'solana') return false;
-
-    return !!account.misc.solStakingAccounts?.length;
-});
-
-export const selectHasSolExternalStakingAccounts = createMemoizedSelector(
-    [selectAccountByKey],
-    account => {
-        if (!account?.misc || account.networkType !== 'solana') return false;
-
-        return (account.misc.solExternalStakingAccounts?.length ?? 0) > 0;
-    },
-);
-
-export const selectSolExternalStakingAccountsTotalStaked = createMemoizedSelector(
-    [selectAccountByKey],
-    account => {
-        if (!account?.misc || account.networkType !== 'solana') return '0';
-
-        const totalLamports = (account.misc.solExternalStakingAccounts ?? []).reduce(
-            (sum, { stake }) => sum + BigInt(stake ?? '0'),
-            0n,
-        );
-
-        return totalLamports.toString();
-    },
-);
-
-export const selectAdaAccountHasStaked = createMemoizedSelector([selectAccountByKey], account =>
-    isCardanoStakingActive(account),
 );
 
 export const selectAddressByNetworkAndPath = createMemoizedSelector(

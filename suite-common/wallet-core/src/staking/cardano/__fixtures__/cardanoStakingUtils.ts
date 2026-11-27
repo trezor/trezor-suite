@@ -142,51 +142,6 @@ export const isCardanoStakedWithEverstake = [
     },
 ];
 
-export const isCardanoStakedOutsideEverstake = [
-    {
-        description: 'foreign pool with pool data available',
-        account: cardanoAccount(foreignPool),
-        pools: fetchedPools,
-        result: true,
-    },
-    {
-        description: 'hardcoded Everstake pool with pool data available',
-        account: cardanoAccount(everstakePool),
-        pools: fetchedPools,
-        result: false,
-    },
-    {
-        description: 'hardcoded Everstake pool without pool data',
-        account: cardanoAccount(everstakePool),
-        pools: [],
-        result: false,
-    },
-    {
-        description: 'foreign pool without pool data (EVERSTAKE_POOLS is the complete set)',
-        account: cardanoAccount(foreignPool),
-        pools: [],
-        result: true,
-    },
-    {
-        description: 'Five Binaries pool without pool data',
-        account: cardanoAccount(fiveBinariesPool),
-        pools: [],
-        result: true,
-    },
-    {
-        description: 'Five Binaries pool with pool data available',
-        account: cardanoAccount(fiveBinariesPool),
-        pools: fetchedPools,
-        result: true,
-    },
-    {
-        description: 'account without delegation',
-        account: cardanoAccount(undefined),
-        pools: [],
-        result: false,
-    },
-];
-
 export const isCardanoStakedWithFiveBinaries = [
     {
         description: 'Five Binaries pool',

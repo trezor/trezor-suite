@@ -23,14 +23,11 @@ import { type TronNativeProductDeps, createTronNativeProduct } from './product';
 import { luganodesProvider } from '../../../providers/luganodes';
 import { p2pProvider } from '../../../providers/p2p';
 
-// The oracle is the four P0.1 suites that read Tron: in wallet-core
-// src/staking/stakingSelectors.characterization.test.ts,
-// src/staking/tron/tronStakingUtils.characterization.test.ts and
-// src/staking/shared/stakingUtils.characterization.test.ts, and in wallet-utils
-// src/stakingUtils.characterization.test.ts, whose literals are copied here. Products cannot
-// import the legacy code, so this file derives the same readings from the position and the
-// product info the way P2.5 will, in TRX. The APR stands in for useStakingRate, which the
-// P0.1 suites do not cover.
+// The oracle was the four P0.1 suites that read Tron, the characterization suites of wallet-core's
+// staking selectors, Tron utils and shared utils and of wallet-utils' staking utils, whose literals
+// are copied here; the legacy read side went with them in P2.5. This file derives the same readings
+// from the position and the product info, in TRX. The APR stands in for useStakingRate, which the
+// P0.1 suites did not cover.
 const trxStats: TrxStats = [
     {
         address: MOCK_TRON_P2P_ORG_SR,

@@ -1,7 +1,4 @@
-import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
-
 import { ETH_NETWORK_ADDRESSES } from '../ethereumNetworkAddresses';
-import { DAYS_TO_ADD_TO_POOL_DEFAULT } from '../ethereumStakingConstants';
 
 export const transformTxFixtures = [
     {
@@ -524,111 +521,6 @@ export const getStakeTxGasLimitFixture = [
             },
             success: false,
         },
-    },
-];
-
-export const getDaysToAddToPoolFixture = [
-    {
-        description:
-            'should return undefined if validatorAddingDelay or validatorActivationTime is undefined',
-        args: {
-            stakeTxs: [{ blockTime: 1721393017 }],
-            validatorsQueue: {}, // validatorAddingDelay and validatorActivationTime are undefined
-        },
-        result: undefined,
-    },
-    {
-        description: 'should return undefined if blockTime is undefined',
-        args: {
-            stakeTxs: [{}], // blockTime is undefined
-            validatorsQueue: {
-                addingDelay: 86400,
-                activationTime: 86400,
-            } satisfies EthValidatorsQueue,
-        },
-        result: undefined,
-    },
-    {
-        description: 'should return the number of days to wait',
-        args: {
-            stakeTxs: [{ blockTime: 1721393017 }], // 2024-07-19 (2024-07-10 + 9 days)
-            validatorsQueue: {
-                addingDelay: 86400,
-                activationTime: 86400,
-            } satisfies EthValidatorsQueue, // + 2 days
-        },
-        result: 11, // 9 + 2
-    },
-    {
-        description: 'should return 1 if the number of days to wait is less than or equal to 0',
-        args: {
-            stakeTxs: [{ blockTime: 1720615417 }], // 2024-07-10
-            validatorsQueue: { addingDelay: 0, activationTime: 0 } satisfies EthValidatorsQueue,
-        },
-        result: 1,
-    },
-];
-
-export const getDaysToUnstakeFixture = [
-    {
-        description: 'should return undefined if validatorWithdrawTime is undefined',
-        args: {
-            unstakeTxs: [{ blockTime: 1721393017 }],
-            validatorsQueue: {}, // validatorWithdrawTime is undefined
-        },
-        result: undefined,
-    },
-    {
-        description: 'should return 1 if blockTime is undefined',
-        args: {
-            unstakeTxs: [{}], // blockTime is undefined
-            validatorsQueue: { withdrawTime: 86400 } satisfies EthValidatorsQueue,
-        },
-        result: 1,
-    },
-    {
-        description: 'should return the number of days to wait',
-        args: {
-            unstakeTxs: [{ blockTime: 1721393017 }], // 2024-07-19 (2024-07-10 + 9 days)
-            validatorsQueue: { withdrawTime: 86400 } satisfies EthValidatorsQueue, // 1 day
-        },
-        result: 10,
-    },
-    {
-        description: 'should return 1 if the number of days to wait is less than or equal to 0',
-        args: {
-            unstakeTxs: [{ blockTime: 1720615417 }], // 2024-07-10
-            validatorsQueue: { withdrawTime: 0 } satisfies EthValidatorsQueue,
-        },
-        result: 1,
-    },
-];
-
-export const getDaysToAddToPoolInitialFixture = [
-    {
-        description:
-            'should return undefined if validatorAddingDelay or validatorActivationTime is undefined',
-        args: {
-            validatorsQueue: {}, // validatorAddingDelay and validatorActivationTime are undefined
-        },
-        result: DAYS_TO_ADD_TO_POOL_DEFAULT,
-    },
-    {
-        description: 'should return the number of days to wait',
-        args: {
-            validatorsQueue: {
-                addingDelay: 86400,
-                activationTime: 86400,
-            } satisfies EthValidatorsQueue, // 2 days
-        },
-        result: 2, // replace with expected number of days
-    },
-    {
-        description: 'should return 1 if the number of days to wait is less than or equal to 0',
-        args: {
-            validatorsQueue: { addingDelay: 0, activationTime: 0 } satisfies EthValidatorsQueue,
-        },
-        result: 1,
     },
 ];
 
