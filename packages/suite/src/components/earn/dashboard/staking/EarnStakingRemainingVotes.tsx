@@ -1,30 +1,16 @@
 import { Translation } from '@suite/intl';
-import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Icon, Paragraph, Row } from '@trezor/components';
-import { WarningIcon } from '@trezor/icons';
-
-import { useFormatApy } from '#src/hooks/earn/useFormatApy';
+import { InfoIcon } from '@trezor/icons';
 
 type EarnStakingRemainingVotesProps = {
-    apr: number | null;
+    count: string;
 };
 
-export const EarnStakingRemainingVotes = ({ apr }: EarnStakingRemainingVotesProps) => {
-    const formatApyValue = useFormatApy();
-
-    return (
-        <Row gap={4}>
-            <Icon as={WarningIcon} size={20} intent="warning" />
-            <Paragraph typographyStyle="body-sm" intent="warning">
-                {isApyAvailable(apr) ? (
-                    <Translation
-                        id="TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES"
-                        values={{ apr: formatApyValue(apr) }}
-                    />
-                ) : (
-                    <Translation id="TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES_NO_APR" />
-                )}
-            </Paragraph>
-        </Row>
-    );
-};
+export const EarnStakingRemainingVotes = ({ count }: EarnStakingRemainingVotesProps) => (
+    <Row gap={4}>
+        <Icon as={InfoIcon} size={20} intent="info" />
+        <Paragraph typographyStyle="body-sm" intent="info">
+            <Translation id="TR_EARN_UNASSIGNED_VOTES" values={{ count }} />
+        </Paragraph>
+    </Row>
+);

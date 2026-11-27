@@ -85,6 +85,7 @@ type RenderAccountOptions = {
     shouldLimitFiatToNativeBalance?: boolean;
     nativeRate?: CurrentRate | null;
     hiddenTokens?: string[];
+    cardanoPosition?: typeof delegatedStake;
 };
 
 const renderAccount = ({
@@ -94,6 +95,7 @@ const renderAccount = ({
     shouldLimitFiatToNativeBalance = false,
     nativeRate = createRate(2000),
     hiddenTokens = [contract],
+    cardanoPosition = delegatedStake,
 }: RenderAccountOptions = {}) =>
     renderWithStoreProvider(
         <AccountsListItem
@@ -110,7 +112,7 @@ const renderAccount = ({
                         descriptors: [mockStakingProductDescriptor(), ada],
                         positions: {
                             [ethAccount.key]: [activeStake],
-                            [adaAccount.key]: [delegatedStake],
+                            [adaAccount.key]: [cardanoPosition],
                         },
                     }),
                 },
@@ -140,6 +142,15 @@ const renderAccount = ({
     );
 
 describe('AccountsListItem', () => {
+    it('shows No rewards in the account list for Cardano without a pool', async () => {
+        const { getByText } = await renderAccount({
+            account: adaAccount,
+            cardanoPosition: { ...delegatedStake, warnings: [{ code: 'no-stake-pool' }] },
+        });
+
+        expect(getByText('No rewards')).toBeOnTheScreen();
+    });
+
     it('keeps staking in the total when the last token is hidden', async () => {
         const { getByText, queryByText, queryByTestId } = await renderAccount();
 

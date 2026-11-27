@@ -70,12 +70,14 @@ const CHANGE_ADDRESS = {
 type CreateCardanoAccountProps = {
     drepId: string | null;
     isStakingActive?: boolean;
+    poolId?: string | null;
     rewards?: string;
 };
 
 const createCardanoAccount = ({
     drepId,
     isStakingActive = true,
+    poolId = NON_EVERSTAKE_POOL_ID,
     rewards = '0',
 }: CreateCardanoAccountProps): Account =>
     ({
@@ -95,7 +97,7 @@ const createCardanoAccount = ({
                 address: 'stake-address',
                 rewards,
                 isActive: isStakingActive,
-                poolId: NON_EVERSTAKE_POOL_ID,
+                poolId,
                 drep: drepId === null ? null : { drep_id: drepId },
             },
         },
@@ -319,6 +321,16 @@ describe('prepareTxPlan', () => {
         expect(certificateTypes).toContain(PROTO.CardanoCertificateType.STAKE_DELEGATION);
     });
 
+    it('adds a pool to a registered stake key without replacing its vote', async () => {
+        const account = createCardanoAccount({ drepId: PREDEFINED_DREP_ID, poolId: null });
+
+        const certificateTypes = getCertificateTypes(
+            await migratePool(account, { accountKey: account.key, option: { type: 'current' } }),
+        );
+
+        expect(certificateTypes).toEqual([PROTO.CardanoCertificateType.STAKE_DELEGATION]);
+    });
+
     it('composes a vote delegation certificate for the Everstake option', async () => {
         const account = createCardanoAccount({ drepId: PREDEFINED_DREP_ID });
 
@@ -329,17 +341,22 @@ describe('prepareTxPlan', () => {
         expect(certificateTypes).toContain(PROTO.CardanoCertificateType.VOTE_DELEGATION);
     });
 
-    it('composes a vote delegation certificate for an unregistered account, which has no live delegation to keep', async () => {
+    it('registers the key and delegates the vote when an inactive account reports a stale vote', async () => {
         const account = createCardanoAccount({
             drepId: PREDEFINED_DREP_ID,
             isStakingActive: false,
+            poolId: null,
         });
 
         const certificateTypes = getCertificateTypes(
             await migratePool(account, { accountKey: account.key, option: { type: 'current' } }),
         );
 
-        expect(certificateTypes).toContain(PROTO.CardanoCertificateType.VOTE_DELEGATION);
+        expect(certificateTypes).toEqual([
+            PROTO.CardanoCertificateType.STAKE_REGISTRATION,
+            PROTO.CardanoCertificateType.STAKE_DELEGATION,
+            PROTO.CardanoCertificateType.VOTE_DELEGATION,
+        ]);
     });
 
     it('builds nothing for a vote delegation that keeps the current delegation, leaving nothing to sign', async () => {

@@ -11,6 +11,7 @@ import {
     selectIsStakingOperationPending,
     selectStakeableStakingProductDescriptorBySymbol,
     selectStakingAccountAmount,
+    selectStakingAccountNotice,
     settleTronUnlocks,
     useNetworkStakingRate,
     useStakingAccess,
@@ -98,6 +99,9 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     const { productId, descriptor, position, totals, access } = useStakingAccountPosition(
         account.key,
     );
+
+    const notice = useSelector(state => selectStakingAccountNotice(state, account.key));
+    const voteCount = notice?.kind === 'votes-left' ? notice.count : '0';
 
     const stakeableDescriptor = useSelector(state =>
         selectStakeableStakingProductDescriptorBySymbol(state, account.symbol),
@@ -389,9 +393,17 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         openTronFlow(event, 'withdraw');
     };
 
-    const apyAvailable =
-        stakingStatus !== 'staking-outdated-provider' &&
-        stakingStatus !== 'staking-remaining-votes';
+    const rateLabel =
+        notice?.kind === 'no-stake-pool' ? (
+            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                <Translation id="TR_STAKING_REWARDS_REDUCED" />
+            </Text>
+        ) : (
+            <EarnStakingRateTooltip
+                rateKind={rateKind}
+                rate={stakingStatus === 'staking-outdated-provider' ? null : rate}
+            />
+        );
 
     const actionButtonsProps = {
         stakingStatus,
@@ -422,23 +434,17 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                         <Row justifyContent="space-between" alignItems="flex-start">
                             <EarnAccountCell account={account} />
 
-                            {apyAvailable ? (
-                                <EarnStakingRateTooltip rateKind={rateKind} rate={rate} />
-                            ) : (
-                                <Text typographyStyle="body-sm">
-                                    <Translation id="TR_EARN_NOT_AVAILABLE" />
-                                </Text>
-                            )}
+                            {rateLabel}
                         </Row>
 
                         {stakingStatus === 'insufficient-funds' && minStakeParagraph}
 
                         {stakingStatus === 'staking-outdated-provider' && (
-                            <EarnStakingOutdatedProvider apy={newProviderApy} />
+                            <EarnStakingOutdatedProvider apy={newProviderApy} account={account} />
                         )}
 
                         {stakingStatus === 'staking-remaining-votes' && (
-                            <EarnStakingRemainingVotes apr={rate} />
+                            <EarnStakingRemainingVotes count={voteCount} />
                         )}
 
                         {(stakingStatus === 'staking-active' ||
@@ -525,15 +531,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                     <EarnAccountCell account={account} />
                 </Table.Cell>
 
-                <Table.Cell>
-                    {apyAvailable ? (
-                        <EarnStakingRateTooltip rateKind={rateKind} rate={rate} />
-                    ) : (
-                        <Text typographyStyle="body-sm">
-                            <Translation id="TR_EARN_NOT_AVAILABLE" />
-                        </Text>
-                    )}
-                </Table.Cell>
+                <Table.Cell>{rateLabel}</Table.Cell>
 
                 {stakingStatus === 'insufficient-funds' && (
                     <>
@@ -599,7 +597,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                 {stakingStatus === 'staking-outdated-provider' && (
                     <>
                         <Table.Cell colSpan={2}>
-                            <EarnStakingOutdatedProvider apy={newProviderApy} />
+                            <EarnStakingOutdatedProvider apy={newProviderApy} account={account} />
                         </Table.Cell>
                         <Table.Cell align="end">
                             <EarnStakingActionButtons {...actionButtonsProps} />
@@ -610,7 +608,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                 {stakingStatus === 'staking-remaining-votes' && (
                     <>
                         <Table.Cell colSpan={2}>
-                            <EarnStakingRemainingVotes apr={rate} />
+                            <EarnStakingRemainingVotes count={voteCount} />
                         </Table.Cell>
                         <Table.Cell align="end">
                             <EarnStakingActionButtons {...actionButtonsProps} />

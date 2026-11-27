@@ -1,10 +1,8 @@
 import {
-    selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
-    selectIsStakingAccountDelegatedOutside,
     selectStakeableStakingProductDescriptorBySymbol,
     selectStakingAccountLockup,
-    selectStakingAccountPositionDetails,
+    selectStakingAccountNotice,
 } from '@suite-common/earn-staking';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { type Account } from '@suite-common/wallet-types';
@@ -25,21 +23,10 @@ export type StakingAccountStatus =
 export const useStakingAccountStatus = (account: Account): StakingAccountStatus => {
     const isStakingActive = useSelector(state => selectIsStakingAccountActive(state, account.key));
 
-    const hasOutdatedProvider = useSelector(state =>
-        selectHasStakingAccountWarning(state, account.key, 'outdated-provider'),
-    );
-    const isDelegatedOutside = useSelector(state =>
-        selectIsStakingAccountDelegatedOutside(state, account.key),
-    );
+    const notice = useSelector(state => selectStakingAccountNotice(state, account.key));
     // A liquid position stakes the whole balance, so there is nothing more to stake.
     const isLiquidPosition = useSelector(
         state => selectStakingAccountLockup(state, account.key) === 'liquid',
-    );
-
-    const unallocatedVotingPower = useSelector(
-        state =>
-            selectStakingAccountPositionDetails(state, account.key, 'tron-staking')
-                ?.unallocatedVotingPower ?? null,
     );
 
     const minStakeAmountForDashboard = useSelector(
@@ -48,20 +35,20 @@ export const useStakingAccountStatus = (account: Account): StakingAccountStatus 
                 .minStakeAmountForDashboard ?? null,
     );
 
-    const isNewProviderBannerEnabled = useSelector(state =>
+    const isProviderPromotionEnabled = useSelector(state =>
         selectIsFeatureEnabled(state, Feature.banners.staking.ada.newProvider, true),
     );
 
-    if ((hasOutdatedProvider || isDelegatedOutside) && isNewProviderBannerEnabled) {
+    if (
+        notice?.kind === 'no-stake-pool' ||
+        ((notice?.kind === 'outdated-provider' || notice?.kind === 'external-provider') &&
+            isProviderPromotionEnabled)
+    ) {
         return 'staking-outdated-provider';
     }
 
     // The active flag is the account menu's reading, so a rewards-only Tron account is staked here too.
-    if (
-        isStakingActive &&
-        unallocatedVotingPower !== null &&
-        isPositiveBalance(unallocatedVotingPower)
-    ) {
+    if (isStakingActive && notice?.kind === 'votes-left') {
         return 'staking-remaining-votes';
     }
 

@@ -1,16 +1,10 @@
-import { Badge, HStack } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
+import { Badge } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-export const ZeroApyBadge = () => (
+export const ZeroApyBadge = ({ isInformational = false }: { isInformational?: boolean }) => (
     <Badge
-        intent="warning"
-        icon={
-            <HStack spacing="sp4" alignItems="center">
-                <Icon name="piggyBank" color="contentWarning" size="medium" />
-                <Icon name="warning" color="contentWarning" size="medium" />
-            </HStack>
-        }
+        intent={isInformational ? 'info' : 'warning'}
+        icon={isInformational ? 'info' : 'warning'}
         size="small"
         label={<Translation id="earn.zeroApyBadge" />}
     />

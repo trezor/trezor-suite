@@ -3,12 +3,14 @@ import { useSelector } from 'react-redux';
 import {
     type StakingRootState,
     formatStakingAmount,
+    selectStakingAccountNotice,
     selectStakingAccountPositionDetails,
 } from '@suite-common/earn-staking';
 import { type StakingAmount } from '@suite-common/earn-staking-common';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getTronResources } from '@suite-common/wallet-utils';
+import { TronUnassignedVotesBadge } from '@suite-native/accounts';
 import {
     Card,
     HStack,
@@ -18,10 +20,7 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { BigNumber } from '@trezor/utils';
 
 import { TronStakingVotesBottomSheet } from './TronStakingVotesBottomSheet';
 
@@ -34,11 +33,6 @@ type TronResourceRowProps = {
     available: number;
     total: number;
 };
-
-const remainingVotesStyle = prepareNativeStyle(utils => ({
-    textDecorationLine: 'underline',
-    marginLeft: utils.spacings.sp4,
-}));
 
 const TronResourceRow = ({ labelId, available, total }: TronResourceRowProps) => (
     <VStack spacing="sp8">
@@ -58,7 +52,6 @@ const TronResourceRow = ({ labelId, available, total }: TronResourceRowProps) =>
 );
 
 export const TronResourcesCard = ({ accountKey }: TronResourcesCardProps) => {
-    const { applyStyle } = useNativeStyles();
     const votesModal = useBottomSheetModal();
 
     const account = useSelector((state: AccountsRootState) =>
@@ -67,6 +60,10 @@ export const TronResourcesCard = ({ accountKey }: TronResourcesCardProps) => {
 
     const stakingDetails = useSelector((state: StakingRootState) =>
         selectStakingAccountPositionDetails(state, accountKey, 'tron-staking'),
+    );
+
+    const notice = useSelector((state: StakingRootState) =>
+        selectStakingAccountNotice(state, accountKey),
     );
 
     // Resource meters are account data, not staking state.
@@ -82,9 +79,6 @@ export const TronResourcesCard = ({ accountKey }: TronResourcesCardProps) => {
         formatStakingAmount({ amount, networkSymbol: account.symbol });
 
     const votingPower = stakingDetails === null ? '0' : formatVotes(stakingDetails.votingPower);
-    const unallocatedVotingPower =
-        stakingDetails === null ? '0' : formatVotes(stakingDetails.unallocatedVotingPower);
-    const hasRemainingVotes = new BigNumber(unallocatedVotingPower).gt(0);
 
     return (
         <VStack spacing="sp16">
@@ -107,21 +101,9 @@ export const TronResourcesCard = ({ accountKey }: TronResourcesCardProps) => {
                         <Text variant="body-sm" color="contentSecondary">
                             <Translation id="earn.tron.votes" />
                         </Text>
-                        {hasRemainingVotes ? (
+                        {notice?.kind === 'votes-left' ? (
                             <PressableOpacity onPress={votesModal.openModal}>
-                                <HStack alignItems="center">
-                                    <Icon name="warning" color="contentWarning" size="medium" />
-                                    <Text
-                                        variant="body-sm-strong"
-                                        color="contentWarning"
-                                        style={applyStyle(remainingVotesStyle)}
-                                    >
-                                        <Translation
-                                            id="earn.tron.votesRemaining"
-                                            values={{ count: unallocatedVotingPower }}
-                                        />
-                                    </Text>
-                                </HStack>
+                                <TronUnassignedVotesBadge accountKey={accountKey} />
                             </PressableOpacity>
                         ) : (
                             <Text variant="body-sm">

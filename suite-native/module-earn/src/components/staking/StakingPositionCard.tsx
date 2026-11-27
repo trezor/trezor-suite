@@ -3,15 +3,11 @@ import { useSelector } from 'react-redux';
 
 import {
     type StakingPositionEntry,
-    type StakingRootState,
     formatStakingAmount,
-    selectIsStakingAccountDelegatedOutside,
+    getStakingPositionNotice,
     useNetworkStakingRate,
 } from '@suite-common/earn-staking';
-import {
-    getStakingPositionAmount,
-    hasStakingPositionWarning,
-} from '@suite-common/earn-staking-common';
+import { getStakingPositionAmount } from '@suite-common/earn-staking-common';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
@@ -22,7 +18,6 @@ import { useStakingDetailNavigation, useStakingNavigateAnalytics } from '@suite-
 import { CompactCryptoAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { BigNumber } from '@trezor/utils';
 
 import { ApyValue } from '../earn/ApyValue';
 import { EarnAccountCardLayout } from '../earn/EarnAccountCardLayout';
@@ -54,27 +49,28 @@ export const StakingPositionCard = ({ entry, onClose }: StakingPositionCardProps
         accountKey,
     });
 
-    const isDelegatedOutside = useSelector((state: StakingRootState) =>
-        selectIsStakingAccountDelegatedOutside(state, accountKey),
-    );
-
-    const hasOutdatedProvider = hasStakingPositionWarning(position, 'outdated-provider');
+    const notice = getStakingPositionNotice(entry);
+    const hasOutdatedProvider = notice?.kind === 'outdated-provider';
+    const hasNoPool = notice?.kind === 'no-stake-pool';
+    const isDelegatedOutside = notice?.kind === 'external-provider';
 
     const amount = formatStakingAmount({
         amount: getStakingPositionAmount(position),
         networkSymbol: symbol,
     });
 
-    const unallocatedVotingPower =
-        position.details?.kind === 'tron-staking' ? position.details.unallocatedVotingPower : null;
-
-    const votesRemaining =
-        unallocatedVotingPower !== null && new BigNumber(unallocatedVotingPower).gt(0)
-            ? formatStakingAmount({ amount: unallocatedVotingPower, networkSymbol: symbol })
-            : null;
-
-    const isRateShown = isDelegatedOutside || !isPending;
+    const isRateShown = hasOutdatedProvider || hasNoPool || isDelegatedOutside || !isPending;
     const isRateAvailable = !isDelegatedOutside && isApyAvailable(rate);
+
+    const rateLabel =
+        isRateAvailable && rate !== null ? (
+            <Translation
+                id={rateKind === 'apr' ? 'earn.aprPercentage' : 'earn.apyPercentage'}
+                values={{ apy: PercentageFormatter.format(rate) }}
+            />
+        ) : (
+            <ApyValue apy={null} withLabel rateType={rateKind ?? 'apy'} />
+        );
 
     const onPress = useCallback(() => {
         if (!account) return;
@@ -122,21 +118,17 @@ export const StakingPositionCard = ({ entry, onClose }: StakingPositionCardProps
                     <ZeroApyBadge />
                 ) : (
                     <Text variant="body-sm" color="contentSecondary">
-                        {isRateAvailable && rate !== null ? (
-                            <Translation
-                                id={
-                                    rateKind === 'apr' ? 'earn.aprPercentage' : 'earn.apyPercentage'
-                                }
-                                values={{ apy: PercentageFormatter.format(rate) }}
-                            />
-                        ) : (
-                            <ApyValue apy={null} withLabel rateType={rateKind ?? 'apy'} />
-                        )}
+                        {hasNoPool ? <Translation id="earn.zeroApyBadge" /> : rateLabel}
                     </Text>
                 ))
             }
             alerts={
-                votesRemaining !== null && <EarnTronVotingAlert votesRemaining={votesRemaining} />
+                notice?.kind === 'votes-left' && (
+                    <EarnTronVotingAlert
+                        apr={rateKind === 'apr' ? rate : null}
+                        votesRemaining={notice.count}
+                    />
+                )
             }
             onPress={onPress}
         />

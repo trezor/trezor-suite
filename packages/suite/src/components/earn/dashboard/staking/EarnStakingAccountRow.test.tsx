@@ -163,6 +163,21 @@ describe('EarnStakingAccountRow', () => {
     });
 
     describe('current rewards', () => {
+        it('shows the available APR when some TRON votes remain unassigned', () => {
+            renderRow({
+                account: fundedTrxAccount,
+                position: tronPosition({
+                    balances: { ...ZERO_BALANCES, staked: amount(HUNDRED_TRX) },
+                    details: { ...tronDetails, unallocatedVotingPower: amount('2000000') },
+                }),
+                productInfo: mockStakingProductInfo({ rate: 4.25, targets: [] }),
+            });
+
+            expect(screen.getByTestId('@earn/dashboard/staking-rate')).toHaveTextContent('4.25%');
+            expect(screen.getByText(/2 unassigned votes/)).toBeVisible();
+            expect(screen.getByTestId(VOTE_BUTTON)).toBeEnabled();
+        });
+
         it('rates the frozen TRX and not the unfreeze queue, which the Staked line still counts', () => {
             renderRow({
                 account: fundedTrxAccount,

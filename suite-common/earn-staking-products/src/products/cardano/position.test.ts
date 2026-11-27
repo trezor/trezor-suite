@@ -304,8 +304,16 @@ describe('getCardanoProductPosition', () => {
             balances: balances({ staked: `40${ADA}` }),
             targets: [],
             operations: ['unstake', 'vote'],
+            warnings: [{ code: 'no-stake-pool' }],
             details: { kind: 'cardano-delegation', poolId: null, drep: null },
         });
+    });
+
+    it('does not build a position for an inactive key with a reported vote', () => {
+        const account = mockCardanoStakingAccount('everstake');
+        account.misc.staking = { ...account.misc.staking, isActive: false, poolId: null };
+
+        expect(getExternalPosition({ account })).toBeNull();
     });
 
     it('keeps the position and the pool of a registered stake key with an empty balance', () => {

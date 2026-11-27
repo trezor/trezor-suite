@@ -244,8 +244,20 @@ describe('StakingCard', () => {
     });
 
     describe('on a Cardano position', () => {
+        it('keeps stake key management available without claiming the balance is staked when there is no pool', () => {
+            renderAdaCard({
+                position: adaPosition({ warnings: [{ code: 'no-stake-pool' }] }),
+            });
+
+            expect(screen.queryByTestId('@account/staking/full-balance')).not.toBeInTheDocument();
+            expect(
+                screen.queryByText(messages.TR_STAKE_RESTAKED_BADGE.defaultMessage),
+            ).not.toBeInTheDocument();
+            expect(screen.getByTestId('@account/staking/unstake-button')).toBeEnabled();
+        });
+
         it('shows the full balance as staked and claims the rewards of a delegated key', async () => {
-            const { report } = renderAdaCard({ position: adaPosition() });
+            const { report } = renderAdaCard({ position: adaDelegation('56398') });
 
             expect(screen.getByTestId('@account/staking/full-balance')).toBeInTheDocument();
             expect(screen.getByTestId('@account/staking/rewards-with-symbol')).toHaveTextContent(

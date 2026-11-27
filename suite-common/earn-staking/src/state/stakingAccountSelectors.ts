@@ -23,6 +23,7 @@ import type { AccountKey, BaseCurrencyAmount } from '@suite-common/wallet-types'
 import {
     getAccountBalanceWithStaking,
     getFiatRateKey,
+    isPositiveBalance,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import type { NetworkSymbol } from '@trezor/network-module-types';
@@ -46,6 +47,12 @@ export type StakingPositionEntry = {
     position: StakingPosition;
     descriptor: StakingProductDescriptor;
 };
+
+export type StakingPositionNotice =
+    | { kind: 'outdated-provider' }
+    | { kind: 'no-stake-pool' }
+    | { kind: 'external-provider' }
+    | { kind: 'votes-left'; count: string };
 
 export type StakingAccountFiatRootState = StakingRootState &
     AccountsRootState &
@@ -104,6 +111,63 @@ export const selectStakingAccountPositionEntry = (
     accountKey: AccountKey,
 ): StakingPositionEntry | null =>
     selectCountedStakingPositionEntriesByAccount(state, accountKey)[0] ?? null;
+
+const isStakingPositionWithoutPool = (position: StakingPosition): boolean =>
+    hasStakingPositionWarning(position, 'no-stake-pool') &&
+    !hasPendingStakingOperation(position, 'stake');
+
+export const selectIsStakingAccountWithoutPool = (
+    state: StakingRootState,
+    accountKey: AccountKey,
+): boolean => {
+    const entry = selectStakingAccountPositionEntry(state, accountKey);
+
+    return entry !== null && isStakingPositionWithoutPool(entry.position);
+};
+
+export const isStakingPositionDelegatedOutside = ({
+    position,
+    descriptor,
+}: StakingPositionEntry): boolean =>
+    position.targets.length > 0 && !descriptor.operations.includes('stake');
+
+export const getStakingPositionNotice = (
+    entry: StakingPositionEntry | null,
+): StakingPositionNotice | null => {
+    if (entry === null) return null;
+
+    const { position, descriptor } = entry;
+
+    if (hasStakingPositionWarning(position, 'outdated-provider')) {
+        return { kind: 'outdated-provider' };
+    }
+
+    if (isStakingPositionWithoutPool(position)) {
+        return { kind: 'no-stake-pool' };
+    }
+
+    if (isStakingPositionDelegatedOutside(entry)) {
+        return { kind: 'external-provider' };
+    }
+
+    const { details } = position;
+    if (details?.kind === 'tron-staking' && isPositiveBalance(details.unallocatedVotingPower)) {
+        return {
+            kind: 'votes-left',
+            count: formatStakingAmount({
+                amount: details.unallocatedVotingPower,
+                networkSymbol: descriptor.networkSymbol,
+            }),
+        };
+    }
+
+    return null;
+};
+
+export const selectStakingAccountNotice = createWeakMapSelector(
+    [selectStakingAccountPositionEntry],
+    getStakingPositionNotice,
+);
 
 export type StakingPositionDetailsOfKind<TKind extends StakingPositionDetails['kind']> = Extract<
     StakingPositionDetails,

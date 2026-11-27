@@ -5,8 +5,8 @@ import { selectAccountFiatBalance } from '@suite-common/assets';
 import {
     type StakingRootState,
     selectAccountCryptoBalanceWithStaking,
-    selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
+    selectStakingAccountNotice,
 } from '@suite-common/earn-staking';
 import { isNetworkWithTokens } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
@@ -70,8 +70,8 @@ const AccountsListItemComponent = ({
         selectIsStakingAccountActive(state, account.key),
     );
 
-    const hasOutdatedProvider = useSelector((state: StakingRootState) =>
-        selectHasStakingAccountWarning(state, account.key, 'outdated-provider'),
+    const notice = useSelector((state: StakingRootState) =>
+        selectStakingAccountNotice(state, account.key),
     );
 
     const fiatBalance = useSelector((state: NativeAccountsRootState) =>
@@ -88,7 +88,9 @@ const AccountsListItemComponent = ({
     const shouldShowAccountLabel = !isNetworkWithTokens(account.symbol) || !isNativeCoinOnly;
     const shouldShowTokenBadge = hasAnyKnownTokens && !isNativeCoinOnly;
     const shouldShowStakingBadge = isStakingActive && !isNativeCoinOnly;
-    const shouldShowZeroApyBadge = hasOutdatedProvider && !isNativeCoinOnly;
+    const shouldShowNoRewardsBadge =
+        (notice?.kind === 'outdated-provider' || notice?.kind === 'no-stake-pool') &&
+        !isNativeCoinOnly;
     const shouldShowTotalFiat = shouldShowTokenBadge && !shouldLimitFiatToNativeBalance;
     const shouldIncludeStakingInFiat = shouldShowStakingBadge && !shouldLimitFiatToNativeBalance;
     const fiatBalanceValue = shouldShowTotalFiat ? (
@@ -139,8 +141,8 @@ const AccountsListItemComponent = ({
                     {!isNativeCoinOnly && !!formattedAccountType && (
                         <Badge label={formattedAccountType} size="small" />
                     )}
-                    {shouldShowZeroApyBadge ? (
-                        <ZeroApyBadge />
+                    {shouldShowNoRewardsBadge ? (
+                        <ZeroApyBadge isInformational={notice?.kind === 'no-stake-pool'} />
                     ) : (
                         shouldShowStakingBadge && (
                             <StakingBadge networkSymbol={account.symbol} accountKey={account.key} />
