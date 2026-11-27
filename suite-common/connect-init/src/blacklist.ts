@@ -14,4 +14,5 @@ export const blacklist: (typeof connectCallableMethods)[number][] = [
     'getCoinInfo',
     'getAccountInfo',
     'bleUnpair',
+    'registerEvmNetwork',
 ];

@@ -228,20 +228,98 @@ export const ethereumNetworkInfoBase = {
     decimals: 18,
 };
 
-const parseEthereumNetworksJson = (json: any) => {
-    Object.keys(json).forEach(key => {
-        const network = json[key];
+// An entry of coins-eth.json, in the snake_case of the JSON.
+type EthereumNetworkJson = Pick<
+    EthereumNetworkInfo,
+    'label' | 'name' | 'shortcut' | 'slip44' | 'support'
+> & { chain_id: EthereumNetworkInfo['chainId'] };
 
-        ethereumNetworks.push({
-            ...ethereumNetworkInfoBase,
-            chainId: network.chain_id,
-            label: network.label,
-            name: network.name,
-            shortcut: network.shortcut,
-            slip44: network.slip44,
-            support: network.support,
-        });
+const createEthereumNetworkInfo = (network: EthereumNetworkJson): EthereumNetworkInfo => ({
+    ...ethereumNetworkInfoBase,
+    chainId: network.chain_id,
+    label: network.label,
+    name: network.name,
+    shortcut: network.shortcut,
+    slip44: network.slip44,
+    support: network.support,
+});
+
+const parseEthereumNetworksJson = (json: Record<string, EthereumNetworkJson>) => {
+    Object.values(json).forEach(network => {
+        ethereumNetworks.push(createEthereumNetworkInfo(network));
     });
+};
+
+// Shortcuts (lowercase) of EVM networks added at runtime, as opposed to the predefined definitions.
+const customEthereumShortcuts = new Set<string>();
+
+export type RegisterEthereumNetworkParams = {
+    symbol: string;
+    name: string;
+    chainId: number;
+};
+
+/**
+ * Adds (or updates) an EVM network. Predefined networks can never be replaced, so a symbol or chain
+ * id already owned by a predefined definition is rejected.
+ */
+export const registerEthereumNetwork = ({
+    symbol,
+    name,
+    chainId,
+}: RegisterEthereumNetworkParams): Readonly<EthereumNetworkInfo> => {
+    const shortcut = symbol.toLowerCase();
+
+    const isPredefinedSymbol =
+        !!getBitcoinNetwork(asCoinSymbol(shortcut)) ||
+        !!getMiscNetwork(asCoinSymbol(shortcut)) ||
+        (!!getEthereumNetwork(asCoinSymbol(shortcut)) && !customEthereumShortcuts.has(shortcut));
+    if (isPredefinedSymbol) {
+        throw ERRORS.TypedError(
+            'Method_InvalidParameter',
+            `Symbol ${symbol} is already used by a predefined network`,
+        );
+    }
+
+    const isPredefinedChainId = ethereumNetworks.some(
+        network =>
+            network.chainId === chainId &&
+            !customEthereumShortcuts.has(network.shortcut.toLowerCase()),
+    );
+    if (isPredefinedChainId) {
+        throw ERRORS.TypedError(
+            'Method_InvalidParameter',
+            `Chain ID ${chainId} is already used by a predefined network`,
+        );
+    }
+
+    // Custom networks have no firmware support data of their own and behave like any other EVM
+    // chain on the device, so they inherit the support matrix of the predefined Ethereum entry.
+    const ethereum = getEthereumNetwork(asCoinSymbol('eth'));
+    if (!ethereum) {
+        throw ERRORS.TypedError('Method_UnknownCoin');
+    }
+
+    const networkInfo = createEthereumNetworkInfo({
+        chain_id: chainId,
+        label: name,
+        name,
+        shortcut: symbol,
+        slip44: ethereum.slip44,
+        support: { ...ethereum.support },
+    });
+
+    const existingIndex = ethereumNetworks.findIndex(
+        network => network.shortcut.toLowerCase() === shortcut,
+    );
+    if (existingIndex === -1) {
+        ethereumNetworks.push(networkInfo);
+    } else {
+        ethereumNetworks[existingIndex] = networkInfo;
+    }
+    customEthereumShortcuts.add(shortcut);
+
+    return networkInfo;
 };
 
 const parseMiscNetworksJSON = (json: any) => {

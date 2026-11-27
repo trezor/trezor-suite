@@ -15,6 +15,7 @@ import { getFiatRatesForTimestamps } from './api/getFiatRatesForTimestamps';
 import { getInfo } from './api/getInfo';
 import { getRawTransactions, getTransactions } from './api/getTransactions';
 import { pushTransaction } from './api/pushTransaction';
+import { registerEvmNetwork } from './api/registerEvmNetwork';
 import { setCustomBackend } from './api/setCustomBackend';
 import { subscribe, unsubscribe } from './api/subscribe';
 import { subscribeFiatRates } from './api/subscribeFiatRates';
@@ -49,6 +50,7 @@ export type TrezorBlockchainApi = {
     getInfo: Method<typeof getInfo>;
     getDefaultBackend: Method<typeof getDefaultBackend>;
     setCustomBackend: Method<typeof setCustomBackend>;
+    registerEvmNetwork: Method<typeof registerEvmNetwork>;
     disconnect: Method<typeof disconnect>;
     subscribe: Method<typeof subscribe>;
     unsubscribe: Method<typeof unsubscribe>;
@@ -117,6 +119,7 @@ export const TrezorBlockchain: TrezorBlockchainApi = {
     getInfo: method(getInfo),
     getDefaultBackend: method(getDefaultBackend),
     setCustomBackend: method(setCustomBackend),
+    registerEvmNetwork: method(registerEvmNetwork),
     disconnect: method(disconnect),
     subscribe: method(subscribe),
     unsubscribe: method(unsubscribe),
