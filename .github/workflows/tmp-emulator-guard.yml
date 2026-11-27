@@ -1,0 +1,69 @@
+name: "[TMP] Android emulator boot ANR guard"
+
+# Temporary verification, not meant to be merged. Boots the E2E emulator through the real runner
+# action while the host CPU is contended, which makes the boot ANR likely, and checks the guard.
+on:
+  push:
+    branches:
+      - tmp/quickstep-anr-guard
+
+permissions: {}
+
+jobs:
+  guard:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        REPLICA: [0, 1, 2, 3, 4, 5, 6, 7]
+        GUARD: [guard, control]
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+        with:
+          persist-credentials: false
+
+      - name: Enable Android emulator KVM optimalization
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Start host CPU contention
+        run: |
+          for _ in 1 2 3 4 5 6 7 8; do
+            nohup timeout 900 sh -c 'while :; do :; done' > /dev/null 2>&1 &
+          done
+
+      - name: Boot emulator and check the guard
+        timeout-minutes: 20
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
+        env:
+          RUNNER_TEMP: /tmp
+          GUARD: ${{ matrix.GUARD }}
+        with:
+          api-level: 34
+          profile: pixel_6
+          arch: x86_64
+          working-directory: suite-native-app/app
+          ram-size: 4096M
+          force-avd-creation: true
+          avd-name: Pixel_6_API_34
+          emulator-port: 5554
+          emulator-options: -no-window -gpu lavapipe -accel on -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none -no-metrics
+          disable-spellchecker: true
+          disable-linux-hw-accel: false
+          disable-animations: true
+          cores: 4
+          heap-size: 512M
+          script: |
+            echo "BEFORE $(adb shell dumpsys window displays | grep -m1 mCurrentFocus=)"
+            if [ "$GUARD" = guard ]; then bash scripts/prepareAndroidEmulator.sh; else sleep 45; fi
+            echo "AFTER $(adb shell dumpsys window displays | grep -m1 mCurrentFocus=)"
+            adb logcat -d -b system | grep -E "WindowManager: ANR in|ActivityManager: ANR in|InputDispatcher: (Waiting because|Dropping)|Displayed com.android.launcher3" || true
+            sleep 15
+            echo "FINAL $(adb shell dumpsys window displays | grep -m1 mCurrentFocus=)"
