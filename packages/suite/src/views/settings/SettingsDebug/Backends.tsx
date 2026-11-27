@@ -3,7 +3,11 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { selectEnabledNetworks, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
+import {
+    selectBlockchainUrl,
+    selectEnabledNetworks,
+    selectNetworkBlockchainInfo,
+} from '@suite-common/wallet-core';
 import { type ConnectionStatus } from '@suite-common/wallet-types';
 import { Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -121,9 +125,10 @@ const BackendItem = ({
 };
 
 const CoinItem = ({ symbol }: CoinItemProps) => {
-    const { url, error, connected, reconnectionTime, identityConnections } = useSelector(state =>
+    const { error, connected, reconnectionTime, identityConnections } = useSelector(state =>
         selectNetworkBlockchainInfo(state, symbol),
     );
+    const url = useSelector(state => selectBlockchainUrl(state, symbol));
 
     const { dispatch } = useServices(injectDispatch);
 

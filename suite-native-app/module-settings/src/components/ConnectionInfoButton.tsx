@@ -2,7 +2,11 @@ import { Keyboard } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { type Network } from '@suite-common/wallet-config';
-import { type BlockchainRootState, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
+import {
+    type BlockchainRootState,
+    selectBlockchainUrl,
+    selectNetworkBlockchainInfo,
+} from '@suite-common/wallet-core';
 import {
     BottomSheetModal,
     IconButton,
@@ -33,8 +37,11 @@ const InfoLine = ({ title, value }: InfoLineProps) => (
 export const ConnectionInfoButton = ({ network }: ConnectionInfoButtonProps) => {
     const { bottomSheetRef, openModal } = useBottomSheetModal();
 
-    const { connected, url, blockHash, blockHeight, version } = useSelector(
+    const { connected, blockHash, blockHeight, version } = useSelector(
         (state: BlockchainRootState) => selectNetworkBlockchainInfo(state, network.symbol),
+    );
+    const url = useSelector((state: BlockchainRootState) =>
+        selectBlockchainUrl(state, network.symbol),
     );
 
     const openBottomSheet = () => {
