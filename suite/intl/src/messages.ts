@@ -14386,6 +14386,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_CLAIM_REWARDS',
         defaultMessage: 'Claim rewards',
     },
+    TR_EARN_YIELD_CLAIM_REWARDS_HEADER: {
+        id: 'TR_EARN_YIELD_CLAIM_REWARDS_HEADER',
+        defaultMessage: 'Claim Rewards',
+    },
     TR_EARN_YIELD_CLAIM_MODAL_TITLE: {
         id: 'TR_EARN_YIELD_CLAIM_MODAL_TITLE',
         defaultMessage: 'Bonus rewards to claim',

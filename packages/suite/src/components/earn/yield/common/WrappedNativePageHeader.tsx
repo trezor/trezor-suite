@@ -58,7 +58,7 @@ export const WrappedNativePageHeader = ({
                     />
                 )
             }
-            showBalance
+            balanceFormat="exact"
             onBack={account ? handleBack : undefined}
             expandable
         />
