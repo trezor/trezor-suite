@@ -759,7 +759,7 @@ const yieldSlice = createSlice({
         storePrecomposedTransaction(
             state: YieldState,
             action: PayloadAction<
-                YieldSessionActionPayload & {
+                Partial<YieldSessionActionPayload> & {
                     precomposedTx: PrecomposedTransactionFinal;
                     precomposedForm: FormState;
                     availableRewards?: YieldClaimReward[];

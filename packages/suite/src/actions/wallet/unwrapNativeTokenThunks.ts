@@ -13,13 +13,15 @@ import { type Account } from '@suite-common/wallet-types';
 import { createThunk } from '@trezor/redux-utils';
 
 import {
-    type SendYieldTransactionDeps,
-    type SendYieldTransactionState,
+    type SendEvmTransactionDeps,
+    type SendEvmTransactionState,
+    isEvmBroadcastError,
+    openEvmTransactionSimulationThunk,
+    sendEvmTokenTransaction,
+} from './evmTransaction';
+import {
     getYieldDeviceErrorMessage,
     getYieldSubmitErrorAnalyticsMessage,
-    isYieldPushError,
-    openYieldSimulationThunk,
-    sendYieldTransaction,
 } from './stablecoin-yield/signingHelpers';
 
 const UNWRAP_NATIVE_TOKEN_PREFIX = '@wallet/unwrap-native-token';
@@ -36,9 +38,9 @@ type UnwrapNativeTokenPayload = {
 };
 
 type SubmitUnwrapNativeTokenThunkState = ComposeYieldUnwrapTransactionThunkState &
-    SendYieldTransactionState;
+    SendEvmTransactionState;
 
-type SubmitUnwrapNativeTokenThunkDeps = SendYieldTransactionDeps & {
+type SubmitUnwrapNativeTokenThunkDeps = SendEvmTransactionDeps & {
     services: AnalyticsDep;
 };
 
@@ -101,7 +103,7 @@ export const submitUnwrapNativeTokenThunk = createThunk<
             }
 
             const userAcceptedTxSimulation = await dispatch(
-                openYieldSimulationThunk(
+                openEvmTransactionSimulationThunk(
                     {
                         flow: 'unwrap',
                         unsignedTx: result.unsignedTransaction,
@@ -130,20 +132,18 @@ export const submitUnwrapNativeTokenThunk = createThunk<
                 return undefined;
             }
 
-            const sendResult = await sendYieldTransaction({
+            const sendResult = await sendEvmTokenTransaction({
                 account,
                 amount: unwrapAmount,
                 token,
                 unsignedTransaction: result.unsignedTransaction,
-                flowKey: yieldFlow?.flowKey ?? 'standalone-unwrap-native',
-                flowType: yieldFlow?.flowType ?? 'withdraw',
+                yieldFlow,
+                device,
+                txType: 'yield',
+                simulation: userAcceptedTxSimulation,
                 dispatch,
                 getState,
-                selectedFee: userAcceptedTxSimulation.selectedFee,
-                selectedFeeLevel: userAcceptedTxSimulation.selectedFeeLevel,
             });
-
-            userAcceptedTxSimulation.resolve();
 
             if (sendResult.status === 'cancelled') {
                 extra.services.analytics.report({
@@ -205,7 +205,7 @@ export const submitUnwrapNativeTokenThunk = createThunk<
 
             return { txid: sendResult.txid, fee: sendResult.fee };
         } catch (error) {
-            if (isYieldPushError(error)) {
+            if (isEvmBroadcastError(error)) {
                 dispatch(
                     transactionsActions.transactionBroadcastStatus({
                         account,

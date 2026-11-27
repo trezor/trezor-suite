@@ -14,7 +14,11 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type EthereumGetCurrentNonceThunkState, yieldActions } from '@suite-common/wallet-core';
+import {
+    type EthereumGetCurrentNonceThunkState,
+    yieldActions,
+    yieldReducer,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
@@ -22,8 +26,8 @@ import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect, { type DeviceUniquePath } from '@trezor/connect';
 import { asGetter } from '@trezor/dependency-injection';
 
+import { type SendEvmTransactionDeps, type SendEvmTransactionState } from '../evmTransaction';
 import { claimMerklRewardsThunk } from './claimMerklRewardsThunk';
-import { type SendYieldTransactionDeps, type SendYieldTransactionState } from './signingHelpers';
 
 const mockOpenSimulation = jest.fn();
 const mockSelectSelectedDevice = jest.fn();
@@ -35,8 +39,8 @@ const mockDevice = mockSuiteDevice({
     state: { staticSessionId: 'mock@device:0' },
 });
 
-type ClaimMerklRewardsThunkDeps = SendYieldTransactionDeps & { services: DesktopAnalyticsDep };
-type ClaimMerklRewardsThunkState = SendYieldTransactionState & EthereumGetCurrentNonceThunkState;
+type ClaimMerklRewardsThunkDeps = SendEvmTransactionDeps & { services: DesktopAnalyticsDep };
+type ClaimMerklRewardsThunkState = SendEvmTransactionState & EthereumGetCurrentNonceThunkState;
 
 jest.mock('@suite/modal', () => {
     const actual = jest.requireActual<{ openDeferredModal: typeof openDeferredModal }>(
@@ -119,10 +123,18 @@ const dispatchClaim = (report: jest.Mock, isReviewModalConfirmed = true) => {
         ClaimMerklRewardsThunkState
     >({
         preloadedState: {},
-        reducer: (state, action) => ({
-            ...state!,
-            modal: modalReducer(state?.modal, action),
-        }),
+        reducer: (state, action) => {
+            const wallet = state?.wallet;
+
+            return {
+                ...state!,
+                modal: modalReducer(state?.modal, action),
+                wallet: {
+                    ...wallet!,
+                    stablecoinYield: yieldReducer(wallet?.stablecoinYield, action),
+                },
+            };
+        },
         serializableCheck: {
             ignoredActions: [MODAL_OPEN_USER_CONTEXT],
             ignoredPaths: ['modal'],

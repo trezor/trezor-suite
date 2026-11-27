@@ -22,22 +22,22 @@ import { createDeferred } from '@trezor/utils';
 
 import {
     PUSH_TRANSACTION_FAILED_CAUSE,
-    type SendYieldTransactionDeps,
-    type SendYieldTransactionState,
-} from './stablecoin-yield/signingHelpers';
+    type SendEvmTransactionDeps,
+    type SendEvmTransactionState,
+} from './evmTransaction';
 import { submitWrapNativeTokenThunk } from './wrapNativeTokenThunks';
 
 const ethSymbol = asNetworkSymbol('eth');
 
 const mockComposeYieldWrapTransactionThunk = jest.fn();
 const mockOpenDeferredModal = jest.fn();
-const mockSendYieldTransaction = jest.fn();
+const mockSendEvmTokenTransaction = jest.fn();
 
 const mockSentResult = (txid: string) => ({ status: 'sent' as const, txid, fee: '31500000000' });
 const mockCancelledResult = { status: 'cancelled' as const, stage: 'signing' as const };
 
-type WrapNativeTokenThunkDeps = SendYieldTransactionDeps & WithServices<AnalyticsDep>;
-type WrapNativeTokenThunkState = ComposeYieldWrapTransactionThunkState & SendYieldTransactionState;
+type WrapNativeTokenThunkDeps = SendEvmTransactionDeps & WithServices<AnalyticsDep>;
+type WrapNativeTokenThunkState = ComposeYieldWrapTransactionThunkState & SendEvmTransactionState;
 type WrapNativeTokenTestStore = TestCompositionStore<
     WrapNativeTokenThunkState,
     WrapNativeTokenThunkDeps
@@ -53,9 +53,13 @@ jest.mock('@suite/modal', () => ({
     openDeferredModal: (payload: unknown) => mockOpenDeferredModal(payload),
 }));
 
+jest.mock('./evmTransaction', () => ({
+    ...jest.requireActual('./evmTransaction'),
+    sendEvmTokenTransaction: (payload: unknown) => mockSendEvmTokenTransaction(payload),
+}));
+
 jest.mock('./stablecoin-yield/signingHelpers', () => ({
     ...jest.requireActual('./stablecoin-yield/signingHelpers'),
-    sendYieldTransaction: (payload: unknown) => mockSendYieldTransaction(payload),
     getYieldSubmitErrorAnalyticsMessage: jest.fn(() => 'submit-failed'),
 }));
 
@@ -166,7 +170,7 @@ describe('submitWrapNativeTokenThunk', () => {
             await submit.unwrap();
 
             expect(mockOpenDeferredModal).not.toHaveBeenCalled();
-            expect(mockSendYieldTransaction).not.toHaveBeenCalled();
+            expect(mockSendEvmTokenTransaction).not.toHaveBeenCalled();
             expect(report).not.toHaveBeenCalledWith(
                 expect.objectContaining({
                     payload: expect.objectContaining({ type: 'tx-simulation-modal' }),
@@ -197,14 +201,18 @@ describe('submitWrapNativeTokenThunk', () => {
 
         await dispatchWrap(jest.fn());
 
-        expect(mockSendYieldTransaction).toHaveBeenCalledWith(
-            expect.objectContaining({ selectedFee: null, selectedFeeLevel: 'low' }),
+        expect(mockSendEvmTokenTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({
+                txType: 'yield',
+                yieldFlow: undefined,
+                simulation: expect.objectContaining({ selectedFee: null, selectedFeeLevel: 'low' }),
+            }),
         );
     });
 
     it.each(['signing', 'review'] as const)('reports a cancellation at %s', async stage => {
         const report = jest.fn();
-        mockSendYieldTransaction.mockResolvedValue({ status: 'cancelled', stage });
+        mockSendEvmTokenTransaction.mockResolvedValue({ status: 'cancelled', stage });
         mockOpenDeferredModal.mockImplementation(
             () => () =>
                 Promise.resolve({
@@ -242,7 +250,7 @@ describe('submitWrapNativeTokenThunk', () => {
                 }),
         }));
         mockOpenDeferredModal.mockImplementation(() => () => Promise.resolve({ value: false }));
-        mockSendYieldTransaction.mockResolvedValue(mockCancelledResult);
+        mockSendEvmTokenTransaction.mockResolvedValue(mockCancelledResult);
     });
 
     it('uses the shared wrap composition from wallet-core', async () => {
@@ -266,7 +274,7 @@ describe('submitWrapNativeTokenThunk', () => {
         mockOpenDeferredModal.mockImplementation(
             () => () => Promise.resolve({ value: true, resolve: jest.fn() }),
         );
-        mockSendYieldTransaction.mockResolvedValue(mockSentResult('0xwrap'));
+        mockSendEvmTokenTransaction.mockResolvedValue(mockSentResult('0xwrap'));
 
         await store
             .dispatch(
@@ -282,10 +290,9 @@ describe('submitWrapNativeTokenThunk', () => {
             )
             .unwrap();
 
-        expect(mockSendYieldTransaction).toHaveBeenCalledWith(
+        expect(mockSendEvmTokenTransaction).toHaveBeenCalledWith(
             expect.objectContaining({
-                flowKey: 'yield-flow',
-                flowType: 'deposit',
+                yieldFlow: { flowKey: 'yield-flow', flowType: 'deposit' },
             }),
         );
     });
@@ -305,7 +312,7 @@ describe('submitWrapNativeTokenThunk', () => {
         mockOpenDeferredModal.mockImplementation(
             () => () => Promise.resolve({ value: true, resolve: jest.fn() }),
         );
-        mockSendYieldTransaction.mockResolvedValue(mockSentResult('0xwrap'));
+        mockSendEvmTokenTransaction.mockResolvedValue(mockSentResult('0xwrap'));
     };
 
     it('shows a wrap toast displaying both the native and wrapped assets', async () => {
@@ -385,7 +392,7 @@ describe('submitWrapNativeTokenThunk', () => {
         mockOpenDeferredModal.mockImplementation(
             () => () => Promise.resolve({ value: true, resolve: jest.fn() }),
         );
-        mockSendYieldTransaction.mockResolvedValue(mockCancelledResult);
+        mockSendEvmTokenTransaction.mockResolvedValue(mockCancelledResult);
         const store = buildStore(jest.fn());
 
         await store
@@ -402,7 +409,7 @@ describe('submitWrapNativeTokenThunk', () => {
             mockOpenDeferredModal.mockImplementation(
                 () => () => Promise.resolve({ value: true, resolve: jest.fn() }),
             );
-            mockSendYieldTransaction.mockRejectedValue(error);
+            mockSendEvmTokenTransaction.mockRejectedValue(error);
         };
 
         const getFlowErrors = (store: WrapNativeTokenTestStore) =>
@@ -559,7 +566,7 @@ describe('submitWrapNativeTokenThunk', () => {
                         selectedFeeLevel: 'normal',
                     }),
             );
-            mockSendYieldTransaction.mockResolvedValue(mockCancelledResult);
+            mockSendEvmTokenTransaction.mockResolvedValue(mockCancelledResult);
 
             await dispatchInFlowWrap(report);
 
@@ -583,7 +590,7 @@ describe('submitWrapNativeTokenThunk', () => {
                         selectedFeeLevel: 'normal',
                     }),
             );
-            mockSendYieldTransaction.mockRejectedValue(new Error('boom'));
+            mockSendEvmTokenTransaction.mockRejectedValue(new Error('boom'));
 
             await dispatchInFlowWrap(report);
 
@@ -625,7 +632,7 @@ describe('submitWrapNativeTokenThunk', () => {
 
         await dispatchWrap(report);
 
-        expect(mockSendYieldTransaction).not.toHaveBeenCalled();
+        expect(mockSendEvmTokenTransaction).not.toHaveBeenCalled();
         expect(report).not.toHaveBeenCalled();
     });
 
@@ -693,7 +700,7 @@ describe('submitWrapNativeTokenThunk', () => {
                     selectedFeeLevel: 'normal',
                 }),
         );
-        mockSendYieldTransaction.mockResolvedValue(mockSentResult('0xabc'));
+        mockSendEvmTokenTransaction.mockResolvedValue(mockSentResult('0xabc'));
 
         const store = await dispatchWrap(report);
         expect(
