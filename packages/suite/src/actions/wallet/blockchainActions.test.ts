@@ -19,7 +19,11 @@ import {
     tokenDefinitionsInitialState,
 } from '@suite-common/token-definitions';
 import { type TradingRootState, prepareTradingReducer } from '@suite-common/trading';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    asNetworkSymbol,
+    registerLegacyCustomEvmNetwork,
+    unregisterLegacyNetwork,
+} from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
     type AccountsRootState,
@@ -183,6 +187,45 @@ describe('Blockchain Actions', () => {
                 f.blockchainSetCustomBackend,
             );
         });
+    });
+
+    it('init: registers the custom networks in the backends before preloading the fees', async () => {
+        const definition = testMocks.getCustomEvmNetworkDefinition({ blockTimeSeconds: 2.5 });
+        const initialState = getInitialState();
+        const store = mockStore({
+            ...initialState,
+            wallet: {
+                ...initialState.wallet,
+                settings: {
+                    ...initialState.wallet.settings,
+                    enabledNetworks: [definition.symbol],
+                    customEvmNetworks: [definition],
+                },
+            },
+        });
+        // Restored from storage before the backends start, so its fees are preloaded too.
+        registerLegacyCustomEvmNetwork(definition);
+
+        try {
+            await store.dispatch(initBlockchainThunk());
+        } finally {
+            unregisterLegacyNetwork(definition.symbol);
+        }
+
+        expect(TrezorBlockchain.registerEvmNetwork).toHaveBeenCalledWith({
+            symbol: definition.symbol,
+            name: definition.name,
+            rpcUrls: definition.rpcUrls,
+            blockTimeSeconds: 2.5,
+        });
+        expect(TrezorBlockchain.estimateFeeLevels).toHaveBeenCalledWith(
+            expect.objectContaining({ coin: definition.symbol }),
+        );
+        expect(
+            jest.mocked(TrezorBlockchain.registerEvmNetwork).mock.invocationCallOrder[0],
+        ).toBeLessThan(
+            jest.mocked(TrezorBlockchain.estimateFeeLevels).mock.invocationCallOrder[0] ?? Infinity,
+        );
     });
 
     it('init: dispatches the events of the backends', async () => {

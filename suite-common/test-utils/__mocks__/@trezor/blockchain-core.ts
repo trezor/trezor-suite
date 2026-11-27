@@ -24,6 +24,7 @@ export const TrezorBlockchain = {
     getInfo: call('getInfo'),
     getDefaultBackend: call('getDefaultBackend'),
     setCustomBackend: call('setCustomBackend'),
+    registerEvmNetwork: call('registerEvmNetwork'),
     disconnect: call('disconnect'),
     subscribe: call('subscribe'),
     unsubscribe: call('unsubscribe'),

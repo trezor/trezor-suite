@@ -64,6 +64,7 @@ const renderReceiveAddress = async ({
             wallet: {
                 accounts,
                 selectedAccount: { account: undefined },
+                settings: { customEvmNetworks: [] },
                 trading: {
                     buy: {
                         receiveAccountKey: undefined,
