@@ -1,11 +1,12 @@
-import { type TokenMetadata, type TokenMetadataSource } from '@suite-common/token';
 import { toTokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TransactionReviewStatefulOutput } from '@suite-common/wallet-types';
+import { type TransactionReviewOutput } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@trezor/network-module-types';
+
+import { type TokenMetadata, type TokenMetadataSource } from './TokenMetadataContext';
 
 export const transactionReviewOutputsToTokenMetadataSources = (
     networkSymbol: NetworkSymbol | undefined,
-    outputs: readonly TransactionReviewStatefulOutput[] = [],
+    outputs: readonly TransactionReviewOutput[] = [],
 ): TokenMetadataSource[] =>
     networkSymbol
         ? [

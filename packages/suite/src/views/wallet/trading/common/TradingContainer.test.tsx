@@ -20,7 +20,8 @@ import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/m
 jest.mock('./TradingFooter/TradingFooter', () => ({ TradingFooter: () => null }));
 jest.mock('./TradingLayout/useTradingPageHeader', () => ({ useTradingPageHeader: jest.fn() }));
 
-// Invity lowercases EVM contracts, while accounts store them checksummed.
+// Invity lowercases EVM contracts and symbols, while accounts store
+// the contract checksummed and keep the symbol as the token reports it.
 const USDC_CRYPTO_ID = 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId;
 const USDC_ACCOUNT_CONTRACT = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 
@@ -39,7 +40,7 @@ const usdcAccount = mockWalletAccount({
         {
             standard: 'ERC20',
             contract: toTokenAddress(USDC_ACCOUNT_CONTRACT),
-            symbol: 'usdc',
+            symbol: 'USDC',
             name: 'USD Coin',
             decimals: 6,
             balance: '60',

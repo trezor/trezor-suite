@@ -6,6 +6,7 @@ import {
     type TokenMetadataByNetwork,
     type TokenMetadataSource,
 } from './TokenMetadataContext';
+import { getTokenMetadataKey } from './tokenMetadataKey';
 
 type ConsolidateTokenMetadataParams = {
     sources: readonly TokenMetadataSource[];
@@ -30,8 +31,10 @@ export const consolidateTokenMetadata = ({
             tokensByNetwork.set(source.networkSymbol, tokens);
         }
         for (const token of source.tokens.toReversed()) {
-            const inherited = tokens.get(token.contract);
-            tokens.set(token.contract, {
+            const tokenKey = getTokenMetadataKey(source.networkSymbol, token.contract);
+            const inherited = tokens.get(tokenKey);
+
+            tokens.set(tokenKey, {
                 contract: token.contract,
                 name: token.name ?? inherited?.name,
                 symbol: token.symbol ?? inherited?.symbol,
