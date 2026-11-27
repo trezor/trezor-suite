@@ -1,4 +1,3 @@
-import { onSuiteInit, onSuiteReady, setSuiteError } from '@suite/suite-lifecycle';
 import {
     acquireDeviceThunk,
     deviceActions,
@@ -18,40 +17,6 @@ const SUITE_DEVICE_REMEMBERED = mockSuiteDevice({ connected: false });
 const CONNECT_DEVICE = mockConnectDevice({ path: '1' });
 
 const reducerActions = [
-    {
-        description: `SUITE.READY`,
-        actions: [onSuiteReady()],
-        result: [
-            {
-                lifecycle: {
-                    status: 'ready',
-                },
-            },
-        ],
-    },
-    {
-        description: `SUITE.ERROR`,
-        actions: [setSuiteError('Error')],
-        result: [
-            {
-                lifecycle: {
-                    status: 'error',
-                    error: 'Error',
-                },
-            },
-        ],
-    },
-    {
-        description: `SUITE.INIT`,
-        actions: [onSuiteInit()],
-        result: [
-            {
-                lifecycle: {
-                    status: 'loading',
-                },
-            },
-        ],
-    },
     {
         description: `TRANSPORT.START`,
         actions: [

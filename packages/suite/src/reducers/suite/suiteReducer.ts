@@ -1,14 +1,6 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
-import {
-    type SuiteLifecycle,
-    onSuiteInit,
-    onSuiteReady,
-    setSuiteError,
-    storageCorrupted,
-    storageError,
-} from '@suite/suite-lifecycle';
 import type { CountryCode } from '@suite-common/geolocation';
 import { TRANSPORT, type TransportInfo, isTransportEventOfType } from '@trezor/connect';
 
@@ -40,7 +32,6 @@ export interface TransportState {
 }
 
 export type SuiteState = {
-    lifecycle: SuiteLifecycle;
     transport?: TransportState;
     evmSettings: EvmSettings;
     countryCode: CountryCode | null;
@@ -51,7 +42,6 @@ export type SuiteState = {
 };
 
 const initialState: SuiteState = {
-    lifecycle: { status: 'initial' },
     evmSettings: {
         confirmExplanationModalClosed: {},
         explanationBannerClosed: {},
@@ -79,16 +69,6 @@ const suiteReducer = (state: SuiteState = initialState, action: UnknownAction): 
                 ...draft.seenDisconnectNotificationForDeviceIds,
                 ...(action.payload.suiteSettings?.seenDisconnectNotificationForDeviceIds ?? []),
             ];
-        } else if (storageError.match(action)) {
-            draft.lifecycle = { status: 'db-error', error: action.payload };
-        } else if (storageCorrupted.match(action)) {
-            draft.lifecycle = { status: 'db-corrupted', error: action.payload };
-        } else if (onSuiteInit.match(action)) {
-            draft.lifecycle = { status: 'loading' };
-        } else if (onSuiteReady.match(action)) {
-            draft.lifecycle = { status: 'ready' };
-        } else if (setSuiteError.match(action)) {
-            draft.lifecycle = { status: 'error', error: action.payload };
         } else if (setRecentlyConnectedDevicePath.match(action)) {
             draft.recentlyConnectedDeviceRef = action.payload;
         } else if (setRecentlyDisconnectedDevice.match(action)) {
