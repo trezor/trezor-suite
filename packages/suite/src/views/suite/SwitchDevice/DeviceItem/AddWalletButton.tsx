@@ -5,6 +5,7 @@ import { selectIsDeviceOrUiLocked } from '@suite/locks';
 import { closeModalAppThunk, gotoThunk } from '@suite/router';
 import { selectDeviceThunk } from '@suite-common/device';
 import { type AcquiredDevice, type TrezorDevice } from '@suite-common/suite-types';
+import { deviceNeedsAttention, getStatus } from '@suite-common/suite-utils';
 import { selectIsAnyNetworkEnabled, startAddWalletDiscoveryThunk } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
 import { Button, Card, Column, IconButton, Row, Text, Tooltip } from '@trezor/components';
@@ -59,6 +60,18 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
     );
 
     if (!isPassphraseProtectionEnabled && emptyPassphraseWalletExists) {
+        return null;
+    }
+
+    const deviceStatus = getStatus(device);
+
+    // The banner above asks for another step (set up, update, use here…) before a wallet can be
+    // added. A PIN-locked device asks for the PIN on its own as soon as a wallet is added.
+    if (
+        device.connected &&
+        deviceNeedsAttention(deviceStatus) &&
+        deviceStatus !== 'device-pin-locked'
+    ) {
         return null;
     }
 
