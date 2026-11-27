@@ -11,7 +11,10 @@ import {
 import { type CurrentRate, asTimestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 
-import { useFiatFromCryptoValue } from './useFiatFromCryptoValue';
+import {
+    type UseFiatFromCryptoValueParams,
+    useFiatFromCryptoValue,
+} from './useFiatFromCryptoValue';
 
 type State = FiatRatesRootState & WalletSettingsRootState;
 
@@ -51,14 +54,14 @@ const reducer = (state: State = preloadedState, action: UnknownAction): State =>
     };
 };
 
-const renderFiatHook = () => {
+const renderFiatHook = (params: Partial<UseFiatFromCryptoValueParams> = {}) => {
     const { services } = createTestCompositionRoot<void, State>({ reducer, preloadedState });
     let renderCount = 0;
     const hook = renderHookWithStoreProvider(
         () => {
             renderCount++;
 
-            return useFiatFromCryptoValue({ amount: '2', symbol });
+            return useFiatFromCryptoValue({ amount: '2', symbol, ...params });
         },
         { services },
     );
@@ -104,5 +107,20 @@ describe('useFiatFromCryptoValue', () => {
 
         expect(getRenderCount()).toBe(renderCountBefore + 1);
         expect(result.current.fiatAmount?.toString()).toBe('220');
+    });
+
+    it('does not re-render on a price change when it uses the historic rate', () => {
+        const { result, store, getRenderCount } = renderFiatHook({
+            historicRate: 50,
+            useHistoricRate: true,
+        });
+        const renderCountBefore = getRenderCount();
+
+        act(() => {
+            store.dispatch(setCurrentRate({ rate: 110, usdRate: 110 }));
+        });
+
+        expect(getRenderCount()).toBe(renderCountBefore);
+        expect(result.current.fiatAmount?.toString()).toBe('100');
     });
 });

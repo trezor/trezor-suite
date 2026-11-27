@@ -31,9 +31,14 @@ export const useFiatFromCryptoValue = ({
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, baseCurrencyCode, tokenAddress);
 
-    // Only the number: every fetch rewrites the rate entry, even when the price stays the same.
-    const currentRate = useSelector(
-        state => selectFiatRatesByFiatRateKey(state, fiatRateKey, rateType)?.rate,
+    /**
+     * Only the number: every fetch rewrites the rate entry, even when the price stays the same.
+     * With the historic rate, skip the current one so its changes don't re-render.
+     */
+    const currentRate = useSelector(state =>
+        useHistoricRate
+            ? undefined
+            : selectFiatRatesByFiatRateKey(state, fiatRateKey, rateType)?.rate,
     );
 
     const rate = useHistoricRate ? historicRate : currentRate;
