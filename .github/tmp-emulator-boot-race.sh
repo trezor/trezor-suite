@@ -24,7 +24,8 @@ declare -A BUILDS=([37.2.13]=16740729 [37.3.10]=16970787)
 SDKMANAGER=$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager
 AVDMANAGER=$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager
 ADB=$ANDROID_HOME/platform-tools/adb
-STORE=$ANDROID_HOME/.emulator-builds
+# Outside the SDK root (so the SDK tools do not see duplicate packages), on the same filesystem.
+STORE=$(dirname "$ANDROID_HOME")/emulator-builds
 export ANDROID_AVD_HOME=$HOME/.android/avd
 
 now_ms() { date +%s%3N; }
@@ -34,7 +35,8 @@ focus_state() {
 }
 
 setup() {
-    mkdir -p "$OUT" "$ANDROID_AVD_HOME" "$STORE"
+    mkdir -p "$OUT" "$ANDROID_AVD_HOME"
+    sudo mkdir -p "$STORE" && sudo chown "$(id -u):$(id -g)" "$STORE" || return 1
     {
         lscpu
         nproc
@@ -49,6 +51,9 @@ setup() {
     "$SDKMANAGER" --install 'build-tools;37.0.0' platform-tools 'platforms;android-34' > /dev/null || return 1
     "$SDKMANAGER" --install "$SYSTEM_IMAGE" --channel=0 > /dev/null || return 1
 
+    # avdmanager requires a registered emulator package, so keep its package.xml for both builds.
+    "$SDKMANAGER" --install emulator --channel=0 > /dev/null || return 1
+    cp "$ANDROID_HOME/emulator/package.xml" "$RUNNER_TEMP/emulator-package.xml" || return 1
     rm -rf "$ANDROID_HOME/emulator"
     local version
     for version in "${!BUILDS[@]}"; do
@@ -57,6 +62,7 @@ setup() {
         mkdir -p "$STORE/$version"
         unzip -q "$RUNNER_TEMP/emulator.zip" -d "$STORE/$version" || return 1
         rm -f "$RUNNER_TEMP/emulator.zip"
+        cp "$RUNNER_TEMP/emulator-package.xml" "$STORE/$version/emulator/package.xml"
     done
     printf 'index\tversion\tmode\temulator\tbooted\tboot_ms\tlaunch_to_booted_ms\twait_ms\tkeyevent_ms\tkeyevent_rc\tanr_lastanr\tanr_logcat\tanr_dialog\tdialog_after_close\tload1\tfocus\n' \
         > "$OUT/results.tsv"
@@ -105,6 +111,7 @@ run_boot() {
             booted=1
             break
         fi
+        kill -0 "$emulator_pid" 2> /dev/null || break
         sleep 2
     done
     local t_booted load1
@@ -124,6 +131,8 @@ run_boot() {
                 sleep 0.5
             done
             wait_ms=$(($(now_ms) - t_wait))
+            # What the input dispatcher itself considers focused at that moment.
+            adb_s shell dumpsys input 2> /dev/null | tr -d '\r' | grep -A 3 -E 'FocusedApplications|FocusedWindows' > "$dir/input-focus-before-key.txt"
         fi
 
         local t_key
@@ -181,6 +190,15 @@ run_boot() {
         "$index" "$version" "$mode" "${emulator:-?}" "$booted" "${boot_ms:--1}" "$((t_booted - t_launch))" \
         "$wait_ms" "$key_ms" "$key_rc" "$anr_lastanr" "$anr_logcat" "$anr_dialog" "$dialog_after_close" \
         "$load1" "$focus" | tee -a "$OUT/results.tsv"
+
+    if [[ $booted != 1 ]]; then
+        tail -n 30 "$dir/emulator.log"
+        cat "$dir/avdmanager.log"
+        if [[ $index == 0 ]]; then
+            echo "First boot failed, aborting." >&2
+            exit 1
+        fi
+    fi
 
     adb_s emu kill > /dev/null 2>&1
     local tick
