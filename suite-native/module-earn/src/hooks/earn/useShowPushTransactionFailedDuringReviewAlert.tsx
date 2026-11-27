@@ -17,7 +17,7 @@ export type ReviewFormType =
     | 'wrap-native'
     | 'unwrap-native';
 
-export type ReviewAlertKind = 'pushFailed' | 'pendingConflict' | 'signFailed';
+export type ReviewAlertKind = 'pushFailed' | 'pendingConflict' | 'signFailed' | 'preparationFailed';
 
 type AlertKeys = {
     title: TxKeyPath;
@@ -28,6 +28,11 @@ type AlertTranslationKeys = {
     pushFailed: AlertKeys;
     pendingConflict: AlertKeys;
     signFailed: AlertKeys;
+};
+
+const preparationFailedKeys: AlertKeys = {
+    title: 'generic.unknownError',
+    description: 'transactionManagement.precomposedTransaction.errors.stakeTxPreparationFailed',
 };
 
 const translationKeys = {
@@ -193,7 +198,7 @@ export const useShowPushTransactionFailedDuringReviewAlert = (formType: ReviewFo
 
     const showReviewAlert = useCallback(
         (kind: ReviewAlertKind) => {
-            const alertKeys = keys[kind];
+            const alertKeys = kind === 'preparationFailed' ? preparationFailedKeys : keys[kind];
 
             showAlert({
                 title: <Translation id={alertKeys.title} />,

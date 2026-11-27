@@ -5158,6 +5158,9 @@ export const messages = {
                     'The transaction could not be prepared. Make sure the account is up to date and try again.',
                 stakedBalanceChanged:
                     'Your staked balance has changed. Check the updated amount and try again.',
+                solanaStakingFeeEstimateInvalid: 'The network fee estimate is invalid. Try again.',
+                solanaStakingNothingToClaim:
+                    'No SOL is currently available to claim. Your staking balance may have changed.',
                 remainingBalanceLessThanRent:
                     'After sending this amount, your account will have SOL remaining lower than the rent.',
                 amountNotEnoughCurrencyFeeWithEthAmount:

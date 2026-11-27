@@ -6,7 +6,11 @@ import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device'
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { formatStakingAmount, useStakingAccountPosition } from '@suite-common/earn-staking';
-import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import {
+    selectAccountByKey,
+    selectAreFeesLoading,
+    selectHasRunningDiscovery,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, InfoItem, Modal, Paragraph, Row, Tooltip } from '@trezor/components';
@@ -31,12 +35,14 @@ type EarnClaimModalProps = {
     account: Account;
 };
 
-export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
+export const EarnClaimModal = ({ onCancel, account: initialAccount }: EarnClaimModalProps) => {
     // React Compiler: `watch` keeps one identity for the form's whole life, so a compiled
     // render-time read of it freezes on the first render. Remove once these reads move to
     // `useWatch` or out of render.
     'use no memo';
 
+    const account =
+        useSelector(state => selectAccountByKey(state, initialAccount.key)) ?? initialAccount;
     const deviceStatus = useEarnDeviceStatus();
     const { device, isLocked } = useDevice();
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
@@ -75,8 +81,10 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
     });
     const claimAmount = isCardanoNetworkType ? rewardsAmount : claimableAmount;
 
+    const hasClaimableStake =
+        account.networkType !== 'solana' || isPositiveBalance(claimableAmount);
     const isFormInputsValid = !isCardanoNetworkType
-        ? formIsValid && hasValues
+        ? formIsValid && hasValues && hasClaimableStake
         : !isCardanoClaimingDisabled;
 
     const isDeviceConnected = device?.connected && device?.available;
@@ -313,8 +321,15 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                         </>
                     )}
 
-                    {errors[CRYPTO_INPUT] && (
-                        <Banner intent="critical" description={errors[CRYPTO_INPUT]?.message} />
+                    {!hasClaimableStake ? (
+                        <Banner
+                            intent="info"
+                            description={<Translation id="TR_STAKE_SOL_NOTHING_TO_CLAIM" />}
+                        />
+                    ) : (
+                        errors[CRYPTO_INPUT] && (
+                            <Banner intent="critical" description={errors[CRYPTO_INPUT]?.message} />
+                        )
                     )}
                 </Column>
             </Form>

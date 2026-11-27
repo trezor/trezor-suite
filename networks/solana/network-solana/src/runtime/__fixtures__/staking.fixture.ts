@@ -27,6 +27,7 @@ type MockStakeAccountParams = {
     pubkey: string;
     stake: number;
     deactivationEpoch: number | bigint;
+    lockupEpoch?: number;
     voterPubkey?: string;
 };
 
@@ -34,6 +35,7 @@ export const mockStakeAccount = ({
     pubkey,
     stake,
     deactivationEpoch,
+    lockupEpoch = 0,
     voterPubkey = EVERSTAKE_SOLANA_DEVNET_VALIDATOR,
 }: MockStakeAccountParams) => ({
     pubkey,
@@ -49,7 +51,7 @@ export const mockStakeAccount = ({
                                 authorized: { staker: mockSender, withdrawer: mockSender },
                                 lockup: {
                                     unixTimestamp: 0,
-                                    epoch: 0,
+                                    epoch: lockupEpoch,
                                     custodian: address('11111111111111111111111111111111'),
                                 },
                             },

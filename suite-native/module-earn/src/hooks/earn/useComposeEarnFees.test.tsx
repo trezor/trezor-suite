@@ -1,6 +1,6 @@
 import { useLayoutEffect } from 'react';
 
-import { combineReducers } from '@reduxjs/toolkit';
+import { type UnknownAction, combineReducers, createAction } from '@reduxjs/toolkit';
 
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { formDraftActions, formDraftReducer } from '@suite-common/wallet-core';
@@ -10,7 +10,7 @@ import {
     type FormState,
     type PrecomposedLevels,
 } from '@suite-common/wallet-types';
-import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mockSolanaStakingAccount, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Button, Text } from '@suite-native/atoms';
@@ -108,6 +108,9 @@ const FEES_STATE = {
     },
 } as unknown as FeesState;
 
+const refreshTestAccounts = createAction<Account[]>('test/refreshAccounts');
+const refreshTestFees = createAction<FeesState>('test/refreshFees');
+
 const createTestStore = (account = ACCOUNT, additionalAccounts: Account[] = []) =>
     createLightStore({
         reducer: {
@@ -120,12 +123,16 @@ const createTestStore = (account = ACCOUNT, additionalAccounts: Account[] = []) 
                     bitcoinAmountUnit: 0,
                     addressDisplayType: 'chunked',
                 }),
-                accounts: createStaticReducer([account, ...additionalAccounts]),
-                fees: createStaticReducer({
-                    ...FEES_STATE,
-                    [account.symbol]: FEES_STATE.eth,
-                    sol: FEES_STATE.eth,
-                }),
+                accounts: (state = [account, ...additionalAccounts], action: UnknownAction) =>
+                    refreshTestAccounts.match(action) ? action.payload : state,
+                fees: (
+                    state = {
+                        ...FEES_STATE,
+                        [account.symbol]: FEES_STATE.eth,
+                        sol: FEES_STATE.eth,
+                    },
+                    action: UnknownAction,
+                ) => (refreshTestFees.match(action) ? action.payload : state),
                 formDrafts: formDraftReducer,
                 send: prepareSendFormReducer({
                     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -356,6 +363,7 @@ describe('useComposeEarnFees recovery', () => {
     it.each([
         ['unstake', 'TR_GENERIC_ERROR_TITLE'],
         ['claim', 'TR_STAKE_TX_PREPARATION_FAILED'],
+        ['claim', 'TR_STAKE_SOL_FEE_ESTIMATE_INVALID'],
     ] as const)('offers retry for Solana %s after %s and recovers', async (stakeType, error) => {
         const account = mockWalletAccount({ symbol: asNetworkSymbol('sol') });
         const analytics = mockNativeAnalytics();
@@ -386,6 +394,107 @@ describe('useComposeEarnFees recovery', () => {
                 }),
             ),
         );
+    });
+
+    it('keeps the first Solana claim fee visible through discovery and block-height updates', async () => {
+        const account = mockSolanaStakingAccount('deactivated');
+        const stakes = account.misc?.solStakingAccounts ?? [];
+        expect(stakes).toHaveLength(1);
+        const store = createTestStore(account);
+        const { result } = await renderHookWithStoreProvider(useComposeEarnFees, {
+            services: { store, analytics: mockNativeAnalytics() },
+            initialProps: {
+                accountKey: account.key,
+                formState: buildEarnComposeFormState(account.descriptor, '1.1', ''),
+                formDraftPrefix: 'claim',
+            },
+        });
+        expect(result.current.isComposingFeeLevels).toBe(true);
+        await settleDebounce();
+        expect(result.current.isFeeReady).toBe(true);
+
+        const initialFees = store.getState().wallet.fees;
+        const initialSolFees = initialFees.sol!;
+        const updatedFeeData = { ...initialSolFees.data!, blockHeight: 101 };
+
+        await act(() => {
+            store.dispatch(
+                refreshTestAccounts([
+                    {
+                        ...account,
+                        balance: '999999999',
+                        misc: {
+                            ...account.misc,
+                            solStakingAccounts: stakes.map(stake => ({ ...stake })),
+                        },
+                    },
+                ]),
+            );
+        });
+        expect(result.current.isFeeReady).toBe(true);
+
+        await act(() => {
+            store.dispatch(
+                refreshTestFees({
+                    ...initialFees,
+                    sol: { ...initialSolFees, data: updatedFeeData },
+                }),
+            );
+        });
+        expect(result.current.isFeeReady).toBe(true);
+        expect(store.getState().wallet.send.feeLevels).toEqual(FEE_LEVELS);
+        await settleDebounce();
+        expect(mockSolanaCompose).toHaveBeenCalledTimes(1);
+
+        await act(() => {
+            store.dispatch(refreshTestAccounts([{ ...account, availableBalance: '5000' }]));
+        });
+        expect(result.current.isFeeReady).toBe(false);
+        expect(result.current.isComposingFeeLevels).toBe(true);
+        await settleDebounce();
+        expect(result.current.isFeeReady).toBe(true);
+        expect(mockSolanaCompose).toHaveBeenCalledTimes(2);
+
+        await act(() => {
+            store.dispatch(
+                refreshTestAccounts([
+                    {
+                        ...account,
+                        availableBalance: '5000',
+                        misc: {
+                            ...account.misc,
+                            solStakingAccounts: stakes.map(stake => ({
+                                ...stake,
+                                stake: '1',
+                            })),
+                        },
+                    },
+                ]),
+            );
+        });
+        expect(result.current.isFeeReady).toBe(false);
+        await settleDebounce();
+        expect(result.current.isFeeReady).toBe(true);
+        expect(mockSolanaCompose).toHaveBeenCalledTimes(3);
+
+        await act(() => {
+            store.dispatch(
+                refreshTestFees({
+                    ...initialFees,
+                    sol: {
+                        ...initialSolFees,
+                        data: {
+                            ...updatedFeeData,
+                            levels: [{ label: 'normal', feePerUnit: '20', blocks: 1 }],
+                        },
+                    },
+                }),
+            );
+        });
+        expect(result.current.isFeeReady).toBe(false);
+        await settleDebounce();
+        expect(result.current.isFeeReady).toBe(true);
+        expect(mockSolanaCompose).toHaveBeenCalledTimes(4);
     });
 
     it('does not report previous-flow error levels as a new failure at mount', async () => {

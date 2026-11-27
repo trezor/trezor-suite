@@ -1,13 +1,18 @@
 import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FormState } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { useFeeSelector } from './useFeeSelector';
 import { createFeeLevel } from '../../__fixtures__/feeLevels';
 import { ETH_ACCOUNT_KEY, getEthAccount, getWalletState } from '../../__fixtures__/walletState';
 
-jest.mock('./useFeesFetching', () => ({ useFeesFetching: () => ({ areFeesLoading: false }) }));
+let mockAreFeesLoading = false;
+
+jest.mock('./useFeesFetching', () => ({
+    useFeesFetching: () => ({ areFeesLoading: mockAreFeesLoading }),
+}));
 jest.mock('@suite-native/atoms', () => ({
     ...jest.requireActual('@suite-native/atoms'),
     useBottomSheetModal: () => ({
@@ -16,6 +21,39 @@ jest.mock('@suite-native/atoms', () => ({
         closeModal: jest.fn(),
     }),
 }));
+
+afterEach(() => {
+    mockAreFeesLoading = false;
+});
+
+it.each([false, true])(
+    'keeps network loading from hiding a composed Solana fee (composed: %s)',
+    async isComposed => {
+        mockAreFeesLoading = true;
+        const account = mockWalletAccount({ symbol: asNetworkSymbol('sol') });
+        const wallet = getWalletState();
+        const { result } = await renderHookWithStoreProvider(useFeeSelector, {
+            initialProps: {
+                accountKey: account.key,
+                selectedFee: 'normal',
+                updateThunk: () => () => undefined,
+                formDraft: null,
+            },
+            preloadedState: {
+                wallet: {
+                    ...wallet,
+                    accounts: [account],
+                    send: {
+                        ...wallet.send,
+                        feeLevels: isComposed ? { normal: createFeeLevel({ fee: '5000' }) } : {},
+                    },
+                },
+            },
+        });
+        expect(result.current.areFeesLoading).toBe(!isComposed);
+        expect(result.current.fee).toBe(isComposed ? '5000' : null);
+    },
+);
 
 it('rejects an empty TRC20 limit without taking the generic Custom fee path', async () => {
     const wallet = getWalletState();

@@ -12,7 +12,11 @@ export type EarnType = 'staking' | 'yield';
 export type EarnFormDraftPrefix = 'stake' | 'unstake' | 'claim';
 
 export type SignStakeTransactionRejectValue =
-    SignTransactionError | SignTransactionTimeoutError | StakeLiveStateInvalidError | undefined;
+    | SignTransactionError
+    | SignTransactionTimeoutError
+    | StakeLiveStateInvalidError
+    | { error: 'stake-preparation-failed' }
+    | undefined;
 
 export type StakingPendingModal = {
     bottomSheetRef: BottomSheetModalRef;

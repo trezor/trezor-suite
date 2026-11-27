@@ -10,6 +10,7 @@ import {
     stakeTransactionFixtures,
 } from './__fixtures__/staking.fixture';
 import {
+    getSolanaStakingData,
     prepareClaimSolTx,
     prepareStakeSolTx,
     prepareUnstakeSolTx,
@@ -189,5 +190,91 @@ describe('stake account layout', () => {
         });
 
         expect(getSerializedMessage(response)).toBe(message);
+    });
+
+    it('prepares a claim with fee rate 1e5 as the same transaction as the integer estimate', async () => {
+        const feePerUnit = '1e5';
+        const { rpcResults, message } = stakeTransactionFixtures.claim;
+
+        const response = await prepareClaimSolTx({
+            from: mockSender,
+            connection: mockConnection(rpcResults),
+            estimatedFee: { feePerUnit, feeLimit: '200000' },
+        });
+
+        expect(getSerializedMessage(response)).toBe(message);
+    });
+
+    it('marks a deactivated stake as claimable only after its lockup expires', async () => {
+        const { rpcResults } = stakeTransactionFixtures.claim;
+        const lockedStake = mockStakeAccount({
+            pubkey: getAddressDecoder().decode(new Uint8Array(32).fill(5)),
+            stake: 3_000_000_000,
+            deactivationEpoch: 850,
+            lockupEpoch: 901,
+        });
+        const connection = mockConnection({ ...rpcResults, getProgramAccounts: [lockedStake] });
+
+        await expect(getSolanaStakingData(connection, mockSender, 900)).resolves.toMatchObject([
+            { status: 'deactivated', isClaimable: false },
+        ]);
+        await expect(prepareClaimSolTx({ from: mockSender, connection })).resolves.toMatchObject({
+            success: false,
+            errorCode: 'NO_CLAIMABLE_STAKE',
+        });
+        await expect(getSolanaStakingData(connection, mockSender, 901)).resolves.toMatchObject([
+            { status: 'deactivated', isClaimable: true },
+        ]);
+    });
+
+    it.each([
+        ['withdrawn accounts', []],
+        ['active accounts', stakeTransactionFixtures.unstake.rpcResults.getProgramAccounts],
+    ])('returns a recoverable result when fresh RPC data contains only %s', async (_, accounts) => {
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+        try {
+            const response = await prepareClaimSolTx({
+                from: mockSender,
+                connection: mockConnection({
+                    getProgramAccounts: accounts,
+                    getEpochInfo: { epoch: 900 },
+                }),
+            });
+
+            expect(response).toEqual({
+                success: false,
+                errorCode: 'NO_CLAIMABLE_STAKE',
+                errorMessage: 'No stake is currently available to claim.',
+            });
+            expect(consoleErrorSpy).not.toHaveBeenCalled();
+        } finally {
+            consoleErrorSpy.mockRestore();
+        }
+    });
+
+    it('returns a recoverable invalid-fee result for every staking operation', async () => {
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        const estimatedFee = { feePerUnit: 'NaN', feeLimit: '200000' };
+        const params = { from: mockSender, connection: mockConnection({}), estimatedFee };
+
+        try {
+            const responses = await Promise.all([
+                prepareStakeSolTx({ ...params, amount: '1', validator }),
+                prepareUnstakeSolTx({ ...params, amount: '1', validator }),
+                prepareClaimSolTx(params),
+            ]);
+
+            for (const response of responses) {
+                expect(response).toEqual({
+                    success: false,
+                    errorCode: 'INVALID_FEE',
+                    errorMessage: 'Invalid Solana staking fee estimate.',
+                });
+            }
+            expect(consoleErrorSpy).not.toHaveBeenCalled();
+        } finally {
+            consoleErrorSpy.mockRestore();
+        }
     });
 });

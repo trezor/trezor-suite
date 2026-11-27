@@ -18,6 +18,7 @@ export interface SolanaStakingAccount {
     rentExemptReserve: string;
     voterPubkey?: string;
     activationEpoch?: number;
+    isClaimable?: boolean;
 }
 
 export type TokenStandard =

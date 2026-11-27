@@ -35,7 +35,13 @@ export type EarnReviewErrorPayload =
     { error?: string; errorCode?: string; message?: string } | undefined;
 
 export type EarnReviewErrorReaction =
-    'none' | 'popScreen' | 'pendingConflict' | 'pushFailed' | 'signFailed' | 'deviceDisconnected';
+    | 'none'
+    | 'popScreen'
+    | 'pendingConflict'
+    | 'pushFailed'
+    | 'signFailed'
+    | 'preparationFailed'
+    | 'deviceDisconnected';
 
 export const getEarnReviewErrorReaction = (
     payload: EarnReviewErrorPayload,
@@ -58,6 +64,10 @@ export const getEarnReviewErrorReaction = (
 
     if (payload?.error === 'stake-live-state-invalid') {
         return 'signFailed';
+    }
+
+    if (payload?.error === 'stake-preparation-failed') {
+        return 'preparationFailed';
     }
 
     const errorCode = payload?.errorCode;

@@ -7058,6 +7058,15 @@ export const messages = defineMessages({
         id: 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED',
         defaultMessage: 'Your staked balance has changed. Check the updated amount and try again.',
     },
+    TR_STAKE_SOL_FEE_ESTIMATE_INVALID: {
+        id: 'TR_STAKE_SOL_FEE_ESTIMATE_INVALID',
+        defaultMessage: 'The network fee estimate is invalid. Try again.',
+    },
+    TR_STAKE_SOL_NOTHING_TO_CLAIM: {
+        id: 'TR_STAKE_SOL_NOTHING_TO_CLAIM',
+        defaultMessage:
+            'No SOL is currently available to claim. Your staking balance may have changed.',
+    },
     OP_RETURN: {
         id: 'OP_RETURN',
         defaultMessage: 'Hexadecimal message (OP_RETURN)',

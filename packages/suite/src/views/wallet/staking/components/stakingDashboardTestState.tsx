@@ -2,7 +2,7 @@ import { type ReactElement } from 'react';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { type StakingDep } from '@suite-common/earn-staking';
+import { type StakingDep, stakingReducer } from '@suite-common/earn-staking';
 import {
     mockStakingQueryClient,
     mockStakingServices,
@@ -24,7 +24,7 @@ import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-sy
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { type RenderResult, createTestCompositionRoot } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey, type CurrentRate } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -239,13 +239,20 @@ type RenderParams = {
 export const renderStakingDashboardComponent = (
     element: ReactElement,
     { state, productInfo }: RenderParams,
-): RenderResult & { report: jest.Mock } => {
+) => {
     const report = mock<DesktopAnalyticsDep['analytics']['report']>();
     const { services } = createTestCompositionRoot<
         { services: StakingDep & DesktopAnalyticsDep },
         MockSuiteState
     >({
         preloadedState: state,
+        reducer: (currentState = state, action) => {
+            const staking = stakingReducer(currentState.earn.staking, action);
+
+            return staking === currentState.earn.staking
+                ? currentState
+                : { ...currentState, earn: { ...currentState.earn, staking } };
+        },
         services: () => ({
             staking: mockStakingServices(),
             analytics: mockDesktopAnalytics(report),
@@ -256,5 +263,5 @@ export const renderStakingDashboardComponent = (
         queryClient: mockStakingQueryClient({ productInfo }),
     });
 
-    return { ...view, report };
+    return { ...view, report, store: services.store };
 };

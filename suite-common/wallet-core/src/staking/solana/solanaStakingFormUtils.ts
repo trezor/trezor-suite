@@ -84,47 +84,31 @@ const calculateSolanaStakeTransaction = (
     );
 };
 
-// A split instruction cannot be recreated in Suite, such a transaction is reviewed on the device only.
-const applyDeviceReviewOnly = (
-    composed: PrecomposedLevels,
-    isDeviceReviewOnly: boolean,
-): PrecomposedLevels =>
-    Object.fromEntries(
-        Object.entries(composed).map(([key, tx]) =>
-            tx.type === 'error' ? [key, tx] : [key, { ...tx, isDeviceReviewOnly }],
-        ),
-    );
-
 // Merges solanaTxMeta (rent, fee) into each fee level for device review amounts.
 const applySolanaTxMeta = (
     composed: PrecomposedLevels,
     solanaTxMeta: SolanaTxMeta,
 ): PrecomposedLevels =>
     Object.fromEntries(
-        Object.entries(applyDeviceReviewOnly(composed, solanaTxMeta.hasSplitInstruction)).map(
-            ([key, tx]) => {
-                if (tx.type === 'error') return [key, tx];
+        Object.entries(composed).map(([key, tx]) => {
+            if (tx.type === 'error') return [key, tx];
 
-                const nextTx = { ...tx, solanaTxMeta };
+            const nextTx = {
+                ...tx,
+                isDeviceReviewOnly: solanaTxMeta.hasSplitInstruction,
+                solanaTxMeta,
+            };
 
-                if (tx.type === 'final') {
-                    const totalSpent = new BigNumber(solanaTxMeta.deviceAmountLamports)
-                        .plus(solanaTxMeta.feeIncludingRentLamports)
-                        .toString();
+            if (tx.type === 'final') {
+                const totalSpent = new BigNumber(solanaTxMeta.deviceAmountLamports)
+                    .plus(solanaTxMeta.feeIncludingRentLamports)
+                    .toString();
 
-                    return [
-                        key,
-                        {
-                            ...nextTx,
-                            fee: solanaTxMeta.feeIncludingRentLamports,
-                            totalSpent,
-                        },
-                    ];
-                }
+                return [key, { ...nextTx, totalSpent }];
+            }
 
-                return [key, nextTx];
-            },
-        ),
+            return [key, nextTx];
+        }),
     );
 
 // Turns a prepared staking transaction into a message and asks the backend to estimate its fee.
@@ -202,38 +186,39 @@ export const prepareSolanaStakeTxData = async ({
     return undefined;
 };
 
-const PREPARATION_FAILED_LEVEL: PrecomposedTransactionError = {
-    type: 'error',
-    error: 'TR_STAKE_TX_PREPARATION_FAILED',
-    errorMessage: { id: 'TR_STAKE_TX_PREPARATION_FAILED' },
+const PREPARATION_ERROR_MESSAGES = {
+    INSUFFICIENT_ACTIVE_STAKE: 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED',
+    INVALID_FEE: 'TR_STAKE_SOL_FEE_ESTIMATE_INVALID',
+    NO_CLAIMABLE_STAKE: 'TR_STAKE_SOL_NOTHING_TO_CLAIM',
+    UNKNOWN: 'TR_STAKE_TX_PREPARATION_FAILED',
+} as const;
+
+const buildPreparationFailedLevels = (
+    predefinedLevels: FeeLevel[],
+    errorCode?: PrepareStakeSolTxErrorCode,
+): PrecomposedLevels => {
+    const messageId = PREPARATION_ERROR_MESSAGES[errorCode ?? 'UNKNOWN'];
+    const error: PrecomposedTransactionError = {
+        type: 'error',
+        error: messageId,
+        errorMessage: { id: messageId },
+    };
+
+    return Object.fromEntries(predefinedLevels.map(level => [level.label, error]));
 };
 
-const STAKED_BALANCE_CHANGED_LEVEL: PrecomposedTransactionError = {
-    type: 'error',
-    error: 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED',
-    errorMessage: { id: 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED' },
-};
+const STALE_STAKING_ERROR_CODES = ['INSUFFICIENT_ACTIVE_STAKE', 'NO_CLAIMABLE_STAKE'] as const;
 
-type BuildPreparationFailedLevelsParams = {
-    predefinedLevels: FeeLevel[];
-    errorCode?: PrepareStakeSolTxErrorCode;
-};
+export const isSolanaStakingBalanceChangedErrorCode = (code?: PrepareStakeSolTxErrorCode) =>
+    STALE_STAKING_ERROR_CODES.some(staleCode => staleCode === code);
 
-const buildPreparationFailedLevels = ({
-    predefinedLevels,
-    errorCode,
-}: BuildPreparationFailedLevelsParams): PrecomposedLevels => {
-    const failedLevel =
-        errorCode === 'INSUFFICIENT_ACTIVE_STAKE'
-            ? STAKED_BALANCE_CHANGED_LEVEL
-            : PREPARATION_FAILED_LEVEL;
-
-    return Object.fromEntries(predefinedLevels.map(level => [level.label, failedLevel]));
-};
-
-export const hasStakedBalanceChangedError = (composedLevels?: PrecomposedLevels) =>
-    Object.values(composedLevels ?? {}).some(
-        level => level.type === 'error' && level.error === STAKED_BALANCE_CHANGED_LEVEL.error,
+export const hasSolanaStakingBalanceChangedError = (levels?: PrecomposedLevels) =>
+    Object.values(levels ?? {}).some(
+        level =>
+            level.type === 'error' &&
+            STALE_STAKING_ERROR_CODES.some(
+                code => PREPARATION_ERROR_MESSAGES[code] === level.error,
+            ),
     );
 
 type ComposeSolanaStakingTransactionParams = {
@@ -264,7 +249,7 @@ export const composeSolanaStakingTransaction = async ({
 
     const predefinedLevels = feeInfo.levels.filter(level => level.label !== 'custom');
 
-    const txData = await prepareSolanaStakeTxData({
+    const prepareParams: PrepareSolanaStakeTxDataParams = {
         from: account.descriptor,
         symbol: account.symbol,
         amount,
@@ -272,41 +257,52 @@ export const composeSolanaStakingTransaction = async ({
         blockchainUrl,
         userAgent,
         source,
-    });
+    };
+    const txData = await prepareSolanaStakeTxData(prepareParams);
 
     if (!txData?.success) {
-        return buildPreparationFailedLevels({ predefinedLevels, errorCode: txData?.errorCode });
+        return buildPreparationFailedLevels(predefinedLevels, txData?.errorCode);
     }
 
     const estimatedFee = await estimateSolanaStakeFee(account.symbol, txData);
 
+    const txDataWithFee =
+        estimatedFee.success && estimatedFee.payload
+            ? await prepareSolanaStakeTxData({
+                  ...prepareParams,
+                  estimatedFee: estimatedFee.payload,
+              })
+            : undefined;
+
+    if (estimatedFee.success && !txDataWithFee?.success) {
+        return buildPreparationFailedLevels(predefinedLevels, txDataWithFee?.errorCode);
+    }
+
+    const solanaTxMeta = txDataWithFee?.success ? txDataWithFee.solanaTxMeta : undefined;
+    // The encoded priority fee can differ from the estimate after rounding.
+    const effectiveFee: EstimatedFee =
+        solanaTxMeta && estimatedFee.success && estimatedFee.payload
+            ? {
+                  success: true,
+                  payload: {
+                      ...estimatedFee.payload,
+                      feePerTx: solanaTxMeta.feeIncludingRentLamports,
+                  },
+              }
+            : estimatedFee;
     const composed = composeStakingTransaction(
         formValues,
         composeContext,
         predefinedLevels,
-        (...args) => calculateSolanaStakeTransaction(txData.solanaTxMeta.rentLamports, ...args),
-        estimatedFee,
+        (...args) =>
+            calculateSolanaStakeTransaction(
+                solanaTxMeta?.rentLamports ?? txData.solanaTxMeta.rentLamports,
+                ...args,
+            ),
+        effectiveFee,
         undefined,
     );
     if (!composed) return undefined;
 
-    if (estimatedFee.success && estimatedFee.payload) {
-        const txDataWithFee = await prepareSolanaStakeTxData({
-            from: account.descriptor,
-            symbol: account.symbol,
-            amount,
-            stakeType,
-            blockchainUrl,
-            userAgent,
-            source,
-            estimatedFee: estimatedFee.payload,
-        });
-
-        if (txDataWithFee?.success) {
-            return applySolanaTxMeta(composed, txDataWithFee.solanaTxMeta);
-        }
-    }
-
-    // Fee estimation or the fee-aware preparation failed, keep the review-only flag of the first tx.
-    return applyDeviceReviewOnly(composed, txData.solanaTxMeta.hasSplitInstruction);
+    return solanaTxMeta ? applySolanaTxMeta(composed, solanaTxMeta) : composed;
 };

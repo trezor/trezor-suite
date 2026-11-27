@@ -56,7 +56,6 @@ export const StakingClaimReviewScreen = () => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-
     const { position, totals, access } = useStakingAccountPosition(accountKey);
 
     const canClaimInstantly = isStakingOperationAvailable({
@@ -68,25 +67,27 @@ export const StakingClaimReviewScreen = () => {
         amount: totals.withdrawable,
         networkSymbol: symbol,
     });
+    const networkType = account?.networkType;
+    const contractAddress = account ? getStakingContractAddress(account, 'claim') : undefined;
+    const hasNoClaimableSolanaStake =
+        networkType === 'solana' && !isPositiveBalance(claimableAmount);
 
     const claimFormState = useMemo(() => {
-        if (!account) return undefined;
-
-        const contractAddress = getStakingContractAddress(account, 'claim');
+        if (contractAddress === undefined) return undefined;
 
         // Ethereum claims via calldata, Solana via the claimable amount.
-        if (account.networkType === 'ethereum') {
+        if (networkType === 'ethereum') {
             return buildEarnComposeFormState(contractAddress, '0', buildClaimWithdrawRequestData());
         }
 
-        if (account.networkType === 'solana') {
+        if (networkType === 'solana') {
             if (!isPositiveBalance(claimableAmount)) return undefined;
 
             return buildEarnComposeFormState(contractAddress, claimableAmount, '');
         }
 
         return buildEarnComposeFormState(contractAddress, '0', '');
-    }, [account, claimableAmount]);
+    }, [networkType, contractAddress, claimableAmount]);
 
     const {
         formDraft,
@@ -181,18 +182,28 @@ export const StakingClaimReviewScreen = () => {
                         label={<Translation id="earn.claimReviewScreen.amountLabel" />}
                         cryptoAmount={claimableAmount}
                     />
-                    <EarnFeeSection
-                        accountKey={accountKey}
-                        fees={{
-                            hasFeeEstimationError,
-                            isComposingFeeLevels,
-                            retryFeeEstimation,
-                            updateFeeLevelThunk,
-                            selectedFee: formDraft?.selectedFee ?? 'normal',
-                            formDraft,
-                            formDraftKey,
-                        }}
-                    />
+                    {hasNoClaimableSolanaStake && (
+                        <BannerInline
+                            intent="info"
+                            title={
+                                <Translation id="transactionManagement.precomposedTransaction.errors.solanaStakingNothingToClaim" />
+                            }
+                        />
+                    )}
+                    {!hasNoClaimableSolanaStake && (
+                        <EarnFeeSection
+                            accountKey={accountKey}
+                            fees={{
+                                hasFeeEstimationError,
+                                isComposingFeeLevels,
+                                retryFeeEstimation,
+                                updateFeeLevelThunk,
+                                selectedFee: formDraft?.selectedFee ?? 'normal',
+                                formDraft,
+                                formDraftKey,
+                            }}
+                        />
+                    )}
                     {canClaimInstantly && isFeeReady && (
                         <BannerInline
                             intent="brand"
