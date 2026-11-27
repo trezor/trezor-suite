@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectAccountIncludingChosenInTrading } from '@suite/account';
@@ -12,6 +12,7 @@ import { selectYieldTxReview } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputsOptional,
+    getClearSignedDisplayFormat,
     getDecreaseOutputId,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
@@ -99,6 +100,19 @@ export const TransactionReviewModalBody = ({
 
     const decreaseOutputId = getDecreaseOutputId(precomposedTx, precomposedForm);
 
+    const displayFormat = useMemo(
+        () =>
+            account && precomposedTx
+                ? getClearSignedDisplayFormat({
+                      account,
+                      device,
+                      precomposedTx,
+                      transactionData: precomposedForm?.transactionData,
+                  })
+                : undefined,
+        [account, device, precomposedTx, precomposedForm?.transactionData],
+    );
+
     const outputs = constructTransactionReviewOutputsOptional({
         account,
         decreaseOutputId,
@@ -108,6 +122,7 @@ export const TransactionReviewModalBody = ({
         precomposedTx,
         vaultName,
         swapSlippage,
+        displayFormat,
     });
 
     const handleTryAgain = useCallback(
@@ -154,6 +169,7 @@ export const TransactionReviewModalBody = ({
         <TransactionReviewModalBodyInner
             account={account}
             outputs={outputs}
+            displayFormat={displayFormat}
             decision={decision}
             txInfoState={txInfoState}
             tryAgainSignTx={tryAgainSignTx}

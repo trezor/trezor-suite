@@ -506,12 +506,16 @@ const getOutputLines = ({
                 {
                     id: 'contract_intent',
                     type: 'data',
-                    value: isWrappedNativeAction(evmTxType)
-                        ? translationString(wrappedNativeIntentStrings[evmTxType], {
-                              nativeSymbol: getNetworkDisplaySymbol(symbol),
-                              tokenSymbol: getWrappedNativeSymbol(symbol),
-                          })
-                        : '',
+                    // A clear-signing definition's intent is what the device shows; the WETH
+                    // wrap/unwrap flow leaves the value empty and names the action itself.
+                    value:
+                        value ||
+                        (isWrappedNativeAction(evmTxType)
+                            ? translationString(wrappedNativeIntentStrings[evmTxType], {
+                                  nativeSymbol: getNetworkDisplaySymbol(symbol),
+                                  tokenSymbol: getWrappedNativeSymbol(symbol),
+                              })
+                            : ''),
                 },
             ];
         case 'amount': {
