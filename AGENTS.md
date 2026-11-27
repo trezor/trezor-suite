@@ -43,8 +43,9 @@ Nested mandatory skills still apply within their stated scope.
   to the general named-export rule.
 - Analytics/Sentry reporting: [Analytics and Sentry privacy](skills/analytics-and-sentry-privacy/SKILL.md).
 - Commits: [Git conventions](skills/git-and-commit-guidelines/SKILL.md).
-- GitHub PRs and issues: any write action (creating a PR or issue, review, comment, description,
-  approval, merge) follows the mandatory [write rules](skills/github-write-actions/SKILL.md).
+- GitHub PRs and issues: agents MUST NEVER approve or merge a pull request or merge request on any
+  platform; a human does that. Any other write action (creating a PR or issue, review, comment,
+  description) follows the mandatory [write rules](skills/github-write-actions/SKILL.md).
   Pull requests (create, review): [Pull requests](skills/pull-requests/SKILL.md).
   Issues: [GitHub issues](skills/github-issues/SKILL.md).
   Style proposals: [Contribution guide](skills/skills-and-code-style-contribution/SKILL.md).

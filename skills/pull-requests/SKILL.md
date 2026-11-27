@@ -9,7 +9,7 @@ Follow the mandatory [write rules](../github-write-actions/SKILL.md) for every P
 
 ## Create
 
-Follow the [PR description template](../../.github/pull_request_template.md). Notes for QA follow [QA notes](../qa-notes/SKILL.md): only the areas of the app to focus on.
+Follow the [PR description template](../../.github/pull_request_template.md). Notes for QA follow [QA notes](../qa-notes/SKILL.md).
 
 ## Review
 
