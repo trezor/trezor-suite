@@ -211,9 +211,9 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     }
 
     // Resolves the Cardano session capability against the runtime enabled-networks set. MUST run on
-    // the real device-call path (NOT the constructor): keeps `__info` unblocked, and reflects any
-    // enablement applied between introspection and the call (e.g. a permission grant projected into
-    // the store). Sets `useCardanoDerivation` (→ `derive_cardano` at session create).
+    // the real device-call path (NOT the constructor): reflects any enablement applied before the
+    // call (e.g. a permission grant projected into the store). Sets `useCardanoDerivation`
+    // (→ `derive_cardano` at session create).
     public resolveCardanoCapability(): void {
         this.useCardanoDerivation =
             enabledNetworksStore.has('ada') || enabledNetworksStore.has('tada');

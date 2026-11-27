@@ -25,7 +25,6 @@ import type {
     CoreEventMessage,
     CoreRequestMessage,
     DeviceIdentity,
-    MethodInfo,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { TrezorError } from '@trezor/connect-common/src/constants/errors';
@@ -204,25 +203,6 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         return Promise.resolve();
     }
 
-    if (message.payload.__info) {
-        let response: CoreEventMessage;
-        // handleMessage only logs a rejected onCall, so the caller would get no response at all.
-        try {
-            const info = await method.getMethodInfo();
-            response = createResponseMessage(method.responseID, true, info);
-        } catch (error) {
-            response = createResponseMessage(method.responseID, false, { error });
-        }
-
-        // A cancel that arrived while this call was awaiting may have answered it already:
-        // abortRunningCall answers a call without a device itself.
-        if (callMethods.includes(method)) {
-            sendCoreMessage(response);
-        }
-
-        return Promise.resolve();
-    }
-
     const sendCoreMessageWithCallId = createSendCoreMessageWithCallId(
         sendCoreMessage,
         method.callId,
@@ -321,8 +301,7 @@ const onCallDevice = async (
     // set public variables, listeners and run method
     registerDeviceEvents(context, method)(device);
 
-    // Must run here: after the `__info` early-return above, before `device.run` reads
-    // `useCardanoDerivation` below.
+    // Must run here, before `device.run` reads `useCardanoDerivation` below.
     method.resolveCardanoCapability();
 
     let messageResponse: CoreEventMessage;
@@ -830,16 +809,6 @@ export class Core extends EventEmitter {
                 // like regular methods using onCall function. In onCall, disconnecting device
                 // means that call immediately returns error.
                 if (message.payload.method === 'firmwareUpdate') {
-                    if (message.payload.__info) {
-                        this.sendCoreMessage(
-                            createResponseMessage(message.id, true, {
-                                info: 'Update firmware',
-                                requiredPermissions: [{ permission: 'internal' }],
-                            } satisfies MethodInfo),
-                        );
-                        break;
-                    }
-
                     assertDeviceListConnected(this.deviceList);
 
                     const coreContext = this.getCoreContext();

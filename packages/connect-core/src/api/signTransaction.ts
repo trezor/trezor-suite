@@ -112,25 +112,19 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         const prevTxids = getPreviousTxids(inputs, payload.coin, { version: payload.version });
         const origTxids = getOriginalTxids(inputs, outputs);
 
-        let refTxs = getRefTransactions({
-            refTxs: payload.refTxs,
-            account: payload.account,
-            inputs,
-            origTxids,
-            coinInfo,
-        });
-        if (!refTxs && !payload.__info) {
-            // Because of this, ref tx validation is relaxed for __info calls from popup
-            refTxs = [];
-        }
-
-        if (refTxs) {
-            const missing = prevTxids
-                .concat(origTxids)
-                .find(hash => !refTxs.some(tx => tx.hash === hash));
-            if (missing) {
-                throw TypedError('Method_InvalidParameter', `refTx: ${missing} not provided`);
-            }
+        const refTxs =
+            getRefTransactions({
+                refTxs: payload.refTxs,
+                account: payload.account,
+                inputs,
+                origTxids,
+                coinInfo,
+            }) ?? [];
+        const missing = prevTxids
+            .concat(origTxids)
+            .find(hash => !refTxs.some(tx => tx.hash === hash));
+        if (missing) {
+            throw TypedError('Method_InvalidParameter', `refTx: ${missing} not provided`);
         }
 
         const outputsWithAmount = outputs.filter(
