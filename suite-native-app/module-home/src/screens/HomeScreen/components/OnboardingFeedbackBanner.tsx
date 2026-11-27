@@ -1,21 +1,21 @@
 import { ImageBackground, StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
+import { selectDeviceInternalModel } from '@suite-common/device';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, Button, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
 import { setIsOnboardingFeedbackBannerEnabled } from '@suite-native/banners';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { useServices } from '@trezor/dependency-injection';
+import { getSuiteVersion } from '@trezor/env-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-
-const ONBOARDING_FEEDBACK_SURVEY_URL = 'https://satoshilabs.typeform.com/to/fsiLqgmd';
-
-const BANNER_HEIGHT = 160;
+import { getOnboardingSurveyUrl } from '@trezor/urls';
 
 const containerStyle = prepareNativeStyle(utils => ({
-    height: BANNER_HEIGHT,
+    minHeight: 160,
     padding: utils.spacings.sp12,
     borderRadius: utils.borders.radii.r16,
     overflow: 'hidden',
@@ -31,23 +31,26 @@ export const OnboardingFeedbackBanner = () => {
     const { applyStyle } = useNativeStyles();
     const openLink = useOpenLink();
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
+    const deviceModel = useSelector(selectDeviceInternalModel);
 
-    const reportAnalyticsBannerAction = (action: 'cta' | 'close') => {
+    const handleBannerAction = (action: 'open' | 'close') => {
         analytics.report({
-            type: events.onboardingFeedbackBannerClickedEvent.name,
-            payload: { platform: 'mobile', origin: 'postOnboardingDashboard', action },
+            type: events.onboardingSurveyBannerEvent.name,
+            payload: { action, origin: 'postOnboardingDashboard' },
         });
-    };
-
-    const handleGiveFeedback = () => {
-        reportAnalyticsBannerAction('cta');
-        openLink(ONBOARDING_FEEDBACK_SURVEY_URL, { enforce: true });
         dispatch(setIsOnboardingFeedbackBannerEnabled(false));
     };
 
-    const handleClose = () => {
-        reportAnalyticsBannerAction('close');
-        dispatch(setIsOnboardingFeedbackBannerEnabled(false));
+    const handleOpen = () => {
+        handleBannerAction('open');
+        openLink(
+            getOnboardingSurveyUrl({
+                platform: 'mobile',
+                appVersion: getSuiteVersion(),
+                deviceModel,
+            }),
+            { enforce: true },
+        );
     };
 
     return (
@@ -58,7 +61,7 @@ export const OnboardingFeedbackBanner = () => {
             fadeDuration={0}
         >
             <Box style={applyStyle(overlayStyle)} />
-            <HStack flex={1}>
+            <HStack style={{ flexGrow: 1 }}>
                 <VStack flex={1} justifyContent="space-between" paddingTop="sp4">
                     <Box>
                         <Text variant="headline-sm" color="contentOnDarkPrimary">
@@ -72,7 +75,7 @@ export const OnboardingFeedbackBanner = () => {
                         <Button
                             size="medium"
                             intent="neutral"
-                            onPress={handleGiveFeedback}
+                            onPress={handleOpen}
                             testID="@home/onboarding-feedback-banner/give-feedback"
                             iconRight="arrowLineUpRight"
                         >
@@ -87,7 +90,7 @@ export const OnboardingFeedbackBanner = () => {
                         intent="neutral"
                         priority="secondary"
                         isInverse
-                        onPress={handleClose}
+                        onPress={() => handleBannerAction('close')}
                         testID="@home/onboarding-feedback-banner/close"
                     />
                 </Box>

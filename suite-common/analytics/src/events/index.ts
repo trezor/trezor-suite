@@ -20,11 +20,8 @@ export { deviceConnectionDeviceFoundEvent } from './deviceConnectionDeviceFoundE
 export { deviceConnectionDevicePairedEvent } from './deviceConnectionDevicePairedEvent';
 export { guideSupportChatOpenedEvent } from './guideSupportChatOpenedEvent';
 export { navigateFlowEvent } from './navigateFlowEvent';
-export {
-    onboardingFeedbackBannerClickedEvent,
-    type OnboardingFeedbackBannerOrigin,
-} from './onboardingFeedbackBannerClickedEvent';
 export { onboardingRecoveryWarningCreateNewWalletEvent } from './onboardingRecoveryWarningCreateNewWalletEvent';
+export { onboardingSurveyBannerEvent } from './onboardingSurveyBannerEvent';
 export {
     onboardingStepViewedEvent,
     type DeviceOnboardingStepName,

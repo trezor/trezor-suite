@@ -7,6 +7,7 @@ export * from './tor';
 export * from './deeplinks';
 export * from './keys';
 export * from './utms';
+export { getOnboardingSurveyUrl } from './onboarding';
 export * from './chat';
 
 type AllUrls = typeof Urls & typeof GithubUrls;

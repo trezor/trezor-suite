@@ -59,6 +59,7 @@
         "@suite-native/trading-shared": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/type-utils": "workspace:*",

@@ -10920,11 +10920,11 @@ export const messages = defineMessages({
     },
     TR_ONBOARDING_FEEDBACK_BANNER_DESCRIPTION: {
         id: 'TR_ONBOARDING_FEEDBACK_BANNER_DESCRIPTION',
-        defaultMessage: 'Share onboarding feedback and get a 50 USD e-shop voucher',
+        defaultMessage: 'Tell us about your Trezor setup experience.',
     },
     TR_ONBOARDING_FEEDBACK_BANNER_BUTTON: {
         id: 'TR_ONBOARDING_FEEDBACK_BANNER_BUTTON',
-        defaultMessage: 'Give feedback',
+        defaultMessage: 'Take the survey',
     },
     TR_NO_DEVICE_ESHOP_BANNER_HEADING: {
         id: 'TR_NO_DEVICE_ESHOP_BANNER_HEADING',

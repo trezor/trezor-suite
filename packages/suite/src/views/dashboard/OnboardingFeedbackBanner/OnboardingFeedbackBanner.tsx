@@ -8,6 +8,7 @@ import { useExternalLink } from '@suite/external-links';
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
+import { selectDeviceInternalModel } from '@suite-common/device';
 import {
     Box,
     Button,
@@ -19,9 +20,10 @@ import {
     intermediaryTheme,
 } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { getSuiteVersion, isDesktop } from '@trezor/env-utils';
 import { XIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
-import { DASHBOARD_ONBOARDING_FEEDBACK_URL } from '@trezor/urls';
+import { getOnboardingSurveyUrl } from '@trezor/urls';
 
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 import { useSelector } from '#src/hooks/suite/useSelector';
@@ -81,7 +83,14 @@ export const ForceDarkTheme = ({ children, isActive }: ForceDarkThemeProps) =>
 type CTAButtonProps = { onClick: () => void };
 
 const CTAButton = ({ onClick }: CTAButtonProps) => {
-    const href = useExternalLink(DASHBOARD_ONBOARDING_FEEDBACK_URL);
+    const deviceModel = useSelector(selectDeviceInternalModel);
+    const href = useExternalLink(
+        getOnboardingSurveyUrl({
+            platform: isDesktop() ? 'desktop' : 'web',
+            appVersion: getSuiteVersion(),
+            deviceModel,
+        }),
+    );
 
     return (
         <Button
@@ -103,24 +112,12 @@ export const OnboardingFeedbackBanner = () => {
 
     const isEligible = useSelector(selectShouldShowOnboardingFeedbackBanner);
 
-    const clearBanner = () => {
+    const handleBannerAction = (action: 'open' | 'close') => {
+        analytics.report({
+            type: events.onboardingSurveyBannerEvent.name,
+            payload: { action, origin: 'postOnboardingDashboard' },
+        });
         dispatch(setFlag({ key: 'showOnboardingFeedbackBanner', value: false }));
-    };
-
-    const handleCTAClick = () => {
-        analytics.report({
-            type: events.onboardingFeedbackBannerClickedEvent.name,
-            payload: { action: 'cta', platform: 'desktop', origin: 'postOnboardingDashboard' },
-        });
-        clearBanner();
-    };
-
-    const handleClose = () => {
-        analytics.report({
-            type: events.onboardingFeedbackBannerClickedEvent.name,
-            payload: { action: 'close', platform: 'desktop', origin: 'postOnboardingDashboard' },
-        });
-        clearBanner();
     };
 
     return (
@@ -151,7 +148,7 @@ export const OnboardingFeedbackBanner = () => {
                                         <Description />
                                     </Column>
 
-                                    <CTAButton onClick={handleCTAClick} />
+                                    <CTAButton onClick={() => handleBannerAction('open')} />
                                 </Column>
 
                                 <Row
@@ -181,7 +178,7 @@ export const OnboardingFeedbackBanner = () => {
                                     icon={XIcon}
                                     intent="neutral"
                                     priority="secondary"
-                                    onClick={handleClose}
+                                    onClick={() => handleBannerAction('close')}
                                     tooltip={{ content: <Translation id="TR_CLOSE" /> }}
                                 />
                             </Box>
