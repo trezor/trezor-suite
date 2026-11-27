@@ -3,7 +3,7 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectRouterParams } from '@suite/router';
 import { type WalletParams } from '@suite/router';
-import { getTradingPrefilledFromAccountData } from '@suite-common/trading';
+import { getTradingPrefilledFromAccountData, isNetworkTradable } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 import { ButtonGroup } from '@trezor/components/src/components/buttons/ButtonGroup/ButtonGroup';
 import { ArrowDownIcon, ArrowUpIcon } from '@trezor/icons';
@@ -24,7 +24,9 @@ export const HeaderActions = () => {
 
     const { account } = selectedAccount;
     const accountType = account?.accountType || routerParams?.accountType || '';
-    const isTradingAvailable = !['coinjoin'].includes(accountType);
+    const symbol = account?.symbol ?? routerParams?.symbol;
+    const isTradingAvailable =
+        !['coinjoin'].includes(accountType) && (!symbol || isNetworkTradable(symbol));
     const isAccountLoading = selectedAccount.status === 'loading';
     const isDeviceConnected = device?.connected && device?.available;
     const accountPrefill = account ? getTradingPrefilledFromAccountData(account) : undefined;

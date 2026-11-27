@@ -11,7 +11,13 @@ import {
 
 import { type NetworksRootState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
-import { type NetworkSymbol, asNetworkSymbol, getTxExplorerUrl } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    asNetworkSymbol,
+    getTxExplorerUrl,
+    registerLegacyCustomEvmNetwork,
+    unregisterLegacyNetwork,
+} from '@suite-common/wallet-config';
 import { explorerInitialState, transactionsInitialState } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -1177,6 +1183,25 @@ describe('tradingSelectors', () => {
             state.wallet.trading.buy.buyInfo = undefined;
 
             expect(selectIsTradingBuyAvailableForNetworkSymbol(state, zec)).toBe(true);
+        });
+
+        it('should never offer buying a network without a trade id', () => {
+            const symbol = asNetworkSymbol('evm100');
+            registerLegacyCustomEvmNetwork({
+                symbol,
+                chainId: 100,
+                name: 'Gnosis',
+                displaySymbol: 'XDAI',
+                explorerUrl: 'https://gnosisscan.io',
+                testnet: false,
+            });
+            state.wallet.trading.buy.buyInfo = undefined;
+
+            try {
+                expect(selectIsTradingBuyAvailableForNetworkSymbol(state, symbol)).toBe(false);
+            } finally {
+                unregisterLegacyNetwork(symbol);
+            }
         });
 
         it('should keep buying available when the provider list failed to load', () => {
