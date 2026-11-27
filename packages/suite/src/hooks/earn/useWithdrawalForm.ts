@@ -7,6 +7,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import {
     getStakeFormsDefaultValues,
     getStakingContractAddress,
+    isSupportedEthStakingNetworkSymbol,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectRawNetworkFeeInfo,
@@ -64,7 +65,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
     );
 
     const network = getNetwork(account.symbol);
-    const { symbol } = account;
+    const { descriptor, symbol } = account;
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
@@ -136,30 +137,40 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
 
     const values = useWatch<WithdrawalFormState>({ control });
 
+    const { cryptoInput } = values;
+    const hasFormErrors = Object.keys(formState.errors).length > 0;
+
     useEffect(() => {
-        const { cryptoInput } = values;
+        setApproximatedInstantEthAmount(null);
 
         if (
+            !isSupportedEthStakingNetworkSymbol(symbol) ||
             !cryptoInput ||
-            new BigNumber(cryptoInput).lte(0) ||
-            Object.keys(formState.errors).length
+            !isPositiveBalance(cryptoInput) ||
+            hasFormErrors
         ) {
-            setApproximatedInstantEthAmount(null);
-
             return;
         }
 
-        const simulateUnstakeAmount = async () => {
-            const approximatedEthAmount = await simulateUnstake({
+        let ignoreResult = false;
+        const updateEstimate = async () => {
+            const estimate = await simulateUnstake({
                 amount: cryptoInput,
-                from: account.descriptor,
-                symbol: account.symbol,
-            });
-            setApproximatedInstantEthAmount(approximatedEthAmount);
+                from: descriptor,
+                symbol,
+            }).catch(() => null);
+
+            if (!ignoreResult) {
+                setApproximatedInstantEthAmount(estimate);
+            }
         };
 
-        simulateUnstakeAmount();
-    }, [account.symbol, account.descriptor, formState.errors, values]);
+        void updateEstimate();
+
+        return () => {
+            ignoreResult = true;
+        };
+    }, [cryptoInput, descriptor, hasFormErrors, symbol]);
 
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {

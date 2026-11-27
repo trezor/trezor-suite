@@ -1,13 +1,15 @@
 import '@suite-common/test-utils/globalOverrides';
 
 import { type Reducer } from '@reduxjs/toolkit';
-import { act } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 
 import { type StakingDep, stakingActions, stakingReducer } from '@suite-common/earn-staking';
 import { mockStakingQueryClient, mockStakingServices } from '@suite-common/earn-staking/mocks';
 import { type StakingPosition } from '@suite-common/earn-staking-common';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { simulateUnstake } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { createDeferred } from '@trezor/utils';
 
 import { renderHookWithProviders } from '#src/support/test-utils/hooksHelper';
 import {
@@ -225,6 +227,54 @@ describe('useWithdrawalForm', () => {
 
         expect(result.current.getValues('cryptoInput')).toBe('3');
         expect(result.current.getValues('outputs.0.amount')).toBe('3');
+    });
+
+    describe('instant Ethereum unstake estimate', () => {
+        const mockSimulateUnstake = jest.mocked(simulateUnstake);
+
+        afterEach(() => {
+            mockSimulateUnstake.mockReset().mockResolvedValue(null);
+        });
+
+        it('clears the previous estimate when the simulation fails and shows a later estimate', async () => {
+            mockSimulateUnstake.mockImplementation(({ amount: requestedAmount }) => {
+                if (requestedAmount === '2') return Promise.resolve('0.75');
+                if (requestedAmount === '0.5') {
+                    return Promise.reject(new Error('execution reverted'));
+                }
+
+                return Promise.resolve('0.25');
+            });
+            const { result } = renderForm(ethAccount, stakedEthPosition('2000000000000000000'));
+
+            await waitFor(() => expect(result.current.approximatedInstantEthAmount).toBe('0.75'));
+
+            await act(() => result.current.setRatioAmount(4));
+
+            expect(result.current.approximatedInstantEthAmount).toBeNull();
+
+            await act(() => result.current.setRatioAmount(2));
+
+            expect(result.current.approximatedInstantEthAmount).toBe('0.25');
+        });
+
+        it('keeps the estimate for the latest amount when an older simulation finishes late', async () => {
+            const older = createDeferred<string>();
+            mockSimulateUnstake.mockImplementation(({ amount: requestedAmount }) =>
+                requestedAmount === '2' ? older.promise : Promise.resolve('0.25'),
+            );
+            const { result } = renderForm(ethAccount, stakedEthPosition('2000000000000000000'));
+
+            await act(() => result.current.setRatioAmount(2));
+            expect(result.current.approximatedInstantEthAmount).toBe('0.25');
+
+            await act(async () => {
+                older.resolve('0.75');
+                await older.promise;
+            });
+
+            expect(result.current.approximatedInstantEthAmount).toBe('0.25');
+        });
     });
 
     it('sets a ratio of the staked balance', async () => {
