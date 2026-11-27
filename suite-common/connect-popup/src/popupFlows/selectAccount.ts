@@ -139,7 +139,7 @@ export const pickAccounts = async (
 
 export class SelectAccount extends CommonPopupFlow<'selectAccount'> {
     // Reject a coin Suite cannot render before the permissions modal, so the user isn't asked to
-    // grant access to a coin that would only crash buildOptions afterwards. Connect's `__info` call
+    // grant access to a coin that would only crash buildOptions afterwards. The method info has
     // already rejected unknown/typo'd coins with Method_UnknownCoin, so a non-network symbol here is
     // a Connect-valid coin this host cannot render — hence a distinct code the caller can act on.
     protected validate() {

@@ -12,7 +12,6 @@ import TrezorConnect, {
     type MethodInfo,
     type PermissionRequest,
 } from '@trezor/connect';
-import { connectCallableMethods } from '@trezor/connect-common';
 import { connectManagementMethods } from '@trezor/connect-common/src/callableMethods';
 import { type SerializedError, TypedError } from '@trezor/connect-common/src/constants/errors';
 import { type Err, type Ok } from '@trezor/type-utils';
@@ -27,6 +26,7 @@ import {
     type ConnectCallSource,
     getCallSourceName,
 } from '../connectPopupTypes';
+import { SUITE_ONLY_METHODS, getMethodInfo } from '../methodInfo';
 import {
     canRememberPermissions,
     deriveCardanoEnabledNetworks,
@@ -36,14 +36,10 @@ import {
     sanitizeRequestedPermissions,
 } from '../permissions';
 
-// Never available to a host, whatever the params: device management, and the calls running under
-// Suite's own firmware update, discovery or coinjoin authorization.
+// Never available to a host, whatever the params.
 const NOT_ALLOWED_METHODS: readonly CallMethodKeys[] = [
     ...connectManagementMethods,
-    'firmwareUpdate',
-    'discoverAccounts',
-    'authorizeCoinjoin',
-    'cancelCoinjoinAuthorization',
+    ...SUITE_ONLY_METHODS,
 ];
 
 type DistributiveOmit<T, K extends keyof T> = T extends T ? Omit<T, K> : never;
@@ -110,25 +106,9 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
         this.signal = signal;
     }
 
-    /**
-     * Describes the call: its title and required permissions. Asks the Connect method by default,
-     * a flow not backed by one describes the call itself.
-     */
-    protected async getMethodInfo(): Promise<MethodInfo> {
-        const { method, payload } = this;
-
-        if (!connectCallableMethods.includes(method)) throw TypedError('Method_Unsupported');
-
-        const methodInfo = await TrezorConnect.call({
-            ...payload,
-            method,
-            __info: true,
-        } as CallMethodPayload);
-        if (!methodInfo.success) {
-            throw methodInfo.error;
-        }
-
-        return methodInfo.payload as MethodInfo;
+    /** Describes the call: its title and required permissions. */
+    protected getMethodInfo(): Promise<MethodInfo> {
+        return getMethodInfo({ ...this.payload, method: this.method } as CallMethodPayload);
     }
 
     /** Rejects a call this host cannot fulfil, before the user is asked for permissions. */

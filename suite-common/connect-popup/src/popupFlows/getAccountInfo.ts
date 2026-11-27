@@ -1,12 +1,12 @@
 import { asNetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
 import { getDescriptorForNetworkType } from '@suite-common/wallet-utils';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
-import TrezorConnect, {
+import {
     type CommonParams,
     type GetAccountInfo as GetAccountInfoParams,
-    type MethodInfo,
     type Params,
 } from '@trezor/connect';
+import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { promiseAllSequence } from '@trezor/utils';
 
 import {
@@ -16,7 +16,6 @@ import {
     getPayloadOrThrow,
 } from './CommonPopupFlow';
 import { connectPopupActions } from '../connectPopupActions';
-import { mergePermissions } from '../permissions';
 
 // The backend reads an account only by its descriptor, so it's derived on the device for a path.
 const getAccount = async (
@@ -41,7 +40,7 @@ const getAccount = async (
     const response = await TrezorBlockchain.getAccountInfo(
         {
             ...request,
-            // The method info of Connect has rejected an account given by neither.
+            // The flow has rejected an account given by neither.
             descriptor: (derived?.descriptor ?? request.descriptor)!,
         },
         { signal },
@@ -53,27 +52,14 @@ const getAccount = async (
 };
 
 export class GetAccountInfo extends CommonPopupFlow<'getAccountInfo'> {
-    // Each account is described by Connect, with its path standing in for its descriptor.
-    protected async getMethodInfo(): Promise<MethodInfo> {
+    protected validate() {
         const requests = this.payload.bundle ?? [this.payload];
-        const infos = await Promise.all(
-            requests.map(({ path, ...request }) =>
-                TrezorConnect.call({
-                    ...request,
-                    descriptor: request.descriptor ?? path,
-                    method: 'getAccountInfo',
-                    __info: true,
-                }).then(getPayloadOrThrow<MethodInfo>),
-            ),
-        );
-
-        return {
-            info: infos.length === 1 ? infos[0]!.info : 'Export info of multiple accounts',
-            requiredPermissions: infos.reduce<MethodInfo['requiredPermissions']>(
-                (permissions, info) => mergePermissions(permissions, info.requiredPermissions),
-                [],
-            ),
-        };
+        if (requests.some(({ path, descriptor }) => !path && typeof descriptor !== 'string')) {
+            throw TypedError(
+                'Method_InvalidParameter',
+                'getAccountInfo: path or descriptor required',
+            );
+        }
     }
 
     protected async callMethod(payload: PopupFlowPayload<'getAccountInfo'>) {
