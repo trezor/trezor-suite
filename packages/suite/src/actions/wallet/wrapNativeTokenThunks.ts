@@ -241,7 +241,8 @@ export const submitWrapNativeTokenThunk = createThunk<
 
             return { txid: sendResult.txid, fee: sendResult.fee };
         } catch (error) {
-            if (isYieldPushError(error)) {
+            const isPushError = isYieldPushError(error);
+            if (isPushError) {
                 dispatch(
                     transactionsActions.transactionBroadcastStatus({
                         account,
@@ -252,10 +253,10 @@ export const submitWrapNativeTokenThunk = createThunk<
             }
             console.error(error);
             reportError(getYieldSubmitErrorAnalyticsMessage(error));
-            const deviceError = getYieldDeviceErrorMessage(error);
+            const deviceError = isPushError ? undefined : getYieldDeviceErrorMessage(error);
             dispatch(
                 notificationsActions.addToast({
-                    type: 'sign-tx-error',
+                    type: isPushError ? 'broadcast-tx-error' : 'sign-tx-error',
                     error: deviceError ?? (error instanceof Error ? error.message : String(error)),
                 }),
             );

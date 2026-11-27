@@ -280,7 +280,7 @@ const pushTransactionThunk =
             );
             dispatch(
                 notificationsActions.addToast({
-                    type: 'sign-tx-error',
+                    type: 'broadcast-tx-error',
                     error: sentTx.error.message,
                 }),
             );

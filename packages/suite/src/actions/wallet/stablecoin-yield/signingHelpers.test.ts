@@ -17,6 +17,7 @@ import TrezorConnect, { asDeviceUniquePath } from '@trezor/connect';
 import { asGetter } from '@trezor/dependency-injection';
 
 import {
+    PUSH_TRANSACTION_FAILED_CAUSE,
     type SendYieldTransactionDeps,
     type SendYieldTransactionState,
     openYieldSimulationThunk,
@@ -246,7 +247,10 @@ describe('sendYieldTransaction', () => {
         const error = new Error('Transport unavailable');
         jest.spyOn(TrezorBlockchain, 'pushTransaction').mockRejectedValueOnce(error);
 
-        await expect(sendTransaction({ store })).rejects.toBe(error);
+        await expect(sendTransaction({ store })).rejects.toMatchObject({
+            cause: PUSH_TRANSACTION_FAILED_CAUSE,
+            message: error.message,
+        });
 
         expect(selectUserContextModalPayload(store.getState())).toBeUndefined();
     });
@@ -267,13 +271,29 @@ describe('sendYieldTransaction', () => {
             return Promise.reject(error);
         });
 
-        await expect(sendTransaction({ store })).rejects.toBe(error);
+        await expect(sendTransaction({ store })).rejects.toMatchObject({
+            cause: PUSH_TRANSACTION_FAILED_CAUSE,
+            message: error.message,
+        });
 
         const activeModal = selectUserContextModalPayload(store.getState());
         expect(replacementDecision).toBeDefined();
         expect(activeModal?.type === 'review-transaction' && activeModal.decision.promise).toBe(
             replacementDecision,
         );
+    });
+
+    it('uses the backend error code when a failed broadcast returns an empty message', async () => {
+        jest.spyOn(console, 'error').mockImplementation();
+        jest.spyOn(TrezorBlockchain, 'pushTransaction').mockResolvedValueOnce({
+            success: false,
+            error: { code: 'Failure_UnknownCode', message: '' },
+        });
+
+        await expect(sendTransaction()).rejects.toMatchObject({
+            cause: PUSH_TRANSACTION_FAILED_CAUSE,
+            message: 'Failure_UnknownCode',
+        });
     });
 
     it('returns sent with the txid and the precomposed fee after broadcast', async () => {

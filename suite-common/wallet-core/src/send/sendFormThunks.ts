@@ -623,7 +623,7 @@ export const pushSendFormTransactionThunk = createThunk<
         } else {
             dispatch(
                 notificationsActions.addToast({
-                    type: 'sign-tx-error',
+                    type: 'broadcast-tx-error',
                     error: pushTxResponse.error.message,
                 }),
             );
@@ -697,7 +697,7 @@ export const pushSendFormRawTransactionThunk = createThunk<
 
             dispatch(
                 notificationsActions.addToast({
-                    type: 'sign-tx-error',
+                    type: 'broadcast-tx-error',
                     error: sentTx.error.message,
                 }),
             );

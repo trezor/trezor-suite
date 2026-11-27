@@ -134,7 +134,7 @@ export const UnwrapNativeToken = ({
 
         dispatch(
             notificationsActions.addToast({
-                type: 'sign-tx-error',
+                type: 'error',
                 error: 'Unwrap transaction failed.',
             }),
         );

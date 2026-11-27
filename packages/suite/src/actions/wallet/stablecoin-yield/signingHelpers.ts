@@ -39,6 +39,7 @@ import { getAccountIdentity } from '@suite-common/wallet-utils';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 import { ERRORS, asCoinSymbol } from '@trezor/connect-common';
+import { err } from '@trezor/type-utils';
 
 import { getDeviceErrorMessage } from '#src/utils/wallet/getDeviceErrorMessage';
 
@@ -162,6 +163,8 @@ export const pushYieldTransaction = async (
             identity: getAccountIdentity(account),
             disableAlternativeRPC: !isMevProtectionEnabled || !isMevProtectionFeatureEnabled,
         });
+    } catch (error) {
+        return err(ERRORS.serializeError(error));
     } finally {
         if (selectIsTransactionReviewActive(getState(), reviewDecision)) {
             dispatch(closeModal());
@@ -299,7 +302,7 @@ export const sendYieldTransaction = async ({
         );
 
         if (!pushResponse.success) {
-            throw new Error(`${pushResponse.error.code}: ${pushResponse.error.message}`, {
+            throw new Error(pushResponse.error.message || pushResponse.error.code, {
                 cause: PUSH_TRANSACTION_FAILED_CAUSE,
             });
         }
