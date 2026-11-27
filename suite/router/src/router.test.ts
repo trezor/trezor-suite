@@ -212,6 +212,10 @@ describe('router', () => {
                     accountType: 'legacy',
                 },
             });
+            expect(
+                getAppWithParams({ pathname: '/accounts/details', hash: '#/eth/0/watch-imported' })
+                    .params,
+            ).toEqual({ symbol: 'eth', accountIndex: 0, accountType: 'watch-imported' });
             expect(getAppWithParams({ pathname: '/accounts', hash: '#/btc/NaN' })).toEqual({
                 ...resp,
                 params: undefined,

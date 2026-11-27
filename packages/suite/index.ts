@@ -285,6 +285,8 @@ export { ContentFlex } from './src/support/suite/ContentFlex';
 export { AccountNonce } from './src/views/wallet/details/AccountNonce';
 export { CoinjoinLogs } from './src/views/wallet/details/CoinjoinLogs';
 export { RescanAccount } from './src/views/wallet/details/RescanAccount';
+export { RemoveWatchOnlyAccount } from './src/views/wallet/details/RemoveWatchOnlyAccount';
+export { WatchAccount } from './src/views/wallet/watch-account/WatchAccount';
 export { Bip329Labels } from './src/views/wallet/labels/Bip329Labels';
 export { Route } from './src/components/suite/Route';
 export { NftsTablesSection } from './src/views/wallet/nfts/NftsTablesSection';

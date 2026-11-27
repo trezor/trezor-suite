@@ -22,6 +22,7 @@ import { EarnTransactionRenderer } from './EarnTransactionRenderer';
 import { ExchangeInfoRenderer } from './ExchangeInfoRenderer';
 import { type NotificationRendererProps } from './NotificationRendererProps';
 import { TransactionRenderer } from './TransactionRenderer';
+import { WatchOnlyDeviceCallRenderer } from './WatchOnlyDeviceCallRenderer';
 import { WrapInfoRenderer } from './WrapInfoRenderer';
 import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
@@ -167,6 +168,9 @@ export const NotificationRenderer = ({
                 message: 'TR_DEVICE_HAS_BEEN_FORGOTTEN',
                 icon: CheckIcon,
             });
+
+        case 'watch-only-device-call':
+            return <WatchOnlyDeviceCallRenderer render={render} notification={notification} />;
 
         case 'copy-to-clipboard':
             return renderNotificationView(render, notification, {

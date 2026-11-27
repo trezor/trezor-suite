@@ -26,6 +26,8 @@ export { accountsActionsEvent } from './accountsActionsEvent';
 export { accountsEmptyAccountReceiveEvent } from './accountsEmptyAccountReceiveEvent';
 export { accountsNewAccountEvent } from './accountsNewAccountEvent';
 export { accountsTransactionsExportEvent } from './accountsTransactionsExportEvent';
+export { accountsWatchAccountAddedEvent } from './accountsWatchAccountAddedEvent';
+export { accountsWatchAccountRemovedEvent } from './accountsWatchAccountRemovedEvent';
 export { addTokenEvent } from './addTokenEvent';
 export { appNewContentBadgeEvent } from './appNewContentBadgeEvent';
 export { appUpdateEvent } from './appUpdateEvent';

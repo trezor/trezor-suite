@@ -29,6 +29,11 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             /* webpackChunkName: "dashboard" */ '@suite-app/module-home/pages/HiddenTokensPage'
         ).then(({ HiddenTokensPage }) => ({ default: HiddenTokensPage })),
     ),
+    'suite-watch-account': lazy(() =>
+        import(
+            /* webpackChunkName: "wallet" */ '@suite-app/module-account-detail/pages/WatchAccountPage'
+        ).then(({ WatchAccountPage }) => ({ default: WatchAccountPage })),
+    ),
     'suite-asset': lazy(() =>
         import(
             /* webpackChunkName: "dashboard" */ '@suite-app/module-assets/pages/AssetDetailPage'

@@ -11,6 +11,7 @@ const bitcoinFormattedAccountTypeMap: Record<AccountType, string | null> = {
     ledger: null,
     root: null,
     imported: null,
+    'watch-imported': null,
     placeholder: null,
 };
 
@@ -23,6 +24,7 @@ const formattedAccountTypeMap: Record<AccountType, string | null> = {
     taproot: null,
     root: 'Root',
     imported: null,
+    'watch-imported': null,
     placeholder: null,
 };
 

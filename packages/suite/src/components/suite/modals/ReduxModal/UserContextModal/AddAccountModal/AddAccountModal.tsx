@@ -24,13 +24,18 @@ import {
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getAvailableAccountTypes, prepareNewAccountPayload } from '@suite-common/wallet-utils';
+import {
+    getAvailableAccountTypes,
+    isAccountWatchOnly,
+    prepareNewAccountPayload,
+} from '@suite-common/wallet-utils';
 import { Box, Column, Icon, Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { addWatchOnlyAccountThunk } from '#src/actions/wallet/watchOnlyAccountThunks';
 import { NetworkSettingsSearchInput } from '#src/components/suite/NetworkList/NetworkSettingsSearchInput';
 import { AddAccountBannerAboutNetworks } from '#src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountBannerAboutNetworks';
 import { useAvailableNetworkSymbols } from '#src/components/wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
@@ -42,8 +47,15 @@ import { useNetworkSettingsSearch } from '#src/views/settings/SettingsCoins/useN
 import { AccountTypeSelect } from './AccountTypeSelect/AccountTypeSelect';
 import { AddAccountButton } from './AddAccountButton/AddAccountButton';
 import { SelectNetwork } from './SelectNetwork';
-import { getSortedNetworks, getVisibleAccountCounts } from './addAccountModalUtils';
+import { WatchOnlyAddressInput } from './WatchOnlyAddressInput';
+import {
+    getAddableAccountTypes,
+    getSortedNetworks,
+    getVisibleAccountCounts,
+    hasTypeSelectionStep,
+} from './addAccountModalUtils';
 import { useNetworkActivationQueue } from './useNetworkActivationQueue';
+import { useWatchOnlyAddressInput } from './useWatchOnlyAddressInput';
 import { verifyAvailability } from './verifyAvailability';
 import { AdvancedCoinSettingsModal } from '../AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 
@@ -129,6 +141,7 @@ export const AddAccountModal = ({
             : undefined;
 
     const isCoinjoinVisible = (isCoinjoinPublic || isDebug) && !isCoinjoinDisabled;
+    const isDeviceConnected = !!device.connected;
 
     const getAccountTypesForNetwork = useCallback(
         (network?: Network) => {
@@ -136,19 +149,23 @@ export const AddAccountModal = ({
                 return undefined;
             }
 
-            return getAvailableAccountTypes(network.symbol, {
-                isCoinjoinVisible,
-                isDebug,
+            return getAddableAccountTypes({
+                network,
+                isDeviceConnected,
+                // Kept out of flows that pick an account for a parent flow, such as trading.
+                isDebugModeEnabled: isDebug && shouldKeepModalOpen,
+                getDerivedAccountTypes: () =>
+                    getAvailableAccountTypes(network.symbol, { isCoinjoinVisible, isDebug }),
             });
         },
-        [enabledNetworkSymbols, isCoinjoinVisible, isDebug],
+        [enabledNetworkSymbols, isCoinjoinVisible, isDebug, isDeviceConnected, shouldKeepModalOpen],
     );
 
     const defaultAccountTypeSelectionNetwork =
         preselectedNetwork || bitcoinOnlyDefaultNetworkSelection;
     const initialAccountTypeSelectionNetwork =
         defaultAccountTypeSelectionNetwork &&
-        (getAccountTypesForNetwork(defaultAccountTypeSelectionNetwork)?.length ?? 0) > 1
+        hasTypeSelectionStep(getAccountTypesForNetwork(defaultAccountTypeSelectionNetwork))
             ? defaultAccountTypeSelectionNetwork
             : undefined;
 
@@ -156,6 +173,10 @@ export const AddAccountModal = ({
         Network | undefined
     >(initialAccountTypeSelectionNetwork);
     const [selectedAccount, setSelectedAccount] = useState<NetworkAccount | undefined>(undefined);
+    const watchOnlyAddressInput = useWatchOnlyAddressInput(
+        accountTypeSelectionNetwork?.symbol,
+        device.state?.staticSessionId,
+    );
     const [advancedSettingsSymbol, setAdvancedSettingsSymbol] = useState<
         NetworkSymbol | undefined
     >();
@@ -253,13 +274,18 @@ export const AddAccountModal = ({
     // previous account is still empty, or the device lacks the capability).
     const getAddDisabledMessage = useCallback(
         (network: Network) => {
+            const networkAccountTypes = getAccountTypesForNetwork(network);
+
+            if (!isDeviceConnected && !networkAccountTypes) {
+                return <Translation id="TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT" />;
+            }
+
             // The inline button only adds an account directly for already-enabled networks
             // with a single account type. Disabled networks just get enabled and multi-type
             // networks open the account-type-selection step, so neither needs this guard.
             if (!enabledNetworkSymbols.includes(network.symbol)) return undefined;
 
-            const networkAccountTypes = getAccountTypesForNetwork(network);
-            if (!networkAccountTypes || networkAccountTypes.length > 1) return undefined;
+            if (!networkAccountTypes || hasTypeSelectionStep(networkAccountTypes)) return undefined;
 
             const defaultAccountTypeName = networkAccountTypes[0]?.accountType ?? 'normal';
             const scopedAccounts = accounts
@@ -282,6 +308,7 @@ export const AddAccountModal = ({
             device.unavailableCapabilities,
             enabledNetworkSymbols,
             getAccountTypesForNetwork,
+            isDeviceConnected,
         ],
     );
 
@@ -447,6 +474,28 @@ export const AddAccountModal = ({
         }
     }
 
+    async function addWatchOnlyAccount(network: Network, address: string) {
+        if (!shouldStartAddingAccount(network.symbol)) {
+            return;
+        }
+
+        dispatch(preserveModal());
+
+        try {
+            const addedAccount = await dispatch(
+                addWatchOnlyAccountThunk({ address, symbol: network.symbol, device }),
+            ).unwrap();
+            if (!addedAccount) return;
+
+            resetAccountSearch(network.symbol);
+            watchOnlyAddressInput.reset();
+            setAccountTypeSelectionNetwork(undefined);
+            setSelectedAccount(undefined);
+        } finally {
+            finishAddingAccount();
+        }
+    }
+
     const handleNetworkSelection = async (networkSymbol?: NetworkSymbol) => {
         if (!networkSymbol) {
             setAccountTypeSelectionNetwork(undefined);
@@ -472,7 +521,7 @@ export const AddAccountModal = ({
 
         const networkAccountTypes = getAccountTypesForNetwork(networkToSelect);
 
-        if (networkAccountTypes && networkAccountTypes.length > 1) {
+        if (hasTypeSelectionStep(networkAccountTypes)) {
             if (!networkPinned) {
                 setAccountTypeSelectionNetwork(networkToSelect);
                 setSelectedAccount(undefined);
@@ -512,7 +561,10 @@ export const AddAccountModal = ({
     };
 
     const isAccountTypeSelectionStep =
-        !!accountTypeSelectionNetwork && !!accountTypes && accountTypes.length > 1;
+        !!accountTypeSelectionNetwork && !!accountTypes && hasTypeSelectionStep(accountTypes);
+    const effectiveSelectedAccount = selectedAccount ?? accountTypes?.[0];
+    const isWatchOnlySelected =
+        isDebug && !!effectiveSelectedAccount && isAccountWatchOnly(effectiveSelectedAccount);
 
     const getStepConfig = () =>
         isAccountTypeSelectionStep
@@ -526,13 +578,18 @@ export const AddAccountModal = ({
                       />
                   ),
                   children: (
-                      <AccountTypeSelect
-                          selectedAccountType={selectedAccount}
-                          accountTypes={accountTypes}
-                          onSelectAccountType={setSelectedAccount}
-                          networkType={accountTypeSelectionNetwork.networkType}
-                          symbol={accountTypeSelectionNetwork.symbol}
-                      />
+                      <Column gap={16}>
+                          <AccountTypeSelect
+                              selectedAccountType={selectedAccount}
+                              accountTypes={accountTypes}
+                              onSelectAccountType={setSelectedAccount}
+                              networkType={accountTypeSelectionNetwork.networkType}
+                              symbol={accountTypeSelectionNetwork.symbol}
+                          />
+                          {isWatchOnlySelected && (
+                              <WatchOnlyAddressInput state={watchOnlyAddressInput} />
+                          )}
+                      </Column>
                   ),
                   onBackClick: !isBackClickDisabled
                       ? () => setAccountTypeSelectionNetwork(undefined)
@@ -540,7 +597,9 @@ export const AddAccountModal = ({
                   bottomContent: (
                       <AddAccountButton
                           network={accountTypeSelectionNetwork}
-                          selectedAccount={selectedAccount}
+                          selectedAccount={
+                              isWatchOnlySelected ? effectiveSelectedAccount : selectedAccount
+                          }
                           scopedAccounts={scopedAccounts}
                           isLoading={
                               addingAccountNetworkSymbol === accountTypeSelectionNetwork.symbol
@@ -561,6 +620,10 @@ export const AddAccountModal = ({
                                   account,
                                   accountTypes,
                               });
+                          }}
+                          watchOnlyAddress={watchOnlyAddressInput.address}
+                          onAddWatchOnlyAccount={address => {
+                              void addWatchOnlyAccount(accountTypeSelectionNetwork, address);
                           }}
                       />
                   ),

@@ -1,7 +1,10 @@
 import { type EventInstance, type events } from '@suite-common/analytics';
 import { type TokenDefinition } from '@suite-common/token-definitions';
 import { type Account } from '@suite-common/wallet-types';
-import { getAccountsWithSomeTransactionHistory } from '@suite-common/wallet-utils';
+import {
+    getAccountsWithSomeTransactionHistory,
+    isAccountWatchOnly,
+} from '@suite-common/wallet-utils';
 
 import {
     getStakingProvidersForAnalytics,
@@ -10,7 +13,8 @@ import {
 import { getAccountAnalyticsTokenSymbols } from '../tokens/tokenUtils';
 
 export const isAccountActiveForAnalytics = (account: Account) =>
-    getAccountsWithSomeTransactionHistory([account]).length > 0 || !account.empty;
+    !isAccountWatchOnly(account) &&
+    (getAccountsWithSomeTransactionHistory([account]).length > 0 || !account.empty);
 
 export const getAccountInfoAnalyticsPayload = (
     account: Account,

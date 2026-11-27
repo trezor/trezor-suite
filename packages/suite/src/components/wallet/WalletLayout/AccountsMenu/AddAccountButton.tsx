@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
+import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -10,8 +12,12 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { useDiscovery } from '#src/hooks/suite/useDiscovery';
 
-const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {
-    if (device && !device.connected) {
+const getExplanationMessage = (
+    device: TrezorDevice | undefined,
+    discoveryIsRunning: boolean,
+    isDebugModeEnabled: boolean,
+) => {
+    if (device && !device.connected && !isDebugModeEnabled) {
         return <Translation id="TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT" />;
     } else if (discoveryIsRunning) {
         return <Translation id="TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY" />;
@@ -24,13 +30,15 @@ type AddAccountButtonProps = {
 
 export const AddAccountButton = ({ device }: AddAccountButtonProps) => {
     const { isDiscoveryRunning } = useDiscovery();
+    // Watch-only accounts, a debug-mode feature, don't need the device.
+    const isDebugModeEnabled = useSelector(selectIsDebugModeActive);
     const [isHovered, setIsHovered] = useState(false);
 
     const { dispatch } = useServices(injectDispatch);
 
     // TODO: add more cases when adding account is not possible
-    const addAccountDisabled = isDiscoveryRunning || !device?.connected;
-    const tooltipMessage = getExplanationMessage(device, isDiscoveryRunning);
+    const addAccountDisabled = isDiscoveryRunning || (!device?.connected && !isDebugModeEnabled);
+    const tooltipMessage = getExplanationMessage(device, isDiscoveryRunning, isDebugModeEnabled);
     const dataTestId = '@account-menu/add-account';
 
     const handleOnClick = () => {

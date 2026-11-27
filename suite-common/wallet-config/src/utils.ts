@@ -13,6 +13,7 @@ import {
 } from './networkTypes';
 
 export const NORMAL_ACCOUNT_TYPE = 'normal' satisfies AccountType;
+export const WATCH_ONLY_ACCOUNT_TYPE: Extract<AccountType, 'watch-imported'> = 'watch-imported';
 
 /**
  * array from `networks` as a `Network[]` type instead of inferred type

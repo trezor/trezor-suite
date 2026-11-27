@@ -131,6 +131,8 @@ const SECTIONS = {
         '/password-manager',
         '/apps-embedding',
         '/coinmarket-redirect',
+        // Debug only: watch-only account deep link
+        '/watch',
     ],
     onboarding: [
         '/start',

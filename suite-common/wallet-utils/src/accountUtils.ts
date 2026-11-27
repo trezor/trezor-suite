@@ -1,3 +1,4 @@
+import { areEvmAddressesEqual } from '@suite-common/address';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type TokenAddress } from '@suite-common/tokens';
 import {
@@ -8,6 +9,7 @@ import {
     type NetworkSymbolExtended,
     type NetworkType,
     type TrezorConnectBackendType,
+    WATCH_ONLY_ACCOUNT_TYPE,
     getNetwork,
 } from '@suite-common/wallet-config';
 import {
@@ -74,8 +76,19 @@ export const isAccountSuccessful = (account: Account): account is SuccessfulAcco
 
 export const isAccountFailed = (account: Account): account is FailedAccount => !!account.failed;
 
+export const isAccountWatchOnly = ({ accountType }: Pick<Account, 'accountType'>) =>
+    accountType === WATCH_ONLY_ACCOUNT_TYPE;
+
+// Watch-only accounts are a debugging aid, never offered outside debug mode.
+export const canAddWatchOnlyAccount = (networkType: NetworkType, isDebugModeEnabled: boolean) =>
+    isDebugModeEnabled &&
+    (networkType === 'ethereum' || networkType === 'solana' || networkType === 'tron');
+
 export const isAccountDiscoverable = ({ accountType }: Account) =>
-    accountType !== 'imported' && accountType !== 'placeholder' && accountType !== 'coinjoin';
+    accountType !== 'imported' &&
+    accountType !== WATCH_ONLY_ACCOUNT_TYPE &&
+    accountType !== 'placeholder' &&
+    accountType !== 'coinjoin';
 
 export const shouldSkipFirstAccountIndex = (networkType: NetworkType, accountType: AccountType) =>
     (networkType === 'ethereum' || networkType === 'tron') && accountType === 'ledger';
@@ -160,6 +173,16 @@ export const substituteBip43Path = (
     accountIndex: string | number = '0',
 ) => bip43PathTemplate.replace('i', String(accountIndex)) as Bip43Path;
 
+// Counted down from the top of the index range, so no real account ever uses it.
+const WATCH_ONLY_PATH_TOP_INDEX = 2 ** 31 - 1;
+
+/**
+ * Unique to watch-only accounts, which is how the device-call guard recognises them. Should a call
+ * slip past it, the device signs for a never-used, empty address, so nothing can move.
+ */
+export const getWatchOnlyAccountPath = (bip43Path: Bip43PathTemplate, index: number) =>
+    substituteBip43Path(bip43Path, WATCH_ONLY_PATH_TOP_INDEX - index);
+
 type getAccountTypeNameProps = {
     path?: Bip43PathTemplate;
     networkType?: NetworkType;
@@ -181,6 +204,8 @@ export const getAccountTypeName = ({ path, accountType, networkType }: getAccoun
                 return 'TR_ACCOUNT_TYPE_DEFAULT';
             case 'placeholder':
                 return 'TR_ACCOUNT_TYPE_DEFAULT';
+            case WATCH_ONLY_ACCOUNT_TYPE:
+                return 'TR_ACCOUNT_TYPE_WATCH_ONLY';
         }
     }
 
@@ -229,6 +254,8 @@ type getAccountTypeDescProps = {
 
 export const getAccountTypeDesc = ({ path, accountType, networkType }: getAccountTypeDescProps) => {
     switch (accountType) {
+        case WATCH_ONLY_ACCOUNT_TYPE:
+            return 'TR_ACCOUNT_TYPE_WATCH_ONLY_DESC';
         case 'ledger':
             return 'TR_ACCOUNT_TYPE_LEDGER_DESC';
         case 'root':
@@ -1388,6 +1415,80 @@ export const prepareNewAccountPayload = async ({
 
 export const isProgramDerivedAccount = (data: AccountInfo) =>
     !(data?.misc?.owner === SYSTEM_PROGRAM_PUBLIC_KEY || data?.misc?.owner === undefined);
+
+type PrepareWatchOnlyAccountPayloadParams = {
+    address: string;
+    networkSymbol: NetworkSymbol;
+    index: number;
+    device: TrezorDevice;
+};
+
+export const prepareWatchOnlyAccountPayload = async ({
+    address,
+    networkSymbol,
+    index,
+    device,
+}: PrepareWatchOnlyAccountPayloadParams) => {
+    const network = getNetwork(networkSymbol);
+
+    if (!device.state?.staticSessionId) return new Error('Missing device state');
+
+    const res = await TrezorConnect.getAccountInfo({
+        descriptor: address,
+        coin: asCoinSymbol(networkSymbol),
+        details: 'txs',
+        protocols: network.networkType === 'ethereum' ? ['erc4626'] : undefined,
+    });
+
+    if (!res.success) return new Error(res.error.message);
+
+    if (network.networkType === 'solana' && isProgramDerivedAccount(res.payload)) {
+        return new Error('Not a wallet address');
+    }
+
+    return {
+        accountInfo: res.payload,
+        visible: true,
+        deviceState: device.state.staticSessionId,
+        symbol: networkSymbol,
+        index,
+        accountType: WATCH_ONLY_ACCOUNT_TYPE,
+        imported: true,
+        path: getWatchOnlyAccountPath(network.bip43Path, index),
+    };
+};
+
+const isSameDescriptor = (networkType: NetworkType, a: string, b: string) =>
+    networkType === 'ethereum' ? areEvmAddressesEqual(a, b) : a === b;
+
+export const findDeviceAccountByDescriptor = (
+    accounts: Account[],
+    {
+        symbol,
+        deviceState,
+        descriptor,
+    }: Pick<Account, 'symbol' | 'deviceState'> & { descriptor: string },
+) =>
+    accounts.find(
+        account =>
+            account.symbol === symbol &&
+            account.deviceState === deviceState &&
+            isSameDescriptor(account.networkType, account.descriptor, descriptor),
+    );
+
+// The route finds an account by symbol, type and index, so each one needs its own index.
+export const getNextWatchOnlyAccountIndex = (
+    accounts: Account[],
+    { symbol, deviceState }: Pick<Account, 'symbol' | 'deviceState'>,
+) =>
+    accounts
+        .filter(
+            account =>
+                account.symbol === symbol &&
+                account.deviceState === deviceState &&
+                isAccountWatchOnly(account),
+        )
+        .reduce((nextIndex, account) => Math.max(nextIndex, account.index + 1), 0);
 
 export function filterAccountsByNetworkSymbol<T extends Account>(
     accounts: T[],

@@ -1,11 +1,15 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
+import { type DebugRootState, selectIsDebugModeActive } from '@suite/debug';
 import { selectIsRouterLocked } from '@suite/locks';
 import {
     type GotoThunkState,
+    type Route,
     closeModalAppThunk,
+    getAppWithParams,
     gotoThunk,
+    routerLocationChange,
     selectRouteName,
     selectRouterApp,
     selectRouterParams,
@@ -19,7 +23,27 @@ import {
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Dispatch } from '@trezor/redux-utils';
 
-type RedirectMiddlewareState = GotoThunkState & DeviceRootState;
+type RedirectMiddlewareState = GotoThunkState & DebugRootState & DeviceRootState;
+
+const DEBUG_ONLY_ROUTES = new Set<Route['name']>(['suite-watch-account']);
+
+// Runs before analytics and Sentry, so a debug-only URL and its params never reach the router state.
+// Rewriting instead of redirecting keeps the history intact, Back still leaves the app.
+const guardDebugOnlyRoute = (action: UnknownAction, state: RedirectMiddlewareState) => {
+    if (!routerLocationChange.match(action)) return action;
+
+    const routeName = action.payload.route?.name;
+    if (!routeName || !DEBUG_ONLY_ROUTES.has(routeName) || selectIsDebugModeActive(state)) {
+        return action;
+    }
+
+    return routerLocationChange({
+        pathname: '/',
+        hash: '',
+        search: '',
+        ...getAppWithParams({ pathname: '/' }),
+    });
+};
 
 const handleDeviceRedirect = (
     dispatch: Dispatch,
@@ -65,7 +89,8 @@ const handleDeviceRedirect = (
 const redirect =
     (api: MiddlewareAPI<Dispatch, RedirectMiddlewareState>) =>
     (next: ReduxDispatch<UnknownAction>) =>
-    (action: UnknownAction): UnknownAction => {
+    (originalAction: UnknownAction): UnknownAction => {
+        const action = guardDebugOnlyRoute(originalAction, api.getState());
         const isRouterLocked = selectIsRouterLocked(api.getState());
 
         if (isRouterLocked) {

@@ -3462,6 +3462,11 @@ export const messages = defineMessages({
         id: 'TR_ACCOUNT_TYPE_IMPORTED',
         dynamic: true,
     },
+    TR_ACCOUNT_TYPE_WATCH_ONLY: {
+        defaultMessage: 'Watch-only',
+        id: 'TR_ACCOUNT_TYPE_WATCH_ONLY',
+        dynamic: true,
+    },
     TR_ACCOUNT_TYPE_DEFAULT: {
         defaultMessage: 'Default',
         id: 'TR_ACCOUNT_TYPE_DEFAULT',
@@ -4560,6 +4565,68 @@ export const messages = defineMessages({
         id: 'TR_ACCOUNT_TYPE_LEDGER_DESC',
         defaultMessage:
             'Ledger accounts are compatible with Ledger Wallet derivation paths, enabling smooth migration from Ledger to Trezor.',
+    },
+    TR_ACCOUNT_TYPE_WATCH_ONLY_DESC: {
+        id: 'TR_ACCOUNT_TYPE_WATCH_ONLY_DESC',
+        defaultMessage:
+            'Track any {value} address or name. Every flow works until the transaction would go to your Trezor for signing.',
+    },
+    TR_WATCH_ONLY_ADDRESS_LABEL: {
+        id: 'TR_WATCH_ONLY_ADDRESS_LABEL',
+        defaultMessage: 'Address or name',
+    },
+    TOAST_WATCH_ONLY_DEVICE_CALL: {
+        id: 'TOAST_WATCH_ONLY_DEVICE_CALL',
+        defaultMessage: 'Watch-only account: {method} was not sent to your Trezor.',
+    },
+    TR_COPY_TRANSACTION_DATA: {
+        id: 'TR_COPY_TRANSACTION_DATA',
+        defaultMessage: 'Copy transaction data',
+    },
+    TR_WATCH_ACCOUNT_TITLE: {
+        id: 'TR_WATCH_ACCOUNT_TITLE',
+        defaultMessage: 'Watch account',
+    },
+    TR_START_WATCHING: {
+        id: 'TR_START_WATCHING',
+        defaultMessage: 'Start watching',
+    },
+    TR_WATCH_ACCOUNT_DEBUG_ONLY: {
+        id: 'TR_WATCH_ACCOUNT_DEBUG_ONLY',
+        defaultMessage: 'Watch-only accounts are available in debug mode only.',
+    },
+    TR_WATCH_ACCOUNT_INVALID_LINK: {
+        id: 'TR_WATCH_ACCOUNT_INVALID_LINK',
+        defaultMessage: 'This watch link is missing a network or an address.',
+    },
+    TR_WATCH_ACCOUNT_UNSUPPORTED_NETWORK: {
+        id: 'TR_WATCH_ACCOUNT_UNSUPPORTED_NETWORK',
+        defaultMessage: "Watch-only accounts aren't available on {network}.",
+    },
+    TR_WATCH_ACCOUNT_SELECT_WALLET: {
+        id: 'TR_WATCH_ACCOUNT_SELECT_WALLET',
+        defaultMessage: 'Select a wallet to add the watch-only account to.',
+    },
+    TR_WATCH_ACCOUNT_ENABLE_NETWORK: {
+        id: 'TR_WATCH_ACCOUNT_ENABLE_NETWORK',
+        defaultMessage: 'Turn on {network} in your coins settings first.',
+    },
+    TR_REMOVE_WATCH_ONLY_ACCOUNT_TITLE: {
+        id: 'TR_REMOVE_WATCH_ONLY_ACCOUNT_TITLE',
+        defaultMessage: 'Remove watch-only account',
+    },
+    TR_REMOVE_WATCH_ONLY_ACCOUNT_DESC: {
+        id: 'TR_REMOVE_WATCH_ONLY_ACCOUNT_DESC',
+        defaultMessage:
+            'Stops watching this address and deletes its data from this wallet. You can add it again anytime.',
+    },
+    TR_REMOVE_WATCH_ONLY_ACCOUNT_BUTTON: {
+        id: 'TR_REMOVE_WATCH_ONLY_ACCOUNT_BUTTON',
+        defaultMessage: 'Remove',
+    },
+    TR_WATCH_ONLY_ACCOUNT_ALREADY_ADDED: {
+        id: 'TR_WATCH_ONLY_ACCOUNT_ALREADY_ADDED',
+        defaultMessage: 'This address is already in your wallet.',
     },
     TR_ACCOUNT_TYPE_ROOT_DESC: {
         id: 'TR_ACCOUNT_TYPE_ROOT_DESC',

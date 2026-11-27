@@ -22,7 +22,7 @@ export type NetworkType =
     'bitcoin' | 'ethereum' | 'ripple' | 'cardano' | 'solana' | 'stellar' | 'tron';
 
 // Reserved account types to stand in for a real account type.
-type UtilityAccountType = 'normal' | 'imported' | 'placeholder';
+type UtilityAccountType = 'normal' | 'imported' | 'watch-imported' | 'placeholder';
 type RealAccountType = 'legacy' | 'segwit' | 'coinjoin' | 'taproot' | 'ledger' | 'root';
 export type AccountType = UtilityAccountType | RealAccountType;
 

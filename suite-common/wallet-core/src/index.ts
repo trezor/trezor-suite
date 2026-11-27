@@ -6,6 +6,7 @@ export * from './accounts/accountsMiddleware';
 export * from './accounts/accountsReducer';
 export * from './accounts/accountsRefreshTimeReducer';
 export * from './accounts/accountsSelectors';
+export * from './accounts/watchOnlyDeviceCall';
 export * from './accounts/accountsThunks';
 export * from './accounts/earnOnboarding';
 export { useSelector as useAccountsSelector } from './accounts/hooks/useSelector';

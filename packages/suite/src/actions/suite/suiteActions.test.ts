@@ -91,7 +91,7 @@ const getInitialState = (
     device: { ...deviceInitialState, ...device },
     firmware: firmwareInitialState,
     messageSystem: messageSystemInitialState,
-    wallet: { settings: initialWalletSettingsState },
+    wallet: { settings: initialWalletSettingsState, accounts: [] },
 });
 
 const createTestRoot = (preloadedState: SuiteActionsTestState) =>

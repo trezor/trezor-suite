@@ -1,6 +1,10 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkFeature, asNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type NetworkFeature,
+    WATCH_ONLY_ACCOUNT_TYPE,
+    asNetworkSymbol,
+} from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
     type Account,
@@ -12,13 +16,17 @@ import {
     createAccountKey,
 } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type AccountInfo } from '@trezor/blockchain-link-types';
+import TrezorConnect from '@trezor/connect';
 
 import * as fixtures from './__fixtures__/accountUtils';
 import {
     accountSearchFn,
+    canAddWatchOnlyAccount,
     enhanceAddresses,
     findAccountDevice,
     findAccountsByAddress,
+    findDeviceAccountByDescriptor,
     findTransactionSenderAccount,
     getAccountBalanceWithStaking,
     getAccountFiatBalance,
@@ -32,15 +40,20 @@ import {
     getFirmwareDescriptor,
     getHistoryCoveredSince,
     getNetworkAccountFeatures,
+    getNextWatchOnlyAccountIndex,
     getOlderHistoryFrom,
     getTotalFiatBalance,
     getUtxoFromSignedTransaction,
     getUtxoOutpoint,
+    getWatchOnlyAccountPath,
     hasNetworkFeatures,
     haveTokenBalancesChanged,
+    isAccountDiscoverable,
     isAccountOutdated,
+    isAccountWatchOnly,
     isDirectRpcHistoryUnscanned,
     isTestnet,
+    prepareWatchOnlyAccountPayload,
     sortByBIP44AddressIndex,
     sortByCoin,
     substituteBip43Path,
@@ -835,5 +848,211 @@ describe(getAccountFiatBalance.name, () => {
                 stakingBalances: { [other.key]: '1000000000000000000' },
             }).toFixed(),
         ).toBe('7250');
+    });
+});
+
+describe(isAccountWatchOnly.name, () => {
+    it('is a watch-only account', () => {
+        expect(isAccountWatchOnly({ accountType: WATCH_ONLY_ACCOUNT_TYPE })).toBe(true);
+    });
+
+    it('is not an imported portfolio tracker account', () => {
+        expect(isAccountWatchOnly({ accountType: 'imported' })).toBe(false);
+    });
+
+    it('is not a discovered account', () => {
+        expect(isAccountWatchOnly({ accountType: 'normal' })).toBe(false);
+    });
+});
+
+describe(canAddWatchOnlyAccount.name, () => {
+    it.each(['ethereum', 'solana', 'tron'] as const)('allows %s in debug mode', networkType => {
+        expect(canAddWatchOnlyAccount(networkType, true)).toBe(true);
+    });
+
+    it('never allows it outside debug mode', () => {
+        expect(canAddWatchOnlyAccount('ethereum', false)).toBe(false);
+    });
+
+    it('does not allow other networks', () => {
+        expect(canAddWatchOnlyAccount('bitcoin', true)).toBe(false);
+    });
+});
+
+describe(getWatchOnlyAccountPath.name, () => {
+    it('counts down from the top index so no real account shares it', () => {
+        expect(getWatchOnlyAccountPath("m/44'/60'/0'/0/i", 0)).toBe("m/44'/60'/0'/0/2147483647");
+        expect(getWatchOnlyAccountPath("m/44'/501'/i'/0'", 2)).toBe("m/44'/501'/2147483645'/0'");
+    });
+});
+
+describe(isAccountDiscoverable.name, () => {
+    it.each([
+        ['a discovered account', { accountType: 'normal' }, true],
+        ['a watch-only account', { accountType: WATCH_ONLY_ACCOUNT_TYPE }, false],
+        ['an imported account', { accountType: 'imported' }, false],
+        ['a placeholder', { accountType: 'placeholder' }, false],
+        ['a coinjoin account', { accountType: 'coinjoin' }, false],
+    ] as const)('%s → %s', (_, props, expected) => {
+        expect(
+            isAccountDiscoverable(mockWalletAccount({ symbol: asNetworkSymbol('btc'), ...props })),
+        ).toBe(expected);
+    });
+});
+
+describe(getAccountTypeName.name, () => {
+    it('names a watch-only account', () => {
+        expect(
+            getAccountTypeName({ accountType: WATCH_ONLY_ACCOUNT_TYPE, networkType: 'ethereum' }),
+        ).toBe('TR_ACCOUNT_TYPE_WATCH_ONLY');
+        expect(
+            getAccountTypeName({ accountType: WATCH_ONLY_ACCOUNT_TYPE, networkType: 'solana' }),
+        ).toBe('TR_ACCOUNT_TYPE_WATCH_ONLY');
+    });
+});
+
+describe(getAccountTypeDesc.name, () => {
+    it.each(['ethereum', 'solana'] as const)(
+        'describes a %s watch-only account as watch-only, not by its path',
+        networkType => {
+            expect(
+                getAccountTypeDesc({
+                    path: "m/44'/60'/0'/0/i",
+                    accountType: WATCH_ONLY_ACCOUNT_TYPE,
+                    networkType,
+                }),
+            ).toBe('TR_ACCOUNT_TYPE_WATCH_ONLY_DESC');
+        },
+    );
+});
+
+describe(getNextWatchOnlyAccountIndex.name, () => {
+    const deviceState = '1stTestnet@device_id:0';
+    const watchOnly = (index: number, descriptor: string) =>
+        mockWalletAccount({
+            symbol: ethSymbol,
+            accountType: WATCH_ONLY_ACCOUNT_TYPE,
+            index,
+            deviceState,
+            descriptor: asAccountDescriptor(descriptor),
+        });
+
+    it('starts at zero', () => {
+        expect(getNextWatchOnlyAccountIndex([], { symbol: ethSymbol, deviceState })).toBe(0);
+    });
+
+    it('follows the highest watch-only index of the same network and wallet', () => {
+        const accounts = [
+            watchOnly(0, '0xa'),
+            watchOnly(3, '0xb'),
+            mockWalletAccount({ symbol: ethSymbol, index: 7, deviceState }),
+            mockWalletAccount({
+                symbol: ethSymbol,
+                accountType: WATCH_ONLY_ACCOUNT_TYPE,
+                index: 9,
+                deviceState: '1stTestnet@device_id:1',
+            }),
+        ];
+
+        expect(getNextWatchOnlyAccountIndex(accounts, { symbol: ethSymbol, deviceState })).toBe(4);
+    });
+});
+
+describe(findDeviceAccountByDescriptor.name, () => {
+    const deviceState = '1stTestnet@device_id:0';
+    const checksummedAddress = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
+    const ethAccount = mockWalletAccount({
+        symbol: ethSymbol,
+        deviceState,
+        descriptor: asAccountDescriptor(checksummedAddress),
+    });
+
+    it('matches an EVM address regardless of its checksum casing', () => {
+        expect(
+            findDeviceAccountByDescriptor([ethAccount], {
+                symbol: ethSymbol,
+                deviceState,
+                descriptor: checksummedAddress.toLowerCase(),
+            }),
+        ).toBe(ethAccount);
+    });
+
+    it('ignores the same address in another wallet', () => {
+        expect(
+            findDeviceAccountByDescriptor([ethAccount], {
+                symbol: ethSymbol,
+                deviceState: '1stTestnet@device_id:1',
+                descriptor: checksummedAddress,
+            }),
+        ).toBeUndefined();
+    });
+});
+
+describe(prepareWatchOnlyAccountPayload.name, () => {
+    const device = mockSuiteDevice({ state: { staticSessionId: '1stTestnet@device_id:0' } });
+    const mockAccountInfo = (accountInfo: Partial<AccountInfo>) => {
+        const payload: AccountInfo = {
+            descriptor: '0xAbCd',
+            balance: '0',
+            availableBalance: '0',
+            empty: true,
+            history: { total: 0, unconfirmed: 0 },
+            ...accountInfo,
+        };
+
+        // spyOn types the mock by the last (bundled) overload.
+        return jest.spyOn(TrezorConnect, 'getAccountInfo').mockImplementation((() =>
+            Promise.resolve({
+                success: true,
+                payload,
+            })) as unknown as typeof TrezorConnect.getAccountInfo);
+    };
+
+    afterEach(() => jest.restoreAllMocks());
+
+    it('builds a watch-only account on its own placeholder path', async () => {
+        const getAccountInfo = mockAccountInfo({});
+
+        await expect(
+            prepareWatchOnlyAccountPayload({
+                address: '0xAbCd',
+                networkSymbol: ethSymbol,
+                index: 2,
+                device,
+            }),
+        ).resolves.toMatchObject({
+            accountType: WATCH_ONLY_ACCOUNT_TYPE,
+            index: 2,
+            path: getWatchOnlyAccountPath("m/44'/60'/0'/0/i", 2),
+            deviceState: '1stTestnet@device_id:0',
+            accountInfo: { descriptor: '0xAbCd' },
+        });
+        expect(getAccountInfo).toHaveBeenCalledWith(
+            expect.objectContaining({ descriptor: '0xAbCd', coin: 'eth' }),
+        );
+    });
+
+    it('refuses a Solana address owned by a program', async () => {
+        mockAccountInfo({ misc: { owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' } });
+
+        await expect(
+            prepareWatchOnlyAccountPayload({
+                address: 'program-owned',
+                networkSymbol: asNetworkSymbol('sol'),
+                index: 0,
+                device,
+            }),
+        ).resolves.toBeInstanceOf(Error);
+    });
+
+    it('refuses without a device state', async () => {
+        await expect(
+            prepareWatchOnlyAccountPayload({
+                address: '0xAbCd',
+                networkSymbol: ethSymbol,
+                index: 0,
+                device: mockSuiteDevice(),
+            }),
+        ).resolves.toBeInstanceOf(Error);
     });
 });

@@ -2,6 +2,7 @@ import { yup } from '@suite/forms';
 import {
     type AccountType,
     type NetworkSymbol,
+    WATCH_ONLY_ACCOUNT_TYPE,
     getNetworkOptional,
     isAccountOfNetwork,
     isNetworkSymbol,
@@ -14,6 +15,7 @@ import {
 const accountTypes = [
     'normal',
     'imported',
+    'watch-imported',
     'placeholder',
     'legacy',
     'segwit',
@@ -49,6 +51,17 @@ export const parseAssetParams = ({
     contractAddress,
 }: Partial<Record<keyof AssetParams, string>>): AssetParams | undefined =>
     symbol !== undefined && isNetworkSymbol(symbol) ? { symbol, contractAddress } : undefined;
+
+export type WatchAccountParams = {
+    symbol: NetworkSymbol;
+    address: string;
+};
+
+export const parseWatchAccountParams = ({
+    symbol,
+    address,
+}: Partial<Record<keyof WatchAccountParams, string>>): WatchAccountParams | undefined =>
+    symbol !== undefined && isNetworkSymbol(symbol) && address ? { symbol, address } : undefined;
 
 const dashboardParamsSchema = yup.object({
     networkSymbol: yup.mixed<NetworkSymbol>().notRequired(),
@@ -93,7 +106,9 @@ export const validateAccountRouteParams = ({
     if (!network) return;
 
     const accountType = rawAccountType || 'normal';
-    if (!isAccountOfNetwork(network, accountType)) return;
+    // Watch-only isn't a derivation of the network, but its accounts have their own routes.
+    if (accountType !== WATCH_ONLY_ACCOUNT_TYPE && !isAccountOfNetwork(network, accountType))
+        return;
 
     const accountIndex = parseInt(index, 10);
     if (Number.isNaN(accountIndex)) return;

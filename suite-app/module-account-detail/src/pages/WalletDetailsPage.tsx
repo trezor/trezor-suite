@@ -5,7 +5,7 @@ import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { useReceiveDisabled } from '@suite/receive';
-import { getAccountTypeTech } from '@suite-common/wallet-utils';
+import { getAccountTypeTech, isAccountWatchOnly } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -15,6 +15,7 @@ import {
     Bip329Labels,
     CoinjoinLogs,
     ContentFlex,
+    RemoveWatchOnlyAccount,
     RescanAccount,
     WalletLayout,
     showXpubThunk,
@@ -80,6 +81,8 @@ export const WalletDetailsPage = () => {
     const accountTypeTech = getAccountTypeTech(account.path);
 
     const isCoinjoinAccount = account.backendType === 'coinjoin';
+    // Its path is a placeholder, not where the address comes from.
+    const isWatchOnly = isAccountWatchOnly(account);
 
     // xPub is required by networks using UTXO model. Bitcoin, Bitcoin Cash, Litecoin, Dogecoin, Cardano etc.
     const shouldDisplayXpubSection =
@@ -108,17 +111,21 @@ export const WalletDetailsPage = () => {
                             path={account.path}
                             networkType={account.networkType}
                         />
-                        <Paragraph typographyStyle="body-xs" textWrap="nowrap">
-                            (<Translation id={accountTypeTech} />)
-                        </Paragraph>
+                        {!isWatchOnly && (
+                            <Paragraph typographyStyle="body-xs" textWrap="nowrap">
+                                (<Translation id={accountTypeTech} />)
+                            </Paragraph>
+                        )}
                     </DetailsRow>
-                    <DetailsRow
-                        title="TR_ACCOUNT_DETAILS_PATH_HEADER"
-                        description={<Translation id="TR_ACCOUNT_DETAILS_PATH_DESC" />}
-                        learnMoreUrl={HELP_CENTER_BIP32_URL}
-                    >
-                        <Paragraph typographyStyle="body-sm">{account.path}</Paragraph>
-                    </DetailsRow>
+                    {!isWatchOnly && (
+                        <DetailsRow
+                            title="TR_ACCOUNT_DETAILS_PATH_HEADER"
+                            description={<Translation id="TR_ACCOUNT_DETAILS_PATH_DESC" />}
+                            learnMoreUrl={HELP_CENTER_BIP32_URL}
+                        >
+                            <Paragraph typographyStyle="body-sm">{account.path}</Paragraph>
+                        </DetailsRow>
+                    )}
                     {!isCoinjoinAccount ? (
                         shouldDisplayXpubSection && (
                             <DetailsRow
@@ -160,6 +167,14 @@ export const WalletDetailsPage = () => {
                         </DetailsRow>
                     )}
                     <Bip329Labels account={account} isLoading={locked} />
+                    {isWatchOnly && (
+                        <DetailsRow
+                            title="TR_REMOVE_WATCH_ONLY_ACCOUNT_TITLE"
+                            description={<Translation id="TR_REMOVE_WATCH_ONLY_ACCOUNT_DESC" />}
+                        >
+                            <RemoveWatchOnlyAccount account={account} />
+                        </DetailsRow>
+                    )}
                 </Column>
             </Card>
 

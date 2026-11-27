@@ -72,7 +72,7 @@ export type AddCoinAccountNavigationProps = StackToStackCompositeNavigationProps
 
 export type AddCoinEnabledAccountType = Exclude<
     AccountType,
-    'coinjoin' | 'imported' | 'ledger' | 'placeholder' | 'root'
+    'coinjoin' | 'imported' | 'watch-imported' | 'ledger' | 'placeholder' | 'root'
 >;
 
 export const accountTypeTranslationKeys: Record<

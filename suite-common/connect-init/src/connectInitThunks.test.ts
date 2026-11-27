@@ -3,12 +3,16 @@ import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type LockDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
+import { WATCH_ONLY_ACCOUNT_TYPE, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
+    WATCH_ONLY_DEVICE_CALL_ERROR,
     defaultTrezorUIEventHandlerThunk,
     initialWalletSettingsState,
     registerScopedCallId,
     unregisterScopedCallId,
 } from '@suite-common/wallet-core';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { getWatchOnlyAccountPath } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     DEVICE,
     DEVICE_EVENT,
@@ -37,8 +41,14 @@ type ConnectInitThunkTestDeps = {
     extra: ConnectInitThunkDeps;
 };
 
+const watchOnlyAccount = mockWalletAccount({
+    symbol: asNetworkSymbol('eth'),
+    accountType: WATCH_ONLY_ACCOUNT_TYPE,
+    path: getWatchOnlyAccountPath("m/44'/60'/0'/0/i", 0),
+});
+
 const state: ConnectInitThunkState = {
-    wallet: { settings: initialWalletSettingsState },
+    wallet: { settings: initialWalletSettingsState, accounts: [watchOnlyAccount] },
     device: deviceInitialState,
     firmware: firmwareInitialState,
     messageSystem: messageSystemInitialState,
@@ -246,6 +256,29 @@ describe('TrezorConnect Actions', () => {
                 payload: { path: 'device-path-42' },
             },
         ]);
+    });
+
+    it('stops a watch-only account before anything reaches the device', async () => {
+        const { actions, dispatch, getState, extra } = createThunkDeps();
+        await connectInitThunk()(dispatch, getState, extra);
+        actions.length = 0;
+
+        const response = await testMocks.getTrezorConnectMock().ethereumSignTransaction({
+            device: { path: asDeviceUniquePath('device-path-42') },
+            path: watchOnlyAccount.path,
+            transaction: { to: '0xRecipient', value: '0x1', chainId: 1 } as never,
+        });
+
+        expect(response).toEqual({ success: false, payload: WATCH_ONLY_DEVICE_CALL_ERROR });
+        expect(extra.services.lockDevice).not.toHaveBeenCalled();
+        expect(actions).toContainEqual(
+            expect.objectContaining({
+                payload: expect.objectContaining({
+                    type: 'watch-only-device-call',
+                    method: 'ethereumSignTransaction',
+                }),
+            }),
+        );
     });
 
     it('only scoped callId-bearing UI events are swallowed by the global listener', async () => {
