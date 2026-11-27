@@ -1,0 +1,100 @@
+import { useMemo, useState } from 'react';
+
+import { Translation } from '@suite/intl';
+import { type CustomEvmNetworkDefinition } from '@suite-common/wallet-types';
+import {
+    Banner,
+    Card,
+    Column,
+    Modal,
+    Row,
+    Spinner,
+    Text,
+    VirtualizedList,
+} from '@trezor/components';
+
+import { NetworkSettingsSearchInput } from '#src/components/suite/NetworkList/NetworkSettingsSearchInput';
+import { useCustomNetworkCatalogue } from '#src/hooks/settings/useCustomNetworkCatalogue';
+
+import { CUSTOM_NETWORK_ROW_HEIGHT, CustomNetworkListRow } from './CustomNetworkListRow';
+import { filterCustomNetworks } from './filterCustomNetworks';
+
+const LIST_HEIGHT = 'min(480px, 55vh)';
+
+type CustomNetworkListStepProps = {
+    onSelect: (network: CustomEvmNetworkDefinition) => void;
+    onCancel: () => void;
+};
+
+export const CustomNetworkListStep = ({ onSelect, onCancel }: CustomNetworkListStepProps) => {
+    const { networks, isLoading, hasError } = useCustomNetworkCatalogue();
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const listItems = useMemo(
+        () =>
+            filterCustomNetworks(networks, searchQuery).map((entry, index) => ({
+                entry,
+                index,
+                height: CUSTOM_NETWORK_ROW_HEIGHT,
+            })),
+        [networks, searchQuery],
+    );
+
+    return (
+        <Modal
+            width={600}
+            onCancel={onCancel}
+            heading={<Translation id="TR_ADD_CUSTOM_NETWORK" />}
+            description={<Translation id="TR_SUPPORTED_EVM_NETWORKS" />}
+            data-testid="@add-custom-network/list"
+        >
+            <Column gap={16} alignItems="stretch">
+                <NetworkSettingsSearchInput
+                    searchQuery={searchQuery}
+                    onSearchChange={setSearchQuery}
+                    onSearchClear={() => setSearchQuery('')}
+                    dataTestId="@add-custom-network/search"
+                />
+
+                {hasError && (
+                    <Banner
+                        intent="critical"
+                        description={<Translation id="TR_CUSTOM_NETWORKS_LOAD_ERROR" />}
+                    />
+                )}
+
+                {isLoading && (
+                    <Row justifyContent="center" padding={{ vertical: 32 }}>
+                        <Spinner size={24} />
+                    </Row>
+                )}
+
+                {!isLoading && !hasError && listItems.length === 0 && (
+                    <Row justifyContent="center" padding={{ vertical: 32 }}>
+                        <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                            <Translation id="TR_NO_NETWORKS_FOUND" />
+                        </Text>
+                    </Row>
+                )}
+
+                {listItems.length > 0 && (
+                    <Card paddingType="none">
+                        <VirtualizedList
+                            items={listItems}
+                            listHeight={LIST_HEIGHT}
+                            listMinHeight={CUSTOM_NETWORK_ROW_HEIGHT}
+                            getItemKey={({ entry }) => entry.definition.chainId}
+                            renderItem={({ entry, index }) => (
+                                <CustomNetworkListRow
+                                    entry={entry}
+                                    hasDivider={index > 0}
+                                    onSelect={onSelect}
+                                />
+                            )}
+                        />
+                    </Card>
+                )}
+            </Column>
+        </Modal>
+    );
+};
