@@ -5,7 +5,6 @@ import TrezorConnect, {
     type CallMethodPayload,
     type CoinInfo,
     type DerivationPath,
-    type MethodInfo,
     type MethodPermission,
     type PermissionRequest,
     asCoinSymbol,
@@ -23,6 +22,12 @@ import {
     getPublicKeyLabel,
     getUniqueNetworks,
 } from './methodTitles';
+
+/** Describes a host call: its title and its permissions. */
+export type MethodInfo = {
+    requiredPermissions: PermissionRequest[];
+    info: string;
+};
 
 /** Calls running under Suite's own firmware update, discovery or coinjoin authorization. */
 export const SUITE_ONLY_METHODS = [

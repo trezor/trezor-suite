@@ -1,9 +1,10 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import TrezorConnect, { type MethodInfo, type PermissionRequest } from '@trezor/connect';
+import TrezorConnect, { type PermissionRequest } from '@trezor/connect';
 
 import { CommonPopupFlow, type PopupFlowAnswer } from './CommonPopupFlow';
 import { connectPopupActions } from '../connectPopupActions';
+import { type MethodInfo } from '../methodInfo';
 
 jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),

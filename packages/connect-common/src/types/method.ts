@@ -52,14 +52,3 @@ export const GRANTABLE_PERMISSIONS: readonly MethodPermission[] = [
     'verify_message',
     'push_tx',
 ];
-
-/**
- * Metadata describing a `@trezor/connect` method call.
- *
- * Returned by `AbstractMethod.getMethodInfo()` for `__info` calls and consumed by
- * the connect popup to render the permission UI.
- */
-export type MethodInfo = {
-    requiredPermissions: PermissionRequest[];
-    info: string;
-};

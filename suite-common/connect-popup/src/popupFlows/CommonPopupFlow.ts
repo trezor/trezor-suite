@@ -9,7 +9,6 @@ import TrezorConnect, {
     type CallMethodParams,
     type CallMethodPayload,
     type CallMethodResponse,
-    type MethodInfo,
     type PermissionRequest,
 } from '@trezor/connect';
 import { connectManagementMethods } from '@trezor/connect-common/src/callableMethods';
@@ -26,7 +25,7 @@ import {
     type ConnectCallSource,
     getCallSourceName,
 } from '../connectPopupTypes';
-import { SUITE_ONLY_METHODS, getMethodInfo } from '../methodInfo';
+import { type MethodInfo, SUITE_ONLY_METHODS, getMethodInfo } from '../methodInfo';
 import {
     canRememberPermissions,
     deriveCardanoEnabledNetworks,
