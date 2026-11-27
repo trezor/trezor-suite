@@ -35,6 +35,11 @@ focus_state() {
     adb_s shell dumpsys window displays 2>/dev/null | tr -d '\r' | grep -E 'mCurrentFocus=|mFocusedApp=' | head -n 2
 }
 
+# The focused window as the input dispatcher sees it (lags behind the window manager focus).
+input_focus_state() {
+    adb_s shell dumpsys input 2> /dev/null | tr -d '\r' | grep -A 1 'FocusedWindows:' | tr '\n' ' '
+}
+
 setup() {
     mkdir -p "$OUT" "$ANDROID_AVD_HOME"
     sudo mkdir -p "$STORE" && sudo chown "$(id -u):$(id -g)" "$STORE" || return 1
@@ -131,6 +136,18 @@ run_boot() {
     local wait_ms=0 key_ms=-1 key_rc=-1
     local anr_lastanr=0 anr_logcat=0 anr_dialog=0 dialog_after_close=-1 focus=''
     if [[ $booted == 1 ]]; then
+        if [[ $mode == waitinput ]]; then
+            local t_wait_input poll_input
+            t_wait_input=$(now_ms)
+            for ((poll_input = 0; poll_input < 240; poll_input++)); do
+                if [[ $(input_focus_state) == *"name='"*" com.android.launcher3/"* ]]; then
+                    break
+                fi
+                sleep 0.5
+            done
+            wait_ms=$(($(now_ms) - t_wait_input))
+            adb_s shell dumpsys input 2> /dev/null | tr -d '\r' | grep -A 3 -E 'FocusedApplications|FocusedWindows' > "$dir/input-focus-before-key.txt"
+        fi
         if [[ $mode == wait ]]; then
             local t_wait poll
             t_wait=$(now_ms)

@@ -1,15 +1,15 @@
-name: "[TMP] Android emulator boot race under CPU contention (Quickstep ANR)"
+name: "[TMP] Android emulator unlock after input focus (Quickstep ANR)"
 
 # Temporary experiment, not meant to be merged. See .github/tmp-emulator-boot-race.sh.
 on:
   push:
     branches:
-      - tmp/quickstep-anr-stress
+      - tmp/quickstep-anr-waitinput
 
 permissions: {}
 
 jobs:
-  stress:
+  wait_input:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     permissions:
@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        REPLICA: [0, 1, 2, 3, 4, 5]
+        REPLICA: [0, 1, 2, 3, 4, 5, 6, 7]
 
     steps:
       - name: Checkout project
@@ -43,7 +43,7 @@ jobs:
         env:
           REPLICA: ${{ matrix.REPLICA }}
           BOOT_ATTEMPTS: 200
-          VARIANTS_SPEC: "37.3.10 immediate lavapipe STRESS=8;37.3.10 wait lavapipe STRESS=8;37.2.13 immediate lavapipe STRESS=8"
+          VARIANTS_SPEC: "37.3.10 waitinput lavapipe;37.3.10 waitinput lavapipe STRESS=8;37.3.10 immediate lavapipe"
           OUT: ${{ runner.temp }}/boot-race
         run: bash .github/tmp-emulator-boot-race.sh
 
@@ -51,6 +51,6 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: stress-${{ matrix.REPLICA }}
+          name: waitinput-${{ matrix.REPLICA }}
           path: ${{ runner.temp }}/boot-race
           retention-days: 7
