@@ -16,6 +16,7 @@ import {
     selectIsConnectAppSilentModeByOrigin,
     toConnectV9ErrorPayload,
 } from '@suite-common/connect-popup';
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     type CallMethodKeys,
     type PermissionRequest,
@@ -161,6 +162,7 @@ export const useConnectPopupDesktop = () => {
     // PIN, recovery word). Silent mode still focuses the window in these cases
     // because the user can't respond to the device without seeing Suite.
     const windowType = useSelector(selectDeviceContextWindowType);
+    const isDeviceDisconnected = useSelector(state => !selectSelectedDevice(state)?.connected);
     const isUserInputModalOpen =
         windowType &&
         isArrayMember(windowType, [
@@ -175,6 +177,13 @@ export const useConnectPopupDesktop = () => {
 
     const [currentlyOngoing, setCurrentlyOngoing] = useState(false);
     const [wasVisible, setWasVisible] = useState(false);
+
+    // Silent mode only focuses when the user has to type something
+    // into Suite (passphrase/PIN/word). Otherwise Suite comes forward
+    // once the call shows something there: a request of the device,
+    // or the wait for a device every call needs.
+    const ongoingFocus = isSilentMode ? isUserInputModalOpen : !!windowType || isDeviceDisconnected;
+
     useEffect(() => {
         const shouldFocus = (() => {
             const state = popupCall?.state;
@@ -187,12 +196,8 @@ export const useConnectPopupDesktop = () => {
                 case 'select-account':
                 case 'tx-simulation':
                     return true;
-                case 'ongoing': {
-                    // Silent mode only focuses when the user has to type something
-                    // into Suite (passphrase/PIN/word). Device-side confirmations
-                    // and simple ongoing calls stay in the background.
-                    return popupCall?.methodInfo?.useUi && (!isSilentMode || isUserInputModalOpen);
-                }
+                case 'ongoing':
+                    return ongoingFocus;
                 case 'finished':
                 case 'deeplink-callback':
                 case undefined:
@@ -226,5 +231,5 @@ export const useConnectPopupDesktop = () => {
             }
             setCurrentlyOngoing(false);
         }
-    }, [desktopApi, popupCall, currentlyOngoing, wasVisible, isSilentMode, isUserInputModalOpen]);
+    }, [desktopApi, popupCall, currentlyOngoing, wasVisible, ongoingFocus]);
 };
