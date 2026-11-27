@@ -2,6 +2,7 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
 import {
+    type SuiteLifecycle,
     onSuiteInit,
     onSuiteReady,
     setSuiteError,
@@ -27,18 +28,6 @@ import { type EvmSettings } from './evmSettings';
 export type SuiteRootState = {
     suite: SuiteState;
 };
-
-type SuiteLifecycle =
-    | { status: 'initial' }
-    | { status: 'loading' }
-    | { status: 'ready' }
-    // errors set from connect, should be renamed
-    | { status: 'error'; error: string }
-    // blocked if the instance cannot upgrade due to older version running,
-    // blocking in case instance is running older version thus blocking other instance
-    | { status: 'db-error'; error: 'blocking' | 'blocked' }
-    // inconsistent IDB state detected, need to reset storage
-    | { status: 'db-corrupted'; error: unknown };
 
 export interface PrefillFields {
     sendForm?: string;

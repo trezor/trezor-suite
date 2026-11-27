@@ -1,15 +1,21 @@
+import { storageCorrupted, storageError } from './storageLifecycleActions';
 import {
+    onSuiteInit,
+    onSuiteReady,
     selectIsSuiteOnline,
+    selectSuiteLifecycle,
+    setSuiteError,
     suiteLifecycleInitialState,
     suiteLifecycleReducer,
     updateOnlineStatus,
 } from './suiteLifecycleSlice';
 
 describe('suiteLifecycleReducer', () => {
-    it('is online initially', () => {
-        const state = suiteLifecycleReducer(undefined, { type: 'unknown' });
+    it('is online and initial initially', () => {
+        const state = { suiteLifecycle: suiteLifecycleReducer(undefined, { type: 'unknown' }) };
 
-        expect(selectIsSuiteOnline({ suiteLifecycle: state })).toBe(true);
+        expect(selectIsSuiteOnline(state)).toBe(true);
+        expect(selectSuiteLifecycle(state)).toEqual({ status: 'initial' });
     });
 
     it('updates online status', () => {
@@ -21,5 +27,17 @@ describe('suiteLifecycleReducer', () => {
 
         expect(selectIsSuiteOnline({ suiteLifecycle: offline })).toBe(false);
         expect(selectIsSuiteOnline({ suiteLifecycle: online })).toBe(true);
+    });
+
+    it.each([
+        [onSuiteInit(), { status: 'loading' }],
+        [onSuiteReady(), { status: 'ready' }],
+        [setSuiteError('Error'), { status: 'error', error: 'Error' }],
+        [storageError('blocked'), { status: 'db-error', error: 'blocked' }],
+        [storageCorrupted('Corrupted'), { status: 'db-corrupted', error: 'Corrupted' }],
+    ])('sets lifecycle on %o', (action, lifecycle) => {
+        const state = suiteLifecycleReducer(suiteLifecycleInitialState, action);
+
+        expect(selectSuiteLifecycle({ suiteLifecycle: state })).toEqual(lifecycle);
     });
 });

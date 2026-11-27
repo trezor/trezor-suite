@@ -1,4 +1,5 @@
 import { suiteSettingsInitialState } from '@suite/settings';
+import { suiteLifecycleInitialState } from '@suite/suite-lifecycle';
 import { deviceInitialState } from '@suite-common/device';
 import { type MetadataProvider } from '@suite-common/metadata-types';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -73,7 +74,7 @@ const mockState = ({
             selectedDevice: wallet,
         },
         suiteSettings: suiteSettingsInitialState,
-        suiteLifecycle: { online: true },
+        suiteLifecycle: suiteLifecycleInitialState,
     };
 };
 
