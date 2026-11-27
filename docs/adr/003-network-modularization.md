@@ -331,26 +331,29 @@ interpret what each network provides. We explicitly reject this:
   logic headless inside each module instead; see
   [Logic and UI are separated inside the module](#logic-and-ui-are-separated-inside-the-module).
 
-#### The abstraction can be lowered later but not raised
+#### Abstract after the shape is known, not before
 
 > [!CAUTION]
-> **A wrong, premature abstraction is hell to refactor.** The feature-level abstraction can be
-> lowered at any time by replacing a component with a fine-grained API and an engine. The way back
-> does not exist in practice: once an engine is built, replacing it with components again is an
-> extremely expensive refactoring.
+> **A premature abstraction is costly to undo.** A fine-grained network API and its engine have to
+> guess today what every current and future network will need. If the guess is wrong, every
+> network pays for it: new networks bend to fit the API, and the engine grows a condition for each
+> case it did not foresee.
 
-This is the crucial argument of this ADR. The reasons:
+This is the crucial argument of this ADR. Starting at the feature level postpones that guess until
+we have evidence:
 
-- **Lowering is local.** Every network's feature is complete, working and isolated in its own
-  module. If the modules of a feature turn out to be alike, we see it in real code and read the
-  common shape from it instead of guessing it up front. We can then move that one feature to a
-  finer API with a shared implementation. The other features, and the networks that do not fit,
-  stay as they are.
-- **Raising touches every network.** Each network's behavior is split between its description and
-  the shared engine, and the engine's conditions mix the rules of all networks. Taking one network
-  out means untangling what the engine does for it from what it does for the others.
+- **Real code first.** Each network's feature is complete, working and isolated in its own module.
+  If the modules of a feature turn out to be alike, we see the common shape in real code instead
+  of predicting it.
+- **Extraction stays local.** Once the shape is known, we can move that one feature to a finer API
+  with a shared implementation. Other features, and networks that do not fit, stay as they are.
+- **A wrong guess spreads.** With an engine, each network's behavior is split between its
+  description and the shared engine, and the engine's conditions mix the rules of all networks.
+  Correcting a wrong abstraction then means untangling every network at once.
 
-We therefore start at the high level, which keeps both options open.
+[Duplication is cheaper than the wrong abstraction](https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction).
+We therefore start at the feature level and add lower-level APIs only where the code shows they
+fit.
 
 #### Example: a Sign & Verify engine
 
