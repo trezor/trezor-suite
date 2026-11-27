@@ -383,6 +383,7 @@ export { TransactionReviewModal } from './src/components/suite/modals/ReduxModal
 export { UnhideTokenModal } from './src/components/suite/modals/ReduxModal/UnhideTokenModal';
 export { ActivateAssetsModal } from './src/components/suite/modals/ReduxModal/UserContextModal/ActivateAssetsModal';
 export { AddAccountModal } from './src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
+export { AddCustomNetworkModal } from './src/components/suite/modals/ReduxModal/UserContextModal/AddCustomNetworkModal/AddCustomNetworkModal';
 export { AddTokenModal } from './src/components/suite/modals/ReduxModal/UserContextModal/AddTokenModal';
 export { AdvancedCoinSettingsModal } from './src/components/suite/modals/ReduxModal/UserContextModal/AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 export { ApplicationLogModal } from './src/components/suite/modals/ReduxModal/UserContextModal/ApplicationLogModal';
