@@ -22,10 +22,6 @@ export default class GetFeatures extends AbstractMethod<'getFeatures'> {
         return [{ permission: 'read_features' }];
     }
 
-    get useUi() {
-        return false;
-    }
-
     checkFirmwareRange() {
         return undefined;
     }

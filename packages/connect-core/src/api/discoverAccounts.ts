@@ -140,10 +140,6 @@ export default class DiscoverAccounts extends AbstractMethod<
         );
     }
 
-    get useUi() {
-        return false;
-    }
-
     private progress: Partial<{ [key in ReturnType<typeof getAccountTypeKey>]: number }> = {};
     private updateProgress(account: AccountTypeKey, done: number, last = false) {
         const progress = last ? 1 : done / Math.max(ACCOUNT_LIMIT, done + 1);

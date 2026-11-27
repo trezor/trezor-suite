@@ -213,7 +213,7 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
     }
 
     // Returns the permissions the user is asked to consent to.
-    private initiateCall({ info, requiredPermissions, useUi }: MethodInfo) {
+    private initiateCall({ info, requiredPermissions }: MethodInfo) {
         const { method, payload, source } = this;
 
         // Permissions the host/dapp declared up front (ConnectSettings.requestedPermissions),
@@ -232,7 +232,6 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
                 methodInfo: {
                     methodTitle: info,
                     permissionTypes: consentPermissions,
-                    useUi,
                 },
                 payload,
                 source,

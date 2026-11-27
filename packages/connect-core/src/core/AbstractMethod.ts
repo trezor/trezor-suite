@@ -122,11 +122,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         return '';
     } // method info, displayed in popup info-panel
 
-    // whether the popup brings Suite to the foreground while the call is ongoing
-    protected get useUi() {
-        return this.useDevice;
-    }
-
     public useDevice: boolean; // use device
 
     public useDeviceState: boolean; // should validate device state?
@@ -286,7 +281,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     // when the title is requested, instead of on every call.
     public async getMethodInfo(): Promise<MethodInfo> {
         return {
-            useUi: this.useUi,
             requiredPermissions: this.requiredPermissions,
             info: this.info,
             precomposed: await this.payloadToPrecomposed(),

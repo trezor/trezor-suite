@@ -44,7 +44,6 @@ class PopupOnlyFlow extends CommonPopupFlow<'selectAccount'> {
         return Promise.resolve({
             info: 'Select account',
             requiredPermissions: this.requiredPermissions,
-            useUi: true,
         });
     }
 

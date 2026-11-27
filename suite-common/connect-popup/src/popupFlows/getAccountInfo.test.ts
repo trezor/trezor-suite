@@ -59,7 +59,6 @@ describe('GetAccountInfo', () => {
                 { permission: 'read_account_info', coin: 'btc' },
                 { permission: 'read_account_info', coin: 'ltc' },
             ],
-            useUi: true,
         });
         expect(TrezorConnect.call).toHaveBeenCalledWith({
             coin: 'btc',
@@ -79,7 +78,6 @@ describe('GetAccountInfo', () => {
         ).resolves.toEqual({
             info: 'Export Bitcoin account info',
             requiredPermissions: [],
-            useUi: false,
         });
     });
 

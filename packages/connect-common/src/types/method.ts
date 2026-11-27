@@ -61,7 +61,6 @@ export const GRANTABLE_PERMISSIONS: readonly MethodPermission[] = [
  * the connect popup to render the permission UI.
  */
 export type MethodInfo = {
-    useUi: boolean;
     requiredPermissions: PermissionRequest[];
     info: string;
     precomposed?: PrecomposeResultFinal;

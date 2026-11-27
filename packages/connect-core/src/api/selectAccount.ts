@@ -54,10 +54,6 @@ export default class SelectAccount extends AbstractMethod<'selectAccount', Param
         this.requiredFirmwareCoins = [coinInfo];
     }
 
-    get useUi() {
-        return true;
-    }
-
     get requiredPermissions(): PermissionRequest[] {
         // UTXO coins have two separate flows: sharing the whole account as an xpub (omitted or
         // `addressSelection: 'fullAccount'`) needs the broader `read_xpub`, while picking

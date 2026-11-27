@@ -183,7 +183,6 @@ type ConnectPopupCallLoaded = {
     methodInfo: {
         methodTitle: string;
         permissionTypes: PermissionRequest[];
-        useUi: boolean;
     };
     source: ConnectCallSource;
     selectedFee?: SelectedFee;

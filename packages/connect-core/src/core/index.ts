@@ -835,7 +835,6 @@ export class Core extends EventEmitter {
                             createResponseMessage(message.id, true, {
                                 info: 'Update firmware',
                                 requiredPermissions: [{ permission: 'internal' }],
-                                useUi: true,
                             } satisfies MethodInfo),
                         );
                         break;

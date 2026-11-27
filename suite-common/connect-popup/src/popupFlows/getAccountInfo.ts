@@ -73,9 +73,6 @@ export class GetAccountInfo extends CommonPopupFlow<'getAccountInfo'> {
                 (permissions, info) => mergePermissions(permissions, info.requiredPermissions),
                 [],
             ),
-            useUi: requests.some(
-                ({ path, descriptor }) => !!path && typeof descriptor !== 'string',
-            ),
         };
     }
 

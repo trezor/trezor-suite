@@ -69,11 +69,6 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
         this.requiredFirmwareCoins = [coinInfo];
     }
 
-    // Trezor Suite's popup flow uses the device.
-    get useUi() {
-        return true;
-    }
-
     get requiredPermissions(): PermissionRequest[] {
         const permissions: PermissionRequest[] = [this.coinPerm('sign', this.params.coinInfo)];
         if (this.params.push) {
