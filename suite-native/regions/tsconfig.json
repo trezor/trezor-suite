@@ -3,9 +3,16 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/geolocation"
+        },
+        {
             "path": "../../suite-common/message-system"
         },
         { "path": "../../suite-common/regions" },
-        { "path": "../intl" }
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        { "path": "../intl" },
+        { "path": "../../packages/redux-utils" }
     ]
 }
