@@ -1,4 +1,0 @@
-interface:
-    display_name: 'Pull Requests'
-    short_description: 'Comment on PRs; never approve or merge'
-    default_prompt: 'Use $pull-requests to review this pull request using gh without approving or merging it, and prefix every comment with the agent marker, model, version, and reasoning level.'
