@@ -16350,6 +16350,7 @@ __metadata:
     "@trezor/transport": "workspace:*"
     "@trezor/transport-bluetooth": "workspace:*"
     "@trezor/transport-common": "workspace:*"
+    "@trezor/ward-core": "workspace:*"
     tsx: "npm:^4.21.0"
   languageName: unknown
   linkType: soft

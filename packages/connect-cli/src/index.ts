@@ -20,7 +20,7 @@ import {
     isDebugLinkInteraction,
 } from './transport';
 import { getWardCommand, missingWardParams } from './wardCommands';
-import { runWardCommand, warddOptions } from './wardRunners';
+import { quotaManagerUrl, runWardCommand, warddOptions } from './wardRunners';
 
 /* eslint-disable no-console */
 
@@ -127,6 +127,7 @@ const runTestCase = async (device: Device) => {
             ...(args.compact !== undefined ? { compact: args.compact } : {}),
             ...(args.service !== undefined ? { service: args.service } : {}),
             ...(args.wardd !== undefined ? { wardd: warddOptions() } : {}),
+            ...(quotaManagerUrl() !== undefined ? { quotaManager: quotaManagerUrl() } : {}),
             ...(args.batch !== undefined ? { batch: Number(args.batch) } : {}),
             ...(args.rejoin !== undefined ? { rejoin: !!args.rejoin } : {}),
         };

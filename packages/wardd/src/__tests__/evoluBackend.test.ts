@@ -15,6 +15,7 @@ import {
     AppendFailed,
     type ErrorStore,
     EvoluWardBackend,
+    relayErrorOf,
     settled,
     wardOwner,
 } from '../evoluBackend';
@@ -163,6 +164,14 @@ describe('settled: an append that always settles', () => {
         expect(errors.listeners).toBe(0);
     });
 
+    it('does not fail a write over what the relay reports, typed or logged', async () => {
+        const errors = errorStore();
+        const pending = settled(done => setTimeout(done, 20), { errors, timeoutMs: 1000 });
+        errors.set({ type: 'ProtocolQuotaError', ownerId: 'o' });
+        errors.set({ type: 'UnknownError', error: [{ type: 'ProtocolQuotaError', ownerId: 'o' }] });
+        await expect(pending).resolves.toBe(undefined);
+    });
+
     it('ignores an error that was already there before the write began', async () => {
         const errors = errorStore();
         errors.set({ type: 'Old' });
@@ -208,5 +217,26 @@ describe('EvoluWardBackend.append when Evolu never completes', () => {
         } finally {
             await backend.close();
         }
+    });
+});
+
+describe('relayErrorOf: what the relay reported, however Evolu passes it on', () => {
+    it('finds a typed protocol error', () => {
+        expect(relayErrorOf({ type: 'ProtocolQuotaError', ownerId: 'o' })).toEqual({
+            type: 'ProtocolQuotaError',
+            ownerId: 'o',
+        });
+    });
+
+    it('finds one inside a logged error', () => {
+        expect(
+            relayErrorOf({ type: 'UnknownError', error: ['sync', { type: 'ProtocolSyncError' }] }),
+        ).toEqual({ type: 'ProtocolSyncError' });
+    });
+
+    it('is null for a local failure', () => {
+        expect(relayErrorOf({ type: 'SqliteError' })).toBe(null);
+        expect(relayErrorOf({ type: 'UnknownError', error: [{ type: 'SqliteError' }] })).toBe(null);
+        expect(relayErrorOf(null)).toBe(null);
     });
 });

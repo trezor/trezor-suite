@@ -15,6 +15,21 @@ recovery.
 In the manager-free MVP, wardd verifies the wallet's publication signature and stores the change.
 Concurrent writers can produce different valid histories.
 
+## Storage on Suite Sync
+
+The production Suite Sync relay admits an Evolu owner only while the Quota Manager holds storage for
+it, and refuses writes beyond that storage. wardd's records live under a WARD owner of their own,
+derived from the wallet's Evolu node, so that owner needs storage too. Whoever holds the device's
+delegated Suite Sync key funds it from the device's quota, with the same signed request Suite uses
+for its own owner. wardd never holds that key.
+
+wardd reports in its status whether its records reach other hosts. When they do not, it says why
+(no storage, storage used up, relay unreachable), how many local records wait, and how many bytes
+the owner needs. A refused write is never a failed write: the record stays stored here and is
+published, and the waiting records go out once the owner has storage again. wardd synchronizes an
+owner only after the Quota Manager reports storage for it, and resynchronizes when the storage
+grows.
+
 ## Deployment
 
 wardd can use a local development manager or contact a separate manager. Debug devices and emulators

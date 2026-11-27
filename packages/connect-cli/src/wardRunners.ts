@@ -20,6 +20,13 @@ import TrezorConnect, { type Device } from '@trezor/connect';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- the wardd binding is not public API yet: the barrel takes no code exports (#27376)
 import { WARDD_DEFAULT_URL } from '@trezor/connect/src/ward/warddClient';
 import { protobufManager } from '@trezor/protobuf';
+import {
+    QuotaManagerError,
+    SUITE_SYNC_ENDPOINTS,
+    type SuiteSyncEnvironment,
+    ensureOwnerStorage,
+    proofOfDelegatedIdentity,
+} from '@trezor/ward-core';
 
 import { args } from './args';
 import { type WardCommandContext, type WardCommandName, wardCommands } from './wardCommands';
@@ -51,9 +58,75 @@ export const warddOptions = () => {
 };
 
 /**
+ * `--suite-sync=local|dev|prod` or `--quota-manager=URL`: the Quota Manager that funds the WARD
+ * owner on the relay wardd replicates through. Pass the same Suite Sync as wardd was started with.
+ */
+export const quotaManagerUrl = (): string | undefined => {
+    const suiteSync = args['suite-sync'];
+    if (typeof suiteSync === 'string') {
+        if (!(suiteSync in SUITE_SYNC_ENDPOINTS)) {
+            throw new Error(`--suite-sync takes ${Object.keys(SUITE_SYNC_ENDPOINTS).join(', ')}`);
+        }
+
+        return SUITE_SYNC_ENDPOINTS[suiteSync as SuiteSyncEnvironment].quotaManagerUrl;
+    }
+
+    return typeof args['quota-manager'] === 'string' ? args['quota-manager'] : undefined;
+};
+
+/**
+ * The device's delegated Suite Sync key, and with it the proof the device wants before it hands out
+ * the Evolu node that wardd derives the WARD owner from. Both stay on this host: wardd receives only
+ * the owner secret (Connect derives it), the Quota Manager only signatures.
+ */
+const delegatedIdentity = async (device: Device) => {
+    const result = await TrezorConnect.evoluGetDelegatedIdentityKey({ device });
+    if (!result.success) {
+        throw new Error(`evoluGetDelegatedIdentityKey: ${result.error.message}`);
+    }
+    const delegatedKey = result.payload.private_key;
+
+    return { delegatedKey, proof: proofOfDelegatedIdentity(delegatedKey, 'EvoluGetNode') };
+};
+
+/**
+ * Give the WARD owner the storage wardd says it needs, from the device's Suite Sync quota, and
+ * report what wardd says afterwards. wardd sees the larger limit and resynchronizes by itself, so
+ * the records that waited go out.
+ */
+const fundWardOwner = async (
+    status: () => Promise<Record<string, any>>,
+    first: Record<string, any>,
+    delegatedKey: string,
+    quotaManager: string,
+) => {
+    const before = first.replication as Record<string, any> | undefined;
+    if (!before) return { note: 'wardd keeps this wallet in memory; nothing to fund' };
+    if (!(before.needBytes > 0)) return { replication: before };
+    try {
+        const funded = await ensureOwnerStorage({
+            quotaManagerUrl: quotaManager,
+            delegatedKey,
+            ownerId: before.ownerId,
+            needBytes: before.needBytes,
+        });
+
+        return { funded, replication: (await status()).replication };
+    } catch (error) {
+        if (!(error instanceof QuotaManagerError)) throw error;
+
+        return { fundingFailed: error.kind, message: error.message, replication: before };
+    }
+};
+
+/**
  * `ward_sync`, `ward_status`, `ward_flush --wardd`: one `wardRelay` call each, so the whole
  * conversation runs on ONE device session -- the device's WARD sync state is session state, and
  * connect opens a new session per method call.
+ *
+ * WITH A QUOTA MANAGER, wardd stores the wallet in Evolu under its WARD owner and replicates it
+ * through Suite Sync. The call then also funds that owner when wardd reports it short of storage,
+ * and the result says whether the records reach other hosts (`storage`).
  */
 const wardRelay = async (
     device: Device,
@@ -61,13 +134,34 @@ const wardRelay = async (
     op: 'sync' | 'flush' | 'status',
     extra: { rejoin?: boolean; maxBatch?: number } = {},
 ) => {
-    const result = await TrezorConnect.wardRelay({ device, ...params.wardd, op, ...extra });
+    const identity = params.quotaManager ? await delegatedIdentity(device) : undefined;
+    const call = async (o: typeof op, more: typeof extra = {}): Promise<Record<string, any>> => {
+        const result = await TrezorConnect.wardRelay({
+            device,
+            ...params.wardd,
+            op: o,
+            ...(identity ? { proof_of_delegated_identity: identity.proof } : {}),
+            ...more,
+        });
+        if (!result.success) {
+            throw new Error(`${result.error.code}: ${result.error.message}`);
+        }
 
-    if (!result.success) {
-        throw new Error(`${result.error.code}: ${result.error.message}`);
-    }
+        return result.payload as Record<string, any>;
+    };
+    const payload = await call(op, extra);
+    if (!identity) return payload;
+    const status = () => call('status');
 
-    return result.payload;
+    return {
+        ...payload,
+        storage: await fundWardOwner(
+            status,
+            op === 'status' ? payload : await status(),
+            identity.delegatedKey,
+            params.quotaManager,
+        ),
+    };
 };
 
 const wardSync = ({ params }: WardCommandContext, device: Device) =>

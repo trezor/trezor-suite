@@ -15,6 +15,8 @@ export interface WarddOptions {
     dataDir: string | null;
     /** an Evolu relay to replicate through */
     relayUrl?: string;
+    /** the Quota Manager funding WARD owners on that relay (Suite Sync) */
+    quotaManagerUrl?: string;
     /** in-memory backends instead of Evolu (tests, and `--memory`) */
     memory?: boolean;
     /** the WM; the persisted in-process dev WM if omitted */
@@ -102,6 +104,7 @@ export class Wardd {
             wardOwnerSecret: params.wardOwnerSecret,
             dataDir: this.opts.dataDir,
             relayUrl: this.opts.relayUrl,
+            quotaManagerUrl: this.opts.quotaManagerUrl,
         });
     }
 

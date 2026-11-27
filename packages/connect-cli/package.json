@@ -20,7 +20,8 @@
         "@trezor/protobuf": "workspace:*",
         "@trezor/transport": "workspace:*",
         "@trezor/transport-bluetooth": "workspace:*",
-        "@trezor/transport-common": "workspace:*"
+        "@trezor/transport-common": "workspace:*",
+        "@trezor/ward-core": "workspace:*"
     },
     "devDependencies": {
         "tsx": "^4.21.0"

@@ -18,8 +18,23 @@ The default listener is on loopback port 21329. The default data directory is ~/
 | --without-wm           | Use the manager-free MVP with matching firmware. This mode excludes an external manager. |
 | --memory               | Use an in-memory replica and, when selected, an in-memory development manager.           |
 | --relay                | Replicate the persistent store through the specified Evolu relay.                        |
+| --quota-manager        | With --relay, ask this Quota Manager whether the WARD owner has storage on the relay.    |
+| --suite-sync           | Use Suite Sync's relay and Quota Manager: local, dev or prod. Excludes --relay.          |
 
 For a supervised installation, track the daemon process itself. Stopping a workspace launcher alone can leave its child running.
+
+## Suite Sync storage
+
+The status reply carries `replication`: whether the records reach other hosts, the reason when they do not, the number of local records waiting, and `needBytes`, the storage to allocate now. The holder of the device's delegated Suite Sync key allocates it. connect-cli does so with `--suite-sync` or `--quota-manager` on `ward_sync`, `ward_flush` and `ward_status` through wardd.
+
+For a local stack that behaves like Suite Sync, start the development relay with a Quota Manager stand-in on the next port:
+
+```sh
+yarn workspace @trezor/wardd tsx src/relayCli.ts --port 4000 --data-dir /tmp/relay --quota-manager-port 4001
+yarn workspace @trezor/wardd start --suite-sync local
+```
+
+The relay then admits the WARD owner only once it is funded and refuses writes beyond its storage. The stand-in gives each device 1 MiB of quota in place of a registration, which needs a genuine device. `packages/connect-cli/e2e/ward-suite-sync.sh` runs the whole flow against an emulator.
 
 ## Dedicated service interface
 

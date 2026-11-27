@@ -152,6 +152,15 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 device session; --batch folds up to N (max 8) changes
                                                 into one transition.
     --method=ward_status --wardd=...          The replica's head and the WM's.
+    --suite-sync=<local|dev|prod>             With ward_sync/ward_flush/ward_status --wardd: wardd
+                                                replicates through this Suite Sync (start it with the
+                                                same --suite-sync). Fetches the device's delegated
+                                                Suite Sync key, opens the wallet's Evolu store, funds
+                                                the WARD owner from the device's quota when wardd
+                                                reports it short, and adds 'storage' to the result:
+                                                whether records reach other hosts, and if not, why.
+    --quota-manager=<url>                     The same, for a wardd started with --relay and
+                                                --quota-manager.
 
   Backing the queue up (both --queue only)
     --method=ward_backup --queue --appid=example.com --ident=addr1
@@ -177,6 +186,7 @@ const VERBATIM_FLAGS = [
     'target',
     'wardd-token',
     'wardd-token-file',
+    'quota-manager',
 ];
 // --compact takes no value, so it needs no place in VERBATIM_FLAGS above.
 

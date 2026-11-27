@@ -6,6 +6,7 @@
         { "path": "../protobuf" },
         { "path": "../transport" },
         { "path": "../transport-bluetooth" },
-        { "path": "../transport-common" }
+        { "path": "../transport-common" },
+        { "path": "../ward-core" }
     ]
 }

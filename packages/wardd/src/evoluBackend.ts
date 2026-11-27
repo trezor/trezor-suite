@@ -49,7 +49,7 @@ import { createBetterSqliteDriver } from '@evolu/nodejs';
 import path from 'path';
 import { WebSocket } from 'ws';
 
-import { toBytes, toHex } from '@trezor/ward-core';
+import { askOwnerStorage, toBytes, toHex } from '@trezor/ward-core';
 
 import {
     type StoredAttestation,
@@ -58,6 +58,7 @@ import {
     attestationId,
     linkId,
 } from './backend';
+import { RelayLink, type ReplicationStatus } from './replication';
 
 /** The Evolu owner for a WARD secret, derived the way Suite derives its own from a Trezor node. */
 export const wardOwner = (secretBytes: Uint8Array): AppOwner => {
@@ -100,14 +101,38 @@ export const WardSchema = {
 
 const createQuery = createQueryBuilder(WardSchema);
 
+/** What the relay connection reports, for `RelayLink`. Set once the backend exists. */
+interface RelayEvents {
+    opened(): void;
+    disconnected(): void;
+    answered(): void;
+}
+
 /** Evolu's platform deps for Node, with the SQLite files under `dataDir` (null: in memory). */
-const createNodeRun = (dataDir: string | null) => {
+const createNodeRun = (dataDir: string | null, events: Partial<RelayEvents> = {}) => {
     const consoleStoreOutput = createConsoleStoreOutput();
     const console = createConsole({ output: consoleStoreOutput });
     const lockManager = testCreateLockManager();
+    // The relay connection, watched: it is how wardd knows whether records leave this host.
     const nodeCreateWebSocket: CreateWebSocket = (url, options) =>
         createWebSocket(url, {
             ...options,
+            onOpen: () => {
+                events.opened?.();
+                options?.onOpen?.();
+            },
+            onClose: event => {
+                events.disconnected?.();
+                options?.onClose?.(event);
+            },
+            onError: error => {
+                events.disconnected?.();
+                options?.onError?.(error);
+            },
+            onMessage: data => {
+                events.answered?.();
+                options?.onMessage?.(data);
+            },
             WebSocketConstructor: WebSocket as unknown as typeof globalThis.WebSocket,
         });
     const sharedWorkerRun = createRun({
@@ -138,8 +163,14 @@ const createNodeRun = (dataDir: string | null) => {
     const sharedWorker = createSharedWorker<SharedWorkerInput, SharedWorkerOutput>(self => {
         sharedWorkerRun(initSharedWorker(self));
     });
+    // The main side's console is NOT the workers' one. The shared worker forwards every entry of the
+    // workers' console to the main side, which writes it to its own console and logs each error it
+    // receives; with one console for both, an error is forwarded back as a new entry, forever. In a
+    // browser the two run in separate contexts, each with its own console. Errors reach wardd
+    // through `evoluError`, so this one writes to an output nothing reads (forwarded entries are
+    // written whatever the console's level).
     const platformDeps: EvoluPlatformDeps = {
-        console,
+        console: createConsole({ output: createConsoleStoreOutput() }),
         createBroadcastChannel,
         createDbWorker,
         createMessageChannel,
@@ -152,6 +183,35 @@ const createNodeRun = (dataDir: string | null) => {
     run.onAbort(() => evoluDeps[Symbol.dispose]());
 
     return { run, evoluError: evoluDeps.evoluError };
+};
+
+interface ProtocolError {
+    type: string;
+    ownerId?: string;
+}
+
+const asProtocolError = (value: unknown): ProtocolError | null =>
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as { type?: unknown }).type === 'string' &&
+    (value as { type: string }).type.startsWith('Protocol')
+        ? (value as ProtocolError)
+        : null;
+
+/**
+ * The error the RELAY reported (Evolu's `Protocol*` errors), if `error` is one: about replication,
+ * never about the local write. A refused or failed synchronization leaves the record stored here.
+ * Evolu's shared worker passes it on as a logged error, so it arrives wrapped in an `UnknownError`
+ * whose `error` holds the logged arguments.
+ */
+export const relayErrorOf = (error: unknown): ProtocolError | null => {
+    const direct = asProtocolError(error);
+    if (direct) return direct;
+    const wrapped = (error as { type?: unknown; error?: unknown } | null)?.error;
+    if ((error as { type?: unknown } | null)?.type !== 'UnknownError') return null;
+    const args = Array.isArray(wrapped) ? wrapped : [wrapped];
+
+    return args.map(asProtocolError).find(e => e !== null) ?? null;
 };
 
 /** What `settled` listens to for failure: Evolu's shared error store, or a test's stand-in. */
@@ -177,7 +237,10 @@ export class AppendFailed extends Error {
  * settles, holding the wallet's lock and every call behind it. The error store catches the failure
  * Evolu does report; the timeout bounds the one it does not.
  *
- * ANY error while pending rejects, not only "ours": the store does not say which mutation failed,
+ * A RELAY error does not reject: it concerns replication (`RelayLink`), and the record is stored
+ * here whatever the relay does.
+ *
+ * ANY OTHER error while pending rejects, not only "ours": the store does not say which mutation failed,
  * and rejecting a write that in fact landed costs nothing here -- the log is append-only, so it is a
  * row no WM head points at, exactly what a lost race leaves.
  */
@@ -202,7 +265,7 @@ export const settled = (
         };
         held.unsubscribe = opts.errors.subscribe(() => {
             const error = opts.errors.get();
-            if (error && error !== before) {
+            if (error && error !== before && !relayErrorOf(error)) {
                 finish(new AppendFailed(`Evolu reported an error: ${JSON.stringify(error)}`));
             }
         });
@@ -224,11 +287,19 @@ export interface EvoluBackendOptions {
     dataDir: string | null;
     /** an Evolu relay to replicate through; none keeps the replica local */
     relayUrl?: string;
+    /** the Quota Manager that funds the owner on that relay, to report why records do not leave */
+    quotaManagerUrl?: string;
     /** how long an append may take before it is failed; see `settled` */
     appendTimeoutMs?: number;
 }
 
 const DEFAULT_APPEND_TIMEOUT_MS = 30_000;
+
+/**
+ * What a row costs on the relay beyond its body: the encrypted CRDT messages of its other columns
+ * (id, wardId, toCounter) and their timestamps. Measured against the relay's own count, rounded up.
+ */
+export const RECORD_OVERHEAD_BYTES = 256;
 
 export class EvoluWardBackend implements WardBackend {
     private readonly pending = new Map<string, { body: string; done: Promise<void> }>();
@@ -242,22 +313,49 @@ export class EvoluWardBackend implements WardBackend {
         private readonly run: ReturnType<typeof createNodeRun>['run'],
         private readonly errors: ErrorStore,
         private readonly appendTimeoutMs: number,
+        private readonly relay: RelayLink,
+        private readonly stopSync: () => void,
     ) {}
 
     static async open(opts: EvoluBackendOptions): Promise<EvoluWardBackend> {
         const owner = wardOwner(toBytes(opts.wardOwnerSecret));
-        const { run, evoluError } = createNodeRun(opts.dataDir);
+        // set once Evolu is open; the link asks for them only after that
+        let storedBytes = () => 0;
+        let startSync = () => {};
+        let resync = () => {};
+        const { quotaManagerUrl } = opts;
+        const link = new RelayLink({
+            ownerId: owner.id,
+            hasRelay: !!opts.relayUrl,
+            askLimit: quotaManagerUrl
+                ? () => askOwnerStorage({ quotaManagerUrl, timeoutMs: 5_000 }, owner.id)
+                : undefined,
+            start: () => startSync(),
+            resync: () => resync(),
+            storedBytes: () => storedBytes(),
+        });
+        const { run, evoluError } = createNodeRun(opts.dataDir, {
+            opened: () => link.opened(),
+            disconnected: () => link.disconnected(),
+            answered: () => link.answered(),
+        });
+        // No transport here: the owner is synchronized through `useOwner` below, which can be
+        // withdrawn and given again -- the one way to have Evolu synchronize everything once more.
         const evolu = getOrThrow(
             await run(
                 createEvolu(WardSchema, {
                     appName: AppName.orThrow(`trezor-ward-${owner.id.replaceAll('_', '-')}`),
-                    transports: opts.relayUrl
-                        ? [createOwnerWebSocketTransport({ url: opts.relayUrl, ownerId: owner.id })]
-                        : [],
+                    transports: [],
                     appOwner: owner,
                 }),
             ),
         );
+        const unsubscribeErrors = evoluError.subscribe(() => {
+            const error = relayErrorOf(evoluError.get());
+            if (error?.type === 'ProtocolQuotaError' && (error.ownerId ?? owner.id) === owner.id) {
+                link.refusedForQuota();
+            }
+        });
         const wardId = toHex(opts.wardId);
         const query = createQuery(db =>
             db.selectFrom('wardLink').selectAll().where('wardId', '=', wardId),
@@ -271,6 +369,29 @@ export class EvoluWardBackend implements WardBackend {
         const unsubscribeAttestations = evolu.subscribeQuery(attestationQuery)(() => {});
         await evolu.loadQuery(query);
         await evolu.loadQuery(attestationQuery);
+        storedBytes = () =>
+            [...evolu.getQueryRows(query), ...evolu.getQueryRows(attestationQuery)].reduce(
+                (sum, row) =>
+                    sum +
+                    (typeof row.body === 'string' ? row.body.length : 0) +
+                    RECORD_OVERHEAD_BYTES,
+                0,
+            );
+        let stopSync = () => {};
+        if (opts.relayUrl) {
+            const transport = createOwnerWebSocketTransport({
+                url: opts.relayUrl,
+                ownerId: owner.id,
+            });
+            startSync = () => {
+                stopSync = evolu.useOwner(owner, [transport]);
+            };
+            resync = () => {
+                stopSync();
+                stopSync = evolu.useOwner(owner, [transport]);
+            };
+        }
+        link.begin();
 
         return new EvoluWardBackend(
             evolu,
@@ -280,10 +401,13 @@ export class EvoluWardBackend implements WardBackend {
             () => {
                 unsubscribeLinks();
                 unsubscribeAttestations();
+                unsubscribeErrors();
             },
             run,
             evoluError,
             opts.appendTimeoutMs ?? DEFAULT_APPEND_TIMEOUT_MS,
+            link,
+            () => stopSync(),
         );
     }
 
@@ -349,6 +473,8 @@ export class EvoluWardBackend implements WardBackend {
 
             return settled(
                 done => {
+                    // counted before Evolu sends it, so a refusal that follows finds it
+                    this.relay.stored(key);
                     this.evolu.upsert(
                         table,
                         {
@@ -374,7 +500,19 @@ export class EvoluWardBackend implements WardBackend {
         return done;
     }
 
+    /** Whether the records reach other hosts; see replication.ts. */
+    replication(): Promise<ReplicationStatus> {
+        return this.relay.status();
+    }
+
+    /** Synchronize everything with the relay again, e.g. after the owner got more storage. */
+    resync(): void {
+        this.relay.resync();
+    }
+
     async close(): Promise<void> {
+        this.relay.close();
+        this.stopSync();
         this.unsubscribe();
         await this.evolu[Symbol.asyncDispose]();
         await this.run[Symbol.asyncDispose]();

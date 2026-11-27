@@ -1,6 +1,11 @@
 /* eslint-disable no-console */
 /**
  * wardd --port 21329 --data-dir ~/.trezor-ward [--token-file F] [--memory] [--relay URL] [--origin O]...
+ *       [--suite-sync local|dev|prod]
+ *                     replicate through Suite Sync: its relay, and its Quota Manager to fund the
+ *                     WARD owner (the same endpoints Suite uses). Excludes --relay.
+ *       [--quota-manager URL]
+ *                     with --relay: the Quota Manager funding owners on that relay
  *       [--verbose]   log every call, its outcome and the device messages it exchanged
  *       [--adversarial-tests]
  *                     allow the ADVERSARIAL TEST methods: serving a device an older state on
@@ -27,7 +32,7 @@ import { promises as fs } from 'fs';
 import os from 'os';
 import path from 'path';
 
-import { HttpWm } from '@trezor/ward-core';
+import { HttpWm, SUITE_SYNC_ENDPOINTS, type SuiteSyncEnvironment } from '@trezor/ward-core';
 
 import { DEFAULT_ORIGINS, DEFAULT_PORT, startServer } from './server';
 import { Wardd } from './service';
@@ -87,11 +92,33 @@ const main = async () => {
         console.error('--without-wm and --wm cannot be combined');
         process.exit(2);
     }
+    // Suite Sync names its relay and Quota Manager together, so a production wardd never pairs
+    // the production Quota Manager with a relay that admits any owner, or the other way round.
+    const suiteSync = value('suite-sync');
+    if (suiteSync !== undefined && !(suiteSync in SUITE_SYNC_ENDPOINTS)) {
+        console.error(`--suite-sync takes ${Object.keys(SUITE_SYNC_ENDPOINTS).join(', ')}`);
+        process.exit(2);
+    }
+    if (suiteSync !== undefined && (value('relay') || value('quota-manager'))) {
+        console.error(
+            '--suite-sync names the relay and Quota Manager; drop --relay/--quota-manager',
+        );
+        process.exit(2);
+    }
+    if (value('quota-manager') && !value('relay')) {
+        console.error('--quota-manager needs the --relay it funds owners on');
+        process.exit(2);
+    }
+    const endpoints =
+        suiteSync !== undefined
+            ? SUITE_SYNC_ENDPOINTS[suiteSync as SuiteSyncEnvironment]
+            : { relayUrl: value('relay'), quotaManagerUrl: value('quota-manager') };
     const log = (line: string) => process.stdout.write(`${new Date().toISOString()} ${line}\n`);
     const wardd = await Wardd.create({
         dataDir: memory ? null : dataDir,
         memory,
-        relayUrl: value('relay'),
+        relayUrl: endpoints.relayUrl,
+        quotaManagerUrl: endpoints.quotaManagerUrl,
         wm: value('wm') ? new HttpWm(value('wm')!) : undefined,
         withoutWm,
         log: verbose ? log : undefined,
@@ -111,7 +138,8 @@ const main = async () => {
     }
     console.log(
         `wardd listening on ws://127.0.0.1:${server.port} (data: ${memory ? 'memory' : dataDir}` +
-            `${value('relay') ? `, relay: ${value('relay')}` : ''}` +
+            `${endpoints.relayUrl ? `, relay: ${endpoints.relayUrl}` : ''}` +
+            `${endpoints.quotaManagerUrl ? `, quota manager: ${endpoints.quotaManagerUrl}` : ''}` +
             `, WM: ${withoutWm ? 'none (MVP)' : (value('wm') ?? 'in-process')})`,
     );
     const stop = async () => {

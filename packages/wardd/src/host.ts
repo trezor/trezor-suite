@@ -272,6 +272,10 @@ export class WardHost {
                 behind,
                 // stored rows left out of the replica because they do not reproduce their root
                 corrupt,
+                // whether the records reach other hosts; absent for a store without a relay
+                ...(this.backend.replication
+                    ? { replication: await this.backend.replication() }
+                    : {}),
             };
         });
     }

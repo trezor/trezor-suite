@@ -21,6 +21,8 @@ import { sha256 } from '@noble/hashes/sha2.js';
 
 import { type WardLeaf, toBytes, toHex } from '@trezor/ward-core';
 
+import { type ReplicationStatus } from './replication';
+
 export interface StoredChange {
     /** hex */
     entryKey: string;
@@ -103,6 +105,11 @@ export interface WardBackend {
     loadAttestations(): Promise<StoredAttestation[]>;
     /** Persist a verified attestation under its step. */
     appendAttestation(attestation: StoredAttestation): Promise<void>;
+    /**
+     * Whether the records reach other hosts (see replication.ts). A backend without a relay has
+     * none to report.
+     */
+    replication?(): Promise<ReplicationStatus>;
     close(): Promise<void>;
 }
 
@@ -149,6 +156,7 @@ export const loggingBackend = (inner: WardBackend, log: (line: string) => void):
             );
             await inner.appendAttestation(attestation);
         },
+        ...(inner.replication ? { replication: inner.replication.bind(inner) } : {}),
         close: () => inner.close(),
     };
 };
