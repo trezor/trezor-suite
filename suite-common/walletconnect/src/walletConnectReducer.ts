@@ -68,7 +68,7 @@ export const prepareWalletConnectReducer = createReducerWithExtraDeps(
 export const selectSessions = (state: WalletConnectStateRootState) => state.walletConnect.sessions;
 
 export const selectSessionByTopic = (state: WalletConnectStateRootState, topic: string) =>
-    state.walletConnect.sessions.find(session => session.topic === topic);
+    selectSessions(state).find(session => session.topic === topic);
 
 export const selectPendingProposal = (state: WalletConnectStateRootState) =>
     state.walletConnect.pendingProposal;

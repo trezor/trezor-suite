@@ -195,16 +195,13 @@ export const bestSellQuotePerPaymentMethodProjection = (quotes: SellFiatTrade[])
         (aRate, bRate) => bRate - aRate,
     );
 
+export const selectTradingInfo = (state: TradingRootState) => state.wallet?.trading?.info;
+
 export const selectIsTradingBuyFullyLoaded = createMemoizedSelector(
-    [
-        (state: TradingRootState) => state.wallet.trading.info,
-        (state: TradingRootState) => state.wallet.trading.buy.buyInfo,
-    ],
+    [selectTradingInfo, (state: TradingRootState) => state.wallet.trading.buy.buyInfo],
     (info, buyInfo) =>
         !!(info?.coins && info?.platforms && buyInfo) && buyInfo.buyInfo?.providers.length > 0,
 );
-
-export const selectTradingInfo = (state: TradingRootState) => state.wallet?.trading?.info;
 
 export const selectTradingBtcSwapComposeTemplate = (state: TradingRootState) =>
     state.wallet?.trading?.info?.config?.btcSwapComposeTemplate;
@@ -320,14 +317,14 @@ export const selectTradingSell = createMemoizedSelector(
 );
 
 export const selectIsTradingExchangeFullyLoaded = createMemoizedSelector(
-    [(state: TradingRootState) => state.wallet.trading.info, selectTradingExchangeInfo],
+    [selectTradingInfo, selectTradingExchangeInfo],
     (info, exchangeInfo) =>
         !!(info?.coins && info?.platforms && exchangeInfo) &&
         Object.keys(exchangeInfo.providerInfos).length > 0,
 );
 
 export const selectIsTradingSellFullyLoaded = createMemoizedSelector(
-    [(state: TradingRootState) => state.wallet.trading.info, selectTradingSellInfo],
+    [selectTradingInfo, selectTradingSellInfo],
     (info, sellInfo) =>
         !!(info?.coins && info?.platforms && sellInfo) &&
         Object.keys(sellInfo.providerInfos).length > 0,
@@ -756,14 +753,14 @@ export const selectTradingExchangeCexQuotes = createMemoizedSelector(
     quotes => returnStableArrayIfEmpty(quotes.filter(quote => !quote.isDex)),
 );
 
-export const selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId = (
-    state: TradingRootState,
-    quoteId: string | undefined,
-) => !!quoteId && state.wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId === quoteId;
-
 export const selectTradingExchangeDexQuoteApprovalPrefetchLoadingQuoteId = (
     state: TradingRootState,
 ) => state.wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId;
+
+export const selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId = (
+    state: TradingRootState,
+    quoteId: string | undefined,
+) => !!quoteId && selectTradingExchangeDexQuoteApprovalPrefetchLoadingQuoteId(state) === quoteId;
 
 export const selectTradingSellIsLoading = (state: TradingRootState) =>
     state.wallet.trading.sell.isLoading;

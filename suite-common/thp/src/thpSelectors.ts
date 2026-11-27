@@ -16,9 +16,9 @@ export type ThpRootState = {
 
 export const selectThp = (state: ThpRootState) => state.thp;
 
-export const selectIsThpInProgress = (state: ThpRootState) => state.thp.step !== null;
-
 export const selectThpStep = (state: ThpRootState) => state.thp.step;
+
+export const selectIsThpInProgress = (state: ThpRootState) => selectThpStep(state) !== null;
 
 export const selectThpAutoconnectStep = (state: ThpRootState) => state.thp.autoconnectStep;
 

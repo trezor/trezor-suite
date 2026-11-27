@@ -46,7 +46,7 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>(
 
 export const selectDevices = (state: DeviceRootState) => state.device?.devices;
 
-export const selectDevicesCount = (state: DeviceRootState) => state.device?.devices?.length;
+export const selectDevicesCount = (state: DeviceRootState) => selectDevices(state)?.length;
 
 export const selectSelectedDevice = (state: DeviceRootState) => state.device.selectedDevice;
 

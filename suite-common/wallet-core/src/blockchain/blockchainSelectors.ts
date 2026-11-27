@@ -3,17 +3,16 @@ import { type BackendType, type NetworkSymbol, getNetwork } from '@suite-common/
 
 import { type BlockchainRootState } from './blockchainReducer';
 
-export const selectIsElectrumBackendSelected = (
-    state: BlockchainRootState,
-    symbol: NetworkSymbol,
-): boolean =>
-    state.wallet.blockchain[symbol as LegacyNetworkSymbol].backends.selected === 'electrum';
-
 export const selectActiveBackendType = (
     state: BlockchainRootState,
     symbol: NetworkSymbol,
 ): BackendType | undefined =>
     state.wallet.blockchain[symbol as LegacyNetworkSymbol].backends.selected;
+
+export const selectIsElectrumBackendSelected = (
+    state: BlockchainRootState,
+    symbol: NetworkSymbol,
+): boolean => selectActiveBackendType(state, symbol) === 'electrum';
 
 /** The type of the backend the network is read from: the custom one, else the network's default. */
 export const selectEffectiveBackendType = (

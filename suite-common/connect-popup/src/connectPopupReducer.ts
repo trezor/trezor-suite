@@ -300,10 +300,13 @@ export const selectConnectPopupCall = (state: ConnectPopupStateRootState) =>
 export const selectConnectPopupCallWithState = <CallState extends ConnectPopupCall['state']>(
     state: ConnectPopupStateRootState,
     callState: CallState,
-) =>
-    state.connectPopup.activeCall?.state === callState
-        ? (state.connectPopup.activeCall as ConnectPopupCallWithState<CallState>)
+) => {
+    const activeCall = selectConnectPopupCall(state);
+
+    return activeCall?.state === callState
+        ? (activeCall as ConnectPopupCallWithState<CallState>)
         : null;
+};
 
 export const selectConnectAppPermissions = (state: ConnectPopupStateRootState) =>
     state.connectPopup.permissions.filter(p => p.type !== CALL_SOURCE_WALLETCONNECT);

@@ -30,7 +30,8 @@ export const selectTransactionHistoryPrefill = (state: SuiteRootState) =>
 
 export const selectSuiteTransports = (state: SuiteRootState) =>
     state.suite.transport?.transports.map(({ type, version }) => ({ type, version }));
-export const selectIsTransportInitialized = (state: SuiteRootState) => !!state.suite.transport;
+export const selectIsTransportInitialized = (state: SuiteRootState) =>
+    !!selectSuiteTransport(state);
 export const selectActiveTransports = (state: SuiteRootState) =>
     returnStableArrayIfEmpty(state.suite.transport?.transports);
 export const selectHasActiveTransport = (state: SuiteRootState) =>
@@ -43,7 +44,7 @@ export const selectTransportOfType = (type: TransportInfo['type']) => (state: Su
 export const selectPrerequisite = (
     state: SuiteRootState & RouterRootState & DeviceRootState,
 ): PrerequisiteType | null => {
-    const { transport } = state.suite;
+    const transport = selectSuiteTransport(state);
     const device = selectSelectedDevice(state);
     const router = selectRouter(state);
 

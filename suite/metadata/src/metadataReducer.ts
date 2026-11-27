@@ -320,7 +320,8 @@ export const selectLabelableEntities = (state: MetadataRootState, deviceState: S
  * Is everything ready to add label?
  */
 export const selectIsLabelingAvailable = (state: MetadataRootState) => {
-    const { enabled, error } = selectMetadata(state);
+    const enabled = selectMetadataEnabled(state);
+    const error = selectMetadataError(state);
     const provider = selectSelectedProviderForLabels(state);
     const device = selectSelectedDevice(state);
 
