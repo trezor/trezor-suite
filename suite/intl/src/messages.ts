@@ -10772,7 +10772,7 @@ export const messages = defineMessages({
     TR_REFERRAL_REWARDS_CONDITIONS: {
         id: 'TR_REFERRAL_REWARDS_CONDITIONS',
         defaultMessage:
-            "Vouchers are ready within {rewardWaitingPeriodDays} days of your friend's confirmed order",
+            "Vouchers are available within {cardWaitingPeriodDays} days of your friend's confirmed order if they paid by card, or {otherWaitingPeriodDays} days for other payment methods.",
     },
     TR_REFERRAL_TOTAL_EARNED: {
         id: 'TR_REFERRAL_TOTAL_EARNED',

@@ -1,7 +1,12 @@
 import { useIntl } from 'react-intl';
 
 import { Translation } from '@suite/intl';
-import { type ReferralVoucher, getReferralRewardsSummary } from '@suite-common/refer-a-friend';
+import {
+    type ReferralVoucher,
+    VOUCHER_WAITING_PERIOD_DAYS_CARD,
+    VOUCHER_WAITING_PERIOD_DAYS_OTHER,
+    getReferralRewardsSummary,
+} from '@suite-common/refer-a-friend';
 import { Card, Column, H3, IconCircle, Note, Row, Table, Text, Tooltip } from '@trezor/components';
 import { GiftIcon } from '@trezor/icons';
 
@@ -38,24 +43,23 @@ export const ReferralRewards = ({
                     <H3 typographyStyle="body-md-strong">
                         <Translation id="TR_REFERRAL_YOUR_REWARDS" />
                     </H3>
-                    {summary.rewardWaitingPeriodDays !== null && (
-                        <Tooltip
-                            content={
-                                <Translation
-                                    id="TR_REFERRAL_REWARDS_CONDITIONS"
-                                    values={{
-                                        rewardWaitingPeriodDays: summary.rewardWaitingPeriodDays,
-                                    }}
-                                />
-                            }
-                            placement="bottom"
-                            tooltipMaxWidth={270}
-                        >
-                            <Note>
-                                <Translation id="TR_REFERRAL_CONDITIONS" />
-                            </Note>
-                        </Tooltip>
-                    )}
+                    <Tooltip
+                        content={
+                            <Translation
+                                id="TR_REFERRAL_REWARDS_CONDITIONS"
+                                values={{
+                                    cardWaitingPeriodDays: VOUCHER_WAITING_PERIOD_DAYS_CARD,
+                                    otherWaitingPeriodDays: VOUCHER_WAITING_PERIOD_DAYS_OTHER,
+                                }}
+                            />
+                        }
+                        placement="bottom"
+                        tooltipMaxWidth={270}
+                    >
+                        <Note>
+                            <Translation id="TR_REFERRAL_CONDITIONS" />
+                        </Note>
+                    </Tooltip>
                 </Row>
                 <Card type="flat" paddingType="none">
                     <Row
