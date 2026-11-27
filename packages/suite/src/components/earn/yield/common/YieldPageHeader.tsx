@@ -1,6 +1,3 @@
-import styled from 'styled-components';
-
-import { AccountLabel } from '@suite/account';
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
@@ -14,87 +11,16 @@ import {
 } from '@suite-common/suite-types/src/staking';
 import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { Button, IconButton, Row, Text } from '@trezor/components';
+import { Button, IconButton } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { CaretLeftIcon, InfoIcon } from '@trezor/icons';
+import { InfoIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
-import { belowBreakpoint, breakpoints } from '@trezor/theme';
 
-import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { PageHeader } from '#src/components/suite/layouts/SuiteLayout/PageHeader/PageHeader';
+import { EarnAccountPageHeader } from '#src/components/earn/common/EarnAccountPageHeader';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 import { useYieldBackNavigation } from '../hooks/useYieldBackNavigation';
-
-const HeaderLayout = styled.div`
-    display: grid;
-    grid-template-columns: auto auto minmax(0, 1fr) auto;
-    gap: 2px 12px;
-    align-items: center;
-    width: 100%;
-    min-width: 0;
-
-    @media ${belowBreakpoint(breakpoints.mobile)} {
-        row-gap: 8px;
-    }
-`;
-
-const Navigation = styled.div`
-    grid-column: 1;
-    grid-row: 1 / span 2;
-    margin-right: 4px;
-
-    @media ${belowBreakpoint(breakpoints.mobile)} {
-        grid-row: 1;
-    }
-`;
-
-const IdentityIcon = styled.div`
-    grid-column: 2;
-    grid-row: 1 / span 2;
-
-    @media ${belowBreakpoint(breakpoints.mobile)} {
-        grid-row: 1;
-    }
-`;
-
-const IdentityTitle = styled.div`
-    grid-column: 3;
-    grid-row: 1;
-    min-width: 0;
-`;
-
-const IdentityMeta = styled.div`
-    grid-column: 3;
-    grid-row: 2;
-    min-width: 0;
-    overflow: hidden;
-
-    @media ${belowBreakpoint(breakpoints.mobile)} {
-        grid-column: 1 / -1;
-    }
-`;
-
-const MetaValue = styled.div`
-    min-width: 0;
-    overflow: hidden;
-`;
-
-const BalanceValue = styled.div`
-    flex-shrink: 0;
-    white-space: nowrap;
-`;
-
-const Actions = styled.div`
-    grid-column: 4;
-    grid-row: 1 / span 2;
-    margin-left: auto;
-
-    @media ${belowBreakpoint(breakpoints.mobile)} {
-        grid-row: 1;
-    }
-`;
 
 interface YieldPageHeaderProps {
     analyticsStep: Extract<EarnAnalyticsStep, 'yield-deposit' | 'yield-withdraw'>;
@@ -117,8 +43,6 @@ export const YieldPageHeader = ({
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
     const vaultName = vault?.metadata.name;
-    const networkSymbol = account?.symbol;
-    const isHowItWorksVisible = !isInvalid;
     const hasVaultIdentity = !isInvalid && !!account && !!vaultName;
 
     const onBackClick = useYieldBackNavigation({
@@ -159,125 +83,58 @@ export const YieldPageHeader = ({
         );
     };
 
-    const identityIconNode = (() => {
-        if (hasVaultIdentity && networkSymbol) {
-            return (
-                <IdentityIcon>
-                    <TokenIcon
-                        placeholder={vault?.token?.symbol || vault?.token?.name || ''}
-                        networkSymbol={networkSymbol}
-                        contractAddress={vault?.token?.address}
-                        showNetworkIcon
-                        size={32}
-                        isBordered={false}
-                        wrappedTokenIcon="network"
-                    />
-                </IdentityIcon>
-            );
-        }
+    const fallbackIcon = routeParams?.symbol ? (
+        <TokenIcon networkSymbol={routeParams.symbol} size={32} isBordered={false} />
+    ) : null;
+    const tokenIcon = hasVaultIdentity ? (
+        <TokenIcon
+            placeholder={vault?.token?.symbol || vault?.token?.name || ''}
+            networkSymbol={account.symbol}
+            contractAddress={vault?.token?.address}
+            showNetworkIcon
+            size={32}
+            isBordered={false}
+            wrappedTokenIcon="network"
+        />
+    ) : (
+        fallbackIcon
+    );
 
-        if (!hasVaultIdentity && routeParams?.symbol) {
-            return (
-                <IdentityIcon>
-                    <TokenIcon networkSymbol={routeParams.symbol} size={32} isBordered={false} />
-                </IdentityIcon>
-            );
-        }
-
-        return null;
-    })();
+    const howItWorks = isBelowMobile ? (
+        <IconButton
+            icon={InfoIcon}
+            intent="neutral"
+            priority="secondary"
+            size="large"
+            aria-label={translationString('TR_EARN_HOW_IT_WORKS')}
+            onClick={onHowItWorksClick}
+            isDisabled={!account || !vault}
+            data-testid="@yield/page-header/how-it-works-button"
+            tooltip={{ content: <Translation id="TR_EARN_HOW_IT_WORKS" /> }}
+        />
+    ) : (
+        <Button
+            intent="neutral"
+            priority="secondary"
+            onClick={onHowItWorksClick}
+            isDisabled={!account || !vault}
+            data-testid="@yield/page-header/how-it-works-button"
+        >
+            <Translation id="TR_EARN_HOW_IT_WORKS" />
+        </Button>
+    );
 
     return (
-        <PageHeader expandable>
-            <HeaderLayout>
-                <Navigation>
-                    <IconButton
-                        icon={CaretLeftIcon}
-                        intent="neutral"
-                        priority="secondary"
-                        size="large"
-                        onClick={onBackClick}
-                        data-testid="@account-subpage/back"
-                        tooltip={{ content: <Translation id="TR_BACK" /> }}
-                    />
-                </Navigation>
-
-                {identityIconNode}
-
-                <IdentityTitle>
-                    <Text
-                        as="div"
-                        typographyStyle="body-md-strong"
-                        ellipsisLineCount={isBelowMobile ? 2 : 1}
-                    >
-                        {hasVaultIdentity ? vaultName : <Translation id={fallbackTitleId} />}
-                    </Text>
-                </IdentityTitle>
-
-                {hasVaultIdentity && (
-                    <IdentityMeta>
-                        <Row alignItems="center" gap={isBelowMobile ? 8 : 24} overflow="hidden">
-                            <MetaValue>
-                                <AccountLabel
-                                    account={account}
-                                    showAccountTypeBadge
-                                    accountTypeBadgeSize="small"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    typographyStyle="body-sm"
-                                />
-                            </MetaValue>
-                            {isBelowMobile && (
-                                <Text intent="neutral" priority="secondary">
-                                    •
-                                </Text>
-                            )}
-                            <BalanceValue>
-                                <Text
-                                    typographyStyle="body-sm"
-                                    intent="neutral"
-                                    priority="secondary"
-                                >
-                                    <FormattedCryptoAmount
-                                        value={account.formattedBalance}
-                                        networkSymbol={account.symbol}
-                                        isCompact
-                                        data-testid="@yield/page-header/balance"
-                                    />
-                                </Text>
-                            </BalanceValue>
-                        </Row>
-                    </IdentityMeta>
-                )}
-
-                {isHowItWorksVisible && (
-                    <Actions>
-                        {isBelowMobile ? (
-                            <IconButton
-                                icon={InfoIcon}
-                                intent="neutral"
-                                priority="secondary"
-                                size="large"
-                                aria-label={translationString('TR_EARN_HOW_IT_WORKS')}
-                                onClick={onHowItWorksClick}
-                                isDisabled={!account || !vault}
-                                data-testid="@yield/page-header/how-it-works-button"
-                                tooltip={{ content: <Translation id="TR_EARN_HOW_IT_WORKS" /> }}
-                            />
-                        ) : (
-                            <Button
-                                intent="neutral"
-                                priority="secondary"
-                                onClick={onHowItWorksClick}
-                                isDisabled={!account || !vault}
-                                data-testid="@yield/page-header/how-it-works-button"
-                            >
-                                <Translation id="TR_EARN_HOW_IT_WORKS" />
-                            </Button>
-                        )}
-                    </Actions>
-                )}
-            </HeaderLayout>
-        </PageHeader>
+        <EarnAccountPageHeader
+            title={hasVaultIdentity ? vaultName : <Translation id={fallbackTitleId} />}
+            account={hasVaultIdentity ? account : undefined}
+            layout="grid"
+            balanceFormat="compact"
+            balanceTestId="@yield/page-header/balance"
+            tokenIcon={tokenIcon}
+            onBack={onBackClick}
+            actions={isInvalid ? undefined : howItWorks}
+            expandable
+        />
     );
 };
