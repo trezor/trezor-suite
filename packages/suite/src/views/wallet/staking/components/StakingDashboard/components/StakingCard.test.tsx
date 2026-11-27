@@ -8,7 +8,9 @@ import { messages } from '@suite/intl';
 import { type StakingPosition } from '@suite-common/earn-staking-common';
 import { mockStakingProductDescriptor } from '@suite-common/earn-staking-common/mocks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
+import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { BigNumber } from '@trezor/utils';
 
@@ -57,6 +59,20 @@ const adaPosition = (overrides: Partial<StakingPosition> = {}) =>
     });
 
 const EVERSTAKE_POOL_ID = 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj';
+const SECONDS_PER_DAY = 24 * 60 * 60;
+
+const mockConfirmedCardanoTransaction = (
+    subtype: Required<NonNullable<WalletAccountTransaction['cardanoSpecific']>>['subtype'],
+    daysAgo: number,
+) =>
+    testMocks.getWalletTransaction({
+        txid: `${subtype}-${daysAgo}`,
+        descriptor: adaAccount.descriptor,
+        deviceState: adaAccount.deviceState,
+        symbol: adaAccount.symbol,
+        blockTime: Math.floor(Date.now() / 1000) - daysAgo * SECONDS_PER_DAY,
+        cardanoSpecific: { subtype },
+    });
 
 const adaDelegation = (rewards: string) =>
     adaPosition({
@@ -122,14 +138,30 @@ const renderEthCard = ({
         },
     );
 
-const renderAdaCard = ({ position, disabledFeatures }: RenderParams) =>
-    renderStakingDashboardComponent(<StakingCard account={adaAccount} />, {
-        state: createStakingDashboardState({
-            accounts: [adaAccount],
-            positions: { [adaAccount.key]: [position] },
-            disabledFeatures,
-        }),
+type RenderAdaCardParams = Pick<RenderParams, 'position' | 'disabledFeatures'> & {
+    transactions?: WalletAccountTransaction[];
+};
+
+const renderAdaCard = ({ position, disabledFeatures, transactions = [] }: RenderAdaCardParams) => {
+    const state = createStakingDashboardState({
+        accounts: [adaAccount],
+        positions: { [adaAccount.key]: [position] },
+        disabledFeatures,
     });
+
+    return renderStakingDashboardComponent(<StakingCard account={adaAccount} />, {
+        state: {
+            ...state,
+            wallet: {
+                ...state.wallet,
+                transactions: {
+                    ...state.wallet.transactions,
+                    transactions: { [adaAccount.key]: transactions },
+                },
+            },
+        },
+    });
+};
 
 describe('StakingCard', () => {
     beforeAll(() => {
@@ -244,6 +276,8 @@ describe('StakingCard', () => {
     });
 
     describe('on a Cardano position', () => {
+        const activationLabel = messages.TR_STAKE_ACTIVATION_PERIOD.defaultMessage;
+
         it('shows the full balance as staked and claims the rewards of a delegated key', async () => {
             const { report } = renderAdaCard({ position: adaPosition() });
 
@@ -292,19 +326,50 @@ describe('StakingCard', () => {
             expect(screen.getByTestId('@account/staking/claim-rewards-button')).toBeEnabled();
         });
 
-        it('keeps the activation timeline on a delegation until its first reward', () => {
-            renderAdaCard({ position: adaDelegation('0') });
+        it('keeps the activation timeline after a vote on a newly delegated stake', () => {
+            renderAdaCard({
+                position: adaDelegation('0'),
+                transactions: [
+                    mockConfirmedCardanoTransaction('governance_delegation', 0),
+                    mockConfirmedCardanoTransaction('stake_registration', 1),
+                ],
+            });
 
-            expect(screen.getByTestId('@staking/progress-labels')).toBeInTheDocument();
-            expect(
-                screen.getByText(messages.TR_STAKE_ACTIVATION_PERIOD.defaultMessage),
-            ).toBeInTheDocument();
+            expect(screen.getByText(activationLabel)).toBeVisible();
+        });
+
+        it('does not show a new activation after changing the delegate on an established stake', () => {
+            renderAdaCard({
+                position: adaDelegation('0'),
+                transactions: [
+                    mockConfirmedCardanoTransaction('governance_delegation', 0),
+                    mockConfirmedCardanoTransaction('stake_registration', 30),
+                ],
+            });
+
+            expect(screen.queryByText(activationLabel)).not.toBeInTheDocument();
+        });
+
+        it('keeps activation hidden after claiming rewards and changing the delegate', () => {
+            renderAdaCard({
+                position: adaDelegation('0'),
+                transactions: [
+                    mockConfirmedCardanoTransaction('governance_delegation', 0),
+                    mockConfirmedCardanoTransaction('withdrawal', 1),
+                    mockConfirmedCardanoTransaction('stake_delegation', 7),
+                ],
+            });
+
+            expect(screen.queryByText(activationLabel)).not.toBeInTheDocument();
         });
 
         it('shows no timeline once the delegation has earned a reward', () => {
-            renderAdaCard({ position: adaDelegation('56398') });
+            renderAdaCard({
+                position: adaDelegation('56398'),
+                transactions: [mockConfirmedCardanoTransaction('stake_delegation', 7)],
+            });
 
-            expect(screen.queryByTestId('@staking/progress-labels')).not.toBeInTheDocument();
+            expect(screen.queryByText(activationLabel)).not.toBeInTheDocument();
         });
     });
 

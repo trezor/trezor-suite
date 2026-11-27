@@ -9,13 +9,7 @@ import {
     CARDANO_ACTIVATION_PERIOD_MAX_DAYS,
     CARDANO_ACTIVATION_PERIOD_MIN_DAYS,
 } from '@suite-common/wallet-constants';
-import { getTxStakeType } from '@suite-common/wallet-core';
-import {
-    type Account,
-    type StakeType,
-    type WalletAccountTransaction,
-} from '@suite-common/wallet-types';
-import { isPending } from '@suite-common/wallet-utils';
+import { type Account, type StakeType } from '@suite-common/wallet-types';
 import { Column, Paragraph } from '@trezor/components';
 
 import { type ProgressLabelData } from '../components/ProgressLabels/types';
@@ -236,7 +230,7 @@ type UseProgressLabelsData = {
     isStakePending: boolean;
     account: Account;
     position: StakingPosition | null;
-    stakeTxs: WalletAccountTransaction[];
+    lastTxStakeType?: StakeType;
     isStakedWithProvider: boolean;
 };
 
@@ -246,15 +240,11 @@ export const useProgressLabelsData = ({
     isStakePending,
     account,
     position,
-    stakeTxs,
+    lastTxStakeType,
     isStakedWithProvider,
 }: UseProgressLabelsData): ProgressLabelData[] => {
     const pendingOperation = position?.pendingTransactions[0]?.operation ?? null;
     const isUnstake = pendingOperation === 'unstake';
-
-    // The last confirmed operation is not on the position, so it stays on the transactions.
-    const lastStakeTx = stakeTxs.find(tx => !isPending(tx));
-    const lastTxStakeType = lastStakeTx ? getTxStakeType(lastStakeTx) : undefined;
 
     const stakeAccountsStatus = getSolanaStakeAccountsStatus(position?.details ?? null);
 
