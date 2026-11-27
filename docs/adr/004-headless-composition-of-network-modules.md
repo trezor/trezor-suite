@@ -4,7 +4,7 @@
 > Builds on [ADR-003](https://github.com/trezor/trezor-suite/pull/34612) and changes none of its
 > decisions. ADR-003 allows headless contracts for answers that have the same shape for every
 > network, and leaves "which operations it contains … to be explored and defined". This ADR defines
-> them, and how Suite features and network components compose them.
+> that API, and how Suite features and network components compose them.
 
 ## Context
 
@@ -12,7 +12,7 @@ ADR-003 decides that a feature whose UI differs per network is a component from 
 that a module's logic stays headless in its `-suite-common` package, that features are resolved for
 a context, and that backends stay inside the module. It also allows a headless API where "Suite only
 needs an answer from each network", in `@trezor/network-module-suite-common-types`, without saying
-which operations it holds.
+what it holds.
 
 Several callers need those answers today and have no contract to get them from:
 
@@ -26,7 +26,7 @@ Several callers need those answers today and have no contract to get them from:
   `networkType` checks in shared code ([`shouldSubscribeBlocks`][subscribe-blocks]) or values per
   symbol, and fees are refetched on one 60-second timer for every network.
 - **A list of what a network supports.** Supporting networks at different levels, or chains added
-  from a chain list over their own RPC, needs each network's supported operations per context, not
+  from a chain list over their own RPC, needs each network's supported functions per context, not
   only whether a page renders.
 - **Modules without Suite bindings.** A network module can be written by someone who does not write
   React, or for a host that is not Suite. Such a module needs to work with only its headless
@@ -37,19 +37,20 @@ Several callers need those answers today and have no contract to get them from:
 The key words MUST, MUST NOT, SHOULD, SHOULD NOT and MAY are to be read as in
 [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119). A **family** is a group of networks sharing a
 protocol model, served by one network module. **Shared code** is code outside a family's packages:
-Suite features, pages, thunks, services and WalletConnect.
+Suite features, pages, thunks, services and WalletConnect. The **headless API** is what ADR-003
+calls a headless contract: a family's functions and properties, resolved for a context.
 
-### Headless operations
+### Headless API
 
-1. An operation that shared code calls MUST be a headless operation in the Suite Common contract
-   (`@trezor/network-module-suite-common-types`), callable without rendering UI. Shared code MUST
-   call it and MUST NOT rebuild it.
-2. An operation that only the family's own components call MAY stay internal to the family. It
-   becomes a headless operation when shared code needs it.
-3. A headless operation MUST have the same shape for every network. It takes only what every caller
+1. A function or property that shared code uses MUST be part of the family's headless API, in the
+   Suite Common contract (`@trezor/network-module-suite-common-types`), usable without rendering
+   UI. Shared code MUST use it and MUST NOT rebuild it.
+2. A function that only the family's own components call MAY stay internal to the family. It joins
+   the headless API when shared code needs it.
+3. A headless function MUST have the same shape for every network. It takes only what every caller
    can supply and applies the family's defaults for the rest. Family-specific parameters belong to
    the family's own typed API, which its components use.
-4. A headless operation MUST NOT describe UI: no layout, field schemas, control labels or flags that
+4. The headless API MUST NOT describe UI: no layout, field schemas, control labels or flags that
    tell a screen what to show. It returns results, such as a fee estimate, a composed or signed
    transaction, or an error.
 5. A value that a family hands out and gets back, such as a chosen fee, MUST be opaque to shared
@@ -59,11 +60,11 @@ Suite features, pages, thunks, services and WalletConnect.
 
 ### Context and availability
 
-7. Operations MUST be resolved for a context, as ADR-003 resolves features: the network and, where
+7. The headless API MUST be resolved for a context, as ADR-003 resolves features: the network and, where
    relevant, the account. The module reads its backend and remote metadata itself; shared code MUST
    NOT pass a backend.
-8. Each operation MUST be reported as supported, unsupported, or unknown while a probe is pending.
-   Remote configuration MAY disable an operation the release ships. Executable network code MUST
+8. Each function and property MUST be reported as supported, unsupported, or unknown while a probe
+   is pending. Remote configuration MAY disable one that the release ships. Executable network code MUST
    ship in the release; data such as metadata and signed definitions MAY be fetched at run time.
 9. The module MUST state how its data can be followed, by subscription or by polling, and the
    shortest useful interval. Shared code MAY pause or slow fetching for app reasons, such as a
@@ -71,26 +72,26 @@ Suite features, pages, thunks, services and WalletConnect.
 
 ### Dependencies
 
-10. Headless operations MUST NOT read app state or import React. Anything the app owns, such as
+10. The headless API MUST NOT read app state or import React. Anything the app owns, such as
     Trezor Connect, analytics and notifications, MUST reach them through injected dependencies.
 11. A module MAY consist of its headless package only, with no React and no `@suite*` imports.
     Suite MUST be able to register such a module. Its features then appear where a lego default
-    implementation needs nothing beyond headless operations; a feature that needs network-specific
+    implementation needs nothing beyond the headless API; a feature that needs network-specific
     UI stays absent until the family has a component for it.
 
 ### Composition
 
-12. A Suite-owned flow MUST get network answers through headless operations. Where part of its UI
+12. A Suite-owned flow MUST get network answers through the headless API. Where part of its UI
     differs per network, such as fee selection, the flow MAY render that part as a feature of the
     network module, as ADR-003 pages do.
-13. A family's components MUST call the same headless operations for anything shared code can also
+13. A family's components MUST call the same headless functions for anything shared code can also
     do, so a screen and a thunk sign through one path.
 14. Shared code MUST NOT choose behavior by comparing a network's identity (`networkType`, symbol,
     chain id) to a literal. It MAY use identity as an opaque key for caches, settings, analytics,
     URLs and assets. A lint rule with a baseline that only shrinks enforces this for new and
     migrated code.
-15. Each built-in network's supported operations in its default configuration MUST be covered by a
-    snapshot test. Moving a feature onto headless operations MUST keep the support it had before.
+15. Each built-in network's supported functions in its default configuration MUST be covered by a
+    snapshot test. Moving a feature onto the headless API MUST keep the support it had before.
 
 ## Examples
 
@@ -103,10 +104,10 @@ type Availability = 'supported' | 'unsupported' | 'unknown';
 
 type SuiteCommonNetworkModule = {
     getSupportedNetworks(): readonly NetworkSymbol[];
-    getOperations(context: NetworkContext): NetworkOperations; // the module reads its backend
+    getNetworkApi(context: NetworkContext): NetworkApi; // the module reads its backend
 };
 
-type NetworkOperations = {
+type NetworkApi = {
     dataPolicy: { follow: 'subscription' | 'poll'; minIntervalMs: number };
     estimateFee?(params: EstimateFeeParams): Promise<Result<FeeEstimate, NetworkError>>;
     composeTransaction?(params: ComposeParams): Promise<Result<ComposedTx, NetworkError>>;
@@ -120,15 +121,15 @@ type NetworkOperations = {
 type FeeEstimate = { amount: Amount; choice: FeeChoice }; // FeeChoice is opaque (rule 5)
 ```
 
-**Fees.** Send, Trading and Earn ask the same operation. With a query cache the refresh follows the
-module; a thunk would call the same operation.
+**Fees.** Send, Trading and Earn call the same function. With a query cache the refresh follows the
+module; a thunk would call the same function.
 
 ```ts
-const ops = getOperations({ symbol, account });
+const api = getNetworkApi({ symbol, account });
 queryOptions({
     queryKey: ['fee', symbol, account.key, priority], // identity as an opaque key (rule 14)
-    queryFn: () => ops.estimateFee!({ account, outputs, priority }),
-    refetchInterval: ops.dataPolicy.follow === 'poll' ? ops.dataPolicy.minIntervalMs : false,
+    queryFn: () => api.estimateFee!({ account, outputs, priority }),
+    refetchInterval: api.dataPolicy.follow === 'poll' ? api.dataPolicy.minIntervalMs : false,
 });
 ```
 
@@ -137,9 +138,9 @@ differs per network, is the module's feature, rendered by the Trading page.
 
 ```tsx
 const FeeSelection = suiteModule.getFeeSelection?.(account)?.Component ?? DefaultFeePriority;
-const composed = await ops.composeTransaction?.({ account, outputs, fee: selected.choice });
-const signed = await ops.signTransaction?.({ device, account, transaction: composed.value });
-await ops.pushTransaction?.({ account, transaction: signed.value });
+const composed = await api.composeTransaction?.({ account, outputs, fee: selected.choice });
+const signed = await api.signTransaction?.({ device, account, transaction: composed.value });
+await api.pushTransaction?.({ account, transaction: signed.value });
 ```
 
 **Earn.** A yield provider returns an unsigned transaction. Earn shows a simulation only where the
@@ -147,8 +148,8 @@ network supports it, then signs and broadcasts through the network.
 
 ```ts
 const unsigned = await yieldProvider.enter({ account, amount });
-if (ops.simulation === 'supported') showSimulation(await simulate(unsigned));
-const signed = await ops.signTransaction?.({ device, account, transaction: unsigned });
+if (api.simulation === 'supported') showSimulation(await simulate(unsigned));
+const signed = await api.signTransaction?.({ device, account, transaction: unsigned });
 ```
 
 **WalletConnect.** A dapp speaks the family's language, so the family translates it inside its own
@@ -156,7 +157,7 @@ headless package. Suite's WalletConnect feature passes the request through.
 
 ```ts
 // network-ethereum-suite-common: maps eth_signTypedData_v4 and friends to the family's typed API
-const handler = ops.walletConnect;
+const handler = api.walletConnect;
 if (!handler?.methods.includes(request.method)) return reject(request, 'unsupported method');
 const result = await handler.handleRequest({ device, account, request });
 ```
@@ -169,7 +170,7 @@ appear; Sign & Verify with a format choice would need a component.
 // networks/acme/network-acme-suite-common: no React, no @suite* imports
 export const acmeModule = defineSuiteCommonNetworkModule({
     getSupportedNetworks: () => ['acme'],
-    getOperations: ({ account }) => ({
+    getNetworkApi: ({ account }) => ({
         dataPolicy: { follow: 'poll', minIntervalMs: 15_000 },
         estimateFee: params => estimateAcmeFee(deps, params),
         composeTransaction: params => composeAcmeTransaction(deps, params),
@@ -184,11 +185,11 @@ export const acmeModule = defineSuiteCommonNetworkModule({
 as Bitcoin's `format: 'electrum'`. A thunk or WalletConnect calls the headless `signMessage`, which
 applies the family's default format. Both end in the same family function (rule 13).
 
-An earlier reference implementation, [`develop...b5f7c559e7`][reference], shows typed headless
-operations for message signing and transaction details. Its shared screens predate this revision;
+An earlier reference implementation, [`develop...b5f7c559e7`][reference], shows a typed headless
+API for message signing and transaction details. Its shared screens predate this revision;
 under ADR-003 those screens are the family's components.
 
-This ADR does not decide which operations exist beyond those shared code needs, how Suite caches
+This ADR does not decide which functions exist beyond those shared code needs, how Suite caches
 remote data, or whether external developers may write Suite UI.
 
 **Changes to the ADR-003 proposal:** none to its decisions. It adds one case to its code structure:
@@ -198,26 +199,26 @@ a module registered as headless-only MUST NOT import React or `@suite*` packages
 
 ## Rejected alternatives
 
-- **Leaving the headless operations undefined:** each family's logic is headless but shaped per
+- **Leaving the headless API undefined:** each family's logic is headless but shaped per
   family, so Trading, Earn, thunks and WalletConnect need a switch over families.
 - **Shared code calling each family's own API:** shared code then handles the union of every
   family's parameters, the engine ADR-003 rejects.
-- **Headless operations that describe screens:** field schemas or flags that a shared screen
+- **A headless API that describes screens:** field schemas or flags that a shared screen
   interprets are the same rejected engine. Network-specific UI stays a component.
 - **Network code loaded at run time:** executable code ships in the release, where it is reviewed and
   signed with Suite; only data changes between releases.
 
 ## Consequences
 
-- **Easier:** Trading, Earn, RBF, thunks, WalletConnect and tests call one operation per action. A
-  network's supported operations per context can be listed and tested. Remote metadata or a probe
+- **Easier:** Trading, Earn, RBF, thunks, WalletConnect and tests call one function per action. A
+  network's supported functions per context can be listed and tested. Remote metadata or a probe
   changes availability without a release, within what the release ships. An external module can
   start headless-only and gain components later.
-- **Harder:** an operation shared code calls must be given one shape for every network first.
+- **Harder:** a function shared code calls must be given one shape for every network first.
   Network-specific UI still needs a component per family, per platform.
-- **Migration is per feature.** A family can ship its components first and promote an operation to
+- **Migration is per feature.** A family can ship its components first and promote a function to
   the Suite Common contract when shared code needs it.
-- **Revisit when** an operation keeps needing family-specific parameters: that part is UI and
+- **Revisit when** a function keeps needing family-specific parameters: that part is UI and
   belongs in a component.
 
 [subscribe-blocks]: https://github.com/trezor/trezor-suite/blob/bd3630cfba27da8033d77ebb6a808f3784b41d74/suite-common/wallet-utils/src/backendUtils.ts#L79
