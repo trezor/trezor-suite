@@ -15,8 +15,8 @@ import { areBaseCurrencyAmountsEqual } from '@suite-common/wallet-types';
 import { Discreet, VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountHeaderFormatter,
-    CompactCryptoAmountFormatter,
-    CompactTokenAmountFormatter,
+    ExactCryptoAmountFormatter,
+    ExactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
@@ -76,7 +76,7 @@ export const AssetDetailBalanceSection = () => {
                     </Discreet>
                 )}
                 {tokenContract === undefined ? (
-                    <CompactCryptoAmountFormatter
+                    <ExactCryptoAmountFormatter
                         value={amount}
                         symbol={networkSymbol}
                         color="contentPrimary"
@@ -84,7 +84,7 @@ export const AssetDetailBalanceSection = () => {
                         adjustsFontSizeToFit
                     />
                 ) : (
-                    <CompactTokenAmountFormatter
+                    <ExactTokenAmountFormatter
                         value={asDecimalTokenAmount(amount)}
                         networkSymbol={networkSymbol}
                         contractAddress={tokenContract}
