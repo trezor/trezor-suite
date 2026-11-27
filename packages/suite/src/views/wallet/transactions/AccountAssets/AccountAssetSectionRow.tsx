@@ -6,11 +6,11 @@ import { AccountStakingRow } from './AccountStakingRow';
 
 type AccountAssetSectionRowProps = {
     section: AccountListSection;
-    isOpenable?: boolean;
+    isZeroBalance?: boolean;
 };
 
 /** The table row of one section of the account's asset list. */
-export const AccountAssetSectionRow = ({ section, isOpenable }: AccountAssetSectionRowProps) => {
+export const AccountAssetSectionRow = ({ section, isZeroBalance }: AccountAssetSectionRowProps) => {
     const amount = getAccountListSectionAmount(section)?.amount;
 
     switch (section.type) {
@@ -32,7 +32,7 @@ export const AccountAssetSectionRow = ({ section, isOpenable }: AccountAssetSect
                     tokenSymbol={section.token.symbol}
                     tokenDecimals={section.token.decimals}
                     amount={amount}
-                    isOpenable={isOpenable}
+                    isZeroBalance={isZeroBalance}
                 />
             );
         // The tokens held at zero are listed as token sections, never as the group itself.

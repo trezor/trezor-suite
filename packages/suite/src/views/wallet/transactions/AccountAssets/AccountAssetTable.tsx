@@ -110,7 +110,7 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
                     <AccountAssetSectionRow
                         key={getAccountListSectionKey(section)}
                         section={section}
-                        isOpenable={false}
+                        isZeroBalance
                     />
                 ))}
         </AssetTableFrame>

@@ -29,7 +29,7 @@ type AssetTableRowViewProps = (AssetRowProps | StakingRowProps) & {
     amount: string | undefined;
     /** Shown by the asset's name in place of the rate it can earn; `null` shows none. */
     badge?: ReactNode;
-    onOpen?: () => void;
+    onOpen: () => void;
     hasBorderTop?: boolean;
     assetNameTestId?: string;
     'data-testid': string;

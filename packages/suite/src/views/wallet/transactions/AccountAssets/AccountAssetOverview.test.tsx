@@ -30,6 +30,7 @@ import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/device-utils';
 
+import { setTransactionHistoryPrefill } from '#src/actions/suite/suiteActions';
 import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { AccountAssetOverview } from './AccountAssetOverview';
@@ -189,7 +190,7 @@ const renderOverview = (
         { queryClient },
     );
 
-    return { analytics, suiteRouterHistory };
+    return { analytics, suiteRouterHistory, store: services.store };
 };
 
 const rowTestIds = () =>
@@ -286,7 +287,7 @@ describe('the account overview with the asset-first Home', () => {
         expect(rowTestIds()).toContain(`@wallet/account-asset/eth/${ONE_INCH}`);
     });
 
-    it('opens nothing from a token it holds none of, which has no asset detail', () => {
+    it('filters the account transactions to a token it holds none of, which has no asset detail', () => {
         const withEmptyToken = {
             ...ethAccount,
             tokens: [
@@ -298,11 +299,12 @@ describe('the account overview with the asset-first Home', () => {
                 }),
             ],
         };
-        const { analytics, suiteRouterHistory } = renderOverview([withEmptyToken]);
+        const { analytics, suiteRouterHistory, store } = renderOverview([withEmptyToken]);
 
         fireEvent.click(screen.getByTestId('@wallet/account-assets/zero-balance'));
         fireEvent.click(screen.getByTestId(`@wallet/account-asset/eth/${ONE_INCH}`));
 
+        expect(store.getActions()).toContainEqual(setTransactionHistoryPrefill(ONE_INCH));
         expect(suiteRouterHistory.navigate).not.toHaveBeenCalled();
         expect(analytics.report).not.toHaveBeenCalled();
     });
