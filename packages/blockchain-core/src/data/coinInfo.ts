@@ -38,6 +38,57 @@ const backendCoins = [
     ...parseCoins('misc', coins.misc, getMiscFeeLevels),
 ];
 
+const predefinedShortcuts = new Set(backendCoins.map(({ shortcut }) => shortcut.toLowerCase()));
+
+// Block time (in seconds) of a network registered without a measured one, which happens only when
+// its RPC could not serve the blocks to measure it from.
+const FALLBACK_CUSTOM_EVM_BLOCK_TIME_SECONDS = 12;
+
+export type RegisterEvmBackendCoinParams = {
+    symbol: string;
+    name: string;
+    rpcUrls: string[];
+    blockTimeSeconds?: number;
+};
+
+/**
+ * Adds (or updates) an EVM network served by plain RPC nodes. A predefined coin can never be
+ * replaced, so its symbol is rejected.
+ */
+export const registerEvmBackendCoin = ({
+    symbol,
+    name,
+    rpcUrls,
+    blockTimeSeconds = FALLBACK_CUSTOM_EVM_BLOCK_TIME_SECONDS,
+}: RegisterEvmBackendCoinParams): BackendCoinInfo => {
+    const shortcut = symbol.toLowerCase();
+    if (predefinedShortcuts.has(shortcut)) {
+        throw ERRORS.TypedError(
+            'Method_InvalidParameter',
+            `Symbol ${symbol} is already used by a predefined network`,
+        );
+    }
+
+    const existingIndex = backendCoins.findIndex(c => c.shortcut.toLowerCase() === shortcut);
+
+    const coinInfo: BackendCoinInfo = {
+        type: 'ethereum',
+        // The backends are keyed by the exact shortcut, so a change of case must not orphan them.
+        shortcut: backendCoins[existingIndex]?.shortcut ?? symbol,
+        name,
+        blockchainLink: { type: 'evm-rpc', url: rpcUrls },
+        ...getEthereumFeeLevels({ chain: shortcut, blocktime_seconds: blockTimeSeconds }),
+    };
+
+    if (existingIndex === -1) {
+        backendCoins.push(coinInfo);
+    } else {
+        backendCoins[existingIndex] = coinInfo;
+    }
+
+    return coinInfo;
+};
+
 export const getBackendCoinInfo = (coin: string): BackendCoinInfo => {
     const symbol = coin.toLowerCase();
     const coinInfo = backendCoins.find(({ shortcut }) => shortcut.toLowerCase() === symbol);
