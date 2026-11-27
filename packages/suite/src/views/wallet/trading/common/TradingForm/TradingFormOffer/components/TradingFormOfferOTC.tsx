@@ -11,14 +11,13 @@ import {
     useFetchOtc,
 } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectFiatFromCryptoValue } from '@suite-common/wallet-core';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber, localizeNumber } from '@trezor/utils';
 
-import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
@@ -86,12 +85,15 @@ export const TradingFormOfferOTC = () => {
               }).toFixed()
             : cryptoAmount;
 
-    const { fiatAmount: fiatAmountConverted } = useFiatFromCryptoValue({
-        amount: cryptoAmountInUnits || '0',
-        symbol: network?.symbol || asNetworkSymbol('btc'),
-        tokenAddress: contractAddress,
-        rateType: 'current',
-    });
+    const fiatAmountConverted = useSelector(state =>
+        selectFiatFromCryptoValue(
+            state,
+            cryptoAmountInUnits || '0',
+            network?.symbol || asNetworkSymbol('btc'),
+            contractAddress,
+            'current',
+        ),
+    );
 
     const fiatAmount = amountInCrypto ? fiatAmountConverted : fiatInput;
 

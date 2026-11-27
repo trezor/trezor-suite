@@ -51,7 +51,7 @@ jest.mock('@suite-common/wallet-core', () => {
 
     return {
         ...jest.requireActual('@suite-common/wallet-core'),
-        selectFiatRatesByFiatRateKey: () => fiatRate,
+        selectFiatRateByAsset: () => fiatRate,
     };
 });
 

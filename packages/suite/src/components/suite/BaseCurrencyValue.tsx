@@ -9,12 +9,13 @@ import { useFormatters } from '@suite-common/formatters';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { type TokenAddress } from '@suite-common/tokens';
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '@suite-common/trading';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectBaseCurrency, selectFiatRateByAsset } from '@suite-common/wallet-core';
 import { type RateTypeWithoutHistoric, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type AmountUnit, toFiatCurrency } from '@suite-common/wallet-utils';
 import { Skeleton } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import type { UseFiatFromCryptoValueParams } from '#src/hooks/suite/useFiatFromCryptoValue';
-import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 // Do NOT use any prop from <HiddenPlaceholderProps>, its here just to fix types
@@ -28,7 +29,12 @@ interface Params {
     timestamp: number | null;
 }
 
-export type BaseCurrencyValueProps = UseFiatFromCryptoValueParams & {
+export type BaseCurrencyValueProps = {
+    amount: string | AmountUnit; // Todo: remove `string` only for back compatibility
+    symbol: NetworkSymbol;
+    tokenAddress?: TokenAddress;
+    historicRate?: number;
+    useHistoricRate?: boolean;
     children?: (props: Params) => ReactElement | null;
     showApproximationIndicator?: boolean;
     disableHiddenPlaceholder?: boolean;
@@ -74,20 +80,19 @@ export const BaseCurrencyValue = ({
 }: BaseCurrencyValueProps) => {
     const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
     const isNativeToken = !tokenAddress || tokenAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
-    const { baseCurrencyCode, fiatAmount, rate, currentRate } = useFiatFromCryptoValue({
-        amount,
-        symbol,
-        tokenAddress: isNativeToken ? undefined : tokenAddress,
-        historicRate,
-        useHistoricRate,
-        rateType,
-    });
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
+    const currentRate = useSelector(state =>
+        selectFiatRateByAsset(state, symbol, isNativeToken ? undefined : tokenAddress, rateType),
+    );
+    const rate = useHistoricRate ? historicRate : currentRate?.rate;
 
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
     // In case `shouldConvert === true` the `amount` is the Crypto-Value and will be converted.
     // However, in case `shouldConvert === false`, the `amount` is already converted BaseCurrency (Fiat) value.
-    const value = shouldConvert ? fiatAmount : asBaseCurrencyAmount(new BigNumber(amount));
+    const value = shouldConvert
+        ? toFiatCurrency({ amount, rate })
+        : asBaseCurrencyAmount(new BigNumber(amount));
 
     const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : HiddenPlaceholder;
 

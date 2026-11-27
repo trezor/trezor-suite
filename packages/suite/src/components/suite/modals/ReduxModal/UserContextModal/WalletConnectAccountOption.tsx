@@ -5,14 +5,17 @@ import { Address } from '@suite/address';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
-import { selectAccountTokens, selectBaseCurrency } from '@suite-common/wallet-core';
+import {
+    selectAccountTokens,
+    selectBaseCurrency,
+    selectFiatFromCryptoValue,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
 import { Badge, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
 import { CoinBalance } from '#src/components/suite/CoinBalance';
-import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 type WalletConnectAccountOptionProps = {
@@ -23,10 +26,9 @@ const WalletConnectAccountOptionComponent = ({ account }: WalletConnectAccountOp
     const baseCurrency = useSelector(selectBaseCurrency);
     const tokens = useSelector(state => selectAccountTokens(state, account.key));
     const { BaseCurrencyAmountFormatter } = useFormatters();
-    const { fiatAmount } = useFiatFromCryptoValue({
-        amount: account.formattedBalance,
-        symbol: account.symbol,
-    });
+    const fiatAmount = useSelector(state =>
+        selectFiatFromCryptoValue(state, account.formattedBalance, account.symbol),
+    );
 
     const tokenCount = tokens?.shownWithBalance.length ?? 0;
 

@@ -3,7 +3,7 @@ import { Address } from '@suite/address';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
-import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectFiatFromCryptoValue } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
 import { Badge, CardList, Column, Icon, Row, Text } from '@trezor/components';
@@ -12,7 +12,6 @@ import { TokenIcon } from '@trezor/product-components';
 
 import { CoinBalance } from '#src/components/suite/CoinBalance';
 import { AccountLabeling } from '#src/components/suite/labeling/AccountLabeling';
-import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 interface ReceiveAccountItemProps {
@@ -25,10 +24,9 @@ export const ReceiveAccountItem = ({ account, onAccountSelect }: ReceiveAccountI
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const selectedAccountKey = useSelector(selectSelectedAccountKey);
 
-    const { fiatAmount } = useFiatFromCryptoValue({
-        amount: account.formattedBalance,
-        symbol: account.symbol,
-    });
+    const fiatAmount = useSelector(state =>
+        selectFiatFromCryptoValue(state, account.formattedBalance, account.symbol),
+    );
 
     const isUtxoBasedNetwork = isUtxoBased(account);
     const { address } = getUnusedAddressFromAccount(account);

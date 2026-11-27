@@ -24,6 +24,7 @@ export * from './createCooldown';
 export * from './createDeferred';
 export * from './createDeferredManager';
 export * from './createLazy';
+export * from './createStableBigNumbers';
 export * from './extractUrlsFromText';
 export * from './formatBigUintToLE';
 export * from './getIndexOrThrow';

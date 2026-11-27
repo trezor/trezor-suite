@@ -8,6 +8,7 @@ import {
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
+    type BaseCurrencyAmount,
     type CryptoBaseCurrencyPair,
     type CurrentRatesByKey,
     type Rate,
@@ -18,18 +19,25 @@ import {
     type Timestamp,
 } from '@suite-common/wallet-types';
 import {
+    type AmountUnit,
+    getFiatRateKey,
     getFiatRateKeyFromTicker,
     isTestnet,
     roundTimestampToNearestPastHour,
+    toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { createWeakMapSelector, weakMapMemoize } from '@trezor/redux-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, createStableBigNumbers } from '@trezor/utils';
 
 import { MAX_AGE } from './fiatRatesConstants';
 import { type FiatRatesRootState } from './fiatRatesTypes';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccounts } from '../accounts/accountsSelectors';
+import {
+    type WalletSettingsRootState,
+    selectBaseCurrency,
+} from '../settings/walletSettingsReducer';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<FiatRatesRootState>();
 
@@ -107,6 +115,33 @@ export const selectFiatRatesByFiatRateKey = (
     fiatRateKey: CryptoBaseCurrencyPair,
     rateType: RateTypeWithoutHistoric = 'current',
 ): Rate | undefined => state.wallet.fiat?.[rateType]?.[fiatRateKey];
+
+export const selectFiatRateByAsset = (
+    state: FiatRatesRootState & WalletSettingsRootState,
+    networkSymbol: NetworkSymbol,
+    tokenAddress?: TokenAddress,
+    rateType?: RateTypeWithoutHistoric,
+): Rate | undefined =>
+    selectFiatRatesByFiatRateKey(
+        state,
+        getFiatRateKey(networkSymbol, selectBaseCurrency(state), tokenAddress),
+        rateType,
+    );
+
+const getStableFiatAmount = createStableBigNumbers<BaseCurrencyAmount>();
+
+export const selectFiatFromCryptoValue = (
+    state: FiatRatesRootState & WalletSettingsRootState,
+    amount: string | AmountUnit,
+    networkSymbol: NetworkSymbol,
+    tokenAddress?: TokenAddress,
+    rateType?: RateTypeWithoutHistoric,
+): BaseCurrencyAmount | null => {
+    const rate = selectFiatRateByAsset(state, networkSymbol, tokenAddress, rateType)?.rate;
+    const fiatAmount = toFiatCurrency({ amount, rate });
+
+    return fiatAmount === null ? null : getStableFiatAmount(fiatAmount);
+};
 
 export const selectHistoricFiatRatesByTimestamp = (
     state: FiatRatesRootState,
