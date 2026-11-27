@@ -5,6 +5,7 @@ import { createAnalytics } from '@suite/analytics';
 import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity-checks';
 import { createBluetoothCompositionRoot } from '@suite/bluetooth';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
+import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
 import { rerunFwAuthenticityChecksThunk } from '@suite/device';
 import { lockDevice } from '@suite/locks';
 import { selectLabelingDataForAccount } from '@suite/metadata';
@@ -279,10 +280,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
             pairingMethods: ['CodeEntry'],
             knownCredentials: state.thp?.credentials,
         })),
-        getAllowPrerelease: toGetter(
-            deps.getState,
-            (state: AppState) => state.desktopUpdate?.allowPrerelease ?? false,
-        ),
+        getAllowPrerelease: toGetter(deps.getState, selectDesktopUpdateAllowPrerelease),
         shouldRetryFirmwareRevisionCheckError: toGetter(
             deps.getState,
             selectShouldRetryFirmwareRevisionCheckError,

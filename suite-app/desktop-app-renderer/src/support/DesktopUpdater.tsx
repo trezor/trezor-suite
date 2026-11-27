@@ -12,6 +12,8 @@ import {
     notAvailableThunk,
     readyThunk,
     selectDesktopUpdate,
+    selectDesktopUpdateAllowPrerelease,
+    selectDesktopUpdateEnabled,
 } from '@suite/desktop-update';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -35,6 +37,8 @@ const alwaysOpenStates = [
 
 export const DesktopUpdater = () => {
     const desktopUpdate = useSelector(selectDesktopUpdate);
+    const isDesktopUpdateEnabled = useSelector(selectDesktopUpdateEnabled);
+    const allowPrerelease = useSelector(selectDesktopUpdateAllowPrerelease);
     const { desktopApi, analytics, dispatch } = useServices(
         injectDesktopAnalytics,
         injectDispatch,
@@ -52,7 +56,7 @@ export const DesktopUpdater = () => {
 
         let checkForUpdatesInterval: ReturnType<typeof setInterval> | undefined;
 
-        if (desktopUpdate.enabled) {
+        if (isDesktopUpdateEnabled) {
             desktopApi.on('update/checking', () => dispatch(desktopUpdateActions.checking()));
             desktopApi.on('update/available', params => dispatch(availableThunk(params)));
             desktopApi.on('update/not-available', params => dispatch(notAvailableThunk(params)));
@@ -84,14 +88,14 @@ export const DesktopUpdater = () => {
             desktopApi.removeAllListeners('update/downloading');
             desktopApi.removeAllListeners('update/error');
         };
-    }, [desktopApi, desktopUpdate.enabled, dispatch]);
+    }, [desktopApi, isDesktopUpdateEnabled, dispatch]);
 
     const hideWindow = useCallback(() => {
         dispatch(desktopUpdateActions.setIsUpdateModalVisible(false));
 
         const payload = getAppUpdatePayload({
             status: AppUpdateEventStatus.Closed,
-            earlyAccessProgram: desktopUpdate.allowPrerelease,
+            earlyAccessProgram: allowPrerelease,
             updateInfo: desktopUpdate.latest,
         });
 
@@ -99,7 +103,7 @@ export const DesktopUpdater = () => {
             type: events.appUpdateEvent.name,
             payload,
         });
-    }, [dispatch, desktopUpdate.allowPrerelease, desktopUpdate.latest, analytics]);
+    }, [dispatch, allowPrerelease, desktopUpdate.latest, analytics]);
 
     const hideVersionInfoModal = () => {
         dispatch(desktopUpdateActions.setIsVersionInfoModalVisible(false));
