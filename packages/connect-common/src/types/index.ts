@@ -20,6 +20,7 @@ export * from './api/cardano/common';
 export * from './api/bitcoin/common';
 export * from './api/ripple/common';
 export * from './api/ethereum/common';
+export type * from './api/ethereum/displayFormat';
 export * from './api/monero/common';
 export * from './api/solana/common';
 export * from './api/stellar/common';

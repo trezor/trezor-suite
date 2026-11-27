@@ -18,6 +18,10 @@ export {
 export { sanitizeName } from './data/sanitizeName';
 export * from './utils/debug';
 export * from './utils/definitionsUtils';
+export * from './utils/ethereumBuiltInDisplayFormats';
+export * from './utils/ethereumDeviceAccountName';
+export * from './utils/ethereumDisplayFormat';
+export * from './utils/ethereumDisplayFormatCapabilities';
 export * from './utils/refTransactions';
 export * from './utils/urlUtils';
 export { getSerializedPath, getSlip44ByPath, validatePath } from './utils/pathUtils';
