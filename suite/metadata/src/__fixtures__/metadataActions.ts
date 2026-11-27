@@ -536,7 +536,7 @@ const init: Fixture<(typeof metadataLabelingActions)['initThunk']>[] = [
                 providers: [],
                 selectedProvider: {},
             },
-            suite: { online: true },
+            suiteLifecycle: { online: true },
         },
         params: [false],
         result: [

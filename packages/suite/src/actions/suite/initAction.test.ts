@@ -22,7 +22,7 @@ import {
     suiteSettingsActions,
     suiteSettingsInitialState,
 } from '@suite/settings';
-import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
+import { onSuiteInit, onSuiteReady, suiteLifecycleInitialState } from '@suite/suite-lifecycle';
 import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
 import {
     mockConnectInitDeviceEventHooks,
@@ -125,6 +125,7 @@ const EMPTY_ACTION = { type: 'foo' } as any;
 const getInitialState = (): InitThunkState => ({
     networks: mockNetworksState(mockGetSupportedNetworks()),
     suite: suiteReducer(undefined, EMPTY_ACTION),
+    suiteLifecycle: suiteLifecycleInitialState,
     suiteSettings: suiteSettingsInitialState,
     flags: flagsReducer(undefined, EMPTY_ACTION),
     locks: locksInitialState,

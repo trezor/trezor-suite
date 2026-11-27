@@ -3,6 +3,7 @@ import path from 'path';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type SuiteSettingsState, suiteSettingsInitialState } from '@suite/settings';
+import { type SuiteLifecycleState, suiteLifecycleInitialState } from '@suite/suite-lifecycle';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { type MetadataState } from '@suite-common/metadata-types';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -17,11 +18,7 @@ import * as fixtures from './__fixtures__/metadataActions';
 import * as metadataActions from './metadataActions';
 import * as metadataLabelingActions from './metadataLabelingActions';
 import * as metadataProviderActions from './metadataProviderThunks';
-import {
-    type MetadataRootState,
-    type SuiteRootStateSliceForMetadata,
-    metadataReducer,
-} from './metadataReducer';
+import { type MetadataRootState, metadataReducer } from './metadataReducer';
 import * as metadataThunks from './metadataThunks';
 import { DropboxProvider } from './providers/DropboxProvider';
 
@@ -68,7 +65,7 @@ interface InitialState {
     metadata?: MetadataState;
     device: any;
     accounts: any[];
-    suite: Partial<SuiteRootStateSliceForMetadata>;
+    suiteLifecycle?: Partial<SuiteLifecycleState>;
     suiteSettings?: {
         debug?: Partial<SuiteSettingsState['debug']>;
     };
@@ -76,7 +73,7 @@ interface InitialState {
 
 const getInitialState = (state?: InitialState): MetadataRootState => {
     const metadata = state ? state.metadata : undefined;
-    const suite = state ? state.suite : {};
+    const suiteLifecycle = state?.suiteLifecycle ?? {};
     const suiteSettings = state?.suiteSettings ?? {};
 
     const device = state
@@ -99,9 +96,9 @@ const getInitialState = (state?: InitialState): MetadataRootState => {
             buttonRequestsByPath: {},
             isConnectionModalOpen: false,
         },
-        suite: {
-            online: true,
-            ...suite,
+        suiteLifecycle: {
+            ...suiteLifecycleInitialState,
+            ...suiteLifecycle,
         },
         suiteSettings: {
             ...suiteSettingsInitialState,
@@ -369,7 +366,6 @@ describe('Metadata Actions', () => {
             getInitialState({
                 device: { state: { staticSessionId: '1stTestnetAddress@device_id:0' } },
                 accounts: [account],
-                suite: {},
             }),
         );
 

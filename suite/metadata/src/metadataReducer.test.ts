@@ -73,7 +73,7 @@ const mockState = ({
             selectedDevice: wallet,
         },
         suiteSettings: suiteSettingsInitialState,
-        suite: { online: true },
+        suiteLifecycle: { online: true },
     };
 };
 
