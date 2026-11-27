@@ -33,6 +33,7 @@
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" },
+        { "path": "../../packages/connect-core" },
         {
             "path": "../../packages/dependency-injection"
         }

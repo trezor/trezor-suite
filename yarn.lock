@@ -12294,6 +12294,7 @@ __metadata:
     "@trezor/blockchain-core": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:^"
+    "@trezor/connect-core": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/network-cardano-suite-common": "workspace:*"

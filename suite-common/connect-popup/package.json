@@ -38,6 +38,7 @@
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
+        "@trezor/connect-core": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@types/react": "19.3.0"
     }
