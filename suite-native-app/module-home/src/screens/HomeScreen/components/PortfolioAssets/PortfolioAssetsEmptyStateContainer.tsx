@@ -1,13 +1,18 @@
 import { type ReactNode } from 'react';
 
-import { VStack } from '@suite-native/atoms';
+import { Card } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-// The design keeps every asset list empty state at least this tall.
-const MIN_HEIGHT = 329;
+import { AssetsGetSvg } from '../../../../assets/AssetsGetSvg';
 
-const containerStyle = prepareNativeStyle(_ => ({
-    minHeight: MIN_HEIGHT,
+const ILLUSTRATION_SIZE = 120;
+
+const containerStyle = prepareNativeStyle(({ spacings }) => ({
+    marginHorizontal: spacings.sp16,
+    padding: spacings.sp24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacings.sp20,
 }));
 
 type PortfolioAssetsEmptyStateContainerProps = {
@@ -22,15 +27,9 @@ export const PortfolioAssetsEmptyStateContainer = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <VStack
-            spacing="sp20"
-            alignItems="center"
-            justifyContent="center"
-            padding="sp24"
-            style={applyStyle(containerStyle)}
-            testID={testID}
-        >
+        <Card style={applyStyle(containerStyle)} testID={testID}>
+            <AssetsGetSvg width={ILLUSTRATION_SIZE} height={ILLUSTRATION_SIZE} />
             {children}
-        </VStack>
+        </Card>
     );
 };
