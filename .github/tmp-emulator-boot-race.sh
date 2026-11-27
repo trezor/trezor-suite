@@ -17,8 +17,9 @@ AVD=Pixel_6_API_34
 PORT=5554
 SERIAL=emulator-$PORT
 SYSTEM_IMAGE='system-images;android-34;default;x86_64'
-EMULATOR_OPTIONS='-no-window -gpu lavapipe -accel on -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none -no-metrics'
-VARIANTS=('37.2.13 immediate' '37.3.10 immediate' '37.3.10 wait')
+EMULATOR_OPTIONS='-no-window -accel on -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none -no-metrics'
+# Each variant: <emulator version> <unlock mode> [<-gpu mode> [<extra environment assignment>]]
+IFS=';' read -r -a VARIANTS <<< "${VARIANTS_SPEC:-37.2.13 immediate;37.3.10 immediate;37.3.10 wait}"
 declare -A BUILDS=([37.2.13]=16740729 [37.3.10]=16970787)
 
 SDKMANAGER=$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager
@@ -82,9 +83,9 @@ select_emulator() {
 }
 
 run_boot() {
-    local index=$1 version=$2 mode=$3
+    local index=$1 version=$2 mode=$3 gpu=${4:-lavapipe} extra_env=${5:-}
     local dir
-    dir=$OUT/$(printf '%02d' "$index")-$version-$mode
+    dir=$OUT/$(printf '%02d' "$index")-$version-$mode-$gpu${extra_env:+-${extra_env%%=*}}
     mkdir -p "$dir"
 
     "$ADB" kill-server > /dev/null 2>&1
@@ -98,14 +99,14 @@ run_boot() {
     local t_launch emulator_pid
     t_launch=$(now_ms)
     # shellcheck disable=SC2086
-    "$ANDROID_HOME/emulator/emulator" -port "$PORT" -avd "$AVD" $EMULATOR_OPTIONS > "$dir/emulator.log" 2>&1 &
+    env $extra_env "$ANDROID_HOME/emulator/emulator" -port "$PORT" -avd "$AVD" -gpu "$gpu" $EMULATOR_OPTIONS > "$dir/emulator.log" 2>&1 &
     emulator_pid=$!
 
     # @actions/exec waits 10 s for the stdio of the backgrounded emulator before the runner starts polling.
     sleep 10
 
     local booted=0 attempt result
-    for ((attempt = 0; attempt < 300; attempt++)); do
+    for ((attempt = 0; attempt < ${BOOT_ATTEMPTS:-300}; attempt++)); do
         result=$(adb_s shell getprop sys.boot_completed 2> /dev/null | tr -d '\r\n ')
         if [[ $result == 1 ]]; then
             booted=1
@@ -187,14 +188,14 @@ run_boot() {
     emulator=$(grep -m1 -oE 'Android emulator version [0-9.]+' "$dir/emulator.log" | awk '{print $4}')
     boot_ms=$(grep -m1 -oE 'Boot completed in [0-9]+ ms' "$dir/emulator.log" | awk '{print $4}')
     printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
-        "$index" "$version" "$mode" "${emulator:-?}" "$booted" "${boot_ms:--1}" "$((t_booted - t_launch))" \
+        "$index" "$version" "$mode $gpu $extra_env" "${emulator:-?}" "$booted" "${boot_ms:--1}" "$((t_booted - t_launch))" \
         "$wait_ms" "$key_ms" "$key_rc" "$anr_lastanr" "$anr_logcat" "$anr_dialog" "$dialog_after_close" \
         "$load1" "$focus" | tee -a "$OUT/results.tsv"
 
     if [[ $booted != 1 ]]; then
         tail -n 30 "$dir/emulator.log"
         cat "$dir/avdmanager.log"
-        if [[ $index == 0 ]]; then
+        if [[ $index == 0 && -z ${VARIANTS_SPEC:-} ]]; then
             echo "First boot failed, aborting." >&2
             exit 1
         fi
@@ -221,8 +222,8 @@ fi
 started=$SECONDS
 index=0
 while ((SECONDS - started < BUDGET_SECONDS)); do
-    read -r version mode <<< "${VARIANTS[$(((index + REPLICA) % ${#VARIANTS[@]}))]}"
-    run_boot "$index" "$version" "$mode"
+    read -r version mode gpu extra_env <<< "${VARIANTS[$(((index + REPLICA) % ${#VARIANTS[@]}))]}"
+    run_boot "$index" "$version" "$mode" "${gpu:-lavapipe}" "$extra_env"
     index=$((index + 1))
 done
 
