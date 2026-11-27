@@ -45,17 +45,25 @@ export const createLoadReferralKey =
 
         if (!result.success) {
             const errorType = result.error.type;
+
+            // The stored key is unusable, purge it. The key has to be derived on the device again.
+            const purgeStoredKey = () => {
+                deps.dispatch(
+                    referAFriendActions.setEncryptedReferralKey({
+                        walletDescriptor,
+                        encryptedKey: null,
+                    }),
+                );
+            };
+
             switch (errorType) {
-                // The stored key is unusable, purge it. The key has to be derived on the device again.
-                case 'EncryptionUnavailable':
                 case 'DecryptionFailed':
                     console.error('Referral key: decrypting the stored key failed, purging it');
-                    deps.dispatch(
-                        referAFriendActions.setEncryptedReferralKey({
-                            walletDescriptor,
-                            encryptedKey: null,
-                        }),
-                    );
+                    purgeStoredKey();
+
+                    return null;
+                case 'EncryptionUnavailable':
+                    purgeStoredKey();
 
                     return null;
                 default:
