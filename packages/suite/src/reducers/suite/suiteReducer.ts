@@ -1,15 +1,11 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
-import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
+import { onSuiteInit, onSuiteReady, storageCorrupted, storageError } from '@suite/suite-lifecycle';
 import type { CountryCode } from '@suite-common/geolocation';
 import { TRANSPORT, type TransportInfo, isTransportEventOfType } from '@trezor/connect';
 
-import {
-    storageCorrupted,
-    storageError,
-    storageLoad,
-} from '#src/actions/suite/storageLifecycleActions';
+import { storageLoad } from '#src/actions/suite/storageLifecycleActions';
 import {
     addDeviceIdToSeenDisconnectNotification,
     closeEvmExplanationBanner,
