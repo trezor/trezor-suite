@@ -4321,22 +4321,11 @@ export const messages = {
             },
         },
         tradingExchangePreviewScreen: {
-            title: 'Swap',
-            fromAccount: 'From',
-            toAccount: 'To',
             details: 'Transaction details',
             providerNamePlaceholder: 'Provider',
             providerReceiveAddressLabel: "{providerName}'s receive address",
             providerContractAddressLabel: "{providerName}'s contract address",
             confirmationAlertTitle: 'Failed to confirm offer.',
-            approvalSuccessAlert: 'Spending approval confirmed.',
-            eip712Info: {
-                title: "You're swapping with {providerName}",
-                bullet1: 'Simply sign the order—no need to send transactions manually',
-                bullet2: 'No gas fees—the smart contract covers everything automatically',
-                bullet3:
-                    'Your swap may be completed in multiple parts, depending on market conditions',
-            },
             fiatDeviationWarning: 'Receiving {percent} less in estimated value.',
         },
         tradingSellPreviewScreen: {
@@ -4378,11 +4367,6 @@ export const messages = {
         composeAllowanceError: 'Failed to estimate approval fees. Try again.',
         confirmApprovalError: 'Failed to confirm approval. Try again.',
         tradingExchangeApprovalScreen: {
-            approveTitle: 'Approve {symbol} spending',
-            approveSubtitle: 'Approve provider to spend your {symbol} to swap.',
-            revokeSuccessAlert: 'Revoke successful. Set a higher limit.',
-            lowLimitInfoAlert:
-                "You've approved this token, but the limit is too low. Increase it to continue.",
             limitLabel: 'Limit',
             currentLimitLabel: 'Current limit',
             newLimitLabel: 'New limit',
@@ -4392,9 +4376,31 @@ export const messages = {
         tradingExchangeRevokeScreen: {
             revokeTitle: 'Revoke {symbol} spending',
             revokeSubtitle: 'Revoke provider permission to spend your {symbol} to swap.',
-            lowLimitInfoAlert: 'Spending limit too low. Revoke it and approve a higher amount.',
             limitLabel: 'Limit',
             revokeErrorAlert: 'Error revoking spending limit. Try again.',
+        },
+        tradingExchangeFlowScreen: {
+            screenTitle: 'Trade',
+            approveStep: {
+                title: 'Approve spending',
+                nextStepTitle: 'Approve',
+                description: 'Let the provider use your {symbol} to process your swap.',
+            },
+            increaseStep: {
+                title: 'Increase approved limit',
+                description:
+                    'Your current limit is too low. Let the provider access more {symbol} to process your swap.',
+            },
+            revokeStep: {
+                title: 'Revoke approval spending',
+                nextStepTitle: 'Revoke',
+                description:
+                    'To swap more {symbol}, first revoke your current approval. {symbol} requires this before approving a higher limit.',
+            },
+            swapStep: {
+                title: 'Review your swap',
+                nextStepTitle: 'Swap',
+            },
         },
         tradingReviewOutputs: {
             title: 'Confirm on Trezor',
@@ -4434,11 +4440,12 @@ export const messages = {
             approveTitle: 'Confirming approval',
             revokeTitle: 'Confirming revoke',
             subtitle: 'This may take a few moments.',
-            pending: 'Pending',
             error: 'Failed to confirm transaction. Try again.',
             date: 'Date',
             transactionId: 'Transaction ID',
             exploreInBlockchain: 'Explore on blockchain',
+            approveHint: 'Don’t leave yet. You’ll sign the swap in a few seconds.',
+            revokeAndApproveHint: 'Don’t leave yet. You’ll sign the approval in a few seconds.',
             approvalPendingAlert:
                 'Your approval is still processing. When confirmed, you’ll be able to use this approval with the same provider.',
             revocationPendingAlert:

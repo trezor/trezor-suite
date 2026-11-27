@@ -25,7 +25,7 @@ import {
     mercuryoFixedWorstQuote,
     oneInchFusionPlusWithEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
-import { type TradingRootState } from '@suite-native/trading-state';
+import { type TradingRootState, tradingActions } from '@suite-native/trading-state';
 import { FEE_SELECTOR_ROW_TEST_ID } from '@suite-native/transaction-management';
 
 import {
@@ -37,6 +37,10 @@ import { useExchangeIssue } from '../hooks/exchange/useExchangeIssue';
 import { createTradingTestStore } from '../test-utils/tradingTestUtils';
 
 type State = TradingRootState & AccountsRootState;
+
+const HOW_TRADING_WORKS = getTranslation(
+    'moduleTrading.tradingScreen.footer.howTradingWorksSheet.title',
+);
 
 let mockFocusHandlers = new Set<() => void>();
 
@@ -234,23 +238,99 @@ describe('TradingExchangePreviewScreen', () => {
         const { result } = await renderTradingExchangePreviewScreen();
 
         expect(
-            result.getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.title')),
+            result.getByText(getTranslation('moduleTrading.tradingExchangeFlowScreen.screenTitle')),
         ).toBeOnTheScreen();
     });
 
-    it('should render from and to account labels', async () => {
+    it('should render the swap review without the step cards when not approved', async () => {
         const { result } = await renderTradingExchangePreviewScreen();
 
         expect(
             result.getByText(
-                getTranslation('moduleTrading.tradingExchangePreviewScreen.fromAccount'),
+                getTranslation('moduleTrading.tradingExchangeFlowScreen.swapStep.title'),
+            ),
+        ).toBeOnTheScreen();
+        expect(result.queryByTestId('@step-cards/current')).toBeNull();
+        expect(result.queryByTestId('@step-cards/finished')).toBeNull();
+    });
+
+    it('should render the swap as the last step with the approval as the finished step when approved', async () => {
+        const { result } = await renderTradingExchangePreviewScreen(true);
+
+        expect(
+            result.getByText(
+                getTranslation('moduleTrading.tradingExchangeFlowScreen.swapStep.title'),
             ),
         ).toBeOnTheScreen();
         expect(
-            result.getByText(
-                getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount'),
+            within(result.getByTestId('@step-cards/finished')).getByText(
+                getTranslation('moduleTrading.tradingExchangeFlowScreen.approveStep.nextStepTitle'),
             ),
         ).toBeOnTheScreen();
+        expect(result.getByTestId('@step-cards/current')).toHaveTextContent(
+            getTranslation('stepCards.stepper', { stepNumber: 2, stepCount: 2 }),
+            { exact: false },
+        );
+        expect(result.queryByTestId('@step-cards/next')).toBeNull();
+        expect(result.getByText(getTranslation('generic.buttons.continue'))).toBeOnTheScreen();
+    });
+
+    it.each([
+        ['needs_approval', 2],
+        ['needs_increase', 2],
+        ['needs_revoke', 3],
+    ] as const)(
+        'should render the swap as the last step for the stored %s flow',
+        async (flowApprovalStatus, stepCount) => {
+            store.dispatch(tradingActions.setExchangeFlowApprovalStatus(flowApprovalStatus));
+
+            const { result } = await renderTradingExchangePreviewScreen(true);
+
+            expect(result.getByTestId('@step-cards/current')).toHaveTextContent(
+                getTranslation('stepCards.stepper', { stepNumber: stepCount, stepCount }),
+                { exact: false },
+            );
+            expect(
+                within(result.getByTestId('@step-cards/finished')).getByText(
+                    getTranslation(
+                        'moduleTrading.tradingExchangeFlowScreen.approveStep.nextStepTitle',
+                    ),
+                ),
+            ).toBeOnTheScreen();
+        },
+    );
+
+    it('should render the step cards for a stored flow status even without isApproved', async () => {
+        store.dispatch(tradingActions.setExchangeFlowApprovalStatus('needs_approval'));
+
+        const { result } = await renderTradingExchangePreviewScreen(false);
+
+        expect(result.getByTestId('@step-cards/current')).toBeOnTheScreen();
+    });
+
+    it.each([false, true])(
+        'should render the you pay and you get rows when isApproved is %s',
+        async isApproved => {
+            const { result } = await renderTradingExchangePreviewScreen(isApproved);
+
+            expect(result.getByTestId('@trading/history/detail/info/pay')).toBeOnTheScreen();
+            expect(result.getByTestId('@trading/history/detail/info/get')).toBeOnTheScreen();
+        },
+    );
+
+    it('should render the provider footer when not approved', async () => {
+        const { result } = await renderTradingExchangePreviewScreen();
+
+        expect(result.getByText(HOW_TRADING_WORKS)).toBeOnTheScreen();
+    });
+
+    it('should render the provider footer outside of the step card when approved', async () => {
+        const { result } = await renderTradingExchangePreviewScreen(true);
+
+        expect(result.getByText(HOW_TRADING_WORKS)).toBeOnTheScreen();
+        expect(
+            within(result.getByTestId('@step-cards/current')).queryByText(HOW_TRADING_WORKS),
+        ).toBeNull();
     });
 
     it('should render transaction details section', async () => {

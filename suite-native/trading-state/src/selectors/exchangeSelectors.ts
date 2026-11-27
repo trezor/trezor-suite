@@ -34,6 +34,9 @@ export type TradingWithFeatureFlagsRootState = TradingRootState & FeatureFlagsRo
 
 export const selectTradingExchange = (state: TradingRootState) => state.wallet.trading.exchange;
 
+export const selectExchangeFlowApprovalStatus = (state: TradingRootState) =>
+    state.wallet.trading.exchangeFlowApprovalStatus;
+
 const findAccountByKey = (accounts: Account[], accountKey: string | undefined) => {
     if (!accountKey) return undefined;
 

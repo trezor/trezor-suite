@@ -13,6 +13,7 @@ import {
 } from '@suite-native/navigation';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { type TradingRootState } from '@suite-native/trading-state';
+import { FEE_SELECTOR_ROW_TEST_ID } from '@suite-native/transaction-management';
 
 import { TradingExchangeRevokeScreen } from './TradingExchangeRevokeScreen';
 import { REVOKE_CONTINUE_BUTTON_TEST_ID } from '../components/exchange/Approval/ApprovalButton';
@@ -199,14 +200,60 @@ describe('TradingExchangeRevokeScreen', () => {
         ]);
     });
 
-    it('should render low limit info alert when shouldIncreaseLimit is true', async () => {
-        const { getByText } = await renderScreen({ shouldIncreaseLimit: true });
+    it('should render a standalone revoke without the step cards', async () => {
+        const { getByText, queryByTestId } = await renderScreen();
 
-        expect(
-            getByText(
-                getTranslation('moduleTrading.tradingExchangeRevokeScreen.lowLimitInfoAlert'),
-            ),
-        ).toBeOnTheScreen();
+        expect(getByText('ETH Account #1')).toBeOnTheScreen();
+        expect(queryByTestId('@step-cards/current')).toBeNull();
+    });
+
+    describe('when shouldIncreaseLimit is true', () => {
+        it('should render the revoke as the first step with the approval and swap as next steps', async () => {
+            const { getByText, getByTestId, getAllByTestId, queryByText, queryByTestId } =
+                await renderScreen({ shouldIncreaseLimit: true });
+
+            expect(
+                getByText(
+                    getTranslation('moduleTrading.tradingExchangeFlowScreen.revokeStep.title'),
+                ),
+            ).toBeOnTheScreen();
+            expect(getByTestId('ExchangeApproval/LimitRevoke')).toBeOnTheScreen();
+            expect(getByTestId(FEE_SELECTOR_ROW_TEST_ID)).toBeOnTheScreen();
+            expect(queryByText('ETH Account #1')).toBeNull();
+            expect(queryByText('Mercuryo')).toBeNull();
+            expect(queryByTestId('@step-cards/finished')).toBeNull();
+
+            const nextStepCards = getAllByTestId('@step-cards/next');
+            expect(nextStepCards).toHaveLength(2);
+            expect(nextStepCards[0]).toHaveTextContent(
+                getTranslation('stepCards.stepper', { stepNumber: 2, stepCount: 3 }) +
+                    getTranslation(
+                        'moduleTrading.tradingExchangeFlowScreen.approveStep.nextStepTitle',
+                    ),
+            );
+            expect(nextStepCards[1]).toHaveTextContent(
+                getTranslation('stepCards.stepper', { stepNumber: 3, stepCount: 3 }) +
+                    getTranslation(
+                        'moduleTrading.tradingExchangeFlowScreen.swapStep.nextStepTitle',
+                    ),
+            );
+        });
+
+        it('should render alert when no account is selected', async () => {
+            store.dispatch(tradingExchangeActions.setTradingAccountKey(undefined));
+
+            const { getByText, queryByTestId } = await renderScreen({ shouldIncreaseLimit: true });
+
+            expect(
+                getByText(
+                    getTranslation('moduleTrading.tradingExchangeRevokeScreen.revokeErrorAlert'),
+                ),
+            ).toBeOnTheScreen();
+            expect(queryByTestId('@step-cards/current')).toBeNull();
+            expect(errorSpy).toHaveBeenCalledWith(
+                'No account selected for exchange revoke details',
+            );
+        });
     });
 
     describe('analytics', () => {

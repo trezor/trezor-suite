@@ -1,25 +1,17 @@
 import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
-import { getTranslation } from '@suite-native/intl';
+import { Text } from '@suite-native/atoms';
+import { Translation, getTranslation } from '@suite-native/intl';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
-import { ExchangeApprovalDetails } from './ExchangeApprovalDetails';
+import { ExchangeRevokeConfirmationDetails } from './ExchangeRevokeConfirmationDetails';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
 
-// Mock FeeSelector to avoid deep dependency chain (useFeesManagement, etc.)
-jest.mock('@suite-native/transaction-management', () => ({
-    ...jest.requireActual('@suite-native/transaction-management'),
-    FeeSelector: jest.fn(() => null),
-}));
-
-describe('ExchangeApprovalDetails', () => {
-    const mockOnApprovalTypeChange = jest.fn();
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-
+describe('ExchangeRevokeConfirmationDetails', () => {
     const defaultOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
         wallet: {
             trading: {
@@ -31,13 +23,22 @@ describe('ExchangeApprovalDetails', () => {
         },
     };
 
-    const renderExchangeApprovalDetails = (
+    const renderDetails = (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = defaultOverrides,
     ) =>
         renderWithTradingProvider(
-            <ExchangeApprovalDetails
+            <ExchangeRevokeConfirmationDetails
                 exchange="mercuryo"
-                onApprovalTypeChange={mockOnApprovalTypeChange}
+                feeRow={
+                    <Text>
+                        <Translation id="transactionManagement.fees.description.title.ethereum" />
+                    </Text>
+                }
+                transactionIdRow={
+                    <Text>
+                        <Translation id="moduleTrading.tradingConfirmationScreen.transactionId" />
+                    </Text>
+                }
             />,
             {
                 tradeType: 'exchange',
@@ -46,25 +47,26 @@ describe('ExchangeApprovalDetails', () => {
             },
         );
 
-    beforeEach(() => {
-        errorSpy.mockClear();
-    });
-
-    it('should render approval details', async () => {
-        const { getByText } = await renderExchangeApprovalDetails();
+    it('renders the account, provider, limit, transaction ID and fee rows', async () => {
+        const { getByText } = await renderDetails();
 
         expect(
             getByText(getTranslation('moduleTrading.exchangeTradePreviewCard.account')),
         ).toBeOnTheScreen();
         expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
         expect(
-            getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.limitLabel')),
+            getByText(getTranslation('moduleTrading.tradingExchangeRevokeScreen.limitLabel')),
         ).toBeOnTheScreen();
-        expect(errorSpy).not.toHaveBeenCalled();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingConfirmationScreen.transactionId')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('transactionManagement.fees.description.title.ethereum')),
+        ).toBeOnTheScreen();
     });
 
-    it('should render error when account is not found', async () => {
-        const { getByText, queryByText } = await renderExchangeApprovalDetails({
+    it('renders nothing without the send account', async () => {
+        const { queryByText } = await renderDetails({
             wallet: {
                 trading: {
                     exchange: {
@@ -76,14 +78,7 @@ describe('ExchangeApprovalDetails', () => {
         });
 
         expect(
-            getByText(
-                getTranslation('moduleTrading.tradingExchangeApprovalScreen.approveErrorAlert'),
-            ),
-        ).toBeOnTheScreen();
-        expect(
-            queryByText(getTranslation('moduleTrading.exchangeTradePreviewCard.account')),
+            queryByText(getTranslation('moduleTrading.tradingConfirmationScreen.transactionId')),
         ).toBeNull();
-        expect(errorSpy).toHaveBeenCalledTimes(1);
-        expect(errorSpy).toHaveBeenCalledWith('No account selected for exchange approval details');
     });
 });

@@ -9,7 +9,11 @@ import {
 } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { tradingInitialState } from '@suite-native/trading-consts';
-import type { ProviderConfirmationStatus, TradingState } from '@suite-native/trading-types';
+import type {
+    ExchangeFlowApprovalStatus,
+    ProviderConfirmationStatus,
+    TradingState,
+} from '@suite-native/trading-types';
 import { createSliceWithExtraDeps } from '@trezor/redux-utils';
 
 import { TRADING_BUY, buyActions, buyReducer } from './buySlice';
@@ -64,6 +68,7 @@ export const tradingSlice = createSliceWithExtraDeps({
             state.formResetRequestedFor = undefined;
             buyReducer(state.buy, buyActions.clearState());
             exchangeReducer(state.exchange, exchangeActions.clearState());
+            state.exchangeFlowApprovalStatus = undefined;
             sellReducer(state.sell, sellActions.clearState());
         },
         setTradeOrderIdToBeOpened: (state: TradingState, { payload }: PayloadAction<string>) => {
@@ -122,6 +127,12 @@ export const tradingSlice = createSliceWithExtraDeps({
                 state.providerConfirmationStatus = newStatus;
             }
         },
+        setExchangeFlowApprovalStatus: (
+            state: TradingState,
+            { payload }: PayloadAction<ExchangeFlowApprovalStatus | undefined>,
+        ) => {
+            state.exchangeFlowApprovalStatus = payload;
+        },
         clearSelectedAccounts: (state: TradingState) => {
             state.buy.tradingAccountKey = undefined;
             state.buy.receiveAccountKey = undefined;
@@ -141,6 +152,9 @@ export const tradingSlice = createSliceWithExtraDeps({
                     state.tradeOrderIdToBeOpened = undefined;
                 },
             )
+            .addMatcher(exchangeActions.clearState.match, state => {
+                state.exchangeFlowApprovalStatus = undefined;
+            })
             .addMatcher(
                 action => action.type.startsWith(TRADING_BUY),
                 (state, action) => {

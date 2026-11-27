@@ -1,5 +1,6 @@
 import type { ExchangeTrade } from 'invity-api';
 
+import type { ApprovalStatus } from '@suite-common/trading';
 import type { UseFormReturn } from '@suite-native/forms';
 
 import type {
@@ -26,4 +27,10 @@ export type ExchangeFormType = UseFormReturn<
     ExchangeFormValues,
     object,
     ExchangeFormValidatedValues
+>;
+
+// Approval steps of the swap flow. Undefined when the swap is the only step.
+export type ExchangeFlowApprovalStatus = Extract<
+    ApprovalStatus,
+    'needs_approval' | 'needs_increase' | 'needs_revoke'
 >;

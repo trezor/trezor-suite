@@ -215,6 +215,46 @@ describe('tradingSlice', () => {
 
             expect(state.tradeOrderIdToBeOpened).toBeUndefined();
         });
+
+        it('should clear exchangeFlowApprovalStatus', () => {
+            const initialState = {
+                ...tradingInitialState,
+                exchangeFlowApprovalStatus: 'needs_revoke',
+            } as TradingState;
+
+            const state = tradingReducer(initialState, exchangeActions.clearState());
+
+            expect(state.exchangeFlowApprovalStatus).toBeUndefined();
+        });
+    });
+
+    describe('setExchangeFlowApprovalStatus', () => {
+        it('should set the exchange flow approval status', () => {
+            const state = tradingReducer(
+                tradingInitialState,
+                tradingActions.setExchangeFlowApprovalStatus('needs_increase'),
+            );
+
+            expect(state.exchangeFlowApprovalStatus).toBe('needs_increase');
+        });
+
+        it('should clear the exchange flow approval status', () => {
+            const state = tradingReducer(
+                { ...tradingInitialState, exchangeFlowApprovalStatus: 'needs_approval' },
+                tradingActions.setExchangeFlowApprovalStatus(undefined),
+            );
+
+            expect(state.exchangeFlowApprovalStatus).toBeUndefined();
+        });
+
+        it('should be cleared when the trading environment changes', () => {
+            const state = tradingReducer(
+                { ...tradingInitialState, exchangeFlowApprovalStatus: 'needs_approval' },
+                tradingActions.setTradingEnvironment('dev'),
+            );
+
+            expect(state.exchangeFlowApprovalStatus).toBeUndefined();
+        });
     });
 
     describe('tradingSell/clearState', () => {

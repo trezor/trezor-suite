@@ -55,7 +55,11 @@ import { buildApprovalTransactionData, getAllowanceAmount } from '@suite-common/
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { getErrorStrFromThunkRejectedValue } from '@suite-native/trading-quote-utils';
-import { type TradingRootState, getFormDraftKeyByTradeType } from '@suite-native/trading-state';
+import {
+    type TradingRootState,
+    getFormDraftKeyByTradeType,
+    tradingActions,
+} from '@suite-native/trading-state';
 import {
     type AddTransactionLabelingThunkDeps,
     type AddTransactionLabelingThunkState,
@@ -81,6 +85,7 @@ export const clearTradingStateThunk = createThunk<void, void, void>(
         dispatch(tradingExchangeActions.saveTransactionId(undefined));
         dispatch(tradingSellActions.saveSelectedQuote(undefined));
         dispatch(tradingSellActions.saveTransactionId(undefined));
+        dispatch(tradingActions.setExchangeFlowApprovalStatus(undefined));
 
         // Clear composed transaction info
         dispatch(tradingCommonActions.saveComposedTransactionInfo({}));

@@ -15,11 +15,9 @@ class ExchangePreviewActions extends TradingActions {
     }
 
     async waitForFeesToLoad() {
-        await waitToHaveRegex(
-            by.id('@transactionManagement/fee-crypto-amount'),
-            /\d[\d.]*\s[A-Z]{2,6}/,
-            { timeout: this.DOUBLE_LONG_TIMEOUT },
-        );
+        await waitToHaveRegex(by.id('@transactionManagement/fee-base-amount'), /\d/, {
+            timeout: this.DOUBLE_LONG_TIMEOUT,
+        });
     }
 
     async goToTransactionSigning() {

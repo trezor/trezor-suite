@@ -230,6 +230,7 @@
 !/suite-native/sentry
 !/suite-native/settings
 !/suite-native/sign-verify
+!/suite-native/step-cards
 !/suite-native/storage
 !/suite-native/suite-sync
 !/suite-native/swipeable-walkthrough
