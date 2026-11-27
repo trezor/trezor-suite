@@ -13,9 +13,10 @@ import { InfoIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
 import { FiatHeader } from '#src/components/wallet/FiatHeader';
-import { SecondaryCryptoAmount } from '#src/components/wallet/SecondaryCryptoAmount';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { useAccountHeaderContext } from '#src/support/suite/AccountHeaderProvider';
+
+import { SecondaryCryptoAmount } from './SecondaryCryptoAmount';
 
 type AccountOverviewBalanceSkeletonProps = {
     animate?: boolean;
@@ -82,7 +83,6 @@ export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalan
     }
 
     const { symbol, formattedBalance } = account;
-    const shouldDisplayBaseCurrency = baseCurrency !== symbol;
     const isMainnet = !isTestnet(symbol);
     const hasTokens = !!account.tokens?.length;
     const balanceExcludesTranslationId = getBalanceExcludesTranslationId(
@@ -102,13 +102,11 @@ export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalan
                         data-testid="@wallet/account/fiat-amount"
                     />
                 )}
-                {shouldDisplayBaseCurrency && (
-                    <SecondaryCryptoAmount
-                        symbol={symbol}
-                        value={formattedBalance}
-                        data-testid="@wallet/account/crypto-balance"
-                    />
-                )}
+                <SecondaryCryptoAmount
+                    symbol={symbol}
+                    value={formattedBalance}
+                    data-testid="@wallet/account/crypto-balance"
+                />
             </Column>
             {balanceExcludesTranslationId && (
                 <Row gap={4}>
