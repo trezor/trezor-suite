@@ -1,4 +1,9 @@
-import { type ReferralProgramData, type ReferralRewards } from '@suite-common/refer-a-friend';
+import {
+    type ReferralProgramData,
+    type ReferralRewards,
+    VOUCHER_WAITING_PERIOD_DAYS_CARD,
+    VOUCHER_WAITING_PERIOD_DAYS_OTHER,
+} from '@suite-common/refer-a-friend';
 import { useAlert } from '@suite-native/alerts';
 import {
     BannerFull,
@@ -45,7 +50,15 @@ export const ReferAFriendContentActive = ({
     const showConditionsAlert = () => {
         showAlert({
             title: <Translation id="referAFriend.conditions.title" />,
-            description: <Translation id="referAFriend.conditions.description" />,
+            description: (
+                <Translation
+                    id="referAFriend.conditions.description"
+                    values={{
+                        cardWaitingPeriodDays: VOUCHER_WAITING_PERIOD_DAYS_CARD,
+                        otherWaitingPeriodDays: VOUCHER_WAITING_PERIOD_DAYS_OTHER,
+                    }}
+                />
+            ),
             primaryButtonTitle: <Translation id="generic.buttons.gotIt" />,
         });
     };

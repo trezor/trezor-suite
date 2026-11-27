@@ -6,6 +6,10 @@ export {
 } from './createReferAFriendCompositionRoot';
 export { getReferralRewardsSummary } from './getReferralRewardsSummary';
 export {
+    VOUCHER_WAITING_PERIOD_DAYS_CARD,
+    VOUCHER_WAITING_PERIOD_DAYS_OTHER,
+} from './referAFriendConstants';
+export {
     type ReferAFriendRootState,
     type ReferAFriendState,
     type ReferralAccountState,

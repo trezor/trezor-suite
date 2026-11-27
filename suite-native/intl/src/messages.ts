@@ -5460,7 +5460,7 @@ export const messages = {
         conditions: {
             title: 'Conditions',
             description:
-                "Vouchers are available within 35 days of your friend's confirmed order if they paid by card, or 30 days for other payment methods.",
+                "Vouchers are available within {cardWaitingPeriodDays} days of your friend's confirmed order if they paid by card, or {otherWaitingPeriodDays} days for other payment methods.",
         },
         voucherList: {
             totalEarned: 'Total earned',
