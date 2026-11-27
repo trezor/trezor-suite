@@ -296,7 +296,7 @@ describe('useTradingExchangeAssetSelect', () => {
         );
     });
 
-    it('keeps the typed amount and drops the quotes of the switched pair', () => {
+    it('drops the quotes of the switched pair', () => {
         const { result, getActions } = renderAssetSelect(
             buildDefaults({
                 sendCryptoSelect: asSellOption(BTC_ASSET, BTC_ACCOUNT_KEY),
@@ -311,7 +311,6 @@ describe('useTradingExchangeAssetSelect', () => {
             });
         });
 
-        expect(result.current.methods.getValues('outputs.0.amount')).toBe('1');
         expect(result.current.methods.getValues('provider')).toBeUndefined();
         expect(getActions()).toContainEqual({ type: tradingExchangeActions.clearQuotes.type });
     });
@@ -335,6 +334,24 @@ describe('useTradingExchangeAssetSelect', () => {
         expect(result.current.methods.getValues('outputs.0.amount')).toBe('0.5');
         expect(result.current.methods.getValues('amountInCrypto')).toBe(true);
         expect(result.current.methods.getValues('amountInputSource')).toBe('crypto');
+    });
+
+    it('empties you pay when there is no amount for the switched pair', () => {
+        const { result } = renderAssetSelect(
+            buildDefaults({
+                sendCryptoSelect: asSellOption(BTC_ASSET, BTC_ACCOUNT_KEY),
+                receiveCryptoSelect: ETH_ASSET,
+                amount: '1',
+            }),
+        );
+
+        act(() => {
+            result.current.handlers.handleAssetsSwitch({
+                receiveAccountKey: ETH_ACCOUNT_KEY,
+            });
+        });
+
+        expect(result.current.methods.getValues('outputs.0.amount')).toBe('');
     });
 
     it('moves the pay asset to you get and leaves you pay empty without a receive account', () => {

@@ -8,7 +8,6 @@ import { selectLanguage } from '@suite/settings';
 import { getFormattedCurrencySymbol } from '@suite-common/formatters';
 import { type TokenAddress } from '@suite-common/tokens';
 import {
-    CONTRACT_ADDRESS_FOR_NATIVE_TOKEN,
     TRADING_FORM_AMOUNT_INPUT_SOURCE,
     TRADING_FORM_AMOUNT_IN_CRYPTO,
     TRADING_FORM_OUTPUT_MAX,
@@ -17,13 +16,10 @@ import {
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AMOUNT_MAX_LENGTH,
-    type FiatRatesRootState,
     selectBaseCurrency,
-    selectFiatRatesByFiatRateKey,
     selectIsBaseCurrencyInSats,
 } from '@suite-common/wallet-core';
 import {
-    getFiatRateKey,
     parseBaseCurrencyToFormattedCrypto,
     parseCryptoToFormattedBaseCurrency,
 } from '@suite-common/wallet-utils';
@@ -31,6 +27,7 @@ import { Row, Skeleton, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
+import { useTradingFiatRate } from '#src/hooks/wallet/trading/form/common/useTradingFiatRate';
 import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     type TradingAllFormProps,
@@ -74,16 +71,7 @@ export const TradingFormInputBaseCurrencyAmount = ({
     const locale = useSelector(selectLanguage);
     const baseCurrency = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
-    const isNativeToken = !tokenAddress || tokenAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
-    const rate = useSelector((state: FiatRatesRootState) =>
-        symbol
-            ? selectFiatRatesByFiatRateKey(
-                  state,
-                  getFiatRateKey(symbol, baseCurrency, isNativeToken ? undefined : tokenAddress),
-                  'current',
-              )?.rate
-            : undefined,
-    );
+    const rate = useTradingFiatRate({ symbol, tokenAddress });
 
     const context = useTradingFormContext();
     const { control, getValues, setValue, clearErrors, getFieldState } =
