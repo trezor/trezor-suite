@@ -10682,7 +10682,7 @@ export const messages = defineMessages({
     },
     TR_REFERRAL_INVITE_FRIENDS_DESCRIPTION: {
         id: 'TR_REFERRAL_INVITE_FRIENDS_DESCRIPTION',
-        defaultMessage: 'Share your link in a message, an email, or a post.',
+        defaultMessage: 'Share your link in a message, an email, or a social media post.',
     },
     TR_REFERRAL_SPEND_REWARDS: {
         id: 'TR_REFERRAL_SPEND_REWARDS',
@@ -10838,7 +10838,7 @@ export const messages = defineMessages({
     TR_REFERRAL_FAQ_SHARE_ANSWER: {
         id: 'TR_REFERRAL_FAQ_SHARE_ANSWER',
         defaultMessage:
-            'After joining, share your referral link with friends in a message, an email, or a post. You earn a reward when they use your link to place a qualifying order.',
+            'After joining, share your referral link with friends in a message, an email, or a social media post. You earn a reward when they use your link to place a qualifying order.',
     },
     TR_REFERRAL_FAQ_LIMIT: {
         id: 'TR_REFERRAL_FAQ_LIMIT',
