@@ -10576,10 +10576,9 @@ export const messages = defineMessages({
         id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_UPGRADE_DESCRIPTION',
         defaultMessage: 'Upgrade to Trezor Safe 7. Save 28%.',
     },
-    TR_REFERRAL_OPEN_STANDARD_WALLET: {
-        id: 'TR_REFERRAL_OPEN_STANDARD_WALLET',
-        defaultMessage:
-            'Open your standard wallet (without passphrase) to join Refer a Friend and see your rewards.',
+    TR_REFERRAL_DISCOVER_STANDARD_WALLET: {
+        id: 'TR_REFERRAL_DISCOVER_STANDARD_WALLET',
+        defaultMessage: 'Discover your standard wallet to use Refer a Friend.',
     },
     TR_REFERRAL_UNAVAILABLE: {
         id: 'TR_REFERRAL_UNAVAILABLE',

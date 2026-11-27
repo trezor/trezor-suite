@@ -114,7 +114,7 @@ export const ReferAFriendPage = () => {
 
     // All referral data belong to the standard wallet, without it there is nothing to show.
     if (!isReferralWalletDescriptorAvailable) {
-        return <ReferralUnavailable description="TR_REFERRAL_OPEN_STANDARD_WALLET" />;
+        return <ReferralUnavailable description="TR_REFERRAL_DISCOVER_STANDARD_WALLET" />;
     }
 
     if (program.status === 'error') {
