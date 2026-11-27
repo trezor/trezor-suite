@@ -15,6 +15,7 @@ import {
     type BlockchainRootState,
     type WalletSettingsRootState,
     blockchainActions,
+    selectActiveBackendType,
     selectIsNetworkEnabled,
     selectNetworkBlockchainInfo,
 } from '@suite-common/wallet-core';
@@ -38,8 +39,11 @@ export const useNetworkBackendForm = ({ symbol, backendOptions, chainId }: Netwo
 
     const {
         connected,
-        backends: { selected, urls },
+        backends: { urls },
     } = useSelector((state: BlockchainRootState) => selectNetworkBlockchainInfo(state, symbol));
+    const selected = useSelector((state: BlockchainRootState) =>
+        selectActiveBackendType(state, symbol),
+    );
     const isNetworkEnabled = useSelector((state: WalletSettingsRootState) =>
         selectIsNetworkEnabled(state, symbol),
     );
