@@ -15,6 +15,7 @@ import {
     selectTheme,
     selectTorOnionLinks,
 } from '@suite/settings';
+import { type SuiteLifecycleRootState, selectIsSuiteOnline } from '@suite/suite-lifecycle';
 import { type TorRootState, selectIsTorEnabled } from '@suite/tor';
 import {
     type LogsApplicationInfoRootState,
@@ -23,10 +24,11 @@ import {
 } from '@suite-common/logger';
 import { type DeviceState } from '@trezor/connect';
 
-import { selectIsSuiteOnline, selectSuiteTransports } from './suiteSelectors';
+import { selectSuiteTransports } from './suiteSelectors';
 import { type SuiteRootState } from '../../reducers/suite/suiteReducer';
 
 export type SuiteLogsApplicationInfoRootState = SuiteRootState &
+    SuiteLifecycleRootState &
     TorRootState &
     MetadataRootState &
     DesktopUpdateRootState &

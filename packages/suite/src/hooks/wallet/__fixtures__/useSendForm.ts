@@ -5,6 +5,7 @@ import { locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
 import { routerLocationChange, routerReducer } from '@suite/router';
 import { suiteSettingsInitialState } from '@suite/settings';
+import { suiteLifecycleReducer } from '@suite/suite-lifecycle';
 import { torReducer } from '@suite/tor';
 import { stakingInitialState } from '@suite-common/earn-staking';
 import { networksReducer } from '@suite-common/networks';
@@ -286,13 +287,13 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
         networks: networksReducer,
         suite: createReducer(
             {
-                online: true,
                 evmSettings: { confirmExplanationModalClosed: {}, explanationBannerClosed: {} },
                 prefillFields: { sendForm: '', transactionHistory: '' },
                 countryCode: null,
             },
             () => ({}),
         ),
+        suiteLifecycle: suiteLifecycleReducer,
         suiteSettings: createReducer(suiteSettingsInitialState, state => state),
         debug: createReducer(debugInitialState, state => state),
         discreetMode: createReducer({ isActive: false }, () => {}),

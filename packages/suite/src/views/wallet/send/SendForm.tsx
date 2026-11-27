@@ -9,6 +9,7 @@ import {
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { selectIsMetadataProviderConnected } from '@suite/metadata';
+import { selectIsSuiteOnline } from '@suite/suite-lifecycle';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { selectBaseCurrency, selectFees, selectSendRaw } from '@suite-common/wallet-core';
 import { Banner, Column } from '@trezor/components';
@@ -18,7 +19,6 @@ import { ConfirmEvmExplanationModal } from '#src/components/suite/modals/Confirm
 import { WalletLayout } from '#src/components/wallet/WalletLayout/WalletLayout';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { SendContext, type UseSendFormProps, useSendForm } from '#src/hooks/wallet/useSendForm';
-import { selectIsSuiteOnline } from '#src/selectors/suite/suiteSelectors';
 
 import { Options } from './Options/Options';
 import { Outputs } from './Outputs/Outputs';

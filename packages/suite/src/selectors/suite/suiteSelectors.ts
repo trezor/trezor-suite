@@ -11,7 +11,6 @@ import {
     isPrerequisiteGloballyExcluded,
 } from '#src/utils/suite/prerequisites';
 
-export const selectIsSuiteOnline = (state: SuiteRootState) => state.suite.online;
 export const selectSuiteLifecycle = (state: SuiteRootState) => state.suite.lifecycle;
 export const selectSuiteLifecycleStatus = (state: { suite: Pick<SuiteState, 'lifecycle'> }) =>
     state.suite.lifecycle.status;
