@@ -6464,6 +6464,10 @@ export const messages = defineMessages({
         defaultMessage:
             'Allow your Trezor to scan wallet addresses beyond the default 20 unused addresses during recovery if transactions are missing.',
     },
+    TR_CUSTOM_NETWORK_ALREADY_EXISTS: {
+        id: 'TR_CUSTOM_NETWORK_ALREADY_EXISTS',
+        defaultMessage: 'This network has already been added.',
+    },
     TR_EXPERIMENTAL_MCP_SERVER: {
         id: 'TR_EXPERIMENTAL_MCP_SERVER',
         defaultMessage: 'MCP server',

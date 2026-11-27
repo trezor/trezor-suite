@@ -125,6 +125,16 @@ export const saveExplorer = (deps: DbDep, { symbol, explorer }: SaveExplorerPara
     }
 };
 
+// The rows of a removed network would otherwise be restored once the same network is added again.
+export const removeNetworkSettings = (deps: DbDep, symbol: NetworkSymbol) => {
+    if (!deps.db.isAccessible()) return Promise.resolve();
+
+    return Promise.all([
+        deps.db.removeItemByPK('backendSettings', symbol),
+        deps.db.removeItemByPK('explorer', symbol),
+    ]);
+};
+
 export const saveDraft = (deps: DbDep, formState: FormState, accountKey: AccountKey) => {
     if (!deps.db.isAccessible()) return;
 

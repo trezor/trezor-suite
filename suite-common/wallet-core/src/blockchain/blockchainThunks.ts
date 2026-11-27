@@ -54,6 +54,7 @@ import {
     fetchAndUpdateAccountThunk,
     reportWalletBalanceThunk,
 } from '../accounts/accountsThunks';
+import { registerCustomEvmNetworkBackend } from '../customNetworks/customEvmNetworkThunks';
 import {
     type GetOrFetchRawFeeInfoThunkState,
     getOrFetchRawFeeInfoThunk,
@@ -61,6 +62,7 @@ import {
 } from '../fees/feesThunks';
 import {
     type WalletSettingsRootState,
+    selectCustomEvmNetworks,
     selectEnabledNetworks,
 } from '../settings/walletSettingsReducer';
 
@@ -132,6 +134,25 @@ export const initBlockchainThunk = createThunk<
         debug: extra.services.getDebugSettings().showConnectLogs,
     });
     TrezorBlockchain.on(BLOCKCHAIN_EVENT, ({ event: _event, ...action }) => dispatch(action));
+
+    // Before anything asks for their fees. A network that fails to register stays unusable until
+    // the next start, it must not take the whole initialization down.
+    await Promise.all(
+        selectCustomEvmNetworks(getState()).map(async definition => {
+            // The desktop renderer reaches the backends over IPC, which rejects instead of failing.
+            try {
+                const result = await registerCustomEvmNetworkBackend(definition);
+                if (!result.success) {
+                    console.warn(
+                        `Custom network ${definition.symbol} not registered`,
+                        result.error,
+                    );
+                }
+            } catch (error) {
+                console.warn(`Custom network ${definition.symbol} not registered`, error);
+            }
+        }),
+    );
 
     await dispatch(preloadFeeInfoThunk());
 
