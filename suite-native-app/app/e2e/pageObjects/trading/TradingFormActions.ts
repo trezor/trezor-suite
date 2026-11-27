@@ -251,7 +251,13 @@ export abstract class TradingFormActions extends TradingActions {
     async confirmTradingForm() {
         const continueButton = this.getElementById('continue-button');
         await waitForEnabled(continueButton, { timeout: this.SHORT_TIMEOUT });
-        await continueButton.tap();
+        try {
+            await continueButton.tap();
+        } catch {
+            // Refreshing quotes can switch Continue to loading between the enabled check and the tap.
+            await waitForEnabled(continueButton, { timeout: this.SHORT_TIMEOUT });
+            await continueButton.tap();
+        }
     }
 
     async revokeApproval() {
