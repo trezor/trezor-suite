@@ -1,4 +1,4 @@
-import { onSuiteInit, onSuiteReady, updateOnlineStatus } from '@suite/suite-lifecycle';
+import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
 import {
     acquireDeviceThunk,
     deviceActions,
@@ -50,18 +50,6 @@ const reducerActions = [
                 lifecycle: {
                     status: 'loading',
                 },
-            },
-        ],
-    },
-    {
-        description: `updateOnlineStatus (true/false)`,
-        actions: [updateOnlineStatus(true), updateOnlineStatus(false)],
-        result: [
-            {
-                online: true,
-            },
-            {
-                online: false,
             },
         ],
     },

@@ -1,7 +1,7 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
-import { onSuiteInit, onSuiteReady, updateOnlineStatus } from '@suite/suite-lifecycle';
+import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
 import type { CountryCode } from '@suite-common/geolocation';
 import { TRANSPORT, type TransportInfo, isTransportEventOfType } from '@trezor/connect';
 
@@ -50,7 +50,6 @@ export interface TransportState {
 }
 
 export type SuiteState = {
-    online: boolean;
     lifecycle: SuiteLifecycle;
     transport?: TransportState;
     evmSettings: EvmSettings;
@@ -62,7 +61,6 @@ export type SuiteState = {
 };
 
 const initialState: SuiteState = {
-    online: true,
     lifecycle: { status: 'initial' },
     evmSettings: {
         confirmExplanationModalClosed: {},
@@ -148,8 +146,6 @@ const suiteReducer = (state: SuiteState = initialState, action: UnknownAction): 
                     ? (draft.transport?.transports ?? [])
                     : draft.transport.transports?.filter(t => t.apiType !== apiType);
             draft.transport = { transports, error };
-        } else if (updateOnlineStatus.match(action)) {
-            draft.online = action.payload;
         }
     });
 
