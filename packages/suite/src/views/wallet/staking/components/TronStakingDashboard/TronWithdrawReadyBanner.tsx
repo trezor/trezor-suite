@@ -14,6 +14,7 @@ import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { getStakingAccountRouteParams } from '#src/constants/suite/staking';
 import { useTronFirmwareUpgradeModal } from '#src/hooks/earn/useTronFirmwareUpgradeModal';
 
 import { useTronStakingOperation } from './hooks/useTronStakingOperation';
@@ -57,12 +58,8 @@ export const TronWithdrawReadyBanner = ({ account, nowMs }: TronWithdrawReadyBan
 
         dispatch(
             gotoThunk({
-                routeName: 'earn-tron-withdraw',
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
+                routeName: 'earn-staking-tron-withdraw',
+                params: getStakingAccountRouteParams(account),
             }),
         );
 

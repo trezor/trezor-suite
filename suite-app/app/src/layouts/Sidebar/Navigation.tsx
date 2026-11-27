@@ -28,12 +28,12 @@ const EARN_ROUTES: Route['name'][] = [
     'earn-yield-unwrap',
     'earn-yield-wrap',
     'earn-yield-vault',
-    'earn-tron',
-    'earn-tron-stake',
-    'earn-tron-vote',
-    'earn-tron-unstake',
-    'earn-tron-withdraw',
-    'earn-tron-claim',
+    'earn-staking-tron',
+    'earn-staking-tron-stake',
+    'earn-staking-tron-vote',
+    'earn-staking-tron-unstake',
+    'earn-staking-tron-withdraw',
+    'earn-staking-tron-claim',
 ];
 
 const SWAP_ROUTES: Route['name'][] = [

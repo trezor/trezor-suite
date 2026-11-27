@@ -18466,6 +18466,7 @@ __metadata:
   resolution: "@suite/router@workspace:suite/router"
   dependencies:
     "@reduxjs/toolkit": "npm:2.13.0"
+    "@suite-common/earn-staking-common": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"

@@ -183,18 +183,21 @@ const SECTIONS = {
         '/earn/yield/wrap',
         '/earn/yield/unwrap',
         '/earn/yield/vault',
-        '/earn/tron',
-        '/earn/tron/stake',
-        '/earn/tron/vote',
-        '/earn/tron/unstake',
-        '/earn/tron/withdraw',
-        '/earn/tron/claim',
+        '/earn/staking/tron',
+        '/earn/staking/tron/stake',
+        '/earn/staking/tron/vote',
+        '/earn/staking/tron/unstake',
+        '/earn/staking/tron/withdraw',
+        '/earn/staking/tron/claim',
     ],
 } as const satisfies Record<string, string[]>;
 
 const allPaths = routes
-    .map(route => route.pattern)
-    .filter(pattern => pattern.split('/').filter(Boolean).length < 4);
+    .filter(
+        route =>
+            route.app === 'earn-staking' || route.pattern.split('/').filter(Boolean).length < 4,
+    )
+    .map(route => route.pattern);
 
 const coveredPaths = new Set<string>(Object.values(SECTIONS).flat());
 

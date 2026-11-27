@@ -1,4 +1,5 @@
 import { type modalAppParams, routes } from '@suite/router-config';
+import { type StakingProductId } from '@suite-common/earn-staking-common';
 import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
 import { type ArrayElement } from '@trezor/type-utils';
@@ -28,21 +29,25 @@ export type ModalAppParams = {
     [key in (typeof modalAppParams)[number]]: string | boolean | undefined;
 };
 
-export type RouteParams = {
-    [
-        K in keyof (CommonWalletParams &
-            EarnParams &
-            ModalAppParams &
-            DashboardParams &
-            AssetParams)
-    ]?: (CommonWalletParams & EarnParams & ModalAppParams & DashboardParams & AssetParams)[K];
-};
+type EarnStakingParams = { stakingProductId: StakingProductId };
+
+export type RouteParams = Partial<
+    CommonWalletParams &
+        EarnParams &
+        EarnStakingParams &
+        ModalAppParams &
+        DashboardParams &
+        AssetParams
+>;
 
 type AppWithParams<T extends { [key: string]: any }> = {
     [K in keyof T]: {
         app: T[K]['app'];
         route: Route;
-        params: ExtractType<ArrayElement<T[K]['params']>> | undefined;
+        params:
+            | (ExtractType<ArrayElement<T[K]['params']>> &
+                  (T[K]['app'] extends 'earn-staking' ? EarnStakingParams : unknown))
+            | undefined;
     };
 };
 

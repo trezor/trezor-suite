@@ -1,7 +1,7 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { gotoThunk, selectRouteName, selectSettingsBackRoute } from '@suite/router';
+import { goBackThunk, gotoThunk, selectRouteName } from '@suite/router';
 import { selectTronStakeSession } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Box, Button, IconButton } from '@trezor/components';
@@ -11,7 +11,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { EarnAccountPageHeader } from '#src/components/earn/common/EarnAccountPageHeader';
-import { TRON_FLOW_BY_ROUTE } from '#src/constants/suite/staking';
+import { TRON_FLOW_BY_ROUTE, getStakingAccountRouteParams } from '#src/constants/suite/staking';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
@@ -23,7 +23,6 @@ export const TronStakePageHeader = ({ account }: TronStakePageHeaderProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
-    const previousRoute = useSelector(selectSettingsBackRoute);
     const routeName = useSelector(selectRouteName);
 
     const flow = routeName ? TRON_FLOW_BY_ROUTE[routeName] : undefined;
@@ -76,7 +75,23 @@ export const TronStakePageHeader = ({ account }: TronStakePageHeaderProps) => {
 
     const onBackClick = () => {
         reportFlowClose();
-        dispatch(gotoThunk({ routeName: previousRoute.name, params: previousRoute.params }));
+
+        if (routeName === 'earn-staking-tron') {
+            dispatch(gotoThunk({ routeName: 'suite-earn' }));
+
+            return;
+        }
+
+        dispatch(
+            goBackThunk({
+                fallback: account
+                    ? {
+                          routeName: 'earn-staking-tron',
+                          params: getStakingAccountRouteParams(account),
+                      }
+                    : { routeName: 'suite-earn' },
+            }),
+        );
     };
 
     const onHowItWorksClick = () => {

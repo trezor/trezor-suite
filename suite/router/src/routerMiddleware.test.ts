@@ -57,17 +57,7 @@ describe('routerMiddleware', () => {
                 loaded: true,
                 pathname: '/onboarding',
                 app: 'onboarding',
-                route: {
-                    name: 'onboarding-index',
-                    pattern: '/onboarding',
-                    app: 'onboarding',
-                    isForegroundApp: true,
-                    isFullscreenApp: true,
-                    clearUrl: undefined,
-                    isNestedRoute: undefined,
-                    params: undefined,
-                    hasNestedRoutes: undefined,
-                },
+                route: getRequiredRoute('onboarding-index'),
                 settingsBackRoute: {
                     name: 'suite-index',
                 },

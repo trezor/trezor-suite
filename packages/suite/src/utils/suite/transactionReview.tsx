@@ -136,11 +136,11 @@ export const getTransactionReviewModalActionTranslation = ({
         };
     }
 
-    if (routeName === 'earn-tron-withdraw') {
+    if (precomposedForm.tronStaking?.kind === 'withdraw') {
         return { id: 'TR_EARN_TRON_WITHDRAW_TITLE' };
     }
 
-    if (routeName === 'earn-tron-claim') {
+    if (precomposedForm.tronStaking?.kind === 'claim') {
         return { id: 'TR_EARN_TRON_CLAIM_TITLE' };
     }
 

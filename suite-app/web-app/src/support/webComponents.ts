@@ -83,42 +83,42 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             default: EarnYieldVaultPage,
         })),
     ),
-    'earn-tron': lazy(() =>
+    'earn-staking-tron': lazy(() =>
         import(
-            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronRedirectPage'
-        ).then(({ EarnTronRedirectPage }) => ({
-            default: EarnTronRedirectPage,
+            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronDashboardPage'
+        ).then(({ EarnTronDashboardPage }) => ({
+            default: EarnTronDashboardPage,
         })),
     ),
-    'earn-tron-stake': lazy(() =>
+    'earn-staking-tron-stake': lazy(() =>
         import(
             /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronStakePage'
         ).then(({ EarnTronStakePage }) => ({
             default: EarnTronStakePage,
         })),
     ),
-    'earn-tron-vote': lazy(() =>
+    'earn-staking-tron-vote': lazy(() =>
         import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronVotePage').then(
             ({ EarnTronVotePage }) => ({
                 default: EarnTronVotePage,
             }),
         ),
     ),
-    'earn-tron-unstake': lazy(() =>
+    'earn-staking-tron-unstake': lazy(() =>
         import(
             /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronUnstakePage'
         ).then(({ EarnTronUnstakePage }) => ({
             default: EarnTronUnstakePage,
         })),
     ),
-    'earn-tron-withdraw': lazy(() =>
+    'earn-staking-tron-withdraw': lazy(() =>
         import(
             /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronWithdrawPage'
         ).then(({ EarnTronWithdrawPage }) => ({
             default: EarnTronWithdrawPage,
         })),
     ),
-    'earn-tron-claim': lazy(() =>
+    'earn-staking-tron-claim': lazy(() =>
         import(
             /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronClaimPage'
         ).then(({ EarnTronClaimPage }) => ({

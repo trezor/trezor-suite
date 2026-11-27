@@ -5,7 +5,7 @@ import {
     selectIsStakingAccountActive,
 } from '@suite-common/earn-staking';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
-import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type Account, type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { useNow } from '@trezor/react-utils';
@@ -22,12 +22,10 @@ import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
 import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard/EmptyStakingCard';
 import { Transactions } from '../StakingDashboard/components/Transactions';
 
-interface TronStakingDashboardProps {
-    selectedAccount: SelectedAccountLoaded;
-}
+type TronStakingDashboardProps = { selectedAccount: SelectedAccountLoaded } | { account: Account };
 
-export const TronStakingDashboard = ({ selectedAccount }: TronStakingDashboardProps) => {
-    const { account } = selectedAccount;
+export const TronStakingDashboard = (props: TronStakingDashboardProps) => {
+    const account = 'account' in props ? props.account : props.selectedAccount.account;
     const { dispatch } = useServices(injectDispatch);
     const accountKey = account.key;
 
@@ -42,7 +40,7 @@ export const TronStakingDashboard = ({ selectedAccount }: TronStakingDashboardPr
 
     return (
         <StakingDashboard
-            selectedAccount={selectedAccount}
+            {...props}
             dashboard={
                 <Column gap={48} alignItems="stretch">
                     {isStakingActive ? (

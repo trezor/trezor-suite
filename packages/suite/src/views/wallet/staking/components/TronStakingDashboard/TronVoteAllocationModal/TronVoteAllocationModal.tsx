@@ -27,6 +27,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { TronStakeInfoRow } from '#src/components/earn/staking/tron/TronStakeInfoRow';
+import { getStakingAccountRouteParams } from '#src/constants/suite/staking';
 import { useTronFirmwareUpgradeModal } from '#src/hooks/earn/useTronFirmwareUpgradeModal';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
@@ -76,12 +77,8 @@ export const TronVoteAllocationModal = ({ account, onClose }: TronVoteAllocation
 
         dispatch(
             gotoThunk({
-                routeName: 'earn-tron-vote',
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
+                routeName: 'earn-staking-tron-vote',
+                params: getStakingAccountRouteParams(account),
             }),
         );
         onClose();

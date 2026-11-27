@@ -11,6 +11,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { CheckSquareOffsetIcon, LightningIcon, LockSimpleOpenIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { getStakingAccountRouteParams } from '#src/constants/suite/staking';
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
 
 import { EarnInANutshellHighlights } from './components/EarnInANutshellHighlights';
@@ -77,12 +78,8 @@ export const TronStakeInANutshellModal = ({
 
         dispatch(
             gotoThunk({
-                routeName: 'earn-tron-stake',
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
+                routeName: 'earn-staking-tron-stake',
+                params: getStakingAccountRouteParams(account),
             }),
         );
 

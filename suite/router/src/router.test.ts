@@ -1,3 +1,4 @@
+import { stakingProductIdSchema } from '@suite-common/earn-staking-common';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { type Route } from './route';
@@ -301,20 +302,57 @@ describe('router', () => {
                 },
                 route: getRoute('earn-yield-claim'),
             });
+        });
+    });
 
-            expect(
-                getAppWithParams({
-                    pathname: '/earn/tron/stake',
-                    hash: '#/trx/0/normal',
-                }),
-            ).toEqual({
+    describe('staking product routes', () => {
+        const stakingProductId = stakingProductIdSchema.parse('trx:trx:curated:native');
+        const accountParams = {
+            symbol: asNetworkSymbol('trx'),
+            accountIndex: 2,
+            accountType: 'normal',
+        } as const;
+
+        it.each(['stake', 'vote', 'unstake', 'withdraw', 'claim'] as const)(
+            'round trips the product and account on the %s route',
+            action => {
+                const route = getRoute(`earn-staking-tron-${action}`);
+                const params = { ...accountParams, stakingProductId };
+                const hash = getRouteHash(route, accountParams);
+
+                expect(hash).toBe('#/trx/2/normal');
+                expect(
+                    getAppWithParams({ pathname: `/earn/staking/tron/${action}`, hash }),
+                ).toEqual({
+                    app: 'earn-staking',
+                    route,
+                    params,
+                });
+            },
+        );
+
+        it.each(['#/trx/2oops/normal', '#/trx/2/legacy'] as const)(
+            'rejects invalid account params %s',
+            hash => {
+                expect(
+                    getAppWithParams({ pathname: '/earn/staking/tron/stake', hash }).params,
+                ).toBeUndefined();
+            },
+        );
+
+        it('opens the product dashboard with or without an account in the URL', () => {
+            const pathname = '/earn/staking/tron';
+            const route = getRoute('earn-staking-tron');
+
+            expect(getAppWithParams({ pathname })).toEqual({
                 app: 'earn-staking',
-                params: {
-                    symbol: 'trx',
-                    accountIndex: 0,
-                    accountType: 'normal',
-                },
-                route: getRoute('earn-tron-stake'),
+                route,
+                params: undefined,
+            });
+            expect(getAppWithParams({ pathname, hash: '#/trx/2/normal' })).toEqual({
+                app: 'earn-staking',
+                route,
+                params: { ...accountParams, stakingProductId },
             });
         });
     });

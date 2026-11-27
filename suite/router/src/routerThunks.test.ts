@@ -2,7 +2,9 @@ import { createMemoryHistory } from 'history';
 
 import { locksInitialState, locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
+import { stakingProductIdSchema } from '@suite-common/earn-staking-common';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import * as fixtures from './__fixtures__/routerThunks';
 import { createSuiteRouterHistory } from './createSuiteRouterHistory';
@@ -48,8 +50,8 @@ const getInitialState = (state?: {
     };
 };
 
-const initStore = (state: GotoThunkState) => {
-    const suiteRouterHistory = createSuiteRouterHistory({ history: createMemoryHistory() });
+const initStore = (state: GotoThunkState, history = createMemoryHistory()) => {
+    const suiteRouterHistory = createSuiteRouterHistory({ history });
     const { store } = createTestCompositionRoot<GotoThunkDeps, GotoThunkState>({
         reducer: {
             router: routerReducer,
@@ -134,6 +136,43 @@ describe('Router thunks', () => {
         store.dispatch(goBackToEarn());
 
         expect(suiteRouterHistory.getLocation().pathname).toEqual('/earn/yield/deposit');
+    });
+
+    it('restores the staking product and account through Back and Forward', () => {
+        const history = createMemoryHistory({
+            initialEntries: ['/earn/staking/tron#/trx/2/normal'],
+        });
+        const { store, suiteRouterHistory } = initStore(getInitialState(), history);
+        const unlisten = suiteRouterHistory.listen(({ location }) => {
+            store.dispatch(onLocationChangeThunk(location));
+        });
+
+        const accountParams = {
+            symbol: asNetworkSymbol('trx'),
+            accountIndex: 2,
+            accountType: 'normal',
+        } as const;
+        const params = {
+            ...accountParams,
+            stakingProductId: stakingProductIdSchema.parse('trx:trx:curated:native'),
+        };
+
+        store.dispatch(routerInitThunk());
+        store.dispatch(gotoThunk({ routeName: 'earn-staking-tron-vote', params: accountParams }));
+        expect(suiteRouterHistory.getLocation()).toMatchObject({
+            pathname: '/earn/staking/tron/vote',
+            hash: '#/trx/2/normal',
+        });
+
+        history.back();
+        expect(store.getState().router.route?.name).toBe('earn-staking-tron');
+        expect(store.getState().router.params).toEqual(params);
+
+        history.forward();
+        expect(store.getState().router.route?.name).toBe('earn-staking-tron-vote');
+        expect(store.getState().router.params).toEqual(params);
+
+        unlisten();
     });
 
     it(`onLocationChange with lock`, () => {

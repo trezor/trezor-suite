@@ -280,19 +280,21 @@ describe('Navigation new-content indicators', () => {
         });
     });
 
-    it.each(['/earn', '/earn/yield/deposit', '/earn/tron/stake'] as const)(
-        'clears Earn when starting directly at %s without click analytics',
-        pathname => {
-            const root = renderNavigation({ pathname });
+    it.each([
+        '/earn',
+        '/earn/yield/deposit',
+        '/earn/staking/tron',
+        '/earn/staking/tron/stake',
+    ] as const)('clears Earn when starting directly at %s without click analytics', pathname => {
+        const root = renderNavigation({ pathname });
 
-            expect(root.services.store.getState().flags.seenNewContentIndicators).toEqual({
-                [NewContentIndicatorId.Earn26_8]: true,
-            });
-            expect(screen.queryByTestId(earnIndicator)).not.toBeInTheDocument();
-            expect(screen.getByTestId(activityIndicator)).toBeInTheDocument();
-            expect(analytics.report).not.toHaveBeenCalled();
-        },
-    );
+        expect(root.services.store.getState().flags.seenNewContentIndicators).toEqual({
+            [NewContentIndicatorId.Earn26_8]: true,
+        });
+        expect(screen.queryByTestId(earnIndicator)).not.toBeInTheDocument();
+        expect(screen.getByTestId(activityIndicator)).toBeInTheDocument();
+        expect(analytics.report).not.toHaveBeenCalled();
+    });
 
     it('clears Activity on direct entry without click analytics', () => {
         const root = renderNavigation({ pathname: '/notifications' });
