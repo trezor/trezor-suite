@@ -8,7 +8,6 @@ import type {
     DeviceButtonRequestCode,
     DeviceState,
     FirmwareCapability,
-    MethodInfo,
     MethodPermission,
     PermissionRequest,
     StaticSessionId,
@@ -274,15 +273,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         if (range.max !== '0' && versionUtils.isNewer(version, range.max)) {
             return UI_EVENTS.FIRMWARE_NOT_COMPATIBLE;
         }
-    }
-
-    // Async so that a method can download what its title names (e.g. a network definition) only
-    // when the title is requested, instead of on every call.
-    public getMethodInfo(): Promise<MethodInfo> {
-        return Promise.resolve({
-            requiredPermissions: this.requiredPermissions,
-            info: this.info,
-        });
     }
 
     public checkDeviceCapability() {

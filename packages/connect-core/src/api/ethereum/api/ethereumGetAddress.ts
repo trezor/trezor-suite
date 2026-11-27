@@ -23,11 +23,7 @@ import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { stripHexPrefix } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import { bundlify } from '../../common/paramsValidator';
-import {
-    decodeEthereumDefinition,
-    ethereumNetworkInfoFromDefinition,
-    getEthereumDefinitions,
-} from '../ethereumDefinitions';
+import { getEthereumDefinitions } from '../ethereumDefinitions';
 
 type Params = {
     proto: PROTO.EthereumGetAddress;
@@ -68,29 +64,6 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
 
     get requiredPermissions(): PermissionRequest[] {
         return this.coinPerms('read_address', this.requiredFirmwareCoins);
-    }
-
-    // Only the `__info` title names networks that are not well-known, so only `__info` downloads
-    // their definitions to decode them.
-    async getMethodInfo() {
-        for (let i = 0; i < this.params.length; i++) {
-            const { params } = this;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const param: (typeof params)[number] = params[i];
-            // network was maybe already set from 'well-known' definition in init method.
-            if (!param.network) {
-                const slip44 = getSlip44ByPath(param.proto.address_n);
-
-                const definitions = await getEthereumDefinitions({ slip44 });
-
-                const decoded = decodeEthereumDefinition(definitions);
-                if (decoded.network) {
-                    param.network = ethereumNetworkInfoFromDefinition(decoded.network);
-                }
-            }
-        }
-
-        return super.getMethodInfo();
     }
 
     get info() {

@@ -27,11 +27,7 @@ import {
     PAYMENT_REQUEST_AMOUNT_BYTES,
     encodePaymentRequestAmount,
 } from '../../../utils/paymentRequest';
-import {
-    decodeEthereumDefinition,
-    ethereumNetworkInfoFromDefinition,
-    getEthereumTransactionDefinitions,
-} from '../ethereumDefinitions';
+import { getEthereumTransactionDefinitions } from '../ethereumDefinitions';
 import * as helper from '../ethereumSignTx';
 
 type Params = {
@@ -164,22 +160,6 @@ export default class EthereumSignTransaction extends AbstractMethod<
 
     get requiredPermissions(): PermissionRequest[] {
         return this.coinPerms('sign', this.requiredFirmwareCoins);
-    }
-
-    // Only the `__info` title names the network, so only `__info` downloads its definition.
-    async getMethodInfo() {
-        const definitions = await getEthereumTransactionDefinitions({
-            path: this.params.path,
-            transaction: this.params.tx,
-        });
-        if (definitions) {
-            const decoded = decodeEthereumDefinition(definitions);
-            if (decoded.network) {
-                this.params.network = ethereumNetworkInfoFromDefinition(decoded.network);
-            }
-        }
-
-        return super.getMethodInfo();
     }
 
     get info() {

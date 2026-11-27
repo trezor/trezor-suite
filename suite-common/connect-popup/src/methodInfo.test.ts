@@ -16,11 +16,6 @@ jest.mock('@trezor/connect', () => ({
     __esModule: true,
     default: { getCoinInfo: jest.fn() },
 }));
-// Keeps the method info of Connect from downloading the definition of an ethereum network.
-jest.mock('@trezor/connect-core/src/api/ethereum/ethereumDefinitions', () => ({
-    ...jest.requireActual('@trezor/connect-core/src/api/ethereum/ethereumDefinitions'),
-    getEthereumDefinitions: () => Promise.resolve({}),
-}));
 
 // The method Connect would run for the call, where it resolves the coins of the call.
 const createConnectMethod = (payload: CallMethodPayload) =>
@@ -152,40 +147,6 @@ const COIN_RESOLVING_CALLS: [string, CallMethodPayload][] = [
     ],
 ];
 
-// Calls of no coin, or of one Connect does not resolve from the params.
-const OTHER_CALLS: [string, CallMethodPayload][] = [
-    ['features', { method: 'getFeatures' }],
-    ['device state', { method: 'getDeviceState' }],
-    ['device tutorial', { method: 'showDeviceTutorial' }],
-    [
-        'ciphered value',
-        { method: 'cipherKeyValue', path: "m/10016'/0", key: 'key', value: 'value' },
-    ],
-    ['unlocked path', { method: 'unlockPath', path: "m/10025'" }],
-    ['coin info', { method: 'getCoinInfo', coin: 'btc' }],
-    ['pushed transaction', { method: 'pushTransaction', coin: 'btc', tx: '00' }],
-    [
-        'composed transaction',
-        {
-            method: 'composeTransaction',
-            coin: 'btc',
-            path: "m/84'/0'/0'",
-            outputs: [{ type: 'payment', address: BTC_ADDRESS, amount: '1000' }],
-            utxo: [],
-            feeLevels: [{ feePerUnit: '1' }],
-        },
-    ],
-    [
-        'verified ethereum message',
-        {
-            method: 'ethereumVerifyMessage',
-            address: ETHEREUM_TRANSACTION.to,
-            message: 'hello',
-            signature: '00',
-        },
-    ],
-];
-
 const getCoinSymbol = (coinInfo?: { shortcut: string }) => coinInfo?.shortcut.toLowerCase();
 
 describe('getMethodInfo', () => {
@@ -246,14 +207,4 @@ describe('getMethodInfo', () => {
             code: 'Method_Unsupported',
         });
     });
-
-    // TODO: remove with the method info of Connect.
-    it.each([...COIN_RESOLVING_CALLS, ...OTHER_CALLS])(
-        'describes the %s as Connect did',
-        async (_, call) => {
-            const method = await createConnectMethod(call);
-
-            await expect(getMethodInfo(call)).resolves.toEqual(await method.getMethodInfo());
-        },
-    );
 });
