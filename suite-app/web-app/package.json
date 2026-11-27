@@ -42,6 +42,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/lazy-loading": "workspace:*",
         "@trezor/logger": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/suite": "workspace:*",

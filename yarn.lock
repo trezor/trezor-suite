@@ -12075,6 +12075,7 @@ __metadata:
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/lazy-loading": "workspace:*"
     "@trezor/logger": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/suite": "workspace:*"

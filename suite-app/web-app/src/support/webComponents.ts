@@ -1,17 +1,26 @@
-import { type ComponentType, type LazyExoticComponent, lazy } from 'react';
+import { type ComponentType } from 'react';
 
 import { type PageName } from '@suite/router';
+import { lazyComponentByName } from '@trezor/lazy-loading';
+import { typedObjectTransformValues } from '@trezor/utils';
 
-export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>> = {
-    'suite-refer-a-friend': lazy(() =>
-        import(
-            /* webpackChunkName: "refer-a-friend" */ '@suite-app/module-refer-a-friend/pages/ReferAFriendPage'
-        ).then(({ ReferAFriendPage }) => ({ default: ReferAFriendPage })),
+type WebPage = { LazyComponent: ComponentType; preload: () => void };
+
+/** Each page in its own chunk, with the `preload` that `preloadInitialPage` starts during boot. */
+export const webPages: Record<PageName, WebPage> = {
+    'suite-refer-a-friend': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "refer-a-friend" */ '@suite-app/module-refer-a-friend/pages/ReferAFriendPage'
+            ),
+        'ReferAFriendPage',
     ),
-    'suite-index': lazy(() =>
-        import(
-            /* webpackChunkName: "dashboard" */ '@suite-app/module-home/pages/DashboardPage'
-        ).then(({ DashboardPage }) => ({ default: DashboardPage })),
+    'suite-index': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "dashboard" */ '@suite-app/module-home/pages/DashboardPage'
+            ),
+        'DashboardPage',
     ),
     /*
      Compatibility fallback after removing the `suite-start` as a fullscreen app.
@@ -19,316 +28,343 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
      Now that screen is rendered declaratively so we don't need a route for it.
     */
     // TODO add a redirect option to routeConfig instead of duplication.
-    'suite-start': lazy(() =>
-        import(
-            /* webpackChunkName: "dashboard" */ '@suite-app/module-home/pages/DashboardPage'
-        ).then(({ DashboardPage }) => ({ default: DashboardPage })),
+    'suite-start': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "dashboard" */ '@suite-app/module-home/pages/DashboardPage'
+            ),
+        'DashboardPage',
     ),
-    'suite-hidden-tokens': lazy(() =>
-        import(
-            /* webpackChunkName: "dashboard" */ '@suite-app/module-home/pages/HiddenTokensPage'
-        ).then(({ HiddenTokensPage }) => ({ default: HiddenTokensPage })),
+    'suite-hidden-tokens': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "dashboard" */ '@suite-app/module-home/pages/HiddenTokensPage'
+            ),
+        'HiddenTokensPage',
     ),
-    'suite-asset': lazy(() =>
-        import(
-            /* webpackChunkName: "dashboard" */ '@suite-app/module-assets/pages/AssetDetailPage'
-        ).then(({ AssetDetailPage }) => ({ default: AssetDetailPage })),
+    'suite-asset': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "dashboard" */ '@suite-app/module-assets/pages/AssetDetailPage'
+            ),
+        'AssetDetailPage',
     ),
-    'suite-earn': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnPage').then(
-            ({ EarnPage }) => ({
-                default: EarnPage,
-            }),
-        ),
+    'suite-earn': lazyComponentByName(
+        () => import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnPage'),
+        'EarnPage',
     ),
-    'earn-positions': lazy(() =>
-        import(
-            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnPositionsPage'
-        ).then(({ EarnPositionsPage }) => ({
-            default: EarnPositionsPage,
-        })),
+    'earn-positions': lazyComponentByName(
+        () =>
+            import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnPositionsPage'),
+        'EarnPositionsPage',
     ),
-    'earn-yield-deposit': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnDepositPage').then(
-            ({ EarnDepositPage }) => ({
-                default: EarnDepositPage,
-            }),
-        ),
+    'earn-yield-deposit': lazyComponentByName(
+        () => import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnDepositPage'),
+        'EarnDepositPage',
     ),
-    'earn-yield-withdraw': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnWithdrawPage').then(
-            ({ EarnWithdrawPage }) => ({
-                default: EarnWithdrawPage,
-            }),
-        ),
+    'earn-yield-withdraw': lazyComponentByName(
+        () =>
+            import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnWithdrawPage'),
+        'EarnWithdrawPage',
     ),
-    'earn-yield-claim': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnClaimPage').then(
-            ({ EarnClaimPage }) => ({
-                default: EarnClaimPage,
-            }),
-        ),
+    'earn-yield-claim': lazyComponentByName(
+        () => import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnClaimPage'),
+        'EarnClaimPage',
     ),
-    'earn-yield-unwrap': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnUnwrapPage').then(
-            ({ EarnUnwrapPage }) => ({
-                default: EarnUnwrapPage,
-            }),
-        ),
+    'earn-yield-unwrap': lazyComponentByName(
+        () => import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnUnwrapPage'),
+        'EarnUnwrapPage',
     ),
-    'earn-yield-wrap': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnWrapPage').then(
-            ({ EarnWrapPage }) => ({
-                default: EarnWrapPage,
-            }),
-        ),
+    'earn-yield-wrap': lazyComponentByName(
+        () => import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnWrapPage'),
+        'EarnWrapPage',
     ),
-    'earn-yield-vault': lazy(() =>
-        import(
-            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnYieldVaultPage'
-        ).then(({ EarnYieldVaultPage }) => ({
-            default: EarnYieldVaultPage,
-        })),
+    'earn-yield-vault': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnYieldVaultPage'
+            ),
+        'EarnYieldVaultPage',
     ),
-    'earn-tron': lazy(() =>
-        import(
-            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronRedirectPage'
-        ).then(({ EarnTronRedirectPage }) => ({
-            default: EarnTronRedirectPage,
-        })),
+    'earn-tron': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronRedirectPage'
+            ),
+        'EarnTronRedirectPage',
     ),
-    'earn-tron-stake': lazy(() =>
-        import(
-            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronStakePage'
-        ).then(({ EarnTronStakePage }) => ({
-            default: EarnTronStakePage,
-        })),
+    'earn-tron-stake': lazyComponentByName(
+        () =>
+            import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronStakePage'),
+        'EarnTronStakePage',
     ),
-    'earn-tron-vote': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronVotePage').then(
-            ({ EarnTronVotePage }) => ({
-                default: EarnTronVotePage,
-            }),
-        ),
+    'earn-tron-vote': lazyComponentByName(
+        () =>
+            import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronVotePage'),
+        'EarnTronVotePage',
     ),
-    'earn-tron-unstake': lazy(() =>
-        import(
-            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronUnstakePage'
-        ).then(({ EarnTronUnstakePage }) => ({
-            default: EarnTronUnstakePage,
-        })),
+    'earn-tron-unstake': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronUnstakePage'
+            ),
+        'EarnTronUnstakePage',
     ),
-    'earn-tron-withdraw': lazy(() =>
-        import(
-            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronWithdrawPage'
-        ).then(({ EarnTronWithdrawPage }) => ({
-            default: EarnTronWithdrawPage,
-        })),
+    'earn-tron-withdraw': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronWithdrawPage'
+            ),
+        'EarnTronWithdrawPage',
     ),
-    'earn-tron-claim': lazy(() =>
-        import(
-            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronClaimPage'
-        ).then(({ EarnTronClaimPage }) => ({
-            default: EarnTronClaimPage,
-        })),
+    'earn-tron-claim': lazyComponentByName(
+        () =>
+            import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronClaimPage'),
+        'EarnTronClaimPage',
     ),
-    'apps-embedding-index': lazy(() =>
-        import(
-            /* webpackChunkName: "apps-embedding" */ '@suite-app/module-apps-embedding/pages/AppsEmbeddingPage'
-        ).then(({ AppsEmbeddingPage }) => ({ default: AppsEmbeddingPage })),
+    'apps-embedding-index': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "apps-embedding" */ '@suite-app/module-apps-embedding/pages/AppsEmbeddingPage'
+            ),
+        'AppsEmbeddingPage',
     ),
-    'suite-connect-popup': lazy(() =>
-        import(
-            /* webpackChunkName: "connect-popup" */ '@suite-app/module-connect-popup/pages/ConnectPopupPage'
-        ).then(({ ConnectPopupPage }) => ({ default: ConnectPopupPage })),
+    'suite-connect-popup': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "connect-popup" */ '@suite-app/module-connect-popup/pages/ConnectPopupPage'
+            ),
+        'ConnectPopupPage',
     ),
-    'notifications-index': lazy(() =>
-        import(
-            /* webpackChunkName: "notifications" */ '@suite-app/module-activity-center/pages/NotificationPage'
-        ).then(({ NotificationPage }) => ({ default: NotificationPage })),
+    'notifications-index': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "notifications" */ '@suite-app/module-activity-center/pages/NotificationPage'
+            ),
+        'NotificationPage',
     ),
 
     // wallet
-    'wallet-index': lazy(() =>
-        import(
-            /* webpackChunkName: "wallet" */ '@suite-app/module-transactions/pages/AccountOverviewPage'
-        ).then(({ AccountOverviewPage }) => ({ default: AccountOverviewPage })),
+    'wallet-index': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "wallet" */ '@suite-app/module-transactions/pages/AccountOverviewPage'
+            ),
+        'AccountOverviewPage',
     ),
-    'wallet-receive': lazy(() =>
-        import(/* webpackChunkName: "wallet" */ '@suite-app/module-receive/pages/ReceivePage').then(
-            ({ ReceivePage }) => ({ default: ReceivePage }),
-        ),
+    'wallet-receive': lazyComponentByName(
+        () =>
+            import(/* webpackChunkName: "wallet" */ '@suite-app/module-receive/pages/ReceivePage'),
+        'ReceivePage',
     ),
-    'wallet-details': lazy(() =>
-        import(
-            /* webpackChunkName: "wallet" */ '@suite-app/module-account-detail/pages/WalletDetailsPage'
-        ).then(({ WalletDetailsPage }) => ({ default: WalletDetailsPage })),
+    'wallet-details': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "wallet" */ '@suite-app/module-account-detail/pages/WalletDetailsPage'
+            ),
+        'WalletDetailsPage',
     ),
     // Debug only: trading form embed preview
-    'wallet-trade': lazy(() =>
-        import(
-            /* webpackChunkName: "wallet" */ '@suite-app/module-trading/pages/WalletTradePage'
-        ).then(({ WalletTradePage }) => ({ default: WalletTradePage })),
+    'wallet-trade': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "wallet" */ '@suite-app/module-trading/pages/WalletTradePage'
+            ),
+        'WalletTradePage',
     ),
-    'wallet-tokens': lazy(() =>
-        import(
-            /* webpackChunkName: "wallet" */ '@suite-app/module-account-detail/pages/TokensPage'
-        ).then(({ TokensPage }) => ({ default: TokensPage })),
+    'wallet-tokens': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "wallet" */ '@suite-app/module-account-detail/pages/TokensPage'
+            ),
+        'TokensPage',
     ),
-    'wallet-nfts': lazy(() =>
-        import(
-            /* webpackChunkName: "wallet" */ '@suite-app/module-account-detail/pages/NftsPage'
-        ).then(({ NftsPage }) => ({
-            default: NftsPage,
-        })),
+    'wallet-nfts': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "wallet" */ '@suite-app/module-account-detail/pages/NftsPage'
+            ),
+        'NftsPage',
     ),
-    'wallet-send': lazy(() =>
-        import(/* webpackChunkName: "wallet" */ '@suite-app/module-send/pages/WalletSendPage').then(
-            ({ WalletSendPage }) => ({ default: WalletSendPage }),
-        ),
+    'wallet-send': lazyComponentByName(
+        () =>
+            import(/* webpackChunkName: "wallet" */ '@suite-app/module-send/pages/WalletSendPage'),
+        'WalletSendPage',
     ),
-    'wallet-staking': lazy(() =>
-        import(
-            /* webpackChunkName: "wallet" */ '@suite-app/module-earn/pages/WalletStakingPage'
-        ).then(({ WalletStakingPage }) => ({ default: WalletStakingPage })),
+    'wallet-staking': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "wallet" */ '@suite-app/module-earn/pages/WalletStakingPage'
+            ),
+        'WalletStakingPage',
     ),
-    'wallet-sign-verify': lazy(() =>
-        import(
-            /* webpackChunkName: "wallet" */ '@suite-app/module-sign-verify/pages/SignVerifyPage'
-        ).then(({ SignVerifyPage }) => ({ default: SignVerifyPage })),
+    'wallet-sign-verify': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "wallet" */ '@suite-app/module-sign-verify/pages/SignVerifyPage'
+            ),
+        'SignVerifyPage',
     ),
-    'wallet-anonymize': lazy(() =>
-        import(
-            /* webpackChunkName: "wallet" */ '@suite-app/module-coinjoin/pages/WalletAnonymizePage'
-        ).then(({ WalletAnonymizePage }) => ({ default: WalletAnonymizePage })),
+    'wallet-anonymize': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "wallet" */ '@suite-app/module-coinjoin/pages/WalletAnonymizePage'
+            ),
+        'WalletAnonymizePage',
     ),
-    'wallet-coinjoin': lazy(() =>
-        import(
-            /* webpackChunkName: "wallet" */ '@suite-app/module-coinjoin/pages/WalletCoinjoinPage'
-        ).then(({ WalletCoinjoinPage }) => ({ default: WalletCoinjoinPage })),
+    'wallet-coinjoin': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "wallet" */ '@suite-app/module-coinjoin/pages/WalletCoinjoinPage'
+            ),
+        'WalletCoinjoinPage',
     ),
 
     // trading
-    'wallet-trading-buy': lazy(() =>
-        import(
-            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingBuyFormPage'
-        ).then(({ TradingBuyFormPage }) => ({ default: TradingBuyFormPage })),
+    'wallet-trading-buy': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingBuyFormPage'
+            ),
+        'TradingBuyFormPage',
     ),
-    'wallet-trading-buy-detail': lazy(() =>
-        import(
-            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingBuyDetailPage'
-        ).then(({ TradingBuyDetailPage }) => ({ default: TradingBuyDetailPage })),
+    'wallet-trading-buy-detail': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingBuyDetailPage'
+            ),
+        'TradingBuyDetailPage',
     ),
-    'wallet-trading-buy-confirm': lazy(() =>
-        import(
-            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingBuyConfirmPage'
-        ).then(({ TradingBuyConfirmPage }) => ({ default: TradingBuyConfirmPage })),
+    'wallet-trading-buy-confirm': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingBuyConfirmPage'
+            ),
+        'TradingBuyConfirmPage',
     ),
-    'wallet-trading-sell': lazy(() =>
-        import(
-            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingSellFormPage'
-        ).then(({ TradingSellFormPage }) => ({ default: TradingSellFormPage })),
+    'wallet-trading-sell': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingSellFormPage'
+            ),
+        'TradingSellFormPage',
     ),
-    'wallet-trading-sell-detail': lazy(() =>
-        import(
-            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingSellDetailPage'
-        ).then(({ TradingSellDetailPage }) => ({ default: TradingSellDetailPage })),
+    'wallet-trading-sell-detail': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingSellDetailPage'
+            ),
+        'TradingSellDetailPage',
     ),
-    'wallet-trading-sell-confirm': lazy(() =>
-        import(
-            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingSellConfirmPage'
-        ).then(({ TradingSellConfirmPage }) => ({ default: TradingSellConfirmPage })),
+    'wallet-trading-sell-confirm': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingSellConfirmPage'
+            ),
+        'TradingSellConfirmPage',
     ),
-    'wallet-trading-exchange': lazy(() =>
-        import(
-            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingExchangeFormPage'
-        ).then(({ TradingExchangeFormPage }) => ({
-            default: TradingExchangeFormPage,
-        })),
+    'wallet-trading-exchange': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingExchangeFormPage'
+            ),
+        'TradingExchangeFormPage',
     ),
-    'wallet-trading-exchange-detail': lazy(() =>
-        import(
-            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingExchangeDetailPage'
-        ).then(({ TradingExchangeDetailPage }) => ({
-            default: TradingExchangeDetailPage,
-        })),
+    'wallet-trading-exchange-detail': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingExchangeDetailPage'
+            ),
+        'TradingExchangeDetailPage',
     ),
-    'wallet-trading-exchange-confirm': lazy(() =>
-        import(
-            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingExchangeConfirmPage'
-        ).then(({ TradingExchangeConfirmPage }) => ({
-            default: TradingExchangeConfirmPage,
-        })),
+    'wallet-trading-exchange-confirm': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingExchangeConfirmPage'
+            ),
+        'TradingExchangeConfirmPage',
     ),
-    'wallet-trading-exchange-approval': lazy(() =>
-        import(
-            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingExchangeApprovalPage'
-        ).then(({ TradingExchangeApprovalPage }) => ({
-            default: TradingExchangeApprovalPage,
-        })),
+    'wallet-trading-exchange-approval': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingExchangeApprovalPage'
+            ),
+        'TradingExchangeApprovalPage',
     ),
-    'wallet-trading-exchange-allowance': lazy(() =>
-        import(
-            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingExchangeAllowancePage'
-        ).then(({ TradingExchangeAllowancePage }) => ({
-            default: TradingExchangeAllowancePage,
-        })),
+    'wallet-trading-exchange-allowance': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingExchangeAllowancePage'
+            ),
+        'TradingExchangeAllowancePage',
     ),
-    'wallet-trading-concierge': lazy(() =>
-        import(
-            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingConciergeDetailPage'
-        ).then(({ TradingConciergeDetailPage }) => ({
-            default: TradingConciergeDetailPage,
-        })),
+    'wallet-trading-concierge': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingConciergeDetailPage'
+            ),
+        'TradingConciergeDetailPage',
     ),
-    'wallet-trading-redirect': lazy(() =>
-        import(
-            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingRedirectPage'
-        ).then(({ TradingRedirectPage }) => ({ default: TradingRedirectPage })),
+    'wallet-trading-redirect': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingRedirectPage'
+            ),
+        'TradingRedirectPage',
     ),
-    'wallet-trading-transactions': lazy(() =>
-        import(
-            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingTransactionsPage'
-        ).then(({ TradingTransactionsPage }) => ({
-            default: TradingTransactionsPage,
-        })),
+    'wallet-trading-transactions': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingTransactionsPage'
+            ),
+        'TradingTransactionsPage',
     ),
 
     // password-manager
-    'password-manager-index': lazy(() =>
-        import(
-            /* webpackChunkName: "password-manager" */ '@suite-app/module-password-manager/pages/PasswordManagerPage'
-        ).then(({ PasswordManagerPage }) => ({
-            default: PasswordManagerPage,
-        })),
+    'password-manager-index': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "password-manager" */ '@suite-app/module-password-manager/pages/PasswordManagerPage'
+            ),
+        'PasswordManagerPage',
     ),
 
     // settings
-    'settings-index': lazy(() =>
-        import(
-            /* webpackChunkName: "settings" */ '@suite-app/module-settings/pages/WebSettingsGeneralPage'
-        ).then(({ WebSettingsGeneralPage }) => ({ default: WebSettingsGeneralPage })),
+    'settings-index': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "settings" */ '@suite-app/module-settings/pages/WebSettingsGeneralPage'
+            ),
+        'WebSettingsGeneralPage',
     ),
-    'settings-coins': lazy(() =>
-        import(
-            /* webpackChunkName: "settings" */ '@suite-app/module-settings/pages/SettingsCoinsPage'
-        ).then(({ SettingsCoinsPage }) => ({ default: SettingsCoinsPage })),
+    'settings-coins': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "settings" */ '@suite-app/module-settings/pages/SettingsCoinsPage'
+            ),
+        'SettingsCoinsPage',
     ),
-    'settings-debug': lazy(() =>
-        import(
-            /* webpackChunkName: "settings" */ '@suite-app/module-settings/pages/SettingsDebugPage'
-        ).then(({ SettingsDebugPage }) => ({ default: SettingsDebugPage })),
+    'settings-debug': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "settings" */ '@suite-app/module-settings/pages/SettingsDebugPage'
+            ),
+        'SettingsDebugPage',
     ),
-    'settings-device': lazy(() =>
-        import(
-            /* webpackChunkName: "settings" */ '@suite-app/module-settings/pages/SettingsDevicePage'
-        ).then(({ SettingsDevicePage }) => ({ default: SettingsDevicePage })),
+    'settings-device': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "settings" */ '@suite-app/module-settings/pages/SettingsDevicePage'
+            ),
+        'SettingsDevicePage',
     ),
-    'settings-connected-apps': lazy(() =>
-        import(
-            /* webpackChunkName: "settings" */ '@suite-app/module-settings/pages/SettingsConnectedAppsPage'
-        ).then(({ SettingsConnectedAppsPage }) => ({
-            default: SettingsConnectedAppsPage,
-        })),
+    'settings-connected-apps': lazyComponentByName(
+        () =>
+            import(
+                /* webpackChunkName: "settings" */ '@suite-app/module-settings/pages/SettingsConnectedAppsPage'
+            ),
+        'SettingsConnectedAppsPage',
     ),
 };
+
+export const webComponents = typedObjectTransformValues(webPages, page => page.LazyComponent);

@@ -12,6 +12,7 @@ import { LoadingScreen } from '@trezor/suite';
 
 import { MainWeb } from './MainWeb';
 import { initSentry } from './sentry';
+import { preloadInitialPage } from './support/preloadInitialPage';
 import { logXssWarning } from './support/xssWarning';
 
 type WebAppDeps = {
@@ -26,6 +27,7 @@ export const createWebApp =
     (deps: WebAppDeps): WebApp =>
     async container => {
         logXssWarning();
+        preloadInitialPage(deps.services.suiteRouterHistory.getLocation());
 
         if (!window.Playwright) {
             initSentry();

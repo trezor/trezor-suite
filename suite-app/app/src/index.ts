@@ -11,5 +11,6 @@ export { type SuiteServices } from './suiteServices';
 export { rootReducer } from './store';
 export { createHydrateReduxStore, type HydrateReduxStoreDep } from './createHydrateReduxStore';
 export { AppRouter } from './AppRouter/AppRouter';
+export { resolveRouteComponentName } from './AppRouter/resolveRouteComponentName';
 export { Main } from './Main';
 export { Preloader } from './Preloader/Preloader';
