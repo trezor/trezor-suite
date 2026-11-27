@@ -17,7 +17,7 @@ import {
     selectLanguage,
     suiteSettingsActions,
 } from '@suite/settings';
-import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
+import { onSuiteInit, onSuiteReady, setSuiteError } from '@suite/suite-lifecycle';
 import * as trezorConnectActions from '@suite-common/connect-init';
 import { type ConnectInitThunkDeps, type ConnectInitThunkState } from '@suite-common/connect-init';
 import { type DeviceRootState } from '@suite-common/device';
@@ -58,8 +58,6 @@ import { type WithServices } from '@trezor/redux-utils';
 import * as bioAuthThunks from '#src/actions/suite/bioAuthThunks';
 import { type SuiteRootState } from '#src/reducers/suite/suiteReducer';
 import { selectSuiteLifecycleStatus } from '#src/selectors/suite/suiteSelectors';
-
-import { setSuiteError } from './suiteActions';
 
 export type InitThunkState = ConnectInitThunkState &
     DeviceRootState &

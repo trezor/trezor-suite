@@ -1,4 +1,4 @@
-import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
+import { onSuiteInit, onSuiteReady, setSuiteError } from '@suite/suite-lifecycle';
 import {
     acquireDeviceThunk,
     deviceActions,
@@ -8,7 +8,6 @@ import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mo
 import { DEVICE, type Device, TRANSPORT } from '@trezor/connect';
 
 import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
-import { setSuiteError } from '../suiteActions';
 
 const SUITE_DEVICE = mockSuiteDevice({ path: '1' });
 const SUITE_DEVICE_UNACQUIRED = mockSuiteDevice({

@@ -36,8 +36,6 @@ export const setTransactionHistoryPrefill = createAction<string>(
     SUITE.SET_TRANSACTION_HISTORY_PREFILL,
 );
 
-export const setSuiteError = createAction<string>(SUITE.ERROR);
-
 export const confirmEvmExplanationModal = createAction<{
     symbol: NetworkSymbol;
     route: string;

@@ -1,7 +1,13 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
-import { onSuiteInit, onSuiteReady, storageCorrupted, storageError } from '@suite/suite-lifecycle';
+import {
+    onSuiteInit,
+    onSuiteReady,
+    setSuiteError,
+    storageCorrupted,
+    storageError,
+} from '@suite/suite-lifecycle';
 import type { CountryCode } from '@suite-common/geolocation';
 import { TRANSPORT, type TransportInfo, isTransportEventOfType } from '@trezor/connect';
 
@@ -13,7 +19,6 @@ import {
     setRecentlyConnectedDevicePath,
     setRecentlyDisconnectedDevice,
     setSendFormPrefill,
-    setSuiteError,
     setTransactionHistoryPrefill,
 } from '#src/actions/suite/suiteActions';
 

@@ -22,7 +22,12 @@ import {
     suiteSettingsActions,
     suiteSettingsInitialState,
 } from '@suite/settings';
-import { onSuiteInit, onSuiteReady, suiteLifecycleInitialState } from '@suite/suite-lifecycle';
+import {
+    onSuiteInit,
+    onSuiteReady,
+    setSuiteError,
+    suiteLifecycleInitialState,
+} from '@suite/suite-lifecycle';
 import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
 import {
     mockConnectInitDeviceEventHooks,
@@ -75,7 +80,6 @@ import { noopCreateLogger } from '@trezor/logger';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
-import * as SUITE from '#src/actions/suite/constants/suiteConstants';
 import {
     type InitThunkDesktopApiDep,
     type InitThunkState,
@@ -273,7 +277,7 @@ const fixtures: Fixture[] = [
             gotoThunk.fulfilled.type,
             initialRedirectionThunk.fulfilled.type,
             connectInitThunk.rejected.type,
-            SUITE.ERROR,
+            setSuiteError.type,
         ],
     },
 ];
