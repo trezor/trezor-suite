@@ -50,7 +50,6 @@ const ADA = asNetworkSymbol('ada');
 
 const USDC = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
 const ONE_INCH = toTokenAddress('0x111111111117dc0aa78b770fa6a738034120c302');
-/** No token definition vouches for it, so it is hidden as unrecognized. */
 const UNRECOGNIZED = toTokenAddress('0x00000000000000000000000000000000000000ff');
 
 const mockRate = (rate: number) => ({ rate, usdRate: rate }) as CurrentRate;
@@ -374,7 +373,6 @@ describe('the account overview with the asset-first Home', () => {
     });
 
     it('offers no menu on a Bitcoin account worth cents, which has nothing to hide', () => {
-        // 0.00001 BTC at $60,000 is 60c: the coin is never hidden and Bitcoin holds no tokens.
         renderOverview([{ ...btcAccount, formattedBalance: '0.00001', balance: '1000' }], {
             areSmallBalancesShown: false,
         });
@@ -384,7 +382,6 @@ describe('the account overview with the asset-first Home', () => {
     });
 
     it('keeps the coin listed while Home hides small balances, which hide only tokens', () => {
-        // 0.0002 ETH at $3,000 is 60c and 2.1 1INCH at 29c is 61c: both are small balances.
         renderOverview([{ ...ethAccount, formattedBalance: '0.0002' }], {
             areSmallBalancesShown: false,
         });

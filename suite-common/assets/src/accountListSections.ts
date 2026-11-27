@@ -10,7 +10,7 @@ import {
     type TokenDefinitionsRootState,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { type TokenAddress, type TokenInfoBranded } from '@suite-common/tokens';
+import { type TokenAddress, type TokenInfoBranded, toTokenAddress } from '@suite-common/tokens';
 import { getNetworkDisplaySymbol, isNetworkWithTokens } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -161,7 +161,7 @@ export const getAccountListSections = ({
             const fiatRateKey = getFiatRateKey(
                 account.symbol,
                 localCurrency,
-                token.contract as TokenAddress,
+                toTokenAddress(token.contract),
             );
             const rate = fiatRates[fiatRateKey]?.rate;
             if (!rate || !token.balance) return 0;
@@ -230,10 +230,6 @@ export const selectAccountListSectionsWithZeroBalanceGroup =
 export const selectAccountListSectionsWithVaultTokens = createAccountListSectionsSelector(true);
 
 export type AccountAssetOverview = {
-    /**
-     * The table's rows, in the list's order: the coin always, even at zero, then the stake and the
-     * tokens the account holds something of.
-     */
     listedSections: readonly AccountListSection[];
     /** The known tokens it holds none of, each as a token section. */
     zeroBalanceSections: readonly AccountListSection[];
@@ -246,11 +242,6 @@ const isCoinSectionHeld = (section: AccountListSection) =>
     (section.type === 'account' && isPositiveBalance(section.account.formattedBalance)) ||
     (section.type === 'staking' && isPositiveBalance(section.stakingCryptoBalance));
 
-/**
- * What the desktop account overview shows of the list: one place that says what is listed and
- * what counts as held, so the table, the balance card and the count cannot disagree. The coin is
- * listed whatever the account holds of it, as on mobile.
- */
 export const selectAccountAssetOverview = createMemoizedSelector(
     [selectAccountListSectionsWithVaultTokens],
     (sections): AccountAssetOverview => {

@@ -30,12 +30,6 @@ type AccountAssetTableProps = {
     accountKey: AccountKey;
 };
 
-/**
- * What one account holds, as the mobile account overview lists it: its coin always, even at zero,
- * its stake on a row of its own, its tokens by value, and the tokens it holds none of in a group
- * that opens. The menu is the Home table's, without the grouping: every row is the account's
- * network. Small balances hide tokens only, never the coin.
- */
 export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [isZeroBalanceOpen, setIsZeroBalanceOpen] = useState(false);
@@ -68,7 +62,6 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
         dispatch(gotoThunk({ routeName: 'wallet-tokens-hidden', preserveParams: true }));
     };
 
-    // The page offers an unused account its own empty state, with the ways to fund it.
     if (account === null || account.empty) {
         return null;
     }

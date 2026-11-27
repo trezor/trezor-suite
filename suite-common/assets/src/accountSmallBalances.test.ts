@@ -97,7 +97,6 @@ describe('the small balances of an account', () => {
     });
 
     it('never count the coin, which the account overview always lists', () => {
-        // 1 ADA at 50c, all of it delegated, inside the balance.
         const state = createState({ ...mockRate(0.5, undefined, 0.5, ADA) });
 
         expect(selectAccountSmallBalances(state, adaAccount.key)).toEqual({
