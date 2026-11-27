@@ -74,6 +74,7 @@ const getDeviceStatusWarningIntent = (deviceStatus: ReturnType<typeof getStatus>
         case 'used-in-other-window':
         case 'unacquired':
         case 'device-thp-locked':
+        case 'device-rebooting':
             return 'info';
         case 'firmware-required':
         case 'firmware-corrupted':
