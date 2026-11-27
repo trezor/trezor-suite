@@ -28,9 +28,6 @@ type FixtureState = Partial<{
         selectedDevice: FixtureDevice;
     };
     router: RouterState;
-    suite: {
-        online: boolean;
-    };
     tor: {
         torStatus: TorStatus;
         torBootstrap: null;
@@ -122,7 +119,6 @@ const DEFAULT_STATE = {
         devices: [DEVICE_A, DEVICE_B],
         selectedDevice: DEVICE_A,
     },
-    suite: { online: true },
     tor: {
         torStatus: TorStatus.Enabled,
         torBootstrap: null,

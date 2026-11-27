@@ -1,5 +1,6 @@
 import { type SelectedAccountRootState, selectSelectedAccount } from '@suite/account';
 import { type LocksRootState, selectIsDeviceOrUiLocked } from '@suite/locks';
+import { type SuiteLifecycleRootState, selectIsSuiteOnline } from '@suite/suite-lifecycle';
 import { type TorRootState, selectIsTorEnabled } from '@suite/tor';
 import { type DeviceRootState, selectDeviceStatus } from '@suite-common/device';
 import {
@@ -44,13 +45,6 @@ import {
 export type CoinjoinRootState = {
     wallet: {
         coinjoin: CoinjoinState;
-    };
-};
-
-// Slim suite slice declared locally to avoid a dependency on the desktop app's whole state.
-export type SuiteOnlineRootState = {
-    suite: {
-        online: boolean;
     };
 };
 
@@ -394,7 +388,7 @@ export const selectCoinjoinSessionBlockerByAccountKey = (
         LocksRootState &
         MessageSystemRootState &
         SelectedAccountRootState &
-        SuiteOnlineRootState &
+        SuiteLifecycleRootState &
         TorRootState,
     accountKey: AccountKey | null,
 ) => {
@@ -411,7 +405,7 @@ export const selectCoinjoinSessionBlockerByAccountKey = (
     if (selectCoinjoinClient(state, accountKey)?.status === 'unavailable') {
         return 'COORDINATOR_UNAVAILABLE';
     }
-    if (!state.suite.online) {
+    if (!selectIsSuiteOnline(state)) {
         return 'OFFLINE';
     }
     if (selectIsNothingToAnonymizeByAccountKey(state, accountKey)) {
@@ -441,7 +435,7 @@ export const selectCurrentCoinjoinWheelStates = (
         LocksRootState &
         MessageSystemRootState &
         SelectedAccountRootState &
-        SuiteOnlineRootState &
+        SuiteLifecycleRootState &
         TorRootState,
 ) => {
     const { notAnonymized } = selectCurrentCoinjoinBalanceBreakdown(state);

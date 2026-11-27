@@ -4,6 +4,7 @@ import { type SelectedAccountRootState } from '@suite/account';
 import { type LocksRootState, selectIsDeviceLocked } from '@suite/locks';
 import { type ModalRootState, openModal, selectModal } from '@suite/modal';
 import { type RouterRootState, gotoThunk, selectRouteName } from '@suite/router';
+import { type SuiteLifecycleRootState } from '@suite/suite-lifecycle';
 import { type TorRootState } from '@suite/tor';
 import { type DeviceRootState, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
@@ -38,7 +39,6 @@ import * as coinjoinClientActions from './coinjoinClientActions';
 import * as COINJOIN from './coinjoinConstants';
 import {
     type CoinjoinRootState,
-    type SuiteOnlineRootState,
     selectCoinjoinAccountByKey,
     selectCoinjoinAccounts,
     selectCoinjoinSessionBlockerByAccountKey,
@@ -853,7 +853,7 @@ type RestorePausedCoinjoinSessionsThunkState = CoinjoinRootState &
     MessageSystemRootState &
     RouterRootState &
     SelectedAccountRootState &
-    SuiteOnlineRootState &
+    SuiteLifecycleRootState &
     TorRootState;
 
 // check for blocking conditions of interrupted sessions and restore those eligible
