@@ -57,9 +57,37 @@ Pick 2–4 area labels whose name or description matches the report. For a mobil
 
 Skip process labels, which track workflow state such as QA results, merges, backports, or releases rather than the affected area.
 
+## Project fields
+
+The issue goes into the org project [Suite](https://github.com/orgs/trezor/projects/58), number `58`, owner `trezor`. Resolve the field values now, before the confirm step. Set only what the report supports or what the user picked.
+
+`gh` needs the `project` scope. If a project command fails for a missing scope, ask the user to run `gh auth refresh -h github.com -s project` and retry.
+
+```bash
+gh project field-list 58 --owner trezor --format json
+```
+
+- **Platform** — pick from `field-list`.
+- **Team** — fetch the options with their descriptions. Set one only when exactly one description clearly matches the report. Set an option that has no description only when the report names that team.
+
+    ```bash
+    gh api graphql -f query='query{organization(login:"trezor"){projectV2(number:58){field(name:"Team"){... on ProjectV2SingleSelectField{options{name description}}}}}}' \
+      --jq '.data.organization.projectV2.field.options[] | "\(.name)\t\(.description)"'
+    ```
+
+- **Priority** — leave unset unless the report explicitly names one or the user picks one. Do not infer it.
+- **Release** — leave unset unless the report explicitly names a release or the user picks one. Do not infer it from version numbers or dates. It is an iteration: fetch the iterations and keep the `id` of the chosen one.
+
+    ```bash
+    gh api graphql -f query='query{organization(login:"trezor"){projectV2(number:58){field(name:"Release"){... on ProjectV2IterationField{configuration{iterations{id title}}}}}}}' \
+      --jq '.data.organization.projectV2.field.configuration.iterations[] | "\(.id)\t\(.title)"'
+    ```
+
+- **Status** — never edit. New issues already get `🎯 To do`.
+
 ## Confirm, then create
 
-Show the user the repo, title, type, labels, project fields, and body. Ask for each [project field](#suite-project) you could not fill: Platform, Team, Priority, Release. Team and Platform are required, so do not create the issue until the user picks both. Leave Priority and Release unset if the user skips them. Create only after they approve.
+Show the user the repo, title, type, labels, project fields, and body. Ask for each [project field](#project-fields) you could not fill: Platform, Team, Priority, Release. Team and Platform are required. Do not create the issue until both are set, either by you from the report or by the user. Leave Priority and Release unset if the user skips them. Create only after they approve.
 
 ```bash
 gh issue create \
@@ -72,32 +100,17 @@ gh issue create \
 
 When the issue has images, write the body and the media into one temp directory and run `gh` from there. Reference each file inline as `![short alt](./screenshot-1.png)` and pass that same path to `--attach`, or `gh` appends unreferenced files at the end. GitHub MCP cannot upload attachments. Do not commit screenshots into the repo to get a URL. Share the issue URL and delete the temp directory afterward.
 
-## Suite project
+## Add to the project
 
-Resolve the field values below before the [confirm step](#confirm-then-create). Only after the issue exists, add it to the org project [Suite](https://github.com/orgs/trezor/projects/58), number `58`, owner `trezor`, and set them with `item-add` and `item-edit`. `gh` needs the `project` scope. If a project command fails for a missing scope, ask the user to run `gh auth refresh -h github.com -s project` and retry.
-
-List fields before choosing values. Pass each option `name` exactly, emoji included. One `item-edit` per field. Set only what the report supports or what the user picked. Re-read `field-list` if an edit is rejected.
+Add the issue and set each resolved field, one `item-edit` per field. Pass each option `name` exactly, emoji included. Re-read `field-list` if an edit is rejected.
 
 ```bash
-gh project field-list 58 --owner trezor --format json
 gh project item-add 58 --owner trezor --url "$ISSUE_URL"
 gh project item-edit 58 --owner trezor --url "$ISSUE_URL" --field <field> --value "<option name>"
+gh project item-edit 58 --owner trezor --url "$ISSUE_URL" --field Release --iteration-id <iteration id>
 ```
 
 If `item-edit` rejects `--field`, ask the user to upgrade gh (needs 2.97+).
-
-Never edit **Status**. New issues already get `🎯 To do`.
-
-- **Platform** — pick from `field-list`.
-- **Team** — fetch the options with their descriptions. Set one only when exactly one description clearly matches the report. An option without a description only when the report names that team.
-
-    ```bash
-    gh api graphql -f query='query{organization(login:"trezor"){projectV2(number:58){field(name:"Team"){... on ProjectV2SingleSelectField{options{name description}}}}}}' \
-      --jq '.data.organization.projectV2.field.options[] | "\(.name)\t\(.description)"'
-    ```
-
-- **Priority** — leave unset unless the report explicitly names one or the user picks one. Do not infer it.
-- **Release** — leave unset unless the report explicitly names a release or the user picks one. Do not infer it from version numbers or dates. It is an iteration. Set it with `--iteration-id` from the field list, not `--value`.
 
 ## Attachments and confidential data
 
