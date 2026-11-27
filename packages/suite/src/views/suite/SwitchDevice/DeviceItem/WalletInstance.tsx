@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { selectFullSelectedAccount } from '@suite/account';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
-import { selectIsLegacyLabelingVisible, selectLabelingValueBeingEdited } from '@suite/metadata';
+import { selectIsLegacyLabelingVisible, selectMetadataEditing } from '@suite/metadata';
 import { SuiteSyncWalletDebug } from '@suite/suite-sync';
 import { useWalletLabel } from '@suite/wallet';
 import { selectDeviceThunk } from '@suite-common/device';
@@ -61,7 +61,7 @@ export const WalletInstance = ({
     const selectedAccount = useSelector(selectFullSelectedAccount);
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const editing = useSelector(selectLabelingValueBeingEdited);
+    const editing = useSelector(selectMetadataEditing);
     const { dispatch, getState } = useServices(injectDispatch, injectGetState);
     const { translationString } = useTranslation();
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
