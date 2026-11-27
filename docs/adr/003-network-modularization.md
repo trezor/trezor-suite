@@ -351,10 +351,6 @@ we have evidence:
   description and the shared engine, and the engine's conditions mix the rules of all networks.
   Correcting a wrong abstraction then means untangling every network at once.
 
-[Duplication is cheaper than the wrong abstraction](https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction).
-We therefore start at the feature level and add lower-level APIs only where the code shows they
-fit.
-
 #### Example: a Sign & Verify engine
 
 The following is a simplified engine for Sign & Verify alone. Each network adds fields to the
