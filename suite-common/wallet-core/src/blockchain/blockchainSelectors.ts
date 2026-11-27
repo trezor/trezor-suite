@@ -1,4 +1,3 @@
-import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type BackendType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 
 import { type BlockchainRootState, selectNetworkBlockchainInfo } from './blockchainReducer';
@@ -19,9 +18,3 @@ export const selectEffectiveBackendType = (
     symbol: NetworkSymbol,
 ): BackendType | undefined =>
     selectActiveBackendType(state, symbol) ?? getNetwork(symbol).backendOptions[0]?.type;
-
-/** The backend URL the worker reported; `undefined` before the first connection. */
-export const selectBlockchainUrl = (
-    state: BlockchainRootState,
-    symbol: NetworkSymbol,
-): string | undefined => state.wallet.blockchain[symbol as LegacyNetworkSymbol].url;

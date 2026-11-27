@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
-    selectBlockchainUrl,
+    selectBlockchainUrlBySymbol,
     selectEnabledNetworks,
     selectNetworkBlockchainInfo,
 } from '@suite-common/wallet-core';
@@ -128,7 +128,7 @@ const CoinItem = ({ symbol }: CoinItemProps) => {
     const { error, connected, reconnectionTime, identityConnections } = useSelector(state =>
         selectNetworkBlockchainInfo(state, symbol),
     );
-    const url = useSelector(state => selectBlockchainUrl(state, symbol));
+    const url = useSelector(state => selectBlockchainUrlBySymbol(state, symbol));
 
     const { dispatch } = useServices(injectDispatch);
 

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { type Network } from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,
-    selectBlockchainUrl,
+    selectBlockchainUrlBySymbol,
     selectNetworkBlockchainInfo,
 } from '@suite-common/wallet-core';
 import {
@@ -41,7 +41,7 @@ export const ConnectionInfoButton = ({ network }: ConnectionInfoButtonProps) => 
         (state: BlockchainRootState) => selectNetworkBlockchainInfo(state, network.symbol),
     );
     const url = useSelector((state: BlockchainRootState) =>
-        selectBlockchainUrl(state, network.symbol),
+        selectBlockchainUrlBySymbol(state, network.symbol),
     );
 
     const openBottomSheet = () => {
