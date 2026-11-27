@@ -1,4 +1,4 @@
-import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -24,7 +24,7 @@ export const selectSelectedFirstThpDevice = (state: DeviceRootState) => {
     // Use the last one as its more probable you want to use that one. While neither is correct,
     // I assume you will more likely be trying to pair the more recent device.
 
-    const unacquiredThp = state.device.devices.findLast(
+    const unacquiredThp = selectDevices(state).findLast(
         device => getStatus(device) === 'device-thp-locked',
     );
 
@@ -37,7 +37,7 @@ export const selectSelectedFirstThpDevice = (state: DeviceRootState) => {
     // In case there is no unacquired THP device, we still may be in a situation,
     // where we want to work with THP device. Currently, the use-case is `AutoconnectInfo` step,
     // where user works on (maybe) not-selected device, but the THP device is already acquired.
-    return state.device.devices.findLast(device => device.thp?.properties !== undefined);
+    return selectDevices(state).findLast(device => device.thp?.properties !== undefined);
 };
 
 export const selectSupportedNetworkByDevice = (

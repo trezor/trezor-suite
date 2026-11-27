@@ -1,13 +1,12 @@
 import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type BackendType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 
-import { type BlockchainRootState } from './blockchainReducer';
+import { type BlockchainRootState, selectNetworkBlockchainInfo } from './blockchainReducer';
 
 export const selectActiveBackendType = (
     state: BlockchainRootState,
     symbol: NetworkSymbol,
-): BackendType | undefined =>
-    state.wallet.blockchain[symbol as LegacyNetworkSymbol].backends.selected;
+): BackendType | undefined => selectNetworkBlockchainInfo(state, symbol).backends.selected;
 
 export const selectIsElectrumBackendSelected = (
     state: BlockchainRootState,

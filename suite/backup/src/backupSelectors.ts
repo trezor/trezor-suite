@@ -1,4 +1,4 @@
-import type { DeviceRootState } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 
 import type { BackupState } from './backupReducer';
 import type { BackupStatus } from './types';
@@ -10,7 +10,7 @@ export interface BackupRootState {
 export const selectBackup = (state: BackupRootState) => state.backup;
 
 export const selectBackupStatus = (state: BackupRootState & DeviceRootState): BackupStatus => {
-    const backup_availability = state.device.selectedDevice?.features?.backup_availability;
+    const backup_availability = selectSelectedDevice(state)?.features?.backup_availability;
     if (state.backup.error !== undefined) return 'error';
     else if (backup_availability === 'Available' || backup_availability === 'NotAvailable')
         return 'finished';
