@@ -39,6 +39,7 @@ import { asGetter, toGetter } from '@trezor/dependency-injection';
 import { resolveConnectPath } from '@trezor/env-utils';
 import { createBitcoinSuiteNativeNetworkModule } from '@trezor/network-bitcoin-suite-native';
 import { createCardanoSuiteNativeNetworkModule } from '@trezor/network-cardano-suite-native';
+import { createCustomEvmNetworkModule } from '@trezor/network-ethereum-suite-common';
 import { createEthereumSuiteNativeNetworkModule } from '@trezor/network-ethereum-suite-native';
 import type { SuiteNativeNetworkModule } from '@trezor/network-module-suite-native-types';
 import { createRippleSuiteNativeNetworkModule } from '@trezor/network-ripple-suite-native';
@@ -131,6 +132,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
     });
     const networks = createNetworksCompositionRoot({
         networkModuleRepository,
+        createCustomEvmNetworkModule: createCustomEvmNetworkModule(networkModuleDeps),
         dispatch: deps.dispatch,
     });
 

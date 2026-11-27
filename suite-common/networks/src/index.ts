@@ -22,6 +22,26 @@ export {
     selectSupportedNetworkSymbols,
 } from '../reduxState/networksSelectors';
 export { createLoadNetworkModules, type LoadNetworkModulesDep } from './createLoadNetworkModules';
+export {
+    createRegisterCustomEvmNetwork,
+    injectRegisterCustomEvmNetwork,
+    type RegisterCustomEvmNetwork,
+    type RegisterCustomEvmNetworkDep,
+    type RegisterCustomEvmNetworkDeps,
+    type RegisterCustomEvmNetworkParams,
+} from './createRegisterCustomEvmNetwork';
+export {
+    createUnregisterCustomEvmNetwork,
+    injectUnregisterCustomEvmNetwork,
+    type UnregisterCustomEvmNetwork,
+    type UnregisterCustomEvmNetworkDep,
+    type UnregisterCustomEvmNetworkDeps,
+} from './createUnregisterCustomEvmNetwork';
+export type {
+    CreateCustomEvmNetworkModule,
+    CreateCustomEvmNetworkModuleDep,
+    CreateCustomEvmNetworkModuleParams,
+} from './CreateCustomEvmNetworkModule';
 export { createGetNetworkConfigs, type GetNetworkConfigsDep } from './createGetNetworkConfigs';
 export {
     createGetNetworkByCoingeckoId,
