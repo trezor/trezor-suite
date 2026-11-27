@@ -1,3 +1,4 @@
+import { type StakingRateKind } from '@suite-common/earn-staking-common';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { AssetSymbol } from '@suite-native/assets';
@@ -6,12 +7,14 @@ import { Translation } from '@suite-native/intl';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { type HowEarnWorksScreenPreset } from './types';
+import { StakingRateDetails } from '../../staking/StakingRateDetails';
 
 interface UseHowStakeWorksPresetProps {
     symbol: NetworkSymbol;
     entryPeriodInDays: number | null;
     unstakingPeriodInDays: number | null;
     apy: number | null;
+    rateKind: StakingRateKind | null;
 }
 
 export const useHowStakeWorksPreset = ({
@@ -19,6 +22,7 @@ export const useHowStakeWorksPreset = ({
     entryPeriodInDays,
     unstakingPeriodInDays,
     apy,
+    rateKind,
 }: UseHowStakeWorksPresetProps): HowEarnWorksScreenPreset => {
     const apyFormatted = useFormattedEarnRate(apy);
 
@@ -136,6 +140,16 @@ export const useHowStakeWorksPreset = ({
                                 id={stakingRewardsDescriptionId}
                                 values={{ apy: apyFormatted }}
                             />
+                        ),
+                        renderDescription: description => (
+                            <StakingRateDetails
+                                networkSymbol={symbol}
+                                rate={apy}
+                                rateKind={rateKind}
+                                isNestedSheet
+                            >
+                                {description}
+                            </StakingRateDetails>
                         ),
                     },
                 ],

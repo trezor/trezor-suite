@@ -1,26 +1,18 @@
 import { type ReactNode, useEffect, useRef } from 'react';
 
-import styled from 'styled-components';
-
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Text, Tooltip } from '@trezor/components';
+import { Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
 import { ApyValue } from '#src/views/wallet/staking/components/ApyValue';
 
 import { EarnYieldApyBreakdown } from './EarnYieldApyBreakdown';
+import { EarnRateTooltip } from '../../common/EarnRateTooltip';
 
 const APY_TOOLTIP_REPORT_DELAY_MS = 1000;
-
-const Abbr = styled.abbr`
-    cursor: help;
-    text-decoration: underline dotted ${({ theme }) => theme.contentSecondary};
-    text-decoration-thickness: 1px;
-    text-underline-offset: 3px;
-`;
 
 type EarnYieldApyTooltipProps = {
     vault: YieldDtoV2;
@@ -80,26 +72,21 @@ export const EarnYieldApyTooltip = ({
     };
 
     return (
-        <Tooltip
-            content={
-                <EarnYieldApyBreakdown
-                    rewards={vault.rewardRate.components}
-                    networkSymbol={networkSymbol}
-                    underlyingToken={vault.token}
-                />
-            }
-            tooltipMaxWidth={600}
-            placement="top"
-        >
-            <Text typographyStyle="body-sm-strong" intent="neutral" priority="primary">
-                <Abbr
-                    data-testid="@earn/dashboard/apy-percentage"
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
-                >
-                    {children ?? <ApyValue apy={apyPercentage} />}
-                </Abbr>
-            </Text>
-        </Tooltip>
+        <Text typographyStyle="body-sm-strong" intent="neutral" priority="primary">
+            <EarnRateTooltip
+                content={
+                    <EarnYieldApyBreakdown
+                        rewards={vault.rewardRate.components}
+                        networkSymbol={networkSymbol}
+                        underlyingToken={vault.token}
+                    />
+                }
+                data-testid="@earn/dashboard/apy-percentage"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+            >
+                {children ?? <ApyValue apy={apyPercentage} />}
+            </EarnRateTooltip>
+        </Text>
     );
 };

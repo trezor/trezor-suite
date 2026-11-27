@@ -210,8 +210,10 @@ export const useHowYieldWorksPreset = ({
                         ) : (
                             <Translation id="earn.notAvailableShort" />
                         ),
-                        descriptionContainer: ({ children }) => (
-                            <ApyDottedUnderline onPress={onApyPress}>{children}</ApyDottedUnderline>
+                        renderDescription: description => (
+                            <ApyDottedUnderline onPress={onApyPress}>
+                                {description}
+                            </ApyDottedUnderline>
                         ),
                     },
                 ],

@@ -11,6 +11,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { CheckSquareOffsetIcon, LightningIcon, LockSimpleOpenIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { StakingRateTooltip } from '#src/components/earn/staking/StakingRateTooltip';
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
 
 import { EarnInANutshellHighlights } from './components/EarnInANutshellHighlights';
@@ -126,10 +127,16 @@ export const TronStakeInANutshellModal = ({
                                 rate === null ? (
                                     <Translation id="TR_EARN_APY_N_A" />
                                 ) : (
-                                    <Translation
-                                        id="TR_EARN_APR_APPROX"
-                                        values={{ aprPercent: formatApyValue(rate) }}
-                                    />
+                                    <StakingRateTooltip
+                                        networkSymbol={networkSymbol}
+                                        rate={rate}
+                                        rateKind="apr"
+                                    >
+                                        <Translation
+                                            id="TR_EARN_APR_APPROX"
+                                            values={{ aprPercent: formatApyValue(rate) }}
+                                        />
+                                    </StakingRateTooltip>
                                 ),
                         }}
                     />

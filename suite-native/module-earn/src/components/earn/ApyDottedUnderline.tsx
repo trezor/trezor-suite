@@ -42,7 +42,11 @@ export const ApyDottedUnderline = ({ children, onPress }: ApyDottedUnderlineProp
     );
 
     if (onPress) {
-        return <PressableOpacity onPress={onPress}>{content}</PressableOpacity>;
+        return (
+            <PressableOpacity onPress={onPress} accessibilityRole="button">
+                {content}
+            </PressableOpacity>
+        );
     }
 
     return content;

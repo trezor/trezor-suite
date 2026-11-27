@@ -9,6 +9,7 @@ const useRewardDescriptions = (apy: number | null) => {
     const staking = useHowStakeWorksPreset({
         symbol: asNetworkSymbol('eth'),
         apy,
+        rateKind: 'apy',
         entryPeriodInDays: 1,
         unstakingPeriodInDays: 14,
     });

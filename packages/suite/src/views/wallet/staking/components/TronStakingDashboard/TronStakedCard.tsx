@@ -27,6 +27,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { StakingRateTooltip } from '#src/components/earn/staking/StakingRateTooltip';
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
@@ -239,10 +240,16 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                         typographyStyle="body-md-strong"
                         data-testid="@staking/tron-staked-card/apr"
                     >
-                        <Translation id="TR_EARN_TRON_APR_LABEL" />{' '}
-                        <span data-testid="@staking/tron-staked-card/apr-value">
-                            {formatApyValue(rate, { withSymbol: true })}
-                        </span>
+                        <StakingRateTooltip
+                            networkSymbol={account.symbol}
+                            rate={rate}
+                            rateKind="apr"
+                        >
+                            <Translation id="TR_EARN_TRON_APR_LABEL" />{' '}
+                            <span data-testid="@staking/tron-staked-card/apr-value">
+                                {formatApyValue(rate, { withSymbol: true })}
+                            </span>
+                        </StakingRateTooltip>
                     </Text>
 
                     {hasRemainingVotes ? (

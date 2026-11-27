@@ -38,7 +38,11 @@ export const EarnInactiveNetworkOpportunity = ({
                     <Row justifyContent="space-between" alignItems="flex-start">
                         <EarnAccountCell symbol={symbol} />
 
-                        <EarnStakingRateTooltip rateKind={rateKind} rate={rate} />
+                        <EarnStakingRateTooltip
+                            networkSymbol={symbol}
+                            rateKind={rateKind}
+                            rate={rate}
+                        />
                     </Row>
 
                     {noteParagraph}
@@ -58,7 +62,7 @@ export const EarnInactiveNetworkOpportunity = ({
             </Table.Cell>
 
             <Table.Cell>
-                <EarnStakingRateTooltip rateKind={rateKind} rate={rate} />
+                <EarnStakingRateTooltip networkSymbol={symbol} rateKind={rateKind} rate={rate} />
             </Table.Cell>
 
             <Table.Cell colSpan={2}>{noteParagraph}</Table.Cell>

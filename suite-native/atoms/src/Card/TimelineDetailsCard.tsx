@@ -13,7 +13,7 @@ export type TimelineDetailsCardItem = {
     id: string;
     title: ReactNode;
     description?: ReactNode;
-    descriptionContainer?: ({ children }: { children: ReactNode }) => ReactNode;
+    renderDescription?: (description: ReactNode) => ReactNode;
     icon?: ReactNode;
 };
 
@@ -95,20 +95,18 @@ const TimelineDetailsCardItemComponent = ({
     const itemDescription = useMemo(() => {
         if (!item.description) return null;
 
-        const Container = item.descriptionContainer ?? React.Fragment;
-
-        return (
-            <Container>
-                <Text
-                    variant="body-sm"
-                    color="contentSecondary"
-                    numberOfLines={1}
-                    style={applyStyle(itemDescriptionStyle)}
-                >
-                    {item.description}
-                </Text>
-            </Container>
+        const description = (
+            <Text
+                variant="body-sm"
+                color="contentSecondary"
+                numberOfLines={1}
+                style={applyStyle(itemDescriptionStyle)}
+            >
+                {item.description}
+            </Text>
         );
+
+        return item.renderDescription ? item.renderDescription(description) : description;
     }, [item, applyStyle]);
 
     return (
