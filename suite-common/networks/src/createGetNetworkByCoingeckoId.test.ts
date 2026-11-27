@@ -23,6 +23,8 @@ it('indexes registered networks by CoinGecko ID and skips networks without one',
             ],
             get: null,
             isSupportedNetwork: null,
+            register: null,
+            unregister: null,
         },
         getNetworkConfig: symbol => {
             if (symbol === ethereum.symbol) return ethereum;
