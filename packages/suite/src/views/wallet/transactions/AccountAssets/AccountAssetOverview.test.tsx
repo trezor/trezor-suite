@@ -237,20 +237,6 @@ describe('the account overview with the asset-first Home', () => {
         expect(screen.getByTestId('@wallet/account-assets/count')).toHaveTextContent('3 assets');
     });
 
-    it('splits the coin into what is available and what is staked, with the rate the stake earns', () => {
-        renderOverview([ethAccount], { ethStakingApy: 3.2 });
-
-        const earn = screen.getByTestId('@wallet/account-assets/earn');
-
-        expect(earn).toHaveTextContent(
-            new RegExp(
-                `${messages.TR_STAKE_AVAILABLE.defaultMessage}.*\\$3,600.*` +
-                    `${messages.TR_STAKE_STAKED.defaultMessage}.*3\\.2% APY.*\\$1,500`,
-            ),
-        );
-        expect(screen.getByTestId('@wallet/account-assets/earn/view-all')).toBeInTheDocument();
-    });
-
     it('shows the rate the stake earns on the staking row, as the mobile row does', () => {
         renderOverview([ethAccount], { ethStakingApy: 3.2 });
 
@@ -351,17 +337,6 @@ describe('the account overview with the asset-first Home', () => {
             expect(analytics.report).toHaveBeenCalledTimes(1);
             expect(analytics.report).toHaveBeenCalledWith(
                 navigateEvent({ type: 'asset', networkSymbol: 'eth' }),
-            );
-        });
-
-        it('reports View all of the Earn card', () => {
-            const { analytics } = renderOverview([ethAccount]);
-
-            fireEvent.click(screen.getByTestId('@wallet/account-assets/earn/view-all'));
-
-            expect(analytics.report).toHaveBeenCalledTimes(1);
-            expect(analytics.report).toHaveBeenCalledWith(
-                navigateEvent({ type: 'earn', networkSymbol: 'eth' }),
             );
         });
 

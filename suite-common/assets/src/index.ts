@@ -1,7 +1,6 @@
 export * from './accountFiatBalance';
 export * from './accountListSections';
 export * from './accountSmallBalances';
-export * from './accountStakingSplit';
 export * from './assetAccountsSelectors';
 export * from './assetSelectors';
 export * from './assetDetailSelectors';
