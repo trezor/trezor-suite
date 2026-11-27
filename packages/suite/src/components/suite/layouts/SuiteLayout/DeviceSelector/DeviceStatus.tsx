@@ -1,10 +1,8 @@
-import { selectDeviceLabelOrNameById } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { Row, ShortcutBadge, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { type DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
 import { RotateDeviceImage } from '@trezor/product-components';
 
-import { useSelector } from '#src/hooks/suite/useSelector';
 import { DeviceDetail } from '#src/views/suite/SwitchDevice/DeviceItem/DeviceDetail';
 import { DeviceStatusText } from '#src/views/suite/SwitchDevice/DeviceItem/DeviceStatusText';
 
@@ -23,9 +21,8 @@ export const DeviceStatus = ({
     forceConnectionInfo = false,
     isDeviceDetailVisible = true,
 }: DeviceStatusProps) => {
-    const deviceLabelById = useSelector(state => selectDeviceLabelOrNameById(state, device?.id));
-    // Devices without an id (unacquired, bootloader) would all match the first id-less device.
-    const deviceLabel = device?.id ? deviceLabelById : (device?.name ?? '');
+    // Not looked up by id: unacquired and bootloader devices don't have one.
+    const deviceLabel = device?.features?.label || device?.name || '';
 
     const image = (
         <Row justifyContent="center" width={24} opacity={deviceNeedsRefresh ? 0.4 : 1}>
