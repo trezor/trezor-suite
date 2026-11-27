@@ -166,6 +166,30 @@ const { data: feeLevels } = useQuery(getFeeLevelsQueryOptions(networks, symbol))
 const feeLevels = await queryClient.ensureQueryData(getFeeLevelsQueryOptions(networks, symbol)); // a thunk
 ```
 
+**Signing as a mutation.** A thunk keeps the app's side effects (device state, analytics, toasts)
+and calls the network's headless function; a component runs that thunk with `useMutation` to get
+pending and error state. A device action is never retried.
+
+```tsx
+export const signMessageThunk = createThunk<SignedMessage, SignMessageArgs, SignThunkConfig>(
+    'signVerify/sign',
+    async ({ symbol, ...params }, { extra, rejectWithValue }) => {
+        const signVerify = extra.services.networks.getNetworkModule(symbol).signVerify;
+        const result = await signVerify?.signMessage(symbol, params);
+
+        return result?.success ? result.payload : rejectWithValue(result?.error);
+    },
+);
+
+const signMutation = useMutation({
+    mutationFn: (args: SignMessageArgs) => dispatch(signMessageThunk(args)).unwrap(),
+    retry: false, // a retry would prompt on the device again
+    onSuccess: ({ signature }) => setValue('signature', signature),
+});
+
+signMutation.mutate({ symbol, device, path, message, hex }); // isPending and error drive the form
+```
+
 This ADR does not decide which functions exist beyond those shared code uses, how Suite caches
 remote data, or whether external developers may write Suite UI.
 
