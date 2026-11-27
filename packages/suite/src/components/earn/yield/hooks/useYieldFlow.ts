@@ -294,7 +294,7 @@ export const useYieldFlow = ({
         session.step,
     ]);
 
-    useYieldPendingTransactionTracking({
+    const trackedTxid = useYieldPendingTransactionTracking({
         account,
         flowType,
         flowKey,
@@ -403,7 +403,7 @@ export const useYieldFlow = ({
 
             dispatch(yieldActions.startSubmittingWrappedNative({ flowType, flowKey }));
             try {
-                let broadcastTx: { txid: string; fee: string } | undefined;
+                let broadcastTx: { txid: string; fee: string; nonce: number } | undefined;
 
                 if (step === 'wrap') {
                     broadcastTx = await dispatch(
@@ -432,9 +432,8 @@ export const useYieldFlow = ({
                             flowKey,
                             tx: {
                                 type: step,
-                                txid: broadcastTx.txid,
+                                ...broadcastTx,
                                 amount,
-                                fee: broadcastTx.fee,
                                 submittedAt: Date.now(),
                             },
                         }),
@@ -695,7 +694,12 @@ export const useYieldFlow = ({
         wrappedAmount: session.result.wrappedAmount,
         errorMessage: session.error ?? undefined,
         approveModalState: session.approval.modalState,
-        pendingTransaction: session.action.pendingTransaction,
+        pendingTransaction:
+            session.action.pendingTransaction &&
+            trackedTxid &&
+            trackedTxid !== session.action.pendingTransaction.txid
+                ? { ...session.action.pendingTransaction, txid: trackedTxid }
+                : session.action.pendingTransaction,
         allowanceAmount,
         allowanceStatus: session.approval.allowanceStatus,
         approvalAction,

@@ -53,6 +53,7 @@ export type SignedWrappedNativeTokenTransaction = {
     serializedTx: string;
     precomposedTransaction: PrecomposedTransactionFinal;
     formState: FormState;
+    nonce: number;
 };
 
 type SignWrappedNativeTokenPayload = {
@@ -156,6 +157,7 @@ export const signWrappedNativeTokenThunk = createThunk<
 
         return {
             serializedTx: signingResponse.payload.serializedTx,
+            nonce: parseInt(transactionForSigning.nonce, 16),
             precomposedTransaction,
             formState,
         };
@@ -222,6 +224,7 @@ export const pushWrappedNativeTokenThunk = createThunk<
                 precomposedTransaction: signedTransaction.precomposedTransaction,
                 precomposedForm: signedTransaction.formState,
                 txid: pushResponse.payload.txid,
+                ethereumNonce: signedTransaction.nonce.toString(),
             }),
         );
 

@@ -108,7 +108,11 @@ export const useWrappedNativeTokenReview = ({
             }
 
             if (onBroadcast) {
-                onBroadcast({ txid, fee: signedTransaction.precomposedTransaction.fee });
+                onBroadcast({
+                    txid,
+                    fee: signedTransaction.precomposedTransaction.fee,
+                    nonce: signedTransaction.nonce,
+                });
 
                 return;
             }
@@ -119,6 +123,7 @@ export const useWrappedNativeTokenReview = ({
                 pendingTransaction: {
                     amount,
                     fee: signedTransaction.precomposedTransaction.fee,
+                    nonce: signedTransaction.nonce,
                     submittedAt: Date.now(),
                     txid,
                 },

@@ -181,7 +181,7 @@ type SendYieldTransactionDispatch = ThunkDispatch<
 
 // Genuine failures are thrown — a returned `cancelled` is always the user backing out on purpose.
 export type SendYieldTransactionResult =
-    | { status: 'sent'; txid: string; fee: string }
+    | { status: 'sent'; txid: string; fee: string; nonce: number }
     | { status: 'cancelled'; stage: 'signing' | 'review' };
 
 export type SendYieldTransactionParams = {
@@ -230,6 +230,7 @@ export const sendYieldTransaction = async ({
     });
 
     const { transactionForSigning, formState, precomposedTransaction } = transactionReview;
+    const nonce = parseInt(transactionForSigning.nonce, 16);
 
     dispatch(
         yieldActions.storePrecomposedTransaction({
@@ -238,7 +239,7 @@ export const sendYieldTransaction = async ({
             // it like the Send flow.
             precomposedForm: {
                 ...formState,
-                ethereumNonce: parseInt(transactionForSigning.nonce, 16).toString(),
+                ethereumNonce: nonce.toString(),
             },
             accountKey: account.key,
             flowKey,
@@ -311,7 +312,7 @@ export const sendYieldTransaction = async ({
                 precomposedForm: formState,
                 txid: pushResponse.payload.txid,
                 // transactionForSigning.nonce is hex; the fake pending tx expects a decimal string.
-                ethereumNonce: parseInt(transactionForSigning.nonce, 16).toString(),
+                ethereumNonce: nonce.toString(),
             }),
         );
 
@@ -319,6 +320,7 @@ export const sendYieldTransaction = async ({
             status: 'sent',
             txid: pushResponse.payload.txid,
             fee: precomposedTransaction.fee,
+            nonce,
         };
     } catch (error) {
         console.error(error);

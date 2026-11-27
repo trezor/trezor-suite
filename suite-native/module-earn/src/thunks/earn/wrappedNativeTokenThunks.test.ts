@@ -1,7 +1,11 @@
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
+import {
+    accountsActions,
+    synchronizeSentTransactionThunk,
+    transactionsActions,
+} from '@suite-common/wallet-core';
 import {
     type Account,
     type FormState,
@@ -47,6 +51,7 @@ const account = mockWalletAccount({ symbol: ethSymbol }) as Account;
 
 const signedTransaction: SignedWrappedNativeTokenTransaction = {
     serializedTx: '0xsignedtx',
+    nonce: 7,
     precomposedTransaction: {
         type: 'final',
         fee: '0',
@@ -122,6 +127,9 @@ describe('pushWrappedNativeTokenThunk', () => {
             .unwrap();
 
         expect(getTrackedTokenUpdates(store)).toHaveLength(1);
+        expect(synchronizeSentTransactionThunk).toHaveBeenCalledWith(
+            expect.objectContaining({ txid: '0xpushedtxid', ethereumNonce: '7' }),
+        );
     });
 
     it('does not track anything for an unwrap', async () => {

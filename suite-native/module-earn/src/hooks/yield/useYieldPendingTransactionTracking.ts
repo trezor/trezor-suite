@@ -164,7 +164,7 @@ export const useYieldPendingTransactionTracking = ({
     const claimCompletionTxidRef = useRef<string | null>(null);
     const accountSymbol = account?.symbol;
 
-    const pendingTxStatus = useYieldPendingTxStatus({
+    const { status: pendingTxStatus, txid: trackedTxid } = useYieldPendingTxStatus({
         account,
         flowType,
         flowKey,
@@ -342,4 +342,6 @@ export const useYieldPendingTransactionTracking = ({
         vault,
         waitForMerklToResolveClaim,
     ]);
+
+    return trackedTxid;
 };

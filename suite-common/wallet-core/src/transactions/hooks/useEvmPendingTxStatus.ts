@@ -4,9 +4,11 @@ import { useSelector } from 'react-redux';
 import { type Account, type EvmTransactionPurpose } from '@suite-common/wallet-types';
 import {
     type EvmPendingTxStatus,
+    type EvmTransactionCall,
     findTrackedEvmTransaction,
     getEvmPendingTxStatus,
     getPollIntervalMs,
+    getTrackedWrappedNativeTxid,
 } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -24,16 +26,26 @@ interface TrackedNonce {
 }
 
 export interface EvmPendingTxTracking {
+    txid: string | null;
     status: EvmPendingTxStatus | null;
     nonce: number | undefined;
 }
 
-export const useEvmPendingTxStatus = (
-    account: Account | null,
-    txid: string | null,
-    expectedPurpose: EvmTransactionPurpose,
-    persistedNonce?: number,
-): EvmPendingTxTracking => {
+type UseEvmPendingTxStatusParams = {
+    account: Account | null;
+    txid: string | null;
+    expectedPurpose: EvmTransactionPurpose;
+    persistedNonce?: number;
+    expectedCall?: EvmTransactionCall;
+};
+
+export const useEvmPendingTxStatus = ({
+    account,
+    txid,
+    expectedPurpose,
+    persistedNonce,
+    expectedCall,
+}: UseEvmPendingTxStatusParams): EvmPendingTxTracking => {
     const { dispatch } = useServices(injectDispatch);
 
     const transactions = useSelector((state: TransactionsRootState) =>
@@ -46,31 +58,26 @@ export const useEvmPendingTxStatus = (
     const [trackedNonce, setTrackedNonce] = useState<TrackedNonce | null>(null);
 
     const knownNonce =
-        (trackedNonce?.txid === txid ? trackedNonce.nonce : undefined) ?? persistedNonce;
+        persistedNonce ?? (trackedNonce?.txid === txid ? trackedNonce.nonce : undefined);
 
     const trackedTransaction = txid
-        ? findTrackedEvmTransaction({ transactions, txid, nonce: knownNonce })
+        ? findTrackedEvmTransaction({ transactions, txid, nonce: knownNonce, expectedCall })
         : undefined;
 
-    const originalNonce =
-        trackedTransaction && !trackedTransaction.isReplacement
-            ? trackedTransaction.transaction.ethereumSpecific?.nonce
-            : undefined;
+    const nonce = trackedTransaction?.transaction.ethereumSpecific?.nonce ?? knownNonce;
 
     useEffect(() => {
-        if (!txid || originalNonce === undefined) return;
+        if (!txid || nonce === undefined || persistedNonce !== undefined) return;
 
         setTrackedNonce(current =>
-            current?.txid === txid && current.nonce === originalNonce
-                ? current
-                : { txid, nonce: originalNonce },
+            current?.txid === txid && current.nonce === nonce ? current : { txid, nonce },
         );
-    }, [originalNonce, txid]);
+    }, [nonce, persistedNonce, txid]);
 
     const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);
 
     const status = account
-        ? getEvmPendingTxStatus({ txid, trackedTransaction, expectedPurpose })
+        ? getEvmPendingTxStatus({ txid, trackedTransaction, expectedPurpose, expectedCall })
         : null;
 
     useEffect(() => {
@@ -85,5 +92,9 @@ export const useEvmPendingTxStatus = (
         return () => clearInterval(interval);
     }, [status, account?.key, dispatch, pollIntervalMs]);
 
-    return { status, nonce: originalNonce ?? knownNonce };
+    return {
+        status,
+        nonce,
+        txid: getTrackedWrappedNativeTxid({ txid, trackedTransaction, expectedCall }),
+    };
 };
