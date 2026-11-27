@@ -5,6 +5,7 @@ import {
     type NotificationsRootState,
     type ToastPayload,
     notificationsActions,
+    selectNotifications,
 } from '@suite-common/toast-notifications';
 
 import { saveCoinProtocol } from '#src/actions/suite/protocolActions';
@@ -14,8 +15,8 @@ const closeNotifications = (
     api: MiddlewareAPI<Dispatch<UnknownAction>, NotificationsRootState>,
     type: ToastPayload['type'],
 ) => {
-    api.getState()
-        .notifications.filter(notification => notification.type === type && !notification.closed)
+    selectNotifications(api.getState())
+        .filter(notification => notification.type === type && !notification.closed)
         .forEach(protocolNotification =>
             api.dispatch(notificationsActions.close(protocolNotification.id)),
         );

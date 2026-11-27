@@ -35,7 +35,11 @@ export {
     type GlobalSendReceiveFiltersState,
     globalSendReceiveFiltersReducer,
 } from './src/slices/wallet/globalSendReceiveFilters';
-export { type BioAuthState, prepareBioAuthReducer } from './src/reducers/bioAuth/bioAuthReducer';
+export {
+    type BioAuthState,
+    prepareBioAuthReducer,
+    selectIsBioAuthEnabled,
+} from './src/reducers/bioAuth/bioAuthReducer';
 export { type DesktopState, desktopReducer } from './src/reducers/desktop/desktopReducer';
 export { ConnectedThemeProvider } from './src/support/suite/ConnectedThemeProvider';
 export {

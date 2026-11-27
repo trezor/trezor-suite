@@ -11,7 +11,8 @@ import {
     checkSeedThunk,
     isRecoveryInputTypeDisabled,
     recoveryActions,
-    selectRecovery,
+    selectRecoveryError,
+    selectRecoveryStatus,
 } from '@suite/recovery';
 import { selectDeviceButtonRequests, usePin } from '@suite-common/device';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
@@ -37,7 +38,8 @@ import { SelectWordCountStep } from './steps/SelectWordCountStep';
 import { WordInputStep } from './steps/WordInputStep';
 
 export const Recovery = ({ onCancel }: ForegroundAppProps) => {
-    const recovery = useSelector(selectRecovery);
+    const recoveryStatus = useSelector(selectRecoveryStatus);
+    const recoveryError = useSelector(selectRecoveryError);
     const modal = useSelector(selectModal);
     const { dispatch } = useServices(injectDispatch);
     const { device, isLocked } = useDevice();
@@ -60,12 +62,12 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
               'in-progress',
           ]
         : ['initial', 'in-progress'];
-    const hasFinished = recovery.status === 'finished';
-    const hasError = recovery.error !== undefined;
-    const hasBackClick = ['select-word-count', 'select-recovery-type'].includes(recovery.status);
+    const hasFinished = recoveryStatus === 'finished';
+    const hasError = recoveryError !== undefined;
+    const hasBackClick = ['select-word-count', 'select-recovery-type'].includes(recoveryStatus);
 
     const handleClose = () => {
-        if (['in-progress', 'waiting-for-confirmation'].includes(recovery.status)) {
+        if (['in-progress', 'waiting-for-confirmation'].includes(recoveryStatus)) {
             TrezorConnect.cancel({ reason: intl.formatMessage(messages.TR_CANCELLED) });
         } else {
             onCancel();
@@ -73,7 +75,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     };
 
     const handleBackClick = () => {
-        const currentIndex = statesInProgressBar.indexOf(recovery.status);
+        const currentIndex = statesInProgressBar.indexOf(recoveryStatus);
         // Fall back to 'initial' when the current status is not part of this device model's progress
         // bar (e.g. a T1B1-only status lingering after hot-swapping to a touch device), which would
         // otherwise produce an out-of-bounds index and dispatch setStatus(undefined).
@@ -96,7 +98,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     }
 
     const getStep = () => {
-        switch (recovery.status) {
+        switch (recoveryStatus) {
             case 'initial':
                 return (
                     <InitialStep isUnderstood={isUnderstood} setIsUnderstood={setIsUnderstood} />
@@ -173,10 +175,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                             priority="secondary"
                             margin={{ top: 8 }}
                         >
-                            <Translation
-                                id="TR_RECOVERY_ERROR"
-                                values={{ error: recovery.error }}
-                            />
+                            <Translation id="TR_RECOVERY_ERROR" values={{ error: recoveryError }} />
                         </Paragraph>
                     </>
                 );
@@ -184,7 +183,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     };
 
     const getBottomContentPrimaryButton = () => {
-        switch (recovery.status) {
+        switch (recoveryStatus) {
             case 'initial':
                 return (
                     <Modal.Button
@@ -259,7 +258,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     };
 
     const getIcon = () => {
-        if (recovery.status === 'finished') {
+        if (recoveryStatus === 'finished') {
             return hasError ? WarningIcon : CheckIcon;
         }
 
@@ -267,7 +266,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     };
 
     const getIntent = () => {
-        if (recovery.status === 'in-progress') {
+        if (recoveryStatus === 'in-progress') {
             return 'info';
         }
 
@@ -275,7 +274,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     };
 
     const getWidth = () => {
-        switch (recovery.status) {
+        switch (recoveryStatus) {
             case 'initial':
                 return 680;
             case 'waiting-for-confirmation':
@@ -289,7 +288,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
 
     return (
         <Modal.Backdrop>
-            {['in-progress', 'waiting-for-confirmation'].includes(recovery.status) && (
+            {['in-progress', 'waiting-for-confirmation'].includes(recoveryStatus) && (
                 <ConfirmOnDevicePill
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                     deviceModelInternal={device.features.internal_model}
@@ -300,11 +299,11 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             <Modal.ModalBase
                 heading={hasError ? undefined : <Translation id="TR_CHECK_RECOVERY_SEED" />}
                 description={
-                    statesInProgressBar.includes(recovery.status) ? (
+                    statesInProgressBar.includes(recoveryStatus) ? (
                         <Translation
                             id="TR_STEP_OF_TOTAL"
                             values={{
-                                index: statesInProgressBar.indexOf(recovery.status) + 1,
+                                index: statesInProgressBar.indexOf(recoveryStatus) + 1,
                                 total: statesInProgressBar.length,
                             }}
                         />

@@ -1,12 +1,13 @@
 import { type MiddlewareAPI } from 'redux';
 
 import { init } from '../actions/trezorConnectActions';
+import { selectConnect } from '../reducers/trezorConnectReducer';
 import { type Action, type AppState, type Dispatch } from '../types';
 import { SET_METHOD, SET_SCHEMA } from '../types/actions';
 
 export const trezorConnectMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (action: Action) => {
-        const prevConnectOptions = api.getState().connect.options;
+        const prevConnectOptions = selectConnect(api.getState()).options;
 
         next(action);
 

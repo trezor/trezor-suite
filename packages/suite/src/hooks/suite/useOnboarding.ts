@@ -10,7 +10,10 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import * as onboardingActions from '#src/actions/onboarding/onboardingActions';
 import { type GoToSuiteOptions } from '#src/actions/onboarding/onboardingActions';
-import { selectOnboarding } from '#src/selectors/onboarding/onboardingSelectors';
+import {
+    selectOnboarding,
+    selectOnboardingActiveStepId,
+} from '#src/selectors/onboarding/onboardingSelectors';
 import { type AnyPath, type AnyStepId, type BackupMedium } from '#src/types/onboarding';
 
 import { parseStepId } from '../../utils/onboarding/steps';
@@ -48,7 +51,7 @@ export const useOnboarding = () => {
         [dispatch],
     );
 
-    const { activeStepId } = onboarding;
+    const activeStepId = useSelector(selectOnboardingActiveStepId);
     const { activeStep, activeStepCategory } = useMemo(
         () => parseStepId(activeStepId),
         [activeStepId],

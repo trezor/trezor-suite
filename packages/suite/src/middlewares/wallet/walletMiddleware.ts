@@ -2,7 +2,12 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
 import { selectSelectedAccount, selectSelectedAccountKey } from '@suite/account';
-import { routerLocationChange, selectRouteName, selectRouter } from '@suite/router';
+import {
+    routerLocationChange,
+    selectRouteName,
+    selectRouter,
+    selectRouterHash,
+} from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { tradingActions } from '@suite-common/trading';
@@ -110,7 +115,8 @@ const walletMiddleware =
             // leaving wallet app or switching between accounts
             resetReducers =
                 (nextRouter.app !== 'wallet' && !nextRouter.route?.isForegroundApp) ||
-                (nextRouter.app === 'wallet' && nextRouter.hash !== prevRouter.hash);
+                (nextRouter.app === 'wallet' &&
+                    selectRouterHash(api.getState()) !== selectRouterHash(prevState));
         }
         if (resetReducers) {
             api.dispatch(accountsActions.disposeAccount());

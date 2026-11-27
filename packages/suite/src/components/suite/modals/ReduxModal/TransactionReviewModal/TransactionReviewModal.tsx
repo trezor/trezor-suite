@@ -4,6 +4,7 @@ import {
     cancelSignSendFormTransactionThunk,
     selectPrecomposedSendForm,
     selectSend,
+    selectSendPrecomposedTx,
     selectStake,
     selectStakeAccount,
     selectStakePrecomposedForm,
@@ -42,6 +43,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     const yieldTxReview = useSelector(selectYieldTxReview);
     const tronStakeTxReview = useSelector(selectTronStakeTxReview);
     const sendPrecomposedForm = useSelector(selectPrecomposedSendForm);
+    const sendPrecomposedTx = useSelector(selectSendPrecomposedTx);
     const stakePrecomposedForm = useSelector(selectStakePrecomposedForm);
     const stakeAccount = useSelector(selectStakeAccount);
     const selectedAccount = useSelector(selectFullSelectedAccount);
@@ -66,7 +68,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
                 cancelSignTx: () => dispatch(cancelSignYieldTxThunk()),
             };
         }
-        if (send?.precomposedTx) {
+        if (sendPrecomposedTx) {
             return {
                 txInfoState: send,
                 precomposedForm: sendPrecomposedForm,
@@ -91,8 +93,8 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
         try {
             const result = await dispatch(
                 signAndPushSendFormTransactionThunk({
-                    formState: send.precomposedForm!,
-                    precomposedTransaction: send.precomposedTx!,
+                    formState: sendPrecomposedForm!,
+                    precomposedTransaction: sendPrecomposedTx!,
                     selectedAccount: selectedAccount.account,
                 }),
             ).unwrap();
@@ -114,17 +116,17 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
         await dispatch(
             signTransactionThunk({
                 accountKey: stakeAccount.key,
-                formValues: stake.precomposedForm!,
+                formValues: stakePrecomposedForm!,
                 transactionInfo: stake.precomposedTx as PrecomposedTransactionFinal,
             }),
         );
     };
 
     const handleTryAgainSignTx = async () => {
-        if (send.precomposedForm && send.precomposedTx) {
+        if (sendPrecomposedForm && sendPrecomposedTx) {
             dispatch(sendFormActions.clearSignedTransactionData());
             await handleSignAndPushSendTx();
-        } else if (stake.precomposedForm && stake.precomposedTx) {
+        } else if (stakePrecomposedForm && stake.precomposedTx) {
             await handleStakeTx();
         }
     };
