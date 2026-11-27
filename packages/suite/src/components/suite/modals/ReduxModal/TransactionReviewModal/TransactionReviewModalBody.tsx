@@ -7,6 +7,10 @@ import { closeModal, preserveModalOnTxTimeout } from '@suite/modal';
 import { selectRouterUrl } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useYieldVaultName } from '@suite-common/earn-stablecoin';
+import {
+    TokenMetadataProvider,
+    transactionReviewOutputsToTokenMetadataSources,
+} from '@suite-common/token';
 import { selectTradingExchangeSelectedQuoteSwapSlippage } from '@suite-common/trading';
 import { selectYieldTxReview } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
@@ -150,25 +154,34 @@ export const TransactionReviewModalBody = ({
         return <ExpiredTxValidityModal onTryAgain={handleTryAgain} onCancel={onCancel} />;
     }
 
+    const tokenMetadataSources = transactionReviewOutputsToTokenMetadataSources(
+        account.symbol,
+        outputs,
+    );
+
+    // The review must label the tokens the signed transaction carries even when no
+    // account holds them yet or their contract is cased differently from the stored one.
     return (
-        <TransactionReviewModalBodyInner
-            account={account}
-            outputs={outputs}
-            decision={decision}
-            txInfoState={txInfoState}
-            tryAgainSignTx={tryAgainSignTx}
-            cancelSignTx={cancelSignTx}
-            precomposedForm={precomposedForm}
-            vaultName={vaultName}
-            availableRewards={availableRewards}
-            precomposedTx={precomposedTx}
-            isSending={isSending}
-            setIsSending={setIsSending}
-            handleTryAgain={handleTryAgain}
-            hasTxReviewExpired={hasTxReviewExpired}
-            deadline={deadline}
-            shouldCheckTxTimeValidity={shouldCheckTxTimeValidity}
-            isRbfConfirmedError={isRbfConfirmedError}
-        />
+        <TokenMetadataProvider sources={tokenMetadataSources}>
+            <TransactionReviewModalBodyInner
+                account={account}
+                outputs={outputs}
+                decision={decision}
+                txInfoState={txInfoState}
+                tryAgainSignTx={tryAgainSignTx}
+                cancelSignTx={cancelSignTx}
+                precomposedForm={precomposedForm}
+                vaultName={vaultName}
+                availableRewards={availableRewards}
+                precomposedTx={precomposedTx}
+                isSending={isSending}
+                setIsSending={setIsSending}
+                handleTryAgain={handleTryAgain}
+                hasTxReviewExpired={hasTxReviewExpired}
+                deadline={deadline}
+                shouldCheckTxTimeValidity={shouldCheckTxTimeValidity}
+                isRbfConfirmedError={isRbfConfirmedError}
+            />
+        </TokenMetadataProvider>
     );
 };

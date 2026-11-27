@@ -6,6 +6,7 @@ import { consolidateTokenMetadata } from './consolidateTokenMetadata';
 
 const eth = asNetworkSymbol('eth');
 const arb = asNetworkSymbol('arb');
+const sol = asNetworkSymbol('sol');
 const token: TokenMetadata = {
     contract: toTokenAddress('token-a'),
     name: 'Token A',
@@ -91,6 +92,48 @@ describe('consolidateTokenMetadata', () => {
 
         expect(result.get(arb)?.get(token.contract)).toStrictEqual(token);
         expect(parentTokensByNetwork.has(eth)).toBe(false);
+    });
+
+    it('merges EVM contract casings into one entry', () => {
+        const checksummed = toTokenAddress('0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168');
+        const lowercased = toTokenAddress(checksummed.toLowerCase());
+
+        const result = consolidateTokenMetadata({
+            sources: [{ networkSymbol: eth, tokens: [{ contract: checksummed, symbol: 'USDG' }] }],
+            parentTokensByNetwork: new Map([
+                [eth, new Map([[lowercased, { contract: lowercased, decimals: 18 }]])],
+            ]),
+        });
+
+        expect(result.get(eth)?.size).toBe(1);
+        expect(result.get(eth)?.get(lowercased)).toStrictEqual({
+            contract: checksummed,
+            name: undefined,
+            symbol: 'USDG',
+            decimals: 18,
+            standard: undefined,
+        });
+    });
+
+    it('keeps differently cased mints apart outside EVM networks', () => {
+        const mint = toTokenAddress('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v');
+        const otherMint = toTokenAddress(mint.toLowerCase());
+
+        const result = consolidateTokenMetadata({
+            sources: [
+                {
+                    networkSymbol: sol,
+                    tokens: [
+                        { contract: mint, symbol: 'USDC' },
+                        { contract: otherMint, symbol: 'OTHER' },
+                    ],
+                },
+            ],
+            parentTokensByNetwork: new Map(),
+        });
+
+        expect(result.get(sol)?.get(mint)?.symbol).toBe('USDC');
+        expect(result.get(sol)?.get(otherMint)?.symbol).toBe('OTHER');
     });
 
     it('returns empty metadata when both inputs are empty', () => {

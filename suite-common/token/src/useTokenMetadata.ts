@@ -6,6 +6,7 @@ import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { type TokenMetadata, TokenMetadataContext } from './TokenMetadataContext';
+import { getTokenMetadataKey } from './tokenMetadataKey';
 import { selectTokenByNetworkAndContract } from './tokenMetadataSelectors';
 
 /**
@@ -18,14 +19,18 @@ export const useTokenMetadata = (
     contractAddress: TokenAddress | undefined,
 ): TokenMetadata | null => {
     const { tokensByNetwork } = useContext(TokenMetadataContext);
+
     const accountToken = useSelector((state: AccountsRootState) =>
         networkSymbol && contractAddress
             ? selectTokenByNetworkAndContract(state, networkSymbol, contractAddress)
             : null,
     );
+
     const contextToken =
         networkSymbol && contractAddress
-            ? tokensByNetwork.get(networkSymbol)?.get(contractAddress)
+            ? tokensByNetwork
+                  .get(networkSymbol)
+                  ?.get(getTokenMetadataKey(networkSymbol, contractAddress))
             : undefined;
 
     if (!accountToken || !contextToken) {
