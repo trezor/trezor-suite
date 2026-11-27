@@ -5,6 +5,7 @@ export {
     selectIsSelectedAccountLoaded,
     selectIsSelectedAccountLoading,
     selectSelectedAccount,
+    selectSelectedAccountBlockchainInfo,
     selectSelectedAccountKey,
     selectSelectedAccountStatus,
     selectSelectedAccountSymbol,
