@@ -30,7 +30,7 @@ export const SignVerifyPage = () => {
 
             {!isDeviceConnected && <ConnectDeviceGenericPromo />}
 
-            <SignVerify account={account} network={selectedAccount.network} />
+            <SignVerify key={account.key} account={account} network={selectedAccount.network} />
         </WalletLayout>
     );
 };
