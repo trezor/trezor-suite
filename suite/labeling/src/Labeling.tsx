@@ -8,7 +8,7 @@ import {
     metadataLabelingActions,
     selectIsLabelingAvailableForEntity,
     selectIsMetadataEnabled,
-    selectMetadata,
+    selectMetadataInitiating,
 } from '@suite/metadata';
 import {
     type DesktopSuiteSyncRootState,
@@ -56,7 +56,7 @@ export const Labeling = ({
     const [showEnableSuiteSyncModal, setShowEnableSuiteSyncModal] = useState(false);
     const suiteSyncTurnOnEditResolveRef = useRef<((value: boolean) => void) | null>(null);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const legacyMetadataState = useSelector(selectMetadata);
+    const isMetadataInitiating = useSelector(selectMetadataInitiating);
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
     const isLabelActionEnabled = useSelector((state: LabelingState) =>
@@ -82,7 +82,7 @@ export const Labeling = ({
         if (
             !isSuiteSyncEnabled &&
             // Isn't initiation in progress?
-            !legacyMetadataState.initiating &&
+            !isMetadataInitiating &&
             // Is there something that needs to be initiated?
             !isLegacyLabelingEnabled
         ) {
@@ -129,7 +129,7 @@ export const Labeling = ({
         dispatch,
         isLegacyLabelingEnabled,
         isSuiteSyncEnabled,
-        legacyMetadataState.initiating,
+        isMetadataInitiating,
         ensureWalletSuiteSyncOn,
         suiteSyncInteraction,
     ]);
@@ -192,7 +192,7 @@ export const Labeling = ({
                     onSubmit={onSubmit ?? handleSubmit}
                     onEdit={handleEdit}
                     isDisabled={isDisabled || !isLabelActionEnabled}
-                    isLoading={legacyMetadataState.initiating || isDiscoveryRunning}
+                    isLoading={isMetadataInitiating || isDiscoveryRunning}
                     data-testid={`@metadata/${payload.type}/${payload.defaultValue}/hover-container`}
                     {...rest}
                 >

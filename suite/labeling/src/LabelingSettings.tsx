@@ -9,7 +9,8 @@ import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import {
     metadataLabelingActions,
     metadataThunks,
-    selectMetadata,
+    selectMetadataEnabled,
+    selectMetadataInitiating,
     useLabelingDeviceState,
 } from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
@@ -105,7 +106,8 @@ export const LabelingSettings = () => {
     );
     const isSuiteSyncUnsupported = suiteSyncInteraction === 'unsupported';
 
-    const legacyMetadataState = useSelector(selectMetadata);
+    const isMetadataEnabled = useSelector(selectMetadataEnabled);
+    const isMetadataInitiating = useSelector(selectMetadataInitiating);
 
     const translatedOptions: LabelingTranslatedOption[] = LABELING_SELECT_OPTIONS.map(option => ({
         ...option,
@@ -121,7 +123,7 @@ export const LabelingSettings = () => {
 
     const handleLegacyOptionSelect = async () => {
         await turnOffSuiteSync();
-        if (legacyMetadataState.enabled === false) {
+        if (isMetadataEnabled === false) {
             dispatch(metadataLabelingActions.initThunk(true));
         }
     };
@@ -138,7 +140,7 @@ export const LabelingSettings = () => {
 
         switch (value) {
             case 'off':
-                if (legacyMetadataState.enabled) {
+                if (isMetadataEnabled) {
                     dispatch(metadataThunks.disableMetadata());
                 }
 
@@ -182,12 +184,12 @@ export const LabelingSettings = () => {
 
         if (showSuiteSync) {
             if (isSuiteSyncEnabled) return LABELING_SELECT_TRANSLATED_OPTIONS_MAP['suite-sync'];
-            if (legacyMetadataState.enabled) return LABELING_SELECT_TRANSLATED_OPTIONS_MAP.legacy;
+            if (isMetadataEnabled) return LABELING_SELECT_TRANSLATED_OPTIONS_MAP.legacy;
 
             return LABELING_SELECT_TRANSLATED_OPTIONS_MAP.off;
         }
 
-        return legacyMetadataState.enabled
+        return isMetadataEnabled
             ? {
                   ...LABELING_SELECT_TRANSLATED_OPTIONS_MAP.legacy,
                   label: translationString(LABELING_LEGACY_OPTION_LABEL),
@@ -223,8 +225,8 @@ export const LabelingSettings = () => {
                         shouldHighlight={shouldHighlight}
                         title={
                             <LoadingContent
-                                isLoading={legacyMetadataState.initiating}
-                                isSuccessful={legacyMetadataState.enabled}
+                                isLoading={isMetadataInitiating}
+                                isSuccessful={isMetadataEnabled}
                             >
                                 <Translation id="TR_LABELING_ENABLED" />
                             </LoadingContent>
