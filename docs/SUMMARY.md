@@ -16,7 +16,7 @@
 - [Architecture decision records](./adr/README.md)
     - [ADR template](./adr/TEMPLATE.md)
     - [Separate application composition from reusable building blocks](./adr/001-separate-app-and-lego-code.md)
-    - [Networks expose typed capabilities and never render UI](./adr/004-networks-expose-capabilities-and-never-render-ui.md)
+    - [Network modules are headless; Suite composes their UI](./adr/004-network-modules-are-headless.md)
 - [Analytics](./analytics/index.md)
     - [AWS](./analytics/aws.md)
     - [Sentry](./analytics/sentry.md)
