@@ -6,8 +6,11 @@ import {
     selectHasBitcoinOnlyFirmware,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
-import { formatStakingAmount, selectStakingAccountAmount } from '@suite-common/earn-staking';
-import { stakingAmountSchema } from '@suite-common/earn-staking-common';
+import {
+    formatStakingAmount,
+    selectDeviceStakingPositionEntries,
+} from '@suite-common/earn-staking';
+import { getStakingPositionAmount, stakingAmountSchema } from '@suite-common/earn-staking-common';
 import {
     type NetworksRootState,
     selectNetworkNamesMap,
@@ -660,43 +663,64 @@ export const selectWalletAssetSignVerifyAccounts = createMemoizedSelector(
         ),
 );
 
-const selectHomeAssetTableState = (state: AssetTableState) => state;
-
-export const selectWalletAssetStakingAmount = createMemoizedSelector(
+const selectWalletAssetStakingBalances = createMemoizedSelector(
     [
-        selectHomeAssetTableState,
-        selectVisibleDeviceAccounts,
+        selectDeviceStakingPositionEntries,
         selectWalletAssetNetworkSymbol,
         selectWalletAssetContractAddress,
     ],
-    (state, accounts, networkSymbol, contractAddress): string => {
+    (positions, networkSymbol, contractAddress) => {
         if (networkSymbol === undefined || contractAddress !== undefined) {
-            return '0';
+            return { staked: '0', total: '0' };
         }
 
-        const stakingAmount = accounts.reduce(
-            (total, account) =>
-                account.symbol === networkSymbol
-                    ? total.plus(selectStakingAccountAmount(state, account.key))
-                    : total,
-            ZERO,
-        );
+        const isTron = networkSymbol === 'trx';
+        let total = ZERO;
+        let activeTronStake = ZERO;
 
-        return formatStakingAmount({
-            amount: stakingAmountSchema.parse(stakingAmount.toFixed(0)),
-            networkSymbol,
+        positions.forEach(({ descriptor, position }) => {
+            if (descriptor.networkSymbol !== networkSymbol) return;
+
+            total = total.plus(getStakingPositionAmount(position));
+            if (isTron) {
+                activeTronStake = activeTronStake.plus(position.balances.staked);
+            }
         });
+
+        const format = (value: BigNumber) =>
+            formatStakingAmount({
+                amount: stakingAmountSchema.parse(value.toFixed(0)),
+                networkSymbol,
+            });
+
+        const totalStakingAmount = format(total);
+
+        return {
+            staked: isTron ? format(activeTronStake) : totalStakingAmount,
+            total: totalStakingAmount,
+        };
     },
 );
 
-export const selectWalletAssetStakingRatio = createMemoizedSelector(
-    [selectWalletAssetAmount, selectWalletAssetStakingAmount],
-    getStakingRatio,
-);
+export const selectWalletAssetStakingAmount = (
+    state: AssetTableState,
+    assetKey: WalletAssetKey | undefined,
+) => selectWalletAssetStakingBalances(state, assetKey).staked;
 
 export const selectWalletAssetAvailableAmount = createMemoizedSelector(
-    [selectWalletAssetAmount, selectWalletAssetStakingAmount],
-    getAvailableAmount,
+    [selectWalletAssetAmount, selectWalletAssetStakingBalances],
+    (totalAmount, { total }) => getAvailableAmount(totalAmount, total),
+);
+
+export const selectWalletAssetStakingRatio = createMemoizedSelector(
+    [selectWalletAssetAvailableAmount, selectWalletAssetStakingAmount],
+    (availableAmount, stakingAmount) =>
+        availableAmount === undefined
+            ? undefined
+            : getStakingRatio(
+                  new BigNumber(availableAmount).plus(stakingAmount).toFixed(),
+                  stakingAmount,
+              ),
 );
 
 export const selectWalletAssetTokenSymbol = (

@@ -20,13 +20,14 @@ export const TronWithdrawSubmitButton = () => {
     const { device, isLocked } = useDevice();
     const { analytics } = useServices(injectDesktopAnalytics);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const { account, actions } = useTronStakeContext();
+    const { account, actions, fees } = useTronStakeContext();
     const { isSubmitting, pendingTxid, submitAction } = actions;
     const { openFirmwareModal, firmwareModal } = useTronFirmwareUpgradeModal();
 
     const { isWithdrawingDisabled, withdrawingMessageContent } = useMessageSystemStaking(
         account.symbol,
     );
+    const isFeeReady = fees.composedLevels?.normal?.type === 'final';
 
     const { access } = useStakingAccountPosition(account.key);
     const withdrawableAmount = useTronWithdrawableAmount(account);
@@ -36,7 +37,7 @@ export const TronWithdrawSubmitButton = () => {
     const isWithdrawFirmwareOutdated = access.disabled.withdraw?.kind === 'firmware';
 
     const handleClick = () => {
-        if (isWithdrawingDisabled) return;
+        if (isWithdrawingDisabled || !isFeeReady) return;
 
         if (isWithdrawFirmwareOutdated) {
             openFirmwareModal('TR_EARN_TRON_WITHDRAW_TITLE');
@@ -69,6 +70,7 @@ export const TronWithdrawSubmitButton = () => {
                     data-testid="@staking/tron-withdraw/continue-button"
                     isDisabled={
                         isWithdrawingDisabled ||
+                        !isFeeReady ||
                         !hasWithdrawableAmount ||
                         isSubmitting ||
                         isDeviceUnavailable ||

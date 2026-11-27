@@ -43,7 +43,7 @@ export const TronVoteSubmitButton = () => {
     const access = useStakingAccess(productId);
     const isVoteFirmwareOutdated = access.disabled.vote?.kind === 'firmware';
 
-    const hasInsufficientFunds = fees.composedLevels?.normal?.type === 'error';
+    const isFeeReady = fees.composedLevels?.normal?.type === 'final';
 
     const allocations = useWatch({ control, name: 'voteAllocations' });
     const parsedAllocations = parseVoteAllocations(allocations);
@@ -116,7 +116,7 @@ export const TronVoteSubmitButton = () => {
                         isOverAllocated ||
                         isSubmitting ||
                         isDeviceLocked ||
-                        hasInsufficientFunds ||
+                        !isFeeReady ||
                         !!pendingTxid
                     }
                     isLoading={isSubmitting || isDiscoveryRunning}

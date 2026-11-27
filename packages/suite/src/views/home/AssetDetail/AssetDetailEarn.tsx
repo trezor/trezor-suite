@@ -56,6 +56,7 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
             stakingAmount={stakingAmount}
             stakingRatio={stakingRatio}
             stakingRate={stakingRate}
+            showAllocation={isPositiveBalance(availableAmount) || isPositiveBalance(stakingAmount)}
             onViewAll={() => {
                 analytics.report({
                     type: events.navigateFlowEvent.name,

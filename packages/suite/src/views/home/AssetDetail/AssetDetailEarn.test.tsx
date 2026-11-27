@@ -21,7 +21,11 @@ import {
     mockStakingProductDescriptor,
     mockStakingProductInfo,
 } from '@suite-common/earn-staking-common/mocks';
+import { mockNetworksState } from '@suite-common/networks/mocks';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { getWalletAssetKey } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -29,7 +33,7 @@ import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { AssetDetailEarn } from './AssetDetailEarn';
 import { ETH, ETH_ASSET_KEY, getEthAssetState } from './assetDetailTestState';
-import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 const ONE_ETH_IN_WEI = '1000000000000000000';
 
@@ -129,6 +133,60 @@ describe('the earn card on the asset screen', () => {
         expect(card).toHaveTextContent(intl.formatMessage(messages.TR_STAKE_STAKED));
         expect(card.textContent?.match(/\$3,000/g)).toHaveLength(1);
         expect(card).toHaveTextContent('$0.00');
+    });
+
+    it('omits the allocation bar when all TRX is unstaking', () => {
+        const networkSymbol = asNetworkSymbol('trx');
+        const account = mockWalletAccount(
+            { symbol: networkSymbol, formattedBalance: '0' },
+            { networkType: 'tron' },
+        );
+        const { deviceState } = account;
+        const product = mockStakingProductDescriptor({ networkSymbol, type: 'native' });
+        const { services } = createTestCompositionRoot<{ services: StakingDep }, MockSuiteState>({
+            preloadedState: {
+                ...mockInitialAppState,
+                networks: mockNetworksState([networkSymbol]),
+                device: {
+                    ...mockInitialAppState.device,
+                    selectedDevice: mockSuiteDevice({ state: { staticSessionId: deviceState } }),
+                },
+                wallet: {
+                    ...mockInitialAppState.wallet,
+                    accounts: [account],
+                    settings: {
+                        ...mockInitialAppState.wallet.settings,
+                        enabledNetworks: [networkSymbol],
+                    },
+                },
+                earn: {
+                    staking: mockStakingState({
+                        descriptors: [product],
+                        positions: {
+                            [account.key]: [
+                                mockStakingPosition({
+                                    productId: product.id,
+                                    balances: {
+                                        staked: amount('0'),
+                                        pending: amount('0'),
+                                        unstaking: amount('10000000'),
+                                        withdrawable: amount('0'),
+                                        rewards: amount('0'),
+                                    },
+                                }),
+                            ],
+                        },
+                    }),
+                },
+            },
+            services: () => ({ staking: mockStakingServices() }),
+        });
+
+        const assetKey = getWalletAssetKey({ deviceState, networkSymbol });
+        renderWithProviders(services, <AssetDetailEarn assetKey={assetKey} />);
+
+        expect(screen.getByTestId('@asset-detail/earn')).toBeInTheDocument();
+        expect(screen.queryByTestId('@asset-detail/earn/allocation')).not.toBeInTheDocument();
     });
 
     it('is left out while there is nothing to stake', () => {

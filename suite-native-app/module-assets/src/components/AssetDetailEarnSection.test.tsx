@@ -2,6 +2,7 @@ import { type useNetworkStakingRate } from '@suite-common/earn-staking';
 import { mockStakingState } from '@suite-common/earn-staking/mocks';
 import { stakingProviderIdSchema } from '@suite-common/earn-staking-common';
 import { mockStakingProductDescriptor } from '@suite-common/earn-staking-common/mocks';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -69,6 +70,7 @@ const renderEarnSection = ({
     return renderWithStoreProvider(<AssetDetailEarnSection />, {
         preloadedState: {
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
+            networks: mockNetworksState([networkSymbol]),
             earn: {
                 staking: mockStakingState({ platform: 'mobile', descriptors: stakingProducts }),
             },

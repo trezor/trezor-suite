@@ -434,9 +434,9 @@ describe('Tron signing cancellation analytics', () => {
     const submissions = [
         [
             'vote',
-            () =>
+            (account = buildAccount()) =>
                 submitTronVoteThunk({
-                    account: buildAccount(),
+                    account,
                     device,
                     flow: FLOW,
                     allocations: ALLOCATIONS,
@@ -445,9 +445,9 @@ describe('Tron signing cancellation analytics', () => {
         ],
         [
             'stake',
-            () =>
+            (account = buildAccount()) =>
                 submitTronFreezeThunk({
-                    account: buildAccount(),
+                    account,
                     device,
                     amount: '1',
                     resourceType: 'energy',
@@ -456,9 +456,9 @@ describe('Tron signing cancellation analytics', () => {
         ],
         [
             'unstake',
-            () =>
+            (account = buildAccount()) =>
                 submitTronUnstakeThunk({
-                    account: buildAccount(),
+                    account,
                     device,
                     amount: '1',
                     resourceType: 'bandwidth',
@@ -467,23 +467,43 @@ describe('Tron signing cancellation analytics', () => {
         ],
         [
             'claim',
-            () =>
+            (account = buildAccount()) =>
                 submitTronClaimThunk({
-                    account: buildAccount(),
+                    account,
                     device,
                     requestPushApproval: jest.fn(),
                 }),
         ],
         [
             'withdraw',
-            () =>
+            (account = buildAccount()) =>
                 submitTronWithdrawThunk({
-                    account: buildAccount(),
+                    account,
                     device,
                     requestPushApproval: jest.fn(),
                 }),
         ],
     ] as const;
+
+    it.each(submissions.filter(([flow]) => flow !== 'stake'))(
+        'blocks %s signing when bandwidth cannot be paid',
+        async (_, submit) => {
+            const account = buildAccount({ availableBalance: '0' });
+            if (account.networkType === 'tron' && account.misc.tronResources) {
+                account.misc.tronResources.availableFreeBandwidth = 0;
+            }
+            const store = initStore();
+
+            await store.dispatch(submit(account));
+
+            expect(signTronContractMock).not.toHaveBeenCalled();
+            expect(getSubmitFinishedActions(store)).toEqual([
+                expect.objectContaining({
+                    payload: expect.objectContaining({ error: { kind: 'compose-failed' } }),
+                }),
+            ]);
+        },
+    );
 
     it.each(submissions)('reports a signing cancellation once for %s', async (_, submit) => {
         signTronContractMock.mockResolvedValue({ error: { kind: 'cancelled' } });
