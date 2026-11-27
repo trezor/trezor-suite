@@ -2,7 +2,6 @@ import {
     Bundle,
     type DeviceButtonRequestCode,
     GetAddress as GetAddressSchema,
-    type PermissionRequest,
     UI_EVENTS,
     createUiEventMessage,
 } from '@trezor/connect-common';
@@ -52,10 +51,6 @@ export abstract class AbstractMiscGetAddress<
 
         this.hasBundle = hasBundle;
         this.confirmMissingBackup = true;
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
     getButtonRequestData(code: DeviceButtonRequestCode) {

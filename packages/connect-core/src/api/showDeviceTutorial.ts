@@ -1,4 +1,4 @@
-import { type PermissionRequest, UI_EVENTS } from '@trezor/connect-common';
+import { UI_EVENTS } from '@trezor/connect-common';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
@@ -10,10 +10,6 @@ export default class ShowDeviceTutorial extends AbstractMethod<'showDeviceTutori
         this.useDeviceState = false;
         this.allowDeviceMode = [UI_EVENTS.DEVICE_NOT_INITIALIZED];
     }
-    get requiredPermissions(): PermissionRequest[] {
-        return [];
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
 

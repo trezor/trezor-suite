@@ -9,7 +9,6 @@ import type {
     EthereumNetworkInfo,
     EthereumSignTypedDataTypes,
     PROTO,
-    PermissionRequest,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -115,10 +114,6 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         super(message, params);
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
         this.requiredFirmwareCoins = [network];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     getButtonRequestData(code: DeviceButtonRequestCode, name?: string) {

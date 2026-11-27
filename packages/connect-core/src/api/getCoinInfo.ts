@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetCoinInfo.js
 
-import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
+import type { CoinInfo } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common';
 import { GetCoinInfo as GetCoinInfoSchema } from '@trezor/connect-common/src/types/api/account/getCoinInfo';
 import { Assert } from '@trezor/schema-utils';
@@ -40,10 +40,6 @@ export default class GetCoinInfo extends AbstractMethod<'getCoinInfo', Params> {
 
         super(message, params);
         this.useDevice = false;
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return [];
     }
 
     run() {

@@ -1,4 +1,3 @@
-import { type PermissionRequest } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import type { MethodMessage } from '../core/AbstractMethod';
@@ -13,10 +12,6 @@ export default class EvoluGetDelegatedIdentityKey extends AbstractMethod<
     constructor(message: MethodMessage<'evoluGetDelegatedIdentityKey'>) {
         super(message, {});
     }
-    get requiredPermissions(): PermissionRequest[] {
-        return [{ permission: 'management' }];
-    }
-
     async run() {
         const thpState = this.getDevice().getThpState();
         if (thpState) {

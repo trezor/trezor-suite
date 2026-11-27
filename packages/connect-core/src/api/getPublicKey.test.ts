@@ -7,46 +7,16 @@ const createMethod = (params: { path: string; coin?: CoinSymbol }, v9Compat?: bo
         payload: { method: 'getPublicKey', ...params, _v9_compat: v9Compat },
     });
 
-describe('GetPublicKey permissions', () => {
-    it('requires a coin permission for a bitcoin path', () => {
-        const method = createMethod({ path: "m/84'/0'/0'" });
-        expect(method.requiredPermissions).toEqual([{ permission: 'read_xpub', coin: 'btc' }]);
-    });
-
-    it('requires a coin permission for a bitcoin path in v9 compat mode', () => {
-        const method = createMethod({ path: "m/84'/0'/0'" }, true);
-        expect(method.requiredPermissions).toEqual([{ permission: 'read_xpub', coin: 'btc' }]);
-    });
-
-    it('requires a generic permission for a non-bitcoin path in v9 compat mode', () => {
-        const method = createMethod({ path: "m/44'/60'/0'" }, true);
-        expect(method.requiredPermissions).toEqual([{ permission: 'read_xpub' }]);
-    });
-
-    it('requires a generic permission for a non-bitcoin coin in v9 compat mode', () => {
-        const method = createMethod({ path: "m/44'/60'/0'", coin: 'eth' }, true);
-        expect(method.requiredPermissions).toEqual([{ permission: 'read_xpub' }]);
+describe('GetPublicKey', () => {
+    it.each([
+        ['a bitcoin path', { path: "m/84'/0'/0'" }],
+        ['a non-bitcoin path', { path: "m/44'/60'/0'" }],
+        ['a non-bitcoin coin', { path: "m/44'/60'/0'", coin: 'eth' as const }],
+    ])('exports the public key of %s in v9 compat mode as bitcoin', (_, params) => {
+        expect(createMethod(params, true)['params'][0]?.coinInfo.shortcut).toBe('BTC');
     });
 
     it('rejects a non-bitcoin path without v9 compat mode', () => {
         expect(() => createMethod({ path: "m/44'/60'/0'" })).toThrow();
-    });
-
-    it('combines coin and generic permissions in a bundle', () => {
-        const method = new GetPublicKey({
-            payload: {
-                method: 'getPublicKey',
-                bundle: [
-                    { path: "m/84'/0'/0'" },
-                    { path: "m/44'/60'/0'" },
-                    { path: "m/44'/195'/0'" },
-                ],
-                _v9_compat: true,
-            },
-        });
-        expect(method.requiredPermissions).toEqual([
-            { permission: 'read_xpub', coin: 'btc' },
-            { permission: 'read_xpub' },
-        ]);
     });
 });

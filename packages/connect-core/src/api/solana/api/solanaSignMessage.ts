@@ -1,7 +1,6 @@
 import { base58 } from '@scure/base';
 
 import { SolanaSignMessage as SolanaSignMessageSchema } from '@trezor/connect-common';
-import type { PermissionRequest } from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
@@ -35,10 +34,6 @@ export default class SolanaSignMessage extends AbstractMethod<'solanaSignMessage
 
         this.requiredDeviceCapabilities = ['Capability_Solana'];
         this.requiredFirmwareCoins = [getMiscNetwork('sol')];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('sign_message', this.requiredFirmwareCoins);
     }
 
     async run() {

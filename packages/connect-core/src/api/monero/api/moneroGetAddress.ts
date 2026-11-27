@@ -1,5 +1,5 @@
 // Monero GetAddress implementation
-import type { DeviceButtonRequestCode, PermissionRequest } from '@trezor/connect-common';
+import type { DeviceButtonRequestCode } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { Address } from '@trezor/connect-common/src/types/params';
 import { HD_HARDENED_PATH_PART } from '@trezor/crypto-utils';
@@ -57,10 +57,6 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Monero'];
         this.requiredFirmwareCoins = [getMiscNetwork('xmr')];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
     getButtonRequestData(code: DeviceButtonRequestCode) {

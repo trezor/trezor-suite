@@ -28,10 +28,6 @@ export default class NostrGetPublicKey extends AbstractMethod<
         this.requiredFirmwareCoins = [getMiscNetwork('nostr')];
     }
 
-    get requiredPermissions() {
-        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
         const { message } = await cmd.typedCall('NostrGetPubkey', 'NostrPubkey', this.params);

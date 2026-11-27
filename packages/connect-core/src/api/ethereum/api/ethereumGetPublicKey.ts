@@ -3,7 +3,6 @@ import {
     Bundle,
     type EthereumNetworkInfo,
     GetPublicKey as GetPublicKeySchema,
-    type PermissionRequest,
     UI_EVENTS,
     createUiEventMessage,
 } from '@trezor/connect-common';
@@ -47,10 +46,6 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
         this.requiredFirmwareCoins = params.map(({ network }) => network);
         this.hasBundle = hasBundle;
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
     }
 
     async run({ sendCoreMessage }: MethodContext) {

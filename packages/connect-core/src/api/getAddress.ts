@@ -5,7 +5,6 @@ import {
     Bundle,
     type DeviceButtonRequestCode,
     type PROTO,
-    type PermissionRequest,
 } from '@trezor/connect-common';
 import { UI_EVENTS, createUiEventMessage } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
@@ -80,10 +79,6 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         this.hasBundle = hasBundle;
         this.requiredFirmwareCoins = params.map(({ coinInfo }) => coinInfo);
         this.confirmMissingBackup = true;
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
     getButtonRequestData(code: DeviceButtonRequestCode) {

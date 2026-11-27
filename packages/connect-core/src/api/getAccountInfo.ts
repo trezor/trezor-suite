@@ -1,10 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
-import type {
-    CoinInfo,
-    GetAccountInfo as GetAccountInfoParams,
-    PermissionRequest,
-} from '@trezor/connect-common';
+import type { CoinInfo, GetAccountInfo as GetAccountInfoParams } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import type { MethodMessage } from '../core/AbstractMethod';
@@ -52,10 +48,6 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Par
         super(message, { ...payload, descriptor: payload.descriptor!, coinInfo });
         this.useDevice = false;
         this.useDeviceState = false;
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return [this.coinPerm('read_account_info', this.params.coinInfo)];
     }
 
     // Read by Trezor Suite's backends instead, see its getAccountInfo popup flow.

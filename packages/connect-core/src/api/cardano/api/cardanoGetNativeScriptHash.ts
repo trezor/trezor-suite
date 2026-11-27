@@ -3,7 +3,6 @@
 import {
     CardanoGetNativeScriptHash as CardanoGetNativeScriptHashSchema,
     type CardanoNativeScript,
-    type PermissionRequest,
 } from '@trezor/connect-common';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
@@ -65,10 +64,6 @@ export default class CardanoGetNativeScriptHash extends AbstractMethod<
         super(message, params);
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
         this.requiredFirmwareCoins = [getMiscNetwork('ada')];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
     async run() {

@@ -3,9 +3,8 @@ import type { CoinSymbol } from './coinInfo';
 /**
  * Permission category requested by a `@trezor/connect` method.
  *
- * Methods declare which permissions they require via
- * `AbstractMethod.requiredPermissions`. The connect popup groups requested
- * permissions by coin and asks the user to grant access to a host. Read scopes
+ * The connect popup derives the permissions a call requires, groups them by
+ * coin and asks the user to grant access to a host. Read scopes
  * are intentionally narrow so that, for example, granting `read_address` does
  * not also grant `read_xpub`.
  */

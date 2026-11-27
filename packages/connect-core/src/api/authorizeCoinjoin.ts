@@ -1,7 +1,4 @@
-import {
-    AuthorizeCoinjoin as AuthorizeCoinjoinSchema,
-    type PermissionRequest,
-} from '@trezor/connect-common';
+import { AuthorizeCoinjoin as AuthorizeCoinjoinSchema } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -37,10 +34,6 @@ export default class AuthorizeCoinjoin extends AbstractMethod<
 
         this.requiredFirmwareCoins = [coinInfo];
         this.preauthorized = payload.preauthorized;
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return [this.coinPerm('internal', this.requiredFirmwareCoins[0])];
     }
 
     async run() {

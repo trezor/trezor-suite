@@ -1,4 +1,4 @@
-import { type PermissionRequest, UI_EVENTS } from '@trezor/connect-common';
+import { UI_EVENTS } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
@@ -19,10 +19,6 @@ export default class BleUnpair extends AbstractMethod<'bleUnpair', PROTO.BleUnpa
         this.allowDeviceMode = [UI_EVENTS.DEVICE_NOT_INITIALIZED, UI_EVENTS.DEVICE_SEEDLESS];
         this.useDeviceState = false;
     }
-    get requiredPermissions(): PermissionRequest[] {
-        return [{ permission: 'management' }];
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
         // unpair current bluetooth connection session or all known sessions

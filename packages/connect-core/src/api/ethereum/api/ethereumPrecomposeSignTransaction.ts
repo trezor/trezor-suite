@@ -28,10 +28,6 @@ export default class EthereumPrecomposeSignTransaction extends AbstractMethod<
         this.useDevice = false;
     }
 
-    get requiredPermissions() {
-        return [];
-    }
-
     async run() {
         const { path, transaction } = this.params;
         // The definitions name the network of the chain and the token of an ERC-20 transfer.

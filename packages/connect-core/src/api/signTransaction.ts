@@ -4,7 +4,6 @@ import {
     type AccountAddresses,
     type BitcoinNetworkInfo,
     type PROTO,
-    type PermissionRequest,
     type RefTransaction,
     type TransactionOptions,
     getOriginalTxids,
@@ -179,20 +178,6 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
         this.requiredFirmwareCoins = [coinInfo];
         this.preauthorized = payload.preauthorized;
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        const permissions: PermissionRequest[] = [this.coinPerm('sign', this.params.coinInfo)];
-        if (this.params.push) {
-            permissions.push(this.coinPerm('push_tx', this.params.coinInfo));
-        }
-        // Preauthorized signing runs under the coinjoin authorization of the device session, so it
-        // shares the internal tier of authorizeCoinjoin, which creates that authorization.
-        if (this.preauthorized) {
-            permissions.push(this.coinPerm('internal', this.params.coinInfo));
-        }
-
-        return permissions;
     }
 
     async run() {

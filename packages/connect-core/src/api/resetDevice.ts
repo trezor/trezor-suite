@@ -1,5 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ResetDevice.js
-import { type PermissionRequest, UI_EVENTS, createUiEventMessage } from '@trezor/connect-common';
+import { UI_EVENTS, createUiEventMessage } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { TransportError } from '@trezor/connect-common/src/constants/errors';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
@@ -40,10 +40,6 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
         this.useDeviceState = false;
         this.skipFinalReload = false;
     }
-    get requiredPermissions(): PermissionRequest[] {
-        return [{ permission: 'management' }];
-    }
-
     // https://github.com/trezor/trezor-firmware/blob/57868ad48f4c462bb1f4fa57572067e89a039a60/docs/common/message-workflows.md#simple-resetdevice-workflow
     private async resetDeviceWorkflow() {
         const cmd = this.getDevice().getCommands();

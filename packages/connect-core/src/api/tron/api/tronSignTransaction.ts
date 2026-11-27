@@ -3,7 +3,6 @@ import { bytesToHex } from '@noble/hashes/utils.js';
 import { TronSignTransaction as TronSignTransactionSchema } from '@trezor/connect-common';
 import type {
     PROTO,
-    PermissionRequest,
     TronContractInput,
     TronContracts,
     TronContractsTypes,
@@ -134,10 +133,6 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
         super(message, params);
         this.requiredDeviceCapabilities = ['Capability_Tron'];
         this.requiredFirmwareCoins = [getMiscNetwork('trx')];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     async run() {

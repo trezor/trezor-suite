@@ -2,7 +2,6 @@ import {
     type BitcoinNetworkInfo,
     type ComposeParams,
     ERRORS,
-    type PermissionRequest,
     type SignedTransaction,
 } from '@trezor/connect-common';
 import type { ComposeOutput } from '@trezor/utxo-lib';
@@ -55,15 +54,6 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
         this.useDevice = false;
         this.useDeviceState = false;
         this.requiredFirmwareCoins = [coinInfo];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        const permissions: PermissionRequest[] = [this.coinPerm('sign', this.params.coinInfo)];
-        if (this.params.push) {
-            permissions.push(this.coinPerm('push_tx', this.params.coinInfo));
-        }
-
-        return permissions;
     }
 
     // Composed, selected and signed by Trezor Suite instead, see its sendTransaction popup flow.

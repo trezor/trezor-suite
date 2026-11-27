@@ -1,4 +1,4 @@
-import { type PermissionRequest, UI_EVENTS } from '@trezor/connect-common';
+import { UI_EVENTS } from '@trezor/connect-common';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -28,10 +28,6 @@ export default class LoadDevice extends AbstractMethod<'loadDevice', PROTO.LoadD
         this.useDeviceState = false;
         this.skipFinalReload = false;
     }
-    get requiredPermissions(): PermissionRequest[] {
-        return [{ permission: 'management' }];
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('LoadDevice', 'Success', this.params);

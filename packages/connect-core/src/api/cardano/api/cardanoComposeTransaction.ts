@@ -1,4 +1,3 @@
-import { type PermissionRequest } from '@trezor/connect-common';
 import {
     type CardanoComposeTransactionParams,
     CardanoComposeTransactionParamsSchema,
@@ -23,10 +22,6 @@ export default class CardanoComposeTransaction extends AbstractMethod<
         super(message, message.payload);
         this.useDevice = false;
         this.useDeviceState = false;
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return [];
     }
 
     async run() {

@@ -1,4 +1,4 @@
-import type { PROTO, PermissionRequest } from '@trezor/connect-common';
+import type { PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { HD_HARDENED_PATH_PART } from '@trezor/crypto-utils';
 
@@ -42,10 +42,6 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
     'moneroSignTransaction',
     Params
 > {
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('sign', this.requiredFirmwareCoins);
-    }
-
     private state: ProtocolState = {
         hmacs: [],
         vinis: [],

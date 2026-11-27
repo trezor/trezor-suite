@@ -3,7 +3,6 @@ import {
     type CardanoMessageHeaders,
     CardanoSignMessage as CardanoSignMessageSchema,
     type CardanoSignedMessage,
-    type PermissionRequest,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import cardano from '@trezor/network-cardano/runtime';
@@ -65,10 +64,6 @@ export default class CardanoSignMessage extends AbstractMethod<
         super(message, params);
 
         this.requiredFirmwareCoins = [getMiscNetwork('ada')];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     async run(): Promise<CardanoSignedMessage> {

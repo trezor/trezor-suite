@@ -3,7 +3,6 @@
 import {
     Bundle,
     CardanoGetPublicKey as CardanoGetPublicKeySchema,
-    type PermissionRequest,
     UI_EVENTS,
     createUiEventMessage,
 } from '@trezor/connect-common';
@@ -52,10 +51,6 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
         );
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
         this.requiredFirmwareCoins = [getMiscNetwork('ada')];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
     }
 
     async run({ sendCoreMessage }: MethodContext) {

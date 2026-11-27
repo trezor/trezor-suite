@@ -13,14 +13,6 @@ const createMethod = () =>
     });
 
 describe(GetAccountInfo.name, () => {
-    it('requires a permission of its network', () => {
-        const method = createMethod();
-
-        expect(method.requiredPermissions).toEqual([
-            { permission: 'read_account_info', coin: 'xlm' },
-        ]);
-    });
-
     // Trezor Suite derives the descriptor on the device and answers a bundle itself.
     it.each([
         ['an account given by path', { coin: 'btc', path: "m/84'/0'/0'" }],

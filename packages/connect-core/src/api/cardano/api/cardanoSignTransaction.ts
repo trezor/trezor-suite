@@ -8,7 +8,6 @@ import {
     CardanoSignTransaction as CardanoSignTransactionSchema,
     type CardanoSignedTxData,
     type CardanoSignedTxWitness,
-    type PermissionRequest,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import cardano from '@trezor/network-cardano/runtime';
@@ -234,10 +233,6 @@ export default class CardanoSignTransaction extends AbstractMethod<
 
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
         this.requiredFirmwareCoins = [getMiscNetwork('ada')];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     _isFeatureSupported(feature: keyof typeof CardanoSignTransactionFeatures) {

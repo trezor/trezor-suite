@@ -6,7 +6,7 @@ import {
     UI_EVENTS,
     createUiEventMessage,
 } from '@trezor/connect-common';
-import type { PROTO, PermissionRequest } from '@trezor/connect-common';
+import type { PROTO } from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodContext, MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
@@ -42,10 +42,6 @@ export default class SolanaGetPublicKey extends AbstractMethod<
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Solana'];
         this.requiredFirmwareCoins = [getMiscNetwork('sol')];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
     }
 
     async run({ sendCoreMessage }: MethodContext) {

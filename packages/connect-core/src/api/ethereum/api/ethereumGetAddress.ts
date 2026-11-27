@@ -6,12 +6,7 @@ import {
     UI_EVENTS,
     createUiEventMessage,
 } from '@trezor/connect-common';
-import type {
-    DeviceButtonRequestCode,
-    EthereumNetworkInfo,
-    PROTO,
-    PermissionRequest,
-} from '@trezor/connect-common';
+import type { DeviceButtonRequestCode, EthereumNetworkInfo, PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
@@ -59,10 +54,6 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
         this.hasBundle = hasBundle;
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
     getButtonRequestData(code: DeviceButtonRequestCode) {

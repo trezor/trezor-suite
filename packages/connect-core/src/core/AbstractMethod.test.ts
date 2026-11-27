@@ -3,10 +3,6 @@ import * as enabledNetworksStore from '../data/enabledNetworksStore';
 
 // Minimal concrete subclass used to exercise resolveCardanoCapability()'s derivation behavior.
 class TestMethod extends AbstractMethod<any> {
-    get requiredPermissions() {
-        return [];
-    }
-
     run(_context: MethodContext): Promise<MethodReturnType<any>> {
         return Promise.resolve(undefined as any);
     }

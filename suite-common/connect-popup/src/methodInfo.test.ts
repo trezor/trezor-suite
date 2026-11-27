@@ -195,6 +195,81 @@ describe('getMethodInfo', () => {
     });
 
     it.each([
+        ['a bitcoin public key', { method: 'getPublicKey', path: "m/84'/0'/0'" }, ['btc']],
+        // Connect 9 hosts may export a public key of any path, as of no coin.
+        [
+            'a public key of a non-bitcoin path',
+            { method: 'getPublicKey', path: "m/44'/60'/0'", _v9_compat: true },
+            [undefined],
+        ],
+        [
+            'a public key of a non-bitcoin coin',
+            { method: 'getPublicKey', path: "m/44'/60'/0'", coin: 'eth', _v9_compat: true },
+            [undefined],
+        ],
+        [
+            'public keys of bitcoin and other paths',
+            {
+                method: 'getPublicKey',
+                bundle: [
+                    { path: "m/84'/0'/0'" },
+                    { path: "m/44'/60'/0'" },
+                    { path: "m/44'/195'/0'" },
+                ],
+                _v9_compat: true,
+            },
+            ['btc', undefined],
+        ],
+        [
+            'an account of a network',
+            { method: 'getAccountInfo', coin: 'xlm', descriptor: 'G' },
+            ['xlm'],
+        ],
+    ] satisfies [string, CallMethodPayload, (string | undefined)[]][])(
+        'asks for %s',
+        async (_, call, coins) => {
+            const { requiredPermissions } = await getMethodInfo(call);
+
+            expect(requiredPermissions.map(({ coin }) => coin)).toEqual(coins);
+        },
+    );
+
+    it.each([
+        [
+            { method: 'getOwnershipProof', path: "m/84'/1'/0'/0/0", coin: 'test' },
+            'read_account_info',
+        ],
+        [{ method: 'signTransaction', ...TAPROOT_SIGN_TRANSACTION }, 'sign'],
+    ] satisfies [CallMethodPayload, string][])(
+        'asks for the internal tier of coinjoin for a preauthorized $0.method',
+        async (call, permission) => {
+            await expect(getMethodInfo(call)).resolves.toMatchObject({
+                requiredPermissions: [{ permission, coin: 'test' }],
+            });
+            await expect(getMethodInfo({ ...call, preauthorized: true })).resolves.toMatchObject({
+                requiredPermissions: [
+                    { permission, coin: 'test' },
+                    { permission: 'internal', coin: 'test' },
+                ],
+            });
+        },
+    );
+
+    it.each([
+        ['an xpub of a bitcoin account', { coin: 'btc' }, 'read_xpub'],
+        [
+            'addresses of a bitcoin account',
+            { coin: 'btc', addressSelection: 'firstFresh' },
+            'read_address',
+        ],
+        ['an address of an ethereum account', { coin: 'eth' }, 'read_address'],
+    ] as const)('asks for %s', async (_, params, permission) => {
+        await expect(getMethodInfo({ method: 'selectAccount', ...params })).resolves.toMatchObject({
+            requiredPermissions: [{ permission }],
+        });
+    });
+
+    it.each([
         [
             'Export public key of Bitcoin native segwit account #1',
             { method: 'getPublicKey', path: "m/84'/0'/0'" },

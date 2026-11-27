@@ -21,10 +21,6 @@ export default class SolanaPrecomposeSignTransaction extends AbstractMethod<
         this.useDevice = false;
     }
 
-    get requiredPermissions() {
-        return [];
-    }
-
     async run() {
         const { getDecompiledMessage } = await solana();
         const decompiledMessage = getDecompiledMessage(

@@ -3,7 +3,6 @@
 import {
     type BitcoinNetworkInfo,
     DEFAULT_SORTING_STRATEGY,
-    type PermissionRequest,
     type PrecomposeParams,
     type PrecomposedResult,
 } from '@trezor/connect-common';
@@ -68,10 +67,6 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
         this.useDevice = false;
         this.requiredFirmwareCoins = [coinInfo];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return [];
     }
 
     run(): Promise<PrecomposedResult[]> {

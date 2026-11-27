@@ -4,7 +4,6 @@ import {
     Bundle,
     CardanoGetAddress as CardanoGetAddressSchema,
     type DeviceButtonRequestCode,
-    type PermissionRequest,
     UI_EVENTS,
     createUiEventMessage,
 } from '@trezor/connect-common';
@@ -63,10 +62,6 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
         this.requiredFirmwareCoins = [getMiscNetwork('ada')];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
     getButtonRequestData(code: DeviceButtonRequestCode) {

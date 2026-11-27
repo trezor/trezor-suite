@@ -1,15 +1,12 @@
-import { ERRORS, UI_EVENTS, asCoinSymbol } from '@trezor/connect-common';
+import { ERRORS, UI_EVENTS } from '@trezor/connect-common';
 import type {
     CallMethodPayload,
     CallMethodResponse,
     CoinInfo,
-    CoinSymbol,
     CoreEventMessage,
     DeviceButtonRequestCode,
     DeviceState,
     FirmwareCapability,
-    MethodPermission,
-    PermissionRequest,
     StaticSessionId,
     UiRequestButtonData,
 } from '@trezor/connect-common';
@@ -123,48 +120,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     public preauthorized?: boolean; // another variant of device state validation
 
     public useEmptyPassphrase: boolean;
-
-    abstract get requiredPermissions(): PermissionRequest[];
-
-    // `coinInfo.shortcut` keeps its original casing (e.g. `BTC`, `tDASH`) but a
-    // permission `coin` is the lowercase `CoinSymbol`. Every shortcut lowercases
-    // to a known `CoinSymbol` (both derive from the same coin definitions), so
-    // the cast is sound.
-    private toCoinSymbol(shortcut: string): CoinSymbol {
-        return asCoinSymbol(shortcut.toLowerCase());
-    }
-
-    // Build a `PermissionRequest` for a single coin (or coin-less when `coin` is
-    // undefined).
-    protected coinPerm(permission: MethodPermission, coin?: CoinInfo): PermissionRequest {
-        return coin ? { permission, coin: this.toCoinSymbol(coin.shortcut) } : { permission };
-    }
-
-    // Build `PermissionRequest` entries from a list of coins, de-duplicated by
-    // coin symbol. Undefined coins collapse to a single coin-less entry.
-    protected coinPerms(
-        permission: MethodPermission,
-        coins: (CoinInfo | undefined)[],
-    ): PermissionRequest[] {
-        const seen = new Set<CoinSymbol>();
-        const out: PermissionRequest[] = [];
-        let hasCoinless = false;
-        for (const c of coins) {
-            if (!c) {
-                if (!hasCoinless) {
-                    hasCoinless = true;
-                    out.push({ permission });
-                }
-                continue;
-            }
-            const coin = this.toCoinSymbol(c.shortcut);
-            if (seen.has(coin)) continue;
-            seen.add(coin);
-            out.push({ permission, coin });
-        }
-
-        return out;
-    }
 
     public allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI_EVENTS.DEVICE_NOT_INITIALIZED)
 

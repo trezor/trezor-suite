@@ -6,11 +6,7 @@ import {
     EthereumSignTransaction as EthereumSignTransactionSchema,
     ExperimentalMethod,
 } from '@trezor/connect-common';
-import type {
-    EthereumTransaction,
-    EthereumTransactionEIP1559,
-    PermissionRequest,
-} from '@trezor/connect-common';
+import type { EthereumTransaction, EthereumTransactionEIP1559 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { MessagesSchema } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
@@ -152,10 +148,6 @@ export default class EthereumSignTransaction extends AbstractMethod<
                 this.requiredFirmwareCapabilities.push('eip7702');
             }
         }
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     async run() {

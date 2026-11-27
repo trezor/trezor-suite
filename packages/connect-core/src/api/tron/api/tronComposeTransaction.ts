@@ -1,6 +1,5 @@
 import { bytesToHex } from '@noble/hashes/utils.js';
 
-import { type PermissionRequest } from '@trezor/connect-common';
 import { TronComposeTransaction as TronComposeTransactionSchema } from '@trezor/connect-common';
 import { TRON_BANDWIDTH_FORMULA_OVERHEAD } from '@trezor/network-tron/constants';
 import { Assert } from '@trezor/schema-utils';
@@ -22,9 +21,6 @@ export default class TronComposeTransaction extends AbstractMethod<
         this.useDevice = false;
     }
 
-    get requiredPermissions(): PermissionRequest[] {
-        return [];
-    }
     // eslint-disable-next-line require-await
     async run() {
         const { contract, blockHash, blockHeight, fee_limit, data } = this.params;

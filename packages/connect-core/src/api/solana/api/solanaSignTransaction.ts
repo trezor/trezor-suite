@@ -2,7 +2,7 @@ import {
     SolanaSignTransaction as SolanaSignTransactionSchema,
     SolanaTxAdditionalInfo,
 } from '@trezor/connect-common';
-import type { PROTO, PermissionRequest } from '@trezor/connect-common';
+import type { PROTO } from '@trezor/connect-common';
 import solana from '@trezor/network-solana/runtime';
 import { Assert } from '@trezor/schema-utils';
 
@@ -77,10 +77,6 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
         if (isV1Transaction(payload.serializedTx)) {
             this.requiredFirmwareCapabilities = ['solanaV1Transaction'];
         }
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     // The definition version depends on the device firmware, so it is fetched in run(), once the

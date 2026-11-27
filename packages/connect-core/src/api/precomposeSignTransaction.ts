@@ -51,10 +51,6 @@ export default class PrecomposeSignTransaction extends AbstractMethod<
         this.useDevice = false;
     }
 
-    get requiredPermissions() {
-        return [];
-    }
-
     run() {
         const { inputs, outputs, coinInfo, refTxs } = this.params;
         const inputsTotal: BigNumber = inputs.reduce((bn, input) => {

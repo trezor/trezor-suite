@@ -1,9 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/RippleSignTransaction.js
 
-import {
-    type PermissionRequest,
-    RippleSignTransaction as RippleSignTransactionSchema,
-} from '@trezor/connect-common';
+import { RippleSignTransaction as RippleSignTransactionSchema } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -52,10 +49,6 @@ export default class RippleSignTransaction extends AbstractMethod<
 
         this.requiredDeviceCapabilities = ['Capability_Ripple'];
         this.requiredFirmwareCoins = [getMiscNetwork('xrp')];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     async run() {

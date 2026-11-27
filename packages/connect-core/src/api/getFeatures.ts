@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetFeatures.js
 
-import { type PermissionRequest, UI_EVENTS } from '@trezor/connect-common';
+import { UI_EVENTS } from '@trezor/connect-common';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
@@ -16,10 +16,6 @@ export default class GetFeatures extends AbstractMethod<'getFeatures'> {
         ];
         this.useDeviceState = false;
         this.useEmptyPassphrase = true;
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return [{ permission: 'read_features' }];
     }
 
     checkFirmwareRange() {

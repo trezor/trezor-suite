@@ -1,4 +1,3 @@
-import type { PermissionRequest } from '@trezor/connect-common';
 import { SolanaComposeTransaction as SolanaComposeTransactionSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { SYSTEM_PROGRAM_PUBLIC_KEY, tokenProgramsInfo } from '@trezor/network-solana/constants';
@@ -22,10 +21,6 @@ export default class SolanaComposeTransaction extends AbstractMethod<
 
         super(message, params);
         this.useDevice = false;
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return [];
     }
 
     async run() {
