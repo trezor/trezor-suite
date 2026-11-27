@@ -16,14 +16,13 @@ import {
 import { createThunk } from '@trezor/redux-utils';
 
 import {
-    type SendYieldTransactionDeps,
-    type SendYieldTransactionState,
-    getYieldSubmitErrorAnalyticsMessage,
-    isYieldPushError,
-    openYieldSimulationThunk,
-    sendYieldTransaction,
-    showYieldSubmitErrorThunk,
-} from './signingHelpers';
+    type SendEvmTransactionDeps,
+    type SendEvmTransactionState,
+    isEvmBroadcastError,
+    openEvmTransactionSimulationThunk,
+    sendEvmTokenTransaction,
+} from '../evmTransaction';
+import { getYieldSubmitErrorAnalyticsMessage, showYieldSubmitErrorThunk } from './signingHelpers';
 
 type SubmitYieldDepositPayload = {
     flowKey: string;
@@ -32,9 +31,9 @@ type SubmitYieldDepositPayload = {
 };
 
 type SubmitYieldDepositThunkState = ComposeYieldDepositTransactionThunkState &
-    SendYieldTransactionState;
+    SendEvmTransactionState;
 
-type SubmitYieldDepositThunkDeps = SendYieldTransactionDeps & {
+type SubmitYieldDepositThunkDeps = SendEvmTransactionDeps & {
     services: DesktopAnalyticsDep;
 };
 
@@ -100,7 +99,7 @@ export const submitYieldDepositThunk = createThunk<
             }
 
             const userAcceptedTxSimulation = await dispatch(
-                openYieldSimulationThunk(
+                openEvmTransactionSimulationThunk(
                     {
                         flow: flowType,
                         unsignedTx: result.unsignedTransaction,
@@ -128,22 +127,18 @@ export const submitYieldDepositThunk = createThunk<
                 return;
             }
 
-            const { selectedFee, selectedFeeLevel } = userAcceptedTxSimulation;
-
-            const sendResult = await sendYieldTransaction({
+            const sendResult = await sendEvmTokenTransaction({
                 account: flowData.account,
                 amount,
                 token: flowData.token,
                 unsignedTransaction: result.unsignedTransaction,
-                flowKey,
-                flowType,
+                yieldFlow: { flowKey, flowType },
+                device,
+                txType: 'yield',
+                simulation: userAcceptedTxSimulation,
                 dispatch,
                 getState,
-                selectedFee,
-                selectedFeeLevel,
             });
-
-            userAcceptedTxSimulation.resolve();
 
             // A deliberate user cancel — not reported as a failure.
             if (sendResult.status === 'cancelled') {
@@ -182,7 +177,7 @@ export const submitYieldDepositThunk = createThunk<
                 }),
             );
         } catch (error) {
-            if (isYieldPushError(error)) {
+            if (isEvmBroadcastError(error)) {
                 dispatch(
                     transactionsActions.transactionBroadcastStatus({
                         account: flowData.account,

@@ -1,30 +1,35 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import {
-    MODAL_OPEN_USER_CONTEXT,
-    modalReducer,
-    openDeferredModal,
-    selectUserContextModalPayload,
-} from '@suite/modal';
+import { MODAL_OPEN_USER_CONTEXT, modalReducer, selectUserContextModalPayload } from '@suite/modal';
 import { USER_CANCELLED_ERROR_CODES } from '@suite-common/earn-stablecoin';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type EvmSelectedFee, type FeeLevelLabel } from '@suite-common/wallet-types';
+import { selectYieldTxReview, yieldReducer } from '@suite-common/wallet-core';
+import {
+    type Account,
+    type EvmSelectedFee,
+    type FeeLevelLabel,
+    type FormStateTxType,
+} from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect, { asDeviceUniquePath } from '@trezor/connect';
 import { asGetter } from '@trezor/dependency-injection';
+import { createDeferred } from '@trezor/utils';
+
+import { cancelSigningModalOnDisconnectThunk } from '#src/actions/suite/cancelSigningModalOnDisconnectThunk';
 
 import {
-    type SendYieldTransactionDeps,
-    type SendYieldTransactionState,
-    openYieldSimulationThunk,
-    sendYieldTransaction,
-} from './signingHelpers';
+    type SendEvmTransactionDeps,
+    type SendEvmTransactionState,
+    openEvmTransactionSimulationThunk,
+    sendEvmTokenTransaction,
+} from './evmTransaction';
 
 const mockBuildStablecoinYieldTransactionReview = jest.fn();
 const mockDevice = mockSuiteDevice({
+    path: 'current-path',
     connected: true,
     available: true,
     state: { staticSessionId: 'wallet@device:0' },
@@ -57,15 +62,20 @@ const account = mockWalletAccount({
 }) as Account;
 
 const createSigningStore = (isReviewModalConfirmed: boolean) => {
-    const { store } = createTestCompositionRoot<
-        SendYieldTransactionDeps,
-        SendYieldTransactionState
-    >({
+    const { store } = createTestCompositionRoot<SendEvmTransactionDeps, SendEvmTransactionState>({
         preloadedState: {},
-        reducer: (state, action) => ({
-            ...state!,
-            modal: modalReducer(state?.modal, action),
-        }),
+        reducer: (state, action) => {
+            const wallet = state?.wallet;
+
+            return {
+                ...state!,
+                modal: modalReducer(state?.modal, action),
+                wallet: {
+                    ...wallet!,
+                    stablecoinYield: yieldReducer(wallet?.stablecoinYield, action),
+                },
+            };
+        },
         services: () => ({
             analytics: mockDesktopAnalytics(),
             networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
@@ -96,6 +106,9 @@ type SendTransactionParams = {
     unsignedTransaction?: string;
     store?: ReturnType<typeof createSigningStore>;
     sourceAccount?: Account;
+    owner?: typeof mockDevice;
+    txType?: FormStateTxType;
+    resolveSimulation?: () => void;
 };
 
 const sendTransaction = ({
@@ -105,8 +118,11 @@ const sendTransaction = ({
     unsignedTransaction = '{}',
     store = createSigningStore(isReviewModalConfirmed),
     sourceAccount = account,
+    owner = mockDevice,
+    txType = 'yield',
+    resolveSimulation = jest.fn(),
 }: SendTransactionParams = {}) =>
-    sendYieldTransaction({
+    sendEvmTokenTransaction({
         account: sourceAccount,
         amount: '100',
         token: {
@@ -116,15 +132,15 @@ const sendTransaction = ({
             contractAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
         },
         unsignedTransaction,
-        flowKey: 'flow-1',
-        flowType: 'deposit',
+        yieldFlow: { flowKey: 'flow-1', flowType: 'deposit' },
+        device: owner,
+        txType,
         dispatch: store.dispatch,
         getState: store.getState,
-        selectedFee,
-        selectedFeeLevel,
+        simulation: { selectedFee, selectedFeeLevel, resolve: resolveSimulation },
     });
 
-describe('sendYieldTransaction', () => {
+describe('sendEvmTokenTransaction', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockBuildStablecoinYieldTransactionReview.mockReturnValue({
@@ -154,7 +170,7 @@ describe('sendYieldTransaction', () => {
         const sourceAccount = { ...account, deviceState: 'another-wallet@device:0' } as const;
         const store = createSigningStore(false);
         await expect(
-            openYieldSimulationThunk(
+            openEvmTransactionSimulationThunk(
                 { flow: 'deposit', account: sourceAccount, unsignedTx: '{}' },
                 mockDevice,
             )(store.dispatch, store.getState),
@@ -164,6 +180,20 @@ describe('sendYieldTransaction', () => {
             cause: 'Wallet_Mismatch',
         });
         expect(TrezorConnect.ethereumSignTransaction).not.toHaveBeenCalled();
+    });
+
+    it('rejects a device path change after simulation, even for the same wallet', async () => {
+        const owner = { ...mockDevice, path: asDeviceUniquePath('previous-path') };
+        const resolveSimulation = jest.fn();
+        const store = createSigningStore(false);
+
+        await expect(sendTransaction({ owner, resolveSimulation, store })).rejects.toMatchObject({
+            cause: 'Device_Disconnected',
+        });
+
+        expect(TrezorConnect.ethereumSignTransaction).not.toHaveBeenCalled();
+        expect(store.getActions()).toEqual([]);
+        expect(resolveSimulation).toHaveBeenCalledTimes(1);
     });
 
     it.each(['low', 'normal', 'high', 'custom'] as const)(
@@ -177,6 +207,7 @@ describe('sendYieldTransaction', () => {
 
             await sendTransaction({
                 store,
+                txType: 'stake',
                 selectedFeeLevel,
                 selectedFee: {
                     type: 'legacy',
@@ -197,7 +228,11 @@ describe('sendYieldTransaction', () => {
             expect(store.getActions()).toContainEqual(
                 expect.objectContaining({
                     payload: expect.objectContaining({
-                        precomposedForm: expect.objectContaining({ selectedFee: selectedFeeLevel }),
+                        precomposedForm: expect.objectContaining({
+                            selectedFee: selectedFeeLevel,
+                            txType: 'stake',
+                            ethereumNonce: '1',
+                        }),
                     }),
                 }),
             );
@@ -251,29 +286,45 @@ describe('sendYieldTransaction', () => {
         expect(selectUserContextModalPayload(store.getState())).toBeUndefined();
     });
 
-    it('leaves a replacement review open if the original broadcast rejects', async () => {
-        jest.spyOn(console, 'error').mockImplementation();
+    it('keeps the next transaction review intact when an earlier broadcast rejects', async () => {
         const store = createSigningStore(true);
+        const broadcastStarted = createDeferred<void>();
+        const firstBroadcast = createDeferred<never>();
         const error = new Error('Transport unavailable');
-        let replacementDecision: Promise<boolean> | undefined;
         jest.spyOn(TrezorBlockchain, 'pushTransaction').mockImplementationOnce(() => {
-            replacementDecision = store.dispatch(
-                openDeferredModal(
-                    { type: 'review-transaction' },
-                    { devicePath: asDeviceUniquePath('another-device'), cancelWith: false },
-                ),
-            );
+            broadcastStarted.resolve();
 
-            return Promise.reject(error);
+            return firstBroadcast.promise;
         });
 
-        await expect(sendTransaction({ store })).rejects.toBe(error);
+        const firstSend = sendTransaction({ store });
+        await broadcastStarted.promise;
+        store.dispatch(cancelSigningModalOnDisconnectThunk(asDeviceUniquePath('current-path')));
+        expect(selectUserContextModalPayload(store.getState())).toBeUndefined();
 
-        const activeModal = selectUserContextModalPayload(store.getState());
-        expect(replacementDecision).toBeDefined();
-        expect(activeModal?.type === 'review-transaction' && activeModal.decision.promise).toBe(
-            replacementDecision,
-        );
+        const reviewOpened = createDeferred<void>();
+        const unsubscribe = store.subscribe(() => {
+            if (selectUserContextModalPayload(store.getState())?.type === 'review-transaction') {
+                unsubscribe();
+                reviewOpened.resolve();
+            }
+        });
+        const secondSend = sendTransaction({ store });
+        await reviewOpened.promise;
+        const review = selectYieldTxReview(store.getState());
+        const modal = selectUserContextModalPayload(store.getState());
+        if (modal?.type !== 'review-transaction') {
+            throw new Error('Expected the next transaction review.');
+        }
+
+        firstBroadcast.reject(error);
+        await expect(firstSend).rejects.toBe(error);
+
+        expect(selectUserContextModalPayload(store.getState())).toBe(modal);
+        expect(selectYieldTxReview(store.getState())).toBe(review);
+        modal.decision.resolve(false);
+        await expect(secondSend).resolves.toEqual({ status: 'cancelled', stage: 'review' });
+        expect(selectYieldTxReview(store.getState()).precomposedForm).toBeUndefined();
     });
 
     it('returns sent with the txid and the precomposed fee after broadcast', async () => {

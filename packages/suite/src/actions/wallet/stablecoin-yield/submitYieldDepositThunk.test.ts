@@ -19,21 +19,21 @@ import { asGetter } from '@trezor/dependency-injection';
 
 import {
     PUSH_TRANSACTION_FAILED_CAUSE,
-    type SendYieldTransactionDeps,
-    type SendYieldTransactionState,
-} from './signingHelpers';
+    type SendEvmTransactionDeps,
+    type SendEvmTransactionState,
+} from '../evmTransaction';
 import { submitYieldDepositThunk } from './submitYieldDepositThunk';
 
 const mockComposeYieldDepositTransactionThunk = jest.fn();
 const mockOpenDeferredModal = jest.fn();
-const mockSendYieldTransaction = jest.fn();
+const mockSendEvmTokenTransaction = jest.fn();
 
 const mockSentResult = (txid: string) => ({ status: 'sent' as const, txid, fee: '31500000000' });
 const mockCancelledResult = { status: 'cancelled' as const, stage: 'signing' as const };
 
-type SubmitYieldDepositThunkDeps = SendYieldTransactionDeps & { services: DesktopAnalyticsDep };
+type SubmitYieldDepositThunkDeps = SendEvmTransactionDeps & { services: DesktopAnalyticsDep };
 type SubmitYieldDepositThunkState = ComposeYieldDepositTransactionThunkState &
-    SendYieldTransactionState;
+    SendEvmTransactionState;
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
@@ -45,9 +45,9 @@ jest.mock('@suite/modal', () => ({
     openDeferredModal: (payload: unknown) => mockOpenDeferredModal(payload),
 }));
 
-jest.mock('./signingHelpers', () => ({
-    ...jest.requireActual('./signingHelpers'),
-    sendYieldTransaction: (payload: unknown) => mockSendYieldTransaction(payload),
+jest.mock('../evmTransaction', () => ({
+    ...jest.requireActual('../evmTransaction'),
+    sendEvmTokenTransaction: (payload: unknown) => mockSendEvmTokenTransaction(payload),
 }));
 
 const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') }) as Account;
@@ -140,7 +140,7 @@ describe('submitYieldDepositThunk', () => {
                 },
             });
             expect(mockOpenDeferredModal).not.toHaveBeenCalled();
-            expect(mockSendYieldTransaction).not.toHaveBeenCalled();
+            expect(mockSendEvmTokenTransaction).not.toHaveBeenCalled();
         },
     );
 
@@ -168,7 +168,7 @@ describe('submitYieldDepositThunk', () => {
                     selectedFeeLevel: 'normal',
                 }),
         );
-        mockSendYieldTransaction.mockResolvedValue(mockSentResult('0xdeposit'));
+        mockSendEvmTokenTransaction.mockResolvedValue(mockSentResult('0xdeposit'));
     });
 
     it('passes the selected fee level from simulation to signing', async () => {
@@ -184,14 +184,17 @@ describe('submitYieldDepositThunk', () => {
 
         await dispatchDeposit(jest.fn());
 
-        expect(mockSendYieldTransaction).toHaveBeenCalledWith(
-            expect.objectContaining({ selectedFee: null, selectedFeeLevel: 'low' }),
+        expect(mockSendEvmTokenTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({
+                txType: 'yield',
+                simulation: expect.objectContaining({ selectedFee: null, selectedFeeLevel: 'low' }),
+            }),
         );
     });
 
     it('does not report an error when the user cancels the signing', async () => {
         const report = jest.fn();
-        mockSendYieldTransaction.mockResolvedValue(mockCancelledResult);
+        mockSendEvmTokenTransaction.mockResolvedValue(mockCancelledResult);
 
         const store = await dispatchDeposit(report);
 
@@ -214,7 +217,7 @@ describe('submitYieldDepositThunk', () => {
 
         await dispatchDeposit(report);
 
-        expect(mockSendYieldTransaction).not.toHaveBeenCalled();
+        expect(mockSendEvmTokenTransaction).not.toHaveBeenCalled();
         expect(report).not.toHaveBeenCalled();
     });
 
@@ -261,7 +264,7 @@ describe('submitYieldDepositThunk', () => {
     });
 
     it('registers a push failure without specific backend details', async () => {
-        mockSendYieldTransaction.mockRejectedValue(
+        mockSendEvmTokenTransaction.mockRejectedValue(
             new Error('private backend error', { cause: PUSH_TRANSACTION_FAILED_CAUSE }),
         );
         const store = await dispatchDeposit(jest.fn());
@@ -275,7 +278,7 @@ describe('submitYieldDepositThunk', () => {
 
     it('still reports submit-failed when the signing throws', async () => {
         const report = jest.fn();
-        mockSendYieldTransaction.mockRejectedValue(new Error('boom'));
+        mockSendEvmTokenTransaction.mockRejectedValue(new Error('boom'));
 
         const store = await dispatchDeposit(report);
 
@@ -295,7 +298,7 @@ describe('submitYieldDepositThunk', () => {
 
     it.each(['signing', 'review'] as const)('reports a cancellation at %s', async stage => {
         const report = jest.fn();
-        mockSendYieldTransaction.mockResolvedValue({ status: 'cancelled', stage });
+        mockSendEvmTokenTransaction.mockResolvedValue({ status: 'cancelled', stage });
         mockOpenDeferredModal.mockImplementation(
             () => () =>
                 Promise.resolve({
