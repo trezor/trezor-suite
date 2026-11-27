@@ -16,7 +16,7 @@
 - [Architecture decision records](./adr/README.md)
     - [ADR template](./adr/TEMPLATE.md)
     - [Separate application composition from reusable building blocks](./adr/001-separate-app-and-lego-code.md)
-    - [Network modules expose a headless, typed contract](./adr/004-network-modules-are-headless.md)
+    - [Headless composition of network modules](./adr/004-headless-composition-of-network-modules.md)
 - [Analytics](./analytics/index.md)
     - [AWS](./analytics/aws.md)
     - [Sentry](./analytics/sentry.md)
