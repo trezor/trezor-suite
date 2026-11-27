@@ -20,6 +20,7 @@ import {
     getNetwork,
     getNetworkByCoingeckoId,
     getNetworkByTradeCryptoId,
+    getNetworkOptional,
 } from '@suite-common/wallet-config';
 import type { Account, AccountKey, FormStateTrading } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
@@ -126,6 +127,11 @@ export function getCryptoId(
 
     return network.tradeCryptoId as CryptoId;
 }
+
+// Networks without a trade id (custom EVM networks, some testnets) have no provider to trade them.
+// A custom network may already be unregistered while its account is still rendered.
+export const isNetworkTradable = (networkSymbol: NetworkSymbol) =>
+    getNetworkOptional(networkSymbol)?.tradeCryptoId !== undefined;
 
 export const isCryptoIdForNativeToken = (cryptoId: CryptoId) => {
     const { contractAddress } = parseCryptoId(cryptoId);

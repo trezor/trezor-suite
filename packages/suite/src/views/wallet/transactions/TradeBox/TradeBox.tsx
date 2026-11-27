@@ -2,6 +2,7 @@ import { AssetSymbol } from '@suite/assets';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectIsRegionRestricted } from '@suite/regions';
+import { isNetworkTradable } from '@suite-common/trading';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -31,6 +32,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
     const { hasEarnOption, yieldBadge } = useTradeBoxEarnOptions(account);
     const isRegionRestricted = useSelector(selectIsRegionRestricted);
+    const canTrade = !isRegionRestricted && isNetworkTradable(account.symbol);
 
     return (
         <DashboardSection>
@@ -105,7 +107,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                                 <Translation id="TR_EARN" />
                             </TradeBoxActionButton>
                         )}
-                        {!isRegionRestricted && (
+                        {canTrade && (
                             <>
                                 <TradeBoxActionButton account={account} type="buy">
                                     <Translation id="TR_NAV_BUY" />
@@ -119,7 +121,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                                 </TradeBoxActionButton>
                             </>
                         )}
-                        {!hasBitcoinOnlyFirmware(device) && !isRegionRestricted && (
+                        {!hasBitcoinOnlyFirmware(device) && canTrade && (
                             <TradeBoxActionButton
                                 account={account}
                                 type="exchange"

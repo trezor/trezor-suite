@@ -101,6 +101,7 @@ import {
     getTradingQuotesDedupedByProvider,
     isBuyTrade,
     isExchangeProvider,
+    isNetworkTradable,
     testnetToProdCryptoId,
 } from '../utils';
 import {
@@ -672,8 +673,9 @@ export const selectIsTradingBuyAvailableForNetworkSymbol = (
     state: TradingRootState,
     networkSymbol: NetworkSymbol,
 ): boolean =>
-    !selectHasTradingBuyProviders(state) ||
-    selectTradingBuyCryptoIdSet(state).has(getCryptoId(networkSymbol));
+    isNetworkTradable(networkSymbol) &&
+    (!selectHasTradingBuyProviders(state) ||
+        selectTradingBuyCryptoIdSet(state).has(getCryptoId(networkSymbol)));
 
 export const selectTradingSellSupportedCryptoIds = createNetworkMemoizedSelector(
     [
