@@ -1,12 +1,15 @@
+import { useFormContext } from 'react-hook-form';
+
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type FormState } from '@suite-common/wallet-types';
 import { Banner, Column, Modal } from '@trezor/components';
 import { WarningCircleIcon } from '@trezor/icons';
 
 import { FeeLevels } from '#src/components/wallet/Fees/CollapsibleFees/FeeLevels/FeeLevels';
 import { useFeeLevels } from '#src/components/wallet/Fees/CollapsibleFees/FeeLevels/useFeeLevels';
 import { FeesContext, type FeesContextType } from '#src/components/wallet/Fees/context/FeesContext';
+import { useCustomFeeValidation } from '#src/hooks/wallet/form/useCustomFeeValidation';
 
 import { TradingExchangeNetworkFeeModalTotal } from './TradingExchangeNetworkFeeModalTotal';
 
@@ -26,6 +29,11 @@ export const TradingExchangeNetworkFeeModalLayout = ({
     onClose,
 }: TradingExchangeNetworkFeeModalLayoutProps) => {
     const { isTrc20Transfer, txMaxFee } = useFeeLevels(fees);
+    const form = useFormContext<FormState>();
+    const { hasCustomFeeErrors } = useCustomFeeValidation(form, {
+        feeInfo: fees.feeInfo,
+        networkType: fees.networkType,
+    });
     const composedLevel = fees.composedLevels?.[fees.selectedFee];
 
     return (
@@ -37,7 +45,7 @@ export const TradingExchangeNetworkFeeModalLayout = ({
             bottomContent={
                 <>
                     <Modal.Button
-                        isDisabled={isConfirmDisabled}
+                        isDisabled={isConfirmDisabled || hasCustomFeeErrors}
                         onClick={onConfirm}
                         data-testid="@trading/network-fee-modal/confirm"
                     >

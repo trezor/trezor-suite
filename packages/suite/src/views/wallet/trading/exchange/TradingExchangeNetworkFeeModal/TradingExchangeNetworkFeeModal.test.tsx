@@ -17,7 +17,10 @@ import {
 
 const mockComposeRequest = mock<ReturnType<typeof useCompose>['composeRequest']>();
 
-jest.mock('@suite/intl', () => ({ Translation: () => null }));
+jest.mock('@suite/intl', () => ({
+    Translation: () => null,
+    useTranslation: () => ({ translationString: (id: string) => id }),
+}));
 jest.mock('@trezor/components', () => {
     const Container = ({ children }: PropsWithChildren) => children;
 
