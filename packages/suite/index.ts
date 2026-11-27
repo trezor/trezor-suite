@@ -119,6 +119,7 @@ export { PortfolioCard } from './src/views/dashboard/PortfolioCard/PortfolioCard
 export { useNotificationForDisconnectedDevice } from './src/views/dashboard/useNotificationForDisconnectedDevice';
 export { HomeAssetDashboard } from './src/views/home/HomeAssetDashboard';
 export { AssetFirstHomeExperiment } from './src/views/home/AssetFirstHomeExperiment';
+export { useIsAssetFirstHome } from './src/views/home/useIsAssetFirstHome';
 export { HiddenTokensList } from './src/views/dashboard/HiddenTokens/HiddenTokensList';
 export { useDiscovery } from './src/hooks/suite/useDiscovery';
 export { AssetDetailBalance } from './src/views/home/AssetDetail/AssetDetailBalance';
