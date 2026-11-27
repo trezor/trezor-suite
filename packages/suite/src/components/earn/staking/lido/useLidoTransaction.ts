@@ -63,6 +63,7 @@ export type LidoTransaction = {
     pendingTxid: string | null;
     status: EvmPendingTxStatus | null;
     isConfirmed: boolean;
+    resetBroadcast: () => void;
     // The followed transaction as the account knows it; null until the account has it.
     transaction: WalletAccountTransaction | null;
     openTxDetail: (txid: string) => void;
@@ -220,6 +221,7 @@ export const useLidoTransaction = ({
         pendingTxid,
         status,
         isConfirmed: broadcast !== null && status === 'confirmed',
+        resetBroadcast: () => setBroadcast(null),
         transaction,
         openTxDetail,
     };

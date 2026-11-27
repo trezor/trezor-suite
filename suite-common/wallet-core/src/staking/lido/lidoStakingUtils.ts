@@ -267,6 +267,10 @@ export const buildLidoRequestWithdrawalsTransaction = ({
     return data === null ? null : { to: deployment.withdrawalQueue, data };
 };
 
+// The selector, two array heads and two lengths take 132 bytes. Each NFT adds 64 bytes.
+// 93 requests fit within the firmware's 6,144-byte clear-signing limit.
+export const LIDO_MAX_CLAIM_REQUESTS_PER_TRANSACTION = 93;
+
 type BuildLidoClaimWithdrawalsTransactionParams = {
     deployment: LidoDeployment;
     requestIds: readonly string[];
@@ -278,7 +282,7 @@ export const buildLidoClaimWithdrawalsTransaction = ({
     requestIds,
     hints,
 }: BuildLidoClaimWithdrawalsTransactionParams): LidoTransactionData | null => {
-    if (requestIds.length === 0) {
+    if (requestIds.length === 0 || requestIds.length > LIDO_MAX_CLAIM_REQUESTS_PER_TRANSACTION) {
         return null;
     }
 

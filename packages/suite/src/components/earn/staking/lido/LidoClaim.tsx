@@ -1,13 +1,17 @@
+import { useState } from 'react';
+
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    LIDO_MAX_CLAIM_REQUESTS_PER_TRANSACTION,
     type YieldFlowDisplayToken,
     buildLidoClaimWithdrawalsTransaction,
     getLidoClaimableAmount,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Button, Card, Column, Row, Text } from '@trezor/components';
+import { Calldata } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
@@ -31,6 +35,8 @@ export const LidoClaim = ({ account }: LidoClaimProps) => {
         refetch: refetchWithdrawals,
     } = useLidoWithdrawalRequests(account);
     const transaction = useLidoTransaction({ account, kind: 'claim' });
+    // Query data can still contain the previous batch while the confirmed claim is being refreshed.
+    const [claimedIds, setClaimedIds] = useState<ReadonlySet<string>>(() => new Set());
 
     const { decimals } = getNetwork(account.symbol);
     const nativeToken: YieldFlowDisplayToken = {
@@ -46,12 +52,34 @@ export const LidoClaim = ({ account }: LidoClaimProps) => {
         );
     }
 
+    const confirmedClaim = transaction.isConfirmed
+        ? Calldata.evm.lido.claimWithdrawals.decode(transaction.broadcast?.operation.data)
+        : null;
+    const settledIds = new Set([
+        ...claimedIds,
+        ...(confirmedClaim?.requestIds.map(id => id.toString()) ?? []),
+    ]);
+    const unclaimedRequests = claimableRequests.filter(({ id }) => !settledIds.has(id));
+
     if (transaction.isConfirmed) {
         return (
             <LidoFlowComplete
                 account={account}
                 kind="claim"
                 heading={<Translation id="TR_EARN_LIDO_CLAIM_COMPLETE" />}
+                nextAction={
+                    confirmedClaim && unclaimedRequests.length > 0 ? (
+                        <Button
+                            onClick={() => {
+                                setClaimedIds(settledIds);
+                                transaction.resetBroadcast();
+                            }}
+                            data-testid="@staking/lido-claim/next-batch"
+                        >
+                            <Translation id="TR_EARN_LIDO_CLAIM_NEXT_BATCH" />
+                        </Button>
+                    ) : undefined
+                }
                 description={
                     <Translation
                         id="TR_EARN_LIDO_CLAIM_COMPLETE_DESCRIPTION"
@@ -62,18 +90,19 @@ export const LidoClaim = ({ account }: LidoClaimProps) => {
         );
     }
 
-    // What the queue pays out for the finalized requests, read from the queue itself.
-    const claimableAmount = new BigNumber(getLidoClaimableAmount(claimableRequests))
+    const batch = unclaimedRequests.slice(0, LIDO_MAX_CLAIM_REQUESTS_PER_TRANSACTION);
+    const remainingCount = unclaimedRequests.length - batch.length;
+    const claimableAmount = new BigNumber(getLidoClaimableAmount(batch))
         .shiftedBy(-decimals)
         .toFixed();
-    const hasClaimableRequests = claimableRequests.length > 0;
+    const hasClaimableRequests = batch.length > 0;
     const hasPendingTransaction = transaction.pendingTxid !== null;
 
     const handleClaim = () => {
         const claimTransaction = buildLidoClaimWithdrawalsTransaction({
             deployment,
-            requestIds: claimableRequests.map(({ id }) => id),
-            hints: claimableRequests.map(({ hint }) => hint),
+            requestIds: batch.map(({ id }) => id),
+            hints: batch.map(({ hint }) => hint),
         });
 
         if (claimTransaction === null) {
@@ -120,6 +149,18 @@ export const LidoClaim = ({ account }: LidoClaimProps) => {
                         </Text>
                     </Row>
                 </Card>
+            )}
+
+            {remainingCount > 0 && !hasPendingTransaction && (
+                <Banner
+                    intent="info"
+                    description={
+                        <Translation
+                            id="TR_EARN_LIDO_CLAIM_BATCH_DESCRIPTION"
+                            values={{ count: batch.length, remainingCount }}
+                        />
+                    }
+                />
             )}
 
             {/* An empty queue is only reported once a read has said so. */}

@@ -15,6 +15,7 @@ type LidoFlowCompleteProps = {
     heading: ReactNode;
     description: ReactNode;
     statusLabelId?: TranslationKey;
+    nextAction?: ReactNode;
     children?: ReactNode;
 };
 
@@ -24,6 +25,7 @@ export const LidoFlowComplete = ({
     heading,
     description,
     statusLabelId,
+    nextAction,
     children,
 }: LidoFlowCompleteProps) => {
     const navigateToLidoRoute = useNavigateToLidoRoute(account);
@@ -52,6 +54,7 @@ export const LidoFlowComplete = ({
             >
                 {children}
             </EarnFlowStatusCard>
+            {nextAction}
         </EarnFlowComplete>
     );
 };

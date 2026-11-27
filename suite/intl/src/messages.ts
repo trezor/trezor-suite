@@ -12548,6 +12548,15 @@ export const messages = defineMessages({
         id: 'TR_EARN_LIDO_CLAIM_SUBMIT',
         defaultMessage: 'Claim {displaySymbol}',
     },
+    TR_EARN_LIDO_CLAIM_BATCH_DESCRIPTION: {
+        id: 'TR_EARN_LIDO_CLAIM_BATCH_DESCRIPTION',
+        defaultMessage:
+            'This transaction claims {count} withdrawal NFTs. Claim the remaining {remainingCount, plural, one {# NFT} other {# NFTs}} in another transaction.',
+    },
+    TR_EARN_LIDO_CLAIM_NEXT_BATCH: {
+        id: 'TR_EARN_LIDO_CLAIM_NEXT_BATCH',
+        defaultMessage: 'Next batch',
+    },
     TR_EARN_LIDO_CLAIM_COMPLETE: {
         id: 'TR_EARN_LIDO_CLAIM_COMPLETE',
         defaultMessage: 'Claimed',
