@@ -4,7 +4,11 @@ import { type ThunkDispatch } from 'redux-thunk';
 import { openModal } from '@suite/modal';
 import { type SuiteSettingsRootState, selectIsEntropyCheckEnabled } from '@suite/settings';
 import { type DeviceTutorialResult } from '@suite-common/analytics';
-import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import {
+    DEVICE_MODULE_PREFIX,
+    type DeviceRootState,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { FIRMWARE_MODULE_PREFIX } from '@suite-common/firmware';
 import {
     Feature,
@@ -50,33 +54,29 @@ export const applySettingsThunk =
 
 type ShowDeviceTutorialThunkState = DeviceRootState;
 
-export const showDeviceTutorialThunk =
-    () =>
-    async (
-        dispatch: Dispatch<UnknownAction>,
-        getState: () => ShowDeviceTutorialThunkState,
-    ): Promise<DeviceTutorialResult | undefined> => {
-        const device = selectSelectedDevice(getState());
-        if (!device) return;
+export const showDeviceTutorialThunk = createThunk<
+    DeviceTutorialResult | undefined,
+    void,
+    { state: ShowDeviceTutorialThunkState }
+>(`${DEVICE_MODULE_PREFIX}/showDeviceTutorial`, async (_, { dispatch, getState }) => {
+    const device = selectSelectedDevice(getState());
+    if (!device) return;
 
-        const result = await TrezorConnect.showDeviceTutorial({
-            device: {
-                path: device.path,
-            },
-        });
-        if (result.success) return 'completed';
+    const result = await TrezorConnect.showDeviceTutorial({
+        device: {
+            path: device.path,
+        },
+    });
+    if (result.success) return 'completed';
 
-        if (
-            result.error.code === 'Method_Cancel' ||
-            result.error.code === 'Failure_ActionCancelled'
-        ) {
-            return 'cancelled';
-        }
+    if (result.error.code === 'Method_Cancel' || result.error.code === 'Failure_ActionCancelled') {
+        return 'cancelled';
+    }
 
-        dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
+    dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
 
-        return 'failed';
-    };
+    return 'failed';
+});
 
 type ChangePinThunkState = DeviceRootState;
 

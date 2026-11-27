@@ -4,7 +4,7 @@ import { selectSelectedAccount } from '@suite/account';
 import { messages } from '@suite/intl';
 import { type MODAL_CONTEXT_DEVICE } from '@suite/modal';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectDeviceButtonRequests, selectSelectedDevice } from '@suite-common/device';
 import TrezorConnect, { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
@@ -21,6 +21,9 @@ import { TransactionReviewModal } from '../TransactionReviewModal/TransactionRev
 import { ConnectAddressConfirmation } from '../UserContextModal/ConnectAddressConfirmation';
 import { ConnectSelectAccount } from '../UserContextModal/ConnectSelectAccount/ConnectSelectAccount';
 
+// Name of the firmware tutorial layout, sent with `ButtonRequest_Other`.
+const DEVICE_TUTORIAL_BUTTON_REQUEST_NAME = 'tutorial';
+
 /** Modals requested by Device from `trezor-connect` */
 export const DeviceContextModal = ({
     windowType,
@@ -30,6 +33,7 @@ export const DeviceContextModal = ({
     const intl = useIntl();
     const selectedAccount = useSelector(selectSelectedAccount);
     const popupCallState = useSelector(state => selectConnectPopupCall(state)?.state);
+    const buttonRequests = useSelector(selectDeviceButtonRequests);
 
     if (!device) return null;
     const abort = () => TrezorConnect.cancel({ reason: intl.formatMessage(messages.TR_CANCELLED) });
@@ -54,6 +58,9 @@ export const DeviceContextModal = ({
         }
         case 'ButtonRequest_Other': {
             if (data?.type === 'message') return <SignMessageModal device={device} {...data} />;
+            if (buttonRequests.at(-1)?.name === DEVICE_TUTORIAL_BUTTON_REQUEST_NAME) {
+                return <ConfirmActionModal device={device} pillTitle="TR_CONTINUE_ON_TREZOR" />;
+            }
 
             return <ConfirmActionModal device={device} />;
         }

@@ -15,12 +15,14 @@ interface ConfirmActionProps {
     cancelable?: boolean;
     device: TrezorDevice;
     title?: TranslationKey;
+    pillTitle?: TranslationKey;
     onCancel?: () => void;
     enableBackdropClick?: boolean;
 }
 
 export const ConfirmActionModal = ({
     title,
+    pillTitle = 'TR_CONFIRM_ON_TREZOR',
     device,
     onCancel,
     cancelable = true,
@@ -42,7 +44,7 @@ export const ConfirmActionModal = ({
             canSwitchDevice
         >
             <ConfirmOnDevicePill
-                title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+                title={<Translation id={pillTitle} />}
                 deviceModelInternal={getDeviceInternalModel(device)}
                 deviceUnitColor={getDeviceColorVariant(device)}
                 onCancel={cancelable ? handleCancel : undefined}

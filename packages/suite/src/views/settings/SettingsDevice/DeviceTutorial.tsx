@@ -16,7 +16,7 @@ export const DeviceTutorial = ({ isDeviceLocked }: DeviceTutorialProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const handleClick = async () => {
-        const result = await dispatch(showDeviceTutorialThunk());
+        const result = await dispatch(showDeviceTutorialThunk()).unwrap();
 
         if (result) {
             analytics.report({
