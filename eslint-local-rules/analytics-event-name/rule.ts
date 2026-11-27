@@ -1,56 +1,6 @@
 import type { Rule } from 'eslint';
 
-const allowedDomains = new Set([
-    'accounts',
-    'app',
-    'assets',
-    'coin',
-    'dashboard',
-    'device',
-    'earn',
-    'feedback',
-    'firmware',
-    'guide',
-    'menu',
-    'navigate',
-    'onboarding',
-    'passphrase',
-    'promo',
-    'receive',
-    'send',
-    'settings',
-    'staking',
-    'yield',
-    'trading',
-    'transaction',
-    'wallet-connect',
-]);
-const kebabCaseSegment = /^[a-z0-9]+(-[a-z0-9]+)*$/;
-
-const validateEventName = (
-    value: string,
-): { messageId: string; data?: Record<string, string> } | null => {
-    if (!value.includes('/')) {
-        return { messageId: 'invalidFormat' };
-    }
-    const parts = value.split('/');
-    const domain = parts[0];
-    const eventSegments = parts.slice(1);
-    if (domain === undefined) {
-        return { messageId: 'invalidFormat' };
-    }
-
-    if (!allowedDomains.has(domain)) {
-        return { messageId: 'invalidDomain', data: { domain } };
-    }
-    for (const segment of eventSegments) {
-        if (!kebabCaseSegment.test(segment)) {
-            return { messageId: 'notKebabCase', data: { eventPart: value } };
-        }
-    }
-
-    return null;
-};
+import { ANALYTICS_ALLOWED_DOMAINS, validateAnalyticsEventName } from '@suite-common/analytics';
 
 export const analyticsEventNameRule: Rule.RuleModule = {
     meta: {
@@ -63,8 +13,8 @@ export const analyticsEventNameRule: Rule.RuleModule = {
         },
         messages: {
             invalidFormat:
-                "Event name must be in format 'domain/event' (e.g. 'settings/app-log-exported'). Use one of the allowed domains and kebab-case for the event part.",
-            invalidDomain: `Invalid domain '{{domain}}'. Allowed: ${[...allowedDomains].join(', ')}.`,
+                "Event name must be in format 'domain/event' with exactly one '/' (e.g. 'settings/app-log-exported'). Use one of the allowed domains and kebab-case for the event part.",
+            invalidDomain: `Invalid domain '{{domain}}'. Allowed: ${ANALYTICS_ALLOWED_DOMAINS.join(', ')}.`,
             notKebabCase:
                 "Event part after domain must use kebab-case (e.g. 'app-log-exported'), got '{{eventPart}}'.",
         },
@@ -89,12 +39,12 @@ export const analyticsEventNameRule: Rule.RuleModule = {
                         continue;
                     }
 
-                    const error = validateEventName(initializer.value);
+                    const error = validateAnalyticsEventName(initializer.value);
                     if (error) {
                         context.report({
                             node: initializer,
                             messageId: error.messageId,
-                            data: error.data ?? {},
+                            data: 'data' in error ? error.data : {},
                         });
                     }
                 }

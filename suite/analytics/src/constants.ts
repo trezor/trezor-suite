@@ -1,5 +1,6 @@
 export enum EventType {
     AccountsActions = 'accounts/actions',
+    // eslint-disable-next-line local-rules/analytics-event-name
     AccountsEmptyAccountReceive = 'accounts/empty-account/receive',
     AccountsNewAccount = 'accounts/new-account',
     AccountsTransactionsExport = 'accounts/transactions-export',
@@ -21,8 +22,10 @@ export enum EventType {
     DashboardActions = 'dashboard/actions',
     DashboardActivateAssetsModal = 'dashboard/activate-assets-modal',
     DashboardReceiveModal = 'dashboard/receive-modal',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DashboardReceiveModalOptions = 'dashboard/receive-modal/options',
     DashboardSendModal = 'dashboard/send-modal',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DashboardSendModalOptions = 'dashboard/send-modal/options',
     DeviceChangeHomescreen = 'device/change-homescreen',
     // eslint-disable-next-line local-rules/analytics-event-name
@@ -41,13 +44,19 @@ export enum EventType {
     DeviceUpdateFirmware = 'device-update-firmware',
     FeedbackRatingSelected = 'feedback/rating-selected',
     FeedbackSent = 'feedback/sent',
+    // eslint-disable-next-line local-rules/analytics-event-name
     GuideFeedbackNavigation = 'guide/feedback/navigation',
+    // eslint-disable-next-line local-rules/analytics-event-name
     GuideFeedbackSubmit = 'guide/feedback/submit',
+    // eslint-disable-next-line local-rules/analytics-event-name
     GuideHeaderNavigation = 'guide/header/navigation',
+    // eslint-disable-next-line local-rules/analytics-event-name
     GuideNodeNavigation = 'guide/node/navigation',
+    // eslint-disable-next-line local-rules/analytics-event-name
     GuideTooltipLinkNavigation = 'guide/tooltip-link/navigation',
     MenuGuide = 'menu/guide',
     AppNewContentBadge = 'app/new-content-badge',
+    // eslint-disable-next-line local-rules/analytics-event-name
     MenuNotificationsToggle = 'menu/notifications/toggle',
     MenuToggleDiscreet = 'menu/toggle-discreet',
     PromoDesktop = 'promo/desktop',
@@ -71,33 +80,59 @@ export enum EventType {
     SendRawTransaction = 'send-raw-transaction',
     SettingsAnalytics = 'settings/analytics',
     SettingsCoins = 'settings/coins',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsCoinsBackend = 'settings/coins/backend',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDeviceChangeBrightness = 'settings/device/change-brightness',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDeviceChangeHapticFeedback = 'settings/device/change-haptic-feedback',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDeviceChangeOrientation = 'settings/device/change-orientation',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDeviceChangePassphraseProtection = 'settings/device/change-passphrase-protection',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDeviceChangePin = 'settings/device/change-pin',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDeviceChangePinProtection = 'settings/device/change-pin-protection',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDeviceChangeThpAutoconnect = 'settings/device/change-thp-autoconnect',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDeviceChangeWipeCode = 'settings/device/change-wipe-code',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDeviceCheckSeed = 'settings/device/check-seed',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDeviceDisableWipeCode = 'settings/device/disable-wipe-code',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDeviceMultiShareBackup = 'settings/device/multi-share-backup',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDeviceSetupWipeCode = 'settings/device/setup-wipe-code',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDeviceUpdateAutoLock = 'settings/device/update-auto-lock',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsGeneralAddressDisplayType = 'settings/general/address-display-type',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsGeneralAutoEject = 'settings/general/auto-eject',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsGeneralBioAuth = 'settings/general/bio-auth',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsGeneralChangeBitcoinUnit = 'settings/general/change-bitcoin-unit',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsGeneralChangeFiat = 'settings/general/change-fiat',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsGeneralChangeLanguage = 'settings/general/change-language',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsGeneralChangeTheme = 'settings/general/change-theme',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsGeneralEarlyAccess = 'settings/general/early-access',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsGeneralLabelingProvider = 'settings/general/labeling-provider',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsGeneralMevProtection = 'settings/general/mev-protection',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsGeneralNetworkReserve = 'settings/general/network-reserve',
     SettingsLoadNetworksClicked = 'settings/load-networks-clicked',
     SettingsTor = 'settings/tor',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsTorOnionLinks = 'settings/tor/onion-links',
     StakingCardanoPoolDelegation = 'staking/cardano-pool-delegation',
     StakingChangeDelegate = 'staking/change-delegate',

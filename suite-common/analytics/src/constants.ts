@@ -15,9 +15,13 @@ export enum EventType {
     DeviceConnectionDeviceFound = 'device-connection/device-found',
     // eslint-disable-next-line local-rules/analytics-event-name
     DeviceConnectionDevicePaired = 'device-connection/device-paired',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsAppLogExported = 'settings/app-log/exported',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDeviceChangeLabel = 'settings/device/change-label',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDeviceWipe = 'settings/device/wipe',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsGeneralLabeling = 'settings/general/labeling',
     SettingsNetworkSearchUsed = 'settings/network-search-used',
     SettingsNetworksExplorer = 'settings/network-explorer',
@@ -40,6 +44,7 @@ export enum EventType {
     AccountsDiscoveryResult = 'accounts/discovery-result',
     OnboardingStepViewed = 'onboarding/step-viewed',
     OnboardingFeedbackBannerClicked = 'onboarding/feedback-banner',
+    // eslint-disable-next-line local-rules/analytics-event-name
     OnboardingRecoveryWarningCreateNewWallet = 'onboarding/recovery-warning/create-new-wallet',
     PromoNoDeviceEshopCta = 'promo/no-device-eshop-cta',
     PromoDashboardBanner = 'promo/dashboard-banner',
