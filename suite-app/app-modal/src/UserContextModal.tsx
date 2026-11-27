@@ -14,6 +14,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import {
     ActivateAssetsModal,
     AddAccountModal,
+    AddCustomNetworkModal,
     AddTokenModal,
     AdvancedCoinSettingsModal,
     ApplicationLogModal,
@@ -114,6 +115,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             return <MetadataProviderModal onCancel={onCancel} decision={payload.decision} />;
         case 'advanced-coin-settings':
             return <AdvancedCoinSettingsModal {...payload} onCancel={onCancel} />;
+        case 'add-custom-network':
+            return <AddCustomNetworkModal onCancel={onCancel} />;
         case 'activate-assets':
             return <ActivateAssetsModal onCancel={onCancel} />;
         case 'add-token':
