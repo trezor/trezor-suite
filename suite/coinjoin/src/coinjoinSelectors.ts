@@ -65,6 +65,14 @@ export const selectCoinjoinClients = (state: CoinjoinRootState) => state.wallet.
 
 export const selectCoinjoinDebug = (state: CoinjoinRootState) => state.wallet.coinjoin.debug;
 
+export const selectCoinjoinServerEnvironment = (state: CoinjoinRootState, symbol: NetworkSymbol) =>
+    selectCoinjoinDebug(state)?.coinjoinServerEnvironment?.[symbol];
+
+export const selectCoinjoinConfigOverride = (state: CoinjoinRootState, symbol: NetworkSymbol) =>
+    selectCoinjoinDebug(state)?.coinjoinConfigOverride?.[symbol];
+
+export const selectCoinjoinConfig = (state: CoinjoinRootState) => state.wallet.coinjoin.config;
+
 export const selectRoundsDurationInHours = (state: CoinjoinRootState) =>
     state.wallet.coinjoin.config.roundsDurationInHours;
 
@@ -119,11 +127,10 @@ export const selectIsMixingEnabled = (
     if (!isCoinjoinSupportedSymbol(symbol) || selectIsFeatureDisabled(state, Feature.coinjoin)) {
         return false;
     }
-    const debug = selectCoinjoinDebug(state);
-    const config = getCoinjoinConfig(symbol, debug?.coinjoinServerEnvironment?.[symbol]);
+    const config = getCoinjoinConfig(symbol, selectCoinjoinServerEnvironment(state, symbol));
 
     // the same merge initCoinjoinServiceThunk hands to the client
-    return !!{ ...config, ...debug?.coinjoinConfigOverride?.[symbol] }.coordinatorUrl;
+    return !!{ ...config, ...selectCoinjoinConfigOverride(state, symbol) }.coordinatorUrl;
 };
 
 // Holding low-anonymity coins back only protects something where coins went through a coinjoin

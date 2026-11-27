@@ -38,3 +38,6 @@ export const selectBlockchainIdentityConnections = (
     state: BlockchainRootState,
     symbol: NetworkSymbol,
 ) => selectNetworkBlockchainInfo(state, symbol).identityConnections;
+
+export const selectBlockchainSyncTimeout = (state: BlockchainRootState, symbol: NetworkSymbol) =>
+    selectNetworkBlockchainInfo(state, symbol).syncTimeout;

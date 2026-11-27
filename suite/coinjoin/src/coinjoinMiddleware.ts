@@ -43,6 +43,7 @@ import {
     type SuiteOnlineRootState,
     selectCoinjoinAccountByKey,
     selectCoinjoinAccounts,
+    selectCoinjoinConfig,
     selectCoinjoinSessionBlockerByAccountKey,
     selectIsAccountWithSessionInCriticalPhaseByAccountKey,
     selectIsAnySessionInCriticalPhase,
@@ -264,7 +265,7 @@ export const coinjoinMiddleware =
             const incomingConfig = selectFeatureConfig(state, Feature.coinjoin);
 
             if (incomingConfig) {
-                const { config } = state.wallet.coinjoin;
+                const config = selectCoinjoinConfig(state);
                 const updatedConfig: Partial<typeof config> = {};
 
                 // Iterate over existing config and replace the value from remote config only if it's valid number.

@@ -135,6 +135,7 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(
 
 export const selectFirmware = (state: FirmwareRootState) => state.firmware;
 export const selectUseDevkit = (state: FirmwareRootState) => state.firmware.useDevkit;
+export const selectFirmwareError = (state: FirmwareRootState) => selectFirmware(state).error;
 export const selectFirmwareChannel = (state: FirmwareRootState) => state.firmware.firmwareChannel;
 export const selectSwitchFirmwareType = (state: FirmwareRootState) =>
     state.firmware.switchFirmwareType;

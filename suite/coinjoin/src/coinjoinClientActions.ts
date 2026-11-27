@@ -40,7 +40,8 @@ import {
     type CoinjoinRootState,
     selectCoinjoinAccounts,
     selectCoinjoinClients,
-    selectCoinjoinDebug,
+    selectCoinjoinConfigOverride,
+    selectCoinjoinServerEnvironment,
     selectRoundsDurationInHours,
     selectRoundsLeftByAccountKey,
     selectRoundsNeededByAccountKey,
@@ -732,7 +733,6 @@ export const initCoinjoinServiceThunk =
     (symbol: Account['symbol']) =>
     async (dispatch: Dispatch, getState: () => InitCoinjoinServiceThunkState) => {
         const clients = selectCoinjoinClients(getState());
-        const debug = selectCoinjoinDebug(getState());
         const accounts = selectCoinjoinAccounts(getState());
 
         if (!isCoinjoinSupportedSymbol(symbol)) return;
@@ -762,7 +762,7 @@ export const initCoinjoinServiceThunk =
             return knownService;
         }
 
-        const environment = debug?.coinjoinServerEnvironment?.[symbol];
+        const environment = selectCoinjoinServerEnvironment(getState(), symbol);
 
         // or start new instance
         dispatch(clientEnable(symbol));
@@ -805,7 +805,7 @@ export const initCoinjoinServiceThunk =
             const service = await CoinjoinService.createInstance({
                 symbol,
                 prison,
-                settings: { ...config, ...debug?.coinjoinConfigOverride?.[symbol] },
+                settings: { ...config, ...selectCoinjoinConfigOverride(getState(), symbol) },
             });
             if (isCoinjoinDisabledByFeatureFlag) {
                 dispatch(clientEnableFailed(symbol));

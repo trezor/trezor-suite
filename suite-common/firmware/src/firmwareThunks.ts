@@ -10,7 +10,12 @@ import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-util
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
-import { type FirmwareRootState, selectFirmware, selectUseDevkit } from './firmwareReducer';
+import {
+    type FirmwareRootState,
+    selectFirmware,
+    selectFirmwareError,
+    selectUseDevkit,
+} from './firmwareReducer';
 
 export type FirmwareUpdateProps = {
     firmwareType?: FirmwareType;
@@ -61,10 +66,10 @@ export const firmwareUpdateThunk = createThunk<
         const device = selectSelectedDevice(getState());
         const binFilesBaseUrl = getBinFilesBaseUrl();
         const suiteLanguage = getLanguage();
-        const { cachedDevice, error } = selectFirmware(getState());
+        const { cachedDevice } = selectFirmware(getState());
         const useDevkit = selectUseDevkit(getState());
 
-        if (error) {
+        if (selectFirmwareError(getState())) {
             dispatch(firmwareActions.setFirmwareUpdateError(undefined));
         }
 

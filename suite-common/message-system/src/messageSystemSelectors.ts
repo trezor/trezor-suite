@@ -36,6 +36,9 @@ export const selectMessageSystemCurrentSequence = (state: MessageSystemRootState
 export const selectMessageSystemConfigSource = (state: MessageSystemRootState) =>
     state.messageSystem.configSource;
 
+export const selectDismissedMessages = (state: MessageSystemRootState) =>
+    selectMessageSystem(state).dismissedMessages;
+
 const comparePriority = (a: Message, b: Message) => b.priority - a.priority;
 
 const makeSelectActiveMessagesByCategory = (category: Category) =>

@@ -45,6 +45,7 @@ import {
     selectIsCustomBackendConfigured,
     selectNetworkBlockchainInfo,
 } from './blockchainReducer';
+import { selectBlockchainSyncTimeout } from './blockchainSelectors';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccounts } from '../accounts/accountsSelectors';
 import {
@@ -302,7 +303,7 @@ export const syncAccountsWithBlockchainThunk = createThunk<
         const isWindowVisible = getIsWindowVisible();
 
         // First clear, to cancel last planned sync
-        tryClearTimeout(selectNetworkBlockchainInfo(getState(), symbol).syncTimeout);
+        tryClearTimeout(selectBlockchainSyncTimeout(getState(), symbol));
 
         // Sync only when the app window is active
         const shouldSync = isWindowVisible;
@@ -319,9 +320,8 @@ export const syncAccountsWithBlockchainThunk = createThunk<
             );
         }
 
-        const blockchainInfo = selectNetworkBlockchainInfo(getState(), symbol);
         // Second clear, just to be sure that no other sync was planned while executing this one
-        tryClearTimeout(blockchainInfo.syncTimeout);
+        tryClearTimeout(selectBlockchainSyncTimeout(getState(), symbol));
 
         const timeout = setTimeout(
             () => dispatch(syncAccountsWithBlockchainThunk(symbol)),
