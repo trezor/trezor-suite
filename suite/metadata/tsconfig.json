@@ -52,6 +52,7 @@
         { "path": "../device" },
         { "path": "../intl" },
         { "path": "../settings" },
+        { "path": "../suite-lifecycle" },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
         {

@@ -10,7 +10,12 @@ import {
     selectRouteName,
     selectSettingsBackRoute,
 } from '@suite/router';
-import { onSuiteInit, onSuiteReady, updateOnlineStatus } from '@suite/suite-lifecycle';
+import {
+    type SuiteLifecycleRootState,
+    onSuiteInit,
+    onSuiteReady,
+    updateOnlineStatus,
+} from '@suite/suite-lifecycle';
 import { type TorRootState, selectIsTorEnabled, torActions } from '@suite/tor';
 import { type DeviceRootState, deviceActions } from '@suite-common/device';
 import {
@@ -40,7 +45,6 @@ import * as coinjoinAccountActions from './coinjoinAccountActions';
 import * as coinjoinClientActions from './coinjoinClientActions';
 import {
     type CoinjoinRootState,
-    type SuiteOnlineRootState,
     selectCoinjoinAccountByKey,
     selectCoinjoinAccounts,
     selectCoinjoinSessionBlockerByAccountKey,
@@ -58,7 +62,7 @@ type CoinjoinMiddlewareState = AccountsRootState &
     ModalRootState &
     RouterRootState &
     SelectedAccountRootState &
-    SuiteOnlineRootState &
+    SuiteLifecycleRootState &
     TorRootState;
 
 export const coinjoinMiddleware =

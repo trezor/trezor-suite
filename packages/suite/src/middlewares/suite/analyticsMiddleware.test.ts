@@ -22,7 +22,7 @@ describe('Earn entry analytics middleware', () => {
             };
             const initialState: MockSuiteState = {
                 ...mockInitialAppState,
-                suite: { ...mockInitialAppState.suite, lifecycle: { status } },
+                suiteLifecycle: { ...mockInitialAppState.suiteLifecycle, lifecycle: { status } },
                 router: createRouterStateMock({ route: undefined }),
             };
             const reducer: Reducer<MockSuiteState> = (state = initialState, action) => ({

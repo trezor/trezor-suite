@@ -1,4 +1,5 @@
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { selectIsSuiteOnline } from '@suite/suite-lifecycle';
 import {
     selectDeviceByStaticSessionId,
     selectDevices,
@@ -585,8 +586,6 @@ export const addMetadataThunk =
     };
 
 export type InitMetadataDeps = WithServices<DesktopAnalyticsDep>;
-
-const selectIsSuiteOnline = (state: MetadataRootState) => state.suite.online;
 
 /**
  * init - prepare everything needed to load + decrypt and upload + decrypt metadata. Note that this method

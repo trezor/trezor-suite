@@ -10,6 +10,7 @@ import {
     selectRouterApp,
     selectRouterLoaded,
 } from '@suite/router';
+import { selectSuiteLifecycle } from '@suite/suite-lifecycle';
 import { Onboarding } from '@suite-app/module-onboarding';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
 import {
@@ -27,7 +28,6 @@ import {
     analyticsActions,
     initThunk,
     selectPrerequisite,
-    selectSuiteLifecycle,
     useAppShortcuts,
     useDeviceCompromisedNotification,
     useGuideDesktopMenu,
@@ -124,7 +124,7 @@ export const Preloader = memo(({ children }: PropsWithChildren) => {
         return <AnalyticsConsentScreen />;
     }
 
-    if (lifecycle.status === 'error') {
+    if (lifecycle.status === 'connect-error') {
         throw new Error(lifecycle.error);
     }
 

@@ -1,4 +1,3 @@
-import { onSuiteInit, onSuiteReady, updateOnlineStatus } from '@suite/suite-lifecycle';
 import {
     acquireDeviceThunk,
     deviceActions,
@@ -8,7 +7,6 @@ import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mo
 import { DEVICE, type Device, TRANSPORT } from '@trezor/connect';
 
 import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
-import { setSuiteError } from '../suiteActions';
 
 const SUITE_DEVICE = mockSuiteDevice({ path: '1' });
 const SUITE_DEVICE_UNACQUIRED = mockSuiteDevice({
@@ -19,52 +17,6 @@ const SUITE_DEVICE_REMEMBERED = mockSuiteDevice({ connected: false });
 const CONNECT_DEVICE = mockConnectDevice({ path: '1' });
 
 const reducerActions = [
-    {
-        description: `SUITE.READY`,
-        actions: [onSuiteReady()],
-        result: [
-            {
-                lifecycle: {
-                    status: 'ready',
-                },
-            },
-        ],
-    },
-    {
-        description: `SUITE.ERROR`,
-        actions: [setSuiteError('Error')],
-        result: [
-            {
-                lifecycle: {
-                    status: 'error',
-                    error: 'Error',
-                },
-            },
-        ],
-    },
-    {
-        description: `SUITE.INIT`,
-        actions: [onSuiteInit()],
-        result: [
-            {
-                lifecycle: {
-                    status: 'loading',
-                },
-            },
-        ],
-    },
-    {
-        description: `updateOnlineStatus (true/false)`,
-        actions: [updateOnlineStatus(true), updateOnlineStatus(false)],
-        result: [
-            {
-                online: true,
-            },
-            {
-                online: false,
-            },
-        ],
-    },
     {
         description: `TRANSPORT.START`,
         actions: [

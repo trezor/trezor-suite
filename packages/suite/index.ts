@@ -82,7 +82,6 @@ export {
     selectActiveTransports,
     selectIsTransportInitialized,
     selectPrerequisite,
-    selectSuiteLifecycle,
 } from './src/selectors/suite/suiteSelectors';
 export { ErrorPage } from './src/views/suite/ErrorPage';
 export { ToasterProvider } from './src/components/suite/notifications/Toaster/ToasterProvider';

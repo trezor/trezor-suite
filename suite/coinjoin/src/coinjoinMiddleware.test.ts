@@ -3,6 +3,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 import { type SelectedAccountRootState, selectedAccountReducer } from '@suite/account';
 import { type LocksRootState, locksReducer } from '@suite/locks';
 import { type RouterRootState, routerReducer } from '@suite/router';
+import { type SuiteLifecycleRootState, suiteLifecycleReducer } from '@suite/suite-lifecycle';
 import { type TorRootState, torReducer } from '@suite/tor';
 import {
     type MessageSystemRootState,
@@ -18,7 +19,7 @@ import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 import { fixtures } from './__fixtures__/coinjoinMiddleware';
 import { coinjoinMiddleware } from './coinjoinMiddleware';
 import { coinjoinReducer } from './coinjoinReducer';
-import { type CoinjoinRootState, type SuiteOnlineRootState } from './coinjoinSelectors';
+import { type CoinjoinRootState } from './coinjoinSelectors';
 import { CoinjoinService } from './coinjoinService';
 
 jest.mock('./coinjoinService', () => {
@@ -36,7 +37,7 @@ const rootReducer = combineReducers({
     locks: locksReducer,
     messageSystem,
     router: routerReducer,
-    suite: createReducer({ online: true }, () => ({})),
+    suiteLifecycle: suiteLifecycleReducer,
     tor: torReducer,
     discreetMode: createReducer({ isActive: false }, () => {}),
     wallet: combineReducers({
@@ -56,13 +57,13 @@ type State = AccountsRootState &
     LocksRootState &
     MessageSystemRootState &
     RouterRootState &
-    SuiteOnlineRootState &
+    SuiteLifecycleRootState &
     TorRootState & {
         device: Record<never, never>;
         discreetMode: { isActive: boolean };
     };
 
-const initStore = ({ device, router, suite, tor, wallet }: Partial<State> = {}) => {
+const initStore = ({ device, router, tor, wallet }: Partial<State> = {}) => {
     const preloadedState: State = rootReducer(undefined, { type: 'init' });
 
     if (device) {
@@ -73,13 +74,6 @@ const initStore = ({ device, router, suite, tor, wallet }: Partial<State> = {}) 
         preloadedState.router = {
             ...preloadedState.router,
             ...router,
-        };
-    }
-
-    if (suite) {
-        preloadedState.suite = {
-            ...preloadedState.suite,
-            ...suite,
         };
     }
 

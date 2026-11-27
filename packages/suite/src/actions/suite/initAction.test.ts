@@ -22,7 +22,13 @@ import {
     suiteSettingsActions,
     suiteSettingsInitialState,
 } from '@suite/settings';
-import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
+import {
+    onSuiteInit,
+    onSuiteReady,
+    setConnectInitError,
+    suiteLifecycleInitialState,
+    suiteLifecycleReducer,
+} from '@suite/suite-lifecycle';
 import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
 import {
     mockConnectInitDeviceEventHooks,
@@ -75,14 +81,12 @@ import { noopCreateLogger } from '@trezor/logger';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
-import * as SUITE from '#src/actions/suite/constants/suiteConstants';
 import {
     type InitThunkDesktopApiDep,
     type InitThunkState,
     initThunk,
 } from '#src/actions/suite/initAction';
 import { prepareSuiteMiddleware } from '#src/middlewares/suite/suiteMiddleware';
-import suiteReducer from '#src/reducers/suite/suiteReducer';
 import { createWalletReducer } from '#src/reducers/wallet/walletReducer';
 
 import { mockExtraDependenciesForReducers } from '../../../mocks/mockExtraDependenciesForReducers';
@@ -124,7 +128,7 @@ const EMPTY_ACTION = { type: 'foo' } as any;
 
 const getInitialState = (): InitThunkState => ({
     networks: mockNetworksState(mockGetSupportedNetworks()),
-    suite: suiteReducer(undefined, EMPTY_ACTION),
+    suiteLifecycle: suiteLifecycleInitialState,
     suiteSettings: suiteSettingsInitialState,
     flags: flagsReducer(undefined, EMPTY_ACTION),
     locks: locksInitialState,
@@ -272,7 +276,7 @@ const fixtures: Fixture[] = [
             gotoThunk.fulfilled.type,
             initialRedirectionThunk.fulfilled.type,
             connectInitThunk.rejected.type,
-            SUITE.ERROR,
+            setConnectInitError.type,
         ],
     },
 ];
@@ -326,7 +330,7 @@ const initStore = (state: InitThunkState) => {
         ],
         reducer: (currentState = state, action) => ({
             ...currentState,
-            suite: suiteReducer(currentState.suite, action),
+            suiteLifecycle: suiteLifecycleReducer(currentState.suiteLifecycle, action),
             suiteSettings: suiteSettingsReducer(currentState.suiteSettings, action),
             router: routerReducer(currentState.router, action),
             locks: locksReducer(currentState.locks, action),

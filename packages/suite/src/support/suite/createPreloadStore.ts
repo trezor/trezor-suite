@@ -1,9 +1,6 @@
-import {
-    type StorageAction,
-    storageCorrupted,
-    storageError,
-    storageLoad,
-} from '#src/actions/suite/storageLifecycleActions';
+import { type StorageErrorPayload, storageCorrupted, storageError } from '@suite/suite-lifecycle';
+
+import { type StorageAction, storageLoad } from '#src/actions/suite/storageLifecycleActions';
 import { type DbDep } from '#src/storage/Db';
 import { loadStoragePayload } from '#src/storage/loadStoragePayload';
 
@@ -28,7 +25,7 @@ export const createPreloadStore =
             // hydration returns storageError instead of storageLoad. Route the same IndexedDB events
             // into this promise while the database opens, then hand the dispatching handlers back.
             const { onBlocked, onBlocking } = deps.db;
-            const dbError = await new Promise<'blocked' | 'blocking' | undefined>(
+            const dbError = await new Promise<StorageErrorPayload | undefined>(
                 (resolve, reject) => {
                     deps.db.onBlocked = () => resolve('blocked');
                     deps.db.onBlocking = () => resolve('blocking');

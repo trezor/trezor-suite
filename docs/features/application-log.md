@@ -30,7 +30,7 @@ Example log record occurred when user's internet connectivity status changed to 
 
 ```json
 {
-    "type": "@suite/online-status",
+    "type": "suiteLifecycle/updateOnlineStatus",
     "datetime": "Mon, 18 Jul 2022 13:11:30 GMT",
     "payload": {
         "status": false

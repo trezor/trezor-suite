@@ -49,7 +49,7 @@ test.describe('Database blocking', { tag: ['@webOnly', '@noDevice'] }, () => {
         }) => {
             await onboardingPage.verifySuiteIsLoaded();
             await analyticsSection.continueButton.click();
-            await page.expectReduxObjectToEqual('suite.lifecycle.status', 'ready', {
+            await page.expectReduxObjectToEqual('suiteLifecycle.lifecycle.status', 'ready', {
                 timeout: 30_000,
             });
             await indexedDb.expectValue({

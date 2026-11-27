@@ -1,4 +1,3 @@
-export const ERROR = '@suite/error';
 export const DESKTOP_HANDSHAKE = '@suite/desktop-handshake';
 export const SUITE_FORGET_DEVICE = '@suite/forget-device-thunk';
 export const SET_RECENTLY_CONNECTED_DEVICE = '@suite/set-recently-connected-device';

@@ -1,4 +1,5 @@
 import { type RouterState, routerLocationChange } from '@suite/router';
+import { updateOnlineStatus } from '@suite/suite-lifecycle';
 import { TorStatus, torActions } from '@suite/tor';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
@@ -27,9 +28,6 @@ type FixtureState = Partial<{
         selectedDevice: FixtureDevice;
     };
     router: RouterState;
-    suite: {
-        online: boolean;
-    };
     tor: {
         torStatus: TorStatus;
         torBootstrap: null;
@@ -121,7 +119,6 @@ const DEFAULT_STATE = {
         devices: [DEVICE_A, DEVICE_B],
         selectedDevice: DEVICE_A,
     },
-    suite: { online: true },
     tor: {
         torStatus: TorStatus.Enabled,
         torBootstrap: null,
@@ -338,10 +335,7 @@ export const fixtures: Fixture[] = [
     {
         description: 'interrupt all coinjoin sessions when Suite goes offline',
         state: DEFAULT_STATE,
-        action: {
-            type: '@suite/online-status',
-            payload: false,
-        },
+        action: updateOnlineStatus(false),
         expectedActions: PAUSE_ALL_INTERRUPTED_SESSIONS_ACTIONS,
     },
     {
@@ -353,10 +347,7 @@ export const fixtures: Fixture[] = [
                 success: true,
             },
         ],
-        action: {
-            type: '@suite/online-status',
-            payload: true,
-        },
+        action: updateOnlineStatus(true),
         expectedActions: RESTORE_SESSION_B_ACTIONS,
     },
     {
@@ -371,10 +362,7 @@ export const fixtures: Fixture[] = [
                 success: true,
             },
         ],
-        action: {
-            type: '@suite/online-status',
-            payload: true,
-        },
+        action: updateOnlineStatus(true),
         expectedActions: [],
     },
 ];

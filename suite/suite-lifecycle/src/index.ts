@@ -1,1 +1,2 @@
-export * from './suiteLifecycleActions';
+export * from './storageLifecycleActions';
+export * from './suiteLifecycleSlice';

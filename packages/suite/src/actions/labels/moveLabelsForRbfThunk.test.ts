@@ -2,6 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { metadataReducer, selectLabelingDataForAccount } from '@suite/metadata';
 import { prepareSuiteSettingsReducer } from '@suite/settings';
+import { suiteLifecycleReducer } from '@suite/suite-lifecycle';
 import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockMigrateSuiteSyncLabelsForRbfTransaction } from '@suite-common/suite-rbf-labels-migrations-types/mocks';
@@ -36,7 +37,7 @@ const rootReducer = combineReducers({
         accounts: accountsReducer,
     }),
     metadata: metadataReducer,
-    suite: (state: MoveLabelsForRbfThunkState['suite'] = { online: true }) => state,
+    suiteLifecycle: suiteLifecycleReducer,
     suiteSettings: prepareSuiteSettingsReducer({
         actionTypes: { storageLoad: mockActionType('storageLoad') },
         reducers: { storageLoadSuiteSettings: mockReducer() },

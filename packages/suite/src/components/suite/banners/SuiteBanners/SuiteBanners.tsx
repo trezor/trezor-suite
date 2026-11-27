@@ -7,6 +7,7 @@ import {
     selectFirmwareRevisionCheckErrorIfEnabled,
 } from '@suite/authenticity-checks';
 import { MessageSystemBanner } from '@suite/message-system';
+import { selectIsSuiteOnline } from '@suite/suite-lifecycle';
 import { SuiteSyncBanner, selectIsSuiteSyncBannerVisible } from '@suite/suite-sync';
 import {
     selectDeviceStaticSessionId,
@@ -20,7 +21,7 @@ import { isWeb } from '@trezor/env-utils';
 import { MAX_CONTENT_WIDTH } from '#src/constants/suite/layout';
 import { useLocalNetworkAccessPermission } from '#src/hooks/suite/useLocalNetworkAccessPermission';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { selectIsSuiteOnline, selectSuiteTransport } from '#src/selectors/suite/suiteSelectors';
+import { selectSuiteTransport } from '#src/selectors/suite/suiteSelectors';
 
 import { BridgeDeprecated, useLegacyBridgeDetection } from './BridgeDeprecatedBanner';
 import { CardanoOutdatedStakingBanner } from './CardanoOutdatedStakingBanner';

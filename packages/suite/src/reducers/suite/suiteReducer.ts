@@ -1,15 +1,10 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
-import { onSuiteInit, onSuiteReady, updateOnlineStatus } from '@suite/suite-lifecycle';
 import type { CountryCode } from '@suite-common/geolocation';
 import { TRANSPORT, type TransportInfo, isTransportEventOfType } from '@trezor/connect';
 
-import {
-    storageCorrupted,
-    storageError,
-    storageLoad,
-} from '#src/actions/suite/storageLifecycleActions';
+import { storageLoad } from '#src/actions/suite/storageLifecycleActions';
 import {
     addDeviceIdToSeenDisconnectNotification,
     closeEvmExplanationBanner,
@@ -17,7 +12,6 @@ import {
     setRecentlyConnectedDevicePath,
     setRecentlyDisconnectedDevice,
     setSendFormPrefill,
-    setSuiteError,
     setTransactionHistoryPrefill,
 } from '#src/actions/suite/suiteActions';
 
@@ -26,18 +20,6 @@ import { type EvmSettings } from './evmSettings';
 export type SuiteRootState = {
     suite: SuiteState;
 };
-
-type SuiteLifecycle =
-    | { status: 'initial' }
-    | { status: 'loading' }
-    | { status: 'ready' }
-    // errors set from connect, should be renamed
-    | { status: 'error'; error: string }
-    // blocked if the instance cannot upgrade due to older version running,
-    // blocking in case instance is running older version thus blocking other instance
-    | { status: 'db-error'; error: 'blocking' | 'blocked' }
-    // inconsistent IDB state detected, need to reset storage
-    | { status: 'db-corrupted'; error: unknown };
 
 export interface PrefillFields {
     sendForm?: string;
@@ -50,8 +32,6 @@ export interface TransportState {
 }
 
 export type SuiteState = {
-    online: boolean;
-    lifecycle: SuiteLifecycle;
     transport?: TransportState;
     evmSettings: EvmSettings;
     countryCode: CountryCode | null;
@@ -62,8 +42,6 @@ export type SuiteState = {
 };
 
 const initialState: SuiteState = {
-    online: true,
-    lifecycle: { status: 'initial' },
     evmSettings: {
         confirmExplanationModalClosed: {},
         explanationBannerClosed: {},
@@ -91,16 +69,6 @@ const suiteReducer = (state: SuiteState = initialState, action: UnknownAction): 
                 ...draft.seenDisconnectNotificationForDeviceIds,
                 ...(action.payload.suiteSettings?.seenDisconnectNotificationForDeviceIds ?? []),
             ];
-        } else if (storageError.match(action)) {
-            draft.lifecycle = { status: 'db-error', error: action.payload };
-        } else if (storageCorrupted.match(action)) {
-            draft.lifecycle = { status: 'db-corrupted', error: action.payload };
-        } else if (onSuiteInit.match(action)) {
-            draft.lifecycle = { status: 'loading' };
-        } else if (onSuiteReady.match(action)) {
-            draft.lifecycle = { status: 'ready' };
-        } else if (setSuiteError.match(action)) {
-            draft.lifecycle = { status: 'error', error: action.payload };
         } else if (setRecentlyConnectedDevicePath.match(action)) {
             draft.recentlyConnectedDeviceRef = action.payload;
         } else if (setRecentlyDisconnectedDevice.match(action)) {
@@ -148,8 +116,6 @@ const suiteReducer = (state: SuiteState = initialState, action: UnknownAction): 
                     ? (draft.transport?.transports ?? [])
                     : draft.transport.transports?.filter(t => t.apiType !== apiType);
             draft.transport = { transports, error };
-        } else if (updateOnlineStatus.match(action)) {
-            draft.online = action.payload;
         }
     });
 

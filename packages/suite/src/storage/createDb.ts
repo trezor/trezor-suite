@@ -1,11 +1,10 @@
 import { type IDBPDatabase, type IDBPTransaction, type StoreNames } from 'idb';
 
 import { idbVersionToString } from '@suite/idb-migration-utils';
+import { storageError } from '@suite/suite-lifecycle';
 import { type ReloadAppDep } from '@suite-common/suite-types';
 import { type DispatchDep } from '@trezor/redux-utils';
 import SuiteDB, { type OnUpgradeFunc } from '@trezor/suite-storage';
-
-import { storageError } from '#src/actions/suite/storageLifecycleActions';
 
 import type { Db } from './Db';
 import type { SuiteDBSchema } from './definitions';

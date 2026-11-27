@@ -8,6 +8,7 @@ import { Labeling } from '@suite/labeling';
 import { selectIsMetadataEnabled } from '@suite/metadata';
 import { openDeferredModal } from '@suite/modal';
 import { RecipientHistoryNote, useRecipientHistoryNote } from '@suite/recipient-history';
+import { selectIsSuiteOnline } from '@suite/suite-lifecycle';
 import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
 import {
     type AddressCorrection,
@@ -60,7 +61,6 @@ import { type InputErrorProps } from '#src/components/wallet/InputError';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { useReportEnsResolutionToAnalytics } from '#src/hooks/wallet/useReportEnsResolutionToAnalytics';
 import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
-import { selectIsSuiteOnline } from '#src/selectors/suite/suiteSelectors';
 import { captureSentryMessage } from '#src/utils/suite/sentry';
 
 import { DevAddressBook } from './DevAddressBook';

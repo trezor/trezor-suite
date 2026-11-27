@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 
+import { selectIsSuiteOnline } from '@suite/suite-lifecycle';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     type LabelableEntityKeys,
@@ -80,8 +81,6 @@ const fetchPasswordsThunk =
             }),
         );
     };
-
-const selectIsSuiteOnline = (state: MetadataRootState) => state.suite.online;
 
 type InitThunkState = MetadataRootState;
 

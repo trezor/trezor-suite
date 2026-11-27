@@ -12,6 +12,7 @@ import { metadataReducer } from '@suite/metadata';
 import { type State as ModalState, modalReducer as modal } from '@suite/modal';
 import { type RouterState, routerReducer } from '@suite/router';
 import { type SuiteSettingsState, prepareSuiteSettingsReducer } from '@suite/settings';
+import { type SuiteLifecycleState, suiteLifecycleReducer } from '@suite/suite-lifecycle';
 import { type TorState, torReducer } from '@suite/tor';
 import { type AnalyticsState, prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { type ConnectPopupState, prepareConnectPopupReducer } from '@suite-common/connect-popup';
@@ -49,6 +50,7 @@ const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 
 export type SuiteReducersState = {
     suite: SuiteState;
+    suiteLifecycle: SuiteLifecycleState;
     discreetMode: DiscreetModeState;
     tor: TorState;
     suiteSettings: SuiteSettingsState;
@@ -74,6 +76,7 @@ export type SuiteReducersState = {
 
 export const suiteReducers: ReducersMapObject<SuiteReducersState, UnknownAction> = {
     suite: suiteReducer,
+    suiteLifecycle: suiteLifecycleReducer,
     discreetMode: discreetModeReducer,
     tor: torReducer,
     suiteSettings,

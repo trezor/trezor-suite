@@ -8,7 +8,11 @@ import {
     selectRouteName,
     selectRouterUrl,
 } from '@suite/router';
-import { onSuiteReady } from '@suite/suite-lifecycle';
+import {
+    type SuiteLifecycleRootState,
+    onSuiteReady,
+    selectSuiteLifecycleStatus,
+} from '@suite/suite-lifecycle';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { firmwareUpdateThunk } from '@suite-common/firmware';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
@@ -33,8 +37,6 @@ import {
 } from '@trezor/device-utils';
 import { type WithServices, createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
-import { type SuiteRootState } from '#src/reducers/suite/suiteReducer';
-import { selectSuiteLifecycleStatus } from '#src/selectors/suite/suiteSelectors';
 import {
     type GetSuiteReadyPayloadState,
     getSuiteReadyPayload,
@@ -51,9 +53,8 @@ import {
 export type PrepareAnalyticsMiddlewareDeps = WithServices<DesktopAnalyticsDep>;
 
 type AnalyticsMiddlewareState = GetSuiteReadyPayloadState &
-    RouterRootState & {
-        suite: Pick<SuiteRootState['suite'], 'lifecycle'>;
-    };
+    RouterRootState &
+    SuiteLifecycleRootState;
 
 const createAnalyticsMiddleware = createMiddlewareWithExtraDeps<
     PrepareAnalyticsMiddlewareDeps,

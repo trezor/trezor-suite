@@ -2,6 +2,7 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
 import { type SuiteSettingsRootState } from '@suite/settings';
+import { type SuiteLifecycleRootState, selectIsSuiteOnline } from '@suite/suite-lifecycle';
 import {
     type DeviceReducerState,
     type DeviceRootState,
@@ -59,10 +60,6 @@ export const initialMetadataState: MetadataState = {
     error: {},
 };
 
-export type SuiteRootStateSliceForMetadata = {
-    online: boolean;
-};
-
 /** @deprecated Legacy labeling */
 type MetadataSliceRootState = {
     metadata: MetadataState;
@@ -72,7 +69,8 @@ type MetadataSliceRootState = {
 export type MetadataRootState = MetadataSliceRootState &
     AccountsRootState &
     DeviceRootState &
-    SuiteSettingsRootState & { suite: SuiteRootStateSliceForMetadata };
+    SuiteSettingsRootState &
+    SuiteLifecycleRootState;
 
 type StorageLoadMetadataAction = {
     type: '@storage/load';
@@ -347,7 +345,7 @@ export const selectIsLabelingInitPossible = (state: MetadataRootState): boolean 
         (device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION] ||
             (device?.connected && device.state)) &&
         // storage provider is connected or we are at least able to connect to it
-        (selectSelectedProviderForLabels(state) || state.suite.online),
+        (selectSelectedProviderForLabels(state) || selectIsSuiteOnline(state)),
     );
 };
 
