@@ -1,5 +1,5 @@
 import type { AccountAddresses, SubscriptionAccountInfo } from '@trezor/blockchain-link-types/src';
-import { arrayDistinct, isNotUndefined, objectPartition } from '@trezor/utils';
+import { isNotUndefined, objectPartition, unique } from '@trezor/utils';
 import type { Network } from '@trezor/utxo-lib';
 
 import { addressToScripthash } from './transform';
@@ -19,7 +19,7 @@ export const createAddressManager = (getNetwork: () => Network | undefined) => {
     let subscribedAccs: AccountMap = {};
 
     const addAddresses = (addresses: string[]) => {
-        const toAdd = addresses.filter(arrayDistinct).filter(addr => !subscribedAddrs[addr]);
+        const toAdd = unique(addresses).filter(addr => !subscribedAddrs[addr]);
         const network = getNetwork();
 
         subscribedAddrs = toAdd.reduce<AddressMap>((dic, addr) => {
