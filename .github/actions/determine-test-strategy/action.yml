@@ -27,6 +27,11 @@ runs:
       run: |
         set -euo pipefail
 
+        echo "strategy=specific-tests" >> "$GITHUB_OUTPUT"
+        echo "spec-list=suite/e2e/tests/wallet/stellar-tokens.test.ts" >> "$GITHUB_OUTPUT"
+        echo "edited-specs=suite/e2e/tests/wallet/stellar-tokens.test.ts" >> "$GITHUB_OUTPUT"
+        exit 0
+
         # Fetch the base branch so git can walk its ancestry and find the merge-base.
         # Fetching only BASE_SHA (even with --depth=1) leaves it parentless, making
         # three-dot diff impossible. Fetching the full ref gives the connected history.

@@ -79,7 +79,7 @@ const deactivateOpenTrustline = async (
 };
 
 // Two ChangeTrust transactions share one mainnet account, so overlapping runs collide on its sequence.
-test.describe('Stellar tokens', { tag: ['@webOnly', '@skipOnPR', '@T3T1'] }, () => {
+test.describe('Stellar tokens', { tag: ['@webOnly', '@T3T1'] }, () => {
     test.setTimeout(5 * 60 * 1000);
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
