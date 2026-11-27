@@ -134,8 +134,9 @@ The only proof from the client to the server is the signature, i.e. possession o
 
 ## 4. Summary of trust
 
-- **Possession of the Trezor is needed to obtain the key.** Every derivation needs a physical
-  confirmation on the device.
+- **The wallet on Trezor device is used to obtain the key.** The private key is therefore tied to users' wallet backup (deterministic, retrievable after loss).
+  The derivation needs a physical confirmation on the device – requires human consent.
+  The backend does not, however, authenticate a physical device. In fact, any generated private key would work for authentication.
 - **After that, the key alone authorizes requests.** Anyone holding `ReferralKey` can act on the
   account, which is why it is encrypted at rest or kept in memory only. It only grants access to
   the referral account: it can't spend funds or reveal addresses or xpubs.
