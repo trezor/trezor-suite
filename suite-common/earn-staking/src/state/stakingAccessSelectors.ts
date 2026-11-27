@@ -13,6 +13,7 @@ import {
     type MessageSystemRootState,
     selectFeatureMessageContent,
     selectIsFeatureDisabled,
+    selectMessageSystem,
 } from '@suite-common/message-system';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
@@ -78,8 +79,6 @@ const toFeatureDomain = (feature: string) => feature as FeatureDomain;
 
 const selectProductDescriptorParam = (state: StakingRootState, productId: StakingProductId) =>
     selectStakingProductDescriptor(state, productId);
-
-const selectMessageSystem = (state: MessageSystemRootState) => state.messageSystem;
 
 const selectAreTestnetsEnabledParam = (_state: StakingRootState, areTestnetsEnabled: boolean) =>
     areTestnetsEnabled;
