@@ -1,4 +1,4 @@
-import { css } from 'styled-components';
+import { type CSSProperties, css } from 'styled-components';
 
 import {
     type BorderRadius,
@@ -101,6 +101,9 @@ export type FrameProps = {
     objectFit?: ObjectFit;
     objectPosition?: ObjectPosition;
     display?: Display;
+    transition?: CSSProperties['transition'];
+    transform?: CSSProperties['transform'];
+    transformOrigin?: CSSProperties['transformOrigin'];
 };
 export type FramePropsKeys = keyof FrameProps;
 
@@ -149,6 +152,9 @@ export const withFrameProps = ({
     $objectFit,
     $objectPosition,
     $display,
+    $transition,
+    $transform,
+    $transformOrigin,
 }: TransientFrameProps) => css`
     ${
         $margin &&
@@ -296,6 +302,29 @@ export const withFrameProps = ({
         $display &&
         css`
             display: ${$display};
+        `
+    };
+    ${
+        $transition &&
+        css`
+            transition: ${$transition};
+
+            @media (prefers-reduced-motion: reduce) {
+                transition: none;
+            }
+        `
+    };
+    ${
+        $transform &&
+        css`
+            transform: ${$transform};
+            will-change: transform;
+        `
+    };
+    ${
+        $transformOrigin &&
+        css`
+            transform-origin: ${$transformOrigin};
         `
     };
 `;

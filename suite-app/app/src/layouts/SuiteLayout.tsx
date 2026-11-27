@@ -28,6 +28,8 @@ import { ModalSwitcher } from '../ModalSwitcher/ModalSwitcher';
 
 interface SuiteLayoutProps {
     children: ReactNode;
+    sidebar?: ReactNode;
+    showGuideButton?: boolean;
     ['data-testid']?: string;
 }
 
@@ -37,7 +39,8 @@ interface SuiteLayoutProps {
  * layout — sidebar, banners, page. `children` comes from `Preloader`'s own props, so it stays
  * referentially stable and React can bail out here.
  */
-export const SuiteLayout = memo(({ children, 'data-testid': dataTest }: SuiteLayoutProps) => {
+export const SuiteLayout = memo((props: SuiteLayoutProps) => {
+    const { children, sidebar, showGuideButton = true, 'data-testid': dataTest } = props;
     const wrapperRef = useRef<HTMLDivElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -60,7 +63,7 @@ export const SuiteLayout = memo(({ children, 'data-testid': dataTest }: SuiteLay
 
                             <Body data-testid="@suite-layout/body">
                                 <Columns>
-                                    <Sidebar />
+                                    {sidebar ?? <Sidebar />}
                                     <MainContent>
                                         <CoinjoinBars />
                                         <SuiteBanners />
@@ -75,9 +78,11 @@ export const SuiteLayout = memo(({ children, 'data-testid': dataTest }: SuiteLay
                                     </MainContent>
                                 </Columns>
                             </Body>
-                            <AboveTabletOnly>
-                                <GuideButton />
-                            </AboveTabletOnly>
+                            {showGuideButton && (
+                                <AboveTabletOnly>
+                                    <GuideButton />
+                                </AboveTabletOnly>
+                            )}
                         </LayoutPayloadProvider>
                     </Modal.Provider>
                 </PageWrapper>

@@ -10,8 +10,6 @@
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/thp" },
         { "path": "../../suite/analytics" },
-        { "path": "../../suite/debug" },
-        { "path": "../../suite/intl" },
         { "path": "../../suite/macos" },
         { "path": "../../suite/modal" },
         { "path": "../../suite/router" },
@@ -20,11 +18,9 @@
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/env-utils" },
-        { "path": "../../packages/icons" },
         { "path": "../../packages/redux-utils" },
         { "path": "../../packages/suite" },
         { "path": "../../packages/type-utils" },
-        { "path": "../../packages/urls" },
         { "path": "../../packages/requirements" }
     ]
 }

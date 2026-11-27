@@ -6,22 +6,15 @@ import {
     markNewContentIndicatorAsSeen,
     selectIsNewContentIndicatorVisible,
 } from '@suite/flags';
-import { type Route, selectRouteName } from '@suite/router';
+import { selectRouteName } from '@suite/router';
 import { Column, Divider } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { GearSixIcon, GiftIcon } from '@trezor/icons';
+import { GiftIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { selectIsReferAFriendAvailableInApp, useResponsiveContext } from '@trezor/suite';
 
 import { NavigationItem } from './NavigationItem';
-
-const SETTINGS_ROUTES: Route['name'][] = [
-    'settings-index',
-    'settings-device',
-    'settings-coins',
-    'settings-debug',
-    'settings-connected-apps',
-];
+import { SettingsNavigationItem } from './SettingsNavigationItem';
 
 export const BottomNavigation = () => {
     const { isSidebarCollapsed } = useResponsiveContext();
@@ -59,14 +52,7 @@ export const BottomNavigation = () => {
                         hasNewContentIndicator={isReferralNewContentIndicatorVisible}
                     />
                 )}
-                <NavigationItem
-                    nameId="TR_SETTINGS"
-                    icon={GearSixIcon}
-                    goToRoute="settings-index"
-                    routes={SETTINGS_ROUTES}
-                    data-testid="@suite/menu/settings"
-                    shortcut={['MOD', 'COMMA']}
-                />
+                <SettingsNavigationItem />
             </Column>
             <Divider margin={0} color="surfaceBorderSunken" />
         </>

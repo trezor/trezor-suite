@@ -4,7 +4,7 @@ import {
     type SuiteSyncRelayConnectionLogEntry,
     selectSuiteSyncRelayConnectionStatuses,
 } from '@suite-common/suite-sync';
-import { Code, Column, Row, Text } from '@trezor/components';
+import { Code, List, Row, Text } from '@trezor/components';
 import { SectionItem } from '@trezor/product-components';
 
 import { SuiteSyncConnectionStatusDot } from '../SuiteSyncConnectionStatusDot';
@@ -46,23 +46,21 @@ export const SuiteSyncConnectionStatus = () => {
         <SectionItem
             title="Evolu relay connections"
             actions={
-                <Column gap={4}>
-                    <ul>
-                        {relayConnectionStatuses.map(connection => (
-                            <li key={connection.url}>
-                                <Row gap={4} justifyContent="space-between">
-                                    <Text typographyStyle="body-sm">
-                                        <Code>{connection.url}</Code>
-                                    </Text>
-                                    <SuiteSyncConnectionStatusDot
-                                        isConnected={connection.state === 'connected'}
-                                    />
-                                </Row>
-                                <Log entries={connection.log} />
-                            </li>
-                        ))}
-                    </ul>
-                </Column>
+                <List listStyleType="disc" gap={0}>
+                    {relayConnectionStatuses.map(connection => (
+                        <List.Item key={connection.url}>
+                            <Row gap={4} justifyContent="space-between">
+                                <Text typographyStyle="body-sm">
+                                    <Code>{connection.url}</Code>
+                                </Text>
+                                <SuiteSyncConnectionStatusDot
+                                    isConnected={connection.state === 'connected'}
+                                />
+                            </Row>
+                            <Log entries={connection.log} />
+                        </List.Item>
+                    ))}
+                </List>
             }
         />
     );

@@ -4,7 +4,9 @@ export const normalizeDeviceColorVariant = (colorVariant?: number): number => co
 export const getDeviceColorVariant = (device?: {
     features?: { unit_color?: number };
     thp?: { properties?: { model_variant?: number } };
-}): number =>
-    normalizeDeviceColorVariant(
-        device?.features?.unit_color ?? device?.thp?.properties?.model_variant,
-    );
+}): number => {
+    // THP packs Bitcoin-only and packaging flags above the color byte.
+    const thpColorVariant = (device?.thp?.properties?.model_variant ?? 0) & 0xff;
+
+    return normalizeDeviceColorVariant(device?.features?.unit_color ?? thpColorVariant);
+};

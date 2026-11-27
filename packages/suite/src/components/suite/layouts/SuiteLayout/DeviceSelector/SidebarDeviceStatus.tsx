@@ -21,7 +21,13 @@ const needsRefresh = (device?: TrezorDevice) => {
     return needsAcquire;
 };
 
-export const SidebarDeviceStatus = () => {
+type SidebarDeviceStatusProps = {
+    isSwitchShortcutVisible?: boolean;
+};
+
+export const SidebarDeviceStatus = ({
+    isSwitchShortcutVisible = true,
+}: SidebarDeviceStatusProps) => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
     const { isSidebarCollapsed } = useResponsiveContext();
@@ -47,6 +53,7 @@ export const SidebarDeviceStatus = () => {
             device={selectedDevice}
             forceConnectionInfo={isConnectionShown}
             isDeviceDetailVisible={!isSidebarCollapsed}
+            isSwitchShortcutVisible={isSwitchShortcutVisible}
         />
     );
 };

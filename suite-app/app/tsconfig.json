@@ -186,11 +186,15 @@
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
         {
+            "path": "../../suite-common/analytics"
+        },
+        {
             "path": "../../suite-common/test-utils"
         },
         {
             "path": "../../packages/bundler-security"
         },
+        { "path": "../../packages/device-utils" },
         { "path": "../../packages/type-utils" }
     ]
 }

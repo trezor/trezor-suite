@@ -14,6 +14,7 @@ type DeviceStatusProps = {
     device?: TrezorDevice;
     forceConnectionInfo?: boolean;
     isDeviceDetailVisible?: boolean;
+    isSwitchShortcutVisible?: boolean;
 };
 
 export const DeviceStatus = ({
@@ -22,6 +23,7 @@ export const DeviceStatus = ({
     device,
     forceConnectionInfo = false,
     isDeviceDetailVisible = true,
+    isSwitchShortcutVisible = true,
 }: DeviceStatusProps) => {
     const deviceLabel = useSelector(state => selectDeviceLabelOrNameById(state, device?.id));
 
@@ -63,7 +65,9 @@ export const DeviceStatus = ({
                         content={
                             <Row gap={16} alignItems="center">
                                 {content}
-                                <ShortcutBadge shortcut={['ALT', 'KEY_W']} />
+                                {isSwitchShortcutVisible && (
+                                    <ShortcutBadge shortcut={['ALT', 'KEY_W']} />
+                                )}
                             </Row>
                         }
                     >

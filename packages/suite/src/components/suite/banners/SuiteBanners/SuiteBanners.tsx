@@ -73,9 +73,10 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     }, [device?.features?.safety_checks]);
 
     if (isOnboarding) {
-        return bannerMessage ? (
+        return bannerMessage || !isOnline ? (
             <Container $fill={fill}>
-                <MessageSystemBanner message={bannerMessage} />
+                {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
+                {!isOnline && <NoConnectionBanner />}
             </Container>
         ) : null;
     }

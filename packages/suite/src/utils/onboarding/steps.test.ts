@@ -8,7 +8,6 @@ import {
     type IsStepUsedProps,
     findNextStep,
     findPrevStep,
-    isStepCategoryUsed,
     isStepUsed,
     resolveNextAvailableStep,
 } from './steps';
@@ -47,6 +46,7 @@ describe('steps', () => {
         it('should contain the expected steps for T2T1 create flow', () => {
             const stepIds = createSteps.map(s => s.id);
             expect(stepIds).toEqual([
+                STEP.ID_SECURITY_CHECK_STEP,
                 STEP.ID_FIRMWARE_STEP,
                 STEP.ID_CREATE_OR_RECOVER,
                 STEP.ID_BACKUP_TYPE_STEP,
@@ -57,6 +57,9 @@ describe('steps', () => {
         });
 
         it('should navigate through the full create flow', () => {
+            expect(findNextStep(STEP.ID_SECURITY_CHECK_STEP, createSteps, defaultDevice)?.id).toBe(
+                STEP.ID_FIRMWARE_STEP,
+            );
             expect(findNextStep(STEP.ID_FIRMWARE_STEP, createSteps, defaultDevice)?.id).toBe(
                 STEP.ID_CREATE_OR_RECOVER,
             );
@@ -128,6 +131,7 @@ describe('steps', () => {
         it('should contain the expected steps for T2T1 recovery flow', () => {
             const stepIds = recoverySteps.map(s => s.id);
             expect(stepIds).toEqual([
+                STEP.ID_SECURITY_CHECK_STEP,
                 STEP.ID_FIRMWARE_STEP,
                 STEP.ID_CREATE_OR_RECOVER,
                 STEP.ID_RECOVERY_STEP,
@@ -158,6 +162,12 @@ describe('steps', () => {
     });
 
     describe(findPrevStep.name, () => {
+        it('returns to manual inspection from firmware', () => {
+            expect(findPrevStep(STEP.ID_FIRMWARE_STEP, getStepsForPath(STEP.PATH_CREATE))?.id).toBe(
+                STEP.ID_SECURITY_CHECK_STEP,
+            );
+        });
+
         it('should find previous step', () => {
             const createSteps = getStepsForPath(STEP.PATH_CREATE);
             expect(findPrevStep(STEP.ID_CREATE_OR_RECOVER, createSteps)?.id).toBe(
@@ -222,13 +232,6 @@ describe('steps', () => {
                 patch_version: 2,
             } as Partial<AcquiredDevice['features']>);
             expect(isStepUsed(tutorialStep, createProps({ device: deviceOldFw }))).toBe(false);
-        });
-    });
-
-    describe(isStepCategoryUsed.name, () => {
-        it('should return true for categories with at least one valid step', () => {
-            const deviceCategory = stepCategories.find(c => c.id === 'device')!;
-            expect(isStepCategoryUsed(deviceCategory, createProps())).toBe(true);
         });
     });
 

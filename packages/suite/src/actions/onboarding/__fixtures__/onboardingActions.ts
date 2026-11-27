@@ -32,8 +32,20 @@ export type OnboardingActionsFixture = {
 
 export const fixtures: OnboardingActionsFixture[] = [
     {
-        description: 'goToNextStepThunk (without param)',
+        description: 'goToNextStepThunk progresses from manual inspection to firmware',
         initialState: {
+            onboarding: { activeStepId: STEP.ID_SECURITY_CHECK_STEP },
+            device: { selectedDevice: mockSuiteDevice() },
+        },
+        action: () => onboardingActions.goToNextStepThunk(),
+        expect: {
+            toMatchObject: { activeStepId: STEP.ID_FIRMWARE_STEP },
+        },
+    },
+    {
+        description: 'goToNextStepThunk progresses from firmware to electronic authentication',
+        initialState: {
+            onboarding: { activeStepId: STEP.ID_FIRMWARE_STEP },
             device: {
                 selectedDevice: mockSuiteDevice(
                     { connected: true, available: true },

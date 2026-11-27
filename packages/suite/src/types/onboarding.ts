@@ -30,6 +30,7 @@ export type Step = {
 export type AnyStepId =
     | typeof STEP.ID_CREATE_OR_RECOVER
     | typeof STEP.ID_FINAL_STEP
+    | typeof STEP.ID_SECURITY_CHECK_STEP
     | typeof STEP.ID_FIRMWARE_STEP
     | typeof STEP.ID_AUTHENTICATE_DEVICE_STEP
     | typeof STEP.ID_TUTORIAL_STEP

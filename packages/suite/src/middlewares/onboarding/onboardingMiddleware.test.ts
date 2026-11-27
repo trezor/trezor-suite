@@ -75,7 +75,7 @@ const initStore = (state: State) =>
 
 describe('onboardingMiddleware', () => {
     describe('routerAppChanged.type', () => {
-        it('payload=onboarding (into onboarding)', async () => {
+        it('does not initialize onboarding before its entry thunk runs', async () => {
             const store = initStore(
                 getInitialState({
                     loaded: false,
@@ -92,10 +92,7 @@ describe('onboardingMiddleware', () => {
             );
             await store.dispatch({ type: routerAppChanged.type, payload: 'onboarding' });
             const result = store.getActions();
-            expect(result).toEqual([
-                { type: routerAppChanged.type, payload: 'onboarding' },
-                { type: '@onboarding/enable-onboarding-reducer', payload: true },
-            ]);
+            expect(result).toEqual([{ type: routerAppChanged.type, payload: 'onboarding' }]);
         });
     });
 

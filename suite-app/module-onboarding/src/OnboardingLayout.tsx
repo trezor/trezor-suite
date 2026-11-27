@@ -1,102 +1,34 @@
-import { type ReactNode } from 'react';
-import { useSelector } from 'react-redux';
+import { type ReactNode, useRef } from 'react';
 
-import styled from 'styled-components';
-
-import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
-import { Translation } from '@suite/intl';
 import { TRAFFIC_LIGHT_DEFAULT_OFFSET } from '@suite/macos';
 import { MODAL_CONTEXT_USER } from '@suite/modal';
-import { gotoThunk } from '@suite/router';
 import { ReduxModal } from '@suite-app/app-modal';
-import { Box, Button, Column, Row } from '@trezor/components';
-import { useServices } from '@trezor/dependency-injection';
+import { Box, Column, Row } from '@trezor/components';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
-import { XIcon } from '@trezor/icons';
-import { injectDispatch } from '@trezor/redux-utils';
 import {
+    AboveTabletOnly,
     ConnectionGlobalModalManager,
     GuideButton,
     GuideRouter,
-    MAX_ONBOARDING_WIDTH,
-    OnboardingCancelButtonContext,
-    OnboardingProgressBar,
-    SmallDeviceItem,
+    MAX_CONTENT_WIDTH_NUMERIC,
     SuiteBanners,
+    selectIsOnboardingDeviceDisconnected,
     useFilteredModal,
-    useOnboardingCancelButtonContext,
+    useResponsiveContextOnChange,
+    useSelector,
 } from '@trezor/suite';
-import { TREZOR_SUPPORT_URL } from '@trezor/urls';
-
-const OnboardingSpacer = styled.div`
-    height: ${TRAFFIC_LIGHT_DEFAULT_OFFSET}px;
-    width: 100%;
-`;
-
-type OnboardingContentProps = {
-    children: ReactNode;
-};
-
-const OnboardingContent = ({ children }: OnboardingContentProps) => {
-    const { onCancelHandler } = useOnboardingCancelButtonContext();
-    const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    const { dispatch } = useServices(injectDispatch);
-
-    const goToSettings = () => dispatch(gotoThunk({ routeName: 'settings-index' }));
-
-    return (
-        <Column gap={40}>
-            <Column gap={32}>
-                <Row justifyContent="space-between">
-                    <SmallDeviceItem />
-                    <Row gap={12}>
-                        {isDebugModeActive ? (
-                            <Button
-                                intent="neutral"
-                                priority="secondary"
-                                size="small"
-                                onClick={goToSettings}
-                            >
-                                <DebugOnlyBadge>
-                                    <Translation id="TR_SETTINGS" />
-                                </DebugOnlyBadge>
-                            </Button>
-                        ) : null}
-                        <Button
-                            intent="neutral"
-                            priority="secondary"
-                            size="small"
-                            href={TREZOR_SUPPORT_URL}
-                        >
-                            <Translation id="TR_HELP" />
-                        </Button>
-                        {onCancelHandler !== null ? (
-                            <Button
-                                intent="neutral"
-                                priority="secondary"
-                                iconRight={XIcon}
-                                size="small"
-                                onClick={onCancelHandler}
-                            >
-                                <Translation id="TR_CANCEL" />
-                            </Button>
-                        ) : null}
-                    </Row>
-                </Row>
-                <OnboardingProgressBar />
-            </Column>
-            <Box>{children}</Box>
-        </Column>
-    );
-};
 
 type OnboardingLayoutProps = {
     children: ReactNode;
+    sidebar: ReactNode;
 };
 
-export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
+export const OnboardingLayout = ({ children, sidebar }: OnboardingLayoutProps) => {
+    const contentRef = useRef<HTMLDivElement>(null);
+    const isDeviceDisconnected = useSelector(selectIsOnboardingDeviceDisconnected);
     const isMac = isMacOs();
     const isDesktopApp = isDesktop();
+    useResponsiveContextOnChange(contentRef);
 
     const allowedModal = useFilteredModal(
         [MODAL_CONTEXT_USER],
@@ -107,25 +39,41 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
         <>
             <ConnectionGlobalModalManager />
             {allowedModal !== null ? <ReduxModal {...allowedModal} /> : null}
-            <Row width="100%" height="100%">
-                <Column width="100%" height="100%" overflow="auto" alignItems="center">
-                    {isMac && isDesktopApp && <OnboardingSpacer />}
+            <Row width="100%" height="100%" alignItems="stretch">
+                {sidebar}
+                <Column
+                    ref={contentRef}
+                    flex="1"
+                    minWidth={0}
+                    height="100%"
+                    overflow="auto"
+                    alignItems="center"
+                >
+                    {isMac && isDesktopApp && (
+                        <Box height={TRAFFIC_LIGHT_DEFAULT_OFFSET} width="100%" />
+                    )}
                     <Column
                         data-testid="@onboarding-layout/body"
                         gap={20}
-                        maxWidth={MAX_ONBOARDING_WIDTH}
                         width="100%"
-                        padding={{ horizontal: 20, top: 32, bottom: 48 }}
+                        maxWidth={MAX_CONTENT_WIDTH_NUMERIC}
+                        alignItems="center"
+                        height="100%"
+                        padding={{ horizontal: 20, vertical: 32 }}
                     >
                         <SuiteBanners isOnboarding />
-                        <OnboardingCancelButtonContext>
-                            <OnboardingContent>{children}</OnboardingContent>
-                        </OnboardingCancelButtonContext>
+                        <Box width="100%" margin={{ vertical: 'auto' }}>
+                            {children}
+                        </Box>
                     </Column>
                 </Column>
-                <GuideButton />
                 <GuideRouter />
             </Row>
+            {isDeviceDisconnected && (
+                <AboveTabletOnly>
+                    <GuideButton />
+                </AboveTabletOnly>
+            )}
         </>
     );
 };

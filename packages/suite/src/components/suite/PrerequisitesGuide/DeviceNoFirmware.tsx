@@ -1,38 +1,20 @@
 import { type MouseEventHandler } from 'react';
 
-import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { gotoThunk } from '@suite/router';
-import { selectSelectedDevice } from '@suite-common/device';
 import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { DeviceModelInternal } from '@trezor/device-utils';
 import { CpuIcon } from '@trezor/icons';
-import { injectDispatch, injectGetState } from '@trezor/redux-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
+import { startOnboardingThunk } from '#src/actions/onboarding/startOnboardingThunk';
 import { TroubleshootingTips } from '#src/components/suite/troubleshooting/TroubleshootingTips';
 
 export const DeviceNoFirmware = () => {
-    const { analytics, dispatch, getState } = useServices(
-        injectDesktopAnalytics,
-        injectDispatch,
-        injectGetState,
-    );
+    const { dispatch } = useServices(injectDispatch);
 
     const handleClick: MouseEventHandler = e => {
         e.stopPropagation();
-        const device = selectSelectedDevice(getState());
-
-        analytics.report(
-            {
-                type: events.deviceSetupStartedEvent.name,
-                payload: {
-                    deviceModel: device?.features?.internal_model || DeviceModelInternal.UNKNOWN,
-                },
-            },
-            { force: true },
-        );
-        dispatch(gotoThunk({ routeName: 'onboarding-index' }));
+        dispatch(startOnboardingThunk({ shouldRestart: true }));
     };
 
     return (

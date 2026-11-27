@@ -35,6 +35,18 @@ export const stepCategories: StepCategory[] = [
         labelTranslationId: 'TR_DEVICE',
         steps: [
             {
+                id: STEP.ID_SECURITY_CHECK_STEP,
+                prerequisites: [
+                    'device-different',
+                    'no-transport',
+                    'device-unacquired',
+                    'device-used-elsewhere',
+                    'device-unknown',
+                    'device-unreadable',
+                    'device-disconnected',
+                ],
+            },
+            {
                 id: STEP.ID_FIRMWARE_STEP,
                 prerequisites: [
                     'no-transport',

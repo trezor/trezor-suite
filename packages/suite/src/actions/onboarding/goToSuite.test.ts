@@ -1,8 +1,9 @@
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { locksInitialState } from '@suite/locks';
+import { locksInitialState, locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
-import { type SuiteRouterHistoryDep, routerReducer } from '@suite/router';
+import { type RouterPath, type SuiteRouterHistoryDep, routerReducer } from '@suite/router';
+import { createRouterStateMockForRoute } from '@suite/router/mocks';
 import { deviceInitialState } from '@suite-common/device';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
@@ -37,7 +38,7 @@ const getInitialState = (): GoToSuiteThunkState => {
     return {
         locks: locksInitialState,
         modal: modalReducer(undefined, action),
-        router: routerReducer(undefined, action),
+        router: createRouterStateMockForRoute('onboarding-index'),
         networks: mockNetworksState([asNetworkSymbol('btc')]),
         persistentDeviceData: persistentDeviceDataInitialState,
         tokenDefinitions: tokenDefinitionsInitialState,
@@ -49,6 +50,8 @@ const getInitialState = (): GoToSuiteThunkState => {
         },
         onboarding: {
             ...onboardingReducer(undefined, action),
+            isActive: true,
+            activeStepId: 'final',
             path: ['create'],
             onboardingAnalytics: { startTime: Date.now(), seed: 'create' },
         },
@@ -56,8 +59,10 @@ const getInitialState = (): GoToSuiteThunkState => {
     };
 };
 
-const setup = () => {
+const setup = (backgroundPath: RouterPath['pathname'] = '/') => {
     const report = jest.fn();
+    const navigate = jest.fn();
+    const initialState = getInitialState();
 
     const { store } = createTestCompositionRoot<GoToSuiteTestDeps, GoToSuiteThunkState>({
         extra: {
@@ -65,22 +70,42 @@ const setup = () => {
                 fetchAndSaveMetadata: jest.fn(() => () => undefined),
             },
         },
-        preloadedState: getInitialState(),
+        preloadedState: initialState,
+        reducer: (state = initialState, action) => ({
+            ...state,
+            router: routerReducer(state.router, action),
+            locks: locksReducer(state.locks, action),
+            modal: modalReducer(state.modal, action),
+            onboarding: onboardingReducer(state.onboarding, action),
+        }),
         services: () => ({
             analytics: mockDesktopAnalytics(report),
             getTradedAccountKeys: asGetter(() => []),
             suiteRouterHistory: {
-                getLocation: jest.fn(),
-                navigate: jest.fn(),
+                getLocation: () => ({ pathname: backgroundPath, hash: '', search: '' }),
+                navigate,
                 listen: jest.fn(() => jest.fn()),
             },
         }),
     }).services;
 
-    return { store, report };
+    return { store, report, navigate };
 };
 
 describe('goToSuiteThunk', () => {
+    it.each(['/', '/settings', '/settings/device'] as const)(
+        'finishes on the dashboard with %s in the background',
+        backgroundPath => {
+            const { store, navigate } = setup(backgroundPath);
+
+            store.dispatch(goToSuiteThunk());
+
+            expect(store.getState().router.route?.name).toBe('suite-index');
+            expect(navigate).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/' }));
+            expect(store.getState().onboarding.isActive).toBe(false);
+        },
+    );
+
     it('reports device-setup-completed by default', () => {
         const { store, report } = setup();
 

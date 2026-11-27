@@ -1,9 +1,11 @@
 import { type JSX } from 'react';
 
+import { selectRouterApp } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
 
 import { ThpPairingStep } from '#src/components/onboarding/ThpPairingStep/ThpPairingStep';
+import { ID_BACKUP_TYPE_STEP, ID_CREATE_OR_RECOVER } from '#src/constants/onboarding/steps';
 import { useOnboarding } from '#src/hooks/suite/useOnboarding';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectPrerequisite } from '#src/selectors/suite/suiteSelectors';
@@ -23,8 +25,14 @@ export const UnexpectedState = ({ children }: UnexpectedStateProps) => {
     const device = useSelector(selectSelectedDevice);
     const prerequisite = useSelector(selectPrerequisite);
     const thpStep = useSelector(selectThpStep);
+    const isOnboardingRoute = useSelector(selectRouterApp) === 'onboarding';
 
-    const { prevDeviceId, activeStep, activeStepId, showPinMatrix } = useOnboarding();
+    const { isActive, prevDeviceId, activeStep, activeStepId, activeStepCategory, showPinMatrix } =
+        useOnboarding();
+
+    if (!isActive || !isOnboardingRoute) {
+        return <DeviceDisconnectedStep />;
+    }
 
     // After the PIN is set it may happen that it takes too long for an user to finish the onboarding process.
     // Then the device will get auto locked and requests to show a PIN matrix next before changing its setting.
@@ -34,9 +42,17 @@ export const UnexpectedState = ({ children }: UnexpectedStateProps) => {
     }
 
     const isDeviceDifferent = prevDeviceId && device?.id && prevDeviceId !== device.id;
-    // there may be specif onboarding prerequisites
-    if (activeStep?.prerequisites?.includes('device-different') && isDeviceDifferent) {
-        // in case we can 100% detect that user reconnected different device than he had previously connected
+    // The selected device can only become initialized during wallet creation or recovery.
+    const isInitializedBeforeWalletSetup =
+        device?.connected &&
+        device.features?.initialized &&
+        (activeStepCategory?.id === 'device' ||
+            activeStepId === ID_CREATE_OR_RECOVER ||
+            activeStepId === ID_BACKUP_TYPE_STEP);
+    if (
+        isInitializedBeforeWalletSetup ||
+        (activeStep?.prerequisites?.includes('device-different') && isDeviceDifferent)
+    ) {
         return <DeviceDifferentStep />;
     }
 

@@ -91,6 +91,7 @@ export const useInteractiveDeviceChecksFlowState = () => {
 
     return {
         isInteractiveDeviceChecksFlowDisplayed,
+        shouldDoManualDeviceCheck: deviceNeedsManualCheck,
         isAuthenticityCheckStepActive,
         setIsAuthenticityCheckStepActive,
     };

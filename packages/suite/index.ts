@@ -72,6 +72,7 @@ export {
 export { useDeviceCompromisedNotification } from './src/components/suite/SecurityCheck/useDeviceCompromisedNotification';
 export { useGuideDesktopMenu } from './src/hooks/guide/useGuideDesktopMenu';
 export { useGuideKeyboard } from './src/hooks/guide/useGuideKeyboard';
+export { useGuide } from './src/hooks/guide/useGuide';
 export { useAppShortcuts } from './src/hooks/suite/useAppShortcuts';
 export { useWindowVisibility } from './src/hooks/suite/useWindowVisibility';
 export {
@@ -351,8 +352,11 @@ export {
 } from './src/components/suite/layouts/SuiteLayout/LayoutStructure';
 export { type ForegroundAppRoute } from './src/types/suite';
 export { AccountsMenu } from './src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
-export { MIN_CONTENT_WIDTH } from './src/constants/suite/layout';
-export { DeviceSelector } from './src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceSelector';
+export { MAX_CONTENT_WIDTH_NUMERIC, MIN_CONTENT_WIDTH } from './src/constants/suite/layout';
+export {
+    DEVICE_SELECTOR_HEIGHT,
+    DeviceSelector,
+} from './src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceSelector';
 export { QuickActions } from './src/components/suite/layouts/SuiteLayout/Sidebar/QuickActions/QuickActions';
 export { SidebarBanners } from './src/components/suite/layouts/SuiteLayout/Sidebar/SidebarBanners';
 export {
@@ -410,14 +414,15 @@ export { WalletConnectSwitchAccountModal } from './src/components/suite/modals/R
 export { WipeDeviceSuccessModal } from './src/components/suite/modals/ReduxModal/UserContextModal/WipeDeviceSuccessModal';
 export { DeviceConfirmationModal } from './src/components/suite/modals/ReduxModal/DeviceConfirmationModal/DeviceConfirmationModal';
 export { DeviceContextModal } from './src/components/suite/modals/ReduxModal/DeviceContextModal/DeviceContextModal';
-export { OnboardingProgressBar } from './src/components/onboarding/OnboardingProgressBar';
+export { OnboardingStepper } from './src/components/onboarding/OnboardingStepper/OnboardingStepper';
+export {
+    startOnboardingThunk,
+    selectCanStartOnboarding,
+} from './src/actions/onboarding/startOnboardingThunk';
+export { selectIsOnboardingDeviceDisconnected } from './src/selectors/onboarding/onboardingSelectors';
+export { useResponsiveContextOnChange } from './src/components/suite/layouts/SuiteLayout/useResponsiveContextOnChange';
 export { MAX_ONBOARDING_WIDTH } from './src/constants/suite/layout';
 export { useFilteredModal } from './src/hooks/suite/useFilteredModal';
-export {
-    OnboardingCancelButtonContext,
-    useOnboardingCancelButtonContext,
-} from './src/components/onboarding/OnboardingCancelButtonContext';
-export { SmallDeviceItem } from './src/views/suite/SwitchDevice/DeviceItem/SmallDeviceItem';
 export { getOnboardingStepIndex } from './src/config/onboarding/steps';
 export { useOnboarding } from './src/hooks/suite/useOnboarding';
 export { UnexpectedState } from './src/views/onboarding/UnexpectedState/UnexpectedState';
@@ -430,4 +435,5 @@ export { FirmwareStep } from './src/views/onboarding/steps/FirmwareStep/Firmware
 export { PinStep } from './src/views/onboarding/steps/PinStep';
 export { RecoveryStep } from './src/views/onboarding/steps/RecoveryStep/RecoveryStep';
 export { SecurityStep } from './src/views/onboarding/steps/SecurityStep';
+export { SecurityCheckStep } from './src/views/onboarding/steps/SecurityCheckStep';
 export * as onboardingSteps from './src/constants/onboarding/steps';

@@ -1,16 +1,16 @@
-import { type FC, type PropsWithChildren, memo, useEffect } from 'react';
+import { type PropsWithChildren, memo, useEffect } from 'react';
 
 import { selectShouldDisplayDeviceCompromisedOnRoute } from '@suite/authenticity-checks';
 import { useDevice } from '@suite/device';
 import { KillswitchMessageScreen } from '@suite/message-system';
 import {
-    type RouterAppWithParams,
     selectHasRoute,
     selectIsForegroundApp,
+    selectIsOnboardingSettings,
     selectRouterApp,
     selectRouterLoaded,
 } from '@suite/router';
-import { Onboarding } from '@suite-app/module-onboarding';
+import { Onboarding, OnboardingStepAnalytics } from '@suite-app/module-onboarding';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
 import {
     useReportDeviceCompromised,
@@ -26,6 +26,7 @@ import {
     PrerequisitesGuide,
     analyticsActions,
     initThunk,
+    selectIsOnboardingDeviceDisconnected,
     selectPrerequisite,
     selectSuiteLifecycle,
     useAppShortcuts,
@@ -43,18 +44,10 @@ import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { DeviceCompromisedScreen } from './DeviceCompromisedScreen';
 import { InitialLoading } from './InitialLoading';
 import { useWaitForTransport } from './useWaitForTransport';
+import { OnboardingSidebar } from '../layouts/Sidebar/OnboardingSidebar';
 import { SuiteLayout } from '../layouts/SuiteLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout';
 import { WelcomeLayoutWithoutModalSwitcher } from '../layouts/WelcomeLayoutWithoutModalSwitcher';
-
-const getFullscreenApp = (app: RouterAppWithParams['app']): FC | undefined => {
-    switch (app) {
-        case 'onboarding':
-            return Onboarding;
-        default:
-            return undefined;
-    }
-};
 
 // Preloader is a top level wrapper used in _app.tsx.
 // Decides which content should be displayed basing on route and prerequisites.
@@ -64,6 +57,8 @@ export const Preloader = memo(({ children }: PropsWithChildren) => {
     const isRouterLoaded = useSelector(selectRouterLoaded);
     const routerApp = useSelector(selectRouterApp);
     const isForegroundApp = useSelector(selectIsForegroundApp);
+    const isOnboardingSettings = useSelector(selectIsOnboardingSettings);
+    const isOnboardingDeviceDisconnected = useSelector(selectIsOnboardingDeviceDisconnected);
     const hasRoute = useSelector(selectHasRoute);
     const prerequisite = useSelector(selectPrerequisite);
     const shouldDisplayDeviceCompromisedOnRoute = useSelector(
@@ -95,6 +90,20 @@ export const Preloader = memo(({ children }: PropsWithChildren) => {
         }
     }, [dispatch, isAnalyticsConsentConfirmed]);
 
+    const {
+        isInteractiveDeviceChecksFlowDisplayed,
+        shouldDoManualDeviceCheck,
+        isAuthenticityCheckStepActive,
+        setIsAuthenticityCheckStepActive,
+    } = useInteractiveDeviceChecksFlowState();
+
+    const isOnboarding = routerApp === 'onboarding';
+    const isStartingOnboarding =
+        isInteractiveDeviceChecksFlowDisplayed &&
+        shouldDoManualDeviceCheck &&
+        device !== undefined &&
+        !device.features?.initialized;
+
     // Register keyboard handlers for opening/closing Guide using keyboard
     useGuideKeyboard();
     // Open the Guide from the desktop application menu (Help)
@@ -104,12 +113,6 @@ export const Preloader = memo(({ children }: PropsWithChildren) => {
     // on whether a device/account is required.
     useAppShortcuts();
     useWindowVisibility();
-
-    const {
-        isInteractiveDeviceChecksFlowDisplayed,
-        isAuthenticityCheckStepActive,
-        setIsAuthenticityCheckStepActive,
-    } = useInteractiveDeviceChecksFlowState();
 
     // Failed storage loading also prevents persisted analytics consent from loading.
     // Show the failure before consent so it cannot hide the database error.
@@ -143,6 +146,23 @@ export const Preloader = memo(({ children }: PropsWithChildren) => {
         return <DeviceCompromisedScreen />;
     }
 
+    if (isOnboarding || isStartingOnboarding || isOnboardingSettings) {
+        return (
+            <OnboardingStepAnalytics>
+                {isOnboarding || isStartingOnboarding ? (
+                    <Onboarding sidebar={<OnboardingSidebar />} />
+                ) : (
+                    <SuiteLayout
+                        sidebar={<OnboardingSidebar />}
+                        showGuideButton={isOnboardingDeviceDisconnected}
+                    >
+                        {children}
+                    </SuiteLayout>
+                )}
+            </OnboardingStepAnalytics>
+        );
+    }
+
     if (isInteractiveDeviceChecksFlowDisplayed) {
         return (
             <WelcomeLayoutWithoutModalSwitcher>
@@ -152,14 +172,6 @@ export const Preloader = memo(({ children }: PropsWithChildren) => {
                 />
             </WelcomeLayoutWithoutModalSwitcher>
         );
-    }
-
-    // TODO: murder the fullscreen app logic, there must be a better way
-    // i don't like how it's not clear which layout is used
-    // and that the prerequisite screen is handled multiple times
-    const FullscreenApp = getFullscreenApp(routerApp);
-    if (FullscreenApp !== undefined) {
-        return <FullscreenApp />;
     }
 
     if (isForegroundApp) {

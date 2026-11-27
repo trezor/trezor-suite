@@ -30,6 +30,7 @@ import { GuideViewWrapper } from './GuideViewWrapper';
 
 const AnonymousDataList = styled.ul`
     margin-left: 20px;
+    list-style: disc;
 `;
 
 const AnonymousDataItem = styled.li`

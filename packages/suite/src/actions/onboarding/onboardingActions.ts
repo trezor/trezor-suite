@@ -8,7 +8,6 @@ import { type RecoveryState, recoveryRerunThunk } from '@suite/recovery';
 import {
     type GotoThunkState,
     type SuiteRouterHistoryDep,
-    closeModalAppThunk,
     gotoThunk,
     selectRouterApp,
 } from '@suite/router';
@@ -137,7 +136,7 @@ const goToSuiteThunk =
 
         dispatch(initialRunCompletedThunk({ isFreshDeviceSetup }));
         dispatch(resetOnboarding());
-        dispatch(closeModalAppThunk(true));
+        dispatch(gotoThunk({ routeName: 'suite-index' }));
 
         // For Bitcoin-only firmware, pre-activate BTC so the user lands on a populated dashboard
         // instead of the empty "activate assets" state. Only do this on initial setup, when no
@@ -287,9 +286,10 @@ const resolveNextAfterSkippedThunk =
         return resolvedNextStep?.id;
     };
 
-type RerunRecoveryThunkState = DeviceRootState & GotoThunkState & { recovery: RecoveryState };
+export type RerunRecoveryThunkState = DeviceRootState &
+    GotoThunkState & { recovery: RecoveryState };
 
-type RerunRecoveryThunkDeps = { services: DesktopAnalyticsDep & SuiteRouterHistoryDep };
+export type RerunRecoveryThunkDeps = { services: DesktopAnalyticsDep & SuiteRouterHistoryDep };
 
 const rerunRecoveryThunk =
     () =>
@@ -309,7 +309,9 @@ const rerunRecoveryThunk =
         } else {
             if (selectRouterApp(getState()) !== 'onboarding') {
                 dispatch(gotoThunk({ routeName: 'onboarding-index' }));
+                if (selectRouterApp(getState()) !== 'onboarding') return;
             }
+            dispatch(enableOnboardingReducer(true));
             dispatch(goToStep('recovery'));
             dispatch(addPath('recovery'));
         }

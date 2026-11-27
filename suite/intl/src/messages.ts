@@ -5913,10 +5913,6 @@ export const messages = defineMessages({
         id: 'TR_COULD_NOT_RETRIEVE_DATA',
         defaultMessage: 'Could not retrieve data',
     },
-    TR_HELP: {
-        id: 'TR_HELP',
-        defaultMessage: 'Support',
-    },
     TR_HEX_FORMAT: {
         id: 'TR_HEX_FORMAT',
         defaultMessage: 'Hex format',

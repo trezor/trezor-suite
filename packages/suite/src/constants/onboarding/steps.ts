@@ -1,5 +1,6 @@
 export const ID_CREATE_OR_RECOVER = 'create-or-recover';
 export const ID_FINAL_STEP = 'final';
+export const ID_SECURITY_CHECK_STEP = 'security-check';
 export const ID_FIRMWARE_STEP = 'firmware';
 export const ID_BACKUP_TYPE_STEP = 'backup-type';
 export const ID_AUTHENTICATE_DEVICE_STEP = 'authenticate-device';

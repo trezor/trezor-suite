@@ -229,15 +229,6 @@ export class OnboardingPage {
     }
 
     @step()
-    async disableDebugMode() {
-        await this.page.ensureStoreOnDesktop();
-        await this.page.evaluate(action => window.store.dispatch(action), {
-            type: debugActions.setShowDebugMenu.type,
-            payload: false,
-        });
-    }
-
-    @step()
     async enableDebugMode() {
         await this.page.ensureStoreOnDesktop();
         await this.page.evaluate(action => window.store.dispatch(action), {
