@@ -138,7 +138,7 @@ export const YieldDepositCompleteScreen = () => {
         <>
             <EarnCompleteScreenContent
                 type="deposit"
-                vaultId={vault.id}
+                feedbackContext={{ vaultId: vault.id }}
                 buttonTranslationId="earn.yieldCompleteScreen.backToOverview"
                 onButtonPress={() => forceNavigation(handleExit)}
                 rows={rows}

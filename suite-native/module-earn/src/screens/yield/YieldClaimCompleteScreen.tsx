@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { getYieldClaimFeedbackContext } from '@suite-common/feedback';
 import { TokenMetadataProvider } from '@suite-common/token';
 import {
     type AccountsRootState,
@@ -80,11 +81,13 @@ export const YieldClaimCompleteScreen = () => {
         return null;
     }
 
-    const rows = getYieldClaimCompleteRows(session.result.completedRewards);
+    const { completedRewards } = session.result;
+    const rows = getYieldClaimCompleteRows(completedRewards);
 
     const content = (
         <EarnCompleteScreenContent
             type="claim"
+            feedbackContext={getYieldClaimFeedbackContext(completedRewards, networkSymbol)}
             buttonTranslationId="earn.yieldCompleteScreen.backToOverview"
             onButtonPress={handleExit}
             rows={rows}
@@ -95,7 +98,7 @@ export const YieldClaimCompleteScreen = () => {
 
     return (
         <TokenMetadataProvider
-            sources={yieldCompleteRewardsToTokenMetadataSources(session.result.completedRewards)}
+            sources={yieldCompleteRewardsToTokenMetadataSources(completedRewards)}
         >
             {content}
         </TokenMetadataProvider>

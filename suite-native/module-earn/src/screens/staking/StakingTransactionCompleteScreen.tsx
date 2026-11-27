@@ -3,7 +3,12 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { useNetworkStakingPeriods, useNetworkStakingRate } from '@suite-common/earn-staking';
+import {
+    type StakingAccountProductRootState,
+    selectStakingAccountProductDescriptor,
+    useNetworkStakingPeriods,
+    useNetworkStakingRate,
+} from '@suite-common/earn-staking';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Text } from '@suite-native/atoms';
@@ -40,6 +45,10 @@ export const StakingTransactionCompleteScreen = () => {
 
     // Only a stake shows its rate and entry period.
     const stakedNetworkSymbol = stakeType === 'stake' ? (account?.symbol ?? null) : null;
+    const productId = useSelector(
+        (state: StakingAccountProductRootState) =>
+            selectStakingAccountProductDescriptor(state, accountKey)?.id,
+    );
     const { entryPeriodDays } = useNetworkStakingPeriods(stakedNetworkSymbol);
     const { rate } = useNetworkStakingRate({ networkSymbol: stakedNetworkSymbol, accountKey });
 
@@ -65,6 +74,7 @@ export const StakingTransactionCompleteScreen = () => {
         <EarnCompleteScreenContent
             type={stakeType}
             feedbackFeature="staking"
+            feedbackContext={{ productId }}
             buttonTranslationId="earn.transactionCompleteScreen.doneButton"
             onButtonPress={navigation.goBack}
             rows={rows}

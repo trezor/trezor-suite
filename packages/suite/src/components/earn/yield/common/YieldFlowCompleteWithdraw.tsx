@@ -24,8 +24,7 @@ export const YieldFlowCompleteWithdraw = ({
                 values={{ displaySymbol: output.token.symbol }}
             />
         }
-        vaultId={vaultId}
-        showFeedback
+        feedbackContext={{ vaultId }}
     >
         <YieldFlowTransferRow
             inputLabelId="TR_EARN_YIELD_WITHDRAWN"

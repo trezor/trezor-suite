@@ -28,8 +28,7 @@ export const YieldFlowCompleteDeposit = ({
         type="deposit"
         heading={<Translation id="TR_EARN_YIELD_DEPOSIT_COMPLETE" />}
         description={<Translation id="TR_EARN_YIELD_DEPOSIT_COMPLETE_DESCRIPTION" />}
-        vaultId={vault.id}
-        showFeedback
+        feedbackContext={{ vaultId: vault.id }}
     >
         <Row
             justifyContent="space-between"

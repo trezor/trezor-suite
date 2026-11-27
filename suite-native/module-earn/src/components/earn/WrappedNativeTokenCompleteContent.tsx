@@ -85,6 +85,10 @@ export const WrappedNativeTokenCompleteContent = ({
     const content = (
         <EarnCompleteScreenContent
             type={flowType}
+            feedbackContext={{
+                networkSymbol: account.symbol,
+                tokenSymbols: [wrappedNative.symbol],
+            }}
             buttonTranslationId={messages.closeButton}
             onButtonPress={handleClose}
             rows={rows}

@@ -244,6 +244,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                                 content: () => (
                                     <YieldFlowCompleteClaim
                                         rewards={claimSession.result.completedRewards}
+                                        networkSymbol={account.symbol}
                                     />
                                 ),
                             },

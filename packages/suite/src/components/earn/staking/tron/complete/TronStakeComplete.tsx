@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
+import { selectStakingAccountProductDescriptor } from '@suite-common/earn-staking';
 import { type TronFlow } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Column, IconCircle, Text } from '@trezor/components';
@@ -11,6 +12,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { EarnFlowFeedbackCard } from '#src/components/earn/common/EarnFlowFeedbackCard';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 interface TronStakeCompleteProps {
     account: Account;
@@ -29,6 +31,9 @@ export const TronStakeComplete = ({
 }: TronStakeCompleteProps) => {
     const { dispatch } = useServices(injectDispatch);
     const { isBelowMobile } = useLayoutSize();
+    const productId = useSelector(
+        state => selectStakingAccountProductDescriptor(state, account.key)?.id,
+    );
 
     const handleBackToOverview = () =>
         dispatch(
@@ -72,9 +77,9 @@ export const TronStakeComplete = ({
 
             <EarnFlowFeedbackCard
                 featureTitleId="TR_EARN_STAKING"
-                analyticsCategory="staking"
-                context={`tron-${flow}`}
                 feature="staking"
+                context={flow}
+                feedbackContext={{ productId }}
             />
         </Column>
     );

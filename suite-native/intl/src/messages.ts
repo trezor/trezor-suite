@@ -4801,6 +4801,7 @@ export const messages = {
         title: 'How was your experience?',
         description: 'Your feedback helps us improve. Tell us what you think.',
         submitButton: 'Send feedback',
+        submitError: 'Could not send feedback. Try again.',
         successTitle: 'Thanks!',
         successDescription: 'We value your feedback.',
     },

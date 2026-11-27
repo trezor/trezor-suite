@@ -258,6 +258,7 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
                 <WrappedNativeFlowComplete
                     account={account}
                     flow="wrap"
+                    tokenSymbol={token.symbol}
                     heading={<Translation id="TR_WRAP_COMPLETE_HEADING" />}
                     description={
                         <Translation

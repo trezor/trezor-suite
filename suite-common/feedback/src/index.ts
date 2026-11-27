@@ -4,3 +4,4 @@ export * from './rating';
 export type * from './feedback';
 export * from './feedbackSlice';
 export * from './feedbackSelectors';
+export * from './earnFeedback';

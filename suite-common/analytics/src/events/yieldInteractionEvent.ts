@@ -27,6 +27,7 @@ type Attributes = {
     value?: AttributeDef<string>;
     networkSymbol?: AttributeDef<string>;
     vaultId?: AttributeDef<string>;
+    tokenSymbols?: AttributeDef<string[]>;
 };
 
 export const yieldInteractionEvent: EventDef<Attributes, EventType.YieldInteraction> = {
@@ -90,11 +91,18 @@ export const yieldInteractionEvent: EventDef<Attributes, EventType.YieldInteract
             ],
         },
         networkSymbol: {
-            changelog: [{ version: '26.5.2', notes: 'added' }],
+            changelog: [
+                { version: '26.5.2', notes: 'added' },
+                { version: '26.12.0', notes: 'Reported with yield claim feedback.' },
+            ],
         },
         vaultId: {
             description: 'Internal vault identifier (vault.id), when in vault context',
             changelog: [{ version: '26.5.2', notes: 'added' }],
+        },
+        tokenSymbols: {
+            description: 'Distinct reward token symbols for yield claim feedback',
+            changelog: [{ version: '26.12.0', notes: 'added' }],
         },
     },
 };

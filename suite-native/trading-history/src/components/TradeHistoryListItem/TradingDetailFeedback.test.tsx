@@ -9,10 +9,10 @@ import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistor
 
 jest.mock('@suite-common/feedback', () => ({
     ...jest.requireActual('@suite-common/feedback'),
-    sendFeedbackThunk: jest.fn(() => ({ type: 'mock/sendFeedbackAction' })),
+    sendFeedbackThunk: jest.fn(() => () => ({ unwrap: () => Promise.resolve() })),
 }));
 
-const sendFeedbackActionMock = sendFeedbackThunk as unknown as jest.Mock;
+const sendFeedbackActionMock = jest.mocked(sendFeedbackThunk);
 
 const reportMock = jest.fn();
 const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics(reportMock) };

@@ -1,10 +1,8 @@
 import { type ReactNode } from 'react';
 
-import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { events } from '@suite-common/analytics';
-import { type Rating } from '@suite-common/feedback';
+import { type EarnFeedbackContext } from '@suite-common/feedback';
 import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';
@@ -17,8 +15,7 @@ type YieldFlowCompleteProps = {
     type: 'deposit' | 'withdraw' | 'claim';
     heading: ReactNode;
     description: ReactNode;
-    showFeedback?: boolean;
-    vaultId?: string;
+    feedbackContext?: EarnFeedbackContext;
     children: ReactNode;
 };
 
@@ -26,25 +23,13 @@ export const YieldFlowComplete = ({
     type,
     heading,
     description,
-    showFeedback,
-    vaultId,
+    feedbackContext,
     children,
 }: YieldFlowCompleteProps) => {
-    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { isBelowMobile } = useLayoutSize();
 
     const handleBackToOverview = () => dispatch(gotoThunk({ routeName: 'suite-earn' }));
-
-    const handleFeedbackSubmit = (rating: Rating) => {
-        analytics.report({
-            type: events.yieldInteractionEvent.name,
-            payload: {
-                element: 'feedback-submit',
-                value: rating,
-                vaultId,
-            },
-        });
-    };
 
     return (
         <Column gap={16}>
@@ -95,14 +80,12 @@ export const YieldFlowComplete = ({
                 <Translation id="TR_EARN_YIELD_BACK_TO_OVERVIEW" />
             </Button>
 
-            {showFeedback && (
+            {feedbackContext && (
                 <EarnFlowFeedbackCard
                     featureTitleId="TR_EARN_DEFI_YIELD"
-                    analyticsCategory="yield"
-                    context={type}
-                    provider={vaultId}
                     feature="yield"
-                    onSubmit={handleFeedbackSubmit}
+                    context={type}
+                    feedbackContext={feedbackContext}
                 />
             )}
         </Column>
