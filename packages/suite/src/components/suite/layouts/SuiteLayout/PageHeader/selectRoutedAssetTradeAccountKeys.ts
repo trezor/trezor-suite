@@ -1,9 +1,5 @@
 import { type DebugRootState, selectIsDebugModeActive } from '@suite/debug';
-import {
-    type AssetAccount,
-    selectDeviceAssetAccounts,
-    selectWalletAssetNetworkSymbol,
-} from '@suite-common/assets';
+import { type AssetAccount, selectDeviceAssetAccounts } from '@suite-common/assets';
 import { selectDeviceStaticSessionId } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import {
@@ -45,9 +41,6 @@ export const selectRoutedAssetTradeAccountKeys = createMemoizedSelector(
         selectIsDebugModeActive,
         selectTokenDefinitions,
         selectRoutedAssetKey,
-        // From the asset, not its holders: a token held at zero can still be bought.
-        (state: RoutedAssetTradeState) =>
-            selectWalletAssetNetworkSymbol(state, selectRoutedAssetKey(state)),
     ],
     (
         assetAccounts,
@@ -58,11 +51,11 @@ export const selectRoutedAssetTradeAccountKeys = createMemoizedSelector(
         isDebug,
         tokenDefinitions,
         assetKey,
-        networkSymbol,
     ): RoutedAssetTradeAccountKeys => {
         const routedAssetAccounts = assetAccounts.filter(
             assetAccount => assetAccount.assetKey === assetKey,
         );
+        const networkSymbol = routedAssetAccounts[0]?.networkSymbol;
 
         const [buyAccount] =
             networkSymbol === undefined

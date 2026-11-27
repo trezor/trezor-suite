@@ -96,21 +96,6 @@ describe('selectRoutedAssetTradeAccountKeys', () => {
         });
     });
 
-    it('buys a token the wallet holds none of, and sells it from no account', () => {
-        const emptied = account(ethSymbol, 0, {
-            tokens: [mockAccountToken({ contract: usdcContract, balance: '0' })],
-        });
-        const state = buildState([emptied], {
-            symbol: ethSymbol,
-            contractAddress: usdcContract,
-        });
-
-        expect(selectRoutedAssetTradeAccountKeys(state)).toEqual({
-            buy: emptied.key,
-            sell: undefined,
-        });
-    });
-
     it('sells from no account whose only funds are staked', () => {
         const stakedOnly = account(ethSymbol, 0);
         const state = buildState(

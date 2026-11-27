@@ -11,6 +11,8 @@ type AccountAssetRowProps = {
     tokenSymbol?: TokenSymbol;
     tokenDecimals?: number;
     amount: string | undefined;
+    /** The asset detail lists only what the wallet holds, so a token held at zero has none. */
+    isOpenable?: boolean;
 };
 
 /** A Home asset row with what one account holds of its coin or of a token; it opens the asset. */
@@ -20,6 +22,7 @@ export const AccountAssetRow = ({
     tokenSymbol,
     tokenDecimals,
     amount,
+    isOpenable = true,
 }: AccountAssetRowProps) => {
     const openAsset = useOpenAsset({ from: 'account-overview' });
 
@@ -30,7 +33,7 @@ export const AccountAssetRow = ({
             tokenSymbol={tokenSymbol ?? null}
             tokenDecimals={tokenDecimals}
             amount={amount}
-            onOpen={() => openAsset({ networkSymbol, contractAddress })}
+            onOpen={isOpenable ? () => openAsset({ networkSymbol, contractAddress }) : undefined}
             data-testid={`@wallet/account-asset/${networkSymbol}/${contractAddress ?? 'coin'}`}
         />
     );

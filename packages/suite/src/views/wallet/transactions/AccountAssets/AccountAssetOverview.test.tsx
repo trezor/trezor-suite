@@ -286,6 +286,27 @@ describe('the account overview with the asset-first Home', () => {
         expect(rowTestIds()).toContain(`@wallet/account-asset/eth/${ONE_INCH}`);
     });
 
+    it('opens nothing from a token it holds none of, which has no asset detail', () => {
+        const withEmptyToken = {
+            ...ethAccount,
+            tokens: [
+                mockAccountToken({
+                    symbol: '1INCH',
+                    contract: ONE_INCH,
+                    balance: '0',
+                    decimals: 18,
+                }),
+            ],
+        };
+        const { analytics, suiteRouterHistory } = renderOverview([withEmptyToken]);
+
+        fireEvent.click(screen.getByTestId('@wallet/account-assets/zero-balance'));
+        fireEvent.click(screen.getByTestId(`@wallet/account-asset/eth/${ONE_INCH}`));
+
+        expect(suiteRouterHistory.navigate).not.toHaveBeenCalled();
+        expect(analytics.report).not.toHaveBeenCalled();
+    });
+
     it('offers the Home menu without grouping and, while small balances are off, leaves the dust out of the rows but in the total', () => {
         renderOverview([ethAccount], { areSmallBalancesShown: false });
 

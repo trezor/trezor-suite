@@ -943,31 +943,6 @@ describe('the tokens the table leaves out', () => {
         expect(selectWalletAssetFiatValue(state, assetKey)?.toFixed()).toBe('10');
     });
 
-    it('describes a token held at zero for its own screen, but lists it nowhere', () => {
-        const state = createState({
-            accounts: [
-                mockAccount({
-                    symbol: ETH,
-                    tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '0' }],
-                }),
-            ],
-            rates: mockRate(ETH, 1, USDC_ON_ETH),
-        });
-        const assetKey = getWalletAssetKey({
-            deviceState: ALICE,
-            networkSymbol: ETH,
-            contractAddress: USDC_ON_ETH,
-        });
-
-        expect(selectWalletAssetNetworkSymbol(state, assetKey)).toBe(ETH);
-        expect(selectWalletAssetContractAddress(state, assetKey)).toBe(USDC_ON_ETH);
-        expect(selectWalletAssetAmount(state, assetKey)).toBe('0');
-        expect(selectWalletAssetAccountCount(state, assetKey)).toBe(0);
-        expect(selectHomeAssetRowKeys(state)).not.toContain(assetKey);
-        expect(selectHiddenWalletAssetKeys(state, 'hiddenByUser')).toEqual([]);
-        expect(selectHiddenWalletAssetKeys(state, 'unrecognized')).toEqual([]);
-    });
-
     it('says why a token is hidden, and nothing for one that is shown', () => {
         const state = stateWithBitcoinBalance('1');
         const getTokenKey = (contractAddress: TokenAddress) =>

@@ -38,7 +38,6 @@ import {
 import {
     getFiatRateKey,
     hasNetworkFeatures,
-    isNftToken,
     isPositiveBalance,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
@@ -156,48 +155,6 @@ const selectHiddenAssets = (state: AssetTableState, accountKey?: AccountKey) =>
     accountKey === undefined
         ? selectHiddenWalletAssets(state)
         : selectAccountHiddenAssets(state, accountKey);
-
-/**
- * The tokens the accounts list but hold none of. They are no asset of the wallet's, so neither the
- * table nor its totals see them, but the account overview lists them and their detail opens empty.
- */
-const selectZeroBalanceWalletAssets = createMemoizedSelector(
-    [selectVisibleDeviceAccounts],
-    (accounts): ReadonlyMap<WalletAssetKey, WalletAsset> => {
-        const assets = new Map<WalletAssetKey, WalletAsset>();
-
-        accounts.forEach(account =>
-            account.tokens?.forEach(token => {
-                if (isNftToken(token) || isPositiveBalance(token.balance ?? '0')) {
-                    return;
-                }
-
-                const contractAddress = token.contract as TokenAddress;
-                const assetKey = getWalletAssetKey({
-                    deviceState: account.deviceState,
-                    networkSymbol: account.symbol,
-                    contractAddress,
-                });
-
-                if (!assets.has(assetKey)) {
-                    assets.set(assetKey, {
-                        assetKey,
-                        networkSymbol: account.symbol,
-                        contractAddress,
-                        cryptoBalance: ZERO,
-                        amount: '0',
-                        tokenSymbol:
-                            token.symbol === undefined ? null : toTokenSymbol(token.symbol),
-                        tokenDecimals: token.decimals,
-                        accountCount: 0,
-                    });
-                }
-            }),
-        );
-
-        return assets;
-    },
-);
 
 /**
  * The rate of each asset, as a plain number. The fiat state is rewritten on every fetch — a batch of
@@ -633,15 +590,7 @@ const selectWalletAsset = (
 
     const hiddenAsset = () => selectHiddenWalletAssets(state).get(assetKey);
 
-    if (isHidden) {
-        return hiddenAsset();
-    }
-
-    return (
-        selectWalletAssets(state).get(assetKey) ??
-        hiddenAsset() ??
-        selectZeroBalanceWalletAssets(state).get(assetKey)
-    );
+    return isHidden ? hiddenAsset() : (selectWalletAssets(state).get(assetKey) ?? hiddenAsset());
 };
 
 export const selectWalletAssetKey = createMemoizedSelector(
