@@ -8,7 +8,8 @@ import { serializeError } from '@trezor/connect-common/src/constants/errors';
 import GetCoinInfo from '@trezor/connect-core/src/api/getCoinInfo';
 import { getMethod } from '@trezor/connect-core/src/core/method';
 
-import { getMethodInfo } from './methodInfo';
+import { type CommonPopupFlow } from './CommonPopupFlow';
+import { createPopupFlow } from './createPopupFlow';
 
 jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),
@@ -19,6 +20,20 @@ jest.mock('@trezor/connect', () => ({
 // The method Connect would run for the call, where it resolves the coins of the call.
 const createConnectMethod = (payload: CallMethodPayload) =>
     getMethod({ id: '1', type: 'iframe-call', payload });
+
+// Describes the call as the popup flow of the method does.
+const getMethodInfo = async ({ method, ...payload }: CallMethodPayload) => {
+    const flow = createPopupFlow(
+        {
+            method,
+            payload,
+            source: { type: 'web', origin: 'https://app.example', manifest: { appName: 'app' } },
+        },
+        { dispatch: jest.fn(), getState: jest.fn(), signal: new AbortController().signal },
+    );
+
+    return await (flow as CommonPopupFlow<typeof method>)['getMethodInfo']();
+};
 
 const BTC_ADDRESS = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq';
 

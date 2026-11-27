@@ -25,7 +25,7 @@ import {
     type ConnectCallSource,
     getCallSourceName,
 } from '../connectPopupTypes';
-import { type MethodInfo, SUITE_ONLY_METHODS, getMethodInfo } from '../methodInfo';
+import { type MethodInfo, SUITE_ONLY_METHODS } from '../methodInfo';
 import {
     canRememberPermissions,
     deriveCardanoEnabledNetworks,
@@ -82,10 +82,10 @@ export type PopupFlow = {
 
 /**
  * A Connect call made through the popup. `run()` asks for permissions, waits for the device and
- * calls the method. Used as it is for methods the popup does not adjust, subclasses named after
- * a method adjust its steps by overriding the hooks below.
+ * calls the method. The subclass of a method describes its call, and may adjust its steps by
+ * overriding the hooks below.
  */
-export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implements PopupFlow {
+export abstract class CommonPopupFlow<M extends CallMethodKeys> implements PopupFlow {
     protected readonly method: M;
     protected readonly payload: PopupFlowPayload<M>;
     protected readonly source: ConnectCallSource;
@@ -106,9 +106,7 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
     }
 
     /** Describes the call: its title and required permissions. */
-    protected getMethodInfo(): Promise<MethodInfo> {
-        return getMethodInfo({ ...this.payload, method: this.method } as CallMethodPayload);
-    }
+    protected abstract getMethodInfo: () => MaybePromise<MethodInfo>;
 
     /** Rejects a call this host cannot fulfil, before the user is asked for permissions. */
     protected validate(): void {}

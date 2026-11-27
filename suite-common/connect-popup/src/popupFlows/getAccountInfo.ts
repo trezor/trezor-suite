@@ -7,6 +7,7 @@ import {
     type Params,
 } from '@trezor/connect';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
+import { getLabel } from '@trezor/connect-common/src/utils/pathUtils';
 import { promiseAllSequence } from '@trezor/utils';
 
 import {
@@ -16,6 +17,7 @@ import {
     getPayloadOrThrow,
 } from './CommonPopupFlow';
 import { connectPopupActions } from '../connectPopupActions';
+import { describeCall, getCoinPermissions, getKnownCoinInfo, getRequests } from '../methodInfo';
 
 // The backend reads an account only by its descriptor, so it's derived on the device for a path.
 const getAccount = async (
@@ -52,6 +54,19 @@ const getAccount = async (
 };
 
 export class GetAccountInfo extends CommonPopupFlow<'getAccountInfo'> {
+    protected getMethodInfo = async () => {
+        const requests = getRequests(this.payload);
+        const coinInfos = await Promise.all(requests.map(({ coin }) => getKnownCoinInfo(coin)));
+        const [coinInfo] = coinInfos;
+
+        return describeCall(
+            requests.length > 1
+                ? 'Export info of multiple accounts'
+                : getLabel('Export #NETWORK account info', coinInfo),
+            getCoinPermissions('read_account_info', coinInfos),
+        );
+    };
+
     protected validate() {
         const requests = this.payload.bundle ?? [this.payload];
         if (requests.some(({ path, descriptor }) => !path && typeof descriptor !== 'string')) {

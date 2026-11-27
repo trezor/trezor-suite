@@ -6,8 +6,24 @@ import TrezorConnect from '@trezor/connect';
 
 import { AbstractSignTransactionFlow } from './AbstractSignTransactionFlow';
 import { selectConnectPopupCall } from '../connectPopupReducer';
+import { describeCall, getCoinPermissions, getEthereumCoinInfo } from '../methodInfo';
+import { getNetworkLabel } from '../methodTitles';
 
 export class EthereumSignTransaction extends AbstractSignTransactionFlow<'ethereumSignTransaction'> {
+    protected getMethodInfo = async () => {
+        const { path, transaction } = this.payload;
+        const network = await getEthereumCoinInfo(path);
+
+        return describeCall(
+            // The chain of the transaction names the network better than its path.
+            getNetworkLabel(
+                'Sign #NETWORK transaction',
+                getNetworkByEvmChainId(transaction.chainId) ?? network,
+            ),
+            getCoinPermissions('sign', [network]),
+        );
+    };
+
     protected async prepareSigning() {
         const { path, transaction } = this.payload;
         const chainId = transaction.chainId || 1;

@@ -7,6 +7,7 @@ import {
 import { getAvailableAccountTypes } from '@suite-common/wallet-utils';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { type SelectionType } from '@trezor/connect-common/src/types/api/selectAccount';
+import { getLabel } from '@trezor/connect-common/src/utils/pathUtils';
 
 import {
     CommonPopupFlow,
@@ -24,6 +25,7 @@ import {
     type SelectAccountTypeTab,
     isUtxoNetwork,
 } from '../connectPopupTypes';
+import { describeCall, getCoinPermissions, getKnownCoinInfo } from '../methodInfo';
 
 // Resolves one of the network's built-in types (bypassing the "publicly available" filter that
 // getAvailableAccountTypes applies) — an app explicitly requesting a debug-only type, e.g.
@@ -138,6 +140,24 @@ export const pickAccounts = async (
 };
 
 export class SelectAccount extends CommonPopupFlow<'selectAccount'> {
+    protected getMethodInfo = async () => {
+        const coinInfo = await getKnownCoinInfo(this.payload.coin);
+        // UTXO coins share the whole account as an xpub unless the host picks its addresses.
+        const isUtxoBased =
+            coinInfo.type === 'bitcoin' ||
+            coinInfo.shortcut === 'ADA' ||
+            coinInfo.shortcut === 'tADA';
+        const { addressSelection } = this.payload;
+        const isFullAccount = addressSelection === undefined || addressSelection === 'fullAccount';
+
+        return describeCall(
+            getLabel('Select #NETWORK account', coinInfo),
+            getCoinPermissions(isUtxoBased && isFullAccount ? 'read_xpub' : 'read_address', [
+                coinInfo,
+            ]),
+        );
+    };
+
     // Reject a coin Suite cannot render before the permissions modal, so the user isn't asked to
     // grant access to a coin that would only crash buildOptions afterwards. The method info has
     // already rejected unknown/typo'd coins with Method_UnknownCoin, so a non-network symbol here is

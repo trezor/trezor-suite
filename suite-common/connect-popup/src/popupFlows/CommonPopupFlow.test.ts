@@ -3,6 +3,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { type PermissionRequest } from '@trezor/connect';
 
 import { CommonPopupFlow, type PopupFlowAnswer } from './CommonPopupFlow';
+import { createPopupFlow } from './createPopupFlow';
 import { connectPopupActions } from '../connectPopupActions';
 import { type MethodInfo } from '../methodInfo';
 
@@ -41,12 +42,10 @@ class PopupOnlyFlow extends CommonPopupFlow<'selectAccount'> {
         );
     }
 
-    protected getMethodInfo(): Promise<MethodInfo> {
-        return Promise.resolve({
-            info: 'Select account',
-            requiredPermissions: this.requiredPermissions,
-        });
-    }
+    protected getMethodInfo = (): MethodInfo => ({
+        info: 'Select account',
+        requiredPermissions: this.requiredPermissions,
+    });
 
     protected callMethod() {
         return Promise.resolve(answer);
@@ -87,7 +86,7 @@ describe('CommonPopupFlow', () => {
     it.each(['wipeDevice', 'firmwareUpdate', 'cancelCoinjoinAuthorization'] as const)(
         'rejects %s without describing the call',
         async method => {
-            const flow = new CommonPopupFlow(
+            const flow = createPopupFlow(
                 {
                     method,
                     payload: {},

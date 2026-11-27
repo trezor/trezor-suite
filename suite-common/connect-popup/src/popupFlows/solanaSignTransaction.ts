@@ -2,8 +2,11 @@ import { getNetwork } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
 
 import { AbstractSignTransactionFlow } from './AbstractSignTransactionFlow';
+import { describeMiscCall } from '../methodInfo';
 
 export class SolanaSignTransaction extends AbstractSignTransactionFlow<'solanaSignTransaction'> {
+    protected getMethodInfo = () => describeMiscCall('sol', 'sign', 'Sign Solana transaction');
+
     protected async prepareSigning() {
         const { path, additionalInfo } = this.payload;
 

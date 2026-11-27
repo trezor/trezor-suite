@@ -4,9 +4,11 @@ import { type FormOptions, type PrecomposedTransactionFinal } from '@suite-commo
 import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 import { getOriginalTxids, getPreviousTxids } from '@trezor/connect-common';
+import { getLabel } from '@trezor/connect-common/src/utils/pathUtils';
 
 import { AbstractSignTransactionFlow } from './AbstractSignTransactionFlow';
 import { type PopupFlowPayload, type PopupFlowResponse } from './CommonPopupFlow';
+import { describeCall, getBitcoinCoinInfo, getCoinPermissions } from '../methodInfo';
 
 const fetchRefTransactions = async (
     payload: PopupFlowPayload<'signTransaction'>,
@@ -35,6 +37,20 @@ const fetchRefTransactions = async (
 };
 
 export class SignTransaction extends AbstractSignTransactionFlow<'signTransaction'> {
+    protected getMethodInfo = async () => {
+        const { coin, push, preauthorized } = this.payload;
+        const coinInfo = await getBitcoinCoinInfo(coin);
+
+        return describeCall(
+            getLabel('Sign #NETWORK transaction', coinInfo),
+            getCoinPermissions('sign', [coinInfo]).concat(
+                push ? getCoinPermissions('push_tx', [coinInfo]) : [],
+                // Preauthorized signing runs under the coinjoin authorization of the device session.
+                preauthorized ? getCoinPermissions('internal', [coinInfo]) : [],
+            ),
+        );
+    };
+
     protected async preCall(txSigningPrecomposed?: PrecomposedTransactionFinal) {
         const [transactions] = await Promise.all([
             fetchRefTransactions(this.payload, this.signal).catch(error => {

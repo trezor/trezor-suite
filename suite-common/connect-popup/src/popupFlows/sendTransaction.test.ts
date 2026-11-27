@@ -6,8 +6,9 @@ import TrezorConnect, {
     UI_REQUESTS,
     asCoinSymbol,
 } from '@trezor/connect';
+import { getBitcoinNetworkOrThrow } from '@trezor/connect-core/src/data/coinInfo';
 
-import { SendTransaction } from './sendTransaction';
+import { SendTransaction, formatAmount } from './sendTransaction';
 import { SignTransaction } from './signTransaction';
 import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
@@ -284,5 +285,11 @@ describe('SendTransaction', () => {
             payload: PICKER,
         });
         expect(SignTransaction.prototype.process).toHaveBeenCalledWith(mockFinalTx('2'));
+    });
+});
+
+describe('formatAmount', () => {
+    it('formats an amount in the units of the coin', () => {
+        expect(formatAmount('10', getBitcoinNetworkOrThrow('btc'))).toBe('0.0000001 BTC');
     });
 });

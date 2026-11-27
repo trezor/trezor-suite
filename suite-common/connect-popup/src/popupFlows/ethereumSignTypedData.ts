@@ -6,8 +6,12 @@ import TrezorConnect, {
 } from '@trezor/connect';
 
 import { AbstractSignTransactionFlow } from './AbstractSignTransactionFlow';
+import { describeEthereumSigning } from '../methodInfo';
 
 export class EthereumSignTypedData extends AbstractSignTransactionFlow<'ethereumSignTypedData'> {
+    protected getMethodInfo = () =>
+        describeEthereumSigning(this.payload.path, 'Sign #NETWORK typed data');
+
     protected async prepareSigning() {
         const { path, data } = this.payload;
 
