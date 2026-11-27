@@ -45,6 +45,7 @@ const getLifiMinAmountOut = (calldata: string | undefined) => {
 // Firmware strings on the DEX review pages.
 const deviceReview = {
     contractAddressTitle: 'Contract address',
+    contractAddressName: 'LI.FI Service GmbH',
     intentTitle: 'Intent',
     intentValue: 'Swap',
     contractTitle: 'Confirm contract',
@@ -196,7 +197,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: deviceReview.contractAddressTitle },
-                        body: [[dexProvider]],
+                        body: [[deviceReview.contractAddressName]],
                         actions: { right_button: deviceReview.confirmButton },
                     },
                 });
