@@ -1,12 +1,11 @@
 import TrezorConnect, {
     type CallMethodPayload,
+    type PermissionRequest,
     type SignTransaction,
     asCoinSymbol,
 } from '@trezor/connect';
 import { serializeError } from '@trezor/connect-common/src/constants/errors';
-import GetAccountInfo from '@trezor/connect-core/src/api/getAccountInfo';
 import GetCoinInfo from '@trezor/connect-core/src/api/getCoinInfo';
-import PushTransaction from '@trezor/connect-core/src/api/pushTransaction';
 import { getMethod } from '@trezor/connect-core/src/core/method';
 
 import { getMethodInfo } from './methodInfo';
@@ -75,15 +74,6 @@ const COIN_RESOLVING_CALLS: [string, CallMethodPayload][] = [
     ['ownership id', { method: 'getOwnershipId', path: "m/86'/0'/0'/0/0" }],
     ['ownership proof', { method: 'getOwnershipProof', path: "m/86'/0'/0'/0/0" }],
     ['bitcoin transaction', { method: 'signTransaction', ...TAPROOT_SIGN_TRANSACTION }],
-    [
-        'sent transaction',
-        {
-            method: 'sendTransaction',
-            coin: 'btc',
-            outputs: [{ address: BTC_ADDRESS, amount: '1000' }],
-            push: true,
-        },
-    ],
     ['bitcoin account', { method: 'selectAccount', coin: 'btc' }],
     ['ethereum account', { method: 'selectAccount', coin: 'eth' }],
     ['ethereum address', { method: 'ethereumGetAddress', path: "m/44'/60'/0'/0/0" }],
@@ -174,25 +164,34 @@ describe('getMethodInfo', () => {
         },
     );
 
-    it('asks for the coin Connect runs the account info with', async () => {
-        const call = { coin: 'ltc', descriptor: 'ltub' } as const;
-        const method = new GetAccountInfo({ payload: { method: 'getAccountInfo', ...call } });
-        const { requiredPermissions } = await getMethodInfo({ method: 'getAccountInfo', ...call });
-
-        expect(requiredPermissions).toEqual([
-            { permission: 'read_account_info', coin: getCoinSymbol(method['params'].coinInfo) },
-        ]);
-    });
-
-    it('asks for the coin Connect pushes the transaction with', async () => {
-        const call = { coin: 'ltc', tx: '00' } as const;
-        const method = new PushTransaction({ payload: { method: 'pushTransaction', ...call } });
-        const { requiredPermissions } = await getMethodInfo({ method: 'pushTransaction', ...call });
-
-        expect(requiredPermissions).toEqual([
-            { permission: 'push_tx', coin: getCoinSymbol(method['params'].coinInfo) },
-        ]);
-    });
+    // Suite answers these calls itself, of the coin of the call.
+    it.each([
+        [
+            { method: 'getAccountInfo', coin: 'ltc', descriptor: 'ltub' },
+            [{ permission: 'read_account_info', coin: 'ltc' }],
+        ],
+        [
+            { method: 'pushTransaction', coin: 'ltc', tx: '00' },
+            [{ permission: 'push_tx', coin: 'ltc' }],
+        ],
+        [
+            {
+                method: 'sendTransaction',
+                coin: 'btc',
+                outputs: [{ address: BTC_ADDRESS, amount: '1000' }],
+                push: true,
+            },
+            [
+                { permission: 'sign', coin: 'btc' },
+                { permission: 'push_tx', coin: 'btc' },
+            ],
+        ],
+    ] satisfies [CallMethodPayload, PermissionRequest[]][])(
+        'asks for the coin of $0.method',
+        async (call, requiredPermissions) => {
+            await expect(getMethodInfo(call)).resolves.toMatchObject({ requiredPermissions });
+        },
+    );
 
     it.each([
         ['a bitcoin public key', { method: 'getPublicKey', path: "m/84'/0'/0'" }, ['btc']],
