@@ -1,52 +1,52 @@
-import { use, useEffect } from 'react';
-import { type FieldError, useController, useForm, useWatch } from 'react-hook-form';
+import { use } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useDevice } from '@suite/device';
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { type AddressValidator, injectAddressValidator } from '@suite-common/networks';
-import { MAX_LENGTH_MESSAGE, injectSignVerify } from '@suite-common/sign-verify';
-import { notificationsActions } from '@suite-common/toast-notifications';
+import {
+    MAX_LENGTH_MESSAGE,
+    type SignAddressGroup,
+    type SignAddressesRootState,
+    injectSignVerify,
+    selectAccountSignAddresses,
+} from '@suite-common/sign-verify';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { copyToClipboard } from '@trezor/dom-utils';
+import { getStakingPath } from '@trezor/network-cardano-suite-common';
 import { type SignatureFormat } from '@trezor/network-module-suite-common-types';
-import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { isHex, throwError } from '@trezor/utils';
 import { z } from '@trezor/zod';
 
-import { FormatSwitch } from './FormatSwitch';
-import { SignVerifyAddressField } from './SignVerifyAddressField';
-import { SignVerifyContext } from './SignVerifyContext';
-import { SignVerifyMessageField } from './SignVerifyMessageField';
-import { SignVerifyPubKeyField } from './SignVerifyPubKeyField';
-import { SignVerifySignatureField } from './SignVerifySignatureField';
+import { SignVerifyAddressInput } from './SignVerifyAddressInput';
+import { SignVerifyAddressSelect } from './SignVerifyAddressSelect';
+import { EMPTY_VALUES, SignVerifyContext, type SignVerifyValues } from './SignVerifyContext';
+import { SignVerifyFormat } from './SignVerifyFormat';
+import { SignVerifyMessage } from './SignVerifyMessage';
+import { SignVerifyPublicKey } from './SignVerifyPublicKey';
+import { SignVerifySignature } from './SignVerifySignature';
 
-type SignVerifyContext = {
+type SignVerifySchemaContext = {
     addressValidator: AddressValidator;
     isSignPage: boolean;
     symbol: NetworkSymbol;
-};
-
-type SignVerifyFields = {
-    message: string;
-    address: string;
-    hex: boolean;
-    path?: string;
-    signature?: string;
-    format?: SignatureFormat;
-    pubKey?: string;
 };
 
 const REQUIRED: TranslationKey = 'TR_REQUIRED_FIELD';
 
 const requiredString = z.string().min(1, REQUIRED);
 
-const createSignVerifySchema = ({ addressValidator, isSignPage, symbol }: SignVerifyContext) =>
+const createSignVerifySchema = ({
+    addressValidator,
+    isSignPage,
+    symbol,
+}: SignVerifySchemaContext) =>
     z
         .object({
             message: z
@@ -59,11 +59,11 @@ const createSignVerifySchema = ({ addressValidator, isSignPage, symbol }: SignVe
                     value => addressValidator.isAddressValid(symbol, value),
                     'TR_ADD_TOKEN_ADDRESS_NOT_VALID' satisfies TranslationKey,
                 ),
-            path: (isSignPage ? requiredString : z.string()).optional(),
-            signature: (isSignPage ? z.string() : requiredString).optional(),
+            path: isSignPage ? requiredString : z.string(),
+            signature: isSignPage ? z.string() : requiredString,
             hex: z.boolean(),
-            format: z.custom<SignatureFormat>().optional(),
-            pubKey: z.string().optional(),
+            format: z.string(),
+            pubKey: z.string(),
         })
         .refine(
             ({ message, hex }) =>
@@ -76,13 +76,34 @@ const createSignVerifySchema = ({ addressValidator, isSignPage, symbol }: SignVe
             },
         );
 
-const DEFAULT_VALUES: SignVerifyFields = {
-    message: '',
-    address: '',
-    path: '',
-    signature: '',
-    hex: false,
-    pubKey: '',
+const FORMAT_LABELS: Record<SignatureFormat, TranslationKey> = {
+    trezor: 'TR_BIP_SIG_FORMAT',
+    electrum: 'TR_COMPATIBILITY_SIG_FORMAT',
+    raw: 'TR_PUBLIC_KEY_RAW',
+    cose: 'TR_PUBLIC_KEY_COSE',
+};
+
+const getAccountAddressGroups = (
+    account: Account,
+    signAddressGroups: SignAddressGroup[],
+): SignAddressGroup[] => {
+    switch (account.networkType) {
+        // Ethereum signs with the account itself, it has no address list.
+        case 'ethereum':
+            return [{ addresses: [{ address: account.descriptor, path: account.path }] }];
+        case 'cardano':
+            return [
+                {
+                    category: 'stake',
+                    addresses: [
+                        { path: getStakingPath(account), address: account.misc.staking.address },
+                    ],
+                },
+                ...signAddressGroups,
+            ];
+        default:
+            return signAddressGroups;
+    }
 };
 
 type SignVerifyFormProps = {
@@ -96,95 +117,37 @@ export const SignVerifyForm = ({ account, network }: SignVerifyFormProps) => {
 
     const { signVerify } = useServices(injectSignVerify);
     const { addressValidator } = useServices(injectAddressValidator);
-    const { dispatch } = useServices(injectDispatch);
+    const { device, isLocked } = useDevice();
+    const signAddressGroups = useSelector((state: SignAddressesRootState) =>
+        selectAccountSignAddresses(state, account),
+    );
 
     const isSignPage = page === 'sign';
-    const defaultFormat = signVerify.getDefaultFormat(account);
+    const isEthereum = account.networkType === 'ethereum';
+    const formats = signVerify.getFormats(account);
+    const addressGroups = getAccountAddressGroups(account, signAddressGroups);
+    const defaultAddress = isSignPage && isEthereum ? addressGroups[0]?.addresses[0] : undefined;
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors: formErrors, isSubmitting },
-        reset,
-        setValue,
-        clearErrors,
-        control,
-        trigger,
-    } = useForm<SignVerifyFields, SignVerifyContext>({
+    const form = useForm<SignVerifyValues, SignVerifySchemaContext>({
         mode: 'onBlur',
         reValidateMode: 'onChange',
         resolver: (values, context, options) =>
             zodResolver(
                 createSignVerifySchema(context ?? throwError('Missing sign & verify context')),
             )(values, context, options),
-        context: {
-            addressValidator,
-            isSignPage,
-            symbol: account.symbol,
+        context: { addressValidator, isSignPage, symbol: account.symbol },
+        defaultValues: {
+            ...EMPTY_VALUES,
+            path: defaultAddress?.path ?? '',
+            address: defaultAddress?.address ?? '',
+            format: signVerify.getDefaultFormat(account) ?? '',
         },
-        defaultValues: { ...DEFAULT_VALUES, format: defaultFormat },
     });
 
-    const formValues = useWatch({ control });
-
-    const { field: addressField } = useController({ control, name: 'address' });
-    const { field: pathField } = useController({ control, name: 'path' });
-    const { field: hexField } = useController({ control, name: 'hex' });
-    const { field: formatField } = useController({ control, name: 'format' });
-
-    useEffect(() => {
-        if (formValues.message) {
-            trigger('message');
-        }
-    }, [trigger, formValues.message, formValues.hex]);
-
-    useEffect(() => {
-        if (isSignPage) {
-            setValue('signature', '');
-            setValue('pubKey', '');
-        }
-    }, [setValue, isSignPage, formValues.address, formValues.message, formValues.format]);
-
-    useEffect(() => {
-        const overrideValues =
-            isSignPage && account.networkType === 'ethereum'
-                ? {
-                      path: account.path,
-                      address: account.descriptor,
-                  }
-                : {};
-
-        reset({
-            ...DEFAULT_VALUES,
-            format: defaultFormat,
-            ...overrideValues,
-        });
-    }, [
-        reset,
-        isSignPage,
-        account.key,
-        account.networkType,
-        account.path,
-        account.descriptor,
-        defaultFormat,
-    ]);
-
-    const { device, isLocked } = useDevice();
-    const { translationString } = useTranslation();
-
-    const copyValue = async (value: string) => {
-        const result = await copyToClipboard(value);
-
-        if (typeof result !== 'string') {
-            dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
-        }
+    const clear = () => {
+        form.reset();
+        setOutcome(page, 'idle');
     };
-
-    const isCompleted = outcome === 'signed' || outcome === 'verified';
-    const hasFailedVerification = outcome === 'failed';
-
-    const getErrorMessage = (error?: FieldError) =>
-        error ? translationString(error.message as TranslationKey) : undefined;
 
     // A failed verification comes with no Clear button, editing the values is the way out.
     const leaveFailedOutcome = () => {
@@ -193,155 +156,127 @@ export const SignVerifyForm = ({ account, network }: SignVerifyFormProps) => {
         }
     };
 
-    // Every button inside the form has to cancel the click, otherwise it submits the form.
-    const clearForm = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-        reset();
-        setOutcome(page, 'idle');
-    };
-
-    const onSubmit = async (data: SignVerifyFields) => {
-        const { address, path, message, signature, hex, format } = data;
-
-        if (isSignPage && path !== undefined) {
+    const onSubmit = async ({
+        address,
+        path,
+        message,
+        signature,
+        hex,
+        format,
+    }: SignVerifyValues) => {
+        if (isSignPage) {
             const result = await signVerify.sign({
                 device,
                 account,
                 path,
                 message,
                 hex,
-                format,
+                format: formats.find(value => value === format),
             });
 
             if (result.success) {
-                setValue('signature', result.payload.signature);
-                setValue('pubKey', result.payload.pubKey || '');
+                form.setValue('signature', result.payload.signature);
+                form.setValue('pubKey', result.payload.pubKey ?? '');
                 setOutcome(page, 'signed');
             }
-        } else if (signature !== undefined) {
-            const result = await signVerify.verify({
-                device,
-                account,
-                address,
-                message,
-                signature,
-                hex,
-            });
 
-            if (result.success) {
-                setOutcome(page, 'verified');
+            return;
+        }
 
-                return;
-            }
+        const result = await signVerify.verify({
+            device,
+            account,
+            address,
+            message,
+            signature,
+            hex,
+        });
 
-            switch (result.error.type) {
-                // Cancelling on the device leaves the form exactly as it was, the way a cancelled
-                // signing does: nothing was verified, and nothing failed to verify either.
-                case 'DeviceCancelled':
-                    break;
-                case 'DeviceError':
-                case 'DeviceNotConnectedError':
-                case 'SignVerifyNotSupported':
-                    setOutcome(page, 'failed');
-                    break;
-                default:
-                    exhaustive(result.error);
-            }
+        if (result.success) {
+            setOutcome(page, 'verified');
+
+            return;
+        }
+
+        switch (result.error.type) {
+            // Cancelling on the device leaves the form exactly as it was, the way a cancelled
+            // signing does: nothing was verified, and nothing failed to verify either.
+            case 'DeviceCancelled':
+                break;
+            case 'DeviceError':
+            case 'DeviceNotConnectedError':
+            case 'SignVerifyNotSupported':
+                setOutcome(page, 'failed');
+                break;
+            default:
+                exhaustive(result.error);
         }
     };
 
-    const formats = signVerify.getFormats(account);
-    const isCardano = network?.networkType === 'cardano';
+    const isCompleted = outcome === 'signed' || outcome === 'verified';
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} onChange={leaveFailedOutcome}>
-            <Column gap={16} margin={{ bottom: 32 }}>
-                {isSignPage && formats.length > 1 && (
-                    <FormatSwitch
-                        options={formats}
-                        isDisabled={isCompleted}
-                        selectedOption={formatField.value}
-                        onChange={formatField.onChange}
-                    />
+        <FormProvider {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} onChange={leaveFailedOutcome}>
+                <Column gap={16} margin={{ bottom: 32 }}>
+                    {isSignPage && formats.length > 1 && (
+                        <SignVerifyFormat
+                            options={formats.map(value => ({
+                                value,
+                                label: <Translation id={FORMAT_LABELS[value]} />,
+                            }))}
+                            tooltip={
+                                formats.includes('electrum') ? (
+                                    <Translation
+                                        id="TR_FORMAT_TOOLTIP"
+                                        values={{
+                                            FormatDescription: chunks => <p>{chunks}</p>,
+                                            span: chunks => <strong>{chunks}</strong>,
+                                        }}
+                                    />
+                                ) : undefined
+                            }
+                        />
+                    )}
+                    {isSignPage ? (
+                        <SignVerifyAddressSelect
+                            addressGroups={addressGroups}
+                            isFixed={isEthereum}
+                        />
+                    ) : (
+                        <SignVerifyAddressInput />
+                    )}
+                    <SignVerifyMessage />
+                    <SignVerifySignature />
+                    {isSignPage && network?.networkType === 'cardano' && <SignVerifyPublicKey />}
+                </Column>
+                {/* Distinct keys: a reused <button> turns into the submit button during the Clear click, and the browser then submits the cleared form. */}
+                {isCompleted ? (
+                    <Button
+                        key="clear"
+                        type="button"
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={clear}
+                        data-testid="@sign-verify/clear"
+                        minWidth={200}
+                    >
+                        <Translation id="TR_CLEAR" />
+                    </Button>
+                ) : (
+                    <Button
+                        key="submit"
+                        type="submit"
+                        intent="brand"
+                        isDisabled={isLocked()}
+                        isLoading={form.formState.isSubmitting}
+                        data-testid="@sign-verify/submit"
+                        minWidth={200}
+                    >
+                        <Translation id={isSignPage ? 'TR_SIGN' : 'TR_VERIFY'} />
+                    </Button>
                 )}
-                <SignVerifyAddressField
-                    account={account}
-                    isSignPage={isSignPage}
-                    isCompleted={isCompleted}
-                    address={formValues.address}
-                    pathField={{
-                        value: pathField.value,
-                        onBlur: pathField.onBlur,
-                        onChange: addr => {
-                            clearErrors(['path', 'address']);
-                            pathField.onChange(addr?.path || '');
-                            addressField.onChange(addr?.address || '');
-                        },
-                        isDisabled: account.networkType === 'ethereum',
-                    }}
-                    addressField={{
-                        value: addressField.value,
-                        onChange: addressField.onChange,
-                        onBlur: addressField.onBlur,
-                    }}
-                    pathError={getErrorMessage(formErrors.path)}
-                    addressError={getErrorMessage(formErrors.address)}
-                    hasPathError={!!formErrors.path}
-                    hasAddressError={!!formErrors.address || hasFailedVerification}
-                    onCopy={copyValue}
-                />
-                <SignVerifyMessageField
-                    message={formValues.message}
-                    isCompleted={isCompleted}
-                    hasError={!!formErrors.message || hasFailedVerification}
-                    errorMessage={getErrorMessage(formErrors.message)}
-                    hexField={{ isChecked: hexField.value, onChange: hexField.onChange }}
-                    registration={register('message')}
-                    onCopy={copyValue}
-                />
-                <SignVerifySignatureField
-                    signature={formValues.signature}
-                    isSignPage={isSignPage}
-                    isCompleted={isCompleted}
-                    hasError={!!formErrors.signature || hasFailedVerification}
-                    errorMessage={getErrorMessage(formErrors.signature)}
-                    registration={register('signature')}
-                    onCopy={copyValue}
-                />
-                {isSignPage && isCardano && (
-                    <SignVerifyPubKeyField
-                        pubKey={formValues.pubKey}
-                        isCompleted={isCompleted}
-                        hasError={!!formErrors.pubKey}
-                        errorMessage={getErrorMessage(formErrors.pubKey)}
-                        registration={register('pubKey')}
-                        onCopy={copyValue}
-                    />
-                )}
-            </Column>
-            {isCompleted ? (
-                <Button
-                    type="button"
-                    intent="neutral"
-                    priority="secondary"
-                    onClick={clearForm}
-                    data-testid="@sign-verify/clear"
-                    minWidth={200}
-                >
-                    <Translation id="TR_CLEAR" />
-                </Button>
-            ) : (
-                <Button
-                    type="submit"
-                    intent="brand"
-                    isDisabled={isLocked()}
-                    isLoading={isSubmitting}
-                    data-testid="@sign-verify/submit"
-                    minWidth={200}
-                >
-                    <Translation id={isSignPage ? 'TR_SIGN' : 'TR_VERIFY'} />
-                </Button>
-            )}
-        </form>
+            </form>
+        </FormProvider>
     );
 };
