@@ -1,10 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/SignMessage.js
 
-import type {
-    BitcoinNetworkInfo,
-    DeviceButtonRequestCode,
-    PermissionRequest,
-} from '@trezor/connect-common';
+import type { BitcoinNetworkInfo, DeviceButtonRequestCode } from '@trezor/connect-common';
 import { SignMessage as SignMessageSchema } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
@@ -15,7 +11,7 @@ import { validateCoinPath } from './common/paramsValidator';
 import { getBitcoinNetwork, getBitcoinNetworkOrThrow } from '../data/coinInfo';
 import { validateModelOneMessageSize } from '../device/validateMessageSize';
 import { hexToText, messageToHex } from '../utils/formatUtils';
-import { getLabel, getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
+import { getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
 
 type Params = { proto: PROTO.SignMessage; readableMessage: string };
 
@@ -59,14 +55,6 @@ export default class SignMessage extends AbstractMethod<'signMessage', Params> {
     }
 
     coinInfo: BitcoinNetworkInfo | undefined;
-
-    get requiredPermissions(): PermissionRequest[] {
-        return [this.coinPerm('sign_message', this.coinInfo)];
-    }
-
-    get info() {
-        return getLabel('Sign #NETWORK message', this.coinInfo);
-    }
 
     getButtonRequestData(code: DeviceButtonRequestCode, name?: string) {
         if (code === 'ButtonRequest_Other' && name === 'sign_message') {

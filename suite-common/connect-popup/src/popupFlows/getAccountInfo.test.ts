@@ -9,7 +9,7 @@ jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),
     __esModule: true,
     default: {
-        call: jest.fn(),
+        getCoinInfo: jest.fn(),
         getPublicKey: jest.fn(),
         rippleGetAddress: jest.fn(),
     },
@@ -41,9 +41,9 @@ describe('GetAccountInfo', () => {
         );
     });
 
-    it('describes each account by Connect, with its path standing in for its descriptor', async () => {
-        jest.mocked(TrezorConnect.call).mockImplementation(({ coin }: any) =>
-            ok({ info: coin, requiredPermissions: [{ permission: 'read_account_info', coin }] }),
+    it('describes the accounts of a bundle by their coins', async () => {
+        jest.mocked(TrezorConnect.getCoinInfo).mockImplementation(({ coin }: any) =>
+            ok({ type: 'bitcoin', shortcut: coin.toUpperCase(), label: coin } as any),
         );
         const flow = createFlow({
             bundle: [
@@ -59,28 +59,26 @@ describe('GetAccountInfo', () => {
                 { permission: 'read_account_info', coin: 'btc' },
                 { permission: 'read_account_info', coin: 'ltc' },
             ],
-            useUi: true,
-        });
-        expect(TrezorConnect.call).toHaveBeenCalledWith({
-            coin: 'btc',
-            descriptor: PATH,
-            method: 'getAccountInfo',
-            __info: true,
         });
     });
 
-    it('takes the title of a single account from Connect', async () => {
-        jest.mocked(TrezorConnect.call).mockReturnValue(
-            ok({ info: 'Export Bitcoin account info', requiredPermissions: [] }),
+    it('names the coin of a single account', async () => {
+        jest.mocked(TrezorConnect.getCoinInfo).mockReturnValue(
+            ok({ type: 'bitcoin', shortcut: 'BTC', label: 'Bitcoin' } as any),
         );
 
         await expect(
             createFlow({ coin: 'btc', descriptor: 'zpub' })['getMethodInfo'](),
         ).resolves.toEqual({
             info: 'Export Bitcoin account info',
-            requiredPermissions: [],
-            useUi: false,
+            requiredPermissions: [{ permission: 'read_account_info', coin: 'btc' }],
         });
+    });
+
+    it('rejects an account given by neither a path nor a descriptor', () => {
+        expect(() => createFlow({ coin: 'btc' })['validate']()).toThrow(
+            expect.objectContaining({ code: 'Method_InvalidParameter' }),
+        );
     });
 
     it('derives the descriptor of a bitcoin account on the device', async () => {

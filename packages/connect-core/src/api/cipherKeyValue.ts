@@ -2,7 +2,6 @@
 
 import {
     CipherKeyValue as CipherKeyValueSchema,
-    type PermissionRequest,
     UI_EVENTS,
     createUiEventMessage,
 } from '@trezor/connect-common';
@@ -42,14 +41,6 @@ export default class CipherKeyValue extends AbstractMethod<
         super(message, params);
         this.hasBundle = hasBundle;
     }
-    get requiredPermissions(): PermissionRequest[] {
-        return [{ permission: 'sign' }];
-    }
-
-    get info() {
-        return 'Cipher key value';
-    }
-
     async run({ sendCoreMessage }: MethodContext) {
         const responses: PROTO.CipheredKeyValue[] = [];
         const cmd = this.getDevice().getCommands();

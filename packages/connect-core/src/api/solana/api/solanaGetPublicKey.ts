@@ -6,8 +6,7 @@ import {
     UI_EVENTS,
     createUiEventMessage,
 } from '@trezor/connect-common';
-import type { PROTO, PermissionRequest } from '@trezor/connect-common';
-import { fromHardenedPathPart } from '@trezor/crypto-utils';
+import type { PROTO } from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodContext, MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
@@ -43,24 +42,6 @@ export default class SolanaGetPublicKey extends AbstractMethod<
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Solana'];
         this.requiredFirmwareCoins = [getMiscNetwork('sol')];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
-    }
-
-    get info() {
-        if (this.params.length > 1) {
-            return 'Export multiple Solana public keys';
-        }
-        const { params } = this;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const first: (typeof params)[number] = params[0];
-        const addressN = first.address_n;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const accountIndex: number = addressN[2];
-
-        return `Export Solana public key for account #${fromHardenedPathPart(accountIndex) + 1}`;
     }
 
     async run({ sendCoreMessage }: MethodContext) {

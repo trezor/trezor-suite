@@ -245,3 +245,40 @@ export const assertRefTransactions = ({
     origRefTxs.forEach(tx => Assert(OrigTxShape, tx));
     prevRefTxs.forEach(tx => Assert(PrevTxShape, tx));
 };
+
+type GetRefTransactionsParams = {
+    refTxs?: RefTransaction[];
+    account?: { addresses?: AccountAddresses; transactions?: RawTransaction[] };
+    inputs: PROTO.TxInputType[];
+    origTxids: string[];
+    coinInfo: BitcoinNetworkInfo;
+};
+
+// The referenced transactions the caller gave, either as `refTxs` or as raw account transactions.
+export const getRefTransactions = ({
+    refTxs,
+    account,
+    inputs,
+    origTxids,
+    coinInfo,
+}: GetRefTransactionsParams) => {
+    if (refTxs?.length) {
+        if (account?.transactions) {
+            console.warn(
+                'two sources of referential transactions were passed. payload.refTxs have precedence',
+            );
+        }
+        assertRefTransactions({ transactions: refTxs, origTxids });
+
+        return refTxs;
+    }
+    if (account?.transactions?.length) {
+        return transformRawTransactions({
+            transactions: account.transactions,
+            inputs,
+            origTxids,
+            coinInfo,
+            addresses: account.addresses,
+        });
+    }
+};

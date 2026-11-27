@@ -1,4 +1,4 @@
-import { type PermissionRequest, UI_EVENTS } from '@trezor/connect-common';
+import { UI_EVENTS } from '@trezor/connect-common';
 import type { ThpCredentials } from '@trezor/protocol';
 
 import type { MethodMessage } from '../core/AbstractMethod';
@@ -16,10 +16,6 @@ export default class ThpRemoveCredentials extends AbstractMethod<'thpRemoveCrede
         this.allowDeviceMode = [UI_EVENTS.DEVICE_NOT_INITIALIZED, UI_EVENTS.DEVICE_SEEDLESS];
         this.useDeviceState = false;
     }
-    get requiredPermissions(): PermissionRequest[] {
-        return [{ permission: 'management' }];
-    }
-
     run() {
         const requestedCredentials = this.params.credentials;
         if (this.useDevice) {

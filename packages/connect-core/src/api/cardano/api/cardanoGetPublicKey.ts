@@ -3,11 +3,9 @@
 import {
     Bundle,
     CardanoGetPublicKey as CardanoGetPublicKeySchema,
-    type PermissionRequest,
     UI_EVENTS,
     createUiEventMessage,
 } from '@trezor/connect-common';
-import { fromHardenedPathPart } from '@trezor/crypto-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -53,24 +51,6 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
         );
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
         this.requiredFirmwareCoins = [getMiscNetwork('ada')];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
-    }
-
-    get info() {
-        if (this.params.length > 1) {
-            return 'Export multiple Cardano public keys';
-        }
-        const { params } = this;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const first: (typeof params)[number] = params[0];
-        const addressN = first.proto.address_n;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const accountIndex: number = addressN[2];
-
-        return `Export Cardano public key for account #${fromHardenedPathPart(accountIndex) + 1}`;
     }
 
     async run({ sendCoreMessage }: MethodContext) {

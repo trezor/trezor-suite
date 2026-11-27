@@ -10,7 +10,6 @@ import {
     ERRORS,
     type EntropyCheckResult,
     type FirmwareRange,
-    type PermissionRequest,
     UI_EVENTS,
     UI_REQUESTS,
     UI_RESPONSE,
@@ -133,17 +132,6 @@ export default class DiscoverAccounts extends AbstractMethod<
 
         super(message, params);
     }
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms(
-            'internal',
-            this.params.coins.map(c => c.coinInfo),
-        );
-    }
-
-    get useUi() {
-        return false;
-    }
-
     private progress: Partial<{ [key in ReturnType<typeof getAccountTypeKey>]: number }> = {};
     private updateProgress(account: AccountTypeKey, done: number, last = false) {
         const progress = last ? 1 : done / Math.max(ACCOUNT_LIMIT, done + 1);

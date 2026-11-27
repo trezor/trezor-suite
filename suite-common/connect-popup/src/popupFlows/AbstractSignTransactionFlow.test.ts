@@ -8,6 +8,8 @@ const SECOND_PATH = "m/44'/60'/1'/0/0";
 
 // A hidden network is never looked up among real accounts, so a placeholder is always created.
 class PlaceholderSignFlow extends AbstractSignTransactionFlow<'ethereumSignTransaction'> {
+    protected getMethodInfo = () => ({ info: '', requiredPermissions: [] });
+
     protected prepareSigning() {
         this.selectSigningAccount(this.payload.path, {
             symbol: asNetworkSymbol('eth'),

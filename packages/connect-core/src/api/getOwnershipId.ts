@@ -1,7 +1,6 @@
 import {
     Bundle,
     GetOwnershipId as GetOwnershipIdSchema,
-    type PermissionRequest,
     UI_EVENTS,
     createUiEventMessage,
 } from '@trezor/connect-common';
@@ -52,16 +51,6 @@ export default class GetOwnershipId extends AbstractMethod<
         this.hasBundle = hasBundle;
     }
     hasBundle?: boolean;
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_account_info', this.requiredFirmwareCoins);
-    }
-
-    get info() {
-        return this.params.length > 1
-            ? 'Export multiple ownership proof ids'
-            : 'Export ownership id';
-    }
 
     async run({ sendCoreMessage }: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];

@@ -6,28 +6,18 @@ import {
     UI_EVENTS,
     createUiEventMessage,
 } from '@trezor/connect-common';
-import type {
-    DeviceButtonRequestCode,
-    EthereumNetworkInfo,
-    PROTO,
-    PermissionRequest,
-} from '@trezor/connect-common';
+import type { DeviceButtonRequestCode, EthereumNetworkInfo, PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodContext, MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
+import { getEthereumNetwork } from '../../../data/coinInfo';
 import { getDefinitionsVersion } from '../../../utils/definitionsUtils';
-import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { stripHexPrefix } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import { bundlify } from '../../common/paramsValidator';
-import {
-    decodeEthereumDefinition,
-    ethereumNetworkInfoFromDefinition,
-    getEthereumDefinitions,
-} from '../ethereumDefinitions';
+import { getEthereumDefinitions } from '../ethereumDefinitions';
 
 type Params = {
     proto: PROTO.EthereumGetAddress;
@@ -64,50 +54,6 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
         this.hasBundle = hasBundle;
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_address', this.requiredFirmwareCoins);
-    }
-
-    // Only the `__info` title names networks that are not well-known, so only `__info` downloads
-    // their definitions to decode them.
-    async getMethodInfo() {
-        for (let i = 0; i < this.params.length; i++) {
-            const { params } = this;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const param: (typeof params)[number] = params[i];
-            // network was maybe already set from 'well-known' definition in init method.
-            if (!param.network) {
-                const slip44 = getSlip44ByPath(param.proto.address_n);
-
-                const definitions = await getEthereumDefinitions({ slip44 });
-
-                const decoded = decodeEthereumDefinition(definitions);
-                if (decoded.network) {
-                    param.network = ethereumNetworkInfoFromDefinition(decoded.network);
-                }
-            }
-        }
-
-        return super.getMethodInfo();
-    }
-
-    get info() {
-        if (this.params.length === 1) {
-            const { params } = this;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const first: (typeof params)[number] = params[0];
-
-            return getNetworkLabel('Export #NETWORK address', first.network);
-        }
-        const requestedNetworks = this.params.map(b => b.network);
-        const uniqNetworks = getUniqueNetworks(requestedNetworks);
-        if (uniqNetworks.length === 1 && uniqNetworks[0]) {
-            return getNetworkLabel('Export multiple #NETWORK addresses', uniqNetworks[0]);
-        }
-
-        return 'Export multiple addresses';
     }
 
     getButtonRequestData(code: DeviceButtonRequestCode) {

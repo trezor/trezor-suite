@@ -2,10 +2,13 @@ import { type NetworkSymbol, asNetworkSymbol, getNetwork } from '@suite-common/w
 import { selectConsensusBranchId } from '@suite-common/wallet-core';
 import { type FormOptions, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
+import TrezorConnect from '@trezor/connect';
 import { getOriginalTxids, getPreviousTxids } from '@trezor/connect-common';
+import { getLabel } from '@trezor/connect-common/src/utils/pathUtils';
 
 import { AbstractSignTransactionFlow } from './AbstractSignTransactionFlow';
 import { type PopupFlowPayload, type PopupFlowResponse } from './CommonPopupFlow';
+import { describeCall, getBitcoinCoinInfo, getCoinPermissions } from '../methodInfo';
 
 const fetchRefTransactions = async (
     payload: PopupFlowPayload<'signTransaction'>,
@@ -34,6 +37,20 @@ const fetchRefTransactions = async (
 };
 
 export class SignTransaction extends AbstractSignTransactionFlow<'signTransaction'> {
+    protected getMethodInfo = async () => {
+        const { coin, push, preauthorized } = this.payload;
+        const coinInfo = await getBitcoinCoinInfo(coin);
+
+        return describeCall(
+            getLabel('Sign #NETWORK transaction', coinInfo),
+            getCoinPermissions('sign', [coinInfo]).concat(
+                push ? getCoinPermissions('push_tx', [coinInfo]) : [],
+                // Preauthorized signing runs under the coinjoin authorization of the device session.
+                preauthorized ? getCoinPermissions('internal', [coinInfo]) : [],
+            ),
+        );
+    };
+
     protected async preCall(txSigningPrecomposed?: PrecomposedTransactionFinal) {
         const [transactions] = await Promise.all([
             fetchRefTransactions(this.payload, this.signal).catch(error => {
@@ -58,7 +75,9 @@ export class SignTransaction extends AbstractSignTransactionFlow<'signTransactio
         };
     }
 
-    protected prepareSigning(txSigningPrecomposed?: PrecomposedTransactionFinal) {
+    // A transaction composed by sendTransaction is reviewed as it was composed.
+    protected async prepareSigning(composedTx?: PrecomposedTransactionFinal) {
+        const txSigningPrecomposed = composedTx ?? (await this.precompose());
         if (!txSigningPrecomposed) return;
 
         const network = getNetwork(this.payload.coin as NetworkSymbol);
@@ -85,6 +104,12 @@ export class SignTransaction extends AbstractSignTransactionFlow<'signTransactio
             bitcoinLocktimeBlockHeight: '',
             bitcoinLocktimeDatetime: '',
         });
+    }
+
+    private async precompose() {
+        const precomposed = await TrezorConnect.precomposeSignTransaction(this.payload);
+
+        return precomposed.success ? precomposed.payload : undefined;
     }
 
     protected async postCall(response: PopupFlowResponse<'signTransaction'>) {

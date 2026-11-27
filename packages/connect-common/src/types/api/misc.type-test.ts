@@ -53,3 +53,14 @@ export const updateConnectSettings = async (api: TrezorConnect) => {
     // @ts-expect-error - params are required
     api.updateConnectSettings();
 };
+
+export const getCoinInfo = (api: TrezorConnect) => {
+    api.getCoinInfo({ coin: 'btc' });
+    api.getCoinInfo({ path: "m/84'/0'/0'", networkType: 'bitcoin' });
+    api.getCoinInfo({ path: [2147483692, 2147483708], networkType: 'ethereum' });
+
+    // @ts-expect-error - a path needs the network type
+    api.getCoinInfo({ path: "m/84'/0'/0'" });
+    // @ts-expect-error - only bitcoin and ethereum networks resolve from a path
+    api.getCoinInfo({ path: "m/44'/501'", networkType: 'misc' });
+};

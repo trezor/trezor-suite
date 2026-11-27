@@ -1,10 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ChangeLanguage.js
 
-import {
-    ChangeLanguage as ChangeLanguageSchema,
-    type PermissionRequest,
-    UI_EVENTS,
-} from '@trezor/connect-common';
+import { ChangeLanguage as ChangeLanguageSchema, UI_EVENTS } from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage } from '../core/AbstractMethod';
@@ -23,10 +19,6 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
         this.skipFinalReload = false;
         this.useDeviceState = false;
     }
-    get requiredPermissions(): PermissionRequest[] {
-        return [{ permission: 'management' }];
-    }
-
     run() {
         const { language, binary } = this.params;
 

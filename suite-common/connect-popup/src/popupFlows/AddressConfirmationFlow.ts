@@ -22,7 +22,9 @@ type AddressConfirmationMethod =
  * Exports addresses or public keys without showing them on the device, then lets the user verify
  * them one by one.
  */
-export class AddressConfirmationFlow extends CommonPopupFlow<AddressConfirmationMethod> {
+export abstract class AddressConfirmationFlow<
+    M extends AddressConfirmationMethod,
+> extends CommonPopupFlow<M> {
     protected preCall() {
         const bundle = this.getBundle();
         const payload = bundle
@@ -30,10 +32,10 @@ export class AddressConfirmationFlow extends CommonPopupFlow<AddressConfirmation
             : { ...this.payload, showOnTrezor: false };
 
         // TS cannot match a spread of the payload union with its members.
-        return payload as PopupFlowPayload<AddressConfirmationMethod>;
+        return payload as PopupFlowPayload<M>;
     }
 
-    protected async postCall(response: PopupFlowResponse<AddressConfirmationMethod>) {
+    protected async postCall(response: PopupFlowResponse<M>) {
         if (!response.success) return false;
 
         const bundle = this.getBundle();

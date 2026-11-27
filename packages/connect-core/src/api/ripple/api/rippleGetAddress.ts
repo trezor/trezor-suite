@@ -12,10 +12,6 @@ export default class RippleGetAddress extends AbstractMiscGetAddress<'rippleGetA
         this.requiredFirmwareCoins = [getMiscNetwork('xrp')];
     }
 
-    get info() {
-        return this.getInfo('Ripple');
-    }
-
     async _call({ proto }: MiscGetAddressParams) {
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('RippleGetAddress', 'RippleAddress', proto);

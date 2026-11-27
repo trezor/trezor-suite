@@ -1,9 +1,11 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import TrezorConnect, { type MethodInfo, type PermissionRequest } from '@trezor/connect';
+import TrezorConnect, { type PermissionRequest } from '@trezor/connect';
 
 import { CommonPopupFlow, type PopupFlowAnswer } from './CommonPopupFlow';
+import { createPopupFlow } from './createPopupFlow';
 import { connectPopupActions } from '../connectPopupActions';
+import { type MethodInfo } from '../methodInfo';
 
 jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),
@@ -40,13 +42,10 @@ class PopupOnlyFlow extends CommonPopupFlow<'selectAccount'> {
         );
     }
 
-    protected getMethodInfo(): Promise<MethodInfo> {
-        return Promise.resolve({
-            info: 'Select account',
-            requiredPermissions: this.requiredPermissions,
-            useUi: true,
-        });
-    }
+    protected getMethodInfo = (): MethodInfo => ({
+        info: 'Select account',
+        requiredPermissions: this.requiredPermissions,
+    });
 
     protected callMethod() {
         return Promise.resolve(answer);
@@ -83,4 +82,25 @@ describe('CommonPopupFlow', () => {
 
         await expect(flow.run()).rejects.toMatchObject({ code: 'Method_NotAllowed' });
     });
+
+    it.each(['wipeDevice', 'firmwareUpdate', 'cancelCoinjoinAuthorization'] as const)(
+        'rejects %s without describing the call',
+        async method => {
+            const flow = createPopupFlow(
+                {
+                    method,
+                    payload: {},
+                    source: {
+                        type: 'walletconnect',
+                        origin: 'https://dapp.example',
+                        manifest: { appName: 'dapp' },
+                    },
+                },
+                { dispatch: jest.fn(), getState: jest.fn(), signal: new AbortController().signal },
+            );
+
+            await expect(flow.run()).rejects.toMatchObject({ code: 'Method_NotAllowed' });
+            expect(TrezorConnect.call).not.toHaveBeenCalled();
+        },
+    );
 });

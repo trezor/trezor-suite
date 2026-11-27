@@ -142,15 +142,6 @@ export const getCoinInfoOrThrow = (coin: string): Readonly<CoinInfo> => {
     return coinInfo;
 };
 
-export const getCoinName = (path: number[]) => {
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const coinNamePathElement: number = path[1];
-    const slip44 = fromHardenedPathPart(coinNamePathElement);
-    const network = ethereumNetworks.find(n => n.slip44 === slip44);
-
-    return network ? network.name : 'Unknown coin';
-};
-
 const BITCOIN_SHORTCUTS = ['BTC', 'TEST', 'REGTEST'];
 
 const parseBitcoinNetworksJson = (json: any) => {
@@ -273,13 +264,6 @@ const parseCoinsJson = (json: any) => {
         }
     });
 };
-
-export const getUniqueNetworks = <T extends { shortcut: string }>(networks: (T | undefined)[]) =>
-    networks.reduce((result: T[], info?: T) => {
-        if (!info || result.find(i => i.shortcut === info.shortcut)) return result;
-
-        return result.concat(info);
-    }, []);
 
 export const getAllNetworks = (): CoinInfo[] => [
     ...bitcoinNetworks,

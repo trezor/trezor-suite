@@ -1,5 +1,4 @@
 import { UI_EVENTS } from '@trezor/connect-common';
-import type { PermissionRequest } from '@trezor/connect-common';
 import type { VerifyAuthenticityProofResult } from '@trezor/device-authenticity';
 import { AuthenticateDeviceParams } from '@trezor/device-authenticity';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
@@ -29,10 +28,6 @@ export default class AuthenticateDevice extends AbstractMethod<
         this.skipFinalReload = false;
         this.useDeviceState = false;
     }
-    get requiredPermissions(): PermissionRequest[] {
-        return [{ permission: 'management' }];
-    }
-
     async streamAuthenticityProofs(challenge: Buffer) {
         const cmd = this.getDevice().getCommands();
         const MAX_CHUNK_SIZE = 500;

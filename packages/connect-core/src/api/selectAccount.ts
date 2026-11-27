@@ -1,4 +1,4 @@
-import { type CoinInfo, type PermissionRequest } from '@trezor/connect-common';
+import { type CoinInfo } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import {
     type AddressSelection,
@@ -9,8 +9,6 @@ import { Assert } from '@trezor/schema-utils';
 import type { MethodMessage, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
-import { isUtxoBased } from '../utils/accountUtils';
-import { getLabel } from '../utils/pathUtils';
 
 type Params = {
     coinInfo: CoinInfo;
@@ -52,29 +50,6 @@ export default class SelectAccount extends AbstractMethod<'selectAccount', Param
         this.useDevice = false;
         this.useDeviceState = false;
         this.requiredFirmwareCoins = [coinInfo];
-    }
-
-    get useUi() {
-        return true;
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        // UTXO coins have two separate flows: sharing the whole account as an xpub (omitted or
-        // `addressSelection: 'fullAccount'`) needs the broader `read_xpub`, while picking
-        // individual address(es) (`addressSelection: 'firstFresh' | 'manual'`) only needs
-        // `read_address`, same as EVM/other account-based networks, which always export an
-        // individual address.
-        const isFullAccount =
-            this.params.addressSelection === undefined ||
-            this.params.addressSelection === 'fullAccount';
-        const permission =
-            isUtxoBased(this.params.coinInfo) && isFullAccount ? 'read_xpub' : 'read_address';
-
-        return this.coinPerms(permission, this.requiredFirmwareCoins);
-    }
-
-    get info() {
-        return getLabel('Select #NETWORK account', this.params.coinInfo);
     }
 
     run(): Promise<MethodReturnType<'selectAccount'>> {

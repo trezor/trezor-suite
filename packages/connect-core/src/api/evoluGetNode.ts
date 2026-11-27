@@ -1,4 +1,3 @@
-import { type PermissionRequest } from '@trezor/connect-common';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -19,10 +18,6 @@ export default class EvoluGetNode extends AbstractMethod<'evoluGetNode', PROTO.E
 
         super(message, params);
     }
-    get requiredPermissions(): PermissionRequest[] {
-        return [{ permission: 'management' }];
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('EvoluGetNode', 'EvoluNode', this.params);

@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/StellarSignTransaction.js
 
 import { StellarSignTransaction as StellarSignTransactionSchema } from '@trezor/connect-common';
-import type { PermissionRequest, StellarOperation } from '@trezor/connect-common';
+import type { StellarOperation } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import stellar from '@trezor/network-stellar/runtime';
 import { Assert } from '@trezor/schema-utils';
@@ -50,14 +50,6 @@ export default class StellarSignTransaction extends AbstractMethod<
 
         this.requiredDeviceCapabilities = ['Capability_Stellar'];
         this.requiredFirmwareCoins = [getMiscNetwork('xlm')];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('sign', this.requiredFirmwareCoins);
-    }
-
-    get info() {
-        return 'Sign Stellar transaction';
     }
 
     private _isFeatureSupported(feature: keyof typeof StellarSignTransactionFeatures) {

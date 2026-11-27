@@ -1,6 +1,10 @@
 import fetch from 'cross-fetch';
 
-import { type EthereumNetworkInfo, getEthereumDefinitionsBaseUrl } from '@trezor/connect-common';
+import {
+    type EthereumNetworkInfo,
+    type EthereumTransaction,
+    getEthereumDefinitionsBaseUrl,
+} from '@trezor/connect-common';
 import type { MessagesSchema } from '@trezor/protobuf';
 import { protobufManager } from '@trezor/protobuf';
 import { trzd } from '@trezor/protocol';
@@ -10,6 +14,8 @@ import { Assert, Type } from '@trezor/schema-utils';
 import { ethereumNetworkInfoBase } from '../../data/coinInfo';
 import * as settingsStore from '../../data/settingsStore';
 import type { DefinitionsVersion } from '../../utils/definitionsUtils';
+import { stripHexPrefix } from '../../utils/formatUtils';
+import { getSlip44ByPath } from '../../utils/pathUtils';
 
 interface GetEthereumDefinitions {
     chainId?: number;
@@ -126,6 +132,38 @@ export const EthereumDefinitionDecoded = Type.Object({
     network: Type.Optional(EthereumNetworkDefinitionDecoded),
     token: Type.Optional(EthereumTokenDefinitionDecoded),
 });
+
+type GetEthereumTransactionDefinitions = {
+    path: number[];
+    transaction: Pick<EthereumTransaction, 'chainId' | 'data' | 'to'>;
+    version?: DefinitionsVersion;
+};
+
+/**
+ * Downloads the definitions the device needs to display a transaction, which a plain ether
+ * transfer does not need.
+ */
+export const getEthereumTransactionDefinitions = async ({
+    path,
+    transaction: { chainId, data, to },
+    version,
+}: GetEthereumTransactionDefinitions) => {
+    // eth && token => yes
+    // evm && token => yes
+    // eth && !token => no
+    // evm && !token => yes
+    const hexData = data && stripHexPrefix(data);
+    if (chainId === 1 && !hexData) {
+        return;
+    }
+
+    return await getEthereumDefinitions({
+        chainId,
+        slip44: getSlip44ByPath(path),
+        contractAddress: hexData && to != null ? stripHexPrefix(to) : undefined,
+        version,
+    });
+};
 
 export const decodeEthereumDefinition = (
     encodedDefinition: MessagesSchema.EthereumDefinitions,

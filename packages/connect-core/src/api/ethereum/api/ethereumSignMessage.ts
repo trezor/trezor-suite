@@ -1,10 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumSignMessage.js
 
-import type {
-    DeviceButtonRequestCode,
-    EthereumNetworkInfo,
-    PermissionRequest,
-} from '@trezor/connect-common';
+import type { DeviceButtonRequestCode, EthereumNetworkInfo } from '@trezor/connect-common';
 import { EthereumSignMessage as EthereumSignMessageSchema } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
@@ -14,7 +10,6 @@ import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
 import { validateModelOneMessageSize } from '../../../device/validateMessageSize';
 import { getDefinitionsVersion } from '../../../utils/definitionsUtils';
-import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { hexToText, messageToHex } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import { getEthereumDefinitions } from '../ethereumDefinitions';
@@ -46,14 +41,6 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
         super(message, params);
         this.requiredFirmwareCoins = [network];
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('sign', this.requiredFirmwareCoins);
-    }
-
-    get info() {
-        return getNetworkLabel('Sign #NETWORK message', this.params.network);
     }
 
     getButtonRequestData(code: DeviceButtonRequestCode, name?: string) {

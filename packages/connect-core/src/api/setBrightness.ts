@@ -1,6 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/SetBrightness.js
 
-import { type PermissionRequest } from '@trezor/connect-common';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -19,10 +18,6 @@ export default class SetBrightness extends AbstractMethod<'setBrightness', PROTO
         this.skipFinalReload = false;
         this.useDeviceState = false;
     }
-    get requiredPermissions(): PermissionRequest[] {
-        return [{ permission: 'management' }];
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('SetBrightness', 'Success', this.params);

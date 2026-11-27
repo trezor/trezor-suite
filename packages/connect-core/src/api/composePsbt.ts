@@ -1,8 +1,4 @@
-import {
-    type BitcoinNetworkInfo,
-    type ComposePsbtParams,
-    type PermissionRequest,
-} from '@trezor/connect-common';
+import { type BitcoinNetworkInfo, type ComposePsbtParams } from '@trezor/connect-common';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
@@ -50,14 +46,6 @@ export default class ComposePsbt extends AbstractMethod<'composePsbt', Params> {
 
         this.useDevice = false;
         this.requiredFirmwareCoins = [coinInfo];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return [];
-    }
-
-    get info() {
-        return `Compose PSBT transaction`;
     }
 
     run() {

@@ -9,10 +9,9 @@ import TrezorConnect, {
     type CallMethodParams,
     type CallMethodPayload,
     type CallMethodResponse,
-    type MethodInfo,
     type PermissionRequest,
 } from '@trezor/connect';
-import { connectCallableMethods } from '@trezor/connect-common';
+import { connectManagementMethods } from '@trezor/connect-common/src/callableMethods';
 import { type SerializedError, TypedError } from '@trezor/connect-common/src/constants/errors';
 import { type Err, type Ok } from '@trezor/type-utils';
 import { resolveAfter } from '@trezor/utils';
@@ -26,6 +25,7 @@ import {
     type ConnectCallSource,
     getCallSourceName,
 } from '../connectPopupTypes';
+import { type MethodInfo, SUITE_ONLY_METHODS } from '../methodInfo';
 import {
     canRememberPermissions,
     deriveCardanoEnabledNetworks,
@@ -34,6 +34,12 @@ import {
     permissionsAreCovered,
     sanitizeRequestedPermissions,
 } from '../permissions';
+
+// Never available to a host, whatever the params.
+const NOT_ALLOWED_METHODS: readonly CallMethodKeys[] = [
+    ...connectManagementMethods,
+    ...SUITE_ONLY_METHODS,
+];
 
 type DistributiveOmit<T, K extends keyof T> = T extends T ? Omit<T, K> : never;
 
@@ -76,10 +82,10 @@ export type PopupFlow = {
 
 /**
  * A Connect call made through the popup. `run()` asks for permissions, waits for the device and
- * calls the method. Used as it is for methods the popup does not adjust, subclasses named after
- * a method adjust its steps by overriding the hooks below.
+ * calls the method. The subclass of a method describes its call, and may adjust its steps by
+ * overriding the hooks below.
  */
-export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implements PopupFlow {
+export abstract class CommonPopupFlow<M extends CallMethodKeys> implements PopupFlow {
     protected readonly method: M;
     protected readonly payload: PopupFlowPayload<M>;
     protected readonly source: ConnectCallSource;
@@ -99,26 +105,8 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
         this.signal = signal;
     }
 
-    /**
-     * Describes the call: its title and required permissions. Asks the Connect method by default,
-     * a flow not backed by one describes the call itself.
-     */
-    protected async getMethodInfo(): Promise<MethodInfo> {
-        const { method, payload } = this;
-
-        if (!connectCallableMethods.includes(method)) throw TypedError('Method_Unsupported');
-
-        const methodInfo = await TrezorConnect.call({
-            ...payload,
-            method,
-            __info: true,
-        } as CallMethodPayload);
-        if (!methodInfo.success) {
-            throw methodInfo.error;
-        }
-
-        return methodInfo.payload as MethodInfo;
-    }
+    /** Describes the call: its title and required permissions. */
+    protected abstract getMethodInfo: () => MaybePromise<MethodInfo>;
 
     /** Rejects a call this host cannot fulfil, before the user is asked for permissions. */
     protected validate(): void {}
@@ -169,6 +157,8 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
 
     /** Resolves to the successful response, a failure is thrown. */
     async run() {
+        if (NOT_ALLOWED_METHODS.includes(this.method)) throw TypedError('Method_NotAllowed');
+
         const methodInfo = await this.getMethodInfo();
         this.assertCallAllowed(methodInfo);
         const consentPermissions = this.initiateCall(methodInfo);
@@ -178,7 +168,7 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
         await this.enableNetworks(consentPermissions);
         await this.waitForDevice();
 
-        const { response, isPostCallOngoing } = await this.process(methodInfo.precomposed);
+        const { response, isPostCallOngoing } = await this.process();
 
         if (!response.success) {
             throw response.error;
@@ -213,7 +203,7 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
     }
 
     // Returns the permissions the user is asked to consent to.
-    private initiateCall({ info, requiredPermissions, useUi }: MethodInfo) {
+    private initiateCall({ info, requiredPermissions }: MethodInfo) {
         const { method, payload, source } = this;
 
         // Permissions the host/dapp declared up front (ConnectSettings.requestedPermissions),
@@ -232,7 +222,6 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
                 methodInfo: {
                     methodTitle: info,
                     permissionTypes: consentPermissions,
-                    useUi,
                 },
                 payload,
                 source,

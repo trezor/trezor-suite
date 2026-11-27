@@ -3,12 +3,14 @@ import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { getUnusedChangeAddress } from '@suite-common/wallet-utils';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect, {
+    type CoinInfo,
     type PrecomposeResultFinal,
     UI_REQUESTS,
     type UiRequestSelectFee,
     asCoinSymbol,
 } from '@trezor/connect';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
+import { BigNumber } from '@trezor/utils';
 
 import { CommonPopupFlow, getPayloadOrThrow } from './CommonPopupFlow';
 import { buildOptions, pickAccounts } from './selectAccount';
@@ -17,10 +19,36 @@ import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { selectConnectPopupCallWithState } from '../connectPopupReducer';
 import { CALL_SOURCE_DEEPLINK, type ConnectPopupCallWithState } from '../connectPopupTypes';
+import { describeCall, getBitcoinCoinInfo, getCoinPermissions } from '../methodInfo';
+
+export const formatAmount = (amount: string, coinInfo: CoinInfo) =>
+    `${new BigNumber(amount).div(10 ** coinInfo.decimals).toString(10)} ${coinInfo.shortcut}`;
 
 /** Lets the user pick an account and a fee for the outputs, then signs it like signTransaction. */
 export class SendTransaction extends CommonPopupFlow<'sendTransaction'> {
     private signFlow?: SignTransaction;
+
+    protected getMethodInfo = async () => {
+        const { coin, outputs, push } = this.payload;
+        const coinInfo = await getBitcoinCoinInfo(coin);
+        const total = outputs.reduce(
+            (sum, output) =>
+                'amount' in output && typeof output.amount === 'string'
+                    ? sum.plus(output.amount)
+                    : sum,
+            new BigNumber(0),
+        );
+        const info = outputs.some(output => output.type === 'send-max')
+            ? 'Send maximum amount'
+            : `Send ${coinInfo ? formatAmount(total.toString(), coinInfo) : total.toString()}`;
+
+        return describeCall(
+            info,
+            getCoinPermissions('sign', [coinInfo]).concat(
+                push ? getCoinPermissions('push_tx', [coinInfo]) : [],
+            ),
+        );
+    };
 
     // Suite has no account or fee selection on mobile.
     protected validate() {

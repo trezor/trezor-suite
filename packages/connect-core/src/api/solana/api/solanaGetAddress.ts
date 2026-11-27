@@ -10,10 +10,6 @@ export default class SolanaGetAddress extends AbstractMiscGetAddress<'solanaGetA
         this.requiredFirmwareCoins = [getMiscNetwork('sol')];
     }
 
-    get info() {
-        return this.getInfo('Solana');
-    }
-
     async _call({ proto }: MiscGetAddressParams) {
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('SolanaGetAddress', 'SolanaAddress', proto);

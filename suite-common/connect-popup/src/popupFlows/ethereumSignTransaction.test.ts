@@ -25,7 +25,7 @@ const accountToken = mockAccountToken({ contract: TOKEN_CONTRACT.toLowerCase(), 
 jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),
     __esModule: true,
-    default: { ethereumGetAddress: jest.fn() },
+    default: { ethereumGetAddress: jest.fn(), ethereumPrecomposeSignTransaction: jest.fn() },
 }));
 
 jest.mock('@suite-common/device', () => ({
@@ -39,15 +39,15 @@ jest.mock('@suite-common/wallet-core', () => ({
 }));
 
 const mockedGetAddress = TrezorConnect.ethereumGetAddress as jest.Mock;
+const mockedPrecompose = TrezorConnect.ethereumPrecomposeSignTransaction as jest.Mock;
 
 type RunPreCallParams = {
     payload: PopupFlowPayload<'ethereumSignTransaction'>;
     source: ConnectCallSource;
     dispatch: jest.Mock;
-    txSigningPrecomposed?: PrecomposedTransactionFinal;
 };
 
-const runPreCall = ({ payload, source, dispatch, txSigningPrecomposed }: RunPreCallParams) => {
+const runPreCall = ({ payload, source, dispatch }: RunPreCallParams) => {
     const flow = new EthereumSignTransaction(
         { method: 'ethereumSignTransaction', payload, source },
         {
@@ -57,7 +57,7 @@ const runPreCall = ({ payload, source, dispatch, txSigningPrecomposed }: RunPreC
         },
     );
 
-    return flow['preCall'](txSigningPrecomposed);
+    return flow['preCall']();
 };
 
 const runSimulationPreCall = (chainId: number) => {
@@ -110,6 +110,7 @@ const contractCallPrecomposedTx: PrecomposedTransactionFinal = {
 
 const runTokenTransferPreCall = async () => {
     const dispatch = jest.fn(action => action);
+    mockedPrecompose.mockResolvedValueOnce({ success: true, payload: contractCallPrecomposedTx });
 
     await runPreCall({
         payload: {
@@ -131,7 +132,6 @@ const runTokenTransferPreCall = async () => {
             manifest: { appName: 'app' },
         },
         dispatch,
-        txSigningPrecomposed: contractCallPrecomposedTx,
     });
 
     return dispatch.mock.calls
@@ -142,6 +142,7 @@ const runTokenTransferPreCall = async () => {
 describe('EthereumSignTransaction.preCall', () => {
     beforeEach(() => {
         mockedGetAddress.mockResolvedValue({ success: true, payload: { address: '0xabc' } });
+        mockedPrecompose.mockResolvedValue({ success: false, payload: { error: 'Not decoded' } });
     });
 
     afterEach(() => {

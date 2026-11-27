@@ -1,6 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/RequestLogin.js
 
-import type { PermissionRequest } from '@trezor/connect-common';
 import { RequestLoginSchema } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
@@ -41,14 +40,6 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
         super(message, params);
         this.useEmptyPassphrase = true;
     }
-    get requiredPermissions(): PermissionRequest[] {
-        return [{ permission: 'sign' }];
-    }
-
-    get info() {
-        return 'Login';
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
         const { message } = await cmd.typedCall('SignIdentity', 'SignedIdentity', this.params);

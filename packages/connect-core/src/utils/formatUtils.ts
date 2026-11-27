@@ -1,11 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/formatUtils.js
 
-import type { CoinInfo } from '@trezor/connect-common';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-
-export const formatAmount = (n: string, coinInfo: CoinInfo) =>
-    `${new BigNumber(n).div(10 ** coinInfo.decimals).toString(10)} ${coinInfo.shortcut}`;
-
 export const hasHexPrefix = (str: string) => str.slice(0, 2).toLowerCase() === '0x';
 
 export const stripHexPrefix = (str: string) => (hasHexPrefix(str) ? str.slice(2) : str);

@@ -12,10 +12,6 @@ export default class StellarGetAddress extends AbstractMiscGetAddress<'stellarGe
         this.requiredFirmwareCoins = [getMiscNetwork('xlm')];
     }
 
-    get info() {
-        return this.getInfo('Stellar');
-    }
-
     async _call({ proto }: MiscGetAddressParams) {
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('StellarGetAddress', 'StellarAddress', proto);

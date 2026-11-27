@@ -3,7 +3,6 @@ import {
     Bundle,
     type EthereumNetworkInfo,
     GetPublicKey as GetPublicKeySchema,
-    type PermissionRequest,
     UI_EVENTS,
     createUiEventMessage,
 } from '@trezor/connect-common';
@@ -12,8 +11,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodContext, MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
-import { getNetworkLabel } from '../../../utils/ethereumUtils';
+import { getEthereumNetwork } from '../../../data/coinInfo';
 import { getSerializedPath, validatePath } from '../../../utils/pathUtils';
 import { bundlify } from '../../common/paramsValidator';
 
@@ -48,28 +46,6 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
         this.requiredFirmwareCoins = params.map(({ network }) => network);
         this.hasBundle = hasBundle;
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
-    }
-
-    get info() {
-        // set info
-        if (this.params.length === 1) {
-            const { params } = this;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const first: (typeof params)[number] = params[0];
-
-            return getNetworkLabel('Export #NETWORK public key', first.network);
-        }
-        const requestedNetworks = this.params.map(b => b.network);
-        const uniqNetworks = getUniqueNetworks(requestedNetworks);
-        if (uniqNetworks.length === 1 && uniqNetworks[0]) {
-            return getNetworkLabel('Export multiple #NETWORK public keys', uniqNetworks[0]);
-        }
-
-        return 'Export multiple public keys';
     }
 
     async run({ sendCoreMessage }: MethodContext) {

@@ -6,7 +6,6 @@ import {
     getBitcoinNetworkOrThrow,
     getCoinInfoOrThrow,
     getMiscNetwork,
-    getUniqueNetworks,
 } from './coinInfo';
 
 describe('data/coinInfo', () => {
@@ -96,17 +95,5 @@ describe('data/coinInfo', () => {
                 expect(ownerShortcut === undefined || ownerShortcut === n.shortcut).toBe(true);
             });
         });
-    });
-
-    it('getUniqueNetworks', () => {
-        const inputs = [
-            getCoinInfoOrThrow('btc'),
-            getCoinInfoOrThrow('ltc'),
-            getCoinInfoOrThrow('btc'),
-            getCoinInfoOrThrow('ltc'),
-            getCoinInfoOrThrow('ltc'),
-        ];
-        const result = [getCoinInfoOrThrow('btc'), getCoinInfoOrThrow('ltc')];
-        expect(getUniqueNetworks(inputs)).toEqual(result);
     });
 });

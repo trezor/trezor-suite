@@ -1,17 +1,12 @@
-import { ERRORS, UI_EVENTS, asCoinSymbol } from '@trezor/connect-common';
+import { ERRORS, UI_EVENTS } from '@trezor/connect-common';
 import type {
     CallMethodPayload,
     CallMethodResponse,
     CoinInfo,
-    CoinSymbol,
     CoreEventMessage,
     DeviceButtonRequestCode,
     DeviceState,
     FirmwareCapability,
-    MethodInfo,
-    MethodPermission,
-    PermissionRequest,
-    PrecomposeResultFinal,
     StaticSessionId,
     UiRequestButtonData,
 } from '@trezor/connect-common';
@@ -118,15 +113,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public readonly name: Name; // method name
 
-    protected get info() {
-        return '';
-    } // method info, displayed in popup info-panel
-
-    // whether the popup brings Suite to the foreground while the call is ongoing
-    protected get useUi() {
-        return this.useDevice;
-    }
-
     public useDevice: boolean; // use device
 
     public useDeviceState: boolean; // should validate device state?
@@ -134,48 +120,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     public preauthorized?: boolean; // another variant of device state validation
 
     public useEmptyPassphrase: boolean;
-
-    abstract get requiredPermissions(): PermissionRequest[];
-
-    // `coinInfo.shortcut` keeps its original casing (e.g. `BTC`, `tDASH`) but a
-    // permission `coin` is the lowercase `CoinSymbol`. Every shortcut lowercases
-    // to a known `CoinSymbol` (both derive from the same coin definitions), so
-    // the cast is sound.
-    private toCoinSymbol(shortcut: string): CoinSymbol {
-        return asCoinSymbol(shortcut.toLowerCase());
-    }
-
-    // Build a `PermissionRequest` for a single coin (or coin-less when `coin` is
-    // undefined).
-    protected coinPerm(permission: MethodPermission, coin?: CoinInfo): PermissionRequest {
-        return coin ? { permission, coin: this.toCoinSymbol(coin.shortcut) } : { permission };
-    }
-
-    // Build `PermissionRequest` entries from a list of coins, de-duplicated by
-    // coin symbol. Undefined coins collapse to a single coin-less entry.
-    protected coinPerms(
-        permission: MethodPermission,
-        coins: (CoinInfo | undefined)[],
-    ): PermissionRequest[] {
-        const seen = new Set<CoinSymbol>();
-        const out: PermissionRequest[] = [];
-        let hasCoinless = false;
-        for (const c of coins) {
-            if (!c) {
-                if (!hasCoinless) {
-                    hasCoinless = true;
-                    out.push({ permission });
-                }
-                continue;
-            }
-            const coin = this.toCoinSymbol(c.shortcut);
-            if (seen.has(coin)) continue;
-            seen.add(coin);
-            out.push({ permission, coin });
-        }
-
-        return out;
-    }
 
     public allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI_EVENTS.DEVICE_NOT_INITIALIZED)
 
@@ -217,9 +161,9 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     }
 
     // Resolves the Cardano session capability against the runtime enabled-networks set. MUST run on
-    // the real device-call path (NOT the constructor): keeps `__info` unblocked, and reflects any
-    // enablement applied between introspection and the call (e.g. a permission grant projected into
-    // the store). Sets `useCardanoDerivation` (→ `derive_cardano` at session create).
+    // the real device-call path (NOT the constructor): reflects any enablement applied before the
+    // call (e.g. a permission grant projected into the store). Sets `useCardanoDerivation`
+    // (→ `derive_cardano` at session create).
     public resolveCardanoCapability(): void {
         this.useCardanoDerivation =
             enabledNetworksStore.has('ada') || enabledNetworksStore.has('tada');
@@ -280,22 +224,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         if (range.max !== '0' && versionUtils.isNewer(version, range.max)) {
             return UI_EVENTS.FIRMWARE_NOT_COMPATIBLE;
         }
-    }
-
-    // Async so that a method can download what its title names (e.g. a network definition) only
-    // when the title is requested, instead of on every call.
-    public async getMethodInfo(): Promise<MethodInfo> {
-        return {
-            useUi: this.useUi,
-            requiredPermissions: this.requiredPermissions,
-            info: this.info,
-            precomposed: await this.payloadToPrecomposed(),
-        };
-    }
-
-    protected payloadToPrecomposed(): Promise<PrecomposeResultFinal | undefined> {
-        // Suite uses precomposed result for transaction review modals
-        return Promise.resolve(undefined);
     }
 
     public checkDeviceCapability() {

@@ -9,7 +9,6 @@ import type {
     EthereumNetworkInfo,
     EthereumSignTypedDataTypes,
     PROTO,
-    PermissionRequest,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -19,7 +18,6 @@ import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
 import { getDefinitionsVersion } from '../../../utils/definitionsUtils';
-import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { messageToHex } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import { getEthereumDefinitions } from '../ethereumDefinitions';
@@ -116,17 +114,6 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         super(message, params);
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
         this.requiredFirmwareCoins = [network];
-    }
-
-    get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('sign', this.requiredFirmwareCoins);
-    }
-
-    get info() {
-        return getNetworkLabel(
-            'Sign #NETWORK typed data',
-            getEthereumNetwork(this.params.address_n),
-        );
     }
 
     getButtonRequestData(code: DeviceButtonRequestCode, name?: string) {
