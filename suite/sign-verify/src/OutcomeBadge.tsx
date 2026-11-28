@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { Badge } from '@trezor/components';
 import { CheckCircleIcon, WarningCircleIcon } from '@trezor/icons';
 
-import { type SignVerifyOutcome } from './types';
+import { type SignVerifyOutcome } from './SignVerifyContext';
 
 const outcomeBadges = {
     signed: { intent: 'brand', icon: CheckCircleIcon, labelId: 'TR_SIGNED_MESSAGE_BADGE' },
