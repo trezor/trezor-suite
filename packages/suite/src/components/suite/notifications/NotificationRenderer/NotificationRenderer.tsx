@@ -739,6 +739,12 @@ export const NotificationRenderer = ({
                 message: 'TR_THP_RESET_CREDENTIALS_SUCCESS',
             });
 
+        case 'walletconnect-authenticate-error':
+            return renderNotificationView(render, notification, {
+                variant: 'error',
+                message: 'TR_WALLETCONNECT_AUTHENTICATE_ERROR',
+            });
+
         case 'sign-transaction-timeout':
             return renderNotificationView(render, notification, {
                 variant: 'error',
