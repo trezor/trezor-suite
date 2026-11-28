@@ -14,6 +14,8 @@ const createDeps = (resolver?: SymbolNamedAddressResolver) =>
             get: () => mockNetworkModule({ namedAddressResolver: resolver }),
             getSupportedNetworks: null,
             isSupportedNetwork: null,
+            register: null,
+            unregister: null,
         },
     });
 

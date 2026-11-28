@@ -8,5 +8,7 @@ export const mockNetworkModuleRepository = (
     },
     getSupportedNetworks: () => [],
     isSupportedNetwork: (_symbol: string): _symbol is NetworkSymbol => false,
+    register: () => {},
+    unregister: () => {},
     ...overrides,
 });

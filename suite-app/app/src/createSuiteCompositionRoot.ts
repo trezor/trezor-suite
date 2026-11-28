@@ -65,6 +65,7 @@ import type { CreateLoggerDep } from '@trezor/logger';
 import { createBitcoinSuiteNetworkModule } from '@trezor/network-bitcoin-suite';
 import { createCardanoSuiteNetworkModule } from '@trezor/network-cardano-suite';
 import { createEthereumSuiteNetworkModule } from '@trezor/network-ethereum-suite';
+import { createCustomEvmNetworkModule } from '@trezor/network-ethereum-suite-common';
 import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
 import { createRippleSuiteNetworkModule } from '@trezor/network-ripple-suite';
 import { createSolanaSuiteNetworkModule } from '@trezor/network-solana-suite';
@@ -186,6 +187,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     });
     const networks = createNetworksCompositionRoot({
         networkModuleRepository,
+        createCustomEvmNetworkModule: createCustomEvmNetworkModule(networkModuleDeps),
         dispatch: deps.dispatch,
     });
 
