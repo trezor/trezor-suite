@@ -2,6 +2,7 @@ import { createMemoryHistory } from 'history';
 
 import { createElectronDesktopApi } from '@suite/desktop-app-api-electron';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
+import { createUnavailableServiceWorkerControl } from '@suite/service-worker';
 import {
     createHydrateReduxStore,
     createReduxStore,
@@ -55,6 +56,7 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
         thpHostName: undefined,
         getTransportsFactories,
         getTrezorConnect: () => TrezorConnect,
+        serviceWorkerControl: createUnavailableServiceWorkerControl(),
     });
     const preloadStore = createPreloadStore({ db });
     const hydrateReduxStore = createHydrateReduxStore({

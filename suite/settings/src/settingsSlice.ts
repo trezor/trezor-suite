@@ -35,6 +35,11 @@ export interface DebugModeOptions {
     isN4w1BackupEnabled: boolean;
     showTranslationKeys: boolean;
     isAppsEmbeddingEnabled: boolean;
+    isServiceWorkerEnabled?: boolean;
+    /** Shows the service worker's update banner outside production builds, where it is always on. */
+    isServiceWorkerUpdatePromptEnabled?: boolean;
+    /** Turns Serwist's logs on in dev builds, the only ones that contain them. */
+    isServiceWorkerDevLogsEnabled?: boolean;
 }
 
 export interface AutodetectSettings {
@@ -98,6 +103,9 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
         isN4w1BackupEnabled: false,
         showTranslationKeys: false,
         isAppsEmbeddingEnabled: false,
+        isServiceWorkerEnabled: false,
+        isServiceWorkerUpdatePromptEnabled: false,
+        isServiceWorkerDevLogsEnabled: false,
     },
     autodetect: {
         language: true,

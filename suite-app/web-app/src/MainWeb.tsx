@@ -17,6 +17,7 @@ import {
     useTor,
 } from '@trezor/suite';
 
+import { ServiceWorker } from './support/ServiceWorker';
 import { usePlaywright } from './support/usePlaywright';
 import { webComponents } from './support/webComponents';
 
@@ -30,6 +31,7 @@ export const MainWeb = () => {
     return (
         <Main>
             <Metadata />
+            <ServiceWorker />
             <ToasterProvider />
             <Preloader>
                 <Suspense fallback={<BundleLoader />}>

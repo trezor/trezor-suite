@@ -3,6 +3,7 @@ import { type BluetoothDep } from '@suite/bluetooth';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type MetadataMigrationDep } from '@suite/metadata-migration';
 import { type SuiteRouterHistoryDep } from '@suite/router';
+import { type ServiceWorkerControlDep } from '@suite/service-worker';
 import { type ReduxLoggerControlDep } from '@suite/settings';
 import { type TransportsDep } from '@suite-common/connect-init';
 import { type CommonServices } from '@suite-common/extra-dependencies';
@@ -22,4 +23,5 @@ export type SuiteServices = CommonServices &
     ReferAFriendDep &
     TransactionRetrieverDep &
     ReduxLoggerControlDep &
-    GetSignVerifyDep;
+    GetSignVerifyDep &
+    ServiceWorkerControlDep;

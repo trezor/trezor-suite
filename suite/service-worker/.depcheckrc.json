@@ -1,0 +1,7 @@
+{
+    "ignore-patterns": ["libDev", "lib"],
+    "ignores": [
+        "// The webpack and Vite entries load the bundler options through the package's own name, see bundler/index.ts",
+        "@suite/service-worker"
+    ]
+}

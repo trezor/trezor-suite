@@ -6,10 +6,14 @@ import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 import {
     selectAutodetectLanguage,
     selectEarnStakingWorkerBaseUrl,
+    selectIsServiceWorkerDevLogsEnabled,
+    selectIsServiceWorkerEnabled,
+    selectIsServiceWorkerUpdatePromptEnabled,
     selectLanguage,
     selectTheme,
 } from './settingsSelectors';
 import {
+    type DebugModeOptions,
     prepareSuiteSettingsReducer,
     suiteSettingsActions,
     suiteSettingsInitialState,
@@ -61,5 +65,48 @@ describe('settingsSlice', () => {
         expect(selectEarnStakingWorkerBaseUrl(store.getState())).toBe(
             'http://localhost:3001/staking/v1',
         );
+    });
+
+    it('keeps the service worker off until the debug switch turns it on', () => {
+        const store = initStore();
+
+        expect(selectIsServiceWorkerEnabled(store.getState())).toBe(false);
+
+        store.dispatch(suiteSettingsActions.setDebugMode({ isServiceWorkerEnabled: true }));
+
+        expect(selectIsServiceWorkerEnabled(store.getState())).toBe(true);
+    });
+
+    it('keeps the service worker options off until their switches turn them on', () => {
+        const store = initStore();
+
+        expect(selectIsServiceWorkerUpdatePromptEnabled(store.getState())).toBe(false);
+        expect(selectIsServiceWorkerDevLogsEnabled(store.getState())).toBe(false);
+
+        store.dispatch(
+            suiteSettingsActions.setDebugMode({
+                isServiceWorkerUpdatePromptEnabled: true,
+                isServiceWorkerDevLogsEnabled: true,
+            }),
+        );
+
+        expect(selectIsServiceWorkerUpdatePromptEnabled(store.getState())).toBe(true);
+        expect(selectIsServiceWorkerDevLogsEnabled(store.getState())).toBe(true);
+    });
+
+    it('reads debug options saved before the service worker switches existed as off', () => {
+        const debugSavedByOlderVersion: DebugModeOptions = {
+            transports: [],
+            isUnlockedBootloaderAllowed: false,
+            showConnectLogs: false,
+            isN4w1BackupEnabled: false,
+            showTranslationKeys: false,
+            isAppsEmbeddingEnabled: false,
+        };
+        const store = initStore({ ...suiteSettingsInitialState, debug: debugSavedByOlderVersion });
+
+        expect(selectIsServiceWorkerEnabled(store.getState())).toBe(false);
+        expect(selectIsServiceWorkerUpdatePromptEnabled(store.getState())).toBe(false);
+        expect(selectIsServiceWorkerDevLogsEnabled(store.getState())).toBe(false);
     });
 });

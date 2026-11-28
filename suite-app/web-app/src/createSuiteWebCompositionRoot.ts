@@ -2,6 +2,10 @@ import { createBrowserHistory } from 'history';
 
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import {
+    createServiceWorkerControl,
+    createUnavailableServiceWorkerControl,
+} from '@suite/service-worker';
+import {
     createConnectLoggerFactory,
     createHydrateReduxStore,
     createReduxStore,
@@ -27,6 +31,20 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
     const history = createBrowserHistory();
     const platformEncryption = createWebauthnPlatformEncryption();
     const reloadApp = () => window.location.reload();
+    // Browsers leave `navigator.serviceWorker` out in insecure contexts.
+    const serviceWorkerControl =
+        'serviceWorker' in navigator
+            ? createServiceWorkerControl({
+                  serviceWorkerContainer: navigator.serviceWorker,
+                  waitForReadyRegistration: () => navigator.serviceWorker.ready,
+                  isPageControlled: () => navigator.serviceWorker.controller !== null,
+                  storageManager: navigator.storage,
+                  cacheStorage: window.caches,
+                  assetPrefix: process.env.ASSET_PREFIX ?? '',
+                  origin: window.location.origin,
+                  reloadPage: reloadApp,
+              })
+            : createUnavailableServiceWorkerControl();
 
     const getTransportsFactories = () => {
         // Pure DI: connect expects ready-made Transport instances, so the host constructs
@@ -70,6 +88,7 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
         thpHostName: getWebThpHostName(),
         getTransportsFactories,
         getTrezorConnect: () => TrezorConnect,
+        serviceWorkerControl,
     });
     const preloadStore = createPreloadStore({ db });
     const hydrateReduxStore = createHydrateReduxStore({

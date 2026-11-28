@@ -223,6 +223,7 @@
         { "path": "../../suite/regions" },
         { "path": "../../suite/router" },
         { "path": "../../suite/sentry" },
+        { "path": "../../suite/service-worker" },
         { "path": "../../suite/settings" },
         { "path": "../../suite/suite-lifecycle" },
         { "path": "../../suite/suite-sync" },

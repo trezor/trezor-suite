@@ -1,0 +1,38 @@
+{
+    "name": "@suite/service-worker",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "exports": {
+        ".": "./src/index.ts",
+        "./bundler": "./bundler/index.ts",
+        "./webpack": "./webpack/index.ts",
+        "./vite": "./vite/index.ts"
+    },
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "2.13.0",
+        "@trezor/components": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
+        "@trezor/product-components": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "@trezor/zod": "workspace:*",
+        "react": "19.3.0",
+        "serwist": "9.5.13"
+    },
+    "devDependencies": {
+        "@serwist/vite": "9.5.13",
+        "@serwist/webpack-plugin": "9.5.13",
+        "vite": "^8.3.3",
+        "webpack": "5.111.1"
+    }
+}

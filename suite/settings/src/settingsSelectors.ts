@@ -63,6 +63,13 @@ export const selectShowTranslationKeys = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.showTranslationKeys;
 export const selectIsAppsEmbeddingEnabled = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.isAppsEmbeddingEnabled;
+// Restoring settings replaces the whole debug object, so a save from an older version lacks these flags.
+export const selectIsServiceWorkerEnabled = (state: SuiteSettingsRootState) =>
+    state.suiteSettings.debug.isServiceWorkerEnabled ?? false;
+export const selectIsServiceWorkerUpdatePromptEnabled = (state: SuiteSettingsRootState) =>
+    state.suiteSettings.debug.isServiceWorkerUpdatePromptEnabled ?? false;
+export const selectIsServiceWorkerDevLogsEnabled = (state: SuiteSettingsRootState) =>
+    state.suiteSettings.debug.isServiceWorkerDevLogsEnabled ?? false;
 
 // Memoized, so that the returned object is stable for `useSelector`.
 export const selectDeviceAuthenticityCheckSettings =

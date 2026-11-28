@@ -42,6 +42,8 @@ export class PlaywrightProjectBuilder {
                         channel: 'chromium',
                         baseURL: process.env.BASE_URL || 'http://localhost:8000/',
                         target: PlaywrightTarget.Web,
+                        // `page.route` misses requests a service worker handles; a worker test can opt in.
+                        serviceWorkers: 'block',
                         // The CDP endpoint Lighthouse attaches to; see performance/lighthouseConfig.
                         ...(isLighthouseEnabled() && {
                             launchOptions: {

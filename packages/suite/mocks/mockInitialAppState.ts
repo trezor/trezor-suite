@@ -10,6 +10,7 @@ import { locksInitialState } from '@suite/locks';
 import { type State as ModalState } from '@suite/modal';
 import { type RecoveryState } from '@suite/recovery';
 import { type RouterState } from '@suite/router';
+import { serviceWorkerUpdateInitialState } from '@suite/service-worker';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { initialSuiteSyncDesktopState } from '@suite/suite-sync';
 import { type TorState, TorStatus } from '@suite/tor';
@@ -104,6 +105,7 @@ export const mockInitialAppState = {
     wallet: walletReducers(undefined, { type: '@@INIT' }),
     earn: { staking: stakingInitialState },
     desktopUpdate: desktopUpdateInitialState,
+    serviceWorkerUpdate: serviceWorkerUpdateInitialState,
     router: {
         loaded: true,
         pathname: '/suite-web/develop/web/' as RouterState['pathname'],

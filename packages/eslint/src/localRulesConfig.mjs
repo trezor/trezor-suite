@@ -99,6 +99,8 @@ export const localRulesConfig = [
                         // `@suite/intl` ships the translation catalogs as files next to its sources;
                         // e2e tests import a catalog by path to assert translated text.
                         /^@suite\/intl\/translations\/[\w-]+\.json$/,
+                        // Node-only entry points the web app's bundler configs load.
+                        /^@suite\/service-worker\/(?:bundler|webpack|vite)$/,
                     ],
                 },
             ],

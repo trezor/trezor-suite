@@ -113,6 +113,15 @@ export const prepareTokenDefinitionsReducer = createReducerWithExtraDeps(
                     };
                 }
             })
+            .addCase(tokenDefinitionsActions.setDefinitions, (state, action) => {
+                const { symbol, type, data } = action.payload;
+                const definition = state[symbol]?.[type];
+
+                if (definition) {
+                    definition.data = data;
+                    definition.error = false;
+                }
+            })
             .addMatcher(
                 action => action.type === extra.actionTypes.storageLoad,
                 extra.reducers.storageLoadTokenManagement,

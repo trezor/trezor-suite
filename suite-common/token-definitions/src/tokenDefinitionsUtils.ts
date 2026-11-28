@@ -115,7 +115,8 @@ export const buildTokenDefinitionsFromStorage = (
     return tokenDefinitions;
 };
 
-export const fetchTokenDefinitions = async (
+/** `undefined` for a network without a CoinGecko asset id, which has no definitions. */
+export const getTokenDefinitionsUrl = (
     symbol: NetworkSymbol,
     type: DefinitionType,
     structure: TokenStructureType,
@@ -123,14 +124,26 @@ export const fetchTokenDefinitions = async (
     const coingeckoId = getCoingeckoId(symbol);
 
     if (!coingeckoId) {
-        throw Error('Cannot fetch token definitions for network without CoinGecko asset id!');
+        return undefined;
     }
 
     const env = isCodesignBuild() ? 'stable' : 'develop';
 
-    const response = await fetch(
-        `${TOKEN_DEFINITIONS_PREFIX_URL}/${env}/${coingeckoId}.${structure}.${type}.${TOKEN_DEFINITIONS_SUFFIX_URL}`,
-    );
+    return `${TOKEN_DEFINITIONS_PREFIX_URL}/${env}/${coingeckoId}.${structure}.${type}.${TOKEN_DEFINITIONS_SUFFIX_URL}`;
+};
+
+export const fetchTokenDefinitions = async (
+    symbol: NetworkSymbol,
+    type: DefinitionType,
+    structure: TokenStructureType,
+) => {
+    const url = getTokenDefinitionsUrl(symbol, type, structure);
+
+    if (!url) {
+        throw Error('Cannot fetch token definitions for network without CoinGecko asset id!');
+    }
+
+    const response = await fetch(url);
 
     if (!response.ok) {
         throw Error(response.statusText);
