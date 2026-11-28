@@ -7,10 +7,12 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "browser": {
+        "./src/backend/backendConnectLimit": "./src/backend/backendConnectLimit.browser.ts",
         "./src/workers/workers": "./src/workers/workers.browser.ts"
     },
     "react-native": {
-        "./src/workers/workers": "./src/workers/workers.native.ts"
+        "./src/workers/workers": "./src/workers/workers.native.ts",
+        "./src/backend/backendConnectLimit": "./src/backend/backendConnectLimit.native.ts"
     },
     "scripts": {
         "depcheck": "yarn g:depcheck",
