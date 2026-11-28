@@ -16475,6 +16475,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     expo-linear-gradient: "npm:~58.0.3"
+    jotai: "npm:2.17.1"
     react: "npm:19.3.0"
     react-native: "npm:0.88.1"
     react-native-reanimated: "npm:4.7.1"

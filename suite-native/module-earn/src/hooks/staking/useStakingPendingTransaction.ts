@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CommonActions, useNavigation } from '@react-navigation/native';
+import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/native';
 
 import {
     type AccountsRootState,
@@ -29,6 +29,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { type EarnFormDraftPrefix, type StakingPendingModal } from '../../types';
+import { useEarnMissingTransaction } from '../earn/useEarnMissingTransaction';
 import { useEarnPendingTransactionSheet } from '../earn/useEarnPendingTransactionSheet';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>;
@@ -96,7 +97,7 @@ export const useStakingPendingTransaction = ({
 }: UseStakingPendingTransactionParams): UseStakingPendingTransactionResult => {
     const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
-
+    const isFocused = useIsFocused();
     const txid = pendingTransaction?.txid;
     const amountInBaseUnits = pendingTransaction?.amountInBaseUnits;
 
@@ -112,21 +113,29 @@ export const useStakingPendingTransaction = ({
 
     const isTransactionConfirmed = !!transaction && !isTransactionDataPending(transaction);
     const isTransactionFailed = transaction?.type === 'failed';
-    const isPending = !!txid && !isTransactionConfirmed;
+    const isAwaitingConfirmation = !!txid && !isTransactionConfirmed;
+    const isMissing = useEarnMissingTransaction({
+        txid,
+        submittedAt: pendingTransaction?.submittedAt,
+        hasTrackedTransaction: !!transaction,
+        isFocused,
+    });
+    const isPending = isAwaitingConfirmation && !isMissing;
     const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);
 
     useEffect(() => {
-        if (!isPending) return undefined;
+        if (!isAwaitingConfirmation) return undefined;
 
         const interval = setInterval(() => {
             dispatch(fetchAndUpdateAccountThunk({ accountKey }));
         }, pollIntervalMs);
 
         return () => clearInterval(interval);
-    }, [accountKey, dispatch, isPending, pollIntervalMs]);
+    }, [accountKey, dispatch, isAwaitingConfirmation, pollIntervalMs]);
 
     useEffect(() => {
-        if (!txid || amountInBaseUnits === undefined || !isTransactionConfirmed) return;
+        if (!txid || amountInBaseUnits === undefined || !isTransactionConfirmed || !isFocused)
+            return;
 
         navigation.dispatch(
             navigateToPushedTransactionAction({
@@ -139,6 +148,7 @@ export const useStakingPendingTransaction = ({
     }, [
         accountKey,
         amountInBaseUnits,
+        isFocused,
         isTransactionConfirmed,
         isTransactionFailed,
         navigation,
@@ -147,7 +157,11 @@ export const useStakingPendingTransaction = ({
     ]);
 
     const { pendingBottomSheetRef, isExploreDisabled, openInBlockchain } =
-        useEarnPendingTransactionSheet({ accountKey, isPending, pendingTxid: txid });
+        useEarnPendingTransactionSheet({
+            accountKey,
+            isPending: isPending && isFocused,
+            pendingTxid: txid,
+        });
 
     const pendingModal =
         isPending && pendingTransaction

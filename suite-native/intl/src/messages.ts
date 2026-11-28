@@ -2941,6 +2941,11 @@ export const messages = {
         feeEstimationFailed:
             "The network fee couldn't be estimated, so the transaction can't be prepared. Try again later.",
         stakingOperatedByProviders: 'Staking is operated by independent providers',
+        transactionNotConfirmedAlert: {
+            title: "We can't find your transaction",
+            description:
+                'It may have been dropped or may still be pending. Check your recent transactions before you try again.',
+        },
         portfolioTracker: {
             alert: {
                 title: 'Staking is disabled in the portfolio tracker',
