@@ -1,8 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
-import { connectPopupCallInnerThunk, selectConnectPopupCall } from '@suite-common/connect-popup';
+import {
+    connectPopupCallInnerThunk,
+    connectPopupFinishCallThunk,
+    selectConnectPopupCall,
+} from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Box, Button, Card, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -11,7 +13,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 export const ConnectErrorMessage = () => {
     const { dispatch } = useServices(injectDispatch);
-    const navigation = useNavigation();
     const popupCall = useSelector(selectConnectPopupCall);
     const selectedDevice = useSelector(selectSelectedDevice);
 
@@ -59,9 +60,8 @@ export const ConnectErrorMessage = () => {
             );
     };
     const onClose = () => {
-        if (navigation.canGoBack()) {
-            navigation.goBack();
-        }
+        // Only finishing the call answers its caller; just leaving the screen keeps it waiting.
+        dispatch(connectPopupFinishCallThunk());
     };
 
     return (

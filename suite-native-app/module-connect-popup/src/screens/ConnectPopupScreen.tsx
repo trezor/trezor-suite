@@ -50,9 +50,12 @@ export const ConnectPopupScreen = () => {
         if (popupCall?.state == 'deeplink-callback' && addressConfirmation) {
             dispatch(connectPopupActions.confirmAddresses(addressConfirmation));
             setAddressConfirmation(null);
-        }
-        // If the popup call is finished we can exit the screen
-        if (popupCall?.state == 'finished' && navigation.canGoBack()) {
+        } else if (
+            (popupCall?.state == 'finished' || popupCall?.state == 'deeplink-callback') &&
+            navigation.canGoBack()
+        ) {
+            // A finished call can move on to `deeplink-callback` before `finished` is rendered, e.g.
+            // when the popup closes on a call that is still awaited by its deeplink.
             setAddressConfirmation(null);
             navigation.goBack();
         }
