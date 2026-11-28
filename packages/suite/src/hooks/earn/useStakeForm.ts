@@ -129,6 +129,7 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
 
     const {
         isLoading: isComposing,
+        hasComposeError,
         composeRequest,
         composedLevels,
         onFeeLevelChange,
@@ -429,6 +430,8 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
         onFiatAmountChange,
         baseCurrencyCode,
         composedLevels,
+        hasComposeError,
+        retryCompose: composeRequest,
         isComposing,
         stakingLimits,
         setMax,

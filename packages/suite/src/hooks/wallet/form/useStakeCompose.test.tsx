@@ -5,7 +5,7 @@ import { IntlProvider } from 'react-intl';
 import { act } from '@testing-library/react';
 
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
-import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type ComposeActionContext, type StakeFormState } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -20,9 +20,11 @@ jest.mock('#src/actions/wallet/stakeActions', () => ({
 
 const composeTransactionMock = composeTransaction as jest.Mock;
 
-const composeActionContext = (): ComposeActionContext => ({
-    account: mockWalletAccount({ symbol: asNetworkSymbol('ada') }),
-    network: getNetwork(asNetworkSymbol('ada')),
+const composeActionContext = (
+    symbol: NetworkSymbol = asNetworkSymbol('ada'),
+): ComposeActionContext => ({
+    account: mockWalletAccount({ symbol }),
+    network: getNetwork(symbol),
     feeInfo: {
         blockHeight: 0,
         blockTime: 20,
@@ -33,21 +35,34 @@ const composeActionContext = (): ComposeActionContext => ({
     },
 });
 
-const renderStakeCompose = (setErrorSpy?: jest.Mock) => {
+type RenderStakeComposeParams = {
+    symbol?: NetworkSymbol;
+    amount?: string;
+    setErrorSpy?: jest.Mock;
+};
+
+const renderStakeCompose = ({
+    symbol = asNetworkSymbol('ada'),
+    amount = '1',
+    setErrorSpy,
+}: RenderStakeComposeParams = {}) => {
     const { services } = createTestCompositionRoot<void, MockSuiteState>({ preloadedState: {} });
 
     return renderHookWithStoreProvider(
         () => {
-            const methods = useForm<StakeFormState>();
-            const setError: typeof methods.setError = useCallback(
+            const methods = useForm<StakeFormState>({
+                defaultValues: { stakeType: 'unstake', outputs: [{ amount }] },
+            });
+            const { setError: setFormError } = methods;
+            const setError: typeof setFormError = useCallback(
                 (...args) => {
                     setErrorSpy?.(...args);
-                    methods.setError(...args);
+                    setFormError(...args);
                 },
-                [methods],
+                [setFormError],
             );
 
-            return useStakeCompose({ ...methods, setError, state: composeActionContext() });
+            return useStakeCompose({ ...methods, setError, state: composeActionContext(symbol) });
         },
         {
             services,
@@ -83,7 +98,52 @@ describe('useStakeCompose', () => {
         expect(composeTransactionMock).toHaveBeenCalled();
         expect(result.current.isLoading).toBe(false);
         expect(result.current.composedLevels).toBeUndefined();
+        expect(result.current.hasComposeError).toBe(true);
     });
+
+    it('clears the failure after a successful retry', async () => {
+        composeTransactionMock.mockReturnValue(() =>
+            Promise.resolve({
+                normal: {
+                    type: 'error',
+                    error: 'TR_STAKE_TX_PREPARATION_FAILED',
+                    errorMessage: { id: 'TR_STAKE_TX_PREPARATION_FAILED' },
+                },
+            }),
+        );
+        const { result } = renderStakeCompose();
+
+        await act(async () => {
+            await result.current.composeRequest();
+        });
+        expect(result.current.hasComposeError).toBe(true);
+
+        composeTransactionMock.mockReturnValue(() =>
+            Promise.resolve({ normal: { type: 'final' } }),
+        );
+        await act(async () => {
+            await result.current.composeRequest();
+        });
+
+        expect(result.current.hasComposeError).toBe(false);
+        expect(result.current.isLoading).toBe(false);
+        expect(result.current.composedLevels?.normal?.type).toBe('final');
+    });
+
+    it.each(['', '0.0'])(
+        'does not report an empty compose for an incomplete amount (%s)',
+        async amount => {
+            composeTransactionMock.mockReturnValue(() => Promise.resolve(undefined));
+            const { result } = renderStakeCompose({ symbol: asNetworkSymbol('eth'), amount });
+
+            await act(async () => {
+                await result.current.composeRequest();
+            });
+
+            expect(result.current.hasComposeError).toBe(false);
+            expect(result.current.isLoading).toBe(false);
+        },
+    );
 
     it('does not log the rejection message, which may embed the composed account payload', async () => {
         const utxoAddress = 'addr1q9utxo';
@@ -114,7 +174,7 @@ describe('useStakeCompose', () => {
         );
         const setErrorSpy = jest.fn();
 
-        const { result } = renderStakeCompose(setErrorSpy);
+        const { result } = renderStakeCompose({ setErrorSpy });
 
         await act(async () => {
             await result.current.composeRequest();

@@ -87,6 +87,7 @@ export const useChangeDelegateForm = ({
 
     const {
         isLoading: isComposing,
+        hasComposeError,
         composeRequest,
         composedLevels,
         onFeeLevelChange,
@@ -146,6 +147,8 @@ export const useChangeDelegateForm = ({
         register,
         baseCurrencyCode,
         composedLevels,
+        hasComposeError,
+        retryCompose: composeRequest,
         isComposing,
         selectedFee,
         clearForm,

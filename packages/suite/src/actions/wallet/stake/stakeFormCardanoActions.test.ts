@@ -684,8 +684,8 @@ describe('composeTransactionThunk', () => {
             'UTXO_NOT_FRAGMENTED_ENOUGH',
             {
                 type: 'error',
-                error: 'TR_GENERIC_ERROR_TITLE',
-                errorMessage: { id: 'TR_GENERIC_ERROR_TITLE' },
+                error: 'TR_STAKE_TX_PREPARATION_FAILED',
+                errorMessage: { id: 'TR_STAKE_TX_PREPARATION_FAILED' },
             },
         ],
     ])(
@@ -698,6 +698,27 @@ describe('composeTransactionThunk', () => {
             expect(levels?.normal).toEqual(expectedLevel);
         },
     );
+
+    it.each(['utxo', 'addresses'] as const)(
+        'offers a retry when change-delegate cannot prepare a plan without %s',
+        async field => {
+            const account = createStakeReadyAccount();
+            delete account[field];
+
+            const levels = await compose(account, { type: 'abstain' });
+
+            expect(levels?.normal).toMatchObject({
+                type: 'error',
+                error: 'TR_STAKE_TX_PREPARATION_FAILED',
+            });
+        },
+    );
+
+    it('keeps an unchanged live voting preference as an intentional empty plan', async () => {
+        const account = createCardanoAccount({ drepId: PREDEFINED_DREP_ID });
+
+        await expect(compose(account, { type: 'current' })).resolves.toBeUndefined();
+    });
 
     it('keeps the selected custom fee level in the error levels, so the form never waits for a missing level', async () => {
         mockComposeError('UTXO_BALANCE_INSUFFICIENT');

@@ -43,6 +43,8 @@ type WithdrawalContextValues = WithdrawalContextValuesBase & {
     unstakableBalance: string;
     /** A Cardano account with nothing spendable cannot pay the deregistration fee. */
     isCardanoBalanceEmpty: boolean;
+    hasComposeError: boolean;
+    retryCompose: () => Promise<void>;
     amountLimits: AmountLimitProps;
     approximatedInstantEthAmount?: string | null;
     setRatioAmount: (divisor: number) => void;
@@ -182,6 +184,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
 
     const {
         isLoading: isComposing,
+        hasComposeError,
         composeRequest,
         composedLevels,
         onFeeLevelChange,
@@ -301,24 +304,16 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
 
         if (composedTx?.type === 'final') {
-            try {
-                const result = await dispatch(
-                    signTransactionThunk({
-                        accountKey: account.key,
-                        formValues: values,
-                        transactionInfo: composedTx,
-                    }),
-                );
+            const result = await dispatch(
+                signTransactionThunk({
+                    accountKey: account.key,
+                    formValues: values,
+                    transactionInfo: composedTx,
+                }),
+            );
 
-                if (result?.success) {
-                    clearForm();
-                }
-            } catch (error) {
-                // The sign thunk reaches TrezorConnect, whose rejection messages may embed the
-                // composed account payload, and `signTx` is submitted fire-and-forget. Handling the
-                // rejection here keeps it from being reported verbatim by Sentry's global
-                // unhandled-rejection handler. Only the error name, never its message, is safe to log.
-                console.warn('Stake signing failed', error instanceof Error ? error.name : error);
+            if (result?.success) {
+                clearForm();
             }
         }
     }, [getValues, composedLevels, dispatch, account.key, clearForm, selectedFee]);
@@ -337,6 +332,8 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         onFiatAmountChange,
         baseCurrencyCode,
         composedLevels,
+        hasComposeError,
+        retryCompose: composeRequest,
         isComposing,
         selectedFee,
         clearForm,

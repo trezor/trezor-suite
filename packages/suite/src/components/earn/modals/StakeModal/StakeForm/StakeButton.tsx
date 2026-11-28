@@ -68,13 +68,15 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
     // there is no input for cardano. Form validation should always pass
     const isFormInputsValid = !isCardano
         ? formIsValid && hasValues
-        : !isCardanoStakingDisabled &&
-          isDrepValid &&
-          composedLevels?.[selectedFee]?.type === 'final';
+        : !isCardanoStakingDisabled && isDrepValid;
     // Cardano signs straight from onSubmit without handleSubmit, so isSubmitting stays false, and
     // the device lock is taken only after the transaction plan is composed.
     const isDisabled =
-        !isFormInputsValid || isSubmitting || isSigning || (isDeviceConnected && isLocked());
+        !isFormInputsValid ||
+        composedLevels?.[selectedFee]?.type !== 'final' ||
+        isSubmitting ||
+        isSigning ||
+        (isDeviceConnected && isLocked());
 
     const onStakeClick = () => {
         analytics.report({

@@ -22,6 +22,7 @@ import { Banner, Card, Column, Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { StakePreparationError } from '#src/components/earn/forms/StakePreparationError';
 import {
     BASE_VOTING_PREFERENCE_OPTIONS,
     VotingPreferenceCard,
@@ -66,6 +67,8 @@ export const StakeChangeDelegateModalLoaded = ({
         composedLevels,
         selectedFee,
         isComposing,
+        hasComposeError,
+        retryCompose,
         methods,
         handleSubmit,
         signTx,
@@ -221,6 +224,7 @@ export const StakeChangeDelegateModalLoaded = ({
                     }
                 >
                     <Column gap={16}>
+                        {hasComposeError && <StakePreparationError onRetry={retryCompose} />}
                         <CurrentVotingPreference account={account} />
                         <VotingPreferenceCard
                             account={account}

@@ -10,4 +10,6 @@ export type ChangeDelegateContextValues = UseFormReturn<ChangeDelegateFormState>
     BaseStakeContextValues & {
         methods: UseFormReturn<ChangeDelegateFormState>;
         formState: ReactHookFormState<StakeFormState>;
+        hasComposeError: boolean;
+        retryCompose: () => Promise<void>;
     };

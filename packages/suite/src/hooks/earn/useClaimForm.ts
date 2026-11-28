@@ -77,6 +77,7 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
 
     const {
         isLoading: isComposing,
+        hasComposeError,
         composeRequest,
         composedLevels,
         onFeeLevelChange,
@@ -170,6 +171,8 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
         register,
         baseCurrencyCode,
         composedLevels,
+        hasComposeError,
+        retryCompose: composeRequest,
         isComposing,
         selectedFee,
         clearForm,
