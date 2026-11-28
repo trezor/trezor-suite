@@ -58,6 +58,7 @@ import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoveryS
 import {
     type UpdateDiscoveryThunkDeps,
     type UpdateDiscoveryThunkState,
+    setDiscoveryLoadTimingThunk,
     updateDiscoveryThunk,
 } from './discoveryStateThunks';
 import { getErrorCode, hasDiscoveryEnded, shouldFetchAssetsAfterDiscovery } from './discoveryUtils';
@@ -308,6 +309,32 @@ type CompleteDiscoveryParams = {
     getState: () => DiscoveryReportingThunkState;
     dispatch: ThunkDispatch<DiscoveryReportingThunkState, DiscoveryReportingDeps, UnknownAction>;
     fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
+};
+
+type MeasureDiscoveryLoadParams<T> = Pick<CompleteDiscoveryParams, 'dispatch' | 'getState'> & {
+    path: DeviceUniquePath;
+    load: () => Promise<T>;
+};
+
+// Wraps only the call that loads the accounts, so the reported duration of the run leaves out
+// preparing the device before it and confirming an empty passphrase after it.
+const measureDiscoveryLoad = async <T>({
+    dispatch,
+    getState,
+    path,
+    load,
+}: MeasureDiscoveryLoadParams<T>): Promise<T> => {
+    const loadStartTimestamp = Date.now();
+    dispatch(setDiscoveryLoadTimingThunk({ path, timing: { loadStartTimestamp } }));
+
+    const result = await load();
+
+    // A run restarted on the same device meanwhile measures its own load.
+    if (selectDiscoveryByDevicePath(getState(), path)?.loadStartTimestamp === loadStartTimestamp) {
+        dispatch(setDiscoveryLoadTimingThunk({ path, timing: { loadEndTimestamp: Date.now() } }));
+    }
+
+    return result;
 };
 
 const completeDiscovery = (
@@ -638,15 +665,21 @@ export const runDiscoveryThunk = createThunk<
 
             // have Connect check the discovered account with persisted xpub hashes, but those are valid only for standard wallet
             const entropyCheckResult = selectEntropyCheckResultByDeviceId(getState(), device.id);
-            const result = await TrezorConnect.discoverAccounts({
-                device: {
-                    instance,
-                    state: { staticSessionId: deviceState.staticSessionId },
-                    useEmptyPassphrase: !isAddingHiddenWallet,
-                },
-                coins: accountsParam,
-                entropyCheckResult,
-                callId: discoveryCallId,
+            const result = await measureDiscoveryLoad({
+                dispatch,
+                getState,
+                path: device.path,
+                load: () =>
+                    TrezorConnect.discoverAccounts({
+                        device: {
+                            instance,
+                            state: { staticSessionId: deviceState.staticSessionId },
+                            useEmptyPassphrase: !isAddingHiddenWallet,
+                        },
+                        coins: accountsParam,
+                        entropyCheckResult,
+                        callId: discoveryCallId,
+                    }),
             });
 
             TrezorConnect.off(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);
@@ -948,16 +981,22 @@ export const runAdditionalDiscoveryThunk = createThunk<
         // sessionId in Connect's in-memory Device cache with the stale value stored in Redux state.
         // Connect's setState merge logic preserves the up-to-date sessionId when only staticSessionId is provided.
         // This mirrors the behaviour of runDiscoveryThunk and prevents repeated passphrase prompts.
-        const result = await TrezorConnect.discoverAccounts({
-            device: {
-                path: updatedDevice.path,
-                instance: updatedDevice.instance,
-                state: { staticSessionId },
-                useEmptyPassphrase: updatedDevice.useEmptyPassphrase,
-            },
-            coins: accountsParam,
-            entropyCheckResult,
-            callId,
+        const result = await measureDiscoveryLoad({
+            dispatch,
+            getState,
+            path: device.path,
+            load: () =>
+                TrezorConnect.discoverAccounts({
+                    device: {
+                        path: updatedDevice.path,
+                        instance: updatedDevice.instance,
+                        state: { staticSessionId },
+                        useEmptyPassphrase: updatedDevice.useEmptyPassphrase,
+                    },
+                    coins: accountsParam,
+                    entropyCheckResult,
+                    callId,
+                }),
         });
 
         TrezorConnect.off(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);

@@ -60,7 +60,7 @@ describe('discovery state thunks', () => {
         expect(analytics.report).toHaveBeenCalledTimes(1);
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'complete', trigger: 'device-connect' },
+            payload: { outcome: 'complete', trigger: 'device-connect', durationMs: 0 },
         });
     });
 
@@ -87,7 +87,12 @@ describe('discovery state thunks', () => {
         });
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'failed', trigger: 'device-connect', errorCode: 'Backend_Error' },
+            payload: {
+                outcome: 'failed',
+                trigger: 'device-connect',
+                durationMs: 0,
+                errorCode: 'Backend_Error',
+            },
         });
     });
 
@@ -115,7 +120,7 @@ describe('discovery state thunks', () => {
 
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'complete', trigger: 'device-connect' },
+            payload: { outcome: 'complete', trigger: 'device-connect', durationMs: 0 },
         });
     });
 
@@ -143,6 +148,7 @@ describe('discovery state thunks', () => {
             payload: {
                 outcome: 'failed',
                 trigger: 'device-connect',
+                durationMs: 0,
                 errorCode: 'Device_Disconnected',
             },
         });
@@ -165,7 +171,12 @@ describe('discovery state thunks', () => {
 
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'failed', trigger: 'retry', errorCode: 'Backend_Disconnected' },
+            payload: {
+                outcome: 'failed',
+                trigger: 'retry',
+                durationMs: 0,
+                errorCode: 'Backend_Disconnected',
+            },
         });
     });
 
@@ -179,7 +190,12 @@ describe('discovery state thunks', () => {
 
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'failed', trigger: 'retry', errorCode: 'Failure_UnknownCode' },
+            payload: {
+                outcome: 'failed',
+                trigger: 'retry',
+                durationMs: 0,
+                errorCode: 'Failure_UnknownCode',
+            },
         });
     });
 
@@ -196,7 +212,12 @@ describe('discovery state thunks', () => {
 
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'failed', trigger: 'retry', errorCode: 'Failure_UnknownCode' },
+            payload: {
+                outcome: 'failed',
+                trigger: 'retry',
+                durationMs: 0,
+                errorCode: 'Failure_UnknownCode',
+            },
         });
     });
 
@@ -215,7 +236,7 @@ describe('discovery state thunks', () => {
 
             expect(analytics.report).toHaveBeenCalledWith({
                 type: 'accounts/discovery-result',
-                payload: { outcome: 'cancelled', trigger: 'add-wallet' },
+                payload: { outcome: 'cancelled', trigger: 'add-wallet', durationMs: 0 },
             });
         },
     );
@@ -233,7 +254,12 @@ describe('discovery state thunks', () => {
 
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'failed', trigger: 'add-wallet', errorCode: 'Method_Cancel' },
+            payload: {
+                outcome: 'failed',
+                trigger: 'add-wallet',
+                durationMs: 0,
+                errorCode: 'Method_Cancel',
+            },
         });
     });
 
@@ -249,7 +275,7 @@ describe('discovery state thunks', () => {
         expect(analytics.report).toHaveBeenCalledTimes(1);
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'passphrase-mismatch', trigger: 'add-wallet' },
+            payload: { outcome: 'passphrase-mismatch', trigger: 'add-wallet', durationMs: 0 },
         });
     });
 
@@ -269,11 +295,16 @@ describe('discovery state thunks', () => {
         expect(analytics.report).toHaveBeenCalledTimes(2);
         expect(analytics.report).toHaveBeenNthCalledWith(1, {
             type: 'accounts/discovery-result',
-            payload: { outcome: 'complete', trigger: 'device-connect' },
+            payload: { outcome: 'complete', trigger: 'device-connect', durationMs: 0 },
         });
         expect(analytics.report).toHaveBeenNthCalledWith(2, {
             type: 'accounts/discovery-result',
-            payload: { outcome: 'failed', trigger: 'coin-toggle', errorCode: 'Transport_Missing' },
+            payload: {
+                outcome: 'failed',
+                trigger: 'coin-toggle',
+                durationMs: 0,
+                errorCode: 'Transport_Missing',
+            },
         });
     });
 
@@ -294,7 +325,7 @@ describe('discovery state thunks', () => {
         expect(analytics.report).toHaveBeenCalledTimes(1);
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'complete', trigger: 'add-wallet' },
+            payload: { outcome: 'complete', trigger: 'add-wallet', durationMs: 0 },
         });
     });
 
@@ -307,7 +338,7 @@ describe('discovery state thunks', () => {
         expect(analytics.report).toHaveBeenCalledTimes(1);
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'cancelled', trigger: 'device-switch' },
+            payload: { outcome: 'cancelled', trigger: 'device-switch', durationMs: 0 },
         });
     });
 
@@ -321,7 +352,7 @@ describe('discovery state thunks', () => {
         expect(analytics.report).toHaveBeenCalledTimes(1);
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'complete', trigger: 'device-connect' },
+            payload: { outcome: 'complete', trigger: 'device-connect', durationMs: 0 },
         });
     });
 
@@ -341,7 +372,7 @@ describe('discovery state thunks', () => {
         expect(analytics.report).toHaveBeenCalledTimes(1);
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: status.status, trigger: 'add-wallet' },
+            payload: { outcome: status.status, trigger: 'add-wallet', durationMs: 0 },
         });
     });
 
