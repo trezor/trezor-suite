@@ -1,0 +1,18 @@
+appId: io.trezor.suite.develop
+name: Passphrase wallet ("a") on Safe 5 — BTC
+tags:
+  - suite-native
+  - device
+  - passphrase
+---
+- runFlow: _common-start.yaml
+- scrollUntilVisible:
+    element:
+      id: "@coin-enabling/toggle-btc"
+    direction: DOWN
+    timeout: 10000
+    visibilityPercentage: 60
+- tapOn:
+    id: "@coin-enabling/toggle-btc"
+    retryTapIfNoChange: true
+- runFlow: _common-end.yaml

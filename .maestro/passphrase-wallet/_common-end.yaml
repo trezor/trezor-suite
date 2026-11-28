@@ -1,0 +1,120 @@
+appId: io.trezor.suite.develop
+name: (subflow) passphrase — save coins, discover, open passphrase wallet
+env:
+  PASSPHRASE: "a"
+---
+# Save the coin selection.
+- tapOn:
+    id: "@coin-enabling/button-save"
+    retryTapIfNoChange: true
+
+# Wait for the standard (no-passphrase) wallet to connect and discover.
+- extendedWaitUntil:
+    visible:
+      id: "@screen/Home"
+    timeout: 60000
+- extendedWaitUntil:
+    visible:
+      id: "@home/portfolio/graph"
+    timeout: 300000
+
+# Open the device manager and start a new passphrase wallet. The "add passphrase"
+# button only appears once the standard wallet's discovery has finished, so wait
+# for it rather than tapping immediately.
+- tapOn:
+    id: "@device-manager/device-switch"
+    retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible:
+      id: "@device-manager/passphrase/add"
+    timeout: 300000
+- tapOn:
+    id: "@device-manager/passphrase/add"
+    retryTapIfNoChange: true
+
+# Enter the passphrase.
+- extendedWaitUntil:
+    visible:
+      id: "@screen/PassphraseForm"
+    timeout: 20000
+- tapOn:
+    id: "@passphrase/passphraseInput"
+- inputText: ${PASSPHRASE}
+- tapOn:
+    id: "@passphrase/confirmButton"
+    retryTapIfNoChange: true
+
+# Confirm the passphrase on the emulated Trezor (handles repeated prompts).
+- extendedWaitUntil:
+    visible:
+      id: "@screen/PassphraseConfirmOnTrezor"
+    timeout: 30000
+- runScript: confirmPassphraseOnDevice.js
+
+# Passphrase wallet dashboard is up.
+- extendedWaitUntil:
+    visible:
+      id: "@screen/Home"
+    timeout: 300000
+
+# Open the assets tab and the first account of the passphrase wallet.
+- tapOn:
+    id: "@tabBar/AccountsStack"
+    retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible:
+      id: "@screen/Accounts"
+    timeout: 30000
+- extendedWaitUntil:
+    visible:
+      id: "@accountList/item/title"
+    timeout: 30000
+- tapOn:
+    id: "@accountList/item/title"
+    index: 0
+    retryTapIfNoChange: true
+
+# Token-bearing coins land on AccountAssets first; drill into AccountDetail.
+- runFlow:
+    when:
+      visible:
+        id: "@screen/AccountAssets"
+    commands:
+      - tapOn:
+          id: "@accountList/item/title"
+          index: 0
+          retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible:
+      id: "@screen/AccountDetail"
+    timeout: 30000
+
+# Scroll the transaction list toward ~the 15th transaction (we do NOT open it),
+# loading more history when the footer button appears. Measured endpoint.
+# Opening a transaction detail is intentionally avoided — a U+0 in the detail
+# content crashes Maestro's view-hierarchy dump; scrolling the list is unaffected.
+- extendedWaitUntil:
+    visible:
+      id: "@transactions/item/.*"
+    timeout: 30000
+- repeat:
+    times: 3
+    commands:
+      - swipe:
+          start: "50%,80%"
+          end: "50%,35%"
+          duration: 400
+      - runFlow:
+          when:
+            visible:
+              id: "@transactions/list/more-button"
+          commands:
+            - tapOn:
+                id: "@transactions/list/more-button"
+                retryTapIfNoChange: true
+            - waitForAnimationToEnd
+
+# Measured endpoint: the whole passphrase flow up to the scrolled transaction list.
+# Persisting the wallet for the warm-reload measurement (back to Home, disconnect,
+# keep view-only) lives in _persist.yaml — kept OUT of this flow so the measured
+# scenario contains no app restart/disconnect (which crash Flashlight's profiler).
