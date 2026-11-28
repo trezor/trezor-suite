@@ -4,6 +4,7 @@ import { isWhitelistedHost } from '@trezor/utils';
 
 import { electronOrigin, localhostDomains } from '../config';
 import { hasSwitch } from './process-switches';
+import { RENDERER_ORIGIN, isRendererUrl } from './renderer-protocol';
 
 /**
  * Create an electron Renderer interceptor with API to add/remove custom handlers. In the Renderer process,
@@ -20,7 +21,8 @@ export const createElectronSessionInterceptor = (): RequestInterceptor => {
     // URLs that should work even in offline mode (e.g., localhost, test servers)
     const offlineModeAllowedUrls = [
         'http://localhost:8000', // Development server (app itself)
-        'file://', // App's own local resources
+        `${RENDERER_ORIGIN}/`, // App's own resources, served by the renderer protocol
+        'file://', // The legacy-origin-storage export page
         'devtools://', // Chrome DevTools
         'chrome-extension://', // Browser extensions
         'data:', // Inline data URLs
@@ -59,9 +61,13 @@ export const createElectronSessionInterceptor = (): RequestInterceptor => {
         details: Electron.OnBeforeSendHeadersListenerDetails,
         callback: (response: Electron.BeforeSendResponse) => void,
     ) => {
-        // HTTP requests of the packaged `file:` renderer carry no `origin`. Add it for localhost requests.
+        /**
+         * trezord-go answers only to the origins on its list,
+         * and the origin of the packaged renderer is not one of them.
+         * Replace it for localhost requests.
+         */
         if (
-            details.frame?.url.startsWith('file:') &&
+            isRendererUrl(details.frame?.url) &&
             isWhitelistedHost(new URL(details.url).hostname, localhostDomains)
         ) {
             callback({ requestHeaders: { ...details.requestHeaders, Origin: electronOrigin } });

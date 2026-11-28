@@ -25,12 +25,12 @@ jest.mock('@trezor/ipc-proxy', () => ({
 
 const createIpcEvent = (): IpcMainEvent =>
     ({
-        senderFrame: { url: 'file:///build/index.html', isDestroyed: () => false },
+        senderFrame: { url: 'suite://app/index.html', isDestroyed: () => false },
     }) as unknown as IpcMainEvent;
 
 const createIpcInvokeEvent = (): IpcMainInvokeEvent =>
     ({
-        senderFrame: { url: 'file:///build/index.html', isDestroyed: () => false },
+        senderFrame: { url: 'suite://app/index.html', isDestroyed: () => false },
     }) as unknown as IpcMainInvokeEvent;
 
 describe('ipcMain validation wrapper', () => {
@@ -62,7 +62,10 @@ describe('ipcMain validation wrapper', () => {
             wrappedListener(ipcEvent, 'dark');
 
             expect(isSenderFrameDestroyed).toHaveBeenCalledWith({ ipcEvent });
-            expect(validateIpcMessage).toHaveBeenCalledWith({ ipcEvent });
+            expect(validateIpcMessage).toHaveBeenCalledWith({
+                ipcEvent,
+                rendererUrl: 'suite://app/index.html',
+            });
             expect(originalListener).toHaveBeenCalledWith(ipcEvent, 'dark');
         },
     );
@@ -87,7 +90,10 @@ describe('ipcMain validation wrapper', () => {
 
             await expect(wrappedListener(ipcEvent)).resolves.toBe('result');
             expect(isSenderFrameDestroyed).toHaveBeenCalledWith({ ipcEvent });
-            expect(validateIpcMessage).toHaveBeenCalledWith({ ipcEvent });
+            expect(validateIpcMessage).toHaveBeenCalledWith({
+                ipcEvent,
+                rendererUrl: 'suite://app/index.html',
+            });
             expect(originalListener).toHaveBeenCalledWith(ipcEvent);
         },
     );

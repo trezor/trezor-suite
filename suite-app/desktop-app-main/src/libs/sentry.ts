@@ -12,6 +12,8 @@ import { TorStatus } from '@suite/tor-types';
 import type { Store } from './store';
 import type { MainThreadEmitter } from '../modules';
 import { hasSwitch } from './process-switches';
+import { isRendererUrl } from './renderer-protocol';
+import { strictUrlSchema } from './strict-url';
 
 interface InitSentryParams {
     mainThreadEmitter: MainThreadEmitter;
@@ -19,11 +21,21 @@ interface InitSentryParams {
 }
 
 /**
- * @sentry/electron attaches each renderer's last URL to Electron breadcrumbs and renderer crash reports.
- * Suite's own window is normalized to `app:///`; any other URL is a page the in-app browser loaded,
- * which can be a URL the user typed or one carrying an address or an OAuth code.
+ * A page of the app's own files: the SDK replaces the `file://` path of the app with `app:///`
+ * before it records the URL.
  */
-const isSuiteRendererUrl = (url: unknown) => typeof url === 'string' && url.startsWith('app:///');
+const normalizedAppFileUrlSchema = strictUrlSchema.refine(
+    url => url.protocol === 'app:' && url.host === '',
+);
+
+/**
+ * @sentry/electron attaches each renderer's last URL to Electron breadcrumbs and renderer crash reports.
+ * Suite's own window loads from the renderer origin, and the SDK normalizes its `file://` pages
+ * (the legacy-origin-storage export page) to `app:///`; any other URL is a page the in-app browser
+ * loaded, which can be a URL the user typed or one carrying an address or an OAuth code.
+ */
+const isSuiteRendererUrl = (url: unknown) =>
+    isRendererUrl(url) || normalizedAppFileUrlSchema.safeParse(url).success;
 
 const ELECTRON_MAIN_SENTRY_CONFIG = {
     ...SENTRY_CONFIG,
