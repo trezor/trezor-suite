@@ -30,8 +30,9 @@ let cborDecodeLoading: Promise<void> | undefined;
 
 const loadCborDecode = async () => {
     try {
-        const { decode: loadedCborDecode } = await import('cbor');
-        cborDecode = loadedCborDecode;
+        // cbor is CommonJS, so native Node ESM exposes `decode` only on the default export.
+        const { default: cbor } = await import('cbor');
+        cborDecode = cbor.decode;
     } catch {
         // Not cached on failure, so the next legacy address downloads it again.
         cborDecodeLoading = undefined;
