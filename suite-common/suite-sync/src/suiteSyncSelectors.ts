@@ -96,3 +96,24 @@ export const selectHasDeviceSuiteSyncError = (
 
     return state.suiteSync.suiteSyncErrors[deviceStaticSessionId] !== undefined;
 };
+
+/**
+ * Whether a recorded error stops Suite Sync from being turned on automatically for the wallet.
+ * A disconnected device is transient, so that error stops blocking once the device is connected again.
+ */
+export const selectIsSuiteSyncBlockedByError = (
+    state: WithSuiteSyncAndDeviceState,
+    deviceStaticSessionId: StaticSessionId,
+): boolean => {
+    const error = state.suiteSync.suiteSyncErrors[deviceStaticSessionId];
+
+    if (error === undefined) {
+        return false;
+    }
+
+    if (error.type !== 'DeviceNotConnectedError') {
+        return true;
+    }
+
+    return selectDeviceByStaticSessionId(state, deviceStaticSessionId)?.connected !== true;
+};
