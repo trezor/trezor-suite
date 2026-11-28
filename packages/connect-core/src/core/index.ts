@@ -677,10 +677,16 @@ const abortRunningCall = (context: CoreContext, error: TrezorError, callId?: str
             } else {
                 const success = uiPromises.resolve({ type: DEVICE.DISCONNECT, payload: undefined });
                 if (!success) {
-                    callMethods.forEach(m => {
-                        sendCoreMessage(createResponseMessage(m.responseID, false, { error }));
-                    });
-                    callMethods.splice(0, callMethods.length);
+                    // A method running on another device, e.g. the same Trezor connected over
+                    // both USB and Bluetooth, responds once its interrupted run releases that
+                    // device. Responding here first lets the caller start its next call while
+                    // the device is still busy, which then fails with Device_CallInProgress.
+                    // sendCoreMessage removes each responded method from callMethods.
+                    callMethods
+                        .filter(m => !m.device?.isUsedHere())
+                        .forEach(m => {
+                            sendCoreMessage(createResponseMessage(m.responseID, false, { error }));
+                        });
                 }
             }
         });
