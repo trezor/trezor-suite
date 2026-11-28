@@ -77,10 +77,13 @@ describe('coinselectUtils', () => {
         } as const;
         const OUT = { script: { length: 25 } };
 
-        expect(getFee([], [], 10, { feePolicy: 'zcash' })).toBe(10000);
-        expect(getFee([IN], [OUT], 10, { feePolicy: 'zcash' })).toBe(10000);
-        expect(getFee([IN, IN], [OUT], 10, { feePolicy: 'zcash' })).toBe(10000);
-        expect(getFee([IN], [OUT, OUT, OUT], 10, { feePolicy: 'zcash' })).toBe(15000);
+        // 1000 zat per logical action, at least 2 actions
+        expect(getFee([], [], 1, { feePolicy: 'zcash' })).toBe(2000);
+        expect(getFee([IN], [OUT], 1, { feePolicy: 'zcash' })).toBe(2000);
+        expect(getFee([IN, IN], [OUT], 1, { feePolicy: 'zcash' })).toBe(2000);
+        expect(getFee([IN, IN, IN], [OUT], 1, { feePolicy: 'zcash' })).toBe(3000);
+        expect(getFee([IN], [OUT, OUT, OUT], 1, { feePolicy: 'zcash' })).toBe(3000);
+        expect(getFee([IN], [OUT], 10, { feePolicy: 'zcash' })).toBe(2000);
         expect(getFee([IN], [OUT], 60, { feePolicy: 'zcash' })).toBe(11520); // fee per byte is higher
     });
 
