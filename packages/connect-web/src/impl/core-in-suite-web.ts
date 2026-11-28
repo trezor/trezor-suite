@@ -20,7 +20,11 @@ import { getSuiteWebUrl } from './getSuiteWebUrl';
 import { BootstrapError } from '../bootstrap/bootstrap-errors';
 import { type Popup } from '../popup/abstract';
 import { WebPopup } from '../popup/web';
-import { WebExtensionPopup, canSuiteWebReplyToExtension } from '../popup/webextension';
+import {
+    WebExtensionPopup,
+    canSuiteWebReplyToExtension,
+    openSuiteWebErrorTab,
+} from '../popup/webextension';
 
 /**
  * Base class for CoreInPopup methods for TrezorConnect factory.
@@ -28,6 +32,7 @@ import { WebExtensionPopup, canSuiteWebReplyToExtension } from '../popup/webexte
  */
 export class CoreInSuiteWeb implements ConnectImpl {
     private _popupManager?: Popup;
+    private isUnreachableFromExtension = false;
 
     protected logger: Log;
 
@@ -76,6 +81,8 @@ export class CoreInSuiteWeb implements ConnectImpl {
                     if (!canSuiteWebReplyToExtension()) {
                         // Rejecting keeps TrezorConnectDynamic on Suite desktop, so the caller gets
                         // Desktop_ConnectionMissing instead of a Suite Web tab that never answers.
+                        this.isUnreachableFromExtension = true;
+
                         return Promise.reject(
                             ERRORS.TypedError('Handshake_Error', BootstrapError.ENV_NOT_SUPPORTED),
                         );
@@ -107,6 +114,14 @@ export class CoreInSuiteWeb implements ConnectImpl {
         }
 
         return 'https://suite.trezor.io/web/connect-popup';
+    }
+
+    public onCallFailed(error: ERRORS.SerializedError) {
+        // Suite desktop is the only option here, so tell the user to start it. The tab opens
+        // only for a failed call, because init also runs at extension start.
+        if (this.isUnreachableFromExtension && error.code === 'Desktop_ConnectionMissing') {
+            openSuiteWebErrorTab(this.getSuiteUrl(), BootstrapError.ENV_NOT_SUPPORTED);
+        }
     }
 
     /**

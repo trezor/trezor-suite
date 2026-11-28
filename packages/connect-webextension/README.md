@@ -21,7 +21,7 @@ The flow is:
 
 ### Firefox
 
-Firefox does not support `externally_connectable` for web pages, so Suite Web cannot answer your extension there. In Firefox, Connect uses only Trezor Suite desktop. When Suite desktop is not running, calls fail with `Desktop_ConnectionMissing`, so ask the user to start it.
+Firefox does not support `externally_connectable` for web pages, so Suite Web cannot answer your extension there. In Firefox, Connect uses only Trezor Suite desktop. When Suite desktop is not running, each call opens a Suite Web tab that tells the user to start Suite desktop, and the call fails with `Desktop_ConnectionMissing`. With `coreMode: 'suite-web'`, `TrezorConnect.init` fails with `Handshake_Error`.
 
 ## Setup
 
