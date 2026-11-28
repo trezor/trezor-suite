@@ -21,7 +21,9 @@
  */
 export const getMutex = () => {
     const DEFAULT_ID = Symbol();
-    const locks: Record<PropertyKey, Promise<void>> = {};
+    // null prototype so that inherited keys ('toString', '__proto__', ...) used as
+    // lockId don't read as an always-pending lock and hang the caller forever
+    const locks: Record<PropertyKey, Promise<void>> = Object.create(null);
 
     return async (lockId: PropertyKey = DEFAULT_ID) => {
         while (locks[lockId]) {
