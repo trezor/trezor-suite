@@ -42,6 +42,8 @@ const sendFromIframe = (data: Record<string, unknown>) => {
         new MessageEvent('message', {
             data: { channel: iframeChannel, ...data },
             origin: SUITE_ORIGIN,
+            // The channel accepts only messages from the iframe's window.
+            source: iframeWindow as unknown as Window,
         }),
     );
 };
