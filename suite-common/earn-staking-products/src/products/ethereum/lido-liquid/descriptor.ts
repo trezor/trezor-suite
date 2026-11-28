@@ -25,6 +25,7 @@ export const createEthereumLidoLiquidProductDescriptor = ({
     return stakingProductDescriptorSchema.parse({
         id: getStakingProductId(product),
         ...product,
+        name: 'Lido Liquid Staking',
         operations: ['stake', 'unstake', 'withdraw'],
         exclusivity: 'none',
         rateKind: 'apr',
