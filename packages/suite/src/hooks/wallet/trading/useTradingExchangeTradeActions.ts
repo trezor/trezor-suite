@@ -12,14 +12,17 @@ import {
 } from '@suite-common/message-system';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    type TradingBridgeSpeed,
     type TradingSignAndPushSendFormTransactionProps,
     exchangeThunks,
     isTradingError,
     selectTradingExchangeActiveTrade,
+    selectTradingExchangeQuotesRequest,
     selectTradingExchangeSelectedQuote,
     selectTradingExchangeSelectedQuoteTimestamp,
     selectTradingIsSlip24Allowed,
     tradingExchangeActions,
+    withQuotesRequestBridgeSpeed,
 } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
@@ -40,6 +43,7 @@ export const useTradingExchangeTradeActions = () => {
 
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const selectedQuoteTimestamp = useSelector(selectTradingExchangeSelectedQuoteTimestamp);
+    const quotesRequest = useSelector(selectTradingExchangeQuotesRequest);
     const trade = useSelector(selectTradingExchangeActiveTrade);
 
     const { account: formAccount } = useTradingFormAccount('exchange');
@@ -258,8 +262,31 @@ export const useTradingExchangeTradeActions = () => {
         return isConfirmed;
     };
 
+    const changeBridgeSpeed = async (bridgeSpeed: TradingBridgeSpeed) => {
+        if (!quotesRequest) {
+            return false;
+        }
+
+        dispatch(tradingExchangeActions.setIsLoading(true));
+        dispatch(
+            tradingExchangeActions.saveQuoteRequest(
+                withQuotesRequestBridgeSpeed({ request: quotesRequest, bridgeSpeed }),
+            ),
+        );
+
+        const isConfirmed = await refreshSelectedQuote();
+
+        if (!isConfirmed) {
+            dispatch(tradingExchangeActions.saveQuoteRequest(quotesRequest));
+        }
+        dispatch(tradingExchangeActions.setIsLoading(false));
+
+        return isConfirmed;
+    };
+
     return {
         account,
+        changeBridgeSpeed,
         confirmTrade,
         refreshSelectedQuote,
         sendTransaction,

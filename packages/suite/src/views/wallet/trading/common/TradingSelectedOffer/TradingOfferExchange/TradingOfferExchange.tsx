@@ -218,12 +218,13 @@ export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) =
                     label={amountLabels.receiveLabel}
                     currency={selectedTrade.receive}
                     amount={receiveAmount}
-                    isAmountLoading={isSimulationLoading}
+                    isAmountLoading={isLoading || isSimulationLoading}
                     receiveAddress={selectedTrade.receiveAddress}
                     isReceive
                 />
                 {sendAccount && (
                     <TradingOfferExchangeDetails
+                        isLoading={isLoading}
                         account={sendAccount}
                         exchangeQuote={selectedTrade}
                         receiveAmount={receiveAmount}

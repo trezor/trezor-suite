@@ -1,11 +1,13 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type FeeInfo, type FormState } from '@suite-common/wallet-types';
-import { InfoItem, Text, TextButton, Tooltip } from '@trezor/components';
+import { InfoItem, Skeleton, Text, TextButton, Tooltip } from '@trezor/components';
 import { PencilSimpleIcon } from '@trezor/icons';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
@@ -14,6 +16,7 @@ import { type getFeeTooltipTextId } from '#src/components/wallet/Fees/feeUtils';
 import { TradingExchangeNetworkFeeModal } from '#src/views/wallet/trading/exchange/TradingExchangeNetworkFeeModal/TradingExchangeNetworkFeeModal';
 
 export type TradingNetworkFeeInfoItemProps = {
+    isLoading?: boolean;
     amount: string;
     symbol: NetworkSymbol;
     tooltipTextId: ReturnType<typeof getFeeTooltipTextId>;
@@ -27,12 +30,14 @@ export type TradingNetworkFeeInfoItemProps = {
 };
 
 export const TradingNetworkFeeInfoItem = ({
+    isLoading = false,
     amount,
     symbol,
     tooltipTextId,
     edit,
 }: TradingNetworkFeeInfoItemProps) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const shouldAnimateSkeleton = useSelector(selectShouldAnimateLoadingSkeleton);
 
     if (isEditModalOpen && !edit) {
         setIsEditModalOpen(false);
@@ -59,7 +64,8 @@ export const TradingNetworkFeeInfoItem = ({
                 }
                 direction="row"
             >
-                {edit ? (
+                {isLoading && <Skeleton width={60} height={16} animate={shouldAnimateSkeleton} />}
+                {!isLoading && edit && (
                     <TextButton
                         onClick={() => setIsEditModalOpen(true)}
                         size="small"
@@ -76,7 +82,8 @@ export const TradingNetworkFeeInfoItem = ({
                             showApproximationIndicator
                         />
                     </TextButton>
-                ) : (
+                )}
+                {!isLoading && !edit && (
                     <Tooltip
                         content={
                             <FormattedCryptoAmount

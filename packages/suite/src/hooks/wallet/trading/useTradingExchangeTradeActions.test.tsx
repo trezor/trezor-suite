@@ -1,4 +1,4 @@
-import type { CryptoId, ExchangeTrade } from 'invity-api';
+import type { CryptoId, ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
 
 import { locksInitialState } from '@suite/locks';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -14,6 +14,7 @@ import {
     exchangeInitialState,
     tradingExchangeActions,
     initialState as tradingInitialState,
+    withQuotesRequestBridgeSpeed,
 } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -122,6 +123,7 @@ const SELECTED_QUOTE: ExchangeTrade = {
 type StateOverrides = {
     selectedQuote?: ExchangeTrade | undefined;
     selectedQuoteTimestamp?: number;
+    quotesRequest?: ExchangeTradeQuoteRequest;
     accountKey?: Account['key'] | undefined;
     accounts?: Account[];
     selectedDevice?: TrezorDevice;
@@ -135,6 +137,7 @@ const buildState = (overrides: StateOverrides = {}) => {
     const overridesForExchange = {
         selectedQuote,
         selectedQuoteTimestamp: overrides.selectedQuoteTimestamp,
+        quotesRequest: overrides.quotesRequest,
         tradingAccountKey: accountKey,
     };
 
@@ -382,6 +385,74 @@ describe('useTradingExchangeTradeActions', () => {
 
             expect(isRefreshed).toBe(false);
             expect(mockFetchSelectedProviderQuoteThunk).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('changeBridgeSpeed', () => {
+        const BRIDGE_QUOTE: ExchangeTrade = {
+            ...SELECTED_QUOTE,
+            exchange: 'circlecctp',
+            isDex: true,
+            receiveAddress: '0xReceiveAddress',
+        };
+        const QUOTES_REQUEST: ExchangeTradeQuoteRequest = {
+            send: ETHEREUM_CRYPTO_ID,
+            receive: BITCOIN_CRYPTO_ID,
+            sendStringAmount: '1',
+        };
+
+        it('re-quotes with the speed in the request and keeps the loading flag around it', async () => {
+            const { getActions, result } = renderActions({
+                selectedQuote: BRIDGE_QUOTE,
+                quotesRequest: QUOTES_REQUEST,
+            });
+
+            const isChanged = await result.current.changeBridgeSpeed('fast');
+
+            expect(isChanged).toBe(true);
+            expect(mockFetchSelectedProviderQuoteThunk).toHaveBeenCalledTimes(1);
+            const actions = getActions();
+            expect(actions.slice(0, 2)).toEqual([
+                tradingExchangeActions.setIsLoading(true),
+                tradingExchangeActions.saveQuoteRequest(
+                    withQuotesRequestBridgeSpeed({ request: QUOTES_REQUEST, bridgeSpeed: 'fast' }),
+                ),
+            ]);
+            expect(actions).not.toContainEqual(
+                tradingExchangeActions.saveQuoteRequest(QUOTES_REQUEST),
+            );
+            expect(actions.at(-1)).toEqual(tradingExchangeActions.setIsLoading(false));
+        });
+
+        it('restores the original request when the confirmation fails', async () => {
+            mockConfirmTradeThunk.mockImplementationOnce((args: unknown) =>
+                Object.assign(() => ({ unwrap: () => Promise.resolve(undefined) }), { args }),
+            );
+            const { getActions, result } = renderActions({
+                selectedQuote: BRIDGE_QUOTE,
+                quotesRequest: QUOTES_REQUEST,
+            });
+
+            const isChanged = await result.current.changeBridgeSpeed('fast');
+
+            expect(isChanged).toBe(false);
+            const requestActions = getActions().filter(
+                action => action.type === tradingExchangeActions.saveQuoteRequest.type,
+            );
+            expect(requestActions.at(-1)).toEqual(
+                tradingExchangeActions.saveQuoteRequest(QUOTES_REQUEST),
+            );
+            expect(getActions().at(-1)).toEqual(tradingExchangeActions.setIsLoading(false));
+        });
+
+        it('does nothing without a stored quotes request', async () => {
+            const { getActions, result } = renderActions({ selectedQuote: BRIDGE_QUOTE });
+
+            const isChanged = await result.current.changeBridgeSpeed('fast');
+
+            expect(isChanged).toBe(false);
+            expect(mockFetchSelectedProviderQuoteThunk).not.toHaveBeenCalled();
+            expect(getActions()).not.toContainEqual(tradingExchangeActions.setIsLoading(true));
         });
     });
 
