@@ -28,6 +28,10 @@ export type { TransactionNotificationType } from './components/Notifications/not
 export { TransactionNotification } from './components/Notifications/TransactionNotification';
 export type { TransactionNotificationProps } from './components/Notifications/TransactionNotification';
 export { NumberInput } from './components/NumberInput/NumberInput';
+export {
+    NumberInputBase,
+    type NumberInputBaseProps,
+} from './components/NumberInput/NumberInputBase';
 export { PasswordStrengthIndicator } from './components/PasswordStrengthIndicator/PasswordStrengthIndicator';
 export {
     PendingTransactionInfo,
