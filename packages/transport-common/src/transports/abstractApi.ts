@@ -199,11 +199,17 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     return error({ code: releaseIntentResponse.error.code });
                 }
 
-                await this.api.closeDevice(releaseIntentResponse.payload.path, { channel: 'read' });
-
-                await this.sessionsClient.releaseDone({
-                    path: releaseIntentResponse.payload.path,
-                });
+                try {
+                    await this.api.closeDevice(releaseIntentResponse.payload.path, {
+                        channel: 'read',
+                    });
+                } finally {
+                    // always reached, even when closeDevice failed, so the lock
+                    // taken by releaseIntent is freed
+                    await this.sessionsClient.releaseDone({
+                        path: releaseIntentResponse.payload.path,
+                    });
+                }
 
                 return success(null);
             },
@@ -213,14 +219,23 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
     public releaseSync(session: Session) {
         // Obviously not sync as was advertised. Also looks a bit weird but should be the same as before.
-        this.sessionsClient.releaseIntent({ session }).then(async res => {
-            if (!res.success) return;
+        this.sessionsClient
+            .releaseIntent({ session })
+            .then(async res => {
+                if (!res.success) return;
 
-            await this.api.closeDevice(res.payload.path, { channel: 'read' });
-            // Without releaseDone, the lock taken by releaseIntent is held until it times out
-            // and the device stays marked as used by a session that nobody holds anymore.
-            await this.sessionsClient.releaseDone({ path: res.payload.path });
-        });
+                try {
+                    await this.api.closeDevice(res.payload.path, { channel: 'read' });
+                } finally {
+                    // Without releaseDone, the lock taken by releaseIntent is held until it times
+                    // out and the device stays marked as used by a session that nobody holds
+                    // anymore. Hence also when closeDevice failed (the device may be gone already).
+                    await this.sessionsClient.releaseDone({ path: res.payload.path });
+                }
+            })
+            // nobody awaits this chain, an unhandled rejection could take down
+            // the bridge worker
+            .catch(err => this.logger?.error(this.name, 'releaseSync error: ', err));
     }
 
     public call({
