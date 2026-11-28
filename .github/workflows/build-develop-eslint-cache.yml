@@ -5,7 +5,7 @@ name: "[Build] develop ESLint cache"
 # pull request's first lint run starts from an empty ESLint cache and only its later pushes reuse
 # one. Each push to `develop` runs the basic lint job here with the same cache key as the
 # validation workflow and saves the result under the default branch's scope; the type-aware run is
-# never cached (see its job in check-code-validation.yml). A run restores the newest `develop`
+# never cached (see its step in check-code-validation.yml). A run restores the newest `develop`
 # entry for the same toolchain and lints the projects affected since the commit that entry was
 # saved for, so the entry accumulates across pushes. Without such an entry, after a toolchain
 # change or an eviction, it lints every project, which fills the new key in one run. Unlike the
