@@ -445,3 +445,51 @@ describe('endUnfinishedDiscoveryThunk', () => {
         );
     });
 });
+
+describe('runDiscoveryThunk errors', () => {
+    const runDiscovery = async (state: RunDiscoveryThunkState) => {
+        const { actions, dispatch } = createMockDispatch({
+            getState: () => state,
+            extra: createExtra(),
+        });
+
+        await dispatch(runDiscoveryThunk({ device: statelessDevice }));
+
+        return actions;
+    };
+
+    it('fails with the reason when the wallet cannot be added', async () => {
+        jest.mocked(TrezorConnect.getDeviceState).mockResolvedValue({
+            success: true,
+            payload: { state: { staticSessionId: 'standard@deviceid:2' } },
+        });
+        const state = createState({ status: 'starting', isAddingHiddenWallet: false });
+        // Two wallets without a state on one path cannot be told apart.
+        const secondStatelessDevice = mockSuiteDevice({
+            path: devicePath,
+            instance: 3,
+            connected: true,
+        });
+
+        const actions = await runDiscovery({
+            ...state,
+            device: { ...state.device, devices: [statelessDevice, secondStatelessDevice] },
+        });
+
+        expect(actions).toContainEqual({
+            type: updateDiscoveryMatcher.type,
+            payload: {
+                status: {
+                    status: 'failed',
+                    error: 'there must be either one or zero physical devices without state',
+                },
+                path: devicePath,
+            },
+        });
+        expect(actions).not.toContainEqual(
+            expect.objectContaining({
+                payload: expect.objectContaining({ status: { status: 'cancelled' } }),
+            }),
+        );
+    });
+});

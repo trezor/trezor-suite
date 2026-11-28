@@ -51,6 +51,7 @@ import TrezorConnect, {
 import { type DiscoverAccountsProgress } from '@trezor/connect-common/src/types/api/account/discoverAccounts';
 import type { Bip43Path } from '@trezor/crypto-utils';
 import { type SuiteCompatibleThunk, type WithServices, createThunk } from '@trezor/redux-utils';
+import { serializeError } from '@trezor/utils';
 
 import { createAccountInfoRequestListener } from './accountInfoRequestListener';
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
@@ -211,7 +212,7 @@ export const applyDeviceStatesThunk = createThunk<
         } catch (error) {
             console.error('applyDeviceStatesThunk error', error);
 
-            return rejectWithValue(error);
+            return rejectWithValue(error instanceof Error ? error.message : serializeError(error));
         }
     },
 );
@@ -522,13 +523,29 @@ export const runDiscoveryThunk = createThunk<
             }
 
             if (!isAddingHiddenWallet) {
-                await dispatch(
+                const applyResult = await dispatch(
                     applyDeviceStatesThunk({
                         newDeviceState: deviceState,
                         isAddingHiddenWallet,
                         devicePath: passedDevice.path,
                     }),
                 );
+
+                // Without the wallet in the store, `reselectDevice` would end the run as a
+                // cancellation that tells the user nothing.
+                if (applyDeviceStatesThunk.rejected.match(applyResult)) {
+                    dispatch(
+                        updateDiscoveryThunk({
+                            status: {
+                                status: 'failed',
+                                error: applyResult.payload,
+                            },
+                            path: passedDevice.path,
+                        }),
+                    );
+
+                    return;
+                }
             }
 
             device = reselectDevice(deviceState);

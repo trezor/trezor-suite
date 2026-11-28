@@ -5647,6 +5647,23 @@ export const messages = defineMessages({
         defaultMessage: 'Discovery error',
         id: 'TR_DASHBOARD_DISCOVERY_ERROR',
     },
+    TR_DASHBOARD_DISCOVERY_STOPPED: {
+        defaultMessage: "Your assets weren't loaded",
+        id: 'TR_DASHBOARD_DISCOVERY_STOPPED',
+    },
+    TR_DASHBOARD_DISCOVERY_STOPPED_DESC: {
+        defaultMessage: 'Loading was interrupted. Try again to load your assets.',
+        id: 'TR_DASHBOARD_DISCOVERY_STOPPED_DESC',
+    },
+    TR_DASHBOARD_DISCOVERY_DEVICE_CONNECTION_ERROR: {
+        defaultMessage: 'Connection to your Trezor was interrupted',
+        id: 'TR_DASHBOARD_DISCOVERY_DEVICE_CONNECTION_ERROR',
+    },
+    TR_DASHBOARD_DISCOVERY_DEVICE_CONNECTION_ERROR_DESC: {
+        defaultMessage:
+            "Your assets couldn't be loaded. Reconnect your Trezor and try again. If the issue persists, restart Trezor Suite.",
+        id: 'TR_DASHBOARD_DISCOVERY_DEVICE_CONNECTION_ERROR_DESC',
+    },
     TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC: {
         defaultMessage:
             "Your assets couldn't be loaded. If using a VPN, disable it and try again. {details}",
