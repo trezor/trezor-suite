@@ -6967,6 +6967,10 @@ export const messages = defineMessages({
         defaultMessage: 'Converted to lowercase',
         id: 'TR_CONVERTED_TO_LOWERCASE',
     },
+    TR_CONVERTED_HEX_PREFIX_TO_LOWERCASE: {
+        defaultMessage: 'Converted the 0X prefix to 0x',
+        id: 'TR_CONVERTED_HEX_PREFIX_TO_LOWERCASE',
+    },
     TR_ADDED_BITCOINCASH_PREFIX: {
         defaultMessage:
             "We've added the prefix bitcoincash: to match the correct format.\nConfirm that this is a valid Bitcoin Cash (BCH) address.",

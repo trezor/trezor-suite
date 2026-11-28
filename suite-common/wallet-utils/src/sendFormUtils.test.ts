@@ -1,5 +1,8 @@
+import { type FieldErrors } from 'react-hook-form';
+
 import { asNetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
+import { type FormState } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
@@ -19,6 +22,7 @@ import {
     getExternalComposeOutput,
     getGasLimitWithBuffer,
     getLowestFeeFromLevels,
+    hasValidationErrors,
     isAmountWithinNetworkReserve,
     isCustomFeeBelowLowestLevel,
     isMaxFeePerGasBelowBaseFee,
@@ -105,6 +109,22 @@ describe('sendForm utils', () => {
                 invalidArray: [null, true, 1, 'A', {}],
             }),
         ).toEqual(['outputs.0.amount', 'outputs.1.address', 'topLevelField']);
+    });
+
+    it('hasValidationErrors', () => {
+        const noErrors: FieldErrors<FormState> = {};
+        const composeErrors: FieldErrors<FormState> = {
+            selectedFee: { type: 'compose' },
+            outputs: [undefined, { amount: { type: 'compose' } }],
+        };
+        const addressError: FieldErrors<FormState> = {
+            outputs: [{ amount: { type: 'compose' } }, { address: { type: 'valid' } }],
+        };
+
+        expect(hasValidationErrors(noErrors)).toBe(false);
+        expect(hasValidationErrors(composeErrors)).toBe(false);
+        expect(hasValidationErrors({ feePerUnit: { type: 'validate' } })).toBe(true);
+        expect(hasValidationErrors(addressError)).toBe(true);
     });
 
     it('getBitcoinComposeOutputs', () => {

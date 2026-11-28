@@ -19,6 +19,7 @@ import {
     convertAmountUnitsToSubunits,
     getConvertedOrDefaultFeeInfo,
     getDefaultValues,
+    hasValidationErrors,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { useServices } from '@trezor/dependency-injection';
@@ -429,8 +430,13 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     // update composedLevels when feeInfo changes
     useEffect(() => {
+        // Unlike `composeRequest`, this runs on background refreshes. A field that failed
+        // validation can still compose (the backend accepts a `0X` address), which would
+        // enable Review & send for a form showing an error.
+        if (hasValidationErrors(formState.errors)) return;
+
         composeDraft(getValues());
-    }, [composeDraft, getValues]);
+    }, [composeDraft, getValues, formState.errors]);
 
     // handle draftSaveRequest
     useEffect(() => {
