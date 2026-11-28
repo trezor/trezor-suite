@@ -66,7 +66,7 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: Acco
 
     if (!account) return null;
 
-    const accountXpub = getFirmwareDescriptor(account);
+    const accountXpub = getFirmwareDescriptor(account, { withChecksum: true });
 
     return (
         <>

@@ -37,10 +37,11 @@ import { type AccountInfo } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
-import { convertTaprootXpub } from '@trezor/utils';
+import { toCanonicalDescriptor } from '@trezor/utils';
 import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
 
 import { paymentTypeToAccountType } from './constants';
+import { isSameImportedDescriptor, withoutDescriptorChecksum } from './descriptorChecksum';
 
 const ACCOUNTS_IMPORT_MODULE_PREFIX = '@suite-native/accountsImport';
 
@@ -90,8 +91,8 @@ export const importAccountThunk = createThunk<
             deviceState,
             symbol,
         );
-        const existingAccount = deviceNetworkAccounts.find(
-            account => account.descriptor === accountInfo.descriptor,
+        const existingAccount = deviceNetworkAccounts.find(account =>
+            isSameImportedDescriptor(account.descriptor, accountInfo.descriptor),
         );
 
         if (existingAccount) {
@@ -138,11 +139,7 @@ export const getAccountInfoThunk = createThunk<
 >(
     `${ACCOUNTS_IMPORT_MODULE_PREFIX}/getAccountInfo`,
     async ({ symbol, baseCurrencyCode, xpubAddress }, { dispatch, rejectWithValue, getState }) => {
-        // Connect requires apostrophe in Taproot descriptors thus a conversion is necessary.
-        const taprootXpubWithApostrophes = convertTaprootXpub({
-            xpub: xpubAddress,
-            direction: 'h-to-apostrophe',
-        });
+        const bareXpubAddress = withoutDescriptorChecksum(xpubAddress);
 
         try {
             const [fetchedAccountInfo] = await Promise.all([
@@ -153,7 +150,9 @@ export const getAccountInfoThunk = createThunk<
                               deviceState: PORTFOLIO_TRACKER_DEVICE_STATE,
                           })
                         : undefined,
-                    descriptor: taprootXpubWithApostrophes ?? xpubAddress,
+                    // Connect returns this descriptor as the account's, so it has to be in the
+                    // canonical form utxo-lib and the "already imported" checks expect.
+                    descriptor: toCanonicalDescriptor(bareXpubAddress),
                     details: 'txs',
                     protocols: getNetworkType(symbol) === 'ethereum' ? ['erc4626'] : undefined,
                 }),

@@ -780,18 +780,31 @@ describe(convertAmountSubunitsToUnits.name, () => {
 });
 
 describe(getFirmwareDescriptor.name, () => {
-    it('appends the checksum only when asked for and when the account has one', () => {
-        const descriptor = asAccountDescriptor("tr([71d98c03/86'/0'/0']xpub6CXYp/<0;1>/*)");
-        const firmwareDescriptor = 'tr([71d98c03/86h/0h/0h]xpub6CXYp/<0;1>/*)';
-        const account = { descriptor, descriptorChecksum: 'gvfjd7ak' };
+    // mnemonic_12, m/86'/0'/0'; firmware shows `${firmwareDescriptor}#htg5lhe3`.
+    const xpub =
+        'xpub6D1saVFSZYgqXCXDfc5m2KdPXUsBXC12E3WntXXzWGJB8dEBr3CGR62emtC8sxJRVRSmBKbtJubuaaGEvZeeCEWaPaYvD9iJwp2Ky7sZws7';
+    const descriptor = asAccountDescriptor(`tr([95d8f670/86'/0'/0']${xpub}/<0;1>/*)`);
+    const firmwareDescriptor = `tr([95d8f670/86h/0h/0h]${xpub}/<0;1>/*)`;
 
-        expect(getFirmwareDescriptor(account)).toEqual(firmwareDescriptor);
-        expect(getFirmwareDescriptor(account, { withChecksum: true })).toEqual(
-            `${firmwareDescriptor}#gvfjd7ak`,
-        );
+    it('computes the checksum firmware shows', () => {
+        expect(getFirmwareDescriptor({ descriptor })).toEqual(firmwareDescriptor);
         expect(getFirmwareDescriptor({ descriptor }, { withChecksum: true })).toEqual(
-            firmwareDescriptor,
+            `${firmwareDescriptor}#htg5lhe3`,
         );
+    });
+
+    it('replaces a checksum stored with the descriptor', () => {
+        const stored = asAccountDescriptor(`${descriptor}#htg5lhe3`);
+
+        expect(getFirmwareDescriptor({ descriptor: stored }, { withChecksum: true })).toEqual(
+            `${firmwareDescriptor}#htg5lhe3`,
+        );
+    });
+
+    it('leaves a key without a descriptor alone', () => {
+        const zpub = asAccountDescriptor('zpub6rFR7y4Q2AijBE');
+
+        expect(getFirmwareDescriptor({ descriptor: zpub }, { withChecksum: true })).toEqual(zpub);
     });
 });
 

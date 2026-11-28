@@ -55,6 +55,7 @@ import {
     typedObjectKeys,
     unique,
 } from '@trezor/utils';
+import { addDescriptorChecksum } from '@trezor/utxo-lib';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
 import { isDirectRpcBackendType } from './backendUtils';
@@ -351,10 +352,17 @@ type GetFirmwareDescriptorOptions = { withChecksum?: boolean };
 
 /** The account descriptor as firmware displays it; `withChecksum` appends its `#<checksum>`. */
 export const getFirmwareDescriptor = (
-    account: Pick<Account, 'descriptor' | 'descriptorChecksum'>,
+    { descriptor }: Pick<Account, 'descriptor'>,
     { withChecksum = false }: GetFirmwareDescriptorOptions = {},
-): FirmwareDescriptor =>
-    toFirmwareDescriptor(account.descriptor, withChecksum ? account.descriptorChecksum : undefined);
+): FirmwareDescriptor => {
+    // Older versions stored some imported descriptors with firmware's suffix.
+    const firmwareDescriptor = toFirmwareDescriptor(descriptor.split('#')[0] ?? descriptor);
+    if (!withChecksum || !firmwareDescriptor.includes('(')) return firmwareDescriptor;
+
+    // Computed rather than read from `account.descriptorChecksum`, which account refreshes by
+    // older versions erased.
+    return toFirmwareDescriptor(addDescriptorChecksum(firmwareDescriptor));
+};
 
 /**
  * The account that owns every input of the transaction, or undefined when any input is missing,
