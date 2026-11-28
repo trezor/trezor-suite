@@ -14,6 +14,7 @@ export type TronFeeSummaryRowProps = {
     areFeesLoading: boolean;
     resourceLabel: string;
     isAccountActivation: boolean;
+    baseValueOnly?: boolean;
 };
 
 export const TronFeeSummaryRow = ({
@@ -24,6 +25,7 @@ export const TronFeeSummaryRow = ({
     areFeesLoading,
     resourceLabel,
     isAccountActivation,
+    baseValueOnly,
 }: TronFeeSummaryRowProps) => {
     const hasResourceCoverage = !!resourceLabel;
 
@@ -49,6 +51,7 @@ export const TronFeeSummaryRow = ({
                         areFeesLoading={areFeesLoading}
                         resourceLabel={resourceLabel}
                         symbol={symbol}
+                        baseValueOnly={baseValueOnly}
                     />
                     {trxBurned !== null && hasResourceCoverage && !areFeesLoading && (
                         <Text variant="body-sm" color="contentSecondary">
