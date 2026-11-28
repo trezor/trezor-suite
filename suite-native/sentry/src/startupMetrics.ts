@@ -16,11 +16,13 @@ export const reportStartupAppLoaded = () => {
 
     hasReportedAppLoad = true;
 
-    const endedAtMs = performance.now();
-    const appLoadDurationMs = endedAtMs - jsBundleEvaluatedAtMs;
+    const appLoadDurationMs = performance.now() - jsBundleEvaluatedAtMs;
+    // Sentry reads span times as Unix time, while performance.now() on React Native counts from
+    // device boot.
+    const endedAtMs = Date.now();
 
     captureStartupPerformanceReport({
-        startedAtMs: jsBundleEvaluatedAtMs,
+        startedAtMs: endedAtMs - appLoadDurationMs,
         endedAtMs,
         measurements: {
             appLoad: appLoadDurationMs,
