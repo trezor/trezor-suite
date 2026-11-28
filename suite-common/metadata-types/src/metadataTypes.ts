@@ -175,7 +175,7 @@ export abstract class AbstractMetadataProvider {
     }
 
     private async waitForApiRequestCooldown() {
-        const delay = this.apiRequestCooldownUntil - Date.now();
+        const delay = this.apiRequestCooldownUntil - performance.now();
 
         if (delay > 0) {
             await new Promise(resolve => setTimeout(resolve, delay));
@@ -207,7 +207,7 @@ export abstract class AbstractMetadataProvider {
                 if (res.code === 'RATE_LIMIT_ERROR' && res.retryAfterMs !== undefined) {
                     this.apiRequestCooldownUntil = Math.max(
                         this.apiRequestCooldownUntil,
-                        Date.now() + retryDelay,
+                        performance.now() + retryDelay,
                     );
                 }
 

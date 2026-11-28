@@ -7,10 +7,10 @@ export const createRequestPool = (interceptorOptions: InterceptorOptions) => {
 
     return (request: http.ClientRequest, identity?: string) => {
         const { host } = request;
-        const requestTime = Date.now();
+        const requestTime = performance.now();
 
         request.on('response', response => {
-            const timeRequestTook = Date.now() - requestTime;
+            const timeRequestTook = Math.round(performance.now() - requestTime);
             const { statusCode } = response;
 
             const isNetworkMisbehaving = timeRequestTook > requestTimeoutLimit;

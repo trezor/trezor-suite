@@ -126,14 +126,14 @@ export const readAccountHistory = async (
         let { cursor } = params;
         let limit = Math.min(HORIZON_MAX_LIMIT, pageSize * 2);
 
-        const deadline = Date.now() + STELLAR_HISTORY_PAGE_TIMEOUT_MS;
+        const deadline = performance.now() + STELLAR_HISTORY_PAGE_TIMEOUT_MS;
 
         for (;;) {
             // Returning a short page here would read as the end of the history, so this throws.
             // A single attempt: `scheduleAction` would otherwise retry a 404 until the deadline.
             const window = await scheduleAction(
                 () => fetchOperationGroups(params, limit, cursor, effectsSource),
-                { attempts: 1, timeout: Math.max(1, deadline - Date.now()) },
+                { attempts: 1, timeout: Math.max(1, deadline - performance.now()) },
             );
             groups = [...groups, ...window.groups];
 
