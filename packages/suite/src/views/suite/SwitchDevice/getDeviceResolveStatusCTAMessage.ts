@@ -10,6 +10,7 @@ export const getDeviceResolveStatusCTAMessage = (
         case 'initialize':
             return 'TR_CONTINUE_SETUP';
         case 'device-thp-locked':
+        case 'device-pin-locked':
             return 'TR_TRY_AGAIN';
         case 'firmware-required':
         case 'firmware-corrupted':

@@ -124,13 +124,13 @@ export const deviceNeedsAttention = (deviceStatus: DeviceStatus): boolean => {
         case 'device-hard-locked':
         case 'device-pin-locked':
         case 'device-thp-locked':
+        case 'device-rebooting':
             return true;
 
         case 'disconnected':
         case 'unavailable': // this case is already solved in Account view @wallet-components/AccountMode/DeviceUnavailable
         case 'firmware-recommended':
         case 'connected':
-        case 'device-rebooting':
         case 'unknown':
         case 'acquired':
             return false;

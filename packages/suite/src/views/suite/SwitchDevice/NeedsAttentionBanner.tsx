@@ -74,6 +74,7 @@ const getDeviceStatusWarningIntent = (deviceStatus: ReturnType<typeof getStatus>
         case 'used-in-other-window':
         case 'unacquired':
         case 'device-thp-locked':
+        case 'device-rebooting':
             return 'info';
         case 'firmware-required':
         case 'firmware-corrupted':
@@ -138,6 +139,12 @@ export const NeedsAttentionBanner = ({
             case 'was-used-in-other-window':
             case 'unacquired':
                 return () => dispatch(acquireDeviceThunk({ requestedDevice: device }));
+            case 'device-pin-locked':
+                // Without features, the acquire runs the THP handshake that asks for the PIN. On an
+                // acquired device it would only clear the status; opening a wallet asks for it.
+                return device.features
+                    ? null
+                    : () => dispatch(acquireDeviceThunk({ requestedDevice: device }));
             case 'device-thp-locked':
                 return () => {
                     onCancel?.(false);
@@ -148,7 +155,6 @@ export const NeedsAttentionBanner = ({
             case 'device-rebooting':
             case 'device-bootloader-locked':
             case 'device-hard-locked':
-            case 'device-pin-locked':
             case 'acquired':
                 return null;
 

@@ -2547,6 +2547,11 @@ export const messages = defineMessages({
         description: 'Device status',
         id: 'TR_CONNECTED',
     },
+    TR_DEVICE_STATUS_LOCKED: {
+        defaultMessage: 'Locked',
+        description: 'Device status of a connected device that waits to be unlocked',
+        id: 'TR_DEVICE_STATUS_LOCKED',
+    },
     TR_CONTACT_SUPPORT: {
         defaultMessage: 'Contact Trezor Support',
         description: 'Button to click to contact support',

@@ -34,7 +34,7 @@ export const DeviceHeader = ({
         !onBackButtonClick &&
         !actions &&
         (actions === null || !onCancel) &&
-        !(isDeviceStatusVisible && device?.type === 'acquired')
+        !isDeviceStatusVisible
     ) {
         return null;
     }
