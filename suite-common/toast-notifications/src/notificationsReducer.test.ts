@@ -66,6 +66,37 @@ describe('Notifications Actions', () => {
         expect(store.getState().notifications.length).toEqual(2);
     });
 
+    it('does not add the same transaction event more than once', () => {
+        const store = initStore();
+        const transaction = {
+            type: 'tx-confirmed' as const,
+            amount: '99.4',
+            descriptor: 'xpub',
+            symbol: btcSymbol,
+            txid: 'abcd',
+        };
+
+        store.dispatch(notificationsActions.addEvent(transaction));
+        store.dispatch(notificationsActions.addEvent(transaction));
+
+        expect(store.getState().notifications).toHaveLength(1);
+    });
+
+    it('keeps received and confirmed events for the same transaction', () => {
+        const store = initStore();
+        const transaction = {
+            amount: '99.4',
+            descriptor: 'xpub',
+            symbol: btcSymbol,
+            txid: 'abcd',
+        };
+
+        store.dispatch(notificationsActions.addEvent({ type: 'tx-received', ...transaction }));
+        store.dispatch(notificationsActions.addEvent({ type: 'tx-confirmed', ...transaction }));
+
+        expect(store.getState().notifications).toHaveLength(2);
+    });
+
     it('close notification by id', () => {
         const store = initStore({
             preloadedState: {
