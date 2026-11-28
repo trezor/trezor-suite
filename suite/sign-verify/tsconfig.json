@@ -7,10 +7,10 @@
             "path": "../../suite-common/sign-verify"
         },
         {
-            "path": "../../suite-common/toast-notifications"
+            "path": "../../suite-common/suite-types"
         },
         {
-            "path": "../../suite-common/wallet-config"
+            "path": "../../suite-common/toast-notifications"
         },
         {
             "path": "../../suite-common/wallet-types"

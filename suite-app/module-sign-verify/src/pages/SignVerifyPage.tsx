@@ -1,6 +1,6 @@
 import { selectFullSelectedAccount } from '@suite/account';
 import { useDevice } from '@suite/device';
-import { SignVerify } from '@suite/sign-verify';
+import { SignVerifyDefaultTemplate } from '@suite/sign-verify';
 import { injectSignVerify } from '@suite-common/sign-verify';
 import { useServices } from '@trezor/dependency-injection';
 import {
@@ -30,7 +30,7 @@ export const SignVerifyPage = () => {
 
             {!isDeviceConnected && <ConnectDeviceGenericPromo />}
 
-            <SignVerify key={account.key} account={account} network={selectedAccount.network} />
+            <SignVerifyDefaultTemplate key={account.key} account={account} />
         </WalletLayout>
     );
 };
