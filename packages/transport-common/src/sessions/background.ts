@@ -30,9 +30,12 @@ import { error, success } from '../utils/result';
 
 type DescriptorsDict = Record<PathInternal, Descriptor>;
 
-type Lock = { id: TimerId; dfd: Deferred<void> };
+type Lock = { id?: TimerId; dfd: Deferred<void> };
 
 type PendingOperation = { lock: Lock; session: Session };
+
+// Several releases of one session can be pending in turn, so a release needs its own id.
+type PendingRelease = PendingOperation & { releaseId: number };
 
 // in nodeusb, enumeration operation takes ~3 seconds
 const lockDuration = 1000 * 4;
@@ -62,8 +65,9 @@ export class SessionsBackground
     // keeps its own lock and session for it, under the path the *Done carries.
     // null prototype like the dictionaries above, pendingReleases is keyed by the raw serial too
     private pendingAcquires: Record<PathPublic, PendingOperation> = Object.create(null);
-    private pendingReleases: Record<PathInternal, PendingOperation> = Object.create(null);
+    private pendingReleases: Record<PathInternal, PendingRelease> = Object.create(null);
     private lastSessionId = 0;
+    private lastReleaseId = 0;
     private lastPathId = 0;
 
     public async handleMessage<M extends HandleMessageParams>(
@@ -223,8 +227,11 @@ export class SessionsBackground
      * - assign client a new "session". this session will be used in all subsequent communication
      */
     private acquireDone(payload: AcquireDoneRequest) {
-        const pending = this.pendingAcquires[payload.path];
-        delete this.pendingAcquires[payload.path];
+        const pending = this.takePending(
+            this.pendingAcquires,
+            payload.path,
+            ({ session }) => payload.session === undefined || session === payload.session,
+        );
         if (pending) this.releaseLock(pending.lock);
 
         const pathInternal = this.getInternal(payload.path);
@@ -233,9 +240,15 @@ export class SessionsBackground
             return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
 
+        // The lock timed out and the next acquireIntent on this device took over, so the device
+        // belongs to that intent now.
+        if (!pending) {
+            return error({ code: ERRORS.SESSION_WRONG_PREVIOUS });
+        }
+
         // abort: openDevice failed after acquireIntent reserved the session. The
         // lock is already released above; do not commit a phantom session.
-        if (pending && !payload.abort) {
+        if (!payload.abort) {
             this.descriptors[pathInternal].session = pending.session;
             this.descriptors[pathInternal].sessionOwner = payload.sessionOwner;
         }
@@ -261,14 +274,19 @@ export class SessionsBackground
             return error({ code: ERRORS.SESSION_NOT_FOUND });
         }
 
-        this.pendingReleases[path] = { lock, session: payload.session };
+        this.lastReleaseId++;
+        const releaseId = this.lastReleaseId;
+        this.pendingReleases[path] = { lock, session: payload.session, releaseId };
 
-        return success({ path });
+        return success({ path, releaseId });
     }
 
     private releaseDone(payload: ReleaseDoneRequest) {
-        const pending = this.pendingReleases[payload.path];
-        delete this.pendingReleases[payload.path];
+        const pending = this.takePending(
+            this.pendingReleases,
+            payload.path,
+            ({ releaseId }) => payload.releaseId === undefined || releaseId === payload.releaseId,
+        );
         if (pending) this.releaseLock(pending.lock);
 
         const descriptor = this.descriptors[payload.path];
@@ -280,6 +298,25 @@ export class SessionsBackground
         }
 
         return Promise.resolve(success({ descriptors: Object.values(this.descriptors) }));
+    }
+
+    /**
+     * A *Done can come after its lock timed out and the next *Intent on the same device replaced
+     * its pending operation. It must not act on that newer operation, so it takes only its own
+     * one. A client that predates the id its *Done sends takes whatever is pending, like before.
+     */
+    private takePending<P extends PathPublic | PathInternal, O extends PendingOperation>(
+        pendingOperations: Record<P, O>,
+        path: P,
+        isOwn: (pending: O) => boolean,
+    ) {
+        const pending = pendingOperations[path];
+        if (!pending || !isOwn(pending)) {
+            return undefined;
+        }
+        delete pendingOperations[path];
+
+        return pending;
     }
 
     private getSessions() {
@@ -299,16 +336,7 @@ export class SessionsBackground
     }
 
     private startLock() {
-        // todo: create a deferred with built-in timeout functionality (util)
-        const dfd = createDeferred();
-
-        // To ensure that communication with device will not get stuck forever, the lock times
-        // out automatically. It also leaves the queue, so that the queue holds only the locks
-        // that are still held or awaited.
-        const lock: Lock = {
-            id: setTimeout(() => this.releaseLock(lock), lockDuration),
-            dfd,
-        };
+        const lock: Lock = { dfd: createDeferred() };
         this.locksQueue.push(lock);
 
         return lock;
@@ -332,6 +360,16 @@ export class SessionsBackground
     private async waitInQueue() {
         const lock = this.startLock();
         await this.waitForUnlocked(this.locksQueue.indexOf(lock));
+
+        // To ensure that communication with device will not get stuck forever, the lock times
+        // out automatically. It also leaves the queue, so that the queue holds only the locks
+        // that are still held or awaited. The timeout starts only now that the lock is granted:
+        // started at enqueue, it would count the wait behind a slow holder too and could expire
+        // while this lock's own operation runs, letting the next waiter in. A lock released
+        // while waiting (dispose) gets no timeout.
+        if (this.locksQueue.includes(lock)) {
+            lock.id = setTimeout(() => this.releaseLock(lock), lockDuration);
+        }
 
         return lock;
     }

@@ -333,6 +333,30 @@ describe('sessions', () => {
         expect(onReleaseIntent).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
     });
 
+    test('the lock timeout counts from when the lock is granted, not from when it is queued', async () => {
+        jest.useFakeTimers();
+        const client = new SessionsClient(background);
+        await client.enumerateDone({
+            descriptors: [usbDevice('1'), usbDevice('2'), usbDevice('3')],
+        });
+        await client.acquireIntent({ path: PathPublic('1'), previous: null });
+        const onSecondIntent = jest.fn();
+        client.acquireIntent({ path: PathPublic('2'), previous: null }).then(onSecondIntent);
+        const onThirdIntent = jest.fn();
+        client.acquireIntent({ path: PathPublic('3'), previous: null }).then(onThirdIntent);
+
+        // The holder finishes just within its timeout and the second intent gets the lock.
+        jest.advanceTimersByTime(lockDuration - 100);
+        await client.acquireDone({ path: PathPublic('1') });
+        await flushMicrotasks();
+        expect(onSecondIntent).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+
+        // The second intent has used only a fraction of its own timeout, so it still holds the lock.
+        jest.advanceTimersByTime(200);
+        await flushMicrotasks();
+        expect(onThirdIntent).not.toHaveBeenCalled();
+    });
+
     test('releaseDone of a device disconnected during the release still releases the lock', async () => {
         const client = new SessionsClient(background);
         await client.enumerateDone({ descriptors: [usbDevice('1')] });
@@ -422,6 +446,75 @@ describe('sessions', () => {
 
             const sessions = await client.getSessions();
             expect(sessions.payload.descriptors).toMatchObject([{ path: '1', session: '2' }]);
+        });
+
+        test('acquireDone does not act on the next intent on the same device', async () => {
+            const client = new SessionsClient(background);
+            await client.enumerateDone({ descriptors: [usbDevice('1'), usbDevice('2')] });
+            await client.acquireIntent({ path: PathPublic('1'), previous: null });
+            jest.advanceTimersByTime(lockDuration);
+            await client.acquireIntent({ path: PathPublic('1'), previous: null });
+
+            const lateAcquireDone = await client.acquireDone({
+                path: PathPublic('1'),
+                session: Session('1'),
+                sessionOwner: 'late',
+            });
+            expect(lateAcquireDone).toMatchObject({
+                success: false,
+                error: { code: 'wrong previous session' },
+            });
+
+            // the next intent still holds the lock
+            const onAcquireIntent = jest.fn();
+            client.acquireIntent({ path: PathPublic('2'), previous: null }).then(onAcquireIntent);
+            await flushMicrotasks();
+            expect(onAcquireIntent).not.toHaveBeenCalled();
+
+            await client.acquireDone({
+                path: PathPublic('1'),
+                session: Session('2'),
+                sessionOwner: 'next',
+            });
+            const sessions = await client.getSessions();
+            expect(sessions.payload.descriptors).toMatchObject([
+                { path: '1', session: '2', sessionOwner: 'next' },
+                { path: '2', session: null },
+            ]);
+        });
+
+        test('releaseDone does not act on the next release of the same device', async () => {
+            const client = new SessionsClient(background);
+            await client.enumerateDone({ descriptors: [usbDevice('1'), usbDevice('2')] });
+            await client.acquireIntent({ path: PathPublic('1'), previous: null });
+            await client.acquireDone({ path: PathPublic('1') });
+            // e.g. releaseSync after a release whose closeDevice outlasts the lock
+            const firstRelease = await client.releaseIntent({ session: Session('1') });
+            jest.advanceTimersByTime(lockDuration);
+            const secondRelease = await client.releaseIntent({ session: Session('1') });
+            if (!firstRelease.success || !secondRelease.success) {
+                throw new Error('releaseIntent failed');
+            }
+
+            await client.releaseDone({
+                path: PathInternal('1'),
+                releaseId: firstRelease.payload.releaseId,
+            });
+
+            // the second release still holds the lock
+            const onAcquireIntent = jest.fn();
+            client.acquireIntent({ path: PathPublic('2'), previous: null }).then(onAcquireIntent);
+            await flushMicrotasks();
+            expect(onAcquireIntent).not.toHaveBeenCalled();
+
+            await client.releaseDone({
+                path: PathInternal('1'),
+                releaseId: secondRelease.payload.releaseId,
+            });
+            await flushMicrotasks();
+            expect(onAcquireIntent).toHaveBeenCalledWith(
+                expect.objectContaining({ success: true }),
+            );
         });
     });
 

@@ -36,6 +36,10 @@ export type AcquireIntentResponse = BackgroundResponseWithError<
 
 export type AcquireDoneRequest = {
     path: PathPublic;
+    /**
+     * The session acquireIntent returned. Optional only for clients that predate it.
+     */
+    session?: Session;
     sessionOwner?: string;
     /**
      * Set when openDevice failed after acquireIntent already reserved the session:
@@ -49,19 +53,23 @@ export type AcquireDoneResponse = BackgroundResponseWithError<
         session: Session;
         descriptors: Descriptor[];
     },
-    typeof ERRORS.DEVICE_NOT_FOUND
+    typeof ERRORS.DEVICE_NOT_FOUND | typeof ERRORS.SESSION_WRONG_PREVIOUS
 >;
 export interface ReleaseIntentRequest {
     session: Session;
 }
 
 export type ReleaseIntentResponse = BackgroundResponseWithError<
-    { path: PathInternal },
+    { path: PathInternal; releaseId: number },
     typeof ERRORS.SESSION_NOT_FOUND
 >;
 
 export interface ReleaseDoneRequest {
     path: PathInternal;
+    /**
+     * The releaseId releaseIntent returned. Optional only for clients that predate it.
+     */
+    releaseId?: number;
 }
 
 export type ReleaseDoneResponse = BackgroundResponse<{

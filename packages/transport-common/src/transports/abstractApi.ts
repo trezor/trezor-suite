@@ -139,12 +139,26 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 if (!openDeviceResult.success) {
                     // release the lock taken by acquireIntent without committing a
                     // session, otherwise the device deadlocks on the next acquire
-                    await this.sessionsClient.acquireDone({ path, abort: true });
+                    await this.sessionsClient.acquireDone({
+                        path,
+                        session: acquireIntentResponse.payload.session,
+                        abort: true,
+                    });
 
                     return openDeviceResult;
                 }
 
-                await this.sessionsClient.acquireDone({ path, sessionOwner: this.id });
+                const acquireDoneResponse = await this.sessionsClient.acquireDone({
+                    path,
+                    session: acquireIntentResponse.payload.session,
+                    sessionOwner: this.id,
+                });
+
+                // the session was not committed, e.g. the next acquire of this device took over
+                // after this one's lock timed out
+                if (!acquireDoneResponse.success) {
+                    return error({ code: acquireDoneResponse.error.code });
+                }
 
                 return success(acquireIntentResponse.payload.session);
             },
@@ -208,6 +222,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     // taken by releaseIntent is freed
                     await this.sessionsClient.releaseDone({
                         path: releaseIntentResponse.payload.path,
+                        releaseId: releaseIntentResponse.payload.releaseId,
                     });
                 }
 
@@ -230,7 +245,10 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     // Without releaseDone, the lock taken by releaseIntent is held until it times
                     // out and the device stays marked as used by a session that nobody holds
                     // anymore. Hence also when closeDevice failed (the device may be gone already).
-                    await this.sessionsClient.releaseDone({ path: res.payload.path });
+                    await this.sessionsClient.releaseDone({
+                        path: res.payload.path,
+                        releaseId: res.payload.releaseId,
+                    });
                 }
             })
             // nobody awaits this chain, an unhandled rejection could take down

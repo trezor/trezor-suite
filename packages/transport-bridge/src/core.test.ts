@@ -1,4 +1,5 @@
 import { type AbstractApi, PathPublic } from '@trezor/transport-common';
+import { createDeferred } from '@trezor/utils';
 
 import { createCore } from './core';
 
@@ -79,6 +80,52 @@ describe('transport-bridge core lock safety', () => {
             expect(second.success).toBe(true);
         } finally {
             core.dispose();
+        }
+    });
+
+    it('acquire fails when its lock timed out and the next acquire of the device took over', async () => {
+        jest.useFakeTimers();
+        const slowOpenDevice = createDeferred<{ success: true; payload: undefined }>();
+        const openDevice = jest
+            .fn()
+            .mockReturnValueOnce(slowOpenDevice.promise)
+            .mockResolvedValue({ success: true, payload: undefined });
+
+        const core = createCore(createFakeApi({ openDevice }), muteLogger);
+        const { signal } = new AbortController();
+
+        try {
+            await core.enumerate({ signal });
+            const first = core.acquire({
+                path: PathPublic('1'),
+                previous: 'null',
+                signal,
+                sessionOwner: 'A',
+            });
+            await flushMicrotasks();
+            // the first openDevice outlasts the session lock
+            jest.advanceTimersByTime(4000);
+
+            const second = await core.acquire({
+                path: PathPublic('1'),
+                previous: 'null',
+                signal,
+                sessionOwner: 'B',
+            });
+            expect(second).toMatchObject({ success: true, payload: { session: '2' } });
+
+            slowOpenDevice.resolve({ success: true, payload: undefined });
+            expect(await first).toMatchObject({
+                success: false,
+                error: { code: 'wrong previous session' },
+            });
+            const sessions = await core.sessionsClient.getSessions();
+            expect(sessions.payload.descriptors).toMatchObject([
+                { session: '2', sessionOwner: 'B' },
+            ]);
+        } finally {
+            core.dispose();
+            jest.useRealTimers();
         }
     });
 });
