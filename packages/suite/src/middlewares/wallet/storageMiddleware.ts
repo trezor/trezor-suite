@@ -56,6 +56,7 @@ import {
     changeNetworks,
     closeHomeAssetTableFeedback,
     closeHomeAssetTableNewBanner,
+    customEvmNetworksActions,
     earnOnboardingActions,
     explorerActions,
     phishingActions,
@@ -414,6 +415,10 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
         storageActions.saveExplorer(api.extra.services, action.payload);
     }
 
+    if (customEvmNetworksActions.unregistered.match(action)) {
+        storageActions.removeNetworkSettings(api.extra.services, action.payload.symbol);
+    }
+
     if (
         isAnyOf(
             messageSystemActions.fetchSuccessUpdate,
@@ -583,6 +588,8 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
             closeHomeAssetTableNewBanner,
             closeHomeAssetTableFeedback,
             setSuspiciousTransactionsFilter,
+            customEvmNetworksActions.registered,
+            customEvmNetworksActions.unregistered,
         )(action)
     ) {
         api.dispatch(storageActions.saveWalletSettingsThunk());
