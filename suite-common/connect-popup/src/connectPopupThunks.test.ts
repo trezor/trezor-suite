@@ -472,4 +472,73 @@ describe('connectPopupCallInnerThunk', () => {
         expect(source.manifest.appName).toBe('Clau de Code');
         expect(source.process).toEqual({ name: '', fullPath: '/usr/bin/app', warning: false });
     });
+
+    // The audit's finding: a Suite Web call whose origin was never established must not be
+    // processed — a consent UI would ask the user to trust an app they cannot name, and any grant
+    // remembered for it would be shared by every other unattributed caller. Refused before the
+    // method is even described, so Connect is never asked about it.
+    it.each(['*', ''])(
+        'refuses a web call whose origin %p was never established, before any consent UI',
+        async origin => {
+            const { dispatch, deferred, report } = await runCallThunk({
+                method: 'getFeatures',
+                payload: {} as never,
+                source: { type: 'web', origin, manifest: { appName: 'Unattributed' } },
+            });
+
+            expect(dispatch).toHaveBeenCalledWith(
+                connectPopupActions.setError(
+                    serializeError(TypedError('Handshake_Error', 'origin-missing')),
+                ),
+            );
+            const dispatchedTypes = dispatch.mock.calls.map(([action]) => action.type);
+            expect(dispatchedTypes).not.toContain(connectPopupActions.initiateCall.type);
+            expect(dispatchedTypes).not.toContain(connectPopupActions.requestPermissions.type);
+            await expect(deferred.promise).resolves.toEqual({
+                success: false,
+                error: expect.objectContaining({
+                    code: 'Handshake_Error',
+                    message: 'origin-missing',
+                }),
+            });
+            expect(report).toHaveBeenCalledWith({
+                type: events.connectPopupErrorEvent.name,
+                payload: expect.objectContaining({ error: 'Handshake_Error' }),
+            });
+        },
+    );
+
+    // The same for the desktop app: a WebSocket call carries the `Origin` header it was sent with,
+    // and the main process drops only a missing one, so the literal `null` or `*` reaches Suite.
+    it.each(['*', 'null'])(
+        'refuses a desktop call whose origin %p is not established, before any consent UI',
+        async origin => {
+            const { dispatch, deferred } = await runCallThunk({
+                method: 'getFeatures',
+                payload: {} as never,
+                source: {
+                    type: CALL_SOURCE_DESKTOP_WS,
+                    origin,
+                    manifest: { appName: 'Unattributed' },
+                    process: { name: 'App', fullPath: '/usr/bin/app', warning: false },
+                },
+            });
+
+            expect(dispatch).toHaveBeenCalledWith(
+                connectPopupActions.setError(
+                    serializeError(TypedError('Handshake_Error', 'origin-missing')),
+                ),
+            );
+            const dispatchedTypes = dispatch.mock.calls.map(([action]) => action.type);
+            expect(dispatchedTypes).not.toContain(connectPopupActions.initiateCall.type);
+            expect(dispatchedTypes).not.toContain(connectPopupActions.requestPermissions.type);
+            await expect(deferred.promise).resolves.toEqual({
+                success: false,
+                error: expect.objectContaining({
+                    code: 'Handshake_Error',
+                    message: 'origin-missing',
+                }),
+            });
+        },
+    );
 });

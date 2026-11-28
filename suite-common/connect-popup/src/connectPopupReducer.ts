@@ -13,6 +13,7 @@ import {
 import {
     canRememberPermissions,
     canonicalizePermissionCoins,
+    isEstablishedOrigin,
     isSameConnectApp,
 } from './permissions';
 
@@ -71,9 +72,9 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                                             'permission' in t,
                                     ),
                             )
-                            // Drop grants that are no longer remembered, e.g. the origin
-                            // `null` persisted by earlier versions, so the settings list
-                            // cannot show a grant that is ignored.
+                            // Drop grants that are no longer remembered, e.g. the origins `null`,
+                            // `*` or an empty string persisted by earlier versions, so the settings
+                            // list cannot show a grant that is ignored.
                             .filter(canRememberPermissions)
                             // Grants persisted before coins were canonicalized at the
                             // source keep the mixed-case `coinInfo.shortcut` (e.g. `BTC`);
@@ -315,5 +316,5 @@ export const selectIsConnectAppSilentModeByOrigin = (
     state: ConnectPopupStateRootState,
     origin: string | undefined,
 ) =>
-    !!origin &&
+    isEstablishedOrigin(origin) &&
     state.connectPopup.permissions.some(p => p.origin === origin && p.silentMode === true);

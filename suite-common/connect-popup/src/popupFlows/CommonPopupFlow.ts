@@ -24,9 +24,11 @@ import {
     CALL_SOURCE_DEEPLINK,
     CALL_SOURCE_WALLETCONNECT,
     type ConnectCallSource,
+    ORIGIN_MISSING_ERROR,
     getCallSourceName,
 } from '../connectPopupTypes';
 import {
+    canProcessCall,
     canRememberPermissions,
     deriveCardanoEnabledNetworks,
     isSameConnectApp,
@@ -169,6 +171,11 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
 
     /** Resolves to the successful response, a failure is thrown. */
     async run() {
+        // A caller whose origin was never established cannot be attributed to an app (`canProcessCall`
+        // says which sources this holds for): refuse it before the method is described, so no consent
+        // UI is shown under a name the user cannot check and no remembered grant can be matched to it.
+        if (!canProcessCall(this.source)) throw TypedError('Handshake_Error', ORIGIN_MISSING_ERROR);
+
         const methodInfo = await this.getMethodInfo();
         this.assertCallAllowed(methodInfo);
         const consentPermissions = this.initiateCall(methodInfo);

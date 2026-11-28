@@ -92,6 +92,13 @@ export type ConnectCallSource = {
 export const getCallSourceName = (source: ConnectCallSource): string =>
     source.manifest?.appName || source.origin;
 
+/**
+ * Message of the `Handshake_Error` for a caller whose origin was never established. The bootstrap
+ * reports the same one for a caller it cannot name, so the caller is told one reason by whichever
+ * of them refuses it.
+ */
+export const ORIGIN_MISSING_ERROR = 'origin-missing';
+
 type SelectedFee =
     | {
           gasPrice: undefined;

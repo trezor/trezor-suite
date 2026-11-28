@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { CORE_CALL, CORE_CALL_CANCEL, POPUP } from '@trezor/connect';
 import { WEBEXTENSION_SUITE_WEB_CHANNEL } from '@trezor/connect-common';
 
 import {
@@ -37,14 +38,57 @@ const postMessageToExtension = (message: ConnectPopupOutgoingMessage, extensionI
     chrome.runtime.sendMessage(extensionId, message);
 };
 
+// A Chromium extension is named by 32 letters from a to p, and nothing else can stand for one: not
+// the origin of a website, which holds a scheme, nor a wildcard. The id is also the origin of the
+// calls of its extension, so a malformed one would let a caller take the place of another. Suite
+// Web cannot answer a Firefox extension at all (see `canSuiteWebReplyToExtension`).
+const CHROMIUM_EXTENSION_ID_PATTERN = /^[a-p]{32}$/;
+
+// What the extension stamps on every message, whatever its payload.
+type ExtensionMessage = {
+    type?: unknown;
+    id?: unknown;
+    channel?: { here?: unknown; peer?: unknown };
+};
+
+const isMessageFromExtension = (message: ExtensionMessage) =>
+    message.channel?.here === webextChannel.peer && message.channel?.peer === webextChannel.here;
+
+// The types the shared popup protocol handles. The payload is that protocol's to read.
+const isConnectPopupMessage = (message: ExtensionMessage): message is ConnectPopupMessage =>
+    message.type === 'channel-handshake-request' ||
+    message.type === POPUP.HANDSHAKE ||
+    message.type === POPUP.CLOSED ||
+    message.type === CORE_CALL_CANCEL ||
+    message.type === CORE_CALL;
+
 const getUrlHashParams = () => new URLSearchParams(window.location.hash.replace('#', '?'));
+
+const getExtensionId = (hashParams: URLSearchParams): string | null => {
+    const extensionId = hashParams.get('extension-id');
+
+    return extensionId !== null && CHROMIUM_EXTENSION_ID_PATTERN.test(extensionId)
+        ? extensionId
+        : null;
+};
+
+// `URLSearchParams` has decoded the hash already, so decoding it again would change what the
+// extension sent: `%41` into `A`, and a lone `%` would not parse at all.
+const parseHashMessage = (hashMessage: string): ExtensionMessage | null => {
+    try {
+        return JSON.parse(hashMessage);
+    } catch {
+        // Malformed message in hash — ignore.
+        return null;
+    }
+};
 
 const clearUrlHash = () =>
     window.history.replaceState(null, '', window.location.pathname + window.location.search);
 
 export const useConnectPopupWebextension = () => {
     // Read once, so later hash writes cannot change which extension the popup answers.
-    const [extensionId] = useState(() => getUrlHashParams().get('extension-id'));
+    const [extensionId] = useState(() => getExtensionId(getUrlHashParams()));
     const lastProcessedMessageIdRef = useRef<number | undefined>(undefined);
     const [incomingMessages, setIncomingMessages] = useState<ConnectPopupMessage[]>([]);
 
@@ -86,26 +130,23 @@ export const useConnectPopupWebextension = () => {
             return;
         }
 
-        let parsedMessage: ConnectPopupMessage | null = null;
-        if (message) {
-            try {
-                parsedMessage = JSON.parse(decodeURIComponent(message));
-            } catch {
-                // Malformed message in hash — ignore.
-                return;
-            }
-        }
+        const parsedMessage = message ? parseHashMessage(message) : null;
 
         if (parsedMessage) {
-            // Deduplicate using the numeric message id assigned by AbstractMessageChannel.
-            // channel-handshake-request has no id (usePromise: false) and passes through
-            // unconditionally — that's fine since it's idempotent by design.
-            const msgId = (parsedMessage as { id?: number }).id;
-            const isDuplicate = msgId !== undefined && msgId === lastProcessedMessageIdRef.current;
+            // Only what the extension sent over its own channel and the popup handles is passed on.
+            // A message that is refused is removed from the hash like any other.
+            if (isMessageFromExtension(parsedMessage) && isConnectPopupMessage(parsedMessage)) {
+                // Deduplicate using the numeric message id assigned by AbstractMessageChannel.
+                // channel-handshake-request has no id (usePromise: false) and passes through
+                // unconditionally — that's fine since it's idempotent by design.
+                const msgId = typeof parsedMessage.id === 'number' ? parsedMessage.id : undefined;
+                const isDuplicate =
+                    msgId !== undefined && msgId === lastProcessedMessageIdRef.current;
 
-            if (!isDuplicate) {
-                lastProcessedMessageIdRef.current = msgId;
-                setIncomingMessages(prev => [...prev, parsedMessage]);
+                if (!isDuplicate) {
+                    lastProcessedMessageIdRef.current = msgId;
+                    setIncomingMessages(prev => [...prev, parsedMessage]);
+                }
             }
             // Clean hash after reading to prevent browser history pollution.
             clearUrlHash();
