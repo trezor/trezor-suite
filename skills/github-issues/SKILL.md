@@ -116,6 +116,6 @@ If `item-edit` rejects `--field`, ask the user to upgrade gh (needs 2.97+).
 
 Do not attach a screenshot that shows seed words, a PIN, a passphrase, or a wipe code. Ask for a crop if that is the only shot.
 
-Addresses, balances, txids, and account labels are fine in screenshots. Most Suite issues come from public QA and dev wallets. Do not copy those values into the issue text. The screenshot is the evidence.
+Addresses, balances, txids, and account labels are fine in screenshots from public QA and dev wallets, where most Suite issues come from. For any other wallet, ask for a crop without them. Do not copy those values into the issue text. The screenshot is the evidence.
 
 Attach only images that evidence the report.

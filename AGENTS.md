@@ -128,17 +128,26 @@ changes also require `yarn requirements:verify`, `yarn verify-project-references
 After checks pass, repeat or broaden them only for subsequent edits, failures or unresolved risks.
 Do not describe inspected commands as executed or untested behavior as verified.
 
-## Confidential data — never send it off the device
+## Confidential data
 
-Account/device confidential data must never leave the device to any external sink (analytics, Sentry,
-off-device logging, breadcrumbs, request URLs, any remote endpoint). Trace the actual value at the call
-site, not just the field type, and check the whole repo for outbound reporting.
+Account and device confidential data stays on the device. Confidential: device id, label, state and
+serial number, static session id, `session_id`; account descriptor, xpub and public key, addresses, UTXOs,
+txids; exact balances, amounts and fees; labels and free-form user text; passphrase, seed, PIN, wipe code.
+Passphrase, seed, PIN and wipe code have no exception anywhere.
 
-Confidential (see `redactAccount`/`redactDevice` in `suite-common/logger/src/utils.ts`): device
-id/label/state, static session id, `session_id`; account descriptor/xpub/key, addresses, UTXOs, txids;
-exact balances/amounts; labels and free-form user text; passphrase/seed/PIN/wipe code.
-For analytics events and Sentry reports, follow [Analytics and Sentry privacy](skills/analytics-and-sentry-privacy/SKILL.md).
+Never send off the device, or log in committed code, error messages, response bodies, logs or whole objects
+(account, device, form state, Connect responses) as they are: they can carry confidential data. Pick the
+non-sensitive fields or lines. A temporary local debug log removed before committing is fine.
+Not confidential, so keep it where it helps: network symbol, coingeckoId, derivation type, account type
+and index, firmware version and revision, device model.
 
-GitHub issue screenshots are the exception in [GitHub issues](skills/github-issues/SKILL.md): addresses,
-balances, txids, and labels from public QA and dev wallets may be attached. Seed words, PIN,
-passphrase, and wipe code still never leave the device.
+- Code: before it sends a value to any remote sink (analytics, Sentry, off-device logs, request URLs, any
+  other endpoint), check what the value actually holds where it is sent, not what its name or type
+  suggests. Search the whole repo for other places that send it out, not only the analytics folders.
+  Data a wallet feature already sends to its own backend, such as an address to a blockchain backend, is
+  not a leak. Analytics events and Sentry reports follow
+  [Analytics and Sentry privacy](skills/analytics-and-sentry-privacy/SKILL.md).
+- Your own output: the same data stays out of issues, PR descriptions, comments, commit messages and any
+  external tool or service. Fixtures use public test wallets only, never data from a real wallet. The only
+  exception is in [GitHub issues](skills/github-issues/SKILL.md): issue screenshots from public QA and
+  dev wallets may show addresses, balances, txids and labels.

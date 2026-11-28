@@ -16,11 +16,9 @@ Never send:
   amounts, balances, fees, quotes or rates, in fiat or crypto.
 - **Device data:** device id, label and state, static session id, `session_id`, serial number.
 - **User data:** account and other labels, free-form user text, passphrase, seed, PIN, wipe code.
-- **Free-form text from errors or backends:** error messages and response bodies can echo any of the above.
 
-Not sensitive: the random analytics instance id (also the Sentry `user.id`), network symbol, coingeckoId,
-derivation type, account type and index, firmware version and revision, device model, counts, booleans
-and enums.
+Also not sensitive in events: the random analytics instance id (also the Sentry `user.id`), counts,
+booleans and enums.
 
 See `redactAccount` and `redactDevice` in `suite-common/logger/src/utils.ts` for the canonical lists.
 
@@ -83,8 +81,6 @@ consent is known.
 - **Prefer generic error codes over full payloads.** Report an error code or a fixed reason when the message,
   response body or object could contain sensitive data, e.g. a backend error echoing an address or balance.
 - **Never send exact amounts or values,** not even in error or `NaN` diagnostics.
-- **Do not log whole objects** (account, device, form state, Connect responses). Pick the non-sensitive fields
-  you need.
 - **Keep sensitive values out of URLs.** Redaction exists in the shared Sentry configs (`suite/sentry`,
   `suite-common/sentry`, `suite-native/sentry`), but do not rely on it to catch new cases.
 
