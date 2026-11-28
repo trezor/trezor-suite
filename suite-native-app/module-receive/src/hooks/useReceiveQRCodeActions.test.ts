@@ -1,4 +1,3 @@
-// This is the iOS test selected through the `.ios` filename suffix.
 import { Linking, Share } from 'react-native';
 import { type ViewShotRef } from 'react-native-view-shot';
 
@@ -7,7 +6,7 @@ import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { act, renderHookWithBasicProvider, waitFor } from '@suite-native/test-utils';
 
-import { useReceiveQRCodeActions } from './useReceiveQRCodeActions.ios';
+import { useReceiveQRCodeActions } from './useReceiveQRCodeActions';
 
 const mockShare = jest.spyOn(Share, 'share');
 const mockOpenSettings = jest.spyOn(Linking, 'openSettings');
@@ -78,6 +77,16 @@ describe('useReceiveQRCodeActions', () => {
             type: events.receiveQRCodeActionEvent.name,
             payload: { action: 'share' },
         });
+    });
+
+    it('does not report a dismissed share', async () => {
+        mockShare.mockResolvedValue({ action: Share.dismissedAction, activityType: undefined });
+        const { result } = await renderUseReceiveQRCodeActions();
+        result.current.qrCodeViewRef.current = qrCodeView;
+
+        await act(() => result.current.handleShareQRCode());
+
+        expect(mockAnalyticsReport).not.toHaveBeenCalled();
     });
 
     it('copies the QR code image', async () => {

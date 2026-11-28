@@ -3958,6 +3958,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@expo/material-symbols@npm:0.1.1":
+  version: 0.1.1
+  resolution: "@expo/material-symbols@npm:0.1.1"
+  bin:
+    add-material-symbols: bin/add-material-symbols.mjs
+  checksum: 10/c96b292d36260671aa148bb9b188607b1e455054fe76776242af488c4132834635db0e8c24bb1e06a9d0cf5e1c32dc6b546e264c5b721f42ecb386bbefe0dfaf
+  languageName: node
+  linkType: hard
+
 "@expo/mcp-tunnel@npm:~0.2.3":
   version: 0.2.4
   resolution: "@expo/mcp-tunnel@npm:0.2.4"
@@ -14682,6 +14691,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     expo-clipboard: "npm:~58.0.4"
     expo-media-library: "npm:~58.0.13"
+    expo-sharing: "npm:~58.0.21"
     react: "npm:19.3.0"
     react-native: "npm:0.88.1"
     react-native-view-shot: "npm:6.1.1"
@@ -15462,6 +15472,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/atoms@workspace:suite-native/atoms"
   dependencies:
+    "@expo/material-symbols": "npm:0.1.1"
     "@expo/ui": "npm:58.0.25"
     "@gorhom/bottom-sheet": "npm:5.2.9"
     "@mobily/ts-belt": "npm:^3.13.1"
@@ -15643,7 +15654,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/clipboard@workspace:suite-native/clipboard"
   dependencies:
-    "@expo/ui": "npm:58.0.25"
+    "@suite-native/atoms": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     expo-clipboard: "npm:~58.0.4"

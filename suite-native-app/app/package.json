@@ -3,17 +3,6 @@
     "version": "1.0.0",
     "suiteNativeVersion": "26.12.1",
     "main": "index.js",
-    "expo": {
-        "autolinking": {
-            "android": {
-                "exclude": [
-                    "@expo/ui",
-                    "expo-media-library",
-                    "react-native-view-shot"
-                ]
-            }
-        }
-    },
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "android": "expo run:android --variant debugOptimized",

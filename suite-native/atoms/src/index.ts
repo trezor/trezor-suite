@@ -61,6 +61,8 @@ export * from './Card/CompactCardWithIconLayout';
 export * from './Card/PressableCardWithIconLayout';
 export * from './Card/TimelineDetailsCard';
 export * from './CollapsibleCard/CollapsibleCard';
+export * from './ContextMenu/ContextMenu';
+export type * from './ContextMenu/ContextMenu.types';
 export * from './ScreenFooterGradient';
 export * from './ScreenHeaderWrapper';
 export * from './ErrorMessage';

@@ -1,4 +1,3 @@
-// This is the iOS implementation selected by Metro through the `.ios` filename suffix.
 type SaveQRCodeImageToPhotosResult = 'saved' | 'permissionDenied';
 
 export const saveQRCodeImageToPhotos = async (
