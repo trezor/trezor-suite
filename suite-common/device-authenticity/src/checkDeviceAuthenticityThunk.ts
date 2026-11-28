@@ -53,11 +53,13 @@ export const checkDeviceAuthenticityThunk = createThunk<
                 }),
             );
             const isDeviceBootloaderUnlocked = device?.features?.bootloader_locked !== true;
-            const storedResult = isDeviceBootloaderUnlocked
-                ? // error can be because bootloader is unlocked (definite cause of failure, should persist)
-                  { valid: false, error: result.error.message }
-                : // or internal error (then skip the check by storing undefined)
-                  undefined;
+            if (!isDeviceBootloaderUnlocked) {
+                // Inconclusive error (e.g. cancelled on device, disconnected), so the persisted result of a previous check is kept.
+                return rejectWithValue(undefined);
+            }
+
+            // Error caused by unlocked bootloader is a definite failure, so it is persisted.
+            const storedResult = { valid: false, error: result.error.message };
             dispatch(
                 persistentDeviceDataActions.setDeviceAuthenticityResult({
                     deviceId: device.id,
