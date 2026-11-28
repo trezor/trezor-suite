@@ -3,6 +3,7 @@
 import {
     type BitcoinNetworkInfo,
     Bundle,
+    type CoinInfo,
     type DeviceButtonRequestCode,
     type PROTO,
     type PermissionRequest,
@@ -19,14 +20,18 @@ import {
     fixCoinInfoNetwork,
     getBitcoinNetwork,
     getBitcoinNetworkOrThrow,
+    getCoinInfoOfPath,
     getUniqueNetworks,
 } from '../data/coinInfo';
+import { getLabelWithPathNetwork } from '../utils/accountUtils';
 import { getLabel, getSerializedPath, validatePath } from '../utils/pathUtils';
 
 type Params = {
     proto: PROTO.GetAddress;
     address?: string;
     coinInfo: BitcoinNetworkInfo;
+    // The network of the path, which differs from `coinInfo` only for a `crossChain` path.
+    permissionCoinInfo: Readonly<CoinInfo>;
     unlockPath?: PROTO.UnlockPath;
 };
 
@@ -76,6 +81,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
                 proto,
                 address: batch.address,
                 coinInfo,
+                permissionCoinInfo: getCoinInfoOfPath(path, coinInfo),
                 unlockPath: batch.unlockPath,
             };
         });
@@ -88,25 +94,28 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
     }
 
     get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_address', this.requiredFirmwareCoins);
+        return this.coinPerms(
+            'read_address',
+            this.params.map(({ permissionCoinInfo }) => permissionCoinInfo),
+        );
     }
 
     get info() {
-        // set info
-        if (this.params.length === 1) {
-            const { params } = this;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const first: (typeof params)[number] = params[0];
-
-            return getLabel('Export #NETWORK address', first.coinInfo);
+        const [network, ...otherNetworks] = getUniqueNetworks(
+            this.params.map(({ coinInfo }) => coinInfo),
+        );
+        const [pathNetwork, ...otherPathNetworks] = getUniqueNetworks(
+            this.params.map(({ permissionCoinInfo }) => permissionCoinInfo),
+        );
+        if (!network || !pathNetwork || otherNetworks.length || otherPathNetworks.length) {
+            return 'Export multiple addresses';
         }
-        const requestedNetworks = this.params.map(b => b.coinInfo);
-        const uniqNetworks = getUniqueNetworks(requestedNetworks);
-        if (uniqNetworks.length === 1 && uniqNetworks[0]) {
-            return getLabel('Export multiple #NETWORK addresses', uniqNetworks[0]);
-        }
+        const label =
+            this.params.length > 1
+                ? 'Export multiple #NETWORK addresses'
+                : 'Export #NETWORK address';
 
-        return 'Export multiple addresses';
+        return getLabelWithPathNetwork(getLabel(label, network), network, pathNetwork);
     }
 
     getButtonRequestData(code: DeviceButtonRequestCode) {

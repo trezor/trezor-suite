@@ -10,7 +10,11 @@ import {
 } from '@trezor/connect-common/src/types/coinInfo';
 import coinsEth from '@trezor/connect-data/files/coins-eth.json';
 import coins from '@trezor/connect-data/files/coins.json';
-import { fromHardenedPathPart, toHardenedPathPart } from '@trezor/crypto-utils';
+import {
+    HD_HARDENED_PATH_PART,
+    fromHardenedPathPart,
+    toHardenedPathPart,
+} from '@trezor/crypto-utils';
 import { cloneObject } from '@trezor/utils';
 
 const bitcoinNetworks: BitcoinNetworkInfo[] = [];
@@ -75,6 +79,72 @@ export const getMiscNetwork = (
     const slip44 = fromHardenedPathPart(miscPathElement);
 
     return miscNetworks.find(n => n.slip44 === slip44);
+};
+
+// Misc networks whose key is the node that `getPublicKey` and `getAddress` derive at their path,
+// with the curve of that node. Cardano and Monero keys are not that node, and testnets are left out
+// because SLIP-44 registers a coin type to the mainnet. The curves are listed here because
+// coins.json gives Nostr ed25519, while firmware derives its key on secp256k1.
+const miscNetworkNodeCurves: Partial<Record<string, string>> = {
+    NOSTR: 'secp256k1',
+    SOL: 'ed25519',
+    TRX: 'secp256k1',
+    XLM: 'ed25519',
+    XRP: 'secp256k1',
+};
+
+// The curve firmware derives on for an `ecdsaCurveName`. Without a name it is the coin's own,
+// secp256k1 for every bitcoin network, and it compares names as C strings, up to the first NUL.
+// Every secp256k1 variant (decred, groestl, smart) shares the "Bitcoin seed" master key and the
+// curve, so it derives the same node.
+const getNodeCurve = (curveName?: string) => {
+    const curve = curveName?.split('\0')[0] || 'secp256k1';
+
+    return curve.startsWith('secp256k1') ? 'secp256k1' : curve;
+};
+
+// The network whose key a `crossChain` call derives at `path` on `curveName`, for its permission to
+// name. When that network cannot be told, the declared `coinInfo` stands rather than a coin-less
+// (device-wide) permission.
+export const getCoinInfoOfPath = (
+    path: number[],
+    coinInfo: Readonly<BitcoinNetworkInfo>,
+    curveName?: string,
+): Readonly<CoinInfo> => {
+    const nodeCurve = getNodeCurve(curveName);
+    const coinTypeElement = path[1];
+    // Only a hardened second element is a SLIP-44 coin type.
+    if (coinTypeElement === undefined || coinTypeElement < HD_HARDENED_PATH_PART) {
+        return coinInfo;
+    }
+
+    const slip44 = fromHardenedPathPart(coinTypeElement);
+    if (slip44 === coinInfo.slip44) {
+        return coinInfo;
+    }
+
+    if (nodeCurve === 'secp256k1') {
+        // Several bitcoin testnets share coin type 1 and none of them owns it.
+        const [bitcoinNetwork, ...otherBitcoinNetworks] = bitcoinNetworks.filter(
+            n => n.slip44 === slip44,
+        );
+        if (bitcoinNetwork) {
+            return otherBitcoinNetworks.length ? coinInfo : bitcoinNetwork;
+        }
+
+        // Many ethereum networks share coin type 60, which SLIP-44 registers to the first of them,
+        // Ethereum.
+        const ethereumNetwork = ethereumNetworks.find(n => n.slip44 === slip44);
+        if (ethereumNetwork) {
+            return ethereumNetwork;
+        }
+    }
+
+    return (
+        miscNetworks.find(
+            n => n.slip44 === slip44 && miscNetworkNodeCurves[n.shortcut] === nodeCurve,
+        ) ?? coinInfo
+    );
 };
 
 /*

@@ -41,6 +41,13 @@ the same coin.
 { permission: 'read_features' }             // device-level, no coin
 ```
 
+`getAddress` and `getPublicKey` called with `crossChain` derive a key at the path of another
+network, so their permission names the network the key belongs to instead of `coin`. An Ethereum
+path with `coin: 'btc'` needs `{ permission: 'read_address', coin: 'eth' }`. A Solana or Stellar
+path names `sol` or `xlm` only for `getPublicKey` with `ecdsaCurveName: 'ed25519'`, the curve of
+their keys. Where the key belongs to no single network, for example on coin type `1` shared by
+several Bitcoin testnets or at a Cardano path, the permission names `coin`.
+
 ## Declaring permissions up front
 
 By default the user is prompted the first time your application needs a permission it has not yet
