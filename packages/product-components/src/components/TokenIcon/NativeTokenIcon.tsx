@@ -1,5 +1,3 @@
-import { ReactSVG } from 'react-svg';
-
 import styled from 'styled-components';
 
 import { useServices } from '@trezor/dependency-injection';
@@ -8,30 +6,13 @@ import type { NetworkSymbol } from '@trezor/network-module-types';
 import { type TokenIconSize } from './tokenIconTypes';
 import { injectGetCryptoIcon } from '../../services/networkServices';
 
-const SvgContainer = styled.div<{ $size: TokenIconSize }>`
-    display: flex;
+// The coin SVGs are multi-colour and never restyled from CSS, so they need no inline injection.
+const Logo = styled.img<{ $size: TokenIconSize }>`
+    display: block;
     flex-shrink: 0;
     width: ${({ $size }) => $size}px;
     height: ${({ $size }) => $size}px;
 `;
-
-const StyledReactSVG = styled(ReactSVG)`
-    display: flex;
-    width: 100%;
-    height: 100%;
-
-    div {
-        display: flex;
-        width: 100%;
-        height: 100%;
-    }
-
-    svg {
-        display: block;
-        width: 100%;
-        height: 100%;
-    }
-` as typeof ReactSVG;
 
 type NativeTokenIconProps = {
     symbol: NetworkSymbol;
@@ -50,15 +31,14 @@ export const NativeTokenIcon = ({
     if (typeof src !== 'string' || !src) return null;
 
     return (
-        <SvgContainer $size={size} data-testid={dataTestId}>
-            <StyledReactSVG
-                src={src}
-                beforeInjection={svg => {
-                    svg.setAttribute('width', `${size}px`);
-                    svg.setAttribute('height', `${size}px`);
-                }}
-                loading={() => <span className="loading" />}
-            />
-        </SvgContainer>
+        <Logo
+            src={src}
+            alt=""
+            width={size}
+            height={size}
+            decoding="async"
+            $size={size}
+            data-testid={dataTestId}
+        />
     );
 };
