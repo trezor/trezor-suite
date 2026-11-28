@@ -57,7 +57,7 @@ const openBluetoothSettings = async () => {
     }
 
     if (isMacOs()) {
-        return openSettings('open "x-apple.systempreferences:com.apple.Bluetooth"');
+        return openSettings('open "x-apple.systempreferences:com.apple.BluetoothSettings"');
     }
 
     if (isWindows()) {
