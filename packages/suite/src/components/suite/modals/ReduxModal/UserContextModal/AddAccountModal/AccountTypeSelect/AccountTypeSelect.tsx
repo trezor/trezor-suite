@@ -34,17 +34,18 @@ const AccountTypeSelectComponent = ({
     type Option = ReturnType<typeof buildAccountTypeOption>;
 
     const formatLabel = (option: Option) => {
-        const accountTypeName = getAccountTypeName({
+        const accountTypeProps = {
             path: option.value.bip43Path,
             accountType: option.value.accountType,
             networkType,
-        });
+        };
+        const accountTypeName = getAccountTypeName(accountTypeProps);
 
         return (
             <Row alignItems="baseline" gap={8}>
                 {accountTypeName && <Translation id={accountTypeName} />}
                 <Text intent="neutral" priority="secondary">
-                    <Translation id={getAccountTypeTech(option.value.bip43Path)} />
+                    <Translation id={getAccountTypeTech(accountTypeProps)} />
                 </Text>
             </Row>
         );

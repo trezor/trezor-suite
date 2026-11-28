@@ -77,7 +77,11 @@ export const WalletDetailsPage = () => {
     const locked = isLocked(true);
     const disabled = locked || isReceiveDisabled || selectedAccount.status !== 'loaded';
 
-    const accountTypeTech = getAccountTypeTech(account.path);
+    const accountTypeTech = getAccountTypeTech({
+        path: account.path,
+        networkType: account.networkType,
+        accountType: account.accountType,
+    });
 
     const isCoinjoinAccount = account.backendType === 'coinjoin';
 
