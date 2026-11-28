@@ -11,19 +11,27 @@ import {
 } from '@suite-native/device-authorization';
 import { useTranslate } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
-import { selectHasPassphraseIncorrectError } from '@suite-native/passphrase';
+import {
+    selectHasPassphraseIncorrectError,
+    selectIsDiscoveryLoadingAccounts,
+} from '@suite-native/passphrase';
 
 export const useHandleNavigateToInitialScreenOnIdle = () => {
     const deviceAuthorizationStep = useSelector(selectDeviceAuthorizationStep);
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const hasPassphraseIncorrectError = useSelector(selectHasPassphraseIncorrectError);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+    const isDiscoveryLoadingAccounts = useSelector(selectIsDiscoveryLoadingAccounts);
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
 
+    // A wrong passphrase can only fail discovery before it loads accounts, so the rest of the
+    // discovery is not worth blocking on.
+    const isPassphraseCheckDone = !isDiscoveryRunning || isDiscoveryLoadingAccounts;
+
     useFocusEffect(
         useCallback(() => {
-            if (deviceAuthorizationStep === DeviceAuthorizationStep.Idle && !isDiscoveryRunning) {
+            if (deviceAuthorizationStep === DeviceAuthorizationStep.Idle && isPassphraseCheckDone) {
                 if (hasPassphraseIncorrectError) {
                     showAlert({
                         title: translate('modulePassphrase.featureAuthorizationError'),
@@ -39,7 +47,7 @@ export const useHandleNavigateToInitialScreenOnIdle = () => {
         }, [
             deviceAuthorizationStep,
             hasPassphraseIncorrectError,
-            isDiscoveryRunning,
+            isPassphraseCheckDone,
             navigateToInitialScreen,
             showAlert,
             translate,
