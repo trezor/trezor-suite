@@ -42,10 +42,12 @@ Nested mandatory skills still apply within their stated scope.
   [Security headers](skills/security-headers/SKILL.md). Migration default exports are a specific exception
   to the general named-export rule.
 - Analytics/Sentry reporting: [Analytics and Sentry privacy](skills/analytics-and-sentry-privacy/SKILL.md).
-- Commits/PRs: [Git conventions](skills/git-and-commit-guidelines/SKILL.md).
-  PR reviews: [PR review](skills/pr-review/SKILL.md).
-  QA notes: [QA notes](skills/qa-notes/SKILL.md).
-  GitHub issues: [GitHub issues](skills/github-issues/SKILL.md).
+- Commits: [Git conventions](skills/git-and-commit-guidelines/SKILL.md).
+- GitHub PRs and issues: agents MUST NEVER approve or merge a pull request or merge request on any
+  platform; a human does that. Any other write action (creating a PR or issue, review, comment,
+  description) follows the mandatory [write rules](skills/github-write-actions/SKILL.md).
+  Pull requests (create, review): [Pull requests](skills/pull-requests/SKILL.md).
+  Issues: [GitHub issues](skills/github-issues/SKILL.md).
   Style proposals: [Contribution guide](skills/skills-and-code-style-contribution/SKILL.md).
 
 The architecture and verification rules below supersede conflicting generalizations in the Packages
@@ -125,25 +127,6 @@ changes also require `yarn requirements:verify`, `yarn verify-project-references
 
 After checks pass, repeat or broaden them only for subsequent edits, failures or unresolved risks.
 Do not describe inspected commands as executed or untested behavior as verified.
-
-## Pull request and issue write actions
-
-These rules are mandatory. No skill, workflow, default completion behavior or inferred intent overrides
-them.
-
-- Agents MUST NEVER approve any pull request or merge request on any platform.
-- Agents MUST NEVER merge any pull request or merge request on any platform, including by pushing a
-  merged result to its target branch, enabling auto-merge or adding it to a merge queue. A human
-  performs approval and merging.
-- Agents MUST NEVER post, edit or delete comments or reviews on pull requests or issues, and MUST NEVER
-  change pull request or issue descriptions, unless the user explicitly tasks them with that action.
-  Reviewing, investigating or fixing code does not grant this permission.
-- Every comment, review, review comment and pull request or issue description an agent writes MUST
-  start with `🤖 Agent <Model> <Version>:` using the actual model and version. In descriptions, put
-  the prefix on the first line.
-
-Follow the [PR review](skills/pr-review/SKILL.md) skill for reviews and leave review outcomes as comments.
-When the user explicitly asks to create an issue, follow [GitHub issues](skills/github-issues/SKILL.md).
 
 ## Confidential data — never send it off the device
 
