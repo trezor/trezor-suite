@@ -1,35 +1,20 @@
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectFiatFromCryptoValue } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type AmountUnit, BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { BigAmountValue } from './BigAmountValue';
-import { useFiatFromCryptoValue } from '../../hooks/suite/useFiatFromCryptoValue';
-
-type UseFiatAmountProps = {
-    amount: string | AmountUnit; // Todo: `string` only for back compatibility
-    symbol?: NetworkSymbol;
-};
+import { useSelector } from '../../hooks/suite/useSelector';
 
 type FiatHeaderProps = {
+    amount: string | AmountUnit; // Todo: `string` only for back compatibility
+    symbol?: NetworkSymbol;
     size: 'large' | 'medium';
     localCurrency: string;
     'data-testid'?: string;
-} & UseFiatAmountProps;
-
-const useFiatAmount = ({ amount, symbol }: UseFiatAmountProps) => {
-    const { fiatAmount } = useFiatFromCryptoValue({
-        amount,
-        symbol: symbol ?? asNetworkSymbol('btc'),
-    });
-
-    if (!symbol) {
-        return asBaseCurrencyAmount(new BigNumber(amount));
-    }
-
-    return fiatAmount;
 };
 
 /**
@@ -42,7 +27,10 @@ const FiatHeaderContent = ({
     localCurrency,
     'data-testid': dataTestId,
 }: FiatHeaderProps) => {
-    const fiatAmount = useFiatAmount({ amount, symbol });
+    const convertedFiatAmount = useSelector(state =>
+        symbol ? selectFiatFromCryptoValue(state, amount, symbol) : null,
+    );
+    const fiatAmount = symbol ? convertedFiatAmount : asBaseCurrencyAmount(new BigNumber(amount));
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
     // `.format` rather than calling the formatter component and unpacking the element it returns:

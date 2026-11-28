@@ -15,6 +15,7 @@ import {
     getYieldVaultContractAddress,
     selectBaseCurrency,
     selectCurrentFiatRatesByFiatRateKeys,
+    selectFiatFromCryptoValue,
     useMissingRateTickersQuery,
 } from '@suite-common/wallet-core';
 import {
@@ -26,7 +27,6 @@ import {
 import { getContractAddressForNetworkSymbol, getFiatRateKey } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
 import { useMessageSystemYield } from '#src/hooks/suite/useMessageSystemYield';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
@@ -151,23 +151,26 @@ export const YieldVaultDetailProvider = ({
 
     const hasVaultPosition = new BigNumber(receiptTokenBalance).gt(0);
 
-    const { fiatAmount } = useFiatFromCryptoValue({
-        amount: receiptTokenBalance,
-        symbol: account.symbol,
-        tokenAddress:
-            hasVaultPosition && resolvedReceiptToken.contractAddress
-                ? toTokenAddress(resolvedReceiptToken.contractAddress)
-                : undefined,
-    });
+    const receiptTokenAddress =
+        hasVaultPosition && resolvedReceiptToken.contractAddress
+            ? toTokenAddress(resolvedReceiptToken.contractAddress)
+            : undefined;
+    const fiatAmount = useSelector(state =>
+        selectFiatFromCryptoValue(state, receiptTokenBalance, account.symbol, receiptTokenAddress),
+    );
 
-    const { fiatAmount: depositableBalanceFiatAmount } = useFiatFromCryptoValue({
-        amount: depositableBalance,
-        symbol: account.symbol,
-        tokenAddress:
-            !isWrappedNativeVault && resolvedUnderlyingToken.contractAddress
-                ? toTokenAddress(resolvedUnderlyingToken.contractAddress)
-                : undefined,
-    });
+    const underlyingTokenAddress =
+        !isWrappedNativeVault && resolvedUnderlyingToken.contractAddress
+            ? toTokenAddress(resolvedUnderlyingToken.contractAddress)
+            : undefined;
+    const depositableBalanceFiatAmount = useSelector(state =>
+        selectFiatFromCryptoValue(
+            state,
+            depositableBalance,
+            account.symbol,
+            underlyingTokenAddress,
+        ),
+    );
 
     const bonusRewards = useMemo<YieldVaultBonusRewardRate[]>(
         () =>

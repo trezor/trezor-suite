@@ -1,7 +1,7 @@
 import { useTranslation } from '@suite/intl';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
-import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
+import { selectFiatFromCryptoValue, useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import {
     type TronFeeBreakdown,
@@ -13,7 +13,7 @@ import { type TokenInfo } from '@trezor/connect';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type TotalSentFeeContentProps = {
     transactionInfo: GeneralPrecomposedTransaction;
@@ -38,18 +38,21 @@ export function TotalSentFeeContent({
         hasTransactionInfo ? transactionInfo.fee : '0',
         networkSymbol,
     );
-    const { fiatAmount: tokenFiatAmount } = useFiatFromCryptoValue({
-        amount:
-            hasTransactionInfo && tokenInfo
-                ? convertAmountSubunitsToUnits(transactionInfo.totalSpent, tokenInfo.decimals)
-                : '0',
-        symbol: networkSymbol,
-        tokenAddress: tokenInfo?.contract as TokenAddress,
-    });
-    const { fiatAmount: feeFiatAmount } = useFiatFromCryptoValue({
-        amount: feeAmount,
-        symbol: networkSymbol,
-    });
+    const tokenAmount =
+        hasTransactionInfo && tokenInfo
+            ? convertAmountSubunitsToUnits(transactionInfo.totalSpent, tokenInfo.decimals)
+            : '0';
+    const tokenFiatAmount = useSelector(state =>
+        selectFiatFromCryptoValue(
+            state,
+            tokenAmount,
+            networkSymbol,
+            tokenInfo?.contract as TokenAddress,
+        ),
+    );
+    const feeFiatAmount = useSelector(state =>
+        selectFiatFromCryptoValue(state, feeAmount, networkSymbol),
+    );
 
     if (transactionInfo.type === 'error') return null;
 

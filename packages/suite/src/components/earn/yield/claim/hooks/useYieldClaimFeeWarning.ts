@@ -1,8 +1,9 @@
 import { type YieldClaimFeeWarning, getClaimFeeWarning } from '@suite-common/earn-stablecoin';
 import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectFiatFromCryptoValue } from '@suite-common/wallet-core';
 
-import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { useYieldClaimFeeEstimate } from './useYieldClaimFeeEstimate';
 
@@ -19,10 +20,9 @@ export const useYieldClaimFeeWarning = ({
 }: UseYieldClaimFeeWarningParams): YieldClaimFeeWarning | null => {
     const { fee } = useYieldClaimFeeEstimate({ accountRewards, isEnabled: !isClaimPending });
 
-    const { fiatAmount: feeFiatAmount } = useFiatFromCryptoValue({
-        amount: fee ?? '0',
-        symbol: networkSymbol,
-    });
+    const feeFiatAmount = useSelector(state =>
+        selectFiatFromCryptoValue(state, fee ?? '0', networkSymbol),
+    );
 
     if (isClaimPending || !accountRewards || fee === null) return null;
 

@@ -1,7 +1,7 @@
 import { Address } from '@suite/address';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetwork } from '@suite-common/wallet-config';
-import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectFiatFromCryptoValue } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { type Address as AddressType } from '@trezor/blockchain-link-types';
@@ -10,7 +10,6 @@ import { TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { CoinBalance } from '#src/components/suite/CoinBalance';
-import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 interface UtxoReceiveAddressOptionProps {
@@ -35,10 +34,9 @@ export const UtxoReceiveAddressOption = ({
         decimals: network?.decimals,
     });
 
-    const { fiatAmount } = useFiatFromCryptoValue({
-        amount: balanceInUnits,
-        symbol: account.symbol,
-    });
+    const fiatAmount = useSelector(state =>
+        selectFiatFromCryptoValue(state, balanceInUnits, account.symbol),
+    );
 
     return (
         <CardList.Item onClick={() => onAddressSelect(address.address)}>

@@ -5,10 +5,10 @@ import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type FiatRatesRootState,
-    selectBaseCurrency,
-    selectFiatRatesByFiatRateKey,
+    type WalletSettingsRootState,
+    selectFiatRateByAsset,
 } from '@suite-common/wallet-core';
-import { getFiatRateKey, isTestnet, toFiatCurrency } from '@suite-common/wallet-utils';
+import { isTestnet, toFiatCurrency } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { convertTokenValueToDecimal } from '../utils';
@@ -32,10 +32,8 @@ export const useFiatFromCryptoValue = ({
     isBalance = false,
     tokenDecimals = 0,
 }: useFiatFromCryptoValueParams) => {
-    const fiatCurrencyCode = useSelector(selectBaseCurrency);
-    const fiatRateKey = getFiatRateKey(symbol, fiatCurrencyCode, tokenAddress);
-    const currentRate = useSelector((state: FiatRatesRootState) =>
-        selectFiatRatesByFiatRateKey(state, fiatRateKey),
+    const currentRate = useSelector((state: FiatRatesRootState & WalletSettingsRootState) =>
+        selectFiatRateByAsset(state, symbol, tokenAddress),
     );
 
     const rate = useHistoricRate ? historicRate : currentRate?.rate;
