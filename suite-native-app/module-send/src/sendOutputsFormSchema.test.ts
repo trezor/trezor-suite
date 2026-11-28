@@ -140,6 +140,16 @@ describe('sendOutputsFormValidationSchema address', () => {
 });
 
 describe('sendOutputsFormValidationSchema amount', () => {
+    it('keeps rejecting an amount the last compose reported an error for', async () => {
+        const amountComposeErrorMessage = 'The recipient has not added USDC.';
+
+        await expect(
+            validateEnteredAmount(
+                '0.00001',
+                createAmountValidationContext({ amountComposeErrorMessage }),
+            ),
+        ).rejects.toMatchObject({ message: amountComposeErrorMessage });
+    });
     it('accepts an amount within the raw balance when fee-adjusted balance is unavailable', async () => {
         await expect(
             validateEnteredAmount(
