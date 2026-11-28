@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1090" viewBox="0 0 1600 1090" role="img" aria-labelledby="title description">
+  <title id="title">Sign and Verify network modules dependency graph</title>
+  <desc id="description">The React feature contract is imported by the Bitcoin, Ethereum and Cardano Suite modules and by the Sign and Verify page. Optional sign-verify lego is imported by Bitcoin and Ethereum but not Cardano. The network modules are imported only by the app network registration, which, together with the page, is imported by the web and desktop composition roots. Arrows point from a dependency to the code that imports it.</desc>
+  <style>
+ text { font-family: Inter, "Segoe UI", Arial, sans-serif; }
+ .pkg { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size:16px; font-weight:500; fill:#283443; }
+ .detail { font-size:16px; fill:#5e6977; }
+ .layer { font-size:19px; font-weight:650; letter-spacing:.3px; }
+ .layer-detail { font-size:16px; fill:#647080; }
+</style>
+  <defs>
+    <marker id="arrow-contract" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#8b75b5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+    </marker>
+    <marker id="arrow-lego" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#649664" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+    </marker>
+    <marker id="arrow-network" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#b89446" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+    </marker>
+    <marker id="arrow-app" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#6484b4" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+    </marker>
+  </defs>
+  <rect width="1600" height="1090" fill="#ffffff" />
+
+  <!-- Layer panels -->
+  <rect x="120" y="80" width="1360" height="130" rx="20" fill="#f3efff" stroke="#8b75b5" />
+  <rect x="120" y="275" width="1360" height="140" rx="20" fill="#eef8ee" stroke="#649664" />
+  <rect x="120" y="480" width="1360" height="140" rx="20" fill="#fff7e6" stroke="#b89446" />
+  <rect x="120" y="735" width="1360" height="320" rx="20" fill="#edf3ff" stroke="#6484b4" />
+
+  <!-- Layer labels -->
+  <rect x="120" y="39" width="34" height="25" rx="7" fill="#8b75b5" fill-opacity=".12" stroke="#8b75b5" stroke-opacity=".35" />
+  <text x="137" y="57" text-anchor="middle" fill="#8b75b5" font-size="12" font-weight="700">01</text>
+  <text x="170" y="60" class="layer" fill="#8b75b5">CONTRACTS</text>
+  <text x="330" y="59" class="layer-detail">Feature slots as React components · no implementations</text>
+
+  <rect x="120" y="234" width="34" height="25" rx="7" fill="#649664" fill-opacity=".12" stroke="#649664" stroke-opacity=".35" />
+  <text x="137" y="252" text-anchor="middle" fill="#649664" font-size="12" font-weight="700">02</text>
+  <text x="170" y="255" class="layer" fill="#649664">REUSABLE / LEGO</text>
+  <text x="400" y="254" class="layer-detail">Optional parts shared by modules</text>
+
+  <rect x="120" y="439" width="34" height="25" rx="7" fill="#b89446" fill-opacity=".12" stroke="#b89446" stroke-opacity=".35" />
+  <text x="137" y="457" text-anchor="middle" fill="#b89446" font-size="12" font-weight="700">03</text>
+  <text x="170" y="460" class="layer" fill="#b89446">NETWORK MODULES</text>
+  <text x="440" y="459" class="layer-detail">Complete feature UI per network family</text>
+
+  <rect x="120" y="694" width="34" height="25" rx="7" fill="#6484b4" fill-opacity=".12" stroke="#6484b4" stroke-opacity=".35" />
+  <text x="137" y="712" text-anchor="middle" fill="#6484b4" font-size="12" font-weight="700">04</text>
+  <text x="170" y="715" class="layer" fill="#6484b4">APPLICATION</text>
+  <text x="720" y="714" class="layer-detail">Registration · page wiring · composition roots</text>
+
+  <!-- Arrows: contract to importers -->
+  <path d="M 500 143 H 96 Q 80 143 80 159 V 534 Q 80 550 96 550 H 160" fill="none" stroke="#8b75b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-contract)" />
+  <path d="M 800 181 V 505" fill="none" stroke="#8b75b5" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-contract)" />
+  <path d="M 1100 133 H 1504 Q 1520 133 1520 149 V 534 Q 1520 550 1504 550 H 1440" fill="none" stroke="#8b75b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-contract)" />
+  <path d="M 1100 153 H 1534 Q 1550 153 1550 169 V 789 Q 1550 805 1534 805 H 1420" fill="none" stroke="#8b75b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-contract)" />
+
+  <!-- Arrows: lego to network modules -->
+  <path d="M 900 390 V 418 Q 900 430 888 430 H 412 Q 400 430 400 442 V 505" fill="none" stroke="#649664" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-lego)" />
+  <path d="M 960 390 V 505" fill="none" stroke="#649664" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-lego)" />
+
+  <!-- Arrows: network modules to registration -->
+  <path d="M 360 595 V 765" fill="none" stroke="#b89446" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-network)" />
+  <path d="M 800 595 V 618 Q 800 630 788 630 H 572 Q 560 630 560 642 V 765" fill="none" stroke="#b89446" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-network)" />
+  <path d="M 1240 595 V 629 Q 1240 641 1228 641 H 692 Q 680 641 680 653 V 765" fill="none" stroke="#b89446" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-network)" />
+
+  <!-- Arrows: app wiring to composition roots -->
+  <path d="M 400 865 V 950" fill="none" stroke="#6484b4" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-app)" />
+  <path d="M 600 865 C 600 910 1000 905 1000 950" fill="none" stroke="#6484b4" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-app)" />
+  <path d="M 1000 865 C 1000 910 600 905 600 950" fill="none" stroke="#8b75b5" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-contract)" />
+  <path d="M 1200 865 V 950" fill="none" stroke="#8b75b5" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-contract)" />
+
+  <!-- Boundary: network modules never import app code -->
+  <line x1="25" y1="655" x2="1575" y2="655" stroke="#ef4444" stroke-width="5" />
+  <text x="1475" y="682" text-anchor="end" fill="#ef4444" font-size="15" font-weight="650">Network modules never import app code</text>
+
+  <!-- 01 Contracts -->
+  <rect x="500" y="105" width="600" height="76" rx="14" fill="#ffffff" stroke="#8b75b5" stroke-opacity=".65" />
+  <rect x="500" y="123" width="3" height="40" rx="1.5" fill="#8b75b5" />
+  <circle cx="522" cy="133" r="3" fill="#8b75b5" />
+  <text x="536" y="138" class="pkg">@trezor/network-module-suite-types</text>
+  <text x="524" y="164" class="detail">SignVerify, Send, … as optional React components</text>
+
+  <!-- 02 Lego -->
+  <rect x="180" y="300" width="560" height="90" rx="14" fill="#ffffff" stroke="#649664" stroke-opacity=".65" />
+  <rect x="180" y="318" width="3" height="54" rx="1.5" fill="#649664" />
+  <circle cx="202" cy="328" r="3" fill="#649664" />
+  <text x="216" y="333" class="pkg">@suite/intl · @suite/product-components</text>
+  <text x="204" y="359" class="detail">Used by every module and page (arrows omitted)</text>
+
+  <rect x="860" y="300" width="560" height="90" rx="14" fill="#ffffff" stroke="#649664" stroke-opacity=".65" />
+  <rect x="860" y="318" width="3" height="54" rx="1.5" fill="#649664" />
+  <circle cx="882" cy="328" r="3" fill="#649664" />
+  <text x="896" y="333" class="pkg">@suite/sign-verify</text>
+  <text x="884" y="359" class="detail">Message input, address picker, signature output</text>
+
+  <!-- 03 Network modules -->
+  <rect x="160" y="505" width="400" height="90" rx="14" fill="#ffffff" stroke="#b89446" stroke-opacity=".65" />
+  <rect x="160" y="523" width="3" height="54" rx="1.5" fill="#b89446" />
+  <circle cx="182" cy="533" r="3" fill="#b89446" />
+  <text x="196" y="538" class="pkg">@trezor/network-bitcoin-suite</text>
+  <text x="184" y="564" class="detail">Lego plus a signature format picker</text>
+
+  <rect x="600" y="505" width="400" height="90" rx="14" fill="#ffffff" stroke="#b89446" stroke-opacity=".65" />
+  <rect x="600" y="523" width="3" height="54" rx="1.5" fill="#b89446" />
+  <circle cx="622" cy="533" r="3" fill="#b89446" />
+  <text x="636" y="538" class="pkg">@trezor/network-ethereum-suite</text>
+  <text x="624" y="564" class="detail">One module for all EVM networks</text>
+
+  <rect x="1040" y="505" width="400" height="90" rx="14" fill="#ffffff" stroke="#b89446" stroke-opacity=".65" />
+  <rect x="1040" y="523" width="3" height="54" rx="1.5" fill="#b89446" />
+  <circle cx="1062" cy="533" r="3" fill="#b89446" />
+  <text x="1076" y="538" class="pkg">@trezor/network-cardano-suite</text>
+  <text x="1064" y="564" class="detail">Its own UI, no sign-verify lego</text>
+
+  <!-- 04 Application -->
+  <rect x="180" y="765" width="560" height="100" rx="14" fill="#ffffff" stroke="#6484b4" stroke-opacity=".65" />
+  <rect x="180" y="783" width="3" height="64" rx="1.5" fill="#6484b4" />
+  <circle cx="202" cy="793" r="3" fill="#6484b4" />
+  <text x="216" y="798" class="pkg">@suite-app/networks</text>
+  <text x="204" y="824" class="detail">Registers concrete network modules</text>
+
+  <rect x="860" y="765" width="560" height="100" rx="14" fill="#ffffff" stroke="#8b75b5" stroke-opacity=".65" />
+  <rect x="860" y="783" width="3" height="64" rx="1.5" fill="#8b75b5" />
+  <circle cx="882" cy="793" r="3" fill="#8b75b5" />
+  <text x="896" y="798" class="pkg">@suite-app/sign-verify-page</text>
+  <text x="884" y="824" class="detail">Renders the module's SignVerify slot</text>
+  <rect x="884" y="835" width="126" height="20" rx="5" fill="#8b75b5" fill-opacity=".12" />
+  <text x="947" y="849" text-anchor="middle" fill="#8b75b5" font-size="9" font-weight="700" letter-spacing="1.1">ABSTRACT API ONLY</text>
+
+  <rect x="180" y="950" width="560" height="80" rx="14" fill="#ffffff" stroke="#6484b4" stroke-opacity=".65" />
+  <rect x="180" y="968" width="3" height="44" rx="1.5" fill="#6484b4" />
+  <circle cx="202" cy="978" r="3" fill="#6484b4" />
+  <text x="216" y="983" class="pkg">@suite-app/web-app</text>
+  <rect x="204" y="996" width="148" height="23" rx="6" fill="#6484b4" fill-opacity=".13" />
+  <text x="278" y="1012" text-anchor="middle" fill="#6484b4" font-size="10" font-weight="700" letter-spacing="1.1">COMPOSITION ROOT</text>
+
+  <rect x="860" y="950" width="560" height="80" rx="14" fill="#ffffff" stroke="#6484b4" stroke-opacity=".65" />
+  <rect x="860" y="968" width="3" height="44" rx="1.5" fill="#6484b4" />
+  <circle cx="882" cy="978" r="3" fill="#6484b4" />
+  <text x="896" y="983" class="pkg">@suite-app/desktop-app-renderer</text>
+  <rect x="884" y="996" width="148" height="23" rx="6" fill="#6484b4" fill-opacity=".13" />
+  <text x="958" y="1012" text-anchor="middle" fill="#6484b4" font-size="10" font-weight="700" letter-spacing="1.1">COMPOSITION ROOT</text>
+</svg>
