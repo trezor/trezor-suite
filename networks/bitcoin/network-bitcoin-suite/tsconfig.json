@@ -3,9 +3,16 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../../suite-common/sign-verify"
+        },
+        { "path": "../../../suite/intl" },
+        { "path": "../../../suite/sign-verify" },
+        {
             "path": "../network-bitcoin-suite-common"
         },
-        { "path": "../network-bitcoin-types" },
+        {
+            "path": "../network-bitcoin-types"
+        },
         {
             "path": "../../network-module/suite/suite-types"
         }

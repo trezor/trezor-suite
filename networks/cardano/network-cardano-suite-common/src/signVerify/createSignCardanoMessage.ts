@@ -15,7 +15,7 @@ import {
     getProtocolMagic,
     getStakingPath,
 } from '../cardanoAddressParameters';
-import { type CardanoSignatureFormat, toCardanoSignatureFormat } from './cardanoSignatureFormats';
+import { type CardanoSignatureFormat } from './cardanoSignatureFormats';
 
 export type SignCardanoMessageDeps = GetTrezorConnectDep<'cardanoSignMessage'>;
 
@@ -27,7 +27,7 @@ export type SignCardanoMessageParams = {
     path: string;
     message: string;
     hex: boolean;
-    format?: string;
+    format: CardanoSignatureFormat;
 };
 
 export type CardanoSignedMessage = {
@@ -70,12 +70,6 @@ const getPublicKey = (
 export const createSignCardanoMessage =
     (deps: SignCardanoMessageDeps): SignCardanoMessage =>
     async (networkSymbol, { device, accountIndex, accountType, path, message, hex, format }) => {
-        const signatureFormat = toCardanoSignatureFormat(format);
-
-        if (!signatureFormat.success) {
-            return signatureFormat;
-        }
-
         const response = await deps.getTrezorConnect().cardanoSignMessage({
             device,
             path,
@@ -89,7 +83,7 @@ export const createSignCardanoMessage =
         return response.success
             ? ok({
                   signature: response.payload.coseSignature,
-                  pubKey: getPublicKey(signatureFormat.payload, response.payload),
+                  pubKey: getPublicKey(format, response.payload),
                   address: response.payload.headers.protected.address,
               })
             : err(connectErrorToSignVerifyError(response.error));

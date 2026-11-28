@@ -11,7 +11,7 @@ import {
 } from '@trezor/network-module-suite-common-types';
 import { type Result, err, ok } from '@trezor/type-utils';
 
-import { toBitcoinSignatureFormat } from './bitcoinSignatureFormats';
+import { type BitcoinSignatureFormat } from './bitcoinSignatureFormats';
 
 export type SignBitcoinMessageDeps = GetTrezorConnectDep<'signMessage'>;
 
@@ -20,7 +20,7 @@ export type SignBitcoinMessageParams = {
     path: string;
     message: string;
     hex: boolean;
-    format?: string;
+    format: BitcoinSignatureFormat;
 };
 
 export type SignBitcoinMessage = (
@@ -35,19 +35,13 @@ export type SignBitcoinMessageDep = {
 export const createSignBitcoinMessage =
     (deps: SignBitcoinMessageDeps): SignBitcoinMessage =>
     async (networkSymbol, { device, path, message, hex, format }) => {
-        const signatureFormat = toBitcoinSignatureFormat(format);
-
-        if (!signatureFormat.success) {
-            return signatureFormat;
-        }
-
         const response = await deps.getTrezorConnect().signMessage({
             device,
             path,
             coin: asCoinSymbol(networkSymbol),
             message,
             hex,
-            no_script_type: signatureFormat.payload === 'electrum',
+            no_script_type: format === 'electrum',
         });
 
         return response.success

@@ -38,7 +38,6 @@ const getVerifyErrorToast = (error: VerifyError): ToastPayload => {
             return { type: 'verify-message-cancelled' };
         case 'DeviceError':
         case 'DeviceNotConnectedError':
-        case 'SignVerifyNotSupported':
             return { type: 'verify-message-error', error: getErrorMessage(error) };
         default:
             return exhaustive(error);

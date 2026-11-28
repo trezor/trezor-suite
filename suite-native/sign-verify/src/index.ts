@@ -1,1 +1,1 @@
-export { SignVerifyForms } from './SignVerifyForms';
+export { SignVerify } from './SignVerify';

@@ -7,8 +7,6 @@ import type { SuiteCommonNetworkModule } from './SuiteCommonNetworkModule';
 import type { AddressValidator } from './addressValidator/AddressValidator';
 import type { NamedAddressResolver } from './namedAddressResolver/NamedAddressResolver';
 import { createNamedAddressResolver } from './namedAddressResolver/createNamedAddressResolver';
-import type { NetworkSignVerify } from './signVerify/NetworkSignVerify';
-import { createNetworkSignVerify } from './signVerify/createNetworkSignVerify';
 
 /**
  * A module's own capabilities, stated in terms of the symbols that module supports.
@@ -27,8 +25,6 @@ export type NetworkModuleDefinition<TNetworkSymbol extends string> = {
     getNetworkConfig: (networkSymbol: TNetworkSymbol) => SuiteCommonNetworkConfig;
 
     getAccountSyncInterval: (networkSymbol: TNetworkSymbol) => number;
-
-    signVerify?: NetworkSignVerify<TNetworkSymbol>;
 };
 
 /**
@@ -46,7 +42,7 @@ export const createNetworkModule = <TNetworkSymbol extends string>(
 ): SuiteCommonNetworkModule => {
     const narrow = createNarrow(supportedNetworks);
 
-    const { isWrappedNativeToken, namedAddressResolver, signVerify } = definition;
+    const { isWrappedNativeToken, namedAddressResolver } = definition;
 
     return {
         icon: definition.icon,
@@ -61,6 +57,5 @@ export const createNetworkModule = <TNetworkSymbol extends string>(
         getSupportedNetworks: () => asNetworkSymbols(supportedNetworks),
         getNetworkConfig: narrow(definition.getNetworkConfig),
         getAccountSyncInterval: narrow(definition.getAccountSyncInterval),
-        signVerify: signVerify && createNetworkSignVerify(signVerify, supportedNetworks),
     };
 };

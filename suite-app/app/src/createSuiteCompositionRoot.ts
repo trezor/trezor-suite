@@ -36,7 +36,7 @@ import {
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { createQueryClient } from '@suite-common/react-query';
 import { createReferAFriendCompositionRoot } from '@suite-common/refer-a-friend';
-import { createSignVerify } from '@suite-common/sign-verify';
+import { createSignVerifyReporter } from '@suite-common/sign-verify';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
     createSuiteSyncWriteLabels,
@@ -166,8 +166,9 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     });
 
     const networkModuleDeps = {
-        getTrezorConnect: deps.getTrezorConnect,
+        ...deps,
         getTrezorBlockchain: () => TrezorBlockchain,
+        signVerifyReporter: createSignVerifyReporter({ analytics, dispatch: deps.dispatch }),
     };
     const suiteNetworkModules: SuiteNetworkModule[] = [
         createBitcoinSuiteNetworkModule(networkModuleDeps),
@@ -218,11 +219,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         db: deps.db,
         desktopApi: deps.desktopApi,
         networks,
-        signVerify: createSignVerify({
-            networkModuleRepository,
-            analytics,
-            dispatch: deps.dispatch,
-        }),
         getSignVerify: createGetSignVerify({ suiteNetworkModuleRepository }),
         staking,
         queryClient,

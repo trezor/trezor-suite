@@ -11,12 +11,9 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@hookform/resolvers": "^5.9.2",
-        "@suite-common/networks": "workspace:*",
         "@suite-common/sign-verify": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
-        "@suite-common/wallet-types": "workspace:*",
         "@suite/address": "workspace:*",
         "@suite/device": "workspace:*",
         "@suite/intl": "workspace:*",
@@ -24,15 +21,13 @@
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
-        "@trezor/network-cardano-suite-common": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/zod": "workspace:*",
         "react": "19.3.0",
-        "react-hook-form": "^7.91.0",
-        "react-redux": "9.3.1"
+        "react-hook-form": "^7.91.0"
     },
     "devDependencies": {
         "@types/react": "19.3.0"

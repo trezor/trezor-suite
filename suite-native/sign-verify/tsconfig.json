@@ -10,22 +10,13 @@
             "path": "../../suite-common/sign-verify"
         },
         {
-            "path": "../../suite-common/wallet-types"
-        },
-        {
-            "path": "../../suite-common/wallet-utils"
+            "path": "../../suite-common/suite-types"
         },
         { "path": "../atoms" },
+        { "path": "../clipboard" },
         { "path": "../device-authorization" },
-        { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../navigation" },
-        {
-            "path": "../../packages/dependency-injection"
-        },
-        {
-            "path": "../../networks/cardano/network-cardano-suite-common"
-        },
         {
             "path": "../../networks/network-module/suite-common/suite-common-types"
         },
@@ -34,5 +25,6 @@
         },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
-    ]
+    ],
+    "include": [".", "**/*.json"]
 }

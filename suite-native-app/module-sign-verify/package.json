@@ -17,7 +17,8 @@
         "@suite-native/device": "workspace:*",
         "@suite-native/device-authorization": "workspace:*",
         "@suite-native/navigation": "workspace:*",
-        "@suite-native/sign-verify": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
+        "@trezor/network-module-suite-native-types": "workspace:*",
         "react": "19.3.0",
         "react-redux": "9.3.1"
     }

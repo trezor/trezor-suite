@@ -3,9 +3,20 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../../suite-common/sign-verify"
+        },
+        {
+            "path": "../../../suite-native/intl"
+        },
+        {
+            "path": "../../../suite-native/sign-verify"
+        },
+        {
             "path": "../network-cardano-suite-common"
         },
-        { "path": "../network-cardano-types" },
+        {
+            "path": "../network-cardano-types"
+        },
         {
             "path": "../../network-module/suite-native/suite-native-types"
         }

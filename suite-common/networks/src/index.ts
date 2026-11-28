@@ -65,7 +65,6 @@ export {
 } from './createGetNetworkConfig';
 export {
     createNetworkModuleRepository,
-    injectNetworkModuleRepository,
     type NetworkModuleRepository,
     type NetworkModuleRepositoryDep,
     type NetworkModuleRepositoryDeps,

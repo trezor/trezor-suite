@@ -1,8 +1,7 @@
 import { selectFullSelectedAccount } from '@suite/account';
 import { useDevice } from '@suite/device';
-import { SignVerifyDefaultTemplate } from '@suite/sign-verify';
-import { injectSignVerify } from '@suite-common/sign-verify';
 import { useServices } from '@trezor/dependency-injection';
+import { injectGetSignVerify } from '@trezor/network-module-suite-types';
 import {
     ConnectDeviceGenericPromo,
     WalletLayout,
@@ -13,7 +12,7 @@ import {
 export const SignVerifyPage = () => {
     const selectedAccount = useSelector(selectFullSelectedAccount);
     const { device } = useDevice();
-    const { signVerify } = useServices(injectSignVerify);
+    const { getSignVerify } = useServices(injectGetSignVerify);
 
     const { account } = selectedAccount;
 
@@ -21,16 +20,25 @@ export const SignVerifyPage = () => {
         return null;
     }
 
-    const title = signVerify.isVerifySupported(account) ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE';
+    const signVerify = getSignVerify(account.symbol);
+
+    if (signVerify === null) {
+        return null;
+    }
+
     const isDeviceConnected = device?.connected && device?.available;
 
     return (
-        <WalletLayout title={title} isSubpage account={selectedAccount}>
-            <WalletSubpageHeading title={title} />
+        <WalletLayout title={signVerify.title} isSubpage account={selectedAccount}>
+            <WalletSubpageHeading title={signVerify.title} />
 
             {!isDeviceConnected && <ConnectDeviceGenericPromo />}
 
-            <SignVerifyDefaultTemplate key={account.key} account={account} />
+            <signVerify.Component
+                key={account.key}
+                networkSymbol={account.symbol}
+                account={account}
+            />
         </WalletLayout>
     );
 };
