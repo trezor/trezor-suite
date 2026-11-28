@@ -4,17 +4,13 @@ import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { selectLanguage } from '@suite/settings';
 import { getFormattedCurrencySymbol } from '@suite-common/formatters';
 import { type TokenAddress } from '@suite-common/tokens';
-import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type FiatRatesRootState,
-    selectBaseCurrency,
-    selectFiatRatesByFiatRateKey,
-    selectIsBaseCurrencyInSats,
-} from '@suite-common/wallet-core';
-import { getFiatRateKey, parseCryptoToFormattedBaseCurrency } from '@suite-common/wallet-utils';
+import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
+import { parseCryptoToFormattedBaseCurrency } from '@suite-common/wallet-utils';
 import { Row, Text } from '@trezor/components';
 import { BigNumber, localizeNumber } from '@trezor/utils';
+
+import { useTradingFiatRate } from '#src/hooks/wallet/trading/form/common/useTradingFiatRate';
 
 type TradingBaseCurrencyAmountTextProps = {
     amount: string | undefined;
@@ -30,16 +26,7 @@ export const TradingBaseCurrencyAmountText = ({
     const locale = useSelector(selectLanguage);
     const baseCurrency = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
-    const isNativeToken = !tokenAddress || tokenAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
-    const rateTokenAddress = isNativeToken ? undefined : tokenAddress;
-    const rate = useSelector(
-        (state: FiatRatesRootState) =>
-            selectFiatRatesByFiatRateKey(
-                state,
-                getFiatRateKey(symbol, baseCurrency, rateTokenAddress),
-                'current',
-            )?.rate,
-    );
+    const rate = useTradingFiatRate({ symbol, tokenAddress });
 
     if (!rate) {
         return null;

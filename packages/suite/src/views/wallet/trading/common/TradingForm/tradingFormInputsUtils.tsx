@@ -3,7 +3,12 @@ import { type CSSProperties } from 'react';
 import { Translation } from '@suite/intl';
 import { truncateCryptoAmount } from '@suite-common/formatters';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
+import {
+    asAmountSubunit,
+    asAmountUnit,
+    subunitsToUnits,
+    unitsToSubunits,
+} from '@suite-common/wallet-utils';
 import { type FractionButtonProps } from '@trezor/components';
 import { typographyStylesBase } from '@trezor/theme';
 import { BigNumber, clamp } from '@trezor/utils';
@@ -99,4 +104,30 @@ export const getPayAmountInFormUnit = ({
               symbol: asNetworkSymbol('btc'),
           }).toFixed()
         : truncatedValue.toFixed();
+};
+
+type GetPayAmountFromFiatRatesParams = {
+    amount: string;
+    sendRate: number | undefined;
+    receiveRate: number | undefined;
+    isAmountInSats: boolean | undefined;
+};
+
+export const getPayAmountFromFiatRates = ({
+    amount,
+    sendRate,
+    receiveRate,
+    isAmountInSats,
+}: GetPayAmountFromFiatRatesParams) => {
+    const value = new BigNumber(amount);
+
+    if (value.isNaN() || !sendRate || !receiveRate) {
+        return undefined;
+    }
+
+    const amountInUnits = isAmountInSats
+        ? subunitsToUnits({ value: asAmountSubunit(value), symbol: asNetworkSymbol('btc') })
+        : value;
+
+    return amountInUnits.times(sendRate).div(receiveRate).toFixed();
 };

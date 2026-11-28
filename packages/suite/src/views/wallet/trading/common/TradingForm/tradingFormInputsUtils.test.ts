@@ -1,6 +1,10 @@
 import { typographyStylesBase } from '@trezor/theme';
 
-import { getPayAmountInFormUnit, getTradingAmountInputStyle } from './tradingFormInputsUtils';
+import {
+    getPayAmountFromFiatRates,
+    getPayAmountInFormUnit,
+    getTradingAmountInputStyle,
+} from './tradingFormInputsUtils';
 
 const { fontSize: maxFontSize } = typographyStylesBase['headline-md'];
 const minFontSize = Math.ceil(maxFontSize / 2);
@@ -63,6 +67,41 @@ describe('getPayAmountInFormUnit', () => {
     it('drops an amount that is not a number', () => {
         expect(
             getPayAmountInFormUnit({ amount: '', decimals: 8, shouldSendInSats: true }),
+        ).toBeUndefined();
+    });
+});
+
+describe('getPayAmountFromFiatRates', () => {
+    it('keeps the fiat value of the amount on the other asset', () => {
+        expect(
+            getPayAmountFromFiatRates({
+                amount: '12',
+                sendRate: 1,
+                receiveRate: 80000,
+                isAmountInSats: false,
+            }),
+        ).toBe('0.00015');
+    });
+
+    it('reads an amount in satoshis as bitcoins', () => {
+        expect(
+            getPayAmountFromFiatRates({
+                amount: '15000',
+                sendRate: 80000,
+                receiveRate: 1,
+                isAmountInSats: true,
+            }),
+        ).toBe('12');
+    });
+
+    it('does not convert without a rate', () => {
+        expect(
+            getPayAmountFromFiatRates({
+                amount: '12',
+                sendRate: 1,
+                receiveRate: undefined,
+                isAmountInSats: false,
+            }),
         ).toBeUndefined();
     });
 });

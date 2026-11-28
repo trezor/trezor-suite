@@ -139,11 +139,9 @@ export const useTradingExchangeAssetSelect = ({
                 return;
             }
 
-            if (payAmount) {
-                setValueRef.current(TRADING_FORM_OUTPUT_AMOUNT, payAmount, { shouldDirty: true });
-                setValueRef.current(TRADING_FORM_AMOUNT_IN_CRYPTO, true, { shouldDirty: true });
-                setValueRef.current(TRADING_FORM_AMOUNT_INPUT_SOURCE, 'crypto');
-            }
+            setValueRef.current(TRADING_FORM_OUTPUT_AMOUNT, payAmount ?? '', { shouldDirty: true });
+            setValueRef.current(TRADING_FORM_AMOUNT_IN_CRYPTO, true, { shouldDirty: true });
+            setValueRef.current(TRADING_FORM_AMOUNT_INPUT_SOURCE, 'crypto');
 
             handleSellAssetSelect({ ...receiveCryptoSelect, accountKey: receiveAccountKey });
         },

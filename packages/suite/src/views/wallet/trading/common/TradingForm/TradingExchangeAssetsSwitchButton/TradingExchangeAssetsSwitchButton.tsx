@@ -3,7 +3,9 @@ import { useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
+    TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingAssetOption,
@@ -17,10 +19,11 @@ import { IconButton, Row } from '@trezor/components';
 import { ArrowsDownUpIcon } from '@trezor/icons';
 
 import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
+import { useTradingFiatRate } from '#src/hooks/wallet/trading/form/common/useTradingFiatRate';
 import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 
 import { TradingExchangeSwitchInactiveNetworkModal } from './TradingExchangeSwitchInactiveNetworkModal';
-import { getPayAmountInFormUnit } from '../tradingFormInputsUtils';
+import { getPayAmountFromFiatRates, getPayAmountInFormUnit } from '../tradingFormInputsUtils';
 import { type HandleAssetsSwitchParams } from '../useTradingExchangeAssetSelect';
 
 type TradingExchangeAssetsSwitchButtonProps = {
@@ -44,12 +47,21 @@ export const TradingExchangeAssetsSwitchButton = ({
     const { getAssetDecimals } = useTradingAssetDecimals();
     const { control, tradingReceiveAddress, shouldSendInSats } =
         useTradingFormContext<TradingExchangeType>();
-    const [sendCryptoSelect, receiveCryptoSelect] = useWatch({
+    const [sendCryptoSelect, receiveCryptoSelect, sendAmount] = useWatch({
         control,
         name: [
             TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
             TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
+            TRADING_FORM_OUTPUT_AMOUNT,
         ],
+    });
+    const sendRate = useTradingFiatRate({
+        symbol: sendCryptoSelect?.networkSymbol,
+        tokenAddress: sendCryptoSelect?.contractAddress as TokenAddress | null | undefined,
+    });
+    const receiveRate = useTradingFiatRate({
+        symbol: receiveCryptoSelect?.networkSymbol,
+        tokenAddress: receiveCryptoSelect?.contractAddress as TokenAddress | null | undefined,
     });
 
     const receiveAccountKey = tradingReceiveAddress.selectedAccount?.key;
@@ -75,11 +87,20 @@ export const TradingExchangeAssetsSwitchButton = ({
             return;
         }
 
+        const amount =
+            receiveAmount ||
+            getPayAmountFromFiatRates({
+                amount: sendAmount,
+                sendRate,
+                receiveRate,
+                isAmountInSats: shouldSendInSats,
+            });
+
         onSwitch({
             receiveAccountKey,
-            payAmount: receiveAmount
+            payAmount: amount
                 ? getPayAmountInFormUnit({
-                      amount: receiveAmount,
+                      amount,
                       decimals: getAssetDecimals({
                           accountKey: receiveAccountKey,
                           cryptoId: receiveCryptoSelect.id,
