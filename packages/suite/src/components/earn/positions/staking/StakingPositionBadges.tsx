@@ -25,7 +25,7 @@ import { EarnRateBadge } from '#src/components/earn/positions/EarnRateBadge';
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
 
 type StakingPositionBadgesProps = {
-    accountKey: AccountKey;
+    accountKey?: AccountKey;
     balances: StakingPositionBalances;
     rate?: number | null;
     rateKind?: StakingRateKind;
@@ -39,16 +39,21 @@ export const StakingPositionBadges = ({
 }: StakingPositionBadgesProps) => {
     const formatApyValue = useFormatApy();
 
-    const hasOutdatedProvider = useSelector((state: StakingRootState) =>
-        selectHasStakingAccountWarning(state, accountKey, 'outdated-provider'),
+    const hasOutdatedProvider = useSelector(
+        (state: StakingRootState) =>
+            accountKey !== undefined &&
+            selectHasStakingAccountWarning(state, accountKey, 'outdated-provider'),
     );
 
-    const isDelegatedOutside = useSelector((state: StakingRootState) =>
-        selectIsStakingAccountDelegatedOutside(state, accountKey),
+    const isDelegatedOutside = useSelector(
+        (state: StakingRootState) =>
+            accountKey !== undefined && selectIsStakingAccountDelegatedOutside(state, accountKey),
     );
 
     const tronStaking = useSelector((state: StakingRootState) =>
-        selectStakingAccountPositionDetails(state, accountKey, 'tron-staking'),
+        accountKey === undefined
+            ? null
+            : selectStakingAccountPositionDetails(state, accountKey, 'tron-staking'),
     );
 
     const hasUnallocatedVotes =

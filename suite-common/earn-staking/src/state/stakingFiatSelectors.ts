@@ -1,4 +1,7 @@
-import { getStakingPositionAmount } from '@suite-common/earn-staking-common';
+import {
+    getStakingPositionAmount,
+    hasUnvaluedLiquidStakingBalance,
+} from '@suite-common/earn-staking-common';
 import {
     type EarnFiatPosition,
     type EarnFiatValuation,
@@ -21,7 +24,7 @@ import {
 
 import {
     type StakingDeviceRootState,
-    selectDeviceStakingPositionEntries,
+    selectDeviceEarnStakingPositionEntries,
 } from './stakingDeviceSelectors';
 import { formatStakingAmount } from '../utils/formatStakingAmount';
 
@@ -29,29 +32,35 @@ export type StakingFiatRootState = StakingDeviceRootState &
     FiatRatesRootState &
     WalletSettingsRootState;
 
+type StakingFiatPosition = Omit<EarnFiatPosition, 'balance'> & { balance: string | null };
+
 const createStableFiatPosition = weakMapMemoize(
     (
         tickerId: TickerId,
         fiatRateKey: CryptoBaseCurrencyPair,
-        balance: string,
-    ): EarnFiatPosition => ({ tickerId, fiatRateKey, balance }),
+        balance: string | null,
+    ): StakingFiatPosition => ({ tickerId, fiatRateKey, balance }),
 );
 
-const createStableFiatPositions = weakMapMemoize((...positions: EarnFiatPosition[]) => positions);
+const createStableFiatPositions = weakMapMemoize(
+    (...positions: StakingFiatPosition[]) => positions,
+);
 
 export const selectDeviceStakingFiatPositions = createWeakMapSelector(
-    [selectDeviceStakingPositionEntries, selectBaseCurrency],
-    (entries, baseCurrency): readonly EarnFiatPosition[] =>
+    [selectDeviceEarnStakingPositionEntries, selectBaseCurrency],
+    (entries, baseCurrency): readonly StakingFiatPosition[] =>
         returnStableArrayIfEmpty(
             createStableFiatPositions(
                 ...entries.map(({ position, descriptor: { networkSymbol } }) =>
                     createStableFiatPosition(
                         createStableTickerId(networkSymbol),
                         getFiatRateKey(networkSymbol, baseCurrency),
-                        formatStakingAmount({
-                            amount: getStakingPositionAmount(position),
-                            networkSymbol,
-                        }),
+                        hasUnvaluedLiquidStakingBalance(position)
+                            ? null
+                            : formatStakingAmount({
+                                  amount: getStakingPositionAmount(position),
+                                  networkSymbol,
+                              }),
                     ),
                 ),
             ),
@@ -71,9 +80,15 @@ export const selectDeviceStakingFiatValuations = createWeakMapSelector(
     [selectDeviceStakingFiatPositions, selectDeviceStakingCurrentFiatRates],
     (positions, currentFiatRates): readonly EarnFiatValuation[] =>
         returnStableArrayIfEmpty(
-            positions.map(position => ({
-                tickerId: position.tickerId,
-                fiatAmount: getEarnPositionFiatAmount(position, currentFiatRates),
+            positions.map(({ tickerId, fiatRateKey, balance }) => ({
+                tickerId,
+                fiatAmount:
+                    balance === null
+                        ? null
+                        : getEarnPositionFiatAmount(
+                              { tickerId, fiatRateKey, balance },
+                              currentFiatRates,
+                          ),
             })),
         ),
 );

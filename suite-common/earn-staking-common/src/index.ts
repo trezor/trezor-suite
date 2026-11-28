@@ -121,6 +121,7 @@ export {
     getStakingPositionRate,
     hasPendingStakingOperation,
     hasStakingPositionWarning,
+    hasUnvaluedLiquidStakingBalance,
     isStakingPositionActive,
     type GetStakingPositionRateParams,
 } from './utils/stakingPositionUtils';

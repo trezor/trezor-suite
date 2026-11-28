@@ -18,6 +18,11 @@ export const getStakingPositionAmount = ({ balances }: StakingPosition): Staking
         BigNumber.sum(balances.staked, balances.pending, balances.unstaking, balances.withdrawable),
     );
 
+export const hasUnvaluedLiquidStakingBalance = ({ details, balances }: StakingPosition): boolean =>
+    details?.kind === 'liquid-token' &&
+    new BigNumber(details.balance).gt(0) &&
+    new BigNumber(balances.staked).isZero();
+
 // What a rate applies to: the stake and what waits to join it. An unstaking or a withdrawable
 // amount earns nothing any more.
 export const getStakingEarningAmount = ({

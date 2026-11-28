@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import {
-    selectDeviceStakingPositionsCount,
+    selectDeviceEarnStakingPositionsCount,
     useRefreshStakingProductInfo,
 } from '@suite-common/earn-staking';
 import {
@@ -21,7 +21,7 @@ export const EarnPositions = () => {
 
     const { yieldOpportunities, isLoading, isError } = useYieldOpportunities();
 
-    const stakingPositionsCount = useSelector(selectDeviceStakingPositionsCount);
+    const stakingPositionsCount = useSelector(selectDeviceEarnStakingPositionsCount);
 
     const yieldPositionsCount = useSelector((state: EarnListRootState) =>
         selectYieldPositionsCount(state, yieldOpportunities),
