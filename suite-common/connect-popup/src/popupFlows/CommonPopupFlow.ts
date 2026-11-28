@@ -46,6 +46,8 @@ export type PopupFlowParams<M extends CallMethodKeys> = {
     method: M;
     payload: PopupFlowPayload<M>;
     source: ConnectCallSource;
+    /** Id of the popup call the flow runs for, see `requestPopupCall`. */
+    callId?: string;
 };
 
 export type PopupFlowThunkApi = {
@@ -74,6 +76,14 @@ export type PopupFlow = {
     cleanup(): void;
 };
 
+// The Connect calls of a flow run under the id of its popup call, so that the cancel of the popup
+// call ends them and nothing else. An id picked by the caller is replaced: it must not name a call
+// which is not its own. Only a deeplink payload, any JSON, may be something else than an object.
+const withCallId = <Payload>(payload: Payload, callId: string | undefined): Payload =>
+    callId && typeof payload === 'object' && payload !== null && !Array.isArray(payload)
+        ? { ...payload, callId }
+        : payload;
+
 /**
  * A Connect call made through the popup. `run()` asks for permissions, waits for the device and
  * calls the method. Used as it is for methods the popup does not adjust, subclasses named after
@@ -83,17 +93,19 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
     protected readonly method: M;
     protected readonly payload: PopupFlowPayload<M>;
     protected readonly source: ConnectCallSource;
+    protected readonly callId: string | undefined;
     protected readonly dispatch: Dispatch;
     protected readonly getState: () => any;
     protected readonly signal: AbortSignal;
 
     constructor(
-        { method, payload, source }: PopupFlowParams<M>,
+        { method, payload, source, callId }: PopupFlowParams<M>,
         { dispatch, getState, signal }: PopupFlowThunkApi,
     ) {
         this.method = method;
-        this.payload = payload;
+        this.payload = withCallId(payload, callId);
         this.source = source;
+        this.callId = callId;
         this.dispatch = dispatch;
         this.getState = getState;
         this.signal = signal;
@@ -170,6 +182,8 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
     /** Resolves to the successful response, a failure is thrown. */
     async run() {
         const methodInfo = await this.getMethodInfo();
+        // A call cancelled before it reached the popup must not open it.
+        this.throwIfCancelled();
         this.assertCallAllowed(methodInfo);
         const consentPermissions = this.initiateCall(methodInfo);
 
@@ -193,10 +207,17 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
     /** Prepares, makes and handles the call, also on behalf of a flow which delegates its call. */
     async process(txSigningPrecomposed?: PrecomposedTransactionFinal) {
         const payload = await this.preCall(txSigningPrecomposed);
+        // Connect can abort only a call it already has, so a cancel which came earlier ends the
+        // call here, before the device is asked.
+        this.throwIfCancelled();
         const response = await this.callMethod(payload);
         const isPostCallOngoing = await this.postCall(response as PopupFlowResponse<M>);
 
         return { response, isPostCallOngoing };
+    }
+
+    private throwIfCancelled() {
+        if (this.signal.aborted) throw TypedError('Method_Cancel');
     }
 
     // Applies to every flow, however it describes its call.
@@ -236,6 +257,7 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
                 },
                 payload,
                 source,
+                callId: this.callId,
             }),
         );
 

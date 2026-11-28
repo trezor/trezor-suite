@@ -70,8 +70,8 @@ export class SendTransaction extends CommonPopupFlow<'sendTransaction'> {
         isPicked = false,
     ): Promise<PrecomposeResultFinal> {
         const { dispatch, getState } = this;
-        // The app's callId lets its cancel interrupt whichever Connect call is in flight, the signal
-        // stops waiting for the backends.
+        // The callId of the popup call lets its cancel interrupt whichever Connect call is in
+        // flight, the signal stops waiting for the backends.
         const { outputs, identity, baseFee, sequence, sortingStrategy, callId } = this.payload;
         const coin = this.getCoin();
         const coinInfo = await TrezorConnect.getCoinInfo({ coin, callId }).then(getPayloadOrThrow);

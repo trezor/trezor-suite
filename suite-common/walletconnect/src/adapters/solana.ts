@@ -2,15 +2,13 @@ import { type WalletKitTypes } from '@reown/walletkit';
 import { base58 } from '@scure/base';
 import type { ProposalTypes } from '@walletconnect/types';
 
-import * as trezorConnectPopupActions from '@suite-common/connect-popup';
-import { selectSelectedDevice } from '@suite-common/device';
+import { type RequestPopupCallDep } from '@suite-common/connect-popup';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
-import { type CallMethodResponse } from '@trezor/connect';
-import { createThunk } from '@trezor/redux-utils';
-import { type Result } from '@trezor/type-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { type WalletConnectStateRootState, selectSessionByTopic } from '../walletConnectReducer';
@@ -29,10 +27,9 @@ const methods = [
     'solana_signMessage',
 ];
 
-type SolanaSignTransactionThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
-    AccountsRootState;
+type SolanaSignTransactionThunkState = DeviceRootState & AccountsRootState;
 
-type SolanaSignTransactionThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
+type SolanaSignTransactionThunkDeps = WithServices<RequestPopupCallDep>;
 
 const solanaSignTransactionThunk = createThunk<
     { signature: string; transaction: string },
@@ -46,7 +43,7 @@ const solanaSignTransactionThunk = createThunk<
     { state: SolanaSignTransactionThunkState; extra: SolanaSignTransactionThunkDeps }
 >(
     `${WALLETCONNECT_MODULE}/solanaSignTransaction`,
-    async ({ session, transaction, feePayer, origin, isDevnet }, { dispatch, getState }) => {
+    async ({ session, transaction, feePayer, origin, isDevnet }, { getState, extra }) => {
         // Convert from base64 to hex
         const transactionBuffer = Buffer.from(transaction, 'base64');
         const serializedTx = transactionBuffer.toString('hex');
@@ -76,30 +73,26 @@ const solanaSignTransactionThunk = createThunk<
             throw new Error('Account not found');
         }
 
-        dispatch(
-            trezorConnectPopupActions.connectPopupCallThunk({
-                method: 'solanaSignTransaction',
-                payload: {
-                    path: account.path,
-                    device,
-                    serializedTx,
-                    serialize: true,
-                    additionalInfo: {
-                        isDevnet,
-                    },
+        const response = await extra.services.requestPopupCall({
+            method: 'solanaSignTransaction',
+            payload: {
+                path: account.path,
+                device,
+                serializedTx,
+                serialize: true,
+                additionalInfo: {
+                    isDevnet,
                 },
-                source: {
-                    type: 'walletconnect' as const,
-                    origin,
-                    manifest: {
-                        appName: session.peer.metadata.name,
-                        appIcon: session.peer.metadata.icons?.[0],
-                    },
+            },
+            source: {
+                type: 'walletconnect' as const,
+                origin,
+                manifest: {
+                    appName: session.peer.metadata.name,
+                    appIcon: session.peer.metadata.icons?.[0],
                 },
-            }),
-        );
-        const response = (await trezorConnectPopupActions.getPopupCallDeferred(true)
-            .promise) as Result<CallMethodResponse<'solanaSignTransaction'>>;
+            },
+        });
         if (!response.success || !response.payload.serializedTx) {
             console.error('solana_signTransaction error', response);
             throw new Error('Solana signing error');

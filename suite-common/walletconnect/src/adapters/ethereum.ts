@@ -1,8 +1,8 @@
 import { type WalletKitTypes } from '@reown/walletkit';
 import type { ProposalTypes } from '@walletconnect/types';
 
-import * as trezorConnectPopupActions from '@suite-common/connect-popup';
-import { selectSelectedDevice } from '@suite-common/device';
+import { type RequestPopupCallDep } from '@suite-common/connect-popup';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
@@ -23,13 +23,9 @@ import {
     sanitizeHex,
 } from '@suite-common/wallet-utils';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
-import {
-    type CallMethodResponse,
-    type EthereumSignTypedData,
-    type EthereumSignTypedDataTypes,
-} from '@trezor/connect';
+import { type EthereumSignTypedData, type EthereumSignTypedDataTypes } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
-import { createThunk } from '@trezor/redux-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { isAscii, isHex, throwError } from '@trezor/utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
@@ -57,13 +53,13 @@ const TRANSACTION_QUANTITY_FIELDS = [
     'maxPriorityFeePerGas',
 ] as const;
 
-export type EthereumRequestThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
+export type EthereumRequestThunkState = DeviceRootState &
     WalletConnectStateRootState &
     MevProtectionRootState &
     WalletSettingsRootState &
     TransactionsRootState;
 
-export type EthereumRequestThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
+export type EthereumRequestThunkDeps = WithServices<RequestPopupCallDep>;
 
 const ethereumRequestThunk = createThunk<
     string | undefined,
@@ -71,7 +67,7 @@ const ethereumRequestThunk = createThunk<
         event: WalletKitTypes.SessionRequest;
     },
     { state: EthereumRequestThunkState; extra: EthereumRequestThunkDeps }
->(`${WALLETCONNECT_MODULE}/ethereumRequest`, async ({ event }, { dispatch, getState }) => {
+>(`${WALLETCONNECT_MODULE}/ethereumRequest`, async ({ event }, { dispatch, getState, extra }) => {
     const device = selectSelectedDevice(getState());
     const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
     const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
@@ -110,25 +106,21 @@ const ethereumRequestThunk = createThunk<
                 ? sanitizeHex(message)
                 : Buffer.from(message, 'utf8').toString('hex');
             const isReadable = isAscii(messageDecoded);
-            dispatch(
-                trezorConnectPopupActions.connectPopupCallThunk({
-                    ...popupCallCommonParams,
-                    method: 'ethereumSignMessage',
-                    payload: {
-                        path: account.path,
-                        message: isReadable ? messageDecoded : messageHex,
-                        hex: !isReadable,
-                    },
-                }),
-            );
-            const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+            const response = await extra.services.requestPopupCall({
+                ...popupCallCommonParams,
+                method: 'ethereumSignMessage',
+                payload: {
+                    path: account.path,
+                    message: isReadable ? messageDecoded : messageHex,
+                    hex: !isReadable,
+                },
+            });
             if (!response.success) {
                 console.error('personal_sign error', response);
                 throw new Error('personal_sign error');
             }
-            const typedPayload = response.payload as CallMethodResponse<'ethereumSignMessage'>;
 
-            return sanitizeHex(typedPayload.signature);
+            return sanitizeHex(response.payload.signature);
         }
         case 'eth_signTypedData_v4': {
             const [address, data] = event.params.request.params;
@@ -143,21 +135,17 @@ const ethereumRequestThunk = createThunk<
                 metamask_v4_compat: true,
             };
 
-            dispatch(
-                trezorConnectPopupActions.connectPopupCallThunk({
-                    ...popupCallCommonParams,
-                    method: 'ethereumSignTypedData',
-                    payload,
-                }),
-            );
-            const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+            const response = await extra.services.requestPopupCall({
+                ...popupCallCommonParams,
+                method: 'ethereumSignTypedData',
+                payload,
+            });
             if (!response.success) {
                 console.error('eth_signTypedData_v4 error', response);
                 throw new Error('eth_signTypedData_v4 error');
             }
-            const typedPayload = response.payload as CallMethodResponse<'ethereumSignTypedData'>;
 
-            return sanitizeHex(typedPayload.signature);
+            return sanitizeHex(response.payload.signature);
         }
         case 'eth_sendTransaction': {
             const chainId = Number(event.params.chainId.replace('eip155:', ''));
@@ -242,23 +230,18 @@ const ethereumRequestThunk = createThunk<
                 },
                 device,
             };
-            dispatch(
-                trezorConnectPopupActions.connectPopupCallThunk({
-                    ...popupCallCommonParams,
-                    method: 'ethereumSignTransaction',
-                    payload,
-                }),
-            );
-            const signResponse = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+            const signResponse = await extra.services.requestPopupCall({
+                ...popupCallCommonParams,
+                method: 'ethereumSignTransaction',
+                payload,
+            });
             if (!signResponse.success) {
                 console.error('eth_sendTransaction error', signResponse);
                 throw new Error('eth_sendTransaction error');
             }
-            const typedSignPayload =
-                signResponse.payload as CallMethodResponse<'ethereumSignTransaction'>;
 
             const pushResponse = await TrezorBlockchain.pushTransaction({
-                tx: typedSignPayload.serializedTx,
+                tx: signResponse.payload.serializedTx,
                 coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
                 disableAlternativeRPC: !isMevProtectionEnabled || !isMevProtectionFeatureEnabled,

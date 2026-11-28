@@ -32,7 +32,6 @@ import {
     mockGetDebugSettings,
     mockGetThpSettings,
 } from '@suite-common/connect-init/mocks';
-import { connectPopupInitialState } from '@suite-common/connect-popup';
 import { prepareDeviceReducer } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
 import {
@@ -70,7 +69,7 @@ import {
     walletConnectInitialState,
 } from '@suite-common/walletconnect';
 import TrezorConnect from '@trezor/connect';
-import { asGetter, mock } from '@trezor/dependency-injection';
+import { asGetter, mock, mockNotExpected } from '@trezor/dependency-injection';
 import { noopCreateLogger } from '@trezor/logger';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
@@ -133,7 +132,6 @@ const getInitialState = (): InitThunkState => ({
     wallet: walletReducers(undefined, EMPTY_ACTION),
     messageSystem: messageSystemReducer(undefined, EMPTY_ACTION),
     tokenDefinitions: tokenDefinitionsInitialState,
-    connectPopup: connectPopupInitialState,
     walletConnect: walletConnectInitialState,
     device: deviceReducer(undefined, EMPTY_ACTION),
     metadata: metadataReducer(undefined, EMPTY_ACTION),
@@ -319,6 +317,7 @@ const initStore = (state: InitThunkState) => {
             lockDevice: (isLocked: boolean): void => {
                 store.dispatch(lockDevice(isLocked));
             },
+            requestPopupCall: mockNotExpected('requestPopupCall'),
         }),
         middleware: [
             prepareSuiteMiddleware(() => ({ services: { suiteSync: mockSuiteSync() } })),

@@ -1,7 +1,5 @@
-import { type AsyncThunkAction } from '@reduxjs/toolkit';
-
 import { type AnalyticsDep, events } from '@suite-common/analytics';
-import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type LockDeviceDep } from '@suite-common/suite-types';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -28,7 +26,8 @@ import {
 import { createThunk } from '@trezor/redux-utils';
 
 import { connectPopupActions } from './connectPopupActions';
-import { getPermissionDeferred, getPopupCallDeferred } from './connectPopupPromiseManager';
+import { answerPopupCall, getPendingPopupCall } from './connectPopupCallQueue';
+import { getPermissionDeferred } from './connectPopupPromiseManager';
 import { type ConnectPopupStateRootState, selectConnectPopupCall } from './connectPopupReducer';
 import {
     CALL_SOURCE_DEEPLINK,
@@ -38,12 +37,13 @@ import {
     isDeviceReconnectError,
     isUtxoNetwork,
 } from './connectPopupTypes';
-import { type PopupFlowParams } from './popupFlows/CommonPopupFlow';
+import { type PopupFlow, type PopupFlowParams } from './popupFlows/CommonPopupFlow';
 import { createPopupFlow } from './popupFlows/createPopupFlow';
 import {
     applyRequestCompatibility,
     applyResponseCompatibility,
 } from './popupFlows/utils/compatibility';
+import { type RequestPopupCallDep } from './requestPopupCallTypes';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
 
@@ -82,31 +82,31 @@ const sanitizeCallSource = (source: ConnectCallSource): ConnectCallSource => {
     };
 };
 
-// Aborted by the cancel of the current call.
-let callAbortController = new AbortController();
-
 export type ConnectPopupCallInnerThunkState = DeviceRootState & ConnectPopupStateRootState;
 
 export type ConnectPopupCallInnerThunkDeps = {
     services: AnalyticsDep & LockDeviceDep;
 };
 
-export type ConnectPopupCallThunkState = ConnectPopupCallInnerThunkState;
-
-export type ConnectPopupCallThunkDeps = ConnectPopupCallInnerThunkDeps;
-
+// Runs a call which is in the queue, started by `requestPopupCall`. Dispatched again, with the call
+// as stored, to retry a call which is not answered yet (a reconnected or switched device).
 export const connectPopupCallInnerThunk = createThunk<
     void,
     PopupFlowParams<CallMethodKeys>,
     { state: ConnectPopupCallInnerThunkState; extra: ConnectPopupCallInnerThunkDeps }
 >(`${CONNECT_POPUP_MODULE}/callThunk`, async (declaredParams, { dispatch, getState, extra }) => {
-    callAbortController = new AbortController();
-    const { signal } = callAbortController;
+    // Nobody waits for a call which is not in the queue, e.g. one cancelled before its retry.
+    const call = getPendingPopupCall(declaredParams.callId);
+    if (!call) return;
+
+    const { signal } = call.abortController;
     const params = { ...declaredParams, source: sanitizeCallSource(declaredParams.source) };
-    const paramsCompat = applyRequestCompatibility(params);
-    const flow = createPopupFlow(paramsCompat, { dispatch, getState, signal });
+    let flow: PopupFlow | undefined;
 
     try {
+        // Created here, so that a call which cannot even be created is answered as well. A call
+        // without an answer would keep every later call waiting.
+        flow = createPopupFlow(applyRequestCompatibility(params), { dispatch, getState, signal });
         const responseOriginal = await flow.run();
         const response = applyResponseCompatibility(params, responseOriginal);
 
@@ -117,22 +117,28 @@ export const connectPopupCallInnerThunk = createThunk<
 
         // Not returned from the thunk, the response may hold confidential data which would then pass
         // through Redux.
-        if (!signal.aborted) getPopupCallDeferred().resolve(response);
+        answerPopupCall(call.id, response);
     } catch (error) {
         console.error('connectPopupCallThunk', error);
         if (error?.error === 'switching-device') {
             // Do nothing, call will be restarted after device switch
             return;
-        } else if (
-            error?.code === 'Method_Cancel' ||
-            error?.code === 'Method_Unsupported' // handled by fallback mechanism in connect-web
-        ) {
-            dispatch(connectPopupActions.finishCall());
-        } else {
-            dispatch(connectPopupActions.setError(serializeError(error)));
+        }
 
-            // don't return error, allow user to reconnect device
-            if (isDeviceReconnectError(error?.code)) return;
+        // The cancel has closed the popup of a cancelled call already. By now the popup may show
+        // the next call, which this one must not touch.
+        if (!signal.aborted) {
+            if (
+                error?.code === 'Method_Cancel' ||
+                error?.code === 'Method_Unsupported' // handled by fallback mechanism in connect-web
+            ) {
+                dispatch(connectPopupActions.finishCall());
+            } else {
+                dispatch(connectPopupActions.setError(serializeError(error)));
+
+                // don't return error, allow user to reconnect device
+                if (isDeviceReconnectError(error?.code)) return;
+            }
         }
 
         extra.services.analytics.report({
@@ -140,37 +146,26 @@ export const connectPopupCallInnerThunk = createThunk<
             payload: { ...getCallAttributes(params), error: error?.code },
         });
 
-        if (!signal.aborted)
-            getPopupCallDeferred().resolve({ success: false, error: serializeError(error) });
+        answerPopupCall(call.id, { success: false, error: serializeError(error) });
     } finally {
         // Only after the error handling above, so the active call never refers to a removed
         // placeholder account.
-        flow.cleanup();
+        flow?.cleanup();
         extra.services.lockDevice(false);
     }
 });
 
-// Typed thunk that takes the method as a generic parameter
-// Original thunk is exposed as well for using .fulfilled, .rejected, etc.
-export const connectPopupCallThunk = <M extends CallMethodKeys>(
-    params: PopupFlowParams<M>,
-): AsyncThunkAction<
-    void,
-    PopupFlowParams<M>,
-    { state: ConnectPopupCallThunkState; extra: ConnectPopupCallThunkDeps }
-> => connectPopupCallInnerThunk(params) as any;
-
 type ConnectPopupDeeplinkThunkState = DeviceRootState & ConnectPopupStateRootState;
 
 type ConnectPopupDeeplinkThunkDeps = {
-    services: AnalyticsDep & LockDeviceDep;
+    services: RequestPopupCallDep;
 };
 
 export const connectPopupDeeplinkThunk = createThunk<
     void,
     { url: string },
     { state: ConnectPopupDeeplinkThunkState; extra: ConnectPopupDeeplinkThunkDeps }
->(`${CONNECT_POPUP_MODULE}/deeplinkThunk`, async ({ url }, { dispatch }) => {
+>(`${CONNECT_POPUP_MODULE}/deeplinkThunk`, async ({ url }, { dispatch, extra }) => {
     let parsedUrl;
     try {
         parsedUrl = new URL(url);
@@ -222,21 +217,18 @@ export const connectPopupDeeplinkThunk = createThunk<
         return;
     }
 
-    dispatch(
-        connectPopupCallThunk({
-            source: {
-                type: CALL_SOURCE_DEEPLINK,
-                origin: `${callbackUrl.protocol}//${callbackUrl.host}`,
-                manifest: {
-                    appName: queryParams.appName ?? '',
-                    appIcon: queryParams.appIcon ?? '',
-                },
+    const response = await extra.services.requestPopupCall({
+        source: {
+            type: CALL_SOURCE_DEEPLINK,
+            origin: `${callbackUrl.protocol}//${callbackUrl.host}`,
+            manifest: {
+                appName: queryParams.appName ?? '',
+                appIcon: queryParams.appIcon ?? '',
             },
-            method: method as CallMethodKeys,
-            payload,
-        }),
-    );
-    const response = await getPopupCallDeferred(true).promise;
+        },
+        method: method as CallMethodKeys,
+        payload,
+    });
     callbackUrl.searchParams.set('response', JSON.stringify(response));
     dispatch(
         connectPopupActions.deeplinkCallback({
@@ -294,6 +286,7 @@ export const connectPopupVerifyAddressThunk = createThunk<
                 ...call.addresses?.[index]?.validatePayload,
                 showOnTrezor: true,
                 chunked: false,
+                callId: call.callId,
             });
             const validatedStatus = res.success ? 'valid' : 'failed';
             dispatch(
@@ -501,6 +494,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<
                         bip43Path: activeTab.bip43Path as Bip43PathTemplate,
                     },
                     device: activeDevice,
+                    callId: initialCall.callId,
                 });
 
                 // bail if the user navigated to another page/tab, this load was superseded by a
@@ -655,6 +649,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<
                     bip43Path: activeTab.bip43Path as Bip43PathTemplate,
                 },
                 device: activeDevice,
+                callId: initialCall.callId,
             });
 
             // bail if the user navigated to another tab/account or closed the picker meanwhile
@@ -844,6 +839,7 @@ export const connectPopupVerifySelectAccountThunk = createThunk<
                     coin: candidate.symbol,
                     showOnTrezor: true,
                     derivationType: getDerivationType(accountType),
+                    callId: call.callId,
                 });
                 if (!res.success) {
                     console.error('connectPopupVerifySelectAccountThunk (xpub)', res.error);
@@ -879,6 +875,7 @@ export const connectPopupVerifySelectAccountThunk = createThunk<
                               derivationType: getDerivationType(accountType),
                           }
                         : undefined,
+                callId: call.callId,
             });
 
             if (!res.success) {
@@ -931,39 +928,6 @@ export const connectPopupResolveSelectAccountThunk = createThunk<
     getPermissionDeferred().resolve();
 });
 
-type ConnectPopupCancelThunkState = ConnectPopupStateRootState;
-
-export const connectPopupCancelThunk = createThunk<
-    void,
-    { error?: string; callId?: string },
-    {
-        state: ConnectPopupCancelThunkState;
-    }
->(`${CONNECT_POPUP_MODULE}/cancelThunk`, ({ error, callId }, { dispatch, getState }) => {
-    const activeCall = selectConnectPopupCall(getState());
-
-    getPermissionDeferred().reject(TypedError('Method_Cancel'));
-    TrezorConnect.cancel({ reason: error, callId });
-    callAbortController.abort(TypedError('Method_Cancel'));
-    // Clear now instead of when the aborted call settles. No-op before the call reaches a device.
-    dispatch(deviceActions.removeButtonRequests({ path: activeCall?.devicePath }));
-
-    dispatch(connectPopupActions.finishCall());
-
-    // Resolve the popup-call deferred directly so the cancel response
-    // reaches the caller immediately.  Without this, the response
-    // depends on TrezorConnect.cancel() propagating through the
-    // internal core, interrupting the device, and eventually causing
-    // the catch block in connectPopupCallInnerThunk to resolve the
-    // deferred — which may not happen reliably (e.g. the device
-    // interrupt doesn't complete, or the Suite popup tab closes
-    // before RESPONSE_EVENT is sent).
-    getPopupCallDeferred().resolve({
-        success: false,
-        error: serializeError(TypedError('Method_Interrupted')),
-    });
-});
-
 export type ConnectPopupFinishCallThunkState = ConnectPopupStateRootState;
 
 // Closing the popup of a call that ended with a device error answers its caller with that error.
@@ -976,7 +940,7 @@ export const connectPopupFinishCallThunk = createThunk<
     const activeCall = selectConnectPopupCall(getState());
 
     if (activeCall?.state === 'call-error' && isDeviceReconnectError(activeCall.error.code)) {
-        getPopupCallDeferred().resolve({ success: false, error: activeCall.error });
+        answerPopupCall(activeCall.callId, { success: false, error: activeCall.error });
     }
 
     dispatch(connectPopupActions.finishCall());

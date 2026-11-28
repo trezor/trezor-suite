@@ -34,7 +34,6 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
-        "@trezor/type-utils": "workspace:^",
         "@trezor/utils": "workspace:*",
         "@walletconnect/core": "^2.25.0",
         "@walletconnect/types": "^2.25.0",

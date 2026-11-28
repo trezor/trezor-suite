@@ -3,10 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import {
     CALL_SOURCE_WEB,
     type ManifestPartial,
-    connectPopupCallThunk,
-    connectPopupCancelThunk,
-    getPopupCallDeferred,
-    queuePopupCall,
+    connectPopupActions,
+    injectRequestPopupCall,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import {
@@ -43,6 +41,13 @@ export type ConnectPopupMessage =
     | { type: typeof POPUP.CLOSED; payload?: { error?: string; callId?: string } | null }
     | { type: typeof CORE_CALL_CANCEL; payload?: { reason?: string; callId?: string } | null };
 
+type PendingPopupCall = {
+    // The id the app gave the call, by which its cancel names it. Suite runs the call under an id
+    // of its own.
+    callId?: string;
+    abortController: AbortController;
+};
+
 /** Outgoing message shape. */
 export type ConnectPopupOutgoingMessage = Record<string, unknown> & { type: string };
 
@@ -74,11 +79,12 @@ export const useConnectPopup = (
     /** Called after the incoming messages slice has been consumed. */
     onMessagesConsumed: () => void,
 ) => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, requestPopupCall } = useServices(injectDispatch, injectRequestPopupCall);
     const lifecycleStatus = useSelector(selectSuiteLifecycleStatus);
     const popupCall = useSelector(selectConnectPopupCall);
     const manifest = useRef<ManifestPartial | undefined>(undefined);
     const requestedPermissions = useRef<PermissionRequest[] | undefined>(undefined);
+    const pendingPopupCalls = useRef(new Set<PendingPopupCall>());
     const [pendingHandshake, setPendingHandshake] = useState<string | undefined>();
     const [responseSent, setResponseSent] = useState(false);
 
@@ -89,6 +95,18 @@ export const useConnectPopup = (
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const message: (typeof incomingMessages)[number] = incomingMessages[0];
         onMessagesConsumed();
+
+        // Cancels the call the app names, or all of its calls when it names none. That includes
+        // the calls still waiting in the queue.
+        const cancelPopupCalls = (callId: string | undefined, reason: string | undefined) => {
+            pendingPopupCalls.current.forEach(pendingCall => {
+                if (!callId || pendingCall.callId === callId) {
+                    pendingCall.abortController.abort(reason);
+                }
+            });
+            // The app has closed the popup as a whole, also one left open after its answer.
+            if (!callId) dispatch(connectPopupActions.finishCall());
+        };
 
         const processMessage = async (event: ConnectPopupMessage) => {
             if (event.type === 'channel-handshake-request') {
@@ -108,23 +126,24 @@ export const useConnectPopup = (
                 }
 
                 setResponseSent(false);
-                await queuePopupCall();
-                const deferred = getPopupCallDeferred(true);
                 const { method, ...params } = event.payload;
-                dispatch(
-                    connectPopupCallThunk({
-                        method: method as CallMethodKeys,
-                        payload: params,
-                        source: {
-                            type: CALL_SOURCE_WEB,
-                            origin: popupLink.origin,
-                            manifest: manifest.current,
-                            requestedPermissions: requestedPermissions.current,
-                        },
-                    }),
-                );
-
-                const response = await deferred.promise;
+                const pendingCall: PendingPopupCall = {
+                    callId: typeof params.callId === 'string' ? params.callId : undefined,
+                    abortController: new AbortController(),
+                };
+                pendingPopupCalls.current.add(pendingCall);
+                const response = await requestPopupCall({
+                    method: method as CallMethodKeys,
+                    payload: params,
+                    source: {
+                        type: CALL_SOURCE_WEB,
+                        origin: popupLink.origin,
+                        manifest: manifest.current,
+                        requestedPermissions: requestedPermissions.current,
+                    },
+                    signal: pendingCall.abortController.signal,
+                });
+                pendingPopupCalls.current.delete(pendingCall);
 
                 popupLink.sendMessage({
                     id: event.id,
@@ -134,25 +153,15 @@ export const useConnectPopup = (
 
                 setResponseSent(true);
             } else if (event.type === POPUP.CLOSED) {
-                dispatch(
-                    connectPopupCancelThunk({
-                        error: event.payload?.error,
-                        callId: event.payload?.callId,
-                    }),
-                );
+                cancelPopupCalls(event.payload?.callId, event.payload?.error);
             } else if (event.type === CORE_CALL_CANCEL) {
-                dispatch(
-                    connectPopupCancelThunk({
-                        error: event.payload?.reason,
-                        callId: event.payload?.callId,
-                    }),
-                );
+                cancelPopupCalls(event.payload?.callId, event.payload?.reason);
             }
         };
 
         processMessage(message);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [incomingMessages, popupLink, dispatch]);
+    }, [incomingMessages, popupLink, dispatch, requestPopupCall]);
 
     // Send POPUP.CORE_LOADED when suite lifecycle becomes ready.
     useEffect(() => {

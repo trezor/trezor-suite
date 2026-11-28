@@ -15,9 +15,13 @@ const answer: PopupFlowAnswer = { success: true, payload: [] };
 
 // A flow not backed by a Connect method, which describes and makes the call itself.
 class PopupOnlyFlow extends CommonPopupFlow<'selectAccount'> {
+    readonly callMethod = jest.fn(() => Promise.resolve(answer));
+
     constructor(
         private readonly requiredPermissions: PermissionRequest[],
         appName = 'dapp',
+        // Cancels the call while it is prepared, before the device is asked.
+        private readonly abortController = new AbortController(),
     ) {
         super(
             {
@@ -35,9 +39,17 @@ class PopupOnlyFlow extends CommonPopupFlow<'selectAccount'> {
                     connectPopup: { permissions: [] },
                     device: { selectedDevice: mockSuiteDevice({ connected: true }) },
                 }),
-                signal: new AbortController().signal,
+                signal: abortController.signal,
             },
         );
+    }
+
+    cancelInPreCall = false;
+
+    protected preCall() {
+        if (this.cancelInPreCall) this.abortController.abort();
+
+        return this.payload;
     }
 
     protected getMethodInfo(): Promise<MethodInfo> {
@@ -46,10 +58,6 @@ class PopupOnlyFlow extends CommonPopupFlow<'selectAccount'> {
             requiredPermissions: this.requiredPermissions,
             useUi: true,
         });
-    }
-
-    protected callMethod() {
-        return Promise.resolve(answer);
     }
 }
 
@@ -82,5 +90,22 @@ describe('CommonPopupFlow', () => {
         const flow = new PopupOnlyFlow([{ permission: 'management' }]);
 
         await expect(flow.run()).rejects.toMatchObject({ code: 'Method_NotAllowed' });
+    });
+
+    it('does not make a call which was cancelled while it was prepared', async () => {
+        const flow = new PopupOnlyFlow([{ permission: 'read_xpub' }]);
+        flow.cancelInPreCall = true;
+
+        await expect(flow.run()).rejects.toMatchObject({ code: 'Method_Cancel' });
+        expect(flow.callMethod).not.toHaveBeenCalled();
+    });
+
+    it('does not open the popup for a call which was cancelled before', async () => {
+        const abortController = new AbortController();
+        abortController.abort();
+        const flow = new PopupOnlyFlow([{ permission: 'read_xpub' }], 'dapp', abortController);
+
+        await expect(flow.run()).rejects.toMatchObject({ code: 'Method_Cancel' });
+        expect(flow['dispatch']).not.toHaveBeenCalled();
     });
 });
