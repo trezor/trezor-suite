@@ -65,7 +65,7 @@ export const ReceiveFreshAddressHeader = ({
                             <Translation id="moduleReceive.receiveTitle" />
                         )}
                     </Text>
-                    <HStack spacing="sp8" alignItems="center">
+                    <HStack spacing={0} alignItems="center">
                         <AccountLabel
                             variant="body-md-strong"
                             accountDescriptor={accountDescriptor}
