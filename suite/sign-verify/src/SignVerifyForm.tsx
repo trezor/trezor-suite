@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { type FieldError, useController, useForm, useWatch } from 'react-hook-form';
 
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useDevice } from '@suite/device';
-import { yup } from '@suite/forms';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { type AddressValidator, injectAddressValidator } from '@suite-common/networks';
 import { MAX_LENGTH_MESSAGE, injectSignVerify } from '@suite-common/sign-verify';
@@ -17,6 +16,8 @@ import { copyToClipboard } from '@trezor/dom-utils';
 import { type SignatureFormat } from '@trezor/network-module-suite-common-types';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
+import { isHex, throwError } from '@trezor/utils';
+import { z } from '@trezor/zod';
 
 import { FormatSwitch } from './FormatSwitch';
 import { SignVerifyAddressField } from './SignVerifyAddressField';
@@ -32,7 +33,6 @@ type SignVerifyContext = {
     symbol: NetworkSymbol;
 };
 
-// yup doesn't type properly conditionally required fields → need to declare type rather than infer it
 type SignVerifyFields = {
     message: string;
     address: string;
@@ -43,38 +43,39 @@ type SignVerifyFields = {
     pubKey?: string;
 };
 
-const signVerifySchema: yup.ObjectSchema<SignVerifyFields> = yup.object({
-    message: yup
-        .string()
-        .max(MAX_LENGTH_MESSAGE, 'TR_TOO_LONG')
-        .required()
-        .when('hex', {
-            is: true,
-            then: schema => schema.isHex(),
-        }),
-    address: yup
-        .string()
-        .test(
-            'isAddressValid',
-            'TR_ADD_TOKEN_ADDRESS_NOT_VALID',
-            (value, { options }) =>
-                value &&
-                options.context?.symbol &&
-                options.context.addressValidator.isAddressValid(options.context.symbol, value),
-        )
-        .required(),
-    path: yup.string().when('$isSignPage', {
-        is: true,
-        then: schema => schema.required(),
-    }),
-    signature: yup.string().when('$isSignPage', {
-        is: false,
-        then: schema => schema.required(),
-    }),
-    hex: yup.boolean().required(),
-    format: yup.string<SignatureFormat>(),
-    pubKey: yup.string(),
-});
+const REQUIRED: TranslationKey = 'TR_REQUIRED_FIELD';
+
+const requiredString = z.string().min(1, REQUIRED);
+
+const createSignVerifySchema = ({ addressValidator, isSignPage, symbol }: SignVerifyContext) =>
+    z
+        .object({
+            message: z
+                .string()
+                .max(MAX_LENGTH_MESSAGE, 'TR_TOO_LONG' satisfies TranslationKey)
+                .min(1, REQUIRED),
+            address: z
+                .string()
+                .refine(
+                    value => addressValidator.isAddressValid(symbol, value),
+                    'TR_ADD_TOKEN_ADDRESS_NOT_VALID' satisfies TranslationKey,
+                ),
+            path: (isSignPage ? requiredString : z.string()).optional(),
+            signature: (isSignPage ? z.string() : requiredString).optional(),
+            hex: z.boolean(),
+            format: z.custom<SignatureFormat>().optional(),
+            pubKey: z.string().optional(),
+        })
+        .refine(
+            ({ message, hex }) =>
+                !hex || message === '' || isHex(message, { prefix: 'optional', allowEmpty: false }),
+            {
+                message: 'DATA_NOT_VALID_HEX' satisfies TranslationKey,
+                path: ['message'],
+                // The hex check needs the Hex switch next to the message, so it must not wait for the other fields.
+                when: () => true,
+            },
+        );
 
 const DEFAULT_VALUES: SignVerifyFields = {
     message: '',
@@ -114,7 +115,10 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
     } = useForm<SignVerifyFields, SignVerifyContext>({
         mode: 'onBlur',
         reValidateMode: 'onChange',
-        resolver: yupResolver(signVerifySchema),
+        resolver: (values, context, options) =>
+            zodResolver(
+                createSignVerifySchema(context ?? throwError('Missing sign & verify context')),
+            )(values, context, options),
         context: {
             addressValidator,
             isSignPage,

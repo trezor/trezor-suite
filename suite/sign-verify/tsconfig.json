@@ -20,7 +20,6 @@
         },
         { "path": "../address" },
         { "path": "../device" },
-        { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../../packages/components" },
         {
@@ -35,6 +34,8 @@
             "path": "../../networks/network-module/suite-common/suite-common-types"
         },
         { "path": "../../packages/redux-utils" },
-        { "path": "../../packages/type-utils" }
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/zod" }
     ]
 }
