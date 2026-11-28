@@ -7,6 +7,7 @@ import { isWhitelistedHost } from '@trezor/utils';
 
 import { allowedDomains, silentlyBlockedDomains } from '../config';
 import type { ModuleInit } from './module';
+import { isFileUrlInsideDirectory } from '../libs/rendererLocation';
 
 export const SERVICE_NAME = 'request-filter';
 
@@ -19,7 +20,23 @@ export const SERVICE_NAME = 'request-filter';
  */
 export const init: ModuleInit = ({ interceptor, logger }) => {
     interceptor.onBeforeRequest(details => {
-        const { hostname } = new URL(details.url);
+        const url = new URL(details.url);
+        const { hostname } = url;
+        if (url.protocol === 'file:') {
+            if (isFileUrlInsideDirectory(url)) {
+                return;
+            }
+
+            logger.warn(
+                SERVICE_NAME,
+                `${details.url} was blocked because it is outside of the app directory`,
+            );
+
+            // Unlike a hostname, a local path can reveal the user name, so it is not reported.
+            captureMessage('request-filter: file', 'warning');
+
+            return { cancel: true };
+        }
 
         if (isWhitelistedHost(hostname, allowedDomains)) {
             logger.info(
