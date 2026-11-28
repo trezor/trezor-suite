@@ -220,7 +220,7 @@ export const compareOutpoint = (a: string, b: string) =>
 export const sumCredentials = (c: Credentials[]) => c.reduce((sum, cre) => sum + cre.Value, 0);
 
 export const getRoundParams = (roundParameters: CoinjoinRoundParameters) => ({
-    fee_rate: roundParameters.CoordinationFeeRate.Rate * 10 ** 8,
+    fee_rate: Math.round(roundParameters.CoordinationFeeRate.Rate * 10 ** 8),
     no_fee_threshold: roundParameters.CoordinationFeeRate.PlebsDontPayThreshold,
     min_registrable_amount: roundParameters.AllowedInputAmounts.Min,
 });

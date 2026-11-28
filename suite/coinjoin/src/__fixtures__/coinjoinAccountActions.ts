@@ -6,6 +6,7 @@ import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import * as COINJOIN from '../coinjoinConstants';
+import type { CoinjoinSessionParameters } from '../coinjoinTypes';
 
 type FixtureResult = {
     actions: string[];
@@ -53,6 +54,16 @@ type RestoreCoinjoinAccountsFixture = {
     description: string;
     state: FixtureState;
     result: FixtureResult;
+};
+
+type CoordinatorFeeRateFixture = {
+    connect: ConnectFixtures;
+    account: Partial<Account>;
+    accountKey: AccountKey;
+    sessionParams: Partial<CoinjoinSessionParameters>;
+    startState: FixtureState;
+    restoreState: FixtureState;
+    authorizedFeeRate: number;
 };
 
 const ACCOUNT_KEY_12345 = mockAccountKey({ descriptor: '12345' });
@@ -346,3 +357,39 @@ export const restoreCoinjoinSession: CoinjoinSessionFixture[] = [
         },
     },
 ];
+
+// 0.0003 * 10 ** 8 is 29999.999999999996, the firmware takes the authorized rate as uint32.
+const SUB_UNIT_COORDINATOR_FEE_RATE = 0.0003;
+
+export const coordinatorFeeRateInFirmwareUnits: CoordinatorFeeRateFixture = {
+    connect: {
+        success: true,
+        payload: {
+            message: 'Authorized',
+        },
+    },
+    account: ACCOUNT,
+    accountKey: ACCOUNT_KEY_12345,
+    sessionParams: { maxCoordinatorFeeRate: SUB_UNIT_COORDINATOR_FEE_RATE },
+    startState: {
+        coinjoin: {
+            accounts: [CJ_ACCOUNT],
+        },
+    },
+    restoreState: {
+        accounts: [ACCOUNT],
+        coinjoin: {
+            accounts: [
+                {
+                    ...CJ_ACCOUNT,
+                    session: {
+                        ...SESSION,
+                        paused: true,
+                        maxCoordinatorFeeRate: SUB_UNIT_COORDINATOR_FEE_RATE,
+                    },
+                },
+            ],
+        },
+    },
+    authorizedFeeRate: 30000,
+};
