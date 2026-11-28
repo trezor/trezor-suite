@@ -39,8 +39,10 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
-import { type BlockchainRootState } from '../blockchain/blockchainReducer';
-import { selectBlockchainUrl } from '../blockchain/blockchainSelectors';
+import {
+    type BlockchainRootState,
+    selectBlockchainUrlBySymbol,
+} from '../blockchain/blockchainReducer';
 import {
     type WalletSettingsRootState,
     selectAddressDisplayType,
@@ -237,7 +239,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
                       }).toFixed()
                     : output.amount;
 
-            const backendUrl = selectBlockchainUrl(getState(), account.symbol);
+            const backendUrl = selectBlockchainUrlBySymbol(getState(), account.symbol);
 
             // Simulating needs a recipient; until then only the inclusion half can be priced.
             if (address && backendUrl && new BigNumber(amountToSend).isGreaterThan(0)) {
@@ -446,7 +448,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
             const { token: sentToken } = precomposedTransaction;
 
             if (sentToken?.standard === 'STELLAR-CONTRACT') {
-                const backendUrl = selectBlockchainUrl(getState(), selectedAccount.symbol);
+                const backendUrl = selectBlockchainUrlBySymbol(getState(), selectedAccount.symbol);
                 if (!backendUrl) {
                     return rejectWithValue({
                         error: 'sign-transaction-failed',

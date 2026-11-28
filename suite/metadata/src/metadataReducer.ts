@@ -407,11 +407,6 @@ export const selectPasswordManagerState = (
 /**
  * @deprecated Legacy Labeling
  */
-export const selectLabelingValueBeingEdited = ({ metadata }: MetadataRootState) => metadata.editing;
-
-/**
- * @deprecated Legacy Labeling
- */
 export const selectSelectedLabelsProviderType = (state: MetadataRootState) => {
     const isMetadataEnabled = selectIsMetadataEnabled(state);
     if (!isMetadataEnabled) return '';

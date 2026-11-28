@@ -14,15 +14,7 @@ import {
     setSelectedRange,
 } from '#src/actions/wallet/graphActions';
 import SETTINGS from '#src/config/suite/settings';
-import {
-    type AccountIdentifier,
-    type GraphData,
-    type GraphRootState,
-    type GraphState,
-} from '#src/types/wallet/graph';
-
-export const selectGraph = (state: GraphRootState) => state.wallet.graph;
-export const selectGraphSelectedRange = (state: GraphRootState) => state.wallet.graph.selectedRange;
+import { type AccountIdentifier, type GraphData, type GraphState } from '#src/types/wallet/graph';
 
 const initialState: GraphState = {
     data: [],

@@ -19,7 +19,7 @@ import { typography } from '@trezor/theme';
 import { updateGraphDataThunk } from '#src/actions/wallet/graphActions';
 import { TransactionsGraphLoader } from '#src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { selectGraph, selectGraphSelectedRange } from '#src/reducers/wallet/graphReducer';
+import { selectGraph, selectGraphSelectedRange } from '#src/selectors/wallet/graphSelectors';
 import { type AggregatedDashboardHistory } from '#src/types/wallet/graph';
 import { getMinMaxValueFromData } from '#src/utils/wallet/graph/utils';
 import { prepareGraphDataAsync } from '#src/utils/wallet/graph/utilsWorker';

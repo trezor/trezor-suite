@@ -5,7 +5,7 @@ import { Labeling } from '@suite/labeling';
 import {
     selectIsLegacyLabelingVisible,
     selectLabelingDataForAccount,
-    selectLabelingValueBeingEdited,
+    selectMetadataEditing,
 } from '@suite/metadata';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
@@ -81,7 +81,7 @@ export const TransactionTarget = ({
     const historicRate = useSelector(state =>
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
     );
-    const labelingValueBeingEdited = useSelector(selectLabelingValueBeingEdited);
+    const labelingValueBeingEdited = useSelector(selectMetadataEditing);
     const isBlurringEnabled = useSelector(state =>
         selectIsSuspiciousTransactionsBlurringEnabled(state, transaction.symbol),
     );

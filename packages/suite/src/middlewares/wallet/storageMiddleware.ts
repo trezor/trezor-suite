@@ -95,7 +95,7 @@ import {
 } from '#src/actions/suite/suiteActions';
 import { accountGraphFail, accountGraphSuccess } from '#src/actions/wallet/graphActions';
 import { type SuiteState } from '#src/reducers/suite/suiteReducer';
-import { selectGraph } from '#src/reducers/wallet/graphReducer';
+import { selectGraph } from '#src/selectors/wallet/graphSelectors';
 import { type DbDep } from '#src/storage/Db';
 import { type GraphState } from '#src/types/wallet/graph';
 

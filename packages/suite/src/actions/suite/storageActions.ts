@@ -120,11 +120,11 @@ import { type WithServices, createThunk } from '@trezor/redux-utils/';
 import { cloneObject, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
 import { type SuiteState } from '#src/reducers/suite/suiteReducer';
-import { selectGraph } from '#src/reducers/wallet/graphReducer';
 import {
     selectEvmSettings,
     selectSeenDisconnectNotificationForDeviceIds,
 } from '#src/selectors/suite/suiteSelectors';
+import { selectGraph } from '#src/selectors/wallet/graphSelectors';
 import { type DbDep } from '#src/storage/Db';
 import { type GraphData, type GraphState } from '#src/types/wallet/graph';
 import { serializeCoinjoinAccount, serializeDevice } from '#src/utils/suite/storage';
