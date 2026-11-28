@@ -60,7 +60,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "@types/semver": "^7.7.0",
+        "@types/semver": "^7.8.0",
         "expo": "~58.0.21",
         "expo-video": "~58.0.13",
         "jotai": "2.17.1",
@@ -70,7 +70,7 @@
         "react-native-reanimated": "4.7.1",
         "react-native-svg": "15.16.0",
         "react-redux": "9.3.1",
-        "semver": "^7.7.1",
+        "semver": "^7.8.6",
         "type-fest": "5.5.0"
     }
 }

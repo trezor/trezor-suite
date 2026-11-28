@@ -49,13 +49,13 @@
     "devDependencies": {
         "@trezor/requirements": "workspace:*",
         "@types/react": "19.3.0",
-        "concurrently": "^10.0.3",
+        "concurrently": "^10.0.6",
         "next": "15.5.29",
         "nextra": "patch:nextra@npm%3A3.3.1#~/.yarn/patches/nextra-npm-3.3.1-e045409406.patch",
-        "postcss": "^8.5.22",
+        "postcss": "^8.5.32",
         "postcss-cli": "^11.0.1",
         "postcss-import": "^16.1.1",
-        "postcss-lightningcss": "^1.1.0",
+        "postcss-lightningcss": "^1.1.2",
         "react": "19.3.0",
         "react-dom": "19.3.0"
     },

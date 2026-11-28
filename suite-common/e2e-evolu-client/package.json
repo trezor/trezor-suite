@@ -15,7 +15,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "ws": "^8.20.0"
+        "ws": "^8.23.0"
     },
     "devDependencies": {
         "@evolu/common": "8.10.0",
