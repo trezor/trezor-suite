@@ -245,6 +245,98 @@ const notifyAddresses = [
             },
         },
     },
+    {
+        // Synthetic partial-payment fixture.
+        description: 'address tx notification (recv, partial payment)',
+        method: 'subscribe',
+        params: {
+            type: 'addresses',
+            addresses: ['A'],
+        },
+        notifications: {
+            hash: 'abcd',
+            tx_json: {
+                Account: 'B',
+                Destination: 'A',
+                TransactionType: 'Payment',
+                DeliverMax: '100',
+                DestinationTag: '123',
+                Flags: 131072, // tfPartialPayment
+            },
+            meta: {
+                TransactionIndex: 1,
+                TransactionResult: 'tesSUCCESS',
+                delivered_amount: '42',
+            },
+            Account: 'A',
+            type: 'transaction',
+            validated: true,
+        },
+        result: {
+            descriptor: 'A',
+            tx: {
+                ...tx,
+                amount: '42',
+                type: 'recv',
+                targets: [
+                    {
+                        addresses: ['A'],
+                        isAddress: true,
+                        n: 0,
+                        amount: '42',
+                    },
+                ],
+                rippleSpecific: {
+                    destinationTag: '123',
+                },
+            },
+        },
+    },
+    {
+        // Synthetic validated failure: emit a failed transaction, not a received payment.
+        description: 'address tx notification (tec-failed payment is not reported as received)',
+        method: 'subscribe',
+        params: {
+            type: 'addresses',
+            addresses: ['A'],
+        },
+        notifications: {
+            hash: 'abcd',
+            tx_json: {
+                Account: 'B',
+                Destination: 'A',
+                TransactionType: 'Payment',
+                DeliverMax: '100',
+                DestinationTag: '123',
+            },
+            meta: {
+                TransactionIndex: 2,
+                TransactionResult: 'tecDST_TAG_NEEDED',
+            },
+            Account: 'A',
+            type: 'transaction',
+            validated: true,
+        },
+        result: {
+            descriptor: 'A',
+            tx: {
+                ...tx,
+                amount: '100',
+                type: 'failed',
+                targets: [
+                    {
+                        addresses: ['A'],
+                        isAddress: true,
+                        n: 0,
+                        amount: '100',
+                    },
+                ],
+                rippleSpecific: {
+                    destinationTag: '123',
+                },
+            },
+        },
+    },
 ] as const;
 
 export default {

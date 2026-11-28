@@ -134,6 +134,21 @@ const xrpTx = {
     },
 };
 
+// Synthetic partial payment; the original fixture keeps metadata-free fallback coverage.
+const partialPaymentFixture = {
+    ...xrpFixture,
+    hash: '0'.repeat(64),
+    meta: {
+        TransactionIndex: 3,
+        TransactionResult: 'tesSUCCESS',
+        delivered_amount: '4200000',
+    },
+    tx_json: {
+        ...xrpFixture.tx_json,
+        Flags: 2147483648 + 131072,
+    },
+};
+
 export default {
     blockbook: [
         {
@@ -170,6 +185,26 @@ export default {
                 },
             ],
             response: xrpTx,
+        },
+        {
+            description: 'Partial payment',
+            params: { txid: partialPaymentFixture.hash },
+            serverFixtures: [
+                {
+                    method: 'tx',
+                    response: {
+                        type: 'response',
+                        status: 'success',
+                        result: partialPaymentFixture,
+                    },
+                },
+            ],
+            response: {
+                ...xrpTx,
+                txid: partialPaymentFixture.hash,
+                blockHash: partialPaymentFixture.hash,
+                amount: '4200000',
+            },
         },
         {
             description: 'Not found',

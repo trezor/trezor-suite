@@ -49,6 +49,55 @@ describe(transformRippleTransaction.name, () => {
         });
     });
 
+    it.each([
+        { descriptor: SENDER, type: 'sent' },
+        { descriptor: RECIPIENT, type: 'recv' },
+    ])('uses the delivered amount for a partial XRP payment ($type)', ({ descriptor, type }) => {
+        const tx = transformRippleTransaction(
+            TX_HASH,
+            mockPayment({ Flags: 131072 }),
+            { ...mockMeta('tesSUCCESS'), delivered_amount: '420000' },
+            descriptor,
+        );
+
+        expect(tx).toMatchObject({
+            type,
+            amount: '420000',
+            targets: [{ amount: '420000' }],
+        });
+    });
+
+    it.each(['42', '0'])('uses delivered drops %s without a partial-payment flag', delivered => {
+        const tx = transformRippleTransaction(
+            TX_HASH,
+            mockPayment(),
+            { ...mockMeta('tesSUCCESS'), delivered_amount: delivered },
+            RECIPIENT,
+        );
+
+        expect(tx).toMatchObject({ amount: delivered, targets: [{ amount: delivered }] });
+    });
+
+    it.each([
+        undefined,
+        'serialized metadata',
+        'unavailable',
+        mockMeta('tesSUCCESS'),
+        { ...mockMeta('tesSUCCESS'), delivered_amount: 'unavailable' },
+        {
+            ...mockMeta('tesSUCCESS'),
+            delivered_amount: { currency: 'USD', issuer: RECIPIENT, value: '10' },
+        },
+    ])('keeps the fallback when XRP delivery is unavailable: %j', meta => {
+        const tx = transformRippleTransaction(TX_HASH, mockPayment(), meta, RECIPIENT);
+
+        expect(tx).toMatchObject({
+            type: 'recv',
+            amount: '1000000',
+            targets: [{ amount: '1000000' }],
+        });
+    });
+
     it('marks a payment to the descriptor as received', () => {
         const tx = transformRippleTransaction(
             TX_HASH,
@@ -79,6 +128,7 @@ describe(transformRippleTransaction.name, () => {
 
         expect(tx.type).toBe('failed');
         expect(tx.fee).toBe('12');
+        expect(tx.amount).toBe('1000000');
     });
 
     it('returns an unknown transaction without targets for a token payment', () => {
@@ -86,7 +136,7 @@ describe(transformRippleTransaction.name, () => {
         const tx = transformRippleTransaction(
             TX_HASH,
             mockPayment({ Amount: tokenAmount, DeliverMax: tokenAmount }),
-            mockMeta('tesSUCCESS'),
+            { ...mockMeta('tesSUCCESS'), delivered_amount: tokenAmount },
             SENDER,
         );
 
