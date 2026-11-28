@@ -8,6 +8,7 @@ import { estimateFee } from './handlers/estimateFee';
 import { getAccountInfo } from './handlers/getAccountInfo';
 import { getBlock } from './handlers/getBlock';
 import { getBlockHash } from './handlers/getBlockHash';
+import { getEvmBlockTime } from './handlers/getEvmBlockTime';
 import { getEvmChainId } from './handlers/getEvmChainId';
 import { getInfo } from './handlers/getInfo';
 import { getTransaction } from './handlers/getTransaction';
@@ -42,6 +43,8 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
             return rpcCall(request);
         case MESSAGES.GET_EVM_CHAIN_ID:
             return getEvmChainId(request);
+        case MESSAGES.GET_EVM_BLOCK_TIME:
+            return getEvmBlockTime(request);
         default:
             throw new CustomError('worker_unknown_request', `+${request.type}`);
     }

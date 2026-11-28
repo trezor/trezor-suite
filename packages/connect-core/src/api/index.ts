@@ -32,6 +32,7 @@ export { default as getSettings } from './getSettings';
 export { default as pingDevice } from './pingDevice';
 export { default as pushTransaction } from './pushTransaction';
 export { default as recoveryDevice } from './recoveryDevice';
+export { default as registerEvmNetwork } from './registerEvmNetwork';
 export { default as requestLogin } from './requestLogin';
 export { default as resetDevice } from './resetDevice';
 export { default as loadDevice } from './loadDevice';

@@ -4,6 +4,10 @@ import { parseElectrumUrl } from '@trezor/utils';
 
 import type { ModuleInit, ModuleInitBackground } from './module';
 import { looselyTypedIpcMain } from '../ipcMain';
+import {
+    getCustomEvmNetworkRpcHostnames,
+    getCustomEvmNetworkWhitelistKey,
+} from '../libs/customEvmNetworkDomains';
 import { getSwitchValue } from '../libs/process-switches';
 
 export const SERVICE_NAME = '@trezor/blockchain-core';
@@ -47,6 +51,18 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store,
                                 domains,
                             });
                         }
+                    }
+
+                    if (method === 'registerEvmNetwork') {
+                        const { symbol, rpcUrls } = params[0];
+
+                        // Keyed by symbol, so registering the network again on startup restores the
+                        // whitelist and a changed URL list replaces the previous one.
+                        mainThreadEmitter.emit('module/request-interceptor', {
+                            type: 'SET_WHITELISTED_DOMAINS_FOR_CUSTOM_BACKENDS',
+                            coin: getCustomEvmNetworkWhitelistKey(symbol),
+                            domains: getCustomEvmNetworkRpcHostnames(rpcUrls),
+                        });
                     }
 
                     if (method === 'evmRpcGetChainId') {

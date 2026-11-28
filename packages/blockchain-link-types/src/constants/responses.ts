@@ -19,6 +19,7 @@ export const SUBSCRIBE = 'r_subscribe';
 export const UNSUBSCRIBE = 'r_unsubscribe';
 export const PUSH_TRANSACTION = 'r_push_tx';
 export const GET_EVM_CHAIN_ID = 'r_get_evm_chain_id';
+export const GET_EVM_BLOCK_TIME = 'r_get_evm_block_time';
 
 // emitted events
 export const CONNECTED = 'r_connected';
