@@ -1,6 +1,7 @@
 import {
     type ReportedMeasurement,
     formatCommentSection,
+    formatDashboardSection,
     formatMarkdownReport,
     mergeMeasurements,
     perfReportComment,
@@ -183,5 +184,27 @@ describe('publishing a section twice', () => {
         expect(
             readSectionMeasurements({ body, label: 'web / group 2' }).map(({ key }) => key),
         ).toEqual(['web-scenario']);
+    });
+});
+
+describe(formatDashboardSection.name, () => {
+    const params = {
+        platform: 'desktop',
+        measurementCount: 3,
+        dashboardUrl:
+            'https://dev.suite.sldev.cz/e2e/perf/v1/dashboard/index.html?platform=desktop&pr=1',
+        commitId: 'ec599e58884046a48e76624c63a644663278b384',
+    };
+
+    it('links the pull request on the dashboard and the run the numbers came from', () => {
+        expect(
+            formatDashboardSection({ ...params, runUrl: 'https://github.com/o/r/actions/runs/9' }),
+        ).toBe(
+            `- 📊 **desktop**: [this pull request on the dashboard](${params.dashboardUrl}) — 3 measurement(s) from [\`ec599e588\`](https://github.com/o/r/actions/runs/9)`,
+        );
+    });
+
+    it('names the commit without a link when the run is unknown', () => {
+        expect(formatDashboardSection(params)).toMatch(/from `ec599e588`$/);
     });
 });

@@ -4,6 +4,7 @@ import {
     artifactKey,
     baselineKey,
     buildUploadBundle,
+    dashboardUrl,
     indexKey,
     measurementLabel,
     parseNdjson,
@@ -85,9 +86,12 @@ describe('keys', () => {
         );
     });
 
-    it('gives each shard of a pull request its own immutable index file', () => {
+    it('keeps one index per pull request, so a reader finds every run without listing the bucket', () => {
         expect(indexKey({ ...context, prNumber: '32587' })).toBe(
-            'index/android/pr/32587/1842-1-1.ndjson',
+            'index/android/pr/32587/index.ndjson',
+        );
+        expect(indexKey({ ...context, prNumber: '32587', shard: '2', runId: '1843' })).toBe(
+            indexKey({ ...context, prNumber: '32587' }),
         );
     });
 
@@ -100,6 +104,20 @@ describe('keys', () => {
     it('serves every key from the public origin', () => {
         expect(publicUrl(baselineKey('web', 'develop'))).toBe(
             'https://dev.suite.sldev.cz/e2e/perf/v1/baseline/web/develop/latest.json',
+        );
+    });
+});
+
+describe('dashboardUrl', () => {
+    it('opens a pull request against its base branch', () => {
+        expect(dashboardUrl({ platform: 'desktop', prNumber: '35380' })).toBe(
+            'https://dev.suite.sldev.cz/e2e/perf/v1/dashboard/index.html?platform=desktop&pr=35380',
+        );
+    });
+
+    it('opens the trend of a branch', () => {
+        expect(dashboardUrl({ platform: 'android', branch: 'release/26.11' })).toBe(
+            'https://dev.suite.sldev.cz/e2e/perf/v1/dashboard/index.html?platform=android&branch=release%2F26.11',
         );
     });
 });
@@ -141,6 +159,13 @@ describe('toIndexRows', () => {
 
     it('leaves the mark off an ordinary run rather than writing false on every row', () => {
         expect(toIndexRows(run)[0]).not.toHaveProperty('profiled');
+    });
+
+    it('links a row to the CI run that measured it', () => {
+        const runUrl = 'https://github.com/trezor/trezor-suite/actions/runs/1842';
+
+        expect(toIndexRows({ ...run, context: { ...context, runUrl } })[0]?.runUrl).toBe(runUrl);
+        expect(toIndexRows(run)[0]).not.toHaveProperty('runUrl');
     });
 
     it('leaves out the blob when the named artifact was not produced', () => {
@@ -251,14 +276,21 @@ describe('buildUploadBundle', () => {
         ]);
     });
 
-    it('gives each shard of a pull request its own index file', () => {
+    it("writes every shard of a pull request's run into its one index", () => {
         const prContext = { ...context, prNumber: '32587' };
         const runs = [
             { ...run, context: prContext },
             { ...run, context: { ...prContext, shard: '2' } },
         ];
+        const indexes = buildUploadBundle(runs).filter(file => file.path.includes('/pr/'));
 
-        expect(buildUploadBundle(runs).filter(file => file.path.includes('/pr/'))).toHaveLength(2);
+        expect(indexes.map(file => file.path)).toEqual(['index/android/pr/32587/index.ndjson']);
+        expect(parseNdjson(indexes[0]?.body ?? '').map(row => row.shard)).toEqual([
+            '1',
+            '1',
+            '2',
+            '2',
+        ]);
     });
 
     it('seals the baseline only when asked', () => {
@@ -333,13 +365,20 @@ describe('buildUploadBundle', () => {
         expect(parseNdjson(webIndex?.body ?? '').every(row => row.platform === 'web')).toBe(true);
     });
 
-    it('never appends for a pull request, whose file is its own', () => {
+    it("appends a pull request's later push to the runs it already had", () => {
         const prContext = { ...context, prNumber: '32587' };
-        const previous = renderNdjson(toIndexRows({ ...run, context: prContext }));
+        const previous = renderNdjson(
+            toIndexRows({ ...run, context: { ...prContext, runId: '1841' } }),
+        );
         const index = buildUploadBundle([{ ...run, context: prContext }], {
             existingIndex: { [indexKey(prContext)]: previous },
         }).find(file => file.path === indexKey(prContext));
 
-        expect(parseNdjson(index?.body ?? '')).toHaveLength(2);
+        expect(parseNdjson(index?.body ?? '').map(row => row.run)).toEqual([
+            '1841',
+            '1841',
+            '1842',
+            '1842',
+        ]);
     });
 });

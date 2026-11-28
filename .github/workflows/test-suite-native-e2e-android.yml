@@ -90,7 +90,8 @@ jobs:
     permissions:
       id-token: write # to assume the dev-deploy role
       contents: read
-    # Serializes writers of the rolling branch index.
+      pull-requests: write # to link the results from the PR's performance comment
+    # Serializes writers of the rolling branch or pull request index.
     concurrency:
       group: publish-performance-history-${{ github.ref }}
       cancel-in-progress: false

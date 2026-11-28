@@ -2,14 +2,16 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
+import { PERF_REPORT_MARKER } from './markdown';
 import {
+    listPublishedPlatforms,
     listShardDirectories,
     publishFromCi,
     publishRuns,
     resolveRunIdentity,
 } from './publishRuns';
 import type { PerfRun } from './store';
-import { indexKey } from './store';
+import { buildUploadBundle, indexKey } from './store';
 
 describe('resolveRunIdentity', () => {
     it('takes the branch under test from a pull request, not the merge ref', () => {
@@ -136,6 +138,16 @@ describe('publishRuns', () => {
         expect(index.split('\n').filter(Boolean)).toHaveLength(2);
     });
 
+    it("appends a pull request's push to the runs it already published", async () => {
+        const prRun = { ...run, context: { ...run.context, prNumber: '35380' } };
+        respond(200, '{"scenario":"earlier push"}\n');
+
+        await publishRuns({ runs: [prRun], bundleRoot, log: () => {} });
+        const index = fs.readFileSync(path.join(bundleRoot, indexKey(prRun.context)), 'utf8');
+
+        expect(index.split('\n').filter(Boolean)).toHaveLength(2);
+    });
+
     it('starts a history that does not exist yet', async () => {
         respond(404);
 
@@ -199,5 +211,171 @@ describe('publishFromCi', () => {
             }),
         ).resolves.toBeUndefined();
         expect(log).toHaveBeenCalledWith('[performance] Publishing failed: broken artifact');
+    });
+});
+
+describe('listPublishedPlatforms', () => {
+    const run = (platform: PerfRun['context']['platform'], prNumber?: string): PerfRun => ({
+        context: {
+            platform,
+            branch: 'feat/thing',
+            commitId: 'aaa',
+            runId: '9',
+            runAttempt: '1',
+            shard: '1',
+            generatedAt: '2026-10-20T00:00:00.000Z',
+            ...(prNumber ? { prNumber } : {}),
+        },
+        artifacts: [],
+        measurements: [{ scenario: 'wallet-discovery', samples: 1, metrics: {} }],
+    });
+
+    it('links a pull request per platform and counts its measurements across shards', () => {
+        const runs = [
+            run('web', '35380'),
+            run('desktop', '35380'),
+            {
+                ...run('desktop', '35380'),
+                context: { ...run('desktop', '35380').context, shard: '2' },
+            },
+        ];
+
+        expect(listPublishedPlatforms(runs, buildUploadBundle(runs))).toEqual([
+            {
+                platform: 'web',
+                measurementCount: 1,
+                dashboardUrl: expect.stringMatching(/\?platform=web&pr=35380$/),
+            },
+            {
+                platform: 'desktop',
+                measurementCount: 2,
+                dashboardUrl: expect.stringMatching(/\?platform=desktop&pr=35380$/),
+            },
+        ]);
+    });
+
+    it('links a branch run to its branch trend', () => {
+        const runs = [run('android')];
+
+        expect(listPublishedPlatforms(runs, buildUploadBundle(runs))[0]?.dashboardUrl).toMatch(
+            /\?platform=android&branch=feat%2Fthing$/,
+        );
+    });
+
+    it('leaves out a platform whose index this bundle does not write', () => {
+        expect(listPublishedPlatforms([run('web', '1')], [])).toEqual([]);
+    });
+});
+
+describe('publishFromCi on a pull request', () => {
+    const originalEnv = process.env;
+    const prRun: PerfRun = {
+        context: {
+            platform: 'desktop',
+            branch: 'feat/thing',
+            commitId: 'ec599e58884046a48e76624c63a644663278b384',
+            runId: '9',
+            runAttempt: '1',
+            shard: '1',
+            prNumber: '35380',
+            generatedAt: '2026-10-20T00:00:00.000Z',
+        },
+        artifacts: [],
+        measurements: [{ scenario: 'wallet-discovery', samples: 1, metrics: {} }],
+    };
+
+    let root: string;
+    let summaryPath: string;
+    let log: jest.SpyInstance;
+
+    beforeEach(() => {
+        root = fs.mkdtempSync(path.join(os.tmpdir(), 'perf-ci-'));
+        summaryPath = path.join(root, 'summary.md');
+        process.env = {
+            GITHUB_HEAD_REF: 'feat/thing',
+            GITHUB_SHA: 'aaa',
+            PERF_COMMIT_ID: prRun.context.commitId,
+            PERF_PR_NUMBER: '35380',
+            PERF_RUN_URL: 'https://github.com/trezor/trezor-suite/actions/runs/9',
+            PERF_BUNDLE_DIR: path.join(root, 'bundle'),
+            GITHUB_STEP_SUMMARY: summaryPath,
+        };
+        log = jest.spyOn(console, 'log').mockImplementation(() => {});
+        jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+            ok: false,
+            status: 404,
+            text: () => Promise.resolve(''),
+        } as Response);
+    });
+
+    afterEach(() => {
+        process.env = originalEnv;
+        fs.rmSync(root, { recursive: true, force: true });
+        jest.restoreAllMocks();
+    });
+
+    it("links the pull request's results from its performance comment, starting it if needed", async () => {
+        const upsertPrComment = jest.fn().mockResolvedValue('created');
+
+        await publishFromCi(() => [prRun], { upsertPrComment });
+
+        expect(upsertPrComment).toHaveBeenCalledWith(
+            expect.objectContaining({ marker: PERF_REPORT_MARKER, createIfMissing: true }),
+        );
+        const [{ buildBody, holdsOwnContent }] = upsertPrComment.mock.calls[0];
+        const body = buildBody(undefined);
+
+        expect(body).toContain(PERF_REPORT_MARKER);
+        expect(body).toContain('dashboard/index.html?platform=desktop&pr=35380');
+        expect(holdsOwnContent(body)).toBe(true);
+        expect(holdsOwnContent('somebody else wrote this')).toBe(false);
+    });
+
+    it('replaces its own line on a later push instead of adding another', async () => {
+        const upsertPrComment = jest.fn().mockResolvedValue('updated');
+
+        await publishFromCi(() => [prRun], { upsertPrComment });
+        const [{ buildBody }] = upsertPrComment.mock.calls[0];
+        const twice = buildBody(buildBody(undefined));
+
+        expect(twice.match(/this pull request on the dashboard/g)).toHaveLength(1);
+    });
+
+    it('writes the dashboard link into the job summary', async () => {
+        await publishFromCi(() => [prRun], { upsertPrComment: jest.fn().mockResolvedValue('') });
+
+        expect(fs.readFileSync(summaryPath, 'utf8')).toContain('platform=desktop&pr=35380');
+    });
+
+    it('says in the job summary when nothing was published', async () => {
+        const upsertPrComment = jest.fn();
+
+        await publishFromCi(() => [], { upsertPrComment });
+
+        expect(fs.readFileSync(summaryPath, 'utf8')).toContain('Nothing published');
+        expect(upsertPrComment).not.toHaveBeenCalled();
+    });
+
+    it('does not comment on a branch run', async () => {
+        const upsertPrComment = jest.fn();
+        delete process.env.PERF_PR_NUMBER;
+
+        await publishFromCi(
+            () => [{ ...prRun, context: { ...prRun.context, prNumber: undefined } }],
+            {
+                upsertPrComment,
+            },
+        );
+
+        expect(upsertPrComment).not.toHaveBeenCalled();
+    });
+
+    it('never fails the job over a comment it could not write', async () => {
+        const upsertPrComment = jest.fn().mockRejectedValue(new Error('403'));
+
+        await expect(publishFromCi(() => [prRun], { upsertPrComment })).resolves.toBeUndefined();
+        expect(log).toHaveBeenCalledWith(
+            '[performance] Could not link the results on the pull request: 403',
+        );
     });
 });

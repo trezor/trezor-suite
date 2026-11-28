@@ -11,8 +11,9 @@ desktop e2e runs and the mobile Detox runs.
 s3://dev.suite.sldev.cz/e2e/perf/v1/
 ├── runs/<platform>/<branch>/<commit-id>/<run>-<attempt>/shard-<n>/<artifact>.json
 ├── index/<platform>/<branch>/index.ndjson        ← one line per measurement per run
-├── index/<platform>/pr/<number>/<run>-<attempt>-<shard>.ndjson
-└── baseline/<platform>/<branch>/latest.json      ← what later runs compare against
+├── index/<platform>/pr/<number>/index.ndjson     ← the same, for every run of one pull request
+├── baseline/<platform>/<branch>/latest.json      ← what later runs compare against
+└── dashboard/index.html                          ← the page that reads all of the above
 ```
 
 `<platform>` is `web`, `desktop`, `android` or `ios`. It sits high in the key so retention can differ
@@ -49,8 +50,9 @@ the bundle.
 
 Three properties keep this correct without a database:
 
-- **One writer per run**, so no two shards touch an object. Branch runs, which append to one rolling
-  index, are additionally serialized by the job's concurrency group.
+- **One writer per run**, so no two shards touch an object. Every run appends to one rolling index —
+  its branch's, or its pull request's — and the job's concurrency group, keyed by the ref, serializes
+  the runs that share one.
 - **A re-run replaces its own lines.** Index lines are keyed by platform, run, attempt, shard and
   measurement, so re-running corrects a point instead of doubling it.
 - **Artifacts upload before the lines that reference them**, in two passes, so a reader never meets
@@ -60,15 +62,31 @@ Publishing never gates a run: a missing artifact, an unset environment or an unk
 end in a printed status and exit 0. An index that cannot be read back is left as it is, with a
 warning on the job, rather than rewritten with only this run's lines.
 
+The job summary names what was published and links it on the dashboard, or says that nothing was —
+only tests that call `perf.measure` record history, so most pull request runs publish nothing. When a
+pull request's run did publish, the job also adds a line per platform to the pull request's
+`Performance report (alpha)` comment, starting the comment if no e2e job has yet, pointing at that
+pull request on the dashboard. The caller grants the job `pull-requests: write` for this.
+
 ## Reading it back
 
 A page is served from the store itself, so it needs nothing installed and no credentials:
 
 **<https://dev.suite.sldev.cz/e2e/perf/v1/dashboard/index.html>** — pick a platform, a branch and a
-metric; each scenario gets its own trend and links through to the artifact behind its latest point.
-It reads the same rolling index described above, with relative URLs, and is redeployed whenever a
-run publishes. A branch with no run yet simply reports that its index does not exist. Points from
-profiled runs are drawn hollow.
+metric; each scenario gets its own trend over time, a table of every metric's latest value against
+the median of the last five runs, and a **Data points** table with one row per point: time, commit,
+CI run, shard, sample count, the change from the previous point and the artifact behind it. Clicking
+a point on the chart opens its row. It reads the same rolling index described above, with relative
+URLs, and is redeployed whenever a run publishes. A branch with no run yet simply reports that its
+index does not exist. Points from profiled runs are drawn hollow.
+
+Fill in **Pull request** (or open `?platform=<platform>&pr=<number>`, the link the PR comment
+carries) to track one pull request: its runs are drawn as squares over the base branch's trend
+(`develop` unless **Compare with branch** says otherwise), and a table compares its latest push
+with the median of the branch's last five comparable runs and with its own first push, marking a
+change beyond ±5 % as better or worse. Only branch runs recorded the way the PR's were — profiled or
+not — count as comparable; the rest are hidden and the card says how many. The address always
+reflects the current view, so it can be pasted as is.
 
 For anything else, the rows are plain text:
 

@@ -54,7 +54,7 @@ export type PerfRunContext = {
     runAttempt: string;
     /** The e2e job is sharded; a run holds one set of artifacts per shard. */
     shard: string;
-    /** Set on pull requests, which file their index lines per PR instead of per branch. */
+    /** Set on pull requests, which keep their index per PR instead of per branch. */
     prNumber?: string;
     runUrl?: string;
     generatedAt: string;
@@ -83,6 +83,8 @@ export type PerfIndexRow = {
     metrics: PerfStoredMetrics;
     /** See `PerfRunContext.profiled`. */
     profiled?: boolean;
+    /** The CI run, so a point on a chart links to the job that measured it. Absent on older rows. */
+    runUrl?: string;
     env?: Record<string, string | undefined>;
     /** Key of the artifact this row was reduced from, relative to the prefix. */
     blob?: { kind: PerfArtifactKind; key: string };
@@ -145,20 +147,36 @@ export const artifactKey = (context: PerfRunContext, artifactName: string): stri
     `${runPrefix(context)}/${slugify(artifactName)}.json`;
 
 /**
- * Pull requests run concurrently, so each run gets its own immutable file. A branch appends to one
- * rolling file; its publish job is serialized by a concurrency group.
+ * One rolling file per branch, and one per pull request so a reader can find every run of it without
+ * listing the bucket, which a static page cannot do. Both are appended to read-modify-write; the
+ * publish job's concurrency group is keyed by the ref, so two runs never write the same file at once.
  */
 export const indexKey = (context: PerfRunContext): string =>
     context.prNumber
-        ? `index/${context.platform}/pr/${context.prNumber}/${context.runId}-${context.runAttempt}-${slugify(context.shard)}.ndjson`
+        ? `index/${context.platform}/pr/${slugify(context.prNumber)}/index.ndjson`
         : `index/${context.platform}/${slugify(context.branch)}/index.ndjson`;
-
-export const isRollingIndex = (context: PerfRunContext): boolean => !context.prNumber;
 
 export const baselineKey = (platform: PerfPlatform, branch: string): string =>
     `baseline/${platform}/${slugify(branch)}/latest.json`;
 
 export const publicUrl = (key: string): string => `${STORE_ORIGIN}/${STORE_PREFIX}/${key}`;
+
+export type DashboardUrlParams = {
+    platform: PerfPlatform;
+    /** Opens the pull request's runs against its base branch instead of a branch trend. */
+    prNumber?: string;
+    branch?: string;
+};
+
+/** The page `packages/perf-e2e/dashboard/index.html` is deployed as, with its view preselected. */
+export const dashboardUrl = ({ platform, prNumber, branch }: DashboardUrlParams): string => {
+    const query = new URLSearchParams({ platform });
+
+    if (prNumber) query.set('pr', prNumber);
+    if (branch) query.set('branch', branch);
+
+    return `${publicUrl('dashboard/index.html')}?${query.toString()}`;
+};
 
 export const toIndexRows = ({ context, artifacts, measurements }: PerfRun): PerfIndexRow[] => {
     const kindByName = new Map(artifacts.map(artifact => [artifact.name, artifact.kind]));
@@ -180,6 +198,7 @@ export const toIndexRows = ({ context, artifacts, measurements }: PerfRun): Perf
             samples: measurement.samples,
             metrics: measurement.metrics,
             ...(context.profiled || measurement.profiled ? { profiled: true } : {}),
+            ...(context.runUrl ? { runUrl: context.runUrl } : {}),
             ...(context.env ? { env: context.env } : {}),
             ...(measurement.artifact && kind
                 ? { blob: { kind, key: artifactKey(context, measurement.artifact) } }
@@ -270,7 +289,7 @@ export const toBaselineDocument = (runs: readonly PerfRun[]): PerfBaselineDocume
 export const buildUploadBundle = (
     runs: readonly PerfRun[],
     options: {
-        /** Current contents of each rolling index, per key: every platform has its own index. */
+        /** Current contents of each index, per key: every platform and pull request has its own. */
         existingIndex?: Readonly<Record<string, string>>;
         sealBaseline?: boolean;
     } = {},
@@ -282,23 +301,16 @@ export const buildUploadBundle = (
         })),
     );
 
-    const rowsByIndex = new Map<string, { context: PerfRunContext; rows: PerfIndexRow[] }>();
+    const rowsByIndex = new Map<string, PerfIndexRow[]>();
 
     for (const run of runs) {
         const key = indexKey(run.context);
-        const entry = rowsByIndex.get(key) ?? { context: run.context, rows: [] };
 
-        entry.rows.push(...toIndexRows(run));
-        rowsByIndex.set(key, entry);
+        rowsByIndex.set(key, [...(rowsByIndex.get(key) ?? []), ...toIndexRows(run)]);
     }
 
-    for (const [key, { context, rows }] of rowsByIndex) {
-        files.push({
-            path: key,
-            body: isRollingIndex(context)
-                ? appendIndexRows(options.existingIndex?.[key] ?? '', rows)
-                : renderNdjson(rows),
-        });
+    for (const [key, rows] of rowsByIndex) {
+        files.push({ path: key, body: appendIndexRows(options.existingIndex?.[key] ?? '', rows) });
     }
 
     if (options.sealBaseline) {
