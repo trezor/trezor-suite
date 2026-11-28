@@ -17,6 +17,7 @@ export enum EthereumABIType {
     ABI_ADDRESS = 0,
     ABI_UINT256 = 1,
     ABI_UINT248 = 2,
+    ABI_UINT216 = 50,
     ABI_UINT160 = 3,
     ABI_UINT128 = 4,
     ABI_UINT120 = 5,
@@ -32,6 +33,11 @@ export enum EthereumABIType {
     ABI_UINT8 = 15,
     ABI_BOOL = 16,
     ABI_INT160 = 17,
+    ABI_INT128 = 18,
+    ABI_INT64 = 19,
+    ABI_INT32 = 40,
+    ABI_INT24 = 41,
+    ABI_INT256 = 42,
     ABI_BYTES32 = 20,
     ABI_BYTES16 = 21,
     ABI_BYTES8 = 22,
@@ -48,6 +54,7 @@ export enum EthereumERC7730ContainerPath {
     FROM = 1,
     VALUE = 2,
     TO = 3,
+    CHAIN_ID = 4,
 }
 
 export type EnumEthereumERC7730ContainerPath = Static<typeof EnumEthereumERC7730ContainerPath>;
@@ -63,6 +70,7 @@ export enum EthereumERC7730FieldFormatterType {
     FORMATTER_CALLDATA = 6,
     FORMATTER_ENUM = 7,
     FORMATTER_DURATION = 8,
+    FORMATTER_NFT_NAME = 9,
 }
 
 export type EnumEthereumERC7730FieldFormatterType = Static<
@@ -75,8 +83,21 @@ export const EthereumERC7730EnumEntry = Type.Object(
     {
         key: Type.Number(),
         value: Type.String(),
+        wide_key: Type.Optional(Type.String()),
     },
     { $id: 'EthereumERC7730EnumEntry' },
+);
+
+export type EthereumERC7730PathStep = Static<typeof EthereumERC7730PathStep>;
+export const EthereumERC7730PathStep = Type.Object(
+    {
+        field: Type.Optional(Type.Number()),
+        index: Type.Optional(Type.Number()),
+        each: Type.Optional(Type.Boolean()),
+        slice_start: Type.Optional(Type.Number()),
+        slice_end: Type.Optional(Type.Number()),
+    },
+    { $id: 'EthereumERC7730PathStep' },
 );
 
 export type EthereumERC7730Path = Static<typeof EthereumERC7730Path>;
@@ -87,6 +108,7 @@ export const EthereumERC7730Path = Type.Object(
         const_value: Type.Optional(Type.String()),
         slice_start: Type.Optional(Type.Number()),
         slice_end: Type.Optional(Type.Number()),
+        steps: Type.Array(EthereumERC7730PathStep),
     },
     { $id: 'EthereumERC7730Path' },
 );
@@ -105,10 +127,24 @@ export const EthereumERC7730FieldInfo = Type.Object(
         base: Type.Optional(Type.String()),
         prefix: Type.Optional(Type.Boolean()),
         const_token_address: Type.Optional(Type.String()),
+        chain_id_path: Type.Optional(EthereumERC7730Path),
+        const_chain_id: Type.Optional(Type.Number()),
         callee_path: Type.Optional(EthereumERC7730Path),
+        const_callee: Type.Optional(Type.String()),
+        selector_path: Type.Optional(EthereumERC7730Path),
         selector: Type.Optional(Type.String()),
+        amount_path: Type.Optional(EthereumERC7730Path),
+        const_amount: Type.Optional(Type.String()),
+        spender_path: Type.Optional(EthereumERC7730Path),
+        const_spender: Type.Optional(Type.String()),
+        is_delegate_call: Type.Optional(Type.Boolean()),
         enum_values: Type.Array(EthereumERC7730EnumEntry),
         lookup_address: Type.Optional(Type.Boolean()),
+        lookup_token: Type.Optional(Type.Boolean()),
+        lookup_contract: Type.Optional(Type.Boolean()),
+        if_not_in: Type.Array(Type.String()),
+        must_match: Type.Array(Type.String()),
+        bundle_id: Type.Optional(Type.Number()),
     },
     { $id: 'EthereumERC7730FieldInfo' },
 );
