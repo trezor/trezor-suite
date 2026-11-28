@@ -1,23 +1,16 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
-import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
-import { type RateTypeWithoutHistoric } from '@suite-common/wallet-types';
-import { type AmountUnit, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
+import { type AmountUnit, toFiatCurrency } from '@suite-common/wallet-utils';
 
-import { useSelector } from './useSelector';
+import {
+    type FiatRateParams,
+    selectFiatRateForCryptoValue,
+} from '#src/selectors/wallet/fiatRateSelectors';
 
-interface CommonOwnProps {
+export interface UseFiatFromCryptoValueParams extends FiatRateParams {
     amount: string | AmountUnit; // Todo: remove `string` only for back compatibility
-    symbol: NetworkSymbol;
-    tokenAddress?: TokenAddress;
-    rateType?: RateTypeWithoutHistoric;
-}
-
-export interface UseFiatFromCryptoValueParams extends CommonOwnProps {
-    historicRate?: number;
-    useHistoricRate?: boolean;
 }
 
 export const useFiatFromCryptoValue = ({
@@ -28,18 +21,20 @@ export const useFiatFromCryptoValue = ({
     useHistoricRate,
     rateType,
 }: UseFiatFromCryptoValueParams) => {
-    const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const fiatRateKey = getFiatRateKey(symbol, baseCurrencyCode, tokenAddress);
-
-    const currentRate = useSelector(state =>
-        selectFiatRatesByFiatRateKey(state, fiatRateKey, rateType),
+    const rate = useSelector((state: FiatRatesRootState & WalletSettingsRootState) =>
+        selectFiatRateForCryptoValue(state, {
+            symbol,
+            tokenAddress,
+            rateType,
+            historicRate,
+            useHistoricRate,
+        }),
     );
 
-    const rate = useHistoricRate ? historicRate : currentRate?.rate;
     const fiatAmount = useMemo(
         () => (rate ? toFiatCurrency({ amount, rate }) : null),
         [amount, rate],
     );
 
-    return { baseCurrencyCode, fiatAmount, rate, currentRate };
+    return { fiatAmount, rate };
 };
