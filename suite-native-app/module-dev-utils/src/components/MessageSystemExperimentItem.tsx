@@ -6,10 +6,11 @@ import {
     type ExperimentId,
     type MessageSystemRootState,
     buildExperimentGroupRanges,
-    getExperimentGroupByInclusion,
     getInclusionFromInstanceId,
     messageSystemActions,
+    resolveExperimentGroup,
     selectAllExperimentInclusionOverrides,
+    selectExperimentVariantOverrideById,
     selectIsExperimentValid,
 } from '@suite-common/message-system';
 import { type Experiments, type ExperimentsItem } from '@suite-common/suite-types';
@@ -53,6 +54,9 @@ export const MessageSystemExperimentItem = ({
         selectIsExperimentValid(state, experimentId),
     );
     const inclusionOverride = useSelector(selectAllExperimentInclusionOverrides)?.[experimentId];
+    const variantOverride = useSelector((state: MessageSystemRootState) =>
+        selectExperimentVariantOverrideById(state, experimentId),
+    );
     const instanceId = useSelector(selectAnalyticsInstanceId);
     const { dispatch } = useServices(injectDispatch);
     const copyToClipboard = useCopyToClipboard();
@@ -60,13 +64,14 @@ export const MessageSystemExperimentItem = ({
     const experimentName = EXPERIMENT_MAP[experimentId] as string | undefined;
     const inclusion = instanceId ? getInclusionFromInstanceId(instanceId, experimentId) : undefined;
     const effectiveInclusion = inclusionOverride ?? inclusion;
-    const assignedGroup =
-        effectiveInclusion !== undefined
-            ? getExperimentGroupByInclusion({
-                  groups: experiment.groups,
-                  inclusion: effectiveInclusion,
-              })
-            : undefined;
+    const assignedGroup = resolveExperimentGroup({
+        experiment: { ...experiment, id: experimentId },
+        instanceId,
+        variantOverride,
+        inclusionOverride,
+    });
+    const isVariantForced =
+        variantOverride !== undefined && assignedGroup?.variant === variantOverride;
 
     return (
         <Card>
@@ -82,7 +87,8 @@ export const MessageSystemExperimentItem = ({
                     groups={experiment.groups}
                     assignedVariant={assignedGroup?.variant}
                     inclusion={effectiveInclusion}
-                    isOverridden={inclusionOverride !== undefined}
+                    isOverridden={inclusionOverride !== undefined || variantOverride !== undefined}
+                    isVariantForced={isVariantForced}
                 />
                 <Text variant="body-xs">{JSON.stringify(conditions, null, 2)}</Text>
                 <Button

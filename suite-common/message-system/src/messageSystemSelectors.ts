@@ -341,3 +341,11 @@ export const selectExperimentInclusionOverrideById = (id: ExperimentId) =>
         [selectAllExperimentInclusionOverrides],
         inclusionOverrides => inclusionOverrides?.[id] ?? null,
     );
+
+export const selectAllExperimentVariantOverrides = (state: MessageSystemRootState) =>
+    state.messageSystem.experimentVariantOverrides;
+
+export const selectExperimentVariantOverrideById = (
+    state: MessageSystemRootState,
+    id: ExperimentId,
+) => state.messageSystem.experimentVariantOverrides?.[id];

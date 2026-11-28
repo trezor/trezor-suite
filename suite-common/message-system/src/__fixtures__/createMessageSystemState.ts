@@ -9,11 +9,13 @@ export const experimentGroups = [
 type CreateMessageSystemStateParams = {
     groups?: typeof experimentGroups;
     inclusionOverride?: number;
+    variantOverride?: string;
 };
 
 export const createMessageSystemState = ({
     groups = experimentGroups,
     inclusionOverride,
+    variantOverride,
 }: CreateMessageSystemStateParams = {}) =>
     ({
         ...messageSystemInitialState,
@@ -36,5 +38,9 @@ export const createMessageSystemState = ({
         experimentInclusionOverrides:
             inclusionOverride !== undefined
                 ? { [ExperimentId.tradingFeedbackForm]: inclusionOverride }
+                : undefined,
+        experimentVariantOverrides:
+            variantOverride !== undefined
+                ? { [ExperimentId.tradingFeedbackForm]: variantOverride }
                 : undefined,
     }) as unknown as MessageSystemState;

@@ -27,6 +27,7 @@ export type MessageSystemState = {
     manuallyAddedMessageIds: Record<string, true>;
     manuallyAddedExperimentIds: Record<string, true>;
     experimentInclusionOverrides?: Record<string, number>;
+    experimentVariantOverrides?: Record<string, string>;
 };
 
 export type MessageSystemRootState = {

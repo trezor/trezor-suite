@@ -3,12 +3,13 @@ import { useSelector } from 'react-redux';
 
 import { selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
 
-import { getActiveExperimentGroup, getExperimentGroupByInclusion } from './experimentUtils';
+import { resolveExperimentGroup } from './experimentUtils';
 import {
     selectExperimentById,
     selectExperimentInclusionOverrideById,
+    selectExperimentVariantOverrideById,
 } from './messageSystemSelectors';
-import type { ExperimentId } from './messageSystemTypes';
+import type { ExperimentId, MessageSystemRootState } from './messageSystemTypes';
 
 type UseIsExperimentVariantActiveParams = {
     experimentId: ExperimentId;
@@ -19,15 +20,18 @@ export const useExperiment = (experimentId: ExperimentId) => {
     const instanceId = useSelector(selectAnalyticsInstanceId);
     const experiment = useSelector(selectExperimentById(experimentId));
     const inclusionOverride = useSelector(selectExperimentInclusionOverrideById(experimentId));
+    const variantOverride = useSelector((state: MessageSystemRootState) =>
+        selectExperimentVariantOverrideById(state, experimentId),
+    );
     const activeExperimentVariant = useMemo(
         () =>
-            experiment && inclusionOverride != null
-                ? getExperimentGroupByInclusion({
-                      groups: experiment.groups,
-                      inclusion: inclusionOverride,
-                  })
-                : getActiveExperimentGroup({ instanceId, experiment }),
-        [instanceId, experiment, inclusionOverride],
+            resolveExperimentGroup({
+                experiment,
+                instanceId,
+                variantOverride,
+                inclusionOverride: inclusionOverride ?? undefined,
+            }),
+        [instanceId, experiment, variantOverride, inclusionOverride],
     );
 
     return {

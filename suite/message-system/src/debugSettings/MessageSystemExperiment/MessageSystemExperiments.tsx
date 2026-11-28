@@ -6,10 +6,10 @@ import styled from 'styled-components';
 import { selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
 import {
     type ExperimentsItemType,
-    getActiveExperimentGroup,
-    getExperimentGroupByInclusion,
     messageSystemActions,
+    resolveExperimentGroup,
     selectAllExperimentInclusionOverrides,
+    selectAllExperimentVariantOverrides,
     selectAllManuallyAddedExperimentIds,
     selectAllValidExperiments,
 } from '@suite-common/message-system';
@@ -47,6 +47,7 @@ export const MessageSystemExperiments = ({
     const allValidExperiments = useSelector(selectAllValidExperiments);
     const allManuallyAddedExperimentIds = useSelector(selectAllManuallyAddedExperimentIds);
     const allExperimentInclusionOverrides = useSelector(selectAllExperimentInclusionOverrides);
+    const allExperimentVariantOverrides = useSelector(selectAllExperimentVariantOverrides);
     const instanceId = useSelector(selectAnalyticsInstanceId);
     const { dispatch } = useServices(injectDispatch);
 
@@ -88,14 +89,14 @@ export const MessageSystemExperiments = ({
                     const isActive = validExperimentIdSet.has(experiment.id);
 
                     const inclusionOverride = allExperimentInclusionOverrides?.[experiment.id];
+                    const variantOverride = allExperimentVariantOverrides?.[experiment.id];
 
-                    const assignedGroup =
-                        inclusionOverride != undefined
-                            ? getExperimentGroupByInclusion({
-                                  groups: experiment.groups,
-                                  inclusion: inclusionOverride,
-                              })
-                            : getActiveExperimentGroup({ experiment, instanceId });
+                    const assignedGroup = resolveExperimentGroup({
+                        experiment,
+                        instanceId,
+                        variantOverride,
+                        inclusionOverride,
+                    });
 
                     return (
                         <MessageContainer key={`${experiment.id}-${index}`} $active={isActive}>
@@ -115,6 +116,7 @@ export const MessageSystemExperiments = ({
                                     instanceId={instanceId}
                                     experiment={experiment}
                                     inclusionOverride={inclusionOverride}
+                                    variantOverride={variantOverride}
                                 />
                                 <Column alignItems="flex-end" gap={8}>
                                     <Button

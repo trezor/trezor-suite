@@ -186,6 +186,63 @@ export const fixtures = [
         },
     },
     {
+        description: 'Set experiment variant override',
+        initialState,
+        actions: [
+            messageSystemActions.setExperimentVariantOverride({
+                id: experimentIds[0],
+                variant: 'B',
+            }),
+        ],
+        result: {
+            ...initialState,
+            experimentVariantOverrides: { [experimentIds[0]]: 'B' },
+        },
+    },
+    {
+        description: 'Clear experiment variant override',
+        initialState: {
+            ...initialState,
+            experimentVariantOverrides: { [experimentIds[0]]: 'B' },
+        },
+        actions: [messageSystemActions.clearExperimentVariantOverride(experimentIds[0])],
+        result: initialState,
+    },
+    {
+        description: 'Experiment variant override replaces the inclusion override',
+        initialState: {
+            ...initialState,
+            experimentInclusionOverrides: { [experimentIds[0]]: 42 },
+        },
+        actions: [
+            messageSystemActions.setExperimentVariantOverride({
+                id: experimentIds[0],
+                variant: 'B',
+            }),
+        ],
+        result: {
+            ...initialState,
+            experimentVariantOverrides: { [experimentIds[0]]: 'B' },
+        },
+    },
+    {
+        description: 'Experiment inclusion override replaces the variant override',
+        initialState: {
+            ...initialState,
+            experimentVariantOverrides: { [experimentIds[0]]: 'B' },
+        },
+        actions: [
+            messageSystemActions.setExperimentInclusionOverride({
+                id: experimentIds[0],
+                inclusion: 42,
+            }),
+        ],
+        result: {
+            ...initialState,
+            experimentInclusionOverrides: { [experimentIds[0]]: 42 },
+        },
+    },
+    {
         description: 'Default',
         initialState,
         actions: [
