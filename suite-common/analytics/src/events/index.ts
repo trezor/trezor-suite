@@ -18,6 +18,11 @@ export { dashboardNftsEvent } from './dashboardNftsEvent';
 export { deviceConnectionDeviceConfirmationEvent } from './deviceConnectionDeviceConfirmationEvent';
 export { deviceConnectionDeviceFoundEvent } from './deviceConnectionDeviceFoundEvent';
 export { deviceConnectionDevicePairedEvent } from './deviceConnectionDevicePairedEvent';
+export {
+    deviceLaunchTutorialEvent,
+    type DeviceTutorialResult,
+    type DeviceTutorialSource,
+} from './deviceLaunchTutorialEvent';
 export { guideSupportChatOpenedEvent } from './guideSupportChatOpenedEvent';
 export { navigateFlowEvent } from './navigateFlowEvent';
 export { onboardingRecoveryWarningCreateNewWalletEvent } from './onboardingRecoveryWarningCreateNewWalletEvent';

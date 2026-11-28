@@ -10990,6 +10990,10 @@ export const messages = defineMessages({
         id: 'TR_TREZOR_DEVICE_TUTORIAL_DESCRIPTION',
         defaultMessage: 'Learn how to use your Trezor with a short tutorial.',
     },
+    TR_DEVICE_SETTINGS_TUTORIAL: {
+        id: 'TR_DEVICE_SETTINGS_TUTORIAL',
+        defaultMessage: 'Tutorial',
+    },
     TR_CONTINUE_ON_TREZOR: {
         id: 'TR_CONTINUE_ON_TREZOR',
         defaultMessage: 'Continue on Trezor',

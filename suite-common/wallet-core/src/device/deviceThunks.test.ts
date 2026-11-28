@@ -1,14 +1,18 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { type AnalyticsSharedEvents, events } from '@suite-common/analytics';
 import {
     type BluetoothDeviceCommon,
     prepareBluetoothReducerCreator,
 } from '@suite-common/bluetooth';
 import { type DeviceReducerState, deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { preparePersistentDeviceDataReducer } from '@suite-common/persistent-device-data';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot, filterThunkActionTypes } from '@suite-common/test-utils';
 import { type ThpRootState, prepareThpReducer } from '@suite-common/thp';
-import { DEVICE } from '@trezor/connect';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
+import TrezorConnect, { DEVICE } from '@trezor/connect';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { forgetPersistentDataPreloadedStateFixture } from './__fixtures__/forgetPersistentDataPreloadedState';
@@ -17,8 +21,11 @@ import {
     type ForgetDevicePersistentDataThunkDeps,
     type ForgetDevicePersistentDataThunkState,
     type HandleDeviceDisconnectThunkState,
+    type ShowDeviceTutorialThunkDeps,
+    type ShowDeviceTutorialThunkState,
     forgetDevicePersistentDataThunk,
     handleDeviceDisconnectThunk,
+    showDeviceTutorialThunk,
 } from './deviceThunks';
 
 const deviceReducer = prepareDeviceReducer({
@@ -160,6 +167,59 @@ describe(handleDeviceDisconnectThunk.name, () => {
                 }
                 expect(action?.payload).toEqual(fixture.result.payload);
             }
+        });
+    });
+});
+
+const initTutorialStore = () => {
+    const device = mockSuiteDevice({ path: '1' });
+    const analytics = mockAnalytics<AnalyticsSharedEvents>();
+    const { store } = createTestCompositionRoot<
+        ShowDeviceTutorialThunkDeps,
+        ShowDeviceTutorialThunkState
+    >({
+        reducer: combineReducers({ device: deviceReducer }),
+        preloadedState: getDisconnectInitialState({
+            device: { devices: [device], selectedDevice: device },
+        }),
+        services: () => ({ analytics }),
+    }).services;
+
+    return { store, analytics };
+};
+
+describe(showDeviceTutorialThunk.name, () => {
+    it('shows an error toast and reports a failed tutorial', async () => {
+        jest.spyOn(TrezorConnect, 'showDeviceTutorial').mockResolvedValue({
+            success: false,
+            error: { message: 'eeeh', code: 'Failure_UnknownCode' },
+        });
+        const { store, analytics } = initTutorialStore();
+
+        await store.dispatch(showDeviceTutorialThunk({ source: 'settings' }));
+
+        expect(filterThunkActionTypes(store.getActions())).toMatchObject([
+            { type: notificationsActions.addToast.type, payload: { type: 'error', error: 'eeeh' } },
+        ]);
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: events.deviceLaunchTutorialEvent.name,
+            payload: { source: 'settings', result: 'failed' },
+        });
+    });
+
+    it('reports a cancelled tutorial without a toast', async () => {
+        jest.spyOn(TrezorConnect, 'showDeviceTutorial').mockResolvedValue({
+            success: false,
+            error: { message: 'Cancelled', code: 'Method_Cancel' },
+        });
+        const { store, analytics } = initTutorialStore();
+
+        await store.dispatch(showDeviceTutorialThunk({ source: 'settings' }));
+
+        expect(filterThunkActionTypes(store.getActions())).toEqual([]);
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: events.deviceLaunchTutorialEvent.name,
+            payload: { source: 'settings', result: 'cancelled' },
         });
     });
 });
