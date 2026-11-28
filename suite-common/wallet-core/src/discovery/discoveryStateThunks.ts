@@ -7,7 +7,13 @@ import { type WithServices, createOwnedAction, createThunk } from '@trezor/redux
 import { DISCOVERY_MODULE_PREFIX } from './discoveryActions';
 import { selectDiscoveryByDevicePath } from './discoverySelectors';
 import { type DiscoveryRootState } from './discoveryTypes';
-import { getDiscoveryOutcome, getReportableErrorCode, hasDiscoveryEnded } from './discoveryUtils';
+import {
+    getDiscoveryLoadDurationMs,
+    getDiscoveryLoadTiming,
+    getDiscoveryOutcome,
+    getReportableErrorCode,
+    hasDiscoveryEnded,
+} from './discoveryUtils';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountsByDeviceState } from '../accounts/accountsSelectors';
 
@@ -63,7 +69,17 @@ export const updateDiscoveryThunk = createThunk<
     `${DISCOVERY_MODULE_PREFIX}/updateDiscovery`,
     ({ status, path, staticSessionId, isSilent = false }, { dispatch, getState, extra }) => {
         const previousDiscovery = selectDiscoveryByDevicePath(getState(), path);
-        dispatch(updateDiscovery(status, path));
+        const now = Date.now();
+        dispatch(
+            updateDiscovery(
+                {
+                    ...status,
+                    ...(previousDiscovery &&
+                        getDiscoveryLoadTiming(previousDiscovery, status, now)),
+                },
+                path,
+            ),
+        );
 
         const outcome = getDiscoveryOutcome(status);
         const trigger = previousDiscovery?.trigger;
@@ -95,6 +111,10 @@ export const updateDiscoveryThunk = createThunk<
             payload: {
                 outcome: isCancelledFailure ? 'cancelled' : reportedOutcome,
                 trigger,
+                durationMs: getDiscoveryLoadDurationMs(
+                    selectDiscoveryByDevicePath(getState(), path),
+                    now,
+                ),
                 ...(errorCode !== undefined && { errorCode }),
             },
         });
@@ -118,7 +138,11 @@ export const deleteDiscoveryThunk = createThunk<
     if (trigger !== undefined && !hasDiscoveryEnded(deletedDiscovery)) {
         extra.services.analytics.report({
             type: events.accountsDiscoveryResultEvent.name,
-            payload: { outcome: 'cancelled', trigger },
+            payload: {
+                outcome: 'cancelled',
+                trigger,
+                durationMs: getDiscoveryLoadDurationMs(deletedDiscovery, Date.now()),
+            },
         });
     }
 });

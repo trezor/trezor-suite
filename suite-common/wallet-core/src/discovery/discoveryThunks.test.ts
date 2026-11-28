@@ -19,6 +19,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { createMockDispatch, mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
+import { prepareDiscoveryReducer } from './discoveryReducer';
 import { updateDiscoveryMatcher } from './discoveryStateThunks';
 import {
     type EndUnfinishedDiscoveryThunkDeps,
@@ -310,7 +311,7 @@ describe('runAdditionalDiscoveryThunk', () => {
             expect.objectContaining({
                 type: updateDiscoveryMatcher.type,
                 payload: expect.objectContaining({
-                    status: expect.objectContaining({ status: 'progress' }),
+                    status: expect.objectContaining({ status: 'progress', progress: 2 }),
                 }),
             }),
         );
@@ -382,6 +383,91 @@ describe('runAdditionalDiscoveryThunk accounts', () => {
         expect(
             await discoverAccount({ symbol: 'btc', failed: true, code: 'blockchain_link/connect' }),
         ).toMatchObject({ failed: true, errorCode: 'blockchain_link/connect' });
+    });
+});
+
+describe('runAdditionalDiscoveryThunk load duration', () => {
+    const discoveryReducer = prepareDiscoveryReducer(undefined);
+    const deviceState = {
+        success: true as const,
+        payload: { state: { staticSessionId: existingWalletState } },
+    };
+    const allAccountsLoaded = {
+        success: true as const,
+        payload: { empty: 1, nonempty: 0, failed: 0 },
+    };
+
+    const setup = () => {
+        const state = createState({ status: 'complete' }, existingWallet);
+        const extra = createExtra();
+        const mockDispatch = createMockDispatch({ getState: () => state, extra });
+        const subscription = mockDispatch.onDispatch(action => {
+            state.wallet.discovery = discoveryReducer(state.wallet.discovery, action);
+        });
+        jest.spyOn(TrezorConnect, 'on').mockImplementation(jest.fn());
+        jest.spyOn(TrezorConnect, 'off').mockImplementation(jest.fn());
+
+        return { ...mockDispatch, state, analytics: extra.services.analytics, subscription };
+    };
+
+    beforeEach(() => {
+        jest.useFakeTimers({ now: 0 });
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+        jest.useRealTimers();
+    });
+
+    it('reports the time spent loading accounts, leaving out the device preparation', async () => {
+        const { dispatch, analytics, subscription } = setup();
+        jest.mocked(TrezorConnect.getDeviceState).mockImplementation(() => {
+            jest.setSystemTime(2_000);
+
+            return Promise.resolve(deviceState);
+        });
+        jest.spyOn(TrezorConnect, 'discoverAccounts').mockImplementation(() => {
+            jest.setSystemTime(6_000);
+
+            return Promise.resolve(allAccountsLoaded);
+        });
+
+        await dispatch(
+            runAdditionalDiscoveryThunk({
+                staticSessionId: existingWalletState,
+                trigger: 'coin-toggle',
+            }),
+        );
+        subscription.unsubscribe();
+
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: 'accounts/discovery-result',
+            payload: { outcome: 'complete', trigger: 'coin-toggle', durationMs: 4_000 },
+        });
+    });
+
+    it('reports nothing more for a run that ended while the device was being prepared', async () => {
+        const { dispatch, analytics, state, subscription } = setup();
+        jest.mocked(TrezorConnect.getDeviceState).mockImplementation(() => {
+            state.wallet.discovery = {
+                [devicePath]: { status: 'cancelled', trigger: 'coin-toggle' },
+            };
+
+            return Promise.resolve(deviceState);
+        });
+        jest.spyOn(TrezorConnect, 'discoverAccounts').mockResolvedValue(allAccountsLoaded);
+
+        await dispatch(
+            runAdditionalDiscoveryThunk({
+                staticSessionId: existingWalletState,
+                trigger: 'coin-toggle',
+            }),
+        );
+        subscription.unsubscribe();
+
+        expect(analytics.report).not.toHaveBeenCalledWith(
+            expect.objectContaining({ type: 'accounts/discovery-result' }),
+        );
     });
 });
 

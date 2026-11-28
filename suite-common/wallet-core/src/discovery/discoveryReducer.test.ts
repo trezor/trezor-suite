@@ -157,6 +157,7 @@ describe('Discovery Reducer', () => {
         expect(store.getState().wallet.discovery[TEST_DEVICE_PATH]).toEqual({
             status: 'progress',
             startTimestamp: 1000,
+            loadStartTimestamp: expect.any(Number),
             total: 10,
             progress: 5,
             hasLoadedAnyNonEmptyAccount: true,
@@ -253,6 +254,7 @@ describe('Discovery Reducer', () => {
         expect(store.getState().wallet.discovery[TEST_DEVICE_PATH]).toEqual({
             status: 'progress',
             startTimestamp: 1000,
+            loadStartTimestamp: expect.any(Number),
             total: 10,
             progress: 0,
             hasLoadedAnyNonEmptyAccount: undefined,
