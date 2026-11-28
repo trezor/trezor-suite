@@ -122,5 +122,9 @@ The list is CoinGecko-driven; the Stellar-specific enrichment comes from elsewhe
 - `STELLAR_EXPERT_URL` + `/asset/{address}/rating` — the rating used to drop spam.
 - `STELLAR_HORIZON_URL` + `stellar.toml` — SEP-1 home-domain verification for classic assets.
 
+StellarExpert's free tier allows 60 requests a minute and 800 an hour, and refuses anything over it
+with `402 Payment Required`. Its client spaces requests by `STELLAR_EXPERT_MIN_REQUEST_GAP_MS` and
+retries a 402 after `QUOTA_RETRY_DELAY_MS`, so a Stellar run takes about 4.5 s per lookup.
+
 All four live in `scripts/constants/index.ts`. Output is a signed `.jws` plus an unsigned `.json`
 per platform, written to `files/` by `scripts/index.ts` (`signData`, `validateStructure`).

@@ -34,4 +34,12 @@ export const REQUEST_RETRY_MAX_DELAY_MS = 60_000;
 export const REQUEST_TIMEOUT_MS = 20_000;
 export const REQUEST_MIN_GAP_MS = 250;
 
+// StellarExpert's free tier allows 60 requests a minute and 800 an hour. The hourly cap is the
+// tighter one, so requests are spread evenly over it rather than spent in a burst that runs out.
+export const STELLAR_EXPERT_MIN_REQUEST_GAP_MS = (60 * 60 * 1_000) / 800;
+// StellarExpert answers a request over the free quota with 402 Payment Required, not 429.
+export const STELLAR_EXPERT_QUOTA_EXCEEDED_STATUS = 402;
+// Without a `Retry-After`, a refused request waits out the per-minute window before it is retried.
+export const QUOTA_RETRY_DELAY_MS = 60_000;
+
 export const YIELD_VAULTS_URL = 'https://earn.trezor.io/yield/vaults/v1';
