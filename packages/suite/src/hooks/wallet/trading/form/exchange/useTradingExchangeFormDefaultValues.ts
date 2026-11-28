@@ -22,6 +22,7 @@ import {
     getCryptoId,
     getSupportedFiatCurrencyWithFallback,
     selectTradingCoins,
+    selectTradingPrefilledFromAccount,
     useTradingAssets,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
@@ -56,8 +57,19 @@ export const useTradingExchangeFormDefaultValues = (
                 visibleAccount => visibleAccount.symbol === TRADING_DEFAULT_CRYPTO_CURRENCY,
             ),
     );
+    const { receiveCryptoId: prefilledReceiveCryptoId } = useSelector(
+        selectTradingPrefilledFromAccount,
+    );
     const defaultReceiveAsset = useMemo(() => {
         void coins;
+
+        // A caller that prefilled the receive asset knows what the swap is for.
+        if (
+            prefilledReceiveCryptoId !== undefined &&
+            prefilledReceiveCryptoId !== defaultAsset?.id
+        ) {
+            return createAssetOptionFromCryptoId(prefilledReceiveCryptoId);
+        }
 
         const defaultReceiveCryptoId = getCryptoId(TRADING_DEFAULT_CRYPTO_CURRENCY);
 
@@ -66,7 +78,13 @@ export const useTradingExchangeFormDefaultValues = (
         }
 
         return createAssetOptionFromCryptoId(defaultReceiveCryptoId);
-    }, [coins, createAssetOptionFromCryptoId, defaultAsset?.id, hasDefaultReceiveAccount]);
+    }, [
+        coins,
+        createAssetOptionFromCryptoId,
+        defaultAsset?.id,
+        hasDefaultReceiveAccount,
+        prefilledReceiveCryptoId,
+    ]);
 
     const defaultPayment: Output = useMemo(
         () => ({

@@ -15,6 +15,10 @@ import {
     CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
 } from './products/cardano/messageSystemFeatures';
 import { createEthereumEverstakePooledProduct } from './products/ethereum/everstake-pooled/product';
+import {
+    type EthereumLidoLiquidProductDeps,
+    createEthereumLidoLiquidProduct,
+} from './products/ethereum/lido-liquid/product';
 import { SOLANA_EVERSTAKE_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './products/solana/everstake-native/messageSystemFeatures';
 import { createSolanaEverstakeNativeProduct } from './products/solana/everstake-native/product';
 import { createSolanaExternalNativeProduct } from './products/solana/external-native/product';
@@ -26,9 +30,19 @@ import { luganodesProvider } from './providers/luganodes';
 import { p2pProvider } from './providers/p2p';
 import { getStakingProvider } from './providers/stakingProviders';
 
-const createEthereumStakingProducts = (): readonly StakingProductAdapter[] => {
+export type StakingProductsCompositionRootDeps = EthereumLidoLiquidProductDeps;
+
+type EthereumStakingProductsDeps = StakingProductsCompositionRootDeps;
+
+type EthereumStakingProducts = readonly StakingProductAdapter[];
+
+const createEthereumStakingProducts = (
+    deps?: EthereumStakingProductsDeps,
+): EthereumStakingProducts => {
     const ethereumStakingApi = { getStakingStats, getEthereumValidatorsQueue };
 
+    // The first stakeable product stands for its network, so the Everstake pool stays ahead of
+    // Lido.
     return [
         createEthereumEverstakePooledProduct({
             networkSymbol: asNetworkSymbol('eth'),
@@ -38,6 +52,14 @@ const createEthereumStakingProducts = (): readonly StakingProductAdapter[] => {
             networkSymbol: asNetworkSymbol('thod'),
             ...ethereumStakingApi,
         }),
+        ...(deps
+            ? [
+                  createEthereumLidoLiquidProduct({
+                      networkSymbol: asNetworkSymbol('eth'),
+                      ...deps,
+                  }),
+              ]
+            : []),
     ];
 };
 
@@ -113,8 +135,10 @@ const createTronStakingProducts = (): readonly StakingProductAdapter[] => {
     ];
 };
 
-export const createStakingProductsCompositionRoot = (): readonly StakingProductAdapter[] => [
-    ...createEthereumStakingProducts(),
+export const createStakingProductsCompositionRoot = (
+    deps?: StakingProductsCompositionRootDeps,
+): readonly StakingProductAdapter[] => [
+    ...createEthereumStakingProducts(deps),
     ...createSolanaStakingProducts(),
     ...createCardanoStakingProducts(),
     ...createTronStakingProducts(),

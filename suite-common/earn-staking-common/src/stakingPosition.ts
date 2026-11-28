@@ -79,6 +79,8 @@ export const stakingPositionSchema = z.strictObject({
     status: z.enum(STAKING_POSITION_STATUSES),
     lockup: z.enum(STAKING_POSITION_LOCKUPS),
     balances: stakingPositionBalancesSchema,
+    /** Value in the network's subunits held outside assets already counted in the account. */
+    amountOutsideBalance: stakingAmountSchema.optional(),
     activations: z.array(stakingPositionActivationSchema).readonly(),
     unlocks: z.array(stakingPositionUnlockSchema).readonly(),
     targets: z.array(stakingPositionTargetSchema).readonly(),

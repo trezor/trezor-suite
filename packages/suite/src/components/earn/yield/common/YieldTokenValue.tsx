@@ -14,12 +14,14 @@ type YieldTokenValueToken = {
 type YieldTokenValueProps = {
     token: YieldTokenValueToken;
     amount: string;
+    isCompact?: boolean;
     'data-testid'?: string;
 };
 
 export const YieldTokenValue = ({
     token,
     amount,
+    isCompact,
     'data-testid': dataTestId,
 }: YieldTokenValueProps) => (
     <Row alignItems="center" gap={8}>
@@ -34,6 +36,7 @@ export const YieldTokenValue = ({
         <Text typographyStyle="body-md-strong">
             <FormattedCryptoAmount
                 value={amount}
+                isCompact={isCompact}
                 networkSymbol={token.symbol}
                 tokenDecimals={token.decimals}
                 data-testid={dataTestId}

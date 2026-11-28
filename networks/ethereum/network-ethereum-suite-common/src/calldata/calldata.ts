@@ -10,6 +10,9 @@ import { buildEnsText } from './builder/evm/ens/text';
 import { buildClaimWithdrawRequest } from './builder/evm/everstake/claimWithdrawRequest';
 import { buildStake } from './builder/evm/everstake/stake';
 import { buildUnstake } from './builder/evm/everstake/unstake';
+import { buildLidoClaimWithdrawals } from './builder/evm/lido/claimWithdrawals';
+import { buildLidoRequestWithdrawalsWstETH } from './builder/evm/lido/requestWithdrawalsWstETH';
+import { buildLidoStakeETH } from './builder/evm/lido/stakeETH';
 import { buildRedeem } from './builder/evm/redeem';
 import { buildTransfer } from './builder/evm/transfer';
 import { buildWethDeposit } from './builder/evm/weth/deposit';
@@ -58,6 +61,20 @@ export const Calldata = {
                 decode: createEvmDecoder(EVM_ABI.everstake.unstake),
             },
             claimWithdrawRequest: { encode: buildClaimWithdrawRequest },
+        },
+        lido: {
+            stakeETH: {
+                encode: buildLidoStakeETH,
+                decode: createEvmDecoder(EVM_ABI.lido.stakeETH),
+            },
+            requestWithdrawalsWstETH: {
+                encode: buildLidoRequestWithdrawalsWstETH,
+                decode: createEvmDecoder(EVM_ABI.lido.requestWithdrawalsWstETH),
+            },
+            claimWithdrawals: {
+                encode: buildLidoClaimWithdrawals,
+                decode: createEvmDecoder(EVM_ABI.lido.claimWithdrawals),
+            },
         },
         ens: {
             resolve: { encode: buildEnsResolve },

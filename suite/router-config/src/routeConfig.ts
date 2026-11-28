@@ -146,6 +146,30 @@ export const routes = [
         params: earnParams,
     },
     {
+        name: 'earn-lido',
+        pattern: '/earn/lido',
+        app: 'earn-staking',
+        params: earnParams,
+    },
+    {
+        name: 'earn-lido-stake',
+        pattern: '/earn/lido/stake',
+        app: 'earn-staking',
+        params: earnParams,
+    },
+    {
+        name: 'earn-lido-unstake',
+        pattern: '/earn/lido/unstake',
+        app: 'earn-staking',
+        params: earnParams,
+    },
+    {
+        name: 'earn-lido-claim',
+        pattern: '/earn/lido/claim',
+        app: 'earn-staking',
+        params: earnParams,
+    },
+    {
         name: 'apps-embedding-index',
         pattern: '/apps-embedding',
         app: 'apps-embedding',

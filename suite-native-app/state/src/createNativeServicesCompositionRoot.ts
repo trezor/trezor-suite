@@ -18,6 +18,7 @@ import { createReferAFriendCompositionRoot } from '@suite-common/refer-a-friend'
 import { createSignVerify } from '@suite-common/sign-verify';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { createFetchLidoWithdrawalBalances } from '@suite-common/wallet-core';
 import { analytics } from '@suite-native/analytics';
 import {
     rerunFwAuthenticityChecksThunk,
@@ -134,16 +135,20 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         dispatch: deps.dispatch,
     });
 
+    const queryClient = createQueryClient({ shouldRefetchOnEvents: false });
+
     const staking = createStakingCompositionRoot({
         platform: 'mobile',
-        adapters: createStakingProductsCompositionRoot(),
+        adapters: createStakingProductsCompositionRoot({
+            getTrezorBlockchain: () => TrezorBlockchain,
+            fetch: globalThis.fetch.bind(globalThis),
+            fetchWithdrawalBalances: createFetchLidoWithdrawalBalances(queryClient),
+        }),
         deviceAccess: createNativeStakingDeviceAccess({
             getTrezorConnect: deps.getTrezorConnect,
         }),
         dispatch: deps.dispatch,
     });
-
-    const queryClient = createQueryClient({ shouldRefetchOnEvents: false });
 
     const createLogger: ConnectSettings['createLogger'] = (prefix: string) =>
         initLog(prefix, false);

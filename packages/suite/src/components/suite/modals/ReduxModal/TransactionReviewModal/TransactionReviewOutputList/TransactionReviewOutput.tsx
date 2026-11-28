@@ -16,6 +16,7 @@ import { selectAccounts } from '@suite-common/wallet-core';
 import {
     type Account,
     type EvmTransactionPurpose,
+    type LidoReviewDetails,
     type StakeType,
     type TransactionReviewOutput as TransactionReviewOutputType,
     type YieldClaimReward,
@@ -37,6 +38,7 @@ import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { TransactionReviewOutputAssets } from '#src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputAssets';
 import { useSelector } from '#src/hooks/suite/useSelector';
+import { lidoIntentLabels } from '#src/utils/suite/transactionReview';
 
 import {
     type OutputElementLine,
@@ -285,8 +287,11 @@ const getOutputTitle = (
         case 'recipient_name':
             return <Translation id="TR_TRADING_PROVIDER" />;
         case 'swap_intent':
+        case 'lido_intent':
         case 'contract_intent':
             return <Translation id="TR_TRADING_INTENT" />;
+        case 'lido_details':
+            return <Translation id="TR_EARN_LIDO_REVIEW_CONFIRM_CONTRACT" />;
         case 'traded_assets':
             return <Translation id={receiveAddress ? 'TR_CONTRACT' : 'TR_MY_ASSETS'} />;
         case 'fee-limit':
@@ -304,7 +309,7 @@ const getOutputTitle = (
 };
 
 interface GetOutputLinesParams {
-    type: TransactionReviewOutputType['type'];
+    type: Exclude<TransactionReviewOutputType['type'], 'lido_intent' | 'lido_details'>;
     account: Account;
     value: string;
     value2?: string;
@@ -477,8 +482,14 @@ const getOutputLines = ({
 
             return defaultOutput;
         }
-        case 'txid':
         case 'contract':
+            return [
+                ...(value2
+                    ? [{ id: 'contract-name', type: 'default' as const, value: value2 }]
+                    : []),
+                { id: 'contract', type: 'data', value },
+            ];
+        case 'txid':
         case 'opreturn':
         case 'destination-tag':
         case 'locktime':
@@ -657,6 +668,46 @@ const getOutputLines = ({
     }
 };
 
+const getLidoDetailsLines = (details: LidoReviewDetails): OutputElementLine[] => {
+    switch (details.kind) {
+        case 'stake':
+            return [
+                {
+                    id: 'amount',
+                    label: <Translation id="TR_EARN_LIDO_REVIEW_AMOUNT_TO_STAKE" />,
+                    value: details.amount,
+                    type: 'amount',
+                },
+            ];
+        case 'request-withdrawal':
+            return [
+                ...details.amounts.map((value, index) => ({
+                    id: `amount-${index}`,
+                    label: <Translation id="TR_EARN_LIDO_REVIEW_AMOUNT_TO_WITHDRAW" />,
+                    value,
+                    token: details.token,
+                    knownTokenSymbol: details.token.symbol?.toUpperCase(),
+                    type: 'amount' as const,
+                })),
+                {
+                    id: 'beneficiary',
+                    label: <Translation id="TR_EARN_LIDO_REVIEW_BENEFICIARY" />,
+                    value: details.beneficiary,
+                    type: 'safe-address',
+                },
+            ];
+        case 'claim':
+            return details.requestIds.map((value, index) => ({
+                id: `request-${index}`,
+                label: <Translation id="TR_EARN_LIDO_REVIEW_REQUEST_ID" />,
+                value,
+                type: 'data',
+            }));
+        default:
+            return exhaustive(details);
+    }
+};
+
 export type TransactionReviewOutputProps = {
     state: TransactionReviewOutputElementProps['state'];
     account: Account;
@@ -711,21 +762,32 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
         isTronStakeFreeze,
     );
 
-    const outputLines = getOutputLines({
-        type,
-        account,
-        value: value ?? '',
-        value2,
-        label,
-        stakeType,
-        evmTxType,
-        device,
-        token,
-        rewards,
-        translationString,
-        nativeToken,
-        locale,
-    }).map(line => {
+    let lines: OutputElementLine[];
+    if (type === 'lido_intent') {
+        lines = [
+            { id: 'intent', value: translationString(lidoIntentLabels[props.value]), type: 'data' },
+        ];
+    } else if (type === 'lido_details') {
+        lines = getLidoDetailsLines(props.details);
+    } else {
+        lines = getOutputLines({
+            type,
+            account,
+            value: value ?? '',
+            value2,
+            label,
+            stakeType,
+            evmTxType,
+            device,
+            token,
+            rewards,
+            translationString,
+            nativeToken,
+            locale,
+        });
+    }
+
+    const outputLines = lines.map(line => {
         if (line.type === 'address') {
             const relevantAccounts = findAccountsByAddress(symbol, line.value, accounts);
 

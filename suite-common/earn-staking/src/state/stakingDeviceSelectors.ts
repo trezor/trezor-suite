@@ -3,6 +3,7 @@ import {
     type StakingPositionWarningCode,
     getStakingPositionAmount,
     hasStakingPositionWarning,
+    hasUnvaluedLiquidStakingBalance,
     isStakingPositionActive,
 } from '@suite-common/earn-staking-common';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
@@ -23,9 +24,10 @@ import { BigNumber } from '@trezor/utils';
 
 import {
     type StakingPositionEntry,
-    selectCountedStakingPositionEntriesByAccount,
+    selectStakingPositionEntriesByAccount,
 } from './stakingAccountSelectors';
 import type { StakingRootState } from './stakingReducer';
+import { selectStakingPlatform } from './stakingSelectors';
 
 export type StakingDeviceRootState = StakingRootState &
     AccountsRootState &
@@ -53,20 +55,51 @@ const selectDeviceAccountsInNetworkOrder = createWeakMapSelector(
         ),
 );
 
-const selectDeviceCountedStakingPositionEntries = createWeakMapSelector(
+const selectDeviceAllStakingPositionEntries = createWeakMapSelector(
     [selectState, selectDeviceAccountsInNetworkOrder],
     (state, accounts): readonly StakingPositionEntry[] =>
         returnStableArrayIfEmpty(
             createStableEntries(
                 ...accounts.flatMap(account =>
-                    selectCountedStakingPositionEntriesByAccount(state, account.key),
+                    selectStakingPositionEntriesByAccount(state, account.key),
                 ),
             ),
         ),
 );
 
-// The funded entries make the Earn list; the active ones, which a registered key with an empty
-// balance still is, decide whether a network has staking at all.
+const selectDeviceCountedStakingPositionEntries = createWeakMapSelector(
+    [selectDeviceAllStakingPositionEntries],
+    (entries): readonly StakingPositionEntry[] =>
+        returnStableArrayIfEmpty(
+            createStableEntries(
+                ...entries.filter(({ descriptor }) => descriptor.isCountedInAccountTotals),
+            ),
+        ),
+);
+
+// Earn also shows liquid token positions that the current platform can manage.
+export const selectDeviceEarnStakingPositionEntries = createWeakMapSelector(
+    [selectDeviceAllStakingPositionEntries, selectStakingPlatform],
+    (entries, platform): readonly StakingPositionEntry[] =>
+        returnStableArrayIfEmpty(
+            createStableEntries(
+                ...entries.filter(
+                    ({ descriptor, position }) =>
+                        (descriptor.isCountedInAccountTotals ||
+                            (platform !== null &&
+                                descriptor.platforms[platform].access === 'manage' &&
+                                position.details?.kind === 'liquid-token')) &&
+                        (isPositiveBalance(getStakingPositionAmount(position)) ||
+                            hasUnvaluedLiquidStakingBalance(position)),
+                ),
+            ),
+        ),
+);
+
+export const selectDeviceEarnStakingPositionsCount = (state: StakingDeviceRootState): number =>
+    selectDeviceEarnStakingPositionEntries(state).length;
+
+// An active position can also be a registered stake key with an empty balance.
 export const selectDeviceStakingPositionEntries = createWeakMapSelector(
     [selectDeviceCountedStakingPositionEntries],
     (entries): readonly StakingPositionEntry[] =>

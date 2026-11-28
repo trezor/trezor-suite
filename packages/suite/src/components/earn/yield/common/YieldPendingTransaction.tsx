@@ -10,6 +10,8 @@ import {
 type YieldPendingTransactionProps = {
     pendingTransaction: YieldPendingTransactionState;
     onTxClick: (txid: string) => void;
+    showTimeEstimate?: boolean;
+    titleId?: TranslationKey;
 };
 
 const getPendingTransactionLabel = (kind: YieldPendingTransactionState['type']): TranslationKey => {
@@ -35,9 +37,11 @@ const getPendingTransactionLabel = (kind: YieldPendingTransactionState['type']):
 export const YieldPendingTransaction = ({
     pendingTransaction,
     onTxClick,
+    showTimeEstimate = true,
+    titleId,
 }: YieldPendingTransactionProps) => (
     <PendingTransactionInfo
-        title={<Translation id={getPendingTransactionLabel(pendingTransaction.type)} />}
+        title={<Translation id={titleId ?? getPendingTransactionLabel(pendingTransaction.type)} />}
         txidLabel={<Translation id="TR_EXCHANGE_APPROVAL_FORM_TRANSACTION_ID" />}
         txidComponent={
             <Address
@@ -49,7 +53,9 @@ export const YieldPendingTransaction = ({
                 data-testid="@pending-transaction/txid/value"
             />
         }
-        timeEstimateSeconds={PENDING_TRANSACTION_TIME_ESTIMATE_SECONDS}
+        timeEstimateSeconds={
+            showTimeEstimate ? PENDING_TRANSACTION_TIME_ESTIMATE_SECONDS : undefined
+        }
         onTxClick={() => onTxClick(pendingTransaction.txid)}
     />
 );

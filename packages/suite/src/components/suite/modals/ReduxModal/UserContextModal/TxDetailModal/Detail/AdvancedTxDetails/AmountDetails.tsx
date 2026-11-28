@@ -221,7 +221,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                             networkSymbol={tx.symbol}
                                             withLink={true}
                                             withSign={true}
-                                            alignMultitoken="flex-start"
+                                            alignNft="flex-end"
                                             linkTypographyStyle="body-sm"
                                             data-testid={`@modal/tx-details/token-amount/${getContractAddressForNetworkSymbol(tx.symbol, transfer.contract)}`}
                                         />

@@ -7,6 +7,8 @@ type TransactionsPageQueryKeyParams = {
     perPage: number;
 };
 
+const lidoWithdrawalRequestsKey = (accountKey: string) => ['lido-withdrawal-requests', accountKey];
+
 export const commonQueryKeys = {
     networkTxSimulation: (input?: any) => ['network-tx-simulation', input],
     dappScan: (url?: string) => ['dapp-scan', url],
@@ -29,6 +31,14 @@ export const commonQueryKeys = {
     ],
     tronStakingStats: () => ['tron-staking-stats'],
     stakingProductInfo: (productId: string) => ['staking-product-info', productId],
+    lidoWithdrawalRequests: lidoWithdrawalRequestsKey,
+    lidoWithdrawalClaims: (accountKey: string, requests: readonly { id: string }[]) => [
+        ...lidoWithdrawalRequestsKey(accountKey),
+        'claims',
+        requests,
+    ],
+    lidoWithdrawalAllowance: (accountKey: string) => ['lido-withdrawal-allowance', accountKey],
+    lidoStakeLimit: (accountKey: string) => ['lido-stake-limit', accountKey],
     yieldOpportunity: (vaultId: string | undefined) => ['yield-opportunities', 'single', vaultId],
     yieldOpportunitiesList: (params: { limit: number }) => ['yield-opportunities', 'list', params],
     yieldOpportunitiesByAddress: (params: { outputToken?: string; network?: string }) => [

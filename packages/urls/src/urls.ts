@@ -33,6 +33,7 @@ export const DOCS_ANALYTICS_URL: Url = withPlatformUtm(
 );
 
 export const TREZOR_TOS_URL: Url = 'https://trezor.io/terms-of-use';
+export const LIDO_TERMS_OF_USE_URL: Url = 'https://lido.fi/terms-of-use';
 export const TREZOR_TOS_REFER_A_FRIEND_URL: Url = 'https://trezor.io/terms-of-use#refer-a-friend';
 export const TREZOR_SUITE_TOS_URL: Url = 'https://trezor.io/documents/suite_terms_of_use.pdf';
 export const TREZOR_TRADING_LEARN_MORE_URL: Url = 'https://trezor.io/trade-features';
@@ -242,6 +243,8 @@ export const HELP_CENTER_DEFI_YIELD: Url = withPlatformUtm(
 export const HELP_CENTER_ETH_STAKING: Url = withPlatformUtm(
     'https://trezor.io/guides/sending-receiving-staking-funds/staking-assets-in-trezor-suite/staking-ethereum-eth-in-trezor-suite',
 );
+// TODO: Link to the Lido staking article once it is published.
+export const HELP_CENTER_LIDO_STAKING: Url = TREZOR_URL;
 export const HELP_CENTER_SOL_STAKING: Url = withPlatformUtm(
     'https://trezor.io/guides/sending-receiving-staking-funds/staking-assets-in-trezor-suite/staking-solana-in-trezor-suite',
 );

@@ -3,7 +3,9 @@ import {
     type StakingPosition,
     type StakingProductAdapter,
     type StakingProductId,
+    type StakingWithdrawalBalances,
     assertStakingPosition,
+    stakingAmountSchema,
 } from '@suite-common/earn-staking-common';
 import type { QueryClientDep } from '@suite-common/react-query';
 import {
@@ -25,6 +27,7 @@ import {
 import { type StakingRootState, stakingActions } from './stakingReducer';
 import {
     selectIsStakingSupportedSymbol,
+    selectStakingPosition,
     selectStakingProductDescriptors,
 } from './stakingSelectors';
 
@@ -64,35 +67,76 @@ export const syncStakingPositionsThunk = createThunk<
     { state: SyncStakingPositionsThunkState; extra: SyncStakingPositionsThunkDeps }
 >(
     `${STAKING_MODULE_PREFIX}/syncStakingPositions`,
-    ({ accountKey }, { dispatch, getState, extra }) => {
+    async ({ accountKey }, { dispatch, getState, extra }) => {
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account) return;
-
-        const transactions = selectAccountTransactions(getState(), accountKey);
 
         const adapters = extra.services.staking.stakingProductRepository.listBySymbol(
             account.symbol,
         );
 
-        const positions = adapters.flatMap(adapter => {
-            const position = getAdapterPosition(adapter, {
-                account,
-                productInfo: getCachedStakingProductInfo(
-                    extra.services.queryClient,
-                    adapter.descriptor.id,
-                ),
-                transactions,
+        const syncPositions = (
+            withdrawals: ReadonlyMap<StakingProductId, StakingWithdrawalBalances>,
+        ) => {
+            const transactions = selectAccountTransactions(getState(), accountKey);
+            const positions = adapters.flatMap(adapter => {
+                const withdrawalBalances = withdrawals.get(adapter.descriptor.id);
+                const position = getAdapterPosition(adapter, {
+                    account,
+                    productInfo: getCachedStakingProductInfo(
+                        extra.services.queryClient,
+                        adapter.descriptor.id,
+                    ),
+                    transactions,
+                    ...(withdrawalBalances && { withdrawalBalances }),
+                });
+
+                if (position === null) return [];
+                assertStakingPosition(position);
+
+                return [position];
             });
 
-            if (position === null) return [];
+            dispatch(stakingActions.positionsSynced({ accountKey, positions }));
+        };
 
-            assertStakingPosition(position);
+        const withdrawals = new Map<StakingProductId, StakingWithdrawalBalances>();
+        const remoteAdapters = adapters.filter(
+            adapter => adapter.fetchWithdrawalBalances !== undefined,
+        );
 
-            return [position];
-        });
+        for (const {
+            descriptor: { id },
+        } of remoteAdapters) {
+            const previous = selectStakingPosition(getState(), accountKey, id);
+            if (previous !== null) withdrawals.set(id, previous.balances);
+        }
+        syncPositions(withdrawals);
 
-        dispatch(stakingActions.positionsSynced({ accountKey, positions }));
+        if (remoteAdapters.length === 0) return;
+
+        await Promise.all(
+            remoteAdapters.map(async adapter => {
+                const { id } = adapter.descriptor;
+                try {
+                    const balances = await adapter.fetchWithdrawalBalances?.(account);
+
+                    if (balances !== undefined) {
+                        withdrawals.set(id, {
+                            unstaking: stakingAmountSchema.parse(balances.unstaking),
+                            withdrawable: stakingAmountSchema.parse(balances.withdrawable),
+                        });
+                    }
+                } catch {
+                    // Keep the last known withdrawal balances if the adapter cannot refresh them.
+                }
+            }),
+        );
+
+        if (selectAccountByKey(getState(), accountKey) === account) {
+            syncPositions(withdrawals);
+        }
     },
 );
 

@@ -25,6 +25,19 @@ export const EVM_ABI = {
         ]),
         claimWithdrawRequest: parseAbi(['function claimWithdrawRequest()']),
     },
+    lido: {
+        // WstETHReferralStaker: stakes the transaction value and returns wstETH in one call.
+        stakeETH: parseAbi([
+            'function stakeETH(address referral) payable returns (uint256 wstETHAmount)',
+        ]),
+        // WithdrawalQueueERC721.
+        requestWithdrawalsWstETH: parseAbi([
+            'function requestWithdrawalsWstETH(uint256[] amounts, address owner) returns (uint256[] requestIds)',
+        ]),
+        claimWithdrawals: parseAbi([
+            'function claimWithdrawals(uint256[] requestIds, uint256[] hints)',
+        ]),
+    },
     ens: {
         // ENSIP-19 UniversalResolver.
         resolve: parseAbi([

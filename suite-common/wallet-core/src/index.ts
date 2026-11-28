@@ -95,6 +95,8 @@ export * from './staking/ethereum/ethereumStakingSelectors';
 export * from './staking/ethereum/ethereumStakingSignUtils';
 export * from './staking/ethereum/ethereumStakingUtils';
 export type * from './staking/ethereum/types';
+export * from './staking/lido/lidoStakingRequests';
+export * from './staking/lido/lidoStakingUtils';
 export * from './staking/hooks/useStakingEntryPeriodEstimateInDays';
 export * from './staking/shared/getPotentialStakingRewards';
 export * from './staking/shared/stakingConstants';

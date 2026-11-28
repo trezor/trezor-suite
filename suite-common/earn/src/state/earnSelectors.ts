@@ -1,7 +1,7 @@
 import {
     type StakingFiatRootState,
+    selectDeviceEarnStakingPositionsCount,
     selectDeviceStakingFiatValuations,
-    selectDeviceStakingPositionsCount,
 } from '@suite-common/earn-staking';
 import {
     type EarnFiatValuation,
@@ -57,7 +57,7 @@ export const selectIsEarnFiatTotalUnavailable = createMemoizedSelector(
 
 export const selectIsEarnBalanceBreakdownDisplayed = createMemoizedSelector(
     [
-        selectDeviceStakingPositionsCount,
+        selectDeviceEarnStakingPositionsCount,
         selectYieldPositionsCount,
         selectIsEarnFiatTotalIncomplete,
         selectIsEarnFiatTotalUnavailable,
@@ -75,7 +75,7 @@ export const selectIsEarnBalanceBreakdownDisplayed = createMemoizedSelector(
 );
 
 export const selectEarnPositionsCount = createMemoizedSelector(
-    [selectDeviceStakingPositionsCount, selectYieldPositionsCount],
+    [selectDeviceEarnStakingPositionsCount, selectYieldPositionsCount],
     (stakingPositionsCount, yieldPositionsCount): number =>
         stakingPositionsCount + yieldPositionsCount,
 );

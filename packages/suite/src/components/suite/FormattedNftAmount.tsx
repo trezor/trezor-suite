@@ -7,7 +7,7 @@ import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getExplorerUrl, getNetworkType } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { isNftMultitokenTransfer } from '@suite-common/wallet-utils';
-import { Box, Column, Row, Text } from '@trezor/components';
+import { Column, Row, Text } from '@trezor/components';
 import { type TokenTransfer } from '@trezor/connect';
 import { type TypographyStyle } from '@trezor/theme';
 
@@ -21,7 +21,7 @@ export interface FormattedNftAmountProps {
     signValue?: SignValue;
     signGrayscale?: boolean;
     isWithLink?: boolean;
-    alignMultitoken?: 'flex-end' | 'flex-start';
+    alignNft?: 'flex-end' | 'flex-start';
     linkTypographyStyle?: TypographyStyle;
 }
 
@@ -31,7 +31,7 @@ export const FormattedNftAmount = ({
     signValue,
     signGrayscale,
     isWithLink,
-    alignMultitoken = 'flex-end',
+    alignNft = 'flex-end',
     linkTypographyStyle,
 }: FormattedNftAmountProps) => {
     const { translationString } = useTranslation();
@@ -54,7 +54,7 @@ export const FormattedNftAmount = ({
         const tokens = transfer.multiTokenValues;
 
         return (
-            <Column alignItems={alignMultitoken}>
+            <Column alignItems={alignNft}>
                 {tokens?.map((token, index) => (
                     <Row key={`${token.id}-${index}`} gap={4}>
                         <Row>
@@ -97,42 +97,37 @@ export const FormattedNftAmount = ({
         );
     }
 
+    const tokenDetails = (
+        <Row gap={4}>
+            <Text maxWidth={145} ellipsisLineCount={1} intent={isWithLink ? 'brand' : undefined}>
+                <HiddenPlaceholder>
+                    <RedactNumericalValue value={transfer.amount} />
+                </HiddenPlaceholder>
+            </Text>
+            {symbolComponent}
+        </Row>
+    );
+
     return (
-        <Row>
+        <Row justifyContent={alignNft}>
             {signValue ? <Sign value={signValue} grayscale={signGrayscale} /> : null}
-            <Box margin={{ right: 4 }}>
+            <Row gap={4}>
                 <Translation id="TR_TOKEN_ID_COLON" />
-            </Box>
-            {isWithLink ? (
-                <TrezorLink
-                    href={
-                        networkType === 'ethereum'
-                            ? `${getExplorerUrl(explorer, 'nft')}${transfer.contract}/${transfer.amount}`
-                            : undefined
-                    }
-                    typographyStyle={linkTypographyStyle}
-                >
-                    <Row gap={0}>
-                        <Text maxWidth={145} ellipsisLineCount={1} intent="brand">
-                            <HiddenPlaceholder>
-                                <RedactNumericalValue value={transfer.amount} />
-                            </HiddenPlaceholder>
-                            &nbsp;
-                        </Text>
-                        {symbolComponent}
-                    </Row>
-                </TrezorLink>
-            ) : (
-                <Row padding={{ horizontal: 4 }}>
-                    <Text maxWidth={145} ellipsisLineCount={1}>
-                        <HiddenPlaceholder>
-                            <RedactNumericalValue value={transfer.amount} />
-                        </HiddenPlaceholder>
-                        &nbsp;
-                    </Text>
-                    {symbolComponent}
-                </Row>
-            )}
+                {isWithLink ? (
+                    <TrezorLink
+                        href={
+                            networkType === 'ethereum'
+                                ? `${getExplorerUrl(explorer, 'nft')}${transfer.contract}/${transfer.amount}`
+                                : undefined
+                        }
+                        typographyStyle={linkTypographyStyle}
+                    >
+                        {tokenDetails}
+                    </TrezorLink>
+                ) : (
+                    tokenDetails
+                )}
+            </Row>
         </Row>
     );
 };

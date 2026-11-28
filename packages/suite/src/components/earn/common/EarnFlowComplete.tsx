@@ -15,6 +15,7 @@ type EarnFlowCompleteProps = {
     backButtonTestId?: string;
     feedback?: ReactNode;
     children: ReactNode;
+    'data-testid'?: string;
 };
 
 export const EarnFlowComplete = ({
@@ -26,11 +27,12 @@ export const EarnFlowComplete = ({
     backButtonTestId,
     feedback,
     children,
+    'data-testid': dataTestId,
 }: EarnFlowCompleteProps) => {
     const { isBelowMobile } = useLayoutSize();
 
     return (
-        <Column gap={16}>
+        <Column gap={16} data-testid={dataTestId}>
             <IconCircle icon={CheckIcon} intent="brand" size={isBelowMobile ? 64 : 96} />
 
             <Column gap={4}>

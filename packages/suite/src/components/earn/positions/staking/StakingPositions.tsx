@@ -2,14 +2,14 @@ import { useSelector } from 'react-redux';
 
 import {
     type StakingPositionEntry,
-    selectDeviceStakingPositionEntries,
+    selectDeviceEarnStakingPositionEntries,
 } from '@suite-common/earn-staking';
 
 import { EarnPositionsList } from '../EarnPositionsList';
 import { StakingPositionCard } from './StakingPositionCard';
 
 export const StakingPositions = () => {
-    const positionEntries = useSelector(selectDeviceStakingPositionEntries);
+    const positionEntries = useSelector(selectDeviceEarnStakingPositionEntries);
 
     const render = ({ position, descriptor, accountKey }: StakingPositionEntry) => (
         <StakingPositionCard

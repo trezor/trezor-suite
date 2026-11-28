@@ -9,7 +9,7 @@ import type {
     StakingPlan,
     StakingStep,
 } from './stakingPlan';
-import type { StakingPosition } from './stakingPosition';
+import type { StakingPosition, StakingPositionBalances } from './stakingPosition';
 import type { StakingProductDescriptor } from './stakingProductDescriptor';
 import type { StakingProductInfo } from './stakingProductInfo';
 import { type StakingTransaction } from './stakingTransaction';
@@ -18,10 +18,15 @@ export type FetchProductInfoParams = {
     abortSignal?: AbortSignal;
 };
 
+export type StakingWithdrawalBalances = Pick<StakingPositionBalances, 'unstaking' | 'withdrawable'>;
+
+export type StakingPositionAccount = StakingAccount & { key: string; deviceState: string };
+
 export type GetPositionParams = {
     account: StakingAccount;
     productInfo: StakingProductInfo | null;
     transactions: readonly StakingTransaction[];
+    withdrawalBalances?: StakingWithdrawalBalances;
 };
 
 /**
@@ -68,6 +73,9 @@ export type StakingProductAdapter = {
     descriptor: StakingProductDescriptor;
     fetchProductInfo: (params: FetchProductInfoParams) => Promise<StakingProductInfo>;
     getPosition: (params: GetPositionParams) => StakingPosition | null;
+    fetchWithdrawalBalances?: (
+        account: StakingPositionAccount,
+    ) => Promise<{ unstaking: string; withdrawable: string }>;
     getAmountBounds: (params: GetAmountBoundsParams) => StakingAmountBounds;
     planOperation: (params: PlanOperationParams) => Promise<StakingPlan>;
     composeStep: (params: ComposeStepParams) => Promise<ComposedStakingStep>;

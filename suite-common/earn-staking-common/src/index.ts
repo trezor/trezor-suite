@@ -121,6 +121,7 @@ export {
     getStakingPositionRate,
     hasPendingStakingOperation,
     hasStakingPositionWarning,
+    hasUnvaluedLiquidStakingBalance,
     isStakingPositionActive,
     type GetStakingPositionRateParams,
 } from './utils/stakingPositionUtils';
@@ -130,6 +131,8 @@ export type {
     FetchProductInfoParams,
     GetAmountBoundsParams,
     GetPositionParams,
+    StakingPositionAccount,
+    StakingWithdrawalBalances,
     PlanOperationParams,
     SignStepParams,
     StakingAmountBounds,

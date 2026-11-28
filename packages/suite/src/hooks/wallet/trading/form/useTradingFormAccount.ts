@@ -49,10 +49,11 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
                 tradingActions.setTradingFromPrefilledAccount({
                     key: undefined,
                     cryptoId: prefilled.cryptoId,
+                    receiveCryptoId: prefilled.receiveCryptoId,
                 }),
             );
         }
-    }, [accountKey, dispatch, prefilled.key, prefilled.cryptoId]);
+    }, [accountKey, dispatch, prefilled.key, prefilled.cryptoId, prefilled.receiveCryptoId]);
 
     return {
         tradingAccountKey: account?.key,

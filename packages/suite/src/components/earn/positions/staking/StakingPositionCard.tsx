@@ -1,11 +1,13 @@
 import { useSelector } from 'react-redux';
 
+import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { formatStakingAmount, useNetworkStakingRate } from '@suite-common/earn-staking';
+import { formatStakingAmount, useStakingRate } from '@suite-common/earn-staking';
 import {
     type StakingPosition,
     type StakingProductDescriptor,
     getStakingPositionAmount,
+    hasUnvaluedLiquidStakingBalance,
 } from '@suite-common/earn-staking-common';
 import { useFormatters } from '@suite-common/formatters';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
@@ -30,7 +32,8 @@ export const StakingPositionCard = ({
     descriptor,
     accountKey,
 }: StakingPositionCardProps) => {
-    const { name: productName, networkSymbol, rateKind } = descriptor;
+    const { id: productId, name: productName, networkSymbol, rateKind } = descriptor;
+    const isLidoPosition = descriptor.providerId === 'lido' && descriptor.type === 'liquid';
 
     const { dispatch } = useServices(injectDispatch);
     const { CryptoAmountFormatter } = useFormatters();
@@ -44,8 +47,8 @@ export const StakingPositionCard = ({
         networkSymbol,
     });
 
-    const { rate, isPending: isRatePending } = useNetworkStakingRate({
-        networkSymbol,
+    const { rate, isPending: isRatePending } = useStakingRate({
+        productId,
         accountKey,
     });
 
@@ -54,7 +57,7 @@ export const StakingPositionCard = ({
 
         dispatch(
             gotoThunk({
-                routeName: 'wallet-staking',
+                routeName: isLidoPosition ? 'earn-lido' : 'wallet-staking',
                 params: {
                     symbol: account.symbol,
                     accountIndex: account.index,
@@ -66,11 +69,23 @@ export const StakingPositionCard = ({
 
     if (!account) return null;
 
-    const icon = <TokenIcon networkSymbol={networkSymbol} size={40} />;
+    const liquidToken = position.details?.kind === 'liquid-token' ? position.details : null;
+    const icon = (
+        <TokenIcon
+            networkSymbol={networkSymbol}
+            contractAddress={liquidToken?.contract}
+            size={40}
+        />
+    );
 
-    const fiatAmount = <BaseCurrencyValue amount={stakingBalance} symbol={account.symbol} />;
+    const isValueUnavailable = hasUnvaluedLiquidStakingBalance(position);
+    const fiatAmount = isValueUnavailable ? (
+        <Translation id="TR_EARN_N_A" />
+    ) : (
+        <BaseCurrencyValue amount={stakingBalance} symbol={account.symbol} />
+    );
 
-    const cryptoAmount = (
+    const cryptoAmount = !isValueUnavailable && (
         <CryptoAmountFormatter
             value={stakingBalance}
             symbol={account.symbol}
@@ -82,7 +97,7 @@ export const StakingPositionCard = ({
 
     const badges = (
         <StakingPositionBadges
-            accountKey={accountKey}
+            accountKey={descriptor.isCountedInAccountTotals ? accountKey : undefined}
             balances={position.balances}
             rate={isRatePending ? undefined : rate}
             rateKind={rateKind}

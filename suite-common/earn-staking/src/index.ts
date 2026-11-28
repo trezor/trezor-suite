@@ -130,6 +130,8 @@ export {
 export {
     selectDeviceActiveStakingPositionEntries,
     selectDeviceActiveStakingPositionEntriesBySymbol,
+    selectDeviceEarnStakingPositionEntries,
+    selectDeviceEarnStakingPositionsCount,
     selectDeviceStakingEntriesByWarning,
     selectDeviceStakingEntryByWarning,
     selectDeviceStakingPositionEntries,

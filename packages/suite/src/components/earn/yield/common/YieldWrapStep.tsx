@@ -6,8 +6,7 @@ import type {
     YieldFlowDisplayToken,
     YieldPendingTransactionState,
 } from '@suite-common/wallet-core';
-import { Box, Button, Card, Column, Row, Text } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
+import { Button, Column, Row } from '@trezor/components';
 
 import {
     EarnAmountCard,
@@ -15,8 +14,8 @@ import {
 } from '#src/components/earn/common/EarnAmountCard';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
-import { TruncatedAmount } from './TruncatedAmount';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
+import { YieldReceivingRow } from './YieldReceivingRow';
 
 type YieldWrapStepProps = {
     token: YieldFlowDisplayToken;
@@ -76,36 +75,11 @@ export const YieldWrapStep = ({
         />
 
         {shouldShowReceivingRow && (
-            <Card type="contrast" paddingType="small">
-                <Row justifyContent="space-between" alignItems="center" width="100%" gap={8}>
-                    <Text typographyStyle="body-md">
-                        <Translation id="TR_EARN_YIELD_WRAP_RECEIVING" />
-                    </Text>
-                    <Row alignItems="center" gap={8} minWidth={0}>
-                        <TokenIcon
-                            size={20}
-                            networkSymbol={token.networkSymbol}
-                            contractAddress={token.contractAddress ?? null}
-                            placeholder={token.symbol}
-                            showNetworkIcon
-                            isBordered={false}
-                        />
-                        <Box
-                            minWidth={0}
-                            data-testid="@yield/form/wrap-receiving-amount-with-symbol"
-                        >
-                            <TruncatedAmount>
-                                <Text typographyStyle="body-md" ellipsisLineCount={1}>
-                                    <FormattedCryptoAmount
-                                        value={receivingAmount}
-                                        networkSymbol={token.symbol}
-                                    />
-                                </Text>
-                            </TruncatedAmount>
-                        </Box>
-                    </Row>
-                </Row>
-            </Card>
+            <YieldReceivingRow
+                token={token}
+                amount={receivingAmount}
+                testId="@yield/form/wrap-receiving-amount-with-symbol"
+            />
         )}
 
         <Row gap={8} width="100%">

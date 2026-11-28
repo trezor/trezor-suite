@@ -3,7 +3,12 @@ import { type ActionCreatorWithPreparedPayload, current, isAnyOf } from '@reduxj
 import { deviceActions } from '@suite-common/device';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { accountEqualTo, compareAccountsByCoin, enhanceHistory } from '@suite-common/wallet-utils';
+import {
+    accountEqualTo,
+    compareAccountsByCoin,
+    enhanceHistory,
+    isNftToken,
+} from '@suite-common/wallet-utils';
 import {
     type ActionTypesDep,
     type ReducersDep,
@@ -80,7 +85,8 @@ const update = (state: Account[], account: Account, options: UpdateOptions = {})
         // Locally tracked tokens must survive an update built from an older account snapshot
         // (e.g. a concurrent sync). A wrapped-native (WETH) balance exists only as a local entry:
         // wrapping emits no ERC-20 Transfer, so the backend never reports the token on its own.
-        // Only a blind update may keep a contract token, or removing one would never take effect.
+        // The backend owns NFT balances. An omitted collection may have been transferred or burned.
+        // Only a blind update may keep a Soroban contract token, or removal would never take effect.
         const keepsLocalTokens =
             next.networkType === 'ethereum' ||
             (next.networkType === 'stellar' &&
@@ -92,10 +98,11 @@ const update = (state: Account[], account: Account, options: UpdateOptions = {})
                 token =>
                     !nextContracts.has(token.contract.toLowerCase()) &&
                     // A classic trustline the chain stopped reporting is genuinely closed.
-                    (next.networkType !== 'stellar' ||
-                        (token.standard === 'STELLAR-CONTRACT' &&
-                            (!!options.isTokenTrackingBlind ||
-                                unreadableContracts.has(token.contract)))),
+                    (next.networkType === 'ethereum'
+                        ? !isNftToken(token)
+                        : token.standard === 'STELLAR-CONTRACT' &&
+                          (!!options.isTokenTrackingBlind ||
+                              unreadableContracts.has(token.contract))),
             );
 
             if (locallyTrackedTokens.length > 0) {
