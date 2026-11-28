@@ -25,6 +25,7 @@ export const mapTypographyStyleToIconSize = (typographyStyle: TypographyStyle): 
         'body-md': 20,
         'body-sm-strong': 16,
         'body-sm': 16,
+        'body-xs-strong': 16,
         'body-xs': 16,
         inherit: 16,
     };
@@ -41,6 +42,7 @@ export const mapTypographyStyleToIconGap = (typographyStyle: TypographyStyle): S
         'body-md': 8,
         'body-sm-strong': 8,
         'body-sm': 8,
+        'body-xs-strong': 4,
         'body-xs': 4,
         inherit: 4,
     };
@@ -57,6 +59,7 @@ export const mapTypographyStyleToLabelGap = (typographyStyle: TypographyStyle): 
         'body-md': 4,
         'body-sm-strong': 4,
         'body-sm': 2,
+        'body-xs-strong': 2,
         'body-xs': 2,
         inherit: 4,
     };

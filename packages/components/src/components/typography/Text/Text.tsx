@@ -29,6 +29,7 @@ export const allowedTextTextProps = [
     'align',
     'ellipsisLineCount',
     'case',
+    'isAllCaps',
     'wordBreak',
     'overflowWrap',
 ] as const satisfies TextPropsKeys[];

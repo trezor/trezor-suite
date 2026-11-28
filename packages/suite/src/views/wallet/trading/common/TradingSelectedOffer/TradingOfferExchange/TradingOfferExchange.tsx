@@ -182,7 +182,7 @@ export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) =
             <Column gap={20}>
                 <Column gap={4} alignItems="start">
                     {stepLabel && (
-                        <Text typographyStyle="body-sm-strong" case="small-caps" intent="brand">
+                        <Text typographyStyle="body-sm-strong" isAllCaps intent="brand">
                             {stepLabel}
                         </Text>
                     )}
