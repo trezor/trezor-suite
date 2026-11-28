@@ -172,7 +172,7 @@ function publishPR(): void {
     if (shouldPublish(fixResult.result)) {
         runPublish(branch, root, fixResult, summary);
     } else {
-        log('LLM test fixer failed to apply fix or issue was not duplicated → No branch pushed.');
+        log(`LLM test fixer result is '${fixResult.result}' → No branch pushed.`);
     }
 
     writeSummary(root, summary);

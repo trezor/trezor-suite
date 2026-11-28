@@ -33,7 +33,7 @@ Both agents run through `runAgent()` in `common.ts`, which drives the `@anthropi
     ```json
     {
         "taskId": "fix-001",
-        "result": "pass | partial | fail | not_duplicated",
+        "result": "pass | partial | fail | not_duplicated | covered_by_open_pr",
         "passed": ["web/T3W1/suite/e2e/tests/wallet/send.ts"],
         "failed": [],
         "iterations": 2,
@@ -124,6 +124,7 @@ One `runAgent()` call per fix task. Receives a single fix task entry from `repor
 
 ```
 Setup environment (web preview server (pre-built static) / build electron app / emulator)
+Open PR check: gh pr list/diff (read-only token) → an open PR already fixes it → covered_by_open_pr
 Pre-flight run: playwright test <spec> for each validation
   → confirms failure is real
   → produces fresh local trace + screenshots
@@ -159,6 +160,7 @@ Every iteration commits locally. First iteration is a regular commit, subsequent
 | Some pass      | Push branch, create PR ⚠️                   |
 | Zero pass      | Summary artifact only — no branch pushed ❌ |
 | Not duplicated | Summary artifact only — no branch pushed 🔵 |
+| Covered by PR  | Summary artifact only — no branch pushed 🔁 |
 
 ### Git strategy
 
@@ -201,6 +203,8 @@ never read.
 | `INFRASTRUCTURE` | CI/environment issue — agent can't resolve          |
 | `FIX_FAILED`     | Agent tried and couldn't fix it — don't re-attempt  |
 | `FIX_DELIVERED`  | PR pushed, now in devs' hands — no further tracking |
+
+A `covered_by_open_pr` result is recorded as `FIX_DELIVERED` too: the fix is already in an open PR.
 
 A ledger match is never re-attempted. A `not_duplicated` result records nothing (failure not
 reproduced — flaky or resolved). `buildLedger()` is pure and deterministic; matching is the agent's
