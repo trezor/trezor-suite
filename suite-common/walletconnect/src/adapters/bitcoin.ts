@@ -151,7 +151,7 @@ const bitcoinRequestThunk = createThunk<
                 coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
                 request: {
-                    blocks: [1],
+                    feeLevels: 'smart',
                 },
             });
             if (!feeLevels.success) {
