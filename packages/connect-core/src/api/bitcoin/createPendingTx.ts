@@ -71,6 +71,8 @@ export const createPendingTransaction = (
                 isAddress: out.script_type !== 'PAYTOOPRETURN',
                 addresses: transformedAddresses,
                 value: out.amount.toString(),
+                // the exact script lets Suite rebuild the output, e.g. to bump a binary OP_RETURN
+                hex: tx.outs[n]?.script.toString('hex'),
             };
         }),
     };

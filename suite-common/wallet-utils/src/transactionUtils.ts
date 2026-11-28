@@ -31,6 +31,7 @@ import { Calldata } from '@trezor/network-ethereum-suite-common';
 import { SOLANA_BLOCKHASH_VALIDITY_MS } from '@trezor/network-solana/constants';
 import { type Branded } from '@trezor/type-utils';
 import { BigNumber, arrayPartition, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
+import { script } from '@trezor/utxo-lib';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
 import { fromGwei, fromWei } from './ethConverter';
@@ -1123,6 +1124,17 @@ const getEthereumRbfParams = (
     };
 };
 
+const getOpReturnDataHex = (scriptHex: string) => {
+    const [opcode, ...pushes] = script.decompile(Buffer.from(scriptHex, 'hex'));
+    // Trezor's PAYTOOPRETURN carries a single data blob, so a multi-push script can't be replaced
+    if (opcode !== script.OPS.OP_RETURN || pushes.length !== 1 || !script.isPushOnly(pushes)) {
+        return undefined;
+    }
+
+    // toStack restores one-byte payloads such as 01-10 or 81, which decompile turns into opcodes
+    return script.toStack(pushes)[0]?.toString('hex');
+};
+
 const getBitcoinRbfParams = (
     tx: AccountTransaction,
     account: Account,
@@ -1143,15 +1155,13 @@ const getBitcoinRbfParams = (
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const firstAddress: string = outputAddresses[0];
         if (!output.isAddress) {
-            // TODO: this should be done in @trezor/connect, blockchain-link or even blockbook
-            // blockbook sends output.hex as scriptPubKey with additional prefix where: 6a - OP_RETURN and XX - data len. this field should be parsed by @trezor/utxo-lib
-            // blockbook sends ascii data in output.address[0] field in format: "OP_RETURN (ASCII-VALUE)". as a workaround we are extracting ascii data from here
-            const dataAscii = firstAddress.match(/^OP_RETURN \((.*)\)/)?.pop(); // strip ASCII data from brackets
-            if (dataAscii) {
+            // the "OP_RETURN (<ascii>)" address label is lossy for non-ASCII data, only the script is exact
+            const dataHex = output.hex ? getOpReturnDataHex(output.hex) : undefined;
+            if (dataHex) {
                 outputs.push({
                     type: 'opreturn',
-                    dataHex: Buffer.from(dataAscii, 'ascii').toString('hex'),
-                    dataAscii,
+                    dataHex,
+                    dataAscii: Buffer.from(dataHex, 'hex').toString('utf-8'),
                 });
             }
         } else {
