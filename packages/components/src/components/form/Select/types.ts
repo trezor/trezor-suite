@@ -49,4 +49,6 @@ export type SelectProps = AllowedFrameProps &
 export type SelectInnerProps = SelectProps & {
     /** Called by the failed-load control once it has committed, so the next Select loads again. */
     onLoadFailed: () => void;
+    /** The placeholder was pressed while this part loaded, so the control opens as if clicked. */
+    isPressedWhileLoading: boolean;
 };
