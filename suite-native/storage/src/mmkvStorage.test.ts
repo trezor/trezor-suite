@@ -5,7 +5,8 @@ import {
     type EnsureEncryptionKeyDep,
     type StorageEncryptionKey,
 } from './createEnsureEncryptionKey';
-import { ENCRYPTED_STORAGE_ID, createMMKVStorage } from './mmkvStorage';
+import { ENCRYPTED_STORAGE_ID } from './encryptedStorageId';
+import { createMMKVStorage } from './mmkvStorage';
 
 jest.mock('react-native-mmkv', () => {
     const actual = jest.requireActual<typeof MMKV>('react-native-mmkv');
