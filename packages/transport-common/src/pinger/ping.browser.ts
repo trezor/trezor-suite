@@ -19,6 +19,7 @@ const init = async () => {
             }
         };
         worker.onerror = error => {
+            error.preventDefault();
             try {
                 worker.terminate();
             } catch {
@@ -34,6 +35,7 @@ const init = async () => {
         deferred.resolve(id, payload.success);
     };
     worker.onerror = error => {
+        error.preventDefault();
         deferred.rejectAll(error.error instanceof Error ? error.error : new Error(error.message));
     };
 

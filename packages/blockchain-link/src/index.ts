@@ -46,6 +46,7 @@ const initWorker = async (settings: BlockchainSettings) => {
     };
 
     worker.onerror = (error: any) => {
+        error?.preventDefault?.();
         clearTimeout(timeout);
         worker.onmessage = null;
         worker.onerror = null;
@@ -335,7 +336,13 @@ export class BlockchainLink extends TypedEmitter<Events> {
         }
     };
 
-    onError: (error: { message?: string; lineno: number; filename: string }) => void = error => {
+    onError: (error: {
+        message?: string;
+        lineno: number;
+        filename: string;
+        preventDefault?: () => void;
+    }) => void = error => {
+        error.preventDefault?.();
         const message = error.message
             ? `Worker runtime error: Line ${error.lineno} in ${error.filename}: ${error.message}`
             : 'Worker handshake error';

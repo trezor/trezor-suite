@@ -47,9 +47,9 @@ set -e
 cd "$(dirname "$0")"
 
 if [ "$2" == "-clear" ]; then
-    aws s3 sync --delete --cache-control 'public, max-age=3600' $SOURCE s3://"$BUCKET""$DESTDIR"
+    aws s3 sync --delete --cache-control 'public, max-age=31536000, immutable' $SOURCE s3://"$BUCKET""$DESTDIR"
 else
-    aws s3 sync --cache-control 'public, max-age=3600' $SOURCE s3://"$BUCKET""$DESTDIR"
+    aws s3 sync --cache-control 'public, max-age=31536000, immutable' $SOURCE s3://"$BUCKET""$DESTDIR"
 fi
 
 aws cloudfront create-invalidation --distribution-id "$DISTRIBUTION_ID" --paths "$DESTDIR/*"
