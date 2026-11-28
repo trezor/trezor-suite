@@ -40,9 +40,10 @@ const getTrend = (percentageChange: number): Trend => {
 
 type TrendBadgeProps = {
     valueInFraction: number;
+    'data-testid'?: string;
 };
 
-export const TrendBadge = ({ valueInFraction }: TrendBadgeProps) => {
+export const TrendBadge = ({ valueInFraction, 'data-testid': dataTestId }: TrendBadgeProps) => {
     const locale = useSelector(selectLanguage);
     const trend = getTrend(valueInFraction);
     const { icon, color } = trendStyles[trend];
@@ -53,7 +54,7 @@ export const TrendBadge = ({ valueInFraction }: TrendBadgeProps) => {
         : localizePercentage({ valueInFraction, locale });
 
     return (
-        <PercentageWrapper $color={color}>
+        <PercentageWrapper $color={color} data-testid={dataTestId}>
             {icon !== undefined && <Icon as={icon} color={color} size={16} />}
             {formattedChange}
         </PercentageWrapper>

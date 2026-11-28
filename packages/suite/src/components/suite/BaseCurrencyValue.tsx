@@ -37,6 +37,7 @@ export type BaseCurrencyValueProps = UseFiatFromCryptoValueParams & {
     shouldConvert?: boolean;
     showLoadingSkeleton?: boolean;
     className?: string;
+    'data-testid'?: string;
     isLoading?: boolean;
     rateType?: RateTypeWithoutHistoric;
 };
@@ -59,6 +60,7 @@ export const BaseCurrencyValue = ({
     children,
     amount, // expects a value in full units (BTC not sats)
     className,
+    'data-testid': dataTestId,
     symbol,
     tokenAddress,
     historicRate,
@@ -110,7 +112,7 @@ export const BaseCurrencyValue = ({
 
     if (value) {
         const fiatValueComponent = (
-            <WrapperComponent className={className}>
+            <WrapperComponent className={className} data-testid={dataTestId}>
                 {showApproximationIndicator && <>≈&nbsp;</>}
                 <BaseCurrencyAmountFormatter
                     currency={baseCurrencyCode.toUpperCase()}

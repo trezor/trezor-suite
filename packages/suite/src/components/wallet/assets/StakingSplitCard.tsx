@@ -62,12 +62,17 @@ export const StakingSplitCard = ({
                             </TextButton>
                         </Row>
                         <SegmentedBar
+                            data-testid={`${dataTestId}/allocation-bar`}
                             segments={[
                                 { value: 1 - stakingRatio, color: unstakedColor },
                                 { value: stakingRatio, color: STAKING_COLOR },
                             ]}
                         />
-                        <Row justifyContent="space-between" alignItems="center">
+                        <Row
+                            justifyContent="space-between"
+                            alignItems="center"
+                            data-testid={`${dataTestId}/available`}
+                        >
                             <Row gap={12} alignItems="center">
                                 <StakingSplitLegendSquare color={unstakedColor} />
                                 <Text
@@ -91,7 +96,11 @@ export const StakingSplitCard = ({
                                 />
                             </Text>
                         </Row>
-                        <Row justifyContent="space-between" alignItems="center">
+                        <Row
+                            justifyContent="space-between"
+                            alignItems="center"
+                            data-testid={`${dataTestId}/staked`}
+                        >
                             <Row gap={12} alignItems="center">
                                 <StakingSplitLegendSquare color={STAKING_COLOR} />
                                 <Text
@@ -104,7 +113,11 @@ export const StakingSplitCard = ({
                             </Row>
                             <Row gap={12} alignItems="center">
                                 {!isRatePending && rateKind !== null && (
-                                    <Text typographyStyle="body-sm" intent="brand">
+                                    <Text
+                                        typographyStyle="body-sm"
+                                        intent="brand"
+                                        data-testid={`${dataTestId}/staking-rate`}
+                                    >
                                         <StakingRateText rate={rate} rateKind={rateKind} />
                                     </Text>
                                 )}

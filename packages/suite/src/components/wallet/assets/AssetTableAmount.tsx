@@ -16,7 +16,12 @@ type AssetTableAmountProps = {
 /** An amount as an asset table's balance column shows it: in fiat, and below it in the asset. */
 export const AssetTableAmount = ({ symbol, contractAddress, amount }: AssetTableAmountProps) => (
     <Column alignItems="flex-end" gap={ASSET_TABLE_LINE_GAP}>
-        <BaseCurrencyValue amount={amount} symbol={symbol} tokenAddress={contractAddress} />
+        <BaseCurrencyValue
+            data-testid="@asset-table/fiat-balance"
+            amount={amount}
+            symbol={symbol}
+            tokenAddress={contractAddress}
+        />
         <Text
             intent="neutral"
             priority="secondary"
@@ -26,6 +31,7 @@ export const AssetTableAmount = ({ symbol, contractAddress, amount }: AssetTable
         >
             <TruncatedAmount>
                 <FormattedCryptoAmount
+                    data-testid="@asset-table/crypto-balance"
                     value={amount}
                     networkSymbol={symbol}
                     contractAddress={contractAddress}

@@ -28,6 +28,7 @@ import { TronEarnApiMock } from './mocks/tronEarnApiMock';
 import { YieldMock } from './mocks/yieldMock';
 import { ActivityPage } from './pageObjects/activityPage';
 import { AnalyticsSection } from './pageObjects/analyticsSection';
+import { AssetDetailPage } from './pageObjects/assetDetailPage';
 import { AssetsSection } from './pageObjects/assetsSection';
 import { ConnectPermissionsModal } from './pageObjects/connectPermissionsModal';
 import { ConnectSelectAccountModal } from './pageObjects/connectSelectAccountModal';
@@ -71,6 +72,7 @@ type Fixtures = {
     feeSection: FeeSection;
     assetsSection: AssetsSection;
     homeAssetsSection: HomeAssetsSection;
+    assetDetailPage: AssetDetailPage;
     metadataPage: MetadataPage;
     trezorInput: TrezorInput;
     analytics: AnalyticsFixture;
@@ -148,6 +150,9 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     feeSection: async ({ page }, use) => {
         await use(new FeeSection(page));
+    },
+    assetDetailPage: async ({ page }, use) => {
+        await use(new AssetDetailPage(page));
     },
     homeAssetsSection: async ({ page }, use) => {
         await use(new HomeAssetsSection(page));

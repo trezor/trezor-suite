@@ -102,6 +102,7 @@ export const AssetDetailBalance = ({ assetKey }: AssetDetailBalanceProps) => {
                     )}
                     <Text typographyStyle="body-md">
                         <FormattedCryptoAmount
+                            data-testid="@asset-detail/balance/crypto-amount"
                             value={amount}
                             networkSymbol={networkSymbol}
                             contractAddress={contractAddress}

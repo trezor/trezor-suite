@@ -11,9 +11,14 @@ const MIN_EXACT_DECIMALS = 2;
 type FiatChangeAmountProps = {
     change: BigNumber;
     isExact?: boolean;
+    'data-testid'?: string;
 };
 
-export const FiatChangeAmount = ({ change, isExact = false }: FiatChangeAmountProps) => {
+export const FiatChangeAmount = ({
+    change,
+    isExact = false,
+    'data-testid': dataTestId,
+}: FiatChangeAmountProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const shouldRedactNumbers = useShouldRedactNumbers({ strict: false });
     const absoluteChange = asBaseCurrencyAmount(change.abs());
@@ -26,7 +31,7 @@ export const FiatChangeAmount = ({ change, isExact = false }: FiatChangeAmountPr
     );
 
     return (
-        <Row gap={0} alignItems="center">
+        <Row data-testid={dataTestId} gap={0} alignItems="center">
             {!change.isZero() && <Sign value={change} />}
             <Text typographyStyle="body-md">
                 {shouldRedactNumbers && changed !== null

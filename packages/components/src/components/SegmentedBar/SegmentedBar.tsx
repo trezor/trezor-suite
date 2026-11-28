@@ -36,6 +36,7 @@ export const SegmentedBar = ({
             .map(({ value, color }, index) => (
                 <Box
                     key={index}
+                    data-testid={dataTestId ? `${dataTestId}/segment` : undefined}
                     flex={`${value}`}
                     height={height}
                     borderRadius="full"
