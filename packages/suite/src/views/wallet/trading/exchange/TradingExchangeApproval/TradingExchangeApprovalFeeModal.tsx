@@ -7,6 +7,7 @@ import { useCurrentRef } from '@trezor/react-utils';
 
 import { useAllowanceCompose } from '#src/components/wallet/Allowance/hooks/useAllowanceCompose';
 import { useFeesContextValue } from '#src/components/wallet/Fees/context/useFeesContextValue';
+import { useCustomFeeValidation } from '#src/hooks/wallet/form/useCustomFeeValidation';
 import { TradingExchangeNetworkFeeModalLayout } from '#src/views/wallet/trading/exchange/TradingExchangeNetworkFeeModal/TradingExchangeNetworkFeeModalLayout';
 
 import {
@@ -61,6 +62,11 @@ export const TradingExchangeApprovalFeeModal = ({
         isComposing,
     });
 
+    const { validateCustomFee } = useCustomFeeValidation(methods, {
+        feeInfo,
+        networkType: account.networkType,
+    });
+
     const openingRef = useCurrentRef({ methods, defaultFeeValues, composeRequest });
 
     useLayoutEffect(() => {
@@ -72,7 +78,11 @@ export const TradingExchangeApprovalFeeModal = ({
     const composedLevel = composedLevels?.[selectedFee];
     const isConfirmDisabled = isComposing || composedLevel?.type !== 'final';
 
-    const onConfirmClick = () => {
+    const onConfirmClick = async () => {
+        if (!(await validateCustomFee())) {
+            return;
+        }
+
         onConfirm(getAllowanceFeeValues(methods));
         onClose();
     };
