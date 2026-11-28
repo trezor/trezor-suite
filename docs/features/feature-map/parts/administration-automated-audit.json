@@ -1,0 +1,257 @@
+{
+    "sources": [
+        {
+            "path": "suite/e2e/tests/analytics/events.test.ts",
+            "feature_ids": [],
+            "status": "reviewed-excluded",
+            "reason": "Telemetry payload and ready/connect/disconnect instrumentation assertions; no independent user capability beyond the mapped preferences and connection flows.",
+            "detail": "Telemetry payload and ready/connect/disconnect instrumentation assertions; no independent user capability beyond the mapped preferences and connection flows."
+        },
+        {
+            "path": "suite/e2e/tests/analytics/promo-banner-events.test.ts",
+            "feature_ids": [],
+            "status": "reviewed-excluded",
+            "reason": "Debug-injected banner telemetry assertions; normal banner browsing is mapped through dashboard/banners.test.ts.",
+            "detail": "Debug-injected banner telemetry assertions; normal banner browsing is mapped through dashboard/banners.test.ts."
+        },
+        {
+            "path": "suite/e2e/tests/analytics/toggle.test.ts",
+            "feature_ids": ["onboarding.analytics", "app-settings.analytics"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Checks analytics checkbox state across onboarding, reload and settings changes; event assertions are not a separate feature."
+        },
+        {
+            "path": "suite/e2e/tests/backup/t2t1-fail.test.ts",
+            "feature_ids": ["device-settings.backup.create-backup"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Interrupted backup produces failure guidance and disables reattempt where firmware marks the backup unfinished."
+        },
+        {
+            "path": "suite/e2e/tests/backup/t2t1-misc.test.ts",
+            "feature_ids": ["device-settings.backup.create-backup"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Backup acknowledgements reset after closing; disconnected remembered hardware cannot initiate a backup."
+        },
+        {
+            "path": "suite/e2e/tests/bridge-tor/spawn-bridge-daemon.test.ts",
+            "feature_ids": [],
+            "status": "reviewed-excluded",
+            "reason": "Electron background Bridge daemon process lifecycle, not a separate ordinary in-app capability.",
+            "detail": "Electron background Bridge daemon process lifecycle, not a separate ordinary in-app capability."
+        },
+        {
+            "path": "suite/e2e/tests/bridge-tor/spawn-bridge.test.ts",
+            "feature_ids": [],
+            "status": "reviewed-excluded",
+            "reason": "Bundled/external Bridge process startup, shutdown and reconnection infrastructure; not a standalone Bridge installer UI.",
+            "detail": "Bundled/external Bridge process startup, shutdown and reconnection infrastructure; not a standalone Bridge installer UI."
+        },
+        {
+            "path": "suite/e2e/tests/browser/firefox.test.ts",
+            "feature_ids": ["connection.browser"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Supported Firefox proceeds without the unsupported-browser bypass; browser-detection compatibility scenario."
+        },
+        {
+            "path": "suite/e2e/tests/browser/ios.test.ts",
+            "feature_ids": ["connection.browser", "connection.browser.continue"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "The iOS WEB product is blocked without a continue override; this is not native iOS application support."
+        },
+        {
+            "path": "suite/e2e/tests/browser/safari.test.ts",
+            "feature_ids": ["connection.browser", "connection.browser.continue"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Unsupported Safari displays download guidance and permits an explicit continue-at-own-risk bypass."
+        },
+        {
+            "path": "suite/e2e/tests/dashboard/banners.test.ts",
+            "feature_ids": [
+                "wallet.portfolio.promotions",
+                "wallet.portfolio.promotions.carousel",
+                "wallet.portfolio.promotions.dismiss"
+            ],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Eligible promo carousel browsing, external product/earn links and dismissal persistence; debug configuration supplies deterministic test banners."
+        },
+        {
+            "path": "suite/e2e/tests/general/check-links.test.ts",
+            "feature_ids": [],
+            "status": "reviewed-excluded",
+            "reason": "Route inventory and HTTP link integrity sweep, not independent user functionality; available as a source-completeness signal.",
+            "detail": "Route inventory and HTTP link integrity sweep, not independent user functionality; available as a source-completeness signal."
+        },
+        {
+            "path": "suite/e2e/tests/general/eap-modal.test.ts",
+            "feature_ids": ["app-settings.early-access"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Join Early Access from Application settings in a no-device desktop context."
+        },
+        {
+            "path": "suite/e2e/tests/onboarding/get-started-modal.test.ts",
+            "feature_ids": ["onboarding.network-selection"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Post-setup Get started opens Activate assets, selects networks and waits for discovery."
+        },
+        {
+            "path": "suite/e2e/tests/onboarding/t1b1/t1b1-recovery-fail.test.ts",
+            "feature_ids": ["onboarding.recovery.retry"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Disconnected Model One recovery can retry and reselect word count and recovery method."
+        },
+        {
+            "path": "suite/e2e/tests/onboarding/t2t1/t2t1-create-wallet.test.ts",
+            "feature_ids": ["onboarding.new-wallet", "onboarding.pin", "onboarding.complete"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Model T wallet creation, supported backup selection, hardware PIN setup and completion."
+        },
+        {
+            "path": "suite/e2e/tests/onboarding/t2t1/t2t1-entropy-check-failure.test.ts",
+            "feature_ids": ["onboarding.new-wallet", "connection.compromised"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Simulated entropy mismatch opens compromised-device guidance; transport interruption instead produces the error/retry path. The fault injection is not a user option."
+        },
+        {
+            "path": "suite/e2e/tests/onboarding/t3b1/t3b1-create-wallet.test.ts",
+            "feature_ids": ["onboarding.new-wallet", "onboarding.pin", "onboarding.complete"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "T3B1 creation and backup, PIN setting and final wallet step."
+        },
+        {
+            "path": "suite/e2e/tests/onboarding/t3t1/t3t1-create-wallet-offline.test.ts",
+            "feature_ids": ["onboarding.new-wallet", "connection.offline"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Desktop offline device setup completes while connectivity banners remain and network discovery cannot finish normally."
+        },
+        {
+            "path": "suite/e2e/tests/onboarding/t3w1/t3w1-create-wallet.test.ts",
+            "feature_ids": [
+                "onboarding.new-wallet.backup-type",
+                "onboarding.new-wallet",
+                "onboarding.pin",
+                "onboarding.feedback",
+                "onboarding.network-selection"
+            ],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Parameterized T3W1 creation/backup types, PIN, feedback banner and first asset activation."
+        },
+        {
+            "path": "suite/e2e/tests/passphrase/passphrase-cancel.test.ts",
+            "feature_ids": ["wallet-access.hidden"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Cancel an existing hidden-wallet passphrase prompt and recover the current navigation state."
+        },
+        {
+            "path": "suite/e2e/tests/passphrase/passphrase-cardano.test.ts",
+            "feature_ids": ["wallet-access.hidden", "wallet.receive.verify"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Passphrase-backed Cardano address verification after device restart; wrong passphrase is a negative scenario, not a second supported wallet identity."
+        },
+        {
+            "path": "suite/e2e/tests/passphrase/passphrase-numbering.test.ts",
+            "feature_ids": ["wallet-access.switch", "wallet-access.hidden", "wallet-access.eject"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Standard/hidden wallet display numbering remains coherent as wallet instances are added and ejected."
+        },
+        {
+            "path": "suite/e2e/tests/recovery/t2t1-dry-run.test.ts",
+            "feature_ids": ["device-settings.check-backup"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "On-device backup verification including interrupted and partially completed checks; no recovery secrets are included in the inventory."
+        },
+        {
+            "path": "suite/e2e/tests/settings/t1b1-device-settings.test.ts",
+            "feature_ids": [
+                "device-settings.pin",
+                "device-settings.change-pin",
+                "device-settings.homescreen.gallery"
+            ],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Model One PIN entry/mismatch retry and homescreen selection."
+        },
+        {
+            "path": "suite/e2e/tests/settings/t3b1-device-settings.test.ts",
+            "feature_ids": [
+                "device-settings.firmware-version",
+                "device-settings.name",
+                "device-settings.homescreen.gallery",
+                "device-settings.wipe"
+            ],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "T3B1 firmware dialog, hardware label, background selection and device wipe confirmations."
+        },
+        {
+            "path": "suite/e2e/tests/suite/bridge.test.ts",
+            "feature_ids": ["connection.bridge", "connection.usb"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Legacy Bridge route returns to a WebUSB connection prompt; it does not demonstrate a standalone Bridge download/install workflow."
+        },
+        {
+            "path": "suite/e2e/tests/suite/db-locale-migration.test.ts",
+            "feature_ids": [],
+            "status": "reviewed-excluded",
+            "reason": "Cross-version IndexedDB locale migration persistence regression; automatic storage migration is not a separately exposed user setting.",
+            "detail": "Cross-version IndexedDB locale migration persistence regression; automatic storage migration is not a separately exposed user setting."
+        },
+        {
+            "path": "suite/e2e/tests/suite/db-migration.test.ts",
+            "feature_ids": [],
+            "status": "reviewed-excluded",
+            "reason": "Cross-version IndexedDB state migration regression; user preferences are mapped separately and no migration-control UI is asserted.",
+            "detail": "Cross-version IndexedDB state migration regression; user preferences are mapped separately and no migration-control UI is asserted."
+        },
+        {
+            "path": "suite/e2e/tests/suite/initial-run.test.ts",
+            "feature_ids": ["onboarding.analytics", "onboarding.complete", "connection"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Initial consent remains until confirmed; reload resumes the appropriate completed/connected state."
+        },
+        {
+            "path": "suite/e2e/tests/suite/safety-checks-warning.test.ts",
+            "feature_ids": ["device-settings.safety-checks"],
+            "status": "mapped",
+            "reason": "Reviewed scenario source; intended behavior only, no execution result.",
+            "detail": "Safety-check warning offers a shortcut to device settings, can be dismissed and reappears after setting changes."
+        },
+        {
+            "path": "suite/e2e/tests/suite/version-page.test.ts",
+            "feature_ids": [],
+            "status": "reviewed-excluded",
+            "reason": "Hidden /version diagnostic URL and commit hash are developer/support reference, not ordinary settings navigation; user-visible version/release notes are mapped separately.",
+            "detail": "Hidden /version diagnostic URL and commit hash are developer/support reference, not ordinary settings navigation; user-visible version/release notes are mapped separately."
+        },
+        {
+            "status": "mapped",
+            "path": "suite/e2e/tests/manual/general/find-on-page.test.ts",
+            "feature_ids": ["app-controls.find"],
+            "reason": "Manual procedure steps were inspected and reconciled with existing user capabilities; not an execution result.",
+            "detail": "Desktop find bar: open with Cmd/Ctrl+F, highlighted matches and counter, next/previous navigation, Not found, updates after navigation, and closing. Web uses the native browser find."
+        }
+    ],
+    "notes": [
+        "All 32 remaining desktop/web automated sources were inspected; background instrumentation and hidden diagnostics have explicit exclusions."
+    ]
+}

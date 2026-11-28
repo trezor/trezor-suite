@@ -1,0 +1,1713 @@
+{
+    "updates": [
+        {
+            "id": "mobile.onboarding.welcome",
+            "desktop_status": "no",
+            "web_status": "no",
+            "navigation": {
+                "desktop": null,
+                "web": null
+            },
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/app/src/Preloader/Preloader.tsx",
+                    "detail": "The desktop/web preloader starts with analytics consent and device prerequisites; the complete composition has no separate mobile-style welcome-introduction screen with a Start setup action."
+                }
+            ],
+            "reason": "The desktop/web preloader starts with analytics consent and device prerequisites; the complete composition has no separate mobile-style welcome-introduction screen with a Start setup action."
+        },
+        {
+            "id": "mobile.onboarding.biometrics",
+            "desktop_status": "no",
+            "web_status": "no",
+            "navigation": {
+                "desktop": null,
+                "web": null
+            },
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/app/src/Preloader/Preloader.tsx",
+                    "detail": "There is no biometric setup step in the complete desktop/web preloader or device onboarding step switch. Desktop biometric locking exists later in Settings, so this onboarding-context feature remains native-specific."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/module-onboarding/src/Onboarding.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsGeneral/BioAuthSettings.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "There is no biometric setup step in the complete desktop/web preloader or device onboarding step switch. Desktop biometric locking exists later in Settings, so this onboarding-context feature remains native-specific."
+        },
+        {
+            "id": "mobile.onboarding.residence",
+            "desktop_status": "no",
+            "web_status": "no",
+            "navigation": {
+                "desktop": null,
+                "web": null
+            },
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/app/src/Preloader/Preloader.tsx",
+                    "detail": "Desktop/web initial preloader and onboarding step composition do not request a trading country of residence during first launch. Per-trade country selection is a separate mapped capability."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/module-onboarding/src/Onboarding.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "Desktop/web initial preloader and onboarding step composition do not request a trading country of residence during first launch. Per-trade country selection is a separate mapped capability."
+        },
+        {
+            "id": "mobile.wallets.hidden.empty-confirmation",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Open hidden wallet > Confirm passphrase",
+                "web": "Open hidden wallet > Confirm passphrase"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/DeviceContextModal/PassphraseWalletConfirmation.tsx",
+                    "symbol": "PassphraseWalletConfirmation"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/DeviceContextModal/PassphraseWalletIsEmpty.tsx",
+                    "symbol": "PassphraseWalletIsEmpty"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/DeviceContextModal/PassphraseWalletConfirmation.tsx",
+                    "detail": "The canonical hidden-wallet confirmation flow includes the empty-wallet choice before passphrase verification; merge this native screen into that existing capability."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/DeviceContextModal/PassphraseWalletIsEmpty.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "The canonical hidden-wallet confirmation flow includes the empty-wallet choice before passphrase verification; merge this native screen into that existing capability.",
+            "equivalent_id": "wallet-access.passphrase.mismatch"
+        },
+        {
+            "id": "mobile.device-onboarding.security",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Connect device > packaging and device security check",
+                "web": "Connect device > packaging and device security check"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/SecurityCheck/ManualDeviceCheck.tsx",
+                    "symbol": "ManualDeviceCheck"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/SecurityCheck/InteractiveDeviceChecksFlow.tsx",
+                    "symbol": "InteractiveDeviceChecksFlow"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/SecurityCheck/ManualDeviceCheck.tsx",
+                    "detail": "ManualDeviceCheck guides the user through packaging/device checks before the interactive authenticity step; it is displayed when a manual check is required. The model-specific flow differs from native tutorial screens."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/SecurityCheck/InteractiveDeviceChecksFlow.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "ManualDeviceCheck guides the user through packaging/device checks before the interactive authenticity step; it is displayed when a manual check is required. The model-specific flow differs from native tutorial screens."
+        },
+        {
+            "id": "mobile.device-onboarding.create-or-recover",
+            "desktop_status": "yes",
+            "web_status": "yes",
+            "navigation": {
+                "desktop": "Set up device > Create or recover wallet",
+                "web": "Set up device > Create or recover wallet"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/onboarding/steps/CreateOrRecoverStep.tsx",
+                    "symbol": "CreateOrRecoverStep"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/onboarding/steps/CreateOrRecoverStep.tsx",
+                    "detail": "CreateOrRecoverStep offers Create wallet and Restore existing wallet paths in shared desktop/web onboarding."
+                }
+            ],
+            "reason": "CreateOrRecoverStep offers Create wallet and Restore existing wallet paths in shared desktop/web onboarding."
+        },
+        {
+            "id": "mobile.device-onboarding.recovery-instructions",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Set up device > Recover wallet > recovery guidance",
+                "web": "Set up device > Recover wallet > recovery guidance"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
+                    "symbol": null
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/onboarding/steps/RecoveryStep/RecoveryStep.tsx",
+                    "detail": "RecoveryStep presents backup/recovery guidance before starting the device-dependent restoration flow; it is the containing desktop/web recovery step rather than a separate native instruction screen."
+                }
+            ],
+            "reason": "RecoveryStep presents backup/recovery guidance before starting the device-dependent restoration flow; it is the containing desktop/web recovery step rather than a separate native instruction screen."
+        },
+        {
+            "id": "mobile.device-onboarding.backup-failure",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Settings > Device > Wallet backup failed",
+                "web": "Settings > Device > Wallet backup failed"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "suite/backup/src/BackupFailed.tsx",
+                    "symbol": "BackupFailed"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite/backup/src/BackupFailed.tsx",
+                    "detail": "BackupFailed shows the failed-backup explanation and recovery-issues help link for the corresponding device state. Its create-backup button is disabled, so this confirms failure guidance rather than every native restart/wipe action."
+                }
+            ],
+            "reason": "BackupFailed shows the failed-backup explanation and recovery-issues help link for the corresponding device state. Its create-backup button is disabled, so this confirms failure guidance rather than every native restart/wipe action."
+        },
+        {
+            "id": "mobile.device-onboarding.enable-coins",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Settings > Coins > enabled networks",
+                "web": "Settings > Coins > enabled networks"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
+                    "symbol": "SettingsCoinsPage"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/onboarding/steps/FinalStep.tsx",
+                    "symbol": "FinalStep"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/module-settings/src/pages/SettingsCoinsPage.tsx",
+                    "detail": "Desktop/web supports selecting enabled networks through Settings > Coins, but FinalStep completes setup directly without the native mandatory initial coin-selection step. Parity is at the network-selection goal level, with a different entry point."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/onboarding/steps/FinalStep.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "Desktop/web supports selecting enabled networks through Settings > Coins, but FinalStep completes setup directly without the native mandatory initial coin-selection step. Parity is at the network-selection goal level, with a different entry point."
+        },
+        {
+            "id": "mobile.device-settings.pin.enable",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Settings > Device > PIN",
+                "web": "Settings > Device > PIN"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/PinProtection.tsx",
+                    "symbol": "PinProtection"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/PinProtection.tsx",
+                    "detail": "The existing PIN protection toggle enables protection when pin_protection is false; enabling is already part of this canonical control."
+                }
+            ],
+            "reason": "The existing PIN protection toggle enables protection when pin_protection is false; enabling is already part of this canonical control.",
+            "equivalent_id": "device-settings.pin"
+        },
+        {
+            "id": "mobile.device-settings.pin.remove",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Settings > Device > PIN",
+                "web": "Settings > Device > PIN"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/PinProtection.tsx",
+                    "symbol": "PinProtection"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/PinProtection.tsx",
+                    "detail": "The same canonical PIN protection toggle calls changePinThunk with remove:true when a PIN is present; do not duplicate the feature."
+                }
+            ],
+            "reason": "The same canonical PIN protection toggle calls changePinThunk with remove:true when a PIN is present; do not duplicate the feature.",
+            "equivalent_id": "device-settings.pin"
+        },
+        {
+            "id": "mobile.device-settings.check-backup.guided-check",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Settings > Device > Check backup",
+                "web": "Settings > Device > Check backup"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/CheckRecoverySeed.tsx",
+                    "symbol": "CheckRecoverySeed"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/CheckRecoverySeed.tsx",
+                    "detail": "The canonical Check wallet backup entry navigates to the guided recovery/check flow; the native tutorial is part of this capability."
+                }
+            ],
+            "reason": "The canonical Check wallet backup entry navigates to the guided recovery/check flow; the native tutorial is part of this capability.",
+            "equivalent_id": "device-settings.check-backup"
+        },
+        {
+            "id": "mobile.portfolio.inspect-chart",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Home > Portfolio graph > hover a point",
+                "web": "Home > Portfolio graph > hover a point"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/dashboard/PortfolioCard/DashboardGraph.tsx",
+                    "symbol": "DashboardGraph"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/graph/TransactionsGraph/TransactionsGraph.tsx",
+                    "symbol": "TransactionsGraph"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/dashboard/PortfolioCard/DashboardGraph.tsx",
+                    "detail": "The shared TransactionsGraph supplies a hover tooltip with historical values; desktop/web uses pointer inspection instead of a phone press-and-hold gesture. Requires chart data."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/graph/TransactionsGraph/TransactionsGraph.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "The shared TransactionsGraph supplies a hover tooltip with historical values; desktop/web uses pointer inspection instead of a phone press-and-hold gesture. Requires chart data."
+        },
+        {
+            "id": "mobile.portfolio.refresh",
+            "desktop_status": "no",
+            "web_status": "no",
+            "navigation": {
+                "desktop": null,
+                "web": null
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/dashboard/PortfolioCard/DashboardGraph.tsx",
+                    "symbol": "DashboardGraph"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
+                    "symbol": "DashboardPage"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/dashboard/PortfolioCard/DashboardGraph.tsx",
+                    "detail": "DashboardGraph exposes a retry action when graph data retrieval fails and refreshes through its graph updater. There is no native-style whole-wallet pull-to-refresh gesture in the audited DashboardPage composition; only the narrower graph-refresh capability is confirmed."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "This node specifically means the native pull-to-refresh gesture for whole-wallet data. Desktop/web has graph retry or app reload, but the audited dashboard composition exposes no equivalent pull-to-refresh wallet control."
+        },
+        {
+            "id": "mobile.portfolio.feedback",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Sidebar > available feature-feedback banner > Rate",
+                "web": "Sidebar > available feature-feedback banner > Rate"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "suite/feature-feedback/src/components/FeedbackFormModalManager.tsx",
+                    "symbol": null
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "suite/feature-feedback/src/components/FeedbackFormModal.tsx",
+                    "symbol": "FeedbackFormModal"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite/feature-feedback/src/components/FeedbackFormModalManager.tsx",
+                    "detail": "FeedbackFormManager displays a pending-feature feedback banner, opens a rating/text modal, and submits feature-specific feedback. It appears only when a feedback request is pending."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite/feature-feedback/src/components/FeedbackFormModal.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/layouts/SuiteLayout/Sidebar/SidebarBanners.tsx",
+                    "detail": "SidebarBanners mounts FeedbackFormManager when feature feedback is pending, confirming the user-facing entry point."
+                }
+            ],
+            "reason": "FeedbackFormManager displays a pending-feature feedback banner, opens a rating/text modal, and submits feature-specific feedback. It appears only when a feedback request is pending."
+        },
+        {
+            "id": "mobile.accounts.import",
+            "desktop_status": "no",
+            "web_status": "no",
+            "navigation": {
+                "desktop": null,
+                "web": null
+            },
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal.tsx",
+                    "detail": "The complete desktop/web AddAccountModal takes a device and adds/discovers its supported accounts; it has no portfolio-tracker import-by-xpub/address/QR flow or remove-imported-tracker-account action. Desktop remembered device wallets are a separate feature."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/suite/SwitchDevice/SwitchDevice.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "The complete desktop/web AddAccountModal takes a device and adds/discovers its supported accounts; it has no portfolio-tracker import-by-xpub/address/QR flow or remove-imported-tracker-account action. Desktop remembered device wallets are a separate feature."
+        },
+        {
+            "id": "mobile.accounts.import.network",
+            "desktop_status": "no",
+            "web_status": "no",
+            "navigation": {
+                "desktop": null,
+                "web": null
+            },
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal.tsx",
+                    "detail": "The complete desktop/web AddAccountModal takes a device and adds/discovers its supported accounts; it has no portfolio-tracker import-by-xpub/address/QR flow or remove-imported-tracker-account action. Desktop remembered device wallets are a separate feature."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/suite/SwitchDevice/SwitchDevice.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "The complete desktop/web AddAccountModal takes a device and adds/discovers its supported accounts; it has no portfolio-tracker import-by-xpub/address/QR flow or remove-imported-tracker-account action. Desktop remembered device wallets are a separate feature."
+        },
+        {
+            "id": "mobile.accounts.import.manual-xpub",
+            "desktop_status": "no",
+            "web_status": "no",
+            "navigation": {
+                "desktop": null,
+                "web": null
+            },
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal.tsx",
+                    "detail": "The complete desktop/web AddAccountModal takes a device and adds/discovers its supported accounts; it has no portfolio-tracker import-by-xpub/address/QR flow or remove-imported-tracker-account action. Desktop remembered device wallets are a separate feature."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/suite/SwitchDevice/SwitchDevice.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "The complete desktop/web AddAccountModal takes a device and adds/discovers its supported accounts; it has no portfolio-tracker import-by-xpub/address/QR flow or remove-imported-tracker-account action. Desktop remembered device wallets are a separate feature."
+        },
+        {
+            "id": "mobile.accounts.import.qr",
+            "desktop_status": "no",
+            "web_status": "no",
+            "navigation": {
+                "desktop": null,
+                "web": null
+            },
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal.tsx",
+                    "detail": "The complete desktop/web AddAccountModal takes a device and adds/discovers its supported accounts; it has no portfolio-tracker import-by-xpub/address/QR flow or remove-imported-tracker-account action. Desktop remembered device wallets are a separate feature."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/suite/SwitchDevice/SwitchDevice.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "The complete desktop/web AddAccountModal takes a device and adds/discovers its supported accounts; it has no portfolio-tracker import-by-xpub/address/QR flow or remove-imported-tracker-account action. Desktop remembered device wallets are a separate feature."
+        },
+        {
+            "id": "mobile.accounts.import.address",
+            "desktop_status": "no",
+            "web_status": "no",
+            "navigation": {
+                "desktop": null,
+                "web": null
+            },
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal.tsx",
+                    "detail": "The complete desktop/web AddAccountModal takes a device and adds/discovers its supported accounts; it has no portfolio-tracker import-by-xpub/address/QR flow or remove-imported-tracker-account action. Desktop remembered device wallets are a separate feature."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/suite/SwitchDevice/SwitchDevice.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "The complete desktop/web AddAccountModal takes a device and adds/discovers its supported accounts; it has no portfolio-tracker import-by-xpub/address/QR flow or remove-imported-tracker-account action. Desktop remembered device wallets are a separate feature."
+        },
+        {
+            "id": "mobile.accounts.import.wrong-key",
+            "desktop_status": "no",
+            "web_status": "no",
+            "navigation": {
+                "desktop": null,
+                "web": null
+            },
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal.tsx",
+                    "detail": "The complete desktop/web AddAccountModal takes a device and adds/discovers its supported accounts; it has no portfolio-tracker import-by-xpub/address/QR flow or remove-imported-tracker-account action. Desktop remembered device wallets are a separate feature."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/suite/SwitchDevice/SwitchDevice.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "The complete desktop/web AddAccountModal takes a device and adds/discovers its supported accounts; it has no portfolio-tracker import-by-xpub/address/QR flow or remove-imported-tracker-account action. Desktop remembered device wallets are a separate feature."
+        },
+        {
+            "id": "mobile.accounts.import.duplicate",
+            "desktop_status": "no",
+            "web_status": "no",
+            "navigation": {
+                "desktop": null,
+                "web": null
+            },
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal.tsx",
+                    "detail": "The complete desktop/web AddAccountModal takes a device and adds/discovers its supported accounts; it has no portfolio-tracker import-by-xpub/address/QR flow or remove-imported-tracker-account action. Desktop remembered device wallets are a separate feature."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/suite/SwitchDevice/SwitchDevice.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "The complete desktop/web AddAccountModal takes a device and adds/discovers its supported accounts; it has no portfolio-tracker import-by-xpub/address/QR flow or remove-imported-tracker-account action. Desktop remembered device wallets are a separate feature."
+        },
+        {
+            "id": "mobile.accounts.overview.remove",
+            "desktop_status": "no",
+            "web_status": "no",
+            "navigation": {
+                "desktop": null,
+                "web": null
+            },
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal.tsx",
+                    "detail": "The complete desktop/web AddAccountModal takes a device and adds/discovers its supported accounts; it has no portfolio-tracker import-by-xpub/address/QR flow or remove-imported-tracker-account action. Desktop remembered device wallets are a separate feature."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/suite/SwitchDevice/SwitchDevice.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "The complete desktop/web AddAccountModal takes a device and adds/discovers its supported accounts; it has no portfolio-tracker import-by-xpub/address/QR flow or remove-imported-tracker-account action. Desktop remembered device wallets are a separate feature."
+        },
+        {
+            "id": "mobile.send.destination-tag",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Account > Send > Destination tag / Memo",
+                "web": "Account > Send > Destination tag / Memo"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag.tsx",
+                    "symbol": "DestinationTag"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag.tsx",
+                    "detail": "The shared DestinationTag component handles Ripple destination tags and Stellar memos, with network validation and no memo for Soroban contract-token transfers. This combined native control spans two existing network-specific desktop leaves."
+                }
+            ],
+            "reason": "The shared DestinationTag component handles Ripple destination tags and Stellar memos, with network validation and no memo for Soroban contract-token transfers. This combined native control spans two existing network-specific desktop leaves."
+        },
+        {
+            "id": "mobile.send.address-review",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Send > Review and send > compare recipient on Trezor",
+                "web": "Send > Review and send > compare recipient on Trezor"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutput.tsx",
+                    "symbol": "TransactionReviewOutput"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutput.tsx",
+                    "detail": "TransactionReviewOutput shows recipient address confirmation state as the device signs the transaction; desktop/web uses the containing review modal rather than a separate phone address-review screen."
+                }
+            ],
+            "reason": "TransactionReviewOutput shows recipient address confirmation state as the device signs the transaction; desktop/web uses the containing review modal rather than a separate phone address-review screen."
+        },
+        {
+            "id": "mobile.send.tag-review",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Send > Review and send > destination tag",
+                "web": "Send > Review and send > destination tag"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutput.tsx",
+                    "symbol": "TransactionReviewOutput"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutput.tsx",
+                    "detail": "The shared transaction review output renderer explicitly handles destination-tag outputs and confirmation states when a tag is present."
+                }
+            ],
+            "reason": "The shared transaction review output renderer explicitly handles destination-tag outputs and confirmation states when a tag is present."
+        },
+        {
+            "id": "mobile.send.fee.eip1559",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Account > Send > Fee > Custom fee",
+                "web": "Account > Send > Fee > Custom fee"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFeeEthereum.tsx",
+                    "symbol": "CustomFeeEthereum"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFeeEthereum.tsx",
+                    "detail": "CustomFeeEthereum renders maximum fee per gas and priority fee controls when EIP-1559 applies, alongside other EVM custom fee fields. The native grouped control corresponds to multiple existing desktop fee leaves."
+                }
+            ],
+            "reason": "CustomFeeEthereum renders maximum fee per gas and priority fee controls when EIP-1559 applies, alongside other EVM custom fee fields. The native grouped control corresponds to multiple existing desktop fee leaves."
+        },
+        {
+            "id": "mobile.receive.reuse",
+            "desktop_status": "no",
+            "web_status": "no",
+            "navigation": {
+                "desktop": null,
+                "web": null
+            },
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite/receive/src/ReceiveContent.tsx",
+                    "detail": "The audited receive composition shows newest/history addresses and copy/verify/share actions, but does not show the native used-address-reuse warning banner. Displaying address history alone is not warning parity."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite/receive/src/AddressCardDetail.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite/receive/src/AddressHistoryRow.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/module-receive/src/pages/ReceivePage.tsx",
+                    "detail": "The containing ReceivePage composes ReceiveContent and ConfirmEvmExplanationModal, with no additional address-reuse or destination-tag information banner."
+                }
+            ],
+            "reason": "The audited receive composition shows newest/history addresses and copy/verify/share actions, but does not show the native used-address-reuse warning banner. Displaying address history alone is not warning parity."
+        },
+        {
+            "id": "mobile.receive.tag",
+            "desktop_status": "no",
+            "web_status": "no",
+            "navigation": {
+                "desktop": null,
+                "web": null
+            },
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite/receive/src/ReceiveContent.tsx",
+                    "detail": "The complete shared ReceiveContent and address detail composition has no counterpart of the native destination-tag information message; sending/trading tag controls are separate features."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite/receive/src/AddressCardDetail.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/module-receive/src/pages/ReceivePage.tsx",
+                    "detail": "The containing ReceivePage composes ReceiveContent and ConfirmEvmExplanationModal, with no additional address-reuse or destination-tag information banner."
+                }
+            ],
+            "reason": "The complete shared ReceiveContent and address detail composition has no counterpart of the native destination-tag information message; sending/trading tag controls are separate features."
+        },
+        {
+            "id": "mobile.transactions.compare",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Account > Transactions > Transaction detail > Transaction crypto and fiat amounts",
+                "web": "Account > Transactions > Transaction detail > Transaction crypto and fiat amounts"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/AmountDetails.tsx",
+                    "symbol": "AmountDetails"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/AmountDetails.tsx",
+                    "detail": "AmountDetails renders historical and current fiat columns with HistoricRateChange; this is the existing canonical transaction-amount comparison."
+                }
+            ],
+            "reason": "AmountDetails renders historical and current fiat columns with HistoricRateChange; this is the existing canonical transaction-amount comparison.",
+            "equivalent_id": "wallet.transactions.details.amount"
+        },
+        {
+            "id": "mobile.settings.trading-residence",
+            "desktop_status": "no",
+            "web_status": "no",
+            "navigation": {
+                "desktop": null,
+                "web": null
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry.tsx",
+                    "symbol": "TradingFormInputCountry"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/settings/SettingsGeneral/SettingsGeneral.tsx",
+                    "symbol": "SettingsGeneral"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry.tsx",
+                    "detail": "Desktop/web lets the user select country in the trading forms, but the audited General settings composition has no native-style global Trading residence settings screen. The same residence-selection goal is available per trading context."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsGeneral/SettingsGeneral.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "The native global residence preference has no counterpart in the complete desktop/web Application settings. Desktop/web per-trade residence selection is represented by trade.buy.country and trade.sell.residence."
+        },
+        {
+            "id": "mobile.settings.support.faq",
+            "desktop_status": "no",
+            "web_status": "no",
+            "navigation": {
+                "desktop": null,
+                "web": null
+            },
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/guide/Guide.tsx",
+                    "detail": "The complete desktop/web Guide and SupportFeedbackSelection offer searchable articles and support actions, not the native embedded FAQ accordion. The broader help-guide capability is already mapped separately."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/guide/SupportFeedbackSelection.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "The complete desktop/web Guide and SupportFeedbackSelection offer searchable articles and support actions, not the native embedded FAQ accordion. The broader help-guide capability is already mapped separately."
+        },
+        {
+            "id": "mobile.settings.support.export-log",
+            "desktop_status": "yes",
+            "web_status": "yes",
+            "navigation": {
+                "desktop": "Settings > Application > Application log",
+                "web": "Settings > Application > Application log"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/settings/SettingsGeneral/ShowApplicationLog.tsx",
+                    "symbol": "ShowApplicationLog"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/ApplicationLogModal.tsx",
+                    "symbol": "ApplicationLogModal"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsGeneral/ShowApplicationLog.tsx",
+                    "detail": "The canonical Application log capability explicitly includes file export; ApplicationLogModal downloads the diagnostic text file. The phone share sheet is a platform-specific export mechanism."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/ApplicationLogModal.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "The canonical Application log capability explicitly includes file export; ApplicationLogModal downloads the diagnostic text file. The phone share sheet is a platform-specific export mechanism.",
+            "equivalent_id": "app-settings.log"
+        },
+        {
+            "id": "mobile.settings.support.log-details",
+            "desktop_status": "yes",
+            "web_status": "yes",
+            "navigation": {
+                "desktop": "Settings > Application > Application log",
+                "web": "Settings > Application > Application log"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/settings/SettingsGeneral/ShowApplicationLog.tsx",
+                    "symbol": "ShowApplicationLog"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/ApplicationLogModal.tsx",
+                    "symbol": "ApplicationLogModal"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsGeneral/ShowApplicationLog.tsx",
+                    "detail": "ApplicationLogModal provides the sensitive-information switch within the canonical Application log feature."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/ApplicationLogModal.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "ApplicationLogModal provides the sensitive-information switch within the canonical Application log feature.",
+            "equivalent_id": "app-settings.log"
+        },
+        {
+            "id": "mobile.settings.support.legal",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Initial analytics consent > data terms; Trade > How trading works > Terms",
+                "web": "Initial analytics consent > data terms; Trade > How trading works > Terms"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "suite-app/app/src/Preloader/AnalyticsConsentScreen.tsx",
+                    "symbol": "AnalyticsConsentScreen"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingFormFeesDisclaimer/TradingFormFeesDisclaimer.tsx",
+                    "symbol": "TradingFormFeesDisclaimer"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/app/src/Preloader/AnalyticsConsentScreen.tsx",
+                    "detail": "Desktop/web exposes data terms from initial analytics consent and Suite terms from How trading works. This confirms access to legal documents, not an identical Support > Legal collection or the mobile-specific terms URL."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingFormFeesDisclaimer/TradingFormFeesDisclaimer.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "Desktop/web exposes data terms from initial analytics consent and Suite terms from How trading works. This confirms access to legal documents, not an identical Support > Legal collection or the mobile-specific terms URL."
+        },
+        {
+            "id": "mobile.settings.support.about",
+            "desktop_status": "conditional",
+            "web_status": "no",
+            "navigation": {
+                "desktop": "Desktop menu > Help > Trezor website; macOS app menu > About",
+                "web": null
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/guide/SupportFeedbackSelection.tsx",
+                    "symbol": "SupportFeedbackSelection"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/desktop-app-main/src/libs/menu.ts",
+                    "detail": "Desktop Help includes Trezor website and macOS adds the standard About app menu item. The shared Guide/support composition has no equivalent of the native About Trezor branding/social-link collection in web."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/guide/SupportFeedbackSelection.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "Desktop Help includes Trezor website and macOS adds the standard About app menu item. The shared Guide/support composition has no equivalent of the native About Trezor branding/social-link collection in web."
+        },
+        {
+            "id": "mobile.settings.support.version",
+            "desktop_status": "yes",
+            "web_status": "yes",
+            "navigation": {
+                "desktop": "Guide \u2192 Help and feedback \u2192 Application / Firmware",
+                "web": "Guide \u2192 Help and feedback \u2192 Application / Firmware"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/guide/SupportFeedbackSelection.tsx",
+                    "symbol": "SupportFeedbackSelection"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/guide/SupportFeedbackSelection.tsx",
+                    "detail": "The canonical support hub already displays application and device firmware versions. Native build-revision presentation differs; do not infer an identical commit-hash widget."
+                }
+            ],
+            "reason": "The canonical support hub already displays application and device firmware versions. Native build-revision presentation differs; do not infer an identical commit-hash widget.",
+            "equivalent_id": "help.support.versions"
+        },
+        {
+            "id": "mobile.trade.buy.preview",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Trade > Buy > selected offer > review purchase",
+                "web": "Trade > Buy > selected offer > review purchase"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferBuy/TradingOfferBuy.tsx",
+                    "symbol": "TradingOfferBuy"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferBuy/TradingOfferBuy.tsx",
+                    "detail": "The selected-offer component reviews the chosen provider, source/destination and quoted values before provider confirmation or device signing. Requires a valid selected offer, supported region/asset and the relevant trade state."
+                }
+            ],
+            "reason": "The selected-offer component reviews the chosen provider, source/destination and quoted values before provider confirmation or device signing. Requires a valid selected offer, supported region/asset and the relevant trade state."
+        },
+        {
+            "id": "mobile.trade.sell.preview",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Trade > Sell > selected offer > preview",
+                "web": "Trade > Sell > selected offer > preview"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferSell/TradingOfferSell.tsx",
+                    "symbol": "TradingOfferSell"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferSell/TradingOfferSell.tsx",
+                    "detail": "The selected-offer component reviews the chosen provider, source/destination and quoted values before provider confirmation or device signing. Requires a valid selected offer, supported region/asset and the relevant trade state."
+                }
+            ],
+            "reason": "The selected-offer component reviews the chosen provider, source/destination and quoted values before provider confirmation or device signing. Requires a valid selected offer, supported region/asset and the relevant trade state."
+        },
+        {
+            "id": "mobile.trade.swap.preview",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Trade > Swap > selected offer > transaction preview",
+                "web": "Trade > Swap > selected offer > transaction preview"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchange.tsx",
+                    "symbol": "TradingOfferExchange"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchange.tsx",
+                    "detail": "The selected-offer component reviews the chosen provider, source/destination and quoted values before provider confirmation or device signing. Requires a valid selected offer, supported region/asset and the relevant trade state."
+                }
+            ],
+            "reason": "The selected-offer component reviews the chosen provider, source/destination and quoted values before provider confirmation or device signing. Requires a valid selected offer, supported region/asset and the relevant trade state."
+        },
+        {
+            "id": "mobile.trade.concierge.provider",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Trade \u2192 Concierge / OTC entry",
+                "web": "Trade \u2192 Concierge / OTC entry"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/wallet/trading/concierge/TradingConciergeForm.tsx",
+                    "symbol": "TradingConciergeForm"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/trading/concierge/TradingConciergeForm.tsx",
+                    "detail": "TradingConciergeForm explicitly contains country and provider selection; provider choice is already part of the canonical concierge feature."
+                }
+            ],
+            "reason": "TradingConciergeForm explicitly contains country and provider selection; provider choice is already part of the canonical concierge feature.",
+            "equivalent_id": "trade.concierge"
+        },
+        {
+            "id": "mobile.earn.staking.stake",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Earn or account > Staking > Stake",
+                "web": "Earn or account > Staking > Stake"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/earn/modals/StakeModal/StakeModal.tsx",
+                    "symbol": "StakeModal"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/earn/modals/StakeModal/StakeModal.tsx",
+                    "detail": "The StakeModal is a network-aware staking entry flow with amount, fees, provider consent and device confirmation; this is distinct from an amount-entry-only leaf. Availability depends on staking network, device/firmware and provider configuration."
+                }
+            ],
+            "reason": "The StakeModal is a network-aware staking entry flow with amount, fees, provider consent and device confirmation; this is distinct from an amount-entry-only leaf. Availability depends on staking network, device/firmware and provider configuration."
+        },
+        {
+            "id": "mobile.earn.staking.review",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Earn or account > Stake > confirm and review on Trezor",
+                "web": "Earn or account > Stake > confirm and review on Trezor"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/earn/modals/StakeModal/StakeForm/ConfirmStakeModal.tsx",
+                    "symbol": "ConfirmStakeModal"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx",
+                    "symbol": "TransactionReviewModal"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/earn/modals/StakeModal/StakeForm/ConfirmStakeModal.tsx",
+                    "detail": "Desktop/web staking actions use the shared transaction review modal and hardware signing flow. Availability depends on the account staking network, firmware and provider/message-system state."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "Desktop/web staking actions use the shared transaction review modal and hardware signing flow. Availability depends on the account staking network, firmware and provider/message-system state."
+        },
+        {
+            "id": "mobile.earn.staking.unstake",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Earn or account > Staking > Unstake",
+                "web": "Earn or account > Staking > Unstake"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/earn/modals/UnstakeModal/UnstakeModal.tsx",
+                    "symbol": "UnstakeModal"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/earn/modals/UnstakeModal/UnstakeModal.tsx",
+                    "detail": "UnstakeModal provides a network-aware withdrawal form and confirmation; eligible ETH/SOL positions can be unstaked. This generic native node spans the canonical per-network unstake leaves."
+                }
+            ],
+            "reason": "UnstakeModal provides a network-aware withdrawal form and confirmation; eligible ETH/SOL positions can be unstaked. This generic native node spans the canonical per-network unstake leaves."
+        },
+        {
+            "id": "mobile.earn.staking.claim",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Earn or account > Staking > Claim",
+                "web": "Earn or account > Staking > Claim"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/earn/modals/EarnClaimModal/EarnClaimModal.tsx",
+                    "symbol": "EarnClaimModal"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/earn/modals/EarnClaimModal/EarnClaimModal.tsx",
+                    "detail": "EarnClaimModal reviews claimable staking funds, fees and device status before signing; requires matured eligible funds and supported network/provider state."
+                }
+            ],
+            "reason": "EarnClaimModal reviews claimable staking funds, fees and device status before signing; requires matured eligible funds and supported network/provider state."
+        },
+        {
+            "id": "mobile.earn.staking.view-only",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "ADA or TRX account > Staking overview",
+                "web": "ADA or TRX account > Staking overview"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/wallet/staking/components/AdaStakingDashboard/AdaStakingDashboard.tsx",
+                    "symbol": "AdaStakingDashboard"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/wallet/staking/components/TronStakingDashboard/TronStakingDashboard.tsx",
+                    "symbol": "TronStakingDashboard"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/staking/components/AdaStakingDashboard/AdaStakingDashboard.tsx",
+                    "detail": "Desktop/web ADA and TRX staking dashboards display existing positions and also expose management actions. The ability to view is shared, while the native view-only restriction is not a desktop restriction."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/staking/components/TronStakingDashboard/TronStakingDashboard.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "Desktop/web ADA and TRX staking dashboards display existing positions and also expose management actions. The ability to view is shared, while the native view-only restriction is not a desktop restriction."
+        },
+        {
+            "id": "mobile.earn.yield.review",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Earn > Yield > Deposit > transaction review",
+                "web": "Earn > Yield > Deposit > transaction review"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/earn/yield/deposit/YieldDepositForm.tsx",
+                    "symbol": "YieldDepositForm"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx",
+                    "symbol": "TransactionReviewModal"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/earn/yield/deposit/YieldDepositForm.tsx",
+                    "detail": "The yield flow composes the supported vault action and uses device transaction review/signing. Requires eligible vault/reward state, sufficient fees, supported firmware and feature availability."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "The yield flow composes the supported vault action and uses device transaction review/signing. Requires eligible vault/reward state, sufficient fees, supported firmware and feature availability."
+        },
+        {
+            "id": "mobile.earn.yield.withdraw-review",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Earn > Yield > Withdraw > transaction review",
+                "web": "Earn > Yield > Withdraw > transaction review"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/earn/yield/withdraw/YieldWithdrawForm.tsx",
+                    "symbol": "YieldWithdrawForm"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx",
+                    "symbol": "TransactionReviewModal"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/earn/yield/withdraw/YieldWithdrawForm.tsx",
+                    "detail": "The yield flow composes the supported vault action and uses device transaction review/signing. Requires eligible vault/reward state, sufficient fees, supported firmware and feature availability."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "The yield flow composes the supported vault action and uses device transaction review/signing. Requires eligible vault/reward state, sufficient fees, supported firmware and feature availability."
+        },
+        {
+            "id": "mobile.earn.yield.claim-review",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Earn > Yield > Claim rewards > transaction review",
+                "web": "Earn > Yield > Claim rewards > transaction review"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/earn/yield/claim/YieldClaim.tsx",
+                    "symbol": "YieldClaim"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx",
+                    "symbol": "TransactionReviewModal"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/earn/yield/claim/YieldClaim.tsx",
+                    "detail": "The yield flow composes the supported vault action and uses device transaction review/signing. Requires eligible vault/reward state, sufficient fees, supported firmware and feature availability."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "The yield flow composes the supported vault action and uses device transaction review/signing. Requires eligible vault/reward state, sufficient fees, supported firmware and feature availability."
+        },
+        {
+            "id": "mobile.earn.wrap",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Earn \u2192 Yield \u2192 Earn yield \u2192 Wrap",
+                "web": "Earn \u2192 Yield \u2192 Earn yield \u2192 Wrap"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/earn/yield/wrap/WrapNativeToken.tsx",
+                    "symbol": "WrapNativeToken"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/earn/yield/wrap/WrapNativeToken.tsx",
+                    "detail": "The canonical standalone WrapNativeToken flow supports entering an amount, device signing and pending/completed status. Entry gating differs from native dev-utils gating; live rollout is not asserted."
+                }
+            ],
+            "reason": "The canonical standalone WrapNativeToken flow supports entering an amount, device signing and pending/completed status. Entry gating differs from native dev-utils gating; live rollout is not asserted.",
+            "equivalent_id": "earn.yield.standalone-wrap"
+        },
+        {
+            "id": "mobile.connect.request",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "External app \u2192 Connect Trezor \u2192 Suite permission request",
+                "web": "External app \u2192 Connect Trezor \u2192 Suite permission request"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/ConnectPermissionsModal.tsx",
+                    "symbol": "ConnectPermissionsModal"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/ConnectPermissionsModal.tsx",
+                    "detail": "ConnectPermissionsModal shows the requesting app/origin and grouped permissions, then approves or rejects the request; this is already the canonical permission-request review."
+                }
+            ],
+            "reason": "ConnectPermissionsModal shows the requesting app/origin and grouped permissions, then approves or rejects the request; this is already the canonical permission-request review.",
+            "equivalent_id": "connect.permissions.grant"
+        },
+        {
+            "id": "mobile.connect.walletconnect.scan",
+            "desktop_status": "no",
+            "web_status": "no",
+            "navigation": {
+                "desktop": null,
+                "web": null
+            },
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsConnectedApps/WalletConnectButton.tsx",
+                    "detail": "The complete WalletConnectButton pairing modal contains a text input for the connection URI and connect/cancel actions, with no camera QR scanner. Pasting a URI remains supported through the canonical pairing feature."
+                }
+            ],
+            "reason": "The complete WalletConnectButton pairing modal contains a text input for the connection URI and connect/cancel actions, with no camera QR scanner. Pasting a URI remains supported through the canonical pairing feature."
+        },
+        {
+            "id": "mobile.connect.walletconnect.paste",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Settings \u2192 Connected apps \u2192 WalletConnect \u2192 Add with WalletConnect",
+                "web": "Settings \u2192 Connected apps \u2192 WalletConnect \u2192 Add with WalletConnect"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/settings/SettingsConnectedApps/WalletConnectButton.tsx",
+                    "symbol": "WalletConnectButton"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsConnectedApps/WalletConnectButton.tsx",
+                    "detail": "The existing WalletConnectButton input accepts a pasted URI and dispatches walletConnectPairThunk; the native dedicated Paste button is not a separate user capability."
+                }
+            ],
+            "reason": "The existing WalletConnectButton input accepts a pasted URI and dispatches walletConnectPairThunk; the native dedicated Paste button is not a separate user capability.",
+            "equivalent_id": "connect.walletconnect.pair"
+        },
+        {
+            "id": "mobile.connect.walletconnect.default-account",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "After pasting WalletConnect URI \u2192 Connection proposal",
+                "web": "After pasting WalletConnect URI \u2192 Connection proposal"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/WalletConnectProposalModal.tsx",
+                    "symbol": "WalletConnectProposalModal"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/WalletConnectProposalModal.tsx",
+                    "detail": "WalletConnectProposalModal contains the selectable default account and submits selectedDefaultAccount on approval, already covered by the canonical proposal feature."
+                }
+            ],
+            "reason": "WalletConnectProposalModal contains the selectable default account and submits selectedDefaultAccount on approval, already covered by the canonical proposal feature.",
+            "equivalent_id": "connect.walletconnect.proposal"
+        },
+        {
+            "id": "mobile.send.broadcast",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Account > Send > Review and send",
+                "web": "Account > Send > Review and send"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx",
+                    "symbol": "TransactionReviewModal"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewModalBottomContent.tsx",
+                    "symbol": "TransactionReviewModalBottomContent"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx",
+                    "detail": "The existing review flow resolves the send decision and broadcasts the signed transaction; the broadcast action is included in canonical review and send."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewModalBottomContent.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "The existing review flow resolves the send decision and broadcasts the signed transaction; the broadcast action is included in canonical review and send.",
+            "equivalent_id": "wallet.send.review"
+        },
+        {
+            "id": "mobile.accounts.tokens.visibility",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Account > Tokens > token actions > Hide; Hidden tokens > Unhide",
+                "web": "Account > Tokens > token actions > Hide; Hidden tokens > Unhide"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/wallet/tokens/common/TokensTable/TokenRowActions.tsx",
+                    "symbol": "TokenRowActions"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UnhideTokenModal.tsx",
+                    "symbol": "UnhideTokenModal"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/tokens/common/TokensTable/TokenRowActions.tsx",
+                    "detail": "TokenRowActions exposes Hide and the hidden-token flow provides UnhideTokenModal. The native toggle combines these two existing desktop capabilities; do not infer that only hiding is supported."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UnhideTokenModal.tsx",
+                    "detail": "Additional inspected desktop/web composition supporting the parity decision."
+                }
+            ],
+            "reason": "TokenRowActions exposes Hide and the hidden-token flow provides UnhideTokenModal. The native toggle combines these two existing desktop capabilities; do not infer that only hiding is supported."
+        },
+        {
+            "id": "mobile.accounts.tokens.metadata",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Account > Tokens > Token identifiers",
+                "web": "Account > Tokens > Token identifiers"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/wallet/tokens/common/TokensTable/TokenRowActions.tsx",
+                    "symbol": "TokenRowActions"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/wallet/tokens/common/TokensTable/TokenRowActions.tsx",
+                    "detail": "The canonical token-identifier feature exposes token contracts and network-specific identifiers; balances are also present in token holdings. Native token settings combines these details in one sheet."
+                }
+            ],
+            "reason": "The canonical token-identifier feature exposes token contracts and network-specific identifiers; balances are also present in token holdings. Native token settings combines these details in one sheet.",
+            "equivalent_id": "wallet.tokens.identifiers"
+        },
+        {
+            "id": "mobile.connect.remember",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "App permission request \u2192 Remember this application",
+                "web": "App permission request \u2192 Remember this application"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/ConnectPermissionsModal.tsx",
+                    "symbol": "ConnectPermissionsModal"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/ConnectPermissionsModal.tsx",
+                    "detail": "ConnectPermissionsModal has a remembered-permissions checkbox when canRememberPermissions(source) allows it; this is the existing remembered-app feature."
+                }
+            ],
+            "reason": "ConnectPermissionsModal has a remembered-permissions checkbox when canRememberPermissions(source) allows it; this is the existing remembered-app feature.",
+            "equivalent_id": "connect.permissions.remember"
+        },
+        {
+            "id": "mobile.connect.simulation",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Connected dApp \u2192 Transaction request \u2192 Simulation review",
+                "web": "Connected dApp \u2192 Transaction request \u2192 Simulation review"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/tx-simulation/connect-popup/ConnectPopupTxSimulationModalInner.tsx",
+                    "symbol": "ConnectPopupTxSimulationModalInner"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/tx-simulation/connect-popup/ConnectPopupTxSimulationModalInner.tsx",
+                    "detail": "The canonical simulation modal handles supported external Connect and WalletConnect transaction requests and reviews asset effects before approval."
+                }
+            ],
+            "reason": "The canonical simulation modal handles supported external Connect and WalletConnect transaction requests and reviews asset effects before approval.",
+            "equivalent_id": "connect.walletconnect.simulation"
+        },
+        {
+            "id": "mobile.connect.simulation.risks",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Connected dApp \u2192 Transaction request \u2192 Simulation review",
+                "web": "Connected dApp \u2192 Transaction request \u2192 Simulation review"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/tx-simulation/connect-popup/ConnectPopupTxSimulationModalInner.tsx",
+                    "symbol": "ConnectPopupTxSimulationModalInner"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/tx-simulation/connect-popup/ConnectPopupTxSimulationModalInner.tsx",
+                    "detail": "The same canonical simulation review includes failure handling, required disclaimer acknowledgement and risk warnings; merge rather than render a duplicate simulation capability."
+                }
+            ],
+            "reason": "The same canonical simulation review includes failure handling, required disclaimer acknowledgement and risk warnings; merge rather than render a duplicate simulation capability.",
+            "equivalent_id": "connect.walletconnect.simulation"
+        },
+        {
+            "id": "mobile.portfolio.questionnaire",
+            "desktop_status": "no",
+            "web_status": "no",
+            "navigation": {
+                "desktop": null,
+                "web": null
+            },
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/module-home/src/pages/DashboardPage.tsx",
+                    "detail": "The complete DashboardPage empty/standard/asset-first composition has no equivalent of the native empty-portfolio demo-use questionnaire. Generic onboarding feedback is a distinct feature."
+                }
+            ],
+            "reason": "The complete DashboardPage empty/standard/asset-first composition has no equivalent of the native empty-portfolio demo-use questionnaire. Generic onboarding feedback is a distinct feature."
+        },
+        {
+            "id": "mobile.earn.unwrap",
+            "desktop_status": "conditional",
+            "web_status": "conditional",
+            "navigation": {
+                "desktop": "Earn \u2192 Yield \u2192 Earn yield \u2192 Unwrap",
+                "web": "Earn \u2192 Yield \u2192 Earn yield \u2192 Unwrap"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/earn/yield/unwrap/UnwrapNativeToken.tsx",
+                    "symbol": "UnwrapNativeToken"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/earn/yield/unwrap/UnwrapNativeToken.tsx",
+                    "detail": "The existing standalone UnwrapNativeToken flow is the canonical equivalent for converting a supported wrapped-native balance back to the native asset."
+                }
+            ],
+            "reason": "The existing standalone UnwrapNativeToken flow is the canonical equivalent for converting a supported wrapped-native balance back to the native asset.",
+            "equivalent_id": "earn.yield.standalone-unwrap"
+        }
+    ],
+    "notes": [
+        "Rows with equivalent_id are verified aliases for an existing canonical feature and should be merged rather than rendered as duplicate nodes. Supporting desktop/web roots are supplied so the equivalence remains reviewable.",
+        "Context-sensitive differences are explicit: native first-launch biometrics/residence and tracker import are not desktop onboarding features; desktop remembered wallets do not establish tracker-import parity.",
+        "Conditional records sometimes cover a narrower desktop capability than the native screen (for example graph retry rather than whole-wallet pull-to-refresh). Preserve the reason and navigation when rendering platform support.",
+        "Source support does not establish current production rollout. Provider region/asset eligibility, feature flags, firmware and device state still constrain actions.",
+        "No runtime tests, browser sessions, uploads or application changes were performed for this reciprocal source audit."
+    ],
+    "extra_mobile_updates": [
+        {
+            "id": "wallet-access.rename",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/wallet/src/WalletLabel.tsx",
+                    "detail": "WalletLabel only selects a synchronized wallet label and returns that label or fallback text; it has no edit action or write handler."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device-manager/src/components/WalletItemBase.tsx",
+                    "detail": "Complete native wallet row composes a selectable label, icons, optional value and radio; its press handler selects the wallet and provides no wallet-label editor."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device-manager/src/components/DeviceManagerContent.tsx",
+                    "detail": "Complete native wallet manager contains wallet selection, add-hidden-wallet, device settings and connection controls, but no rename-wallet action."
+                }
+            ],
+            "reason": "Native displays wallet-instance labels received through Suite Sync but does not expose a standard/hidden-wallet rename control in the inspected complete manager/row composition. Device renaming and account labeling remain separate supported features."
+        }
+    ]
+}

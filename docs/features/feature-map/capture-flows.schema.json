@@ -1,0 +1,217 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "capture-flows.schema.json",
+    "title": "Feature-map capture flows",
+    "description": "Replayable capture flows that reach each native mobile runtime screenshot (parts/capture-flows.json). Steps tap exposed testIDs or OCR-located visible text, because Suite Native screens expose their content to iOS accessibility as one element. capture-flows.ts validate applies this schema and the cross-reference checks a schema cannot express; capture-flows.ts replay runs the steps through agent-device.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["description", "app_id", "recorded_on", "start_states", "flows"],
+    "properties": {
+        "description": {
+            "type": "string",
+            "minLength": 1
+        },
+        "app_id": {
+            "type": "string",
+            "minLength": 1
+        },
+        "recorded_on": {
+            "type": "string",
+            "minLength": 1
+        },
+        "start_states": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["fresh-install", "keychain-unavailable", "onboarded-empty"],
+            "properties": {
+                "fresh-install": {
+                    "$ref": "#/$defs/start_state"
+                },
+                "keychain-unavailable": {
+                    "$ref": "#/$defs/start_state"
+                },
+                "onboarded-empty": {
+                    "$ref": "#/$defs/start_state"
+                }
+            }
+        },
+        "flows": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/flow"
+            }
+        }
+    },
+    "$defs": {
+        "flow": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["screenshot_id", "start_state", "steps", "arrival", "status", "replays"],
+            "properties": {
+                "screenshot_id": {
+                    "type": "string",
+                    "pattern": "^mobile-[a-z0-9-]+$"
+                },
+                "start_state": {
+                    "enum": ["fresh-install", "keychain-unavailable", "onboarded-empty"]
+                },
+                "steps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/step"
+                    }
+                },
+                "arrival": {
+                    "$ref": "#/$defs/arrival"
+                },
+                "status": {
+                    "enum": ["draft", "replayed", "drifted", "not-reproducible"]
+                },
+                "note": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "replays": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/replay"
+                    }
+                }
+            }
+        },
+        "step": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["do", "lands_on"],
+            "properties": {
+                "do": {
+                    "enum": [
+                        "launch",
+                        "tap",
+                        "scroll_to",
+                        "scroll",
+                        "type",
+                        "wait_text",
+                        "alert",
+                        "back"
+                    ]
+                },
+                "id": {
+                    "description": "testID exposed to iOS accessibility (tab bar, header, device switch). Tapped as an agent-device id selector.",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "text": {
+                    "description": "Visible English text located by OCR on a fresh screenshot (tap, scroll_to, type, wait_text).",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "nth": {
+                    "description": "1-based occurrence of text from the top when it appears more than once.",
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "test_id": {
+                    "description": "testID of the tapped element in source, recorded for traceability when the tap is located by text.",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "value": {
+                    "description": "Typed text (type) or alert action (alert: accept or dismiss). Never seed words, PINs, passphrases or real account data.",
+                    "type": "string"
+                },
+                "direction": {
+                    "enum": ["down", "up"]
+                },
+                "right_of": {
+                    "description": "Tap this many points right of the right edge of the id element (icon buttons without text or exposed id).",
+                    "type": "number"
+                },
+                "dx": {
+                    "type": "number"
+                },
+                "dy": {
+                    "type": "number"
+                },
+                "x_from_right": {
+                    "description": "Tap at this distance from the right screen edge, in the row of the located text (icon buttons beside a label).",
+                    "type": "number"
+                },
+                "lands_on": {
+                    "description": "Route enum value from suite-native/navigation/src/routes.ts, Stack/Route of two enum values, or system-alert.",
+                    "type": "string",
+                    "pattern": "^(system-alert|[A-Za-z0-9]+(/[A-Za-z0-9]+)?)$"
+                }
+            }
+        },
+        "arrival": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["route", "landmarks"],
+            "properties": {
+                "route": {
+                    "type": "string",
+                    "pattern": "^(system-alert|[A-Za-z0-9]+(/[A-Za-z0-9]+)?)$"
+                },
+                "landmarks": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 5,
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                }
+            }
+        },
+        "replay": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["device", "date", "result", "landing", "note"],
+            "properties": {
+                "device": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T"
+                },
+                "result": {
+                    "enum": ["pass", "diverged"]
+                },
+                "landing": {
+                    "enum": ["pass", "drift", "not-run"]
+                },
+                "note": {
+                    "type": "string"
+                }
+            }
+        },
+        "start_state": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["description", "setup"],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "prepare": {
+                    "description": "Command, run on the simulator host before the replay, that prepares this state outside the app. States with prepare have no setup steps.",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "setup": {
+                    "description": "Steps that reach this state from fresh-install; empty for states prepared outside the app.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/step"
+                    }
+                }
+            }
+        }
+    }
+}

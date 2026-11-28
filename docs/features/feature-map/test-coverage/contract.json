@@ -1,0 +1,32 @@
+{
+    "axes": ["desktop_automated", "android_automated", "desktop_manual", "android_manual"],
+    "scale": {
+        "0": "No active verification found; fixtures, uninvoked helpers and disabled automated tests do not establish coverage.",
+        "1-2": "Mention, narrow presence check or incidental exercised entry; no complete user outcome.",
+        "3-4": "Partial happy path; consequential outcomes or stable checks missing.",
+        "5": "Basic complete happy path with meaningful outcome verification.",
+        "6-7": "Happy path and several important variants or recovery intents; material gaps remain.",
+        "8-9": "Broad important-intent and major-variant coverage with substantial stable checks; limited named gaps.",
+        "10": "Ideal important-intent coverage for this feature, including major variants and all meaningful stable checks; no meaningful gap identified."
+    },
+    "desktop_scope": "Computer desktop/web Suite test coverage. Record actual Electron/web restrictions; Electron-only capabilities need compatible desktop tests.",
+    "android_scope": "Android-capable Detox E2E and Android-applicable native manual procedures. Exclude iOS-only tests.",
+    "manual_scope": "Quality of written manual procedures, not proof of execution. describe.skip is the repository convention for manual procedures and does not invalidate them.",
+    "rules": [
+        "Review test bodies and called assertion/page-object helpers; mappings and title counts are only discovery aids.",
+        "Do not inherit parent references into children or use a single ancestor scenario as evidence for every descendant.",
+        "Evaluate high-level features against their meaningful intents; do not blindly average children or take their maximum.",
+        "0 is allowed and required for absent verification. Do not convert absence to 1.",
+        "Keep unavailable-platform score 0 with applicability not-supported unless a test actually verifies the unsupported-state intent.",
+        "Use active automated evidence only for positive automated scores. Preserve relevant skipped evidence with explicit caveats.",
+        "Name important uncovered intents and explain intermediate scores. Avoid unexplained high scores.",
+        "No application tests are being executed by this source-quality review."
+    ],
+    "output": "Each partition: {area,feature_ids,files_reviewed:[paths],assessments:[{feature_id,desktop_automated:{score,confidence,applicability,basis,rationale,covered_intents:[],gaps:[],evidence:[{path,line,scenario,verification,execution}]},android_automated:{...},desktop_manual:{...},android_manual:{...}}],limitations:[]}.",
+    "enums": {
+        "confidence": ["high", "medium", "low"],
+        "applicability": ["applicable", "conditional", "not-supported", "unknown"],
+        "basis": ["direct", "incidental", "none", "parent-synthesis"],
+        "execution": ["active", "skipped", "not-selected", "manual-procedure"]
+    }
+}

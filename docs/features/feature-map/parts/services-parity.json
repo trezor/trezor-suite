@@ -1,0 +1,2740 @@
+{
+    "updates": [
+        {
+            "id": "trade.buy.network-filter",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Buy \u2192 Asset picker \u2192 Network",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-trading/src/components/general/NetworkPicker/NetworkPicker.tsx",
+                    "symbol": "NetworkPicker"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/general/NetworkPicker/NetworkPicker.tsx",
+                    "detail": "Native network picker opens a network sheet and filters tradeable assets by all-supported or discovered networks."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingTradeableAssetScreen.tsx",
+                    "detail": "Tradeable-asset screen composes network filtering and searchable asset lists."
+                }
+            ],
+            "reason": "Native network picker opens a network sheet and filters tradeable assets by all-supported or discovered networks."
+        },
+        {
+            "id": "trade.buy.state",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Buy \u2192 Residence / Select state; Settings \u2192 Trading location",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-trading/src/components/general/TradingCountrySubdivisionPickerButton.tsx",
+                    "symbol": "TradingCountrySubdivisionPickerButton"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/general/TradingCountrySubdivisionPickerButton.tsx",
+                    "detail": "A country subdivision is requested when required and missing; residence-whitelist mode moves location selection to the residence settings/onboarding."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/general/TradingLocationPickers.tsx",
+                    "detail": "Location pickers are hidden in the in-form UI when residence whitelist is required."
+                }
+            ],
+            "reason": "A country subdivision is requested when required and missing; residence-whitelist mode moves location selection to the residence settings/onboarding."
+        },
+        {
+            "id": "trade.buy.payment-status",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Trade history \u2192 Order",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-trading/src/screens/TradingHistoryDetailScreen.tsx",
+                    "symbol": "TradingHistoryDetailScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingHistoryDetailScreen.tsx",
+                    "detail": "The native detail screen renders the selected order status stepper, provider actions, amounts, information and support; behavior depends on order type and provider."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/trading-history/src/components/TradingHistoryDetail/TradingHistoryDetail.tsx",
+                    "detail": "Composes type-aware payment banners, status actions, status stepper, order information and provider support."
+                }
+            ],
+            "reason": "The native detail screen renders the selected order status stepper, provider actions, amounts, information and support; behavior depends on order type and provider."
+        },
+        {
+            "id": "trade.receive",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Buy / Swap \u2192 Receive account",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-trading/src/screens/TradingReceiveAccountsPickerScreen.tsx",
+                    "symbol": "TradingReceiveAccountsPickerScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingReceiveAccountsPickerScreen.tsx",
+                    "detail": "Native trading has a Suite-account destination picker; UTXO accounts lead to a receive-address picker. External manual destination entry is not exposed here."
+                }
+            ],
+            "reason": "Native trading has a Suite-account destination picker; UTXO accounts lead to a receive-address picker. External manual destination entry is not exposed here."
+        },
+        {
+            "id": "trade.receive.add-account",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Buy / Swap \u2192 Receive account \u2192 Add account",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-trading/src/screens/TradingReceiveAccountsPickerScreen.tsx",
+                    "symbol": "TradingReceiveAccountsPickerScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingReceiveAccountsPickerScreen.tsx",
+                    "detail": "The screen uses useAddCoinAccount and an account-type decision sheet to create an account for the receive network; unavailable in restricted view-only contexts."
+                }
+            ],
+            "reason": "The screen uses useAddCoinAccount and an account-type decision sheet to create an account for the receive network; unavailable in restricted view-only contexts."
+        },
+        {
+            "id": "trade.receive.activate-network",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Buy / Swap \u2192 Receive account \u2192 Activate network",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-trading/src/components/general/AccountList/NoAccountsComponent.tsx",
+                    "symbol": "NoAccountsComponent"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/general/AccountList/NoAccountsComponent.tsx",
+                    "detail": "An empty receive-account list offers network activation when the device is neither a portfolio tracker nor in view-only mode."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingReceiveAccountsPickerScreen.tsx",
+                    "detail": "The activation callback enters useAddCoinAccount for the requested network."
+                }
+            ],
+            "reason": "An empty receive-account list offers network activation when the device is neither a portfolio tracker nor in view-only mode."
+        },
+        {
+            "id": "trade.receive.external-address",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/general/AccountList/AccountList.tsx",
+                    "detail": "The audited native receive-account flow lists Suite accounts, creates accounts, and navigates to stored Suite addresses; it exposes no external destination input, destination QR scanner, or external tag/memo form."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingReceiveAccountsPickerScreen.tsx",
+                    "detail": "Complete receive-account screen composes AccountList and AccountTypeDecisionBottomSheet only."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingReceiveAddressPickerScreen.tsx",
+                    "detail": "Address screen searches stored addresses rather than accepting an arbitrary destination."
+                }
+            ],
+            "reason": "The audited native receive-account flow lists Suite accounts, creates accounts, and navigates to stored Suite addresses; it exposes no external destination input, destination QR scanner, or external tag/memo form."
+        },
+        {
+            "id": "trade.receive.scan-address",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/general/AccountList/AccountList.tsx",
+                    "detail": "The audited native receive-account flow lists Suite accounts, creates accounts, and navigates to stored Suite addresses; it exposes no external destination input, destination QR scanner, or external tag/memo form."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingReceiveAccountsPickerScreen.tsx",
+                    "detail": "Complete receive-account screen composes AccountList and AccountTypeDecisionBottomSheet only."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingReceiveAddressPickerScreen.tsx",
+                    "detail": "Address screen searches stored addresses rather than accepting an arbitrary destination."
+                }
+            ],
+            "reason": "The audited native receive-account flow lists Suite accounts, creates accounts, and navigates to stored Suite addresses; it exposes no external destination input, destination QR scanner, or external tag/memo form."
+        },
+        {
+            "id": "trade.receive.tag-memo",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/general/AccountList/AccountList.tsx",
+                    "detail": "The audited native receive-account flow lists Suite accounts, creates accounts, and navigates to stored Suite addresses; it exposes no external destination input, destination QR scanner, or external tag/memo form."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingReceiveAccountsPickerScreen.tsx",
+                    "detail": "Complete receive-account screen composes AccountList and AccountTypeDecisionBottomSheet only."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingReceiveAddressPickerScreen.tsx",
+                    "detail": "Address screen searches stored addresses rather than accepting an arbitrary destination."
+                }
+            ],
+            "reason": "The audited native receive-account flow lists Suite accounts, creates accounts, and navigates to stored Suite addresses; it exposes no external destination input, destination QR scanner, or external tag/memo form."
+        },
+        {
+            "id": "trade.receive.utxo-address",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Buy / Swap \u2192 Receive account \u2192 UTXO account \u2192 Address",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-trading/src/screens/TradingReceiveAddressPickerScreen.tsx",
+                    "symbol": "TradingReceiveAddressPickerScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingReceiveAddressPickerScreen.tsx",
+                    "detail": "Selecting an account with an addresses collection opens a searchable Suite address list."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/general/AccountList/AccountList.tsx",
+                    "detail": "Accounts with addresses navigate to TradingReceiveAddress."
+                }
+            ],
+            "reason": "Selecting an account with an addresses collection opens a searchable Suite address list."
+        },
+        {
+            "id": "trade.sell.residence",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Sell \u2192 Residence; Settings \u2192 Trading location",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-trading/src/components/general/TradingLocationPickers.tsx",
+                    "symbol": "TradingLocationPickers"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/general/TradingLocationPickers.tsx",
+                    "detail": "The Sell form supports country and subdivision selection through trading residence components, subject to residence-whitelist mode."
+                }
+            ],
+            "reason": "The Sell form supports country and subdivision selection through trading residence components, subject to residence-whitelist mode."
+        },
+        {
+            "id": "trade.sell.status",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Trade history \u2192 Order",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-trading/src/screens/TradingHistoryDetailScreen.tsx",
+                    "symbol": "TradingHistoryDetailScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingHistoryDetailScreen.tsx",
+                    "detail": "The native detail screen renders the selected order status stepper, provider actions, amounts, information and support; behavior depends on order type and provider."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/trading-history/src/components/TradingHistoryDetail/TradingHistoryDetail.tsx",
+                    "detail": "Composes type-aware payment banners, status actions, status stepper, order information and provider support."
+                }
+            ],
+            "reason": "The native detail screen renders the selected order status stepper, provider actions, amounts, information and support; behavior depends on order type and provider."
+        },
+        {
+            "id": "trade.swap.cex",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Swap \u2192 Provider \u2192 Centralized offer",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-trading/src/components/general/ProviderSheet/ProviderSheet.tsx",
+                    "symbol": "ProviderSheet"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/general/ProviderSheet/ProviderSheet.tsx",
+                    "detail": "Native offer selection distinguishes provider categories and can select centralized quotes; execution requires a supported pair, provider, account, and device."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingExchangePreviewScreen.tsx",
+                    "detail": "Selected swap quotes progress through native preview and signing; DEX token paths can require approval."
+                }
+            ],
+            "reason": "Native offer selection distinguishes provider categories and can select centralized quotes; execution requires a supported pair, provider, account, and device."
+        },
+        {
+            "id": "trade.swap.dex",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Swap \u2192 Provider \u2192 Decentralized offer",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-trading/src/components/general/ProviderSheet/ProviderSheet.tsx",
+                    "symbol": "ProviderSheet"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/general/ProviderSheet/ProviderSheet.tsx",
+                    "detail": "Native offer selection distinguishes provider categories and can select decentralized quotes; execution requires a supported pair, provider, account, and device."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingExchangePreviewScreen.tsx",
+                    "detail": "Selected swap quotes progress through native preview and signing; DEX token paths can require approval."
+                }
+            ],
+            "reason": "Native offer selection distinguishes provider categories and can select decentralized quotes; execution requires a supported pair, provider, account, and device."
+        },
+        {
+            "id": "trade.swap.minimum-received",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Trade history \u2192 DEX order \u2192 Minimum received",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/trading-history/src/components/TradingHistoryDetail/TradingHistoryDetailMinimumReceivedRow.tsx",
+                    "symbol": "TradingHistoryDetailMinimumReceivedRow"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/trading-history/src/components/TradingHistoryDetail/TradingHistoryDetailMinimumReceivedRow.tsx",
+                    "detail": "Native order details expose minimum received when computed for a DEX trade. This confirms post-order visibility; the same pre-sign placement as desktop was not established."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/trading-history/src/components/TradingHistoryDetail/TradingHistoryDetailInfo.tsx",
+                    "detail": "Conditionally composes minimum-received information."
+                }
+            ],
+            "reason": "Native order details expose minimum received when computed for a DEX trade. This confirms post-order visibility; the same pre-sign placement as desktop was not established."
+        },
+        {
+            "id": "trade.swap.network-fee",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Swap \u2192 Preview \u2192 Network fee",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-trading/src/components/general/TradeInfo/TradeFeeInfoRow.tsx",
+                    "symbol": "TradeFeeInfoRow"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/general/TradeInfo/TradeFeeInfoRow.tsx",
+                    "detail": "Native swap preview uses FeeSelectorRow and recomposes after fee changes; fixed PSBT/provider fees are read-only and network-level restrictions apply."
+                }
+            ],
+            "reason": "Native swap preview uses FeeSelectorRow and recomposes after fee changes; fixed PSBT/provider fees are read-only and network-level restrictions apply."
+        },
+        {
+            "id": "trade.swap.approval-fee",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Swap \u2192 Approval \u2192 Network fee",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-trading/src/components/exchange/Approval/ExchangeApprovalDetails.tsx",
+                    "symbol": "ExchangeApprovalDetails"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/exchange/Approval/ExchangeApprovalDetails.tsx",
+                    "detail": "EVM approval details render FeeSelector backed by the trading transaction draft."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/exchange/Approval/ExchangeRevokeDetails.tsx",
+                    "detail": "Revoke details likewise render FeeSelector."
+                }
+            ],
+            "reason": "EVM approval details render FeeSelector backed by the trading transaction draft."
+        },
+        {
+            "id": "trade.swap.status",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Trade history \u2192 Order",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-trading/src/screens/TradingHistoryDetailScreen.tsx",
+                    "symbol": "TradingHistoryDetailScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingHistoryDetailScreen.tsx",
+                    "detail": "The native detail screen renders the selected order status stepper, provider actions, amounts, information and support; behavior depends on order type and provider."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/trading-history/src/components/TradingHistoryDetail/TradingHistoryDetail.tsx",
+                    "detail": "Composes type-aware payment banners, status actions, status stepper, order information and provider support."
+                }
+            ],
+            "reason": "The native detail screen renders the selected order status stepper, provider actions, amounts, information and support; behavior depends on order type and provider."
+        },
+        {
+            "id": "trade.history.filter",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Trade history \u2192 All / Buy / Sell / Swap",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/trading-history/src/components/TradingHistory.tsx",
+                    "symbol": "TradingHistory"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/trading-history/src/components/TradingHistory.tsx",
+                    "detail": "TradingHistory maintains the active type filter and renders filtered native order lists."
+                }
+            ],
+            "reason": "TradingHistory maintains the active type filter and renders filtered native order lists."
+        },
+        {
+            "id": "trade.history.export",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Trade history \u2192 Export icon",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/trading-history/src/components/TradingHistoryExportButton.tsx",
+                    "symbol": "TradingHistoryExportButton"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/trading-history/src/components/TradingHistoryExportButton.tsx",
+                    "detail": "The native history header exposes CSV export through TradingHistoryExportButton."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingHistoryScreen.tsx",
+                    "detail": "Header right icon is TradingHistoryExportButton."
+                }
+            ],
+            "reason": "The native history header exposes CSV export through TradingHistoryExportButton."
+        },
+        {
+            "id": "earn.opportunities",
+            "mobile_status": "conditional",
+            "navigation": "Main navigation \u2192 Earn",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/earn/EarnScreen.tsx",
+                    "symbol": "EarnScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/earn/EarnScreen.tsx",
+                    "detail": "Earn combines staking/yield positions and opportunity lists; portfolio-tracker and remote availability guards apply."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/earn/EarnPromoList.tsx",
+                    "detail": "Renders native StakingPromoList and YieldPromoList."
+                }
+            ],
+            "reason": "Earn combines staking/yield positions and opportunity lists; portfolio-tracker and remote availability guards apply."
+        },
+        {
+            "id": "earn.opportunities.account",
+            "mobile_status": "conditional",
+            "navigation": "Earn \u2192 Opportunity \u2192 Choose account",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/components/earn/EarnSelectAccountBottomSheet.tsx",
+                    "symbol": "EarnSelectAccountBottomSheet"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/earn/EarnSelectAccountBottomSheet.tsx",
+                    "detail": "The native opportunity flow provides a typed account chooser, and network-enabling sheets are available when required."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/earn/EarnEnableNetworkBottomSheet.tsx",
+                    "detail": "Provides network activation within earning onboarding."
+                }
+            ],
+            "reason": "The native opportunity flow provides a typed account chooser, and network-enabling sheets are available when required."
+        },
+        {
+            "id": "earn.staking.fees",
+            "mobile_status": "conditional",
+            "navigation": "Earn \u2192 ETH / SOL \u2192 Stake / Unstake / Claim \u2192 Network fee",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/components/earn/EarnFeeSection.tsx",
+                    "symbol": "EarnFeeSection"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/earn/EarnFeeSection.tsx",
+                    "detail": "Native earning forms expose FeeSelector with error/retry handling; fee editing follows the network-specific fee management support."
+                }
+            ],
+            "reason": "Native earning forms expose FeeSelector with error/retry handling; fee editing follows the network-specific fee management support."
+        },
+        {
+            "id": "earn.staking.eth",
+            "mobile_status": "conditional",
+            "navigation": "Earn or Ethereum account \u2192 Staking",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
+                    "symbol": "StakingManagementScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
+                    "detail": "Native Ethereum staking supports managing positions with a compatible account/device and provider; its Everstake product descriptor sets platforms.mobile.access to 'manage'."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "selectIsStakingManageableSymbol reads the stakeable product's mobile access: the Everstake ETH/SOL descriptors are 'manage'; Cardano and Tron descriptors are 'read-only'."
+                }
+            ],
+            "reason": "Native Ethereum staking supports managing positions with a compatible account/device and provider; its Everstake product descriptor sets platforms.mobile.access to 'manage'."
+        },
+        {
+            "id": "earn.staking.eth.deposit",
+            "mobile_status": "conditional",
+            "navigation": "Ethereum account \u2192 Staking \u2192 Stake / Stake more",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingFormScreen.tsx",
+                    "symbol": "StakingFormScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingFormScreen.tsx",
+                    "detail": "Native stake amount and review flow supports Ethereum; sufficient funds, fee balance, provider consent and device authorization are required."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "Mobile manage access for ETH/SOL comes from the Everstake product descriptors (platforms.mobile.access 'manage'), read by selectIsStakingManageableSymbol."
+                }
+            ],
+            "reason": "Native stake amount and review flow supports Ethereum; sufficient funds, fee balance, provider consent and device authorization are required."
+        },
+        {
+            "id": "earn.staking.eth.activation",
+            "mobile_status": "conditional",
+            "navigation": "Ethereum account \u2192 Staking \u2192 Pending actions",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementPendingSection.tsx",
+                    "symbol": "StakingManagementPendingSection"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementPendingSection.tsx",
+                    "detail": "Native staking detail shows pending deposits, unstaking, readiness and estimated unstaking periods; exact desktop next-reward/validator queue presentation differs."
+                }
+            ],
+            "reason": "Native staking detail shows pending deposits, unstaking, readiness and estimated unstaking periods; exact desktop next-reward/validator queue presentation differs."
+        },
+        {
+            "id": "earn.staking.eth.instant",
+            "mobile_status": "conditional",
+            "navigation": "Ethereum account \u2192 Staking \u2192 Instant unstake notice",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/components/staking/InstantUnstakeConfirmationBanner.tsx",
+                    "symbol": "InstantUnstakeConfirmationBanner"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/InstantUnstakeConfirmationBanner.tsx",
+                    "detail": "Native confirms an instant unstake with a dismissible banner. An equivalent instant-stake notice is not confirmed, so parity is limited to unstaking."
+                }
+            ],
+            "reason": "Native confirms an instant unstake with a dismissible banner. An equivalent instant-stake notice is not confirmed, so parity is limited to unstaking."
+        },
+        {
+            "id": "earn.staking.eth.unstake",
+            "mobile_status": "conditional",
+            "navigation": "Ethereum account \u2192 Staking \u2192 Unstake",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/staking/UnstakeFlowScreen.tsx",
+                    "symbol": "UnstakeFlowScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/staking/UnstakeFlowScreen.tsx",
+                    "detail": "Native unstake flow supports eligible Ethereum staking balances and proceeds through network-specific device signing."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "Mobile manage access for ETH/SOL comes from the Everstake product descriptors (platforms.mobile.access 'manage'), read by selectIsStakingManageableSymbol."
+                }
+            ],
+            "reason": "Native unstake flow supports eligible Ethereum staking balances and proceeds through network-specific device signing."
+        },
+        {
+            "id": "earn.staking.eth.claim",
+            "mobile_status": "conditional",
+            "navigation": "Ethereum account \u2192 Staking \u2192 Claim",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingClaimReviewScreen.tsx",
+                    "symbol": "StakingClaimReviewScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingClaimReviewScreen.tsx",
+                    "detail": "Native ready-to-claim card opens the claim review when withdrawable balances and network state allow it."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementReadyToClaimCard.tsx",
+                    "detail": "Navigates to StakingClaimReview for positive claimable amounts."
+                }
+            ],
+            "reason": "Native ready-to-claim card opens the claim review when withdrawable balances and network state allow it."
+        },
+        {
+            "id": "earn.staking.eth.transactions",
+            "mobile_status": "conditional",
+            "navigation": "Ethereum account \u2192 Staking \u2192 Staking history",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
+                    "symbol": "StakingManagementScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
+                    "detail": "The native Ethereum staking management screen renders TransactionList filtered to staking transactions."
+                }
+            ],
+            "reason": "The native Ethereum staking management screen renders TransactionList filtered to staking transactions."
+        },
+        {
+            "id": "earn.staking.sol",
+            "mobile_status": "conditional",
+            "navigation": "Earn or Solana account \u2192 Staking",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
+                    "symbol": "StakingManagementScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
+                    "detail": "Native Solana staking supports managing positions with a compatible account/device and provider; its Everstake product descriptor sets platforms.mobile.access to 'manage'."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "selectIsStakingManageableSymbol reads the stakeable product's mobile access: the Everstake ETH/SOL descriptors are 'manage'; Cardano and Tron descriptors are 'read-only'."
+                }
+            ],
+            "reason": "Native Solana staking supports managing positions with a compatible account/device and provider; its Everstake product descriptor sets platforms.mobile.access to 'manage'."
+        },
+        {
+            "id": "earn.staking.sol.stake",
+            "mobile_status": "conditional",
+            "navigation": "Solana account \u2192 Staking \u2192 Stake / Stake more",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingFormScreen.tsx",
+                    "symbol": "StakingFormScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingFormScreen.tsx",
+                    "detail": "Native stake amount and review flow supports Solana; sufficient funds, fee balance, provider consent and device authorization are required."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "Mobile manage access for ETH/SOL comes from the Everstake product descriptors (platforms.mobile.access 'manage'), read by selectIsStakingManageableSymbol."
+                }
+            ],
+            "reason": "Native stake amount and review flow supports Solana; sufficient funds, fee balance, provider consent and device authorization are required."
+        },
+        {
+            "id": "earn.staking.sol.unstake",
+            "mobile_status": "conditional",
+            "navigation": "Solana account \u2192 Staking \u2192 Unstake",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/staking/UnstakeFlowScreen.tsx",
+                    "symbol": "UnstakeFlowScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/staking/UnstakeFlowScreen.tsx",
+                    "detail": "Native unstake flow supports eligible Solana staking balances and proceeds through network-specific device signing."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "Mobile manage access for ETH/SOL comes from the Everstake product descriptors (platforms.mobile.access 'manage'), read by selectIsStakingManageableSymbol."
+                }
+            ],
+            "reason": "Native unstake flow supports eligible Solana staking balances and proceeds through network-specific device signing."
+        },
+        {
+            "id": "earn.staking.sol.claim",
+            "mobile_status": "conditional",
+            "navigation": "Solana account \u2192 Staking \u2192 Claim",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingClaimReviewScreen.tsx",
+                    "symbol": "StakingClaimReviewScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingClaimReviewScreen.tsx",
+                    "detail": "Native ready-to-claim card opens the claim review when withdrawable balances and network state allow it."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementReadyToClaimCard.tsx",
+                    "detail": "Navigates to StakingClaimReview for positive claimable amounts."
+                }
+            ],
+            "reason": "Native ready-to-claim card opens the claim review when withdrawable balances and network state allow it."
+        },
+        {
+            "id": "earn.staking.sol.external",
+            "mobile_status": "conditional",
+            "navigation": "Solana account \u2192 Staking \u2192 External stake notice",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/components/staking/SolExternalStakingBanner.tsx",
+                    "symbol": "SolExternalStakingBanner"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/SolExternalStakingBanner.tsx",
+                    "detail": "A native banner displays externally delegated Solana stake totals when external stake accounts exist."
+                }
+            ],
+            "reason": "A native banner displays externally delegated Solana stake totals when external stake accounts exist."
+        },
+        {
+            "id": "earn.staking.ada",
+            "mobile_status": "conditional",
+            "navigation": "Earn or Cardano account \u2192 Staking",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
+                    "symbol": "StakingManagementScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
+                    "detail": "Mobile Cardano staking is view-only: existing balances, rewards/status and history can be inspected, while mutations are not supported."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "detail": "Cardano staking product descriptors set platforms.mobile.access to 'read-only'."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
+                    "detail": "Stake/unstake buttons render only when the staking product's resolved mobile access is 'manage' (areStakeActionsShown)."
+                }
+            ],
+            "reason": "Mobile Cardano staking is view-only: existing balances, rewards/status and history can be inspected, while mutations are not supported."
+        },
+        {
+            "id": "earn.staking.ada.delegate",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "detail": "Every Cardano staking product descriptor sets platforms.mobile.access to 'read-only'; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
+                    "detail": "Staking action controls require manage support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/thunks/staking/stakingThunks.ts",
+                    "detail": "Only ethereum and solana network types dispatch signing; other network types return unsupported."
+                }
+            ],
+            "reason": "Cardano is explicitly view-only on mobile; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
+        },
+        {
+            "id": "earn.staking.ada.voting",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "detail": "Every Cardano staking product descriptor sets platforms.mobile.access to 'read-only'; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
+                    "detail": "Staking action controls require manage support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/thunks/staking/stakingThunks.ts",
+                    "detail": "Only ethereum and solana network types dispatch signing; other network types return unsupported."
+                }
+            ],
+            "reason": "Cardano is explicitly view-only on mobile; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
+        },
+        {
+            "id": "earn.staking.ada.provider",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "detail": "Every Cardano staking product descriptor sets platforms.mobile.access to 'read-only'; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
+                    "detail": "Staking action controls require manage support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/thunks/staking/stakingThunks.ts",
+                    "detail": "Only ethereum and solana network types dispatch signing; other network types return unsupported."
+                }
+            ],
+            "reason": "Cardano is explicitly view-only on mobile; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
+        },
+        {
+            "id": "earn.staking.ada.claim",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "detail": "Every Cardano staking product descriptor sets platforms.mobile.access to 'read-only'; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
+                    "detail": "Staking action controls require manage support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/thunks/staking/stakingThunks.ts",
+                    "detail": "Only ethereum and solana network types dispatch signing; other network types return unsupported."
+                }
+            ],
+            "reason": "Cardano is explicitly view-only on mobile; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
+        },
+        {
+            "id": "earn.staking.ada.undelegate",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+                    "detail": "Every Cardano staking product descriptor sets platforms.mobile.access to 'read-only'; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
+                    "detail": "Staking action controls require manage support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/thunks/staking/stakingThunks.ts",
+                    "detail": "Only ethereum and solana network types dispatch signing; other network types return unsupported."
+                }
+            ],
+            "reason": "Cardano is explicitly view-only on mobile; native staking mutation/signing supports Ethereum and Solana, not ADA delegation, DRep changes, provider updates, reward claiming or undelegation."
+        },
+        {
+            "id": "earn.staking.trx",
+            "mobile_status": "conditional",
+            "navigation": "Earn or Tron account \u2192 Staking",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
+                    "symbol": "StakingManagementScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
+                    "detail": "Mobile Tron staking is view-only: existing balances, rewards/status and history can be inspected, while mutations are not supported."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
+                    "detail": "Stake/unstake buttons render only when the staking product's resolved mobile access is 'manage' (areStakeActionsShown)."
+                }
+            ],
+            "reason": "Mobile Tron staking is view-only: existing balances, rewards/status and history can be inspected, while mutations are not supported."
+        },
+        {
+            "id": "earn.staking.trx.freeze",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
+                    "detail": "Staking action controls require manage support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/thunks/staking/stakingThunks.ts",
+                    "detail": "Only ethereum and solana network types dispatch staking signing; Tron mutations are unsupported."
+                }
+            ],
+            "reason": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+        },
+        {
+            "id": "earn.staking.trx.resource",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
+                    "detail": "Staking action controls require manage support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/thunks/staking/stakingThunks.ts",
+                    "detail": "Only ethereum and solana network types dispatch staking signing; Tron mutations are unsupported."
+                }
+            ],
+            "reason": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+        },
+        {
+            "id": "earn.staking.trx.vote",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
+                    "detail": "Staking action controls require manage support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/thunks/staking/stakingThunks.ts",
+                    "detail": "Only ethereum and solana network types dispatch staking signing; Tron mutations are unsupported."
+                }
+            ],
+            "reason": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+        },
+        {
+            "id": "earn.staking.trx.representative",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
+                    "detail": "Staking action controls require manage support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/thunks/staking/stakingThunks.ts",
+                    "detail": "Only ethereum and solana network types dispatch staking signing; Tron mutations are unsupported."
+                }
+            ],
+            "reason": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+        },
+        {
+            "id": "earn.staking.trx.allocation",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
+                    "detail": "Staking action controls require manage support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/thunks/staking/stakingThunks.ts",
+                    "detail": "Only ethereum and solana network types dispatch staking signing; Tron mutations are unsupported."
+                }
+            ],
+            "reason": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+        },
+        {
+            "id": "earn.staking.trx.claim",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
+                    "detail": "Staking action controls require manage support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/thunks/staking/stakingThunks.ts",
+                    "detail": "Only ethereum and solana network types dispatch staking signing; Tron mutations are unsupported."
+                }
+            ],
+            "reason": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+        },
+        {
+            "id": "earn.staking.trx.unfreeze",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
+                    "detail": "Staking action controls require manage support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/thunks/staking/stakingThunks.ts",
+                    "detail": "Only ethereum and solana network types dispatch staking signing; Tron mutations are unsupported."
+                }
+            ],
+            "reason": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+        },
+        {
+            "id": "earn.staking.trx.withdraw",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
+                    "detail": "Staking action controls require manage support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/thunks/staking/stakingThunks.ts",
+                    "detail": "Only ethereum and solana network types dispatch staking signing; Tron mutations are unsupported."
+                }
+            ],
+            "reason": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+        },
+        {
+            "id": "earn.staking.trx.resources",
+            "mobile_status": "conditional",
+            "navigation": "Tron account \u2192 Staking \u2192 Resources / Votes",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/components/staking/TronResourcesCard.tsx",
+                    "symbol": "TronResourcesCard"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/TronResourcesCard.tsx",
+                    "detail": "Native read-only Tron resource overview displays energy, bandwidth and voting power and can open vote details; it does not allow freezing or voting changes."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementListHeader.tsx",
+                    "detail": "Composes TronResourcesCard only for Tron accounts."
+                }
+            ],
+            "reason": "Native read-only Tron resource overview displays energy, bandwidth and voting power and can open vote details; it does not allow freezing or voting changes."
+        },
+        {
+            "id": "earn.yield.deposit-amount",
+            "mobile_status": "conditional",
+            "navigation": "Earn \u2192 Yield vault \u2192 Deposit \u2192 Amount / Max",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/yield/YieldDepositScreen.tsx",
+                    "symbol": "YieldDepositScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/yield/YieldDepositScreen.tsx",
+                    "detail": "Native deposit uses YieldAmountInputCard with currency switching, balance and Max; supported vault/account and gas-reserve constraints apply."
+                }
+            ],
+            "reason": "Native deposit uses YieldAmountInputCard with currency switching, balance and Max; supported vault/account and gas-reserve constraints apply."
+        },
+        {
+            "id": "earn.yield.withdraw-unit",
+            "mobile_status": "conditional",
+            "navigation": "Earn \u2192 Yield position \u2192 Withdraw \u2192 Amount unit",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/yield/YieldWithdrawScreen.tsx",
+                    "symbol": "YieldWithdrawScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/yield/YieldWithdrawScreen.tsx",
+                    "detail": "Native AnimatedDoubleInput switches between underlying asset amount and vault receipt shares."
+                }
+            ],
+            "reason": "Native AnimatedDoubleInput switches between underlying asset amount and vault receipt shares."
+        },
+        {
+            "id": "earn.yield.withdraw-max",
+            "mobile_status": "conditional",
+            "navigation": "Earn \u2192 Yield position \u2192 Withdraw \u2192 Max switch",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/yield/YieldWithdrawScreen.tsx",
+                    "symbol": "YieldWithdrawScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/yield/YieldWithdrawScreen.tsx",
+                    "detail": "Native withdrawal offers EarnMaxSwitch when a deposited position exists."
+                }
+            ],
+            "reason": "Native withdrawal offers EarnMaxSwitch when a deposited position exists."
+        },
+        {
+            "id": "earn.yield.standalone-wrap",
+            "mobile_status": "conditional",
+            "navigation": "Account / token details \u2192 Token settings \u2192 Wrap",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/earn/WrapNativeTokenScreen.tsx",
+                    "symbol": "WrapNativeTokenScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/earn/WrapNativeTokenScreen.tsx",
+                    "detail": "Wrap has its own native form, review and completion routes; requires a supported wrapped-native asset and appropriate balance."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/navigation/WrappedNativeTokenStackNavigator.tsx",
+                    "detail": "Registers distinct wrap and unwrap forms, reviews and completion screens."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx",
+                    "detail": "Exposes gated Wrap/Unwrap buttons and navigates to the registered standalone wrapped-native form."
+                }
+            ],
+            "reason": "Wrap has its own native form, review and completion routes; requires a supported wrapped-native asset and appropriate balance."
+        },
+        {
+            "id": "earn.yield.standalone-unwrap",
+            "mobile_status": "conditional",
+            "navigation": "Account / token details \u2192 Token settings \u2192 Unwrap",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/earn/UnwrapNativeTokenScreen.tsx",
+                    "symbol": "UnwrapNativeTokenScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/earn/UnwrapNativeTokenScreen.tsx",
+                    "detail": "Unwrap has its own native form, review and completion routes; requires a supported wrapped-native asset and appropriate balance."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/navigation/WrappedNativeTokenStackNavigator.tsx",
+                    "detail": "Registers distinct wrap and unwrap forms, reviews and completion screens."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx",
+                    "detail": "Exposes gated Wrap/Unwrap buttons and navigates to the registered standalone wrapped-native form."
+                }
+            ],
+            "reason": "Unwrap has its own native form, review and completion routes; requires a supported wrapped-native asset and appropriate balance."
+        },
+        {
+            "id": "earn.yield.bonus-rewards",
+            "mobile_status": "conditional",
+            "navigation": "Earn \u2192 Claim bonus rewards \u2192 Choose account",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/components/yield/YieldClaimRewardsBottomSheet.tsx",
+                    "symbol": "YieldClaimRewardsBottomSheet"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/yield/YieldClaimRewardsBottomSheet.tsx",
+                    "detail": "Native bonus-reward sheet lists account reward summaries and opens the selected account claim flow when rewards are available."
+                }
+            ],
+            "reason": "Native bonus-reward sheet lists account reward summaries and opens the selected account claim flow when rewards are available."
+        },
+        {
+            "id": "earn.yield.claim-fee-warning",
+            "mobile_status": "conditional",
+            "navigation": "Earn \u2192 Yield rewards \u2192 Claim \u2192 Fee warning",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/yield/YieldClaimScreen.tsx",
+                    "symbol": "YieldClaimScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/yield/YieldClaimScreen.tsx",
+                    "detail": "Native reward claim computes fee-versus-reward warnings and renders a warning when fees exceed reward value; it also handles unverifiable reward value."
+                }
+            ],
+            "reason": "Native reward claim computes fee-versus-reward warnings and renders a warning when fees exceed reward value; it also handles unverifiable reward value."
+        },
+        {
+            "id": "earn.yield.pending",
+            "mobile_status": "conditional",
+            "navigation": "Yield deposit / approval / withdrawal / claim \u2192 Pending transaction",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/components/yield/YieldPendingTransactionModal.tsx",
+                    "symbol": "YieldPendingTransactionModal"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/yield/YieldPendingTransactionModal.tsx",
+                    "detail": "Native pending transaction sheets show transaction identifiers, amounts and fees and provide explorer navigation while a yield operation confirms."
+                }
+            ],
+            "reason": "Native pending transaction sheets show transaction identifiers, amounts and fees and provide explorer navigation while a yield operation confirms."
+        },
+        {
+            "id": "connect.permissions.grant",
+            "mobile_status": "conditional",
+            "navigation": "External wallet / dApp \u2192 Open Suite \u2192 Permission request",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-connect-popup/src/components/PermissionConfirmation.tsx",
+                    "symbol": "PermissionConfirmation"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/components/PermissionConfirmation.tsx",
+                    "detail": "Native permission confirmation displays the app origin and grouped permissions and offers confirm/close; requires an authorized device and valid call source."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/screens/ConnectPopupScreen.tsx",
+                    "detail": "Selects permission confirmation for permission-request state."
+                }
+            ],
+            "reason": "Native permission confirmation displays the app origin and grouped permissions and offers confirm/close; requires an authorized device and valid call source."
+        },
+        {
+            "id": "connect.permissions.remember",
+            "mobile_status": "conditional",
+            "navigation": "External app permission request \u2192 Always allow",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-connect-popup/src/components/PermissionConfirmation.tsx",
+                    "symbol": "PermissionConfirmation"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/components/PermissionConfirmation.tsx",
+                    "detail": "A checkbox remembers permissions only when canRememberPermissions accepts the call source."
+                }
+            ],
+            "reason": "A checkbox remembers permissions only when canRememberPermissions accepts the call source."
+        },
+        {
+            "id": "connect.permissions.revoke-one",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/screens/ConnectPermissionsScreen.tsx",
+                    "detail": "Native stored-app settings expose grouped permission display and one forgetAppPermissions button per app; they do not expose individual permission removal."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/components/GroupedPermissionsList.tsx",
+                    "detail": "Native grouped list has no per-permission revoke callback/control."
+                }
+            ],
+            "reason": "Native stored-app settings expose grouped permission display and one forgetAppPermissions button per app; they do not expose individual permission removal."
+        },
+        {
+            "id": "connect.permissions.revoke-all",
+            "mobile_status": "conditional",
+            "navigation": "Settings \u2192 Connections \u2192 Trezor Connect \u2192 App \u2192 Forget",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-connect-popup/src/screens/ConnectPermissionsScreen.tsx",
+                    "symbol": "ConnectPermissionsScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/screens/ConnectPermissionsScreen.tsx",
+                    "detail": "Expanded app cards dispatch forgetAppPermissions for the selected stored application."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/ConnectionSettings.tsx",
+                    "detail": "Trezor Connect settings navigate to ConnectPermissionsScreen when app connections are available."
+                }
+            ],
+            "reason": "Expanded app cards dispatch forgetAppPermissions for the selected stored application."
+        },
+        {
+            "id": "connect.permissions.account",
+            "mobile_status": "unknown",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/screens/ConnectPopupScreen.tsx",
+                    "detail": "Native external-wallet scenarios export accounts, but this audited popup state composition does not contain the desktop multi-account/type picker. Equivalent Suite-side account selection is not established; external wallet account selection is a separate step."
+                }
+            ],
+            "reason": "Native external-wallet scenarios export accounts, but this audited popup state composition does not contain the desktop multi-account/type picker. Equivalent Suite-side account selection is not established; external wallet account selection is a separate step."
+        },
+        {
+            "id": "connect.permissions.address",
+            "mobile_status": "conditional",
+            "navigation": "External app \u2192 Export address \u2192 Suite confirmation / Trezor",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-connect-popup/src/components/AddressConfirmationScreenContent.tsx",
+                    "symbol": "AddressConfirmationScreenContent"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/components/AddressConfirmationScreenContent.tsx",
+                    "detail": "Native address-confirmation state displays exported addresses and opens the confirm-on-Trezor sheet during verification."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/screens/ConnectPopupScreen.tsx",
+                    "detail": "Routes address-confirmation state to AddressConfirmationScreenContent."
+                }
+            ],
+            "reason": "Native address-confirmation state displays exported addresses and opens the confirm-on-Trezor sheet during verification."
+        },
+        {
+            "id": "connect.walletconnect.pair",
+            "mobile_status": "conditional",
+            "navigation": "Settings \u2192 Connections \u2192 WalletConnect \u2192 Add \u2192 Scan QR / Paste",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-connect-popup/src/components/WalletConnectPairBottomSheet.tsx",
+                    "symbol": "WalletConnectPairBottomSheet"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/components/WalletConnectPairBottomSheet.tsx",
+                    "detail": "Native pairing accepts a scanned WalletConnect QR or clipboard URI and calls walletConnectPairThunk; device/app-connection availability gates apply."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/ConnectionSettings.tsx",
+                    "detail": "Shows WalletConnect add controls only when selectIsAppConnectionAvailable is true."
+                }
+            ],
+            "reason": "Native pairing accepts a scanned WalletConnect QR or clipboard URI and calls walletConnectPairThunk; device/app-connection availability gates apply."
+        },
+        {
+            "id": "connect.walletconnect.activate-network",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/screens/WalletConnectSessionPopupScreen.tsx",
+                    "detail": "The audited native proposal screen displays inactive-network warnings and account choices but has no desktop Enable network / Open coin settings action; networks can be enabled separately in Settings."
+                }
+            ],
+            "reason": "The audited native proposal screen displays inactive-network warnings and account choices but has no desktop Enable network / Open coin settings action; networks can be enabled separately in Settings."
+        },
+        {
+            "id": "connect.walletconnect.risk",
+            "mobile_status": "conditional",
+            "navigation": "WalletConnect connection proposal \u2192 App verification / Risk warning",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-connect-popup/src/screens/WalletConnectSessionPopupScreen.tsx",
+                    "symbol": "WalletConnectSessionPopupScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/screens/WalletConnectSessionPopupScreen.tsx",
+                    "detail": "Native proposals show validation/scam states, expired-request warnings and a required scam-warning acknowledgement; a desktop-equivalent additional dApp scan is not established."
+                }
+            ],
+            "reason": "Native proposals show validation/scam states, expired-request warnings and a required scam-warning acknowledgement; a desktop-equivalent additional dApp scan is not established."
+        },
+        {
+            "id": "connect.walletconnect.transaction",
+            "mobile_status": "conditional",
+            "navigation": "Connected dApp \u2192 Transaction request \u2192 Suite review \u2192 Confirm on Trezor",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-connect-popup/src/screens/ConnectPopupScreen.tsx",
+                    "symbol": "ConnectPopupScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/screens/ConnectPopupScreen.tsx",
+                    "detail": "Native Connect popup routes supported external requests through permission/simulation and device-confirmation states; network, method and firmware support apply."
+                }
+            ],
+            "reason": "Native Connect popup routes supported external requests through permission/simulation and device-confirmation states; network, method and firmware support apply."
+        },
+        {
+            "id": "labeling.mode",
+            "mobile_status": "conditional",
+            "navigation": "Settings \u2192 Features \u2192 Secure Sync \u2192 Toggle",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-settings/src/components/ToggleSuiteSyncCard.tsx",
+                    "symbol": "ToggleSuiteSyncCard"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/ToggleSuiteSyncCard.tsx",
+                    "detail": "Native can enable or disable Suite Sync with a disable-confirmation alert; the desktop three-way Off/Suite Sync/Legacy selector is not present, so parity is partial."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSuiteSyncScreen.tsx",
+                    "detail": "Composes only the secure-sync toggle and relay URL card."
+                }
+            ],
+            "reason": "Native can enable or disable Suite Sync with a disable-confirmation alert; the desktop three-way Off/Suite Sync/Legacy selector is not present, so parity is partial."
+        },
+        {
+            "id": "labeling.suite-sync.migration",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSuiteSyncScreen.tsx",
+                    "detail": "No mobile legacy-label-provider migration UI is exposed in the audited native Sync settings; the settings compose an on/off toggle and relay card. Receiving already-migrated relay labels is distinct from migrating a local legacy store."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/ToggleSuiteSyncCard.tsx",
+                    "detail": "Only turnOnSuiteSync/turnOffSuiteSync controls are exposed."
+                }
+            ],
+            "reason": "No mobile legacy-label-provider migration UI is exposed in the audited native Sync settings; the settings compose an on/off toggle and relay card. Receiving already-migrated relay labels is distinct from migrating a local legacy store."
+        },
+        {
+            "id": "labeling.suite-sync.status",
+            "mobile_status": "unknown",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSuiteSyncScreen.tsx",
+                    "detail": "Native settings and Home expose enablement, key-needed and quota-error states, but an equivalent continuous relay-connection status indicator was not established."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/SuiteSyncKeysAlert.tsx",
+                    "detail": "Home can request authorization when wallet sync keys are needed."
+                }
+            ],
+            "reason": "Native settings and Home expose enablement, key-needed and quota-error states, but an equivalent continuous relay-connection status indicator was not established."
+        },
+        {
+            "id": "labeling.legacy",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSuiteSyncScreen.tsx",
+                    "detail": "The audited native labeling settings use Suite Sync toggle and relay configuration only; no Dropbox, Google Drive, local file provider, provider switching or return-to-legacy control is exposed."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/ToggleSuiteSyncCard.tsx",
+                    "detail": "Native UI offers secure-sync on/off rather than legacy provider choices."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "Complete settings navigator contains Suite Sync but no legacy metadata-provider screen."
+                }
+            ],
+            "reason": "The audited native labeling settings use Suite Sync toggle and relay configuration only; no Dropbox, Google Drive, local file provider, provider switching or return-to-legacy control is exposed."
+        },
+        {
+            "id": "labeling.legacy.dropbox",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSuiteSyncScreen.tsx",
+                    "detail": "The audited native labeling settings use Suite Sync toggle and relay configuration only; no Dropbox, Google Drive, local file provider, provider switching or return-to-legacy control is exposed."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/ToggleSuiteSyncCard.tsx",
+                    "detail": "Native UI offers secure-sync on/off rather than legacy provider choices."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "Complete settings navigator contains Suite Sync but no legacy metadata-provider screen."
+                }
+            ],
+            "reason": "The audited native labeling settings use Suite Sync toggle and relay configuration only; no Dropbox, Google Drive, local file provider, provider switching or return-to-legacy control is exposed."
+        },
+        {
+            "id": "labeling.legacy.google",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSuiteSyncScreen.tsx",
+                    "detail": "The audited native labeling settings use Suite Sync toggle and relay configuration only; no Dropbox, Google Drive, local file provider, provider switching or return-to-legacy control is exposed."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/ToggleSuiteSyncCard.tsx",
+                    "detail": "Native UI offers secure-sync on/off rather than legacy provider choices."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "Complete settings navigator contains Suite Sync but no legacy metadata-provider screen."
+                }
+            ],
+            "reason": "The audited native labeling settings use Suite Sync toggle and relay configuration only; no Dropbox, Google Drive, local file provider, provider switching or return-to-legacy control is exposed."
+        },
+        {
+            "id": "labeling.legacy.local",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSuiteSyncScreen.tsx",
+                    "detail": "The audited native labeling settings use Suite Sync toggle and relay configuration only; no Dropbox, Google Drive, local file provider, provider switching or return-to-legacy control is exposed."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/ToggleSuiteSyncCard.tsx",
+                    "detail": "Native UI offers secure-sync on/off rather than legacy provider choices."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "Complete settings navigator contains Suite Sync but no legacy metadata-provider screen."
+                }
+            ],
+            "reason": "The audited native labeling settings use Suite Sync toggle and relay configuration only; no Dropbox, Google Drive, local file provider, provider switching or return-to-legacy control is exposed."
+        },
+        {
+            "id": "labeling.legacy.disconnect",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSuiteSyncScreen.tsx",
+                    "detail": "The audited native labeling settings use Suite Sync toggle and relay configuration only; no Dropbox, Google Drive, local file provider, provider switching or return-to-legacy control is exposed."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/ToggleSuiteSyncCard.tsx",
+                    "detail": "Native UI offers secure-sync on/off rather than legacy provider choices."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "Complete settings navigator contains Suite Sync but no legacy metadata-provider screen."
+                }
+            ],
+            "reason": "The audited native labeling settings use Suite Sync toggle and relay configuration only; no Dropbox, Google Drive, local file provider, provider switching or return-to-legacy control is exposed."
+        },
+        {
+            "id": "labeling.legacy.return",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSuiteSyncScreen.tsx",
+                    "detail": "The audited native labeling settings use Suite Sync toggle and relay configuration only; no Dropbox, Google Drive, local file provider, provider switching or return-to-legacy control is exposed."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/ToggleSuiteSyncCard.tsx",
+                    "detail": "Native UI offers secure-sync on/off rather than legacy provider choices."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "Complete settings navigator contains Suite Sync but no legacy metadata-provider screen."
+                }
+            ],
+            "reason": "The audited native labeling settings use Suite Sync toggle and relay configuration only; no Dropbox, Google Drive, local file provider, provider switching or return-to-legacy control is exposed."
+        },
+        {
+            "id": "help",
+            "mobile_status": "conditional",
+            "navigation": "Settings \u2192 Support; Home \u2192 Activity center",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+                    "symbol": "SettingsSupportScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+                    "detail": "Native provides FAQs, support contact, app logs and an activity center; the desktop searchable Guide panel is not exposed."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-activity-center/src/screens/ActivityCenterScreen.tsx",
+                    "detail": "Activity center exposes transaction notifications and release notes."
+                }
+            ],
+            "reason": "Native provides FAQs, support contact, app logs and an activity center; the desktop searchable Guide panel is not exposed."
+        },
+        {
+            "id": "help.guide",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+                    "detail": "Native support composes a fixed FAQ accordion, contact/log actions, social/legal links and version information; it does not expose the desktop categorized/searchable Guide panel or keyboard-shortcut reference."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "Audited support/settings navigation contains no Guide article/search screen."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
+                    "detail": "Audited root navigation contains no desktop-style Guide surface."
+                }
+            ],
+            "reason": "Native support composes a fixed FAQ accordion, contact/log actions, social/legal links and version information; it does not expose the desktop categorized/searchable Guide panel or keyboard-shortcut reference."
+        },
+        {
+            "id": "help.guide.search",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+                    "detail": "Native support composes a fixed FAQ accordion, contact/log actions, social/legal links and version information; it does not expose the desktop categorized/searchable Guide panel or keyboard-shortcut reference."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "Audited support/settings navigation contains no Guide article/search screen."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
+                    "detail": "Audited root navigation contains no desktop-style Guide surface."
+                }
+            ],
+            "reason": "Native support composes a fixed FAQ accordion, contact/log actions, social/legal links and version information; it does not expose the desktop categorized/searchable Guide panel or keyboard-shortcut reference."
+        },
+        {
+            "id": "help.guide.context",
+            "mobile_status": "conditional",
+            "navigation": "Earn \u2192 ETH / SOL staking \u2192 Info; Yield \u2192 How it works",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/screens/staking/HowStakeWorksScreen.tsx",
+                    "symbol": "HowStakeWorksScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/staking/HowStakeWorksScreen.tsx",
+                    "detail": "Mobile contextual help uses native staking/yield explanatory screens rather than opening a central Guide article panel; parity is contextual explanation only."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/yield/HowYieldWorksScreen.tsx",
+                    "detail": "Provides native yield process explanation."
+                }
+            ],
+            "reason": "Mobile contextual help uses native staking/yield explanatory screens rather than opening a central Guide article panel; parity is contextual explanation only."
+        },
+        {
+            "id": "help.guide.shortcuts",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+                    "detail": "Native support composes a fixed FAQ accordion, contact/log actions, social/legal links and version information; it does not expose the desktop categorized/searchable Guide panel or keyboard-shortcut reference."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "Audited support/settings navigation contains no Guide article/search screen."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
+                    "detail": "Audited root navigation contains no desktop-style Guide surface."
+                }
+            ],
+            "reason": "Native support composes a fixed FAQ accordion, contact/log actions, social/legal links and version information; it does not expose the desktop categorized/searchable Guide panel or keyboard-shortcut reference."
+        },
+        {
+            "id": "help.support.bug",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+                    "detail": "The audited native support screen exposes FAQ, contact-support and app-log actions, not the desktop category-and-description bug report form."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/NeedHelpSection.tsx",
+                    "detail": "Only Contact support and Application log actions are rendered."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/useContactSupportAlert.tsx",
+                    "detail": "Contact support opens an external support chat after consent."
+                }
+            ],
+            "reason": "The audited native support screen exposes FAQ, contact-support and app-log actions, not the desktop category-and-description bug report form."
+        },
+        {
+            "id": "help.support.suggestion",
+            "mobile_status": "conditional",
+            "navigation": "Eligible feature \u2192 Feedback prompt \u2192 Rating and description",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-home/src/screens/FeatureFeedbackModalScreen.tsx",
+                    "symbol": "FeatureFeedbackModalScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/FeatureFeedbackModalScreen.tsx",
+                    "detail": "Native feature-feedback submits SUGGESTION with a rating and written description for configured features; a globally accessible desktop-style generic suggestion entry was not established."
+                }
+            ],
+            "reason": "Native feature-feedback submits SUGGESTION with a rating and written description for configured features; a globally accessible desktop-style generic suggestion entry was not established."
+        },
+        {
+            "id": "help.support.forum",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+                    "detail": "The audited native support hub exposes FAQ, support, app logs, legal and About/social links but no community-forum action."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/AboutUsBanners.tsx",
+                    "detail": "About links target social channels rather than the community forum."
+                }
+            ],
+            "reason": "The audited native support hub exposes FAQ, support, app logs, legal and About/social links but no community-forum action."
+        },
+        {
+            "id": "help.support.versions",
+            "mobile_status": "conditional",
+            "navigation": "Settings \u2192 App version; Device settings \u2192 Firmware",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-settings/src/components/AppTitleAndVersion.tsx",
+                    "symbol": "AppTitleAndVersion"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/AppTitleAndVersion.tsx",
+                    "detail": "Native settings show the app version, and device firmware settings show the firmware version; unlike desktop they are located in separate surfaces."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/components/DeviceFirmwareCard.tsx",
+                    "detail": "Displays firmware version in device settings."
+                }
+            ],
+            "reason": "Native settings show the app version, and device firmware settings show the firmware version; unlike desktop they are located in separate surfaces."
+        },
+        {
+            "id": "help.activity.system",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-activity-center/src/screens/ActivityCenterScreen.tsx",
+                    "detail": "Although the local ActivityCenterTab type includes system, the actual visible tabs contain only notifications and releaseNotes; a System activity tab is not exposed in the audited native screen."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-activity-center/src/components/ActivityCenterTabContent.tsx",
+                    "detail": "The system case explicitly returns null with a TODO; visible native tabs are notifications and releaseNotes."
+                }
+            ],
+            "reason": "Although the local ActivityCenterTab type includes system, the actual visible tabs contain only notifications and releaseNotes; a System activity tab is not exposed in the audited native screen."
+        },
+        {
+            "id": "help.activity.detail",
+            "mobile_status": "conditional",
+            "navigation": "Activity center \u2192 Transaction notification",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-activity-center/src/components/notifications/TransactionNotificationItem.tsx",
+                    "symbol": "TransactionNotificationItem"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-activity-center/src/components/notifications/TransactionNotificationItem.tsx",
+                    "detail": "Native transaction notifications navigate to transaction details when the corresponding account is available; this includes transaction types for Earn/trade/wrap operations."
+                }
+            ],
+            "reason": "Native transaction notifications navigate to transaction details when the corresponding account is available; this includes transaction types for Earn/trade/wrap operations."
+        },
+        {
+            "id": "help.referral",
+            "mobile_status": "conditional",
+            "navigation": "Home \u2192 Refer a friend",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/ReferralButton.tsx",
+                    "symbol": "ReferralButton"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/ReferralButton.tsx",
+                    "detail": "Native Home opens the external SUITE_REFERRAL program page; the button is hidden for portfolio-tracker wallets."
+                }
+            ],
+            "reason": "Native Home opens the external SUITE_REFERRAL program page; the button is hidden for portfolio-tracker wallets."
+        },
+        {
+            "id": "help.referral.prototype",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
+                    "detail": "The audited native root navigator has no internal referral enrollment/rewards screen; native referral entry opens the external program URL only."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/ReferralButton.tsx",
+                    "detail": "Native referral action calls openLink(SUITE_REFERRAL)."
+                }
+            ],
+            "reason": "The audited native root navigator has no internal referral enrollment/rewards screen; native referral entry opens the external program URL only."
+        },
+        {
+            "id": "labeling.password-manager",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/experimental-features/src/experimentalFeatures.ts",
+                    "detail": "The native experimental settings registry exposes slip24 only and the audited root navigator registers no password-manager screen; the desktop experimental Dropbox password manager is not exposed on mobile."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
+                    "detail": "Complete native root composition has no password-manager route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsExperimentalScreen.tsx",
+                    "detail": "Builds visible experimental feature rows from the native registry."
+                }
+            ],
+            "reason": "The native experimental settings registry exposes slip24 only and the audited root navigator registers no password-manager screen; the desktop experimental Dropbox password manager is not exposed on mobile."
+        },
+        {
+            "id": "labeling.password-manager.provider",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/experimental-features/src/experimentalFeatures.ts",
+                    "detail": "The native experimental settings registry exposes slip24 only and the audited root navigator registers no password-manager screen; the desktop experimental Dropbox password manager is not exposed on mobile."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
+                    "detail": "Complete native root composition has no password-manager route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsExperimentalScreen.tsx",
+                    "detail": "Builds visible experimental feature rows from the native registry."
+                }
+            ],
+            "reason": "The native experimental settings registry exposes slip24 only and the audited root navigator registers no password-manager screen; the desktop experimental Dropbox password manager is not exposed on mobile."
+        },
+        {
+            "id": "labeling.password-manager.entries",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/experimental-features/src/experimentalFeatures.ts",
+                    "detail": "The native experimental settings registry exposes slip24 only and the audited root navigator registers no password-manager screen; the desktop experimental Dropbox password manager is not exposed on mobile."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
+                    "detail": "Complete native root composition has no password-manager route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsExperimentalScreen.tsx",
+                    "detail": "Builds visible experimental feature rows from the native registry."
+                }
+            ],
+            "reason": "The native experimental settings registry exposes slip24 only and the audited root navigator registers no password-manager screen; the desktop experimental Dropbox password manager is not exposed on mobile."
+        },
+        {
+            "id": "labeling.password-manager.filter",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/experimental-features/src/experimentalFeatures.ts",
+                    "detail": "The native experimental settings registry exposes slip24 only and the audited root navigator registers no password-manager screen; the desktop experimental Dropbox password manager is not exposed on mobile."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
+                    "detail": "Complete native root composition has no password-manager route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsExperimentalScreen.tsx",
+                    "detail": "Builds visible experimental feature rows from the native registry."
+                }
+            ],
+            "reason": "The native experimental settings registry exposes slip24 only and the audited root navigator registers no password-manager screen; the desktop experimental Dropbox password manager is not exposed on mobile."
+        },
+        {
+            "id": "trade.swap.rate-type",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Swap \u2192 Provider \u2192 Fixed / Floating sections",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-trading/src/components/general/ProviderSheet/ProviderSheetSectionHeader.tsx",
+                    "symbol": "ProviderSheetSectionHeader"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/general/ProviderSheet/ProviderSheetSectionHeader.tsx",
+                    "detail": "Native provider lists contain separate fixed-rate and floating-rate section headings and explanations."
+                }
+            ],
+            "reason": "Native provider lists contain separate fixed-rate and floating-rate section headings and explanations."
+        },
+        {
+            "id": "trade.swap.mev-status",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Trade history \u2192 DEX order \u2192 MEV protection",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/trading-history/src/components/TradingHistoryDetail/TradingHistoryDetailMevProtectionRow.tsx",
+                    "symbol": "TradingHistoryDetailMevProtectionRow"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/trading-history/src/components/TradingHistoryDetail/TradingHistoryDetailMevProtectionRow.tsx",
+                    "detail": "Native DEX order details expose the current wallet MEV-protection setting for supported networks when the feature is enabled; it is not a historical per-order execution attestation."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/trading-history/src/hooks/useTradingHistoryDetailInfo.ts",
+                    "detail": "Visibility is gated by DEX trade, supported send network and the MEV feature; value comes from current wallet settings."
+                }
+            ],
+            "reason": "Native DEX order details expose the current wallet MEV-protection setting for supported networks when the feature is enabled; it is not a historical per-order execution attestation."
+        },
+        {
+            "id": "trade.swap.refresh",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/exchange/ExchangePreview/ExchangePreviewFooter.tsx",
+                    "detail": "The audited native swap review footer exposes Continue or Back to trade form, not the desktop explicit Refresh transaction action. Native quote updates/retries do not establish that manual control."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingExchangePreviewScreen.tsx",
+                    "detail": "Preview screen performs quote/status reactions and composes native footer controls."
+                }
+            ],
+            "reason": "The audited native swap review footer exposes Continue or Back to trade form, not the desktop explicit Refresh transaction action. Native quote updates/retries do not establish that manual control."
+        },
+        {
+            "id": "trade.receive.address-search",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Buy / Swap \u2192 Receive account \u2192 UTXO account \u2192 Search",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-trading/src/screens/TradingReceiveAddressPickerScreen.tsx",
+                    "symbol": "TradingReceiveAddressPickerScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/screens/TradingReceiveAddressPickerScreen.tsx",
+                    "detail": "Native address selection has a debounced SearchInput and address-list filtering for held Suite accounts."
+                }
+            ],
+            "reason": "Native address selection has a debounced SearchInput and address-list filtering for held Suite accounts."
+        },
+        {
+            "id": "earn.staking.trx.reassign",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+                    "detail": "The Tron staking product descriptor sets platforms.mobile.access to 'read-only'; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
+                    "detail": "Staking action controls require manage support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/thunks/staking/stakingThunks.ts",
+                    "detail": "Only ethereum and solana network types dispatch staking signing; Tron mutations are unsupported."
+                }
+            ],
+            "reason": "Tron staking is explicitly view-only on mobile; freeze/resource selection, representative-vote changes, claims, unfreezing and withdrawal mutations are not exposed."
+        },
+        {
+            "id": "connect.walletconnect.simulation",
+            "mobile_status": "conditional",
+            "navigation": "Connected EVM dApp \u2192 Transaction request \u2192 Simulation review",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-connect-popup/src/components/TxSimulationInner.tsx",
+                    "symbol": "TxSimulationInner"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/components/TxSimulationInner.tsx",
+                    "detail": "Native uses EvmTxSimulationReviewContent to show simulated effects and risk controls for supported EVM methods."
+                }
+            ],
+            "reason": "Native uses EvmTxSimulationReviewContent to show simulated effects and risk controls for supported EVM methods."
+        },
+        {
+            "id": "connect.walletconnect.fees",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/components/TxSimulationInner.tsx",
+                    "detail": "Native dApp simulation explicitly contains TODO add fee selection and forwards fee fields supplied by the requesting app; no user fee picker is exposed in this audited review."
+                }
+            ],
+            "reason": "Native dApp simulation explicitly contains TODO add fee selection and forwards fee fields supplied by the requesting app; no user fee picker is exposed in this audited review."
+        },
+        {
+            "id": "labeling.password-manager.decrypt",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/experimental-features/src/experimentalFeatures.ts",
+                    "detail": "The native experimental settings registry exposes slip24 only and the audited root navigator registers no password-manager screen; the desktop experimental Dropbox password manager is not exposed on mobile."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
+                    "detail": "Complete native root composition has no password-manager route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsExperimentalScreen.tsx",
+                    "detail": "Builds visible experimental feature rows from the native registry."
+                }
+            ],
+            "reason": "The native experimental settings registry exposes slip24 only and the audited root navigator registers no password-manager screen; the desktop experimental Dropbox password manager is not exposed on mobile."
+        },
+        {
+            "id": "labeling.password-manager.remove",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/experimental-features/src/experimentalFeatures.ts",
+                    "detail": "The native experimental settings registry exposes slip24 only and the audited root navigator registers no password-manager screen; the desktop experimental Dropbox password manager is not exposed on mobile."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
+                    "detail": "Complete native root composition has no password-manager route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsExperimentalScreen.tsx",
+                    "detail": "Builds visible experimental feature rows from the native registry."
+                }
+            ],
+            "reason": "The native experimental settings registry exposes slip24 only and the audited root navigator registers no password-manager screen; the desktop experimental Dropbox password manager is not exposed on mobile."
+        },
+        {
+            "id": "connect.walletconnect.message-signing",
+            "mobile_status": "conditional",
+            "navigation": "Connected dApp \u2192 Signature request \u2192 Confirm on Trezor",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-connect-popup/src/components/ConnectConfirmOnTrezor.tsx",
+                    "symbol": "ConnectConfirmOnTrezor"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/components/ConnectConfirmOnTrezor.tsx",
+                    "detail": "The native external-call flow supports device signature confirmation for EVM personal_sign or Bitcoin signMessage through shared WalletConnect adapters. Method/network/firmware restrictions apply; detailed presentation is device-led."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/screens/ConnectPopupScreen.tsx",
+                    "detail": "Device button requests render ConnectConfirmOnTrezor."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/walletconnect/src/adapters/ethereum.ts",
+                    "detail": "Implements EVM message and typed-data signing through Connect popup actions."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/walletconnect/src/adapters/bitcoin.ts",
+                    "detail": "Implements Bitcoin message signing; Bitcoin PSBT is not supported."
+                }
+            ],
+            "reason": "The native external-call flow supports device signature confirmation for EVM personal_sign or Bitcoin signMessage through shared WalletConnect adapters. Method/network/firmware restrictions apply; detailed presentation is device-led."
+        },
+        {
+            "id": "connect.walletconnect.typed-data",
+            "mobile_status": "conditional",
+            "navigation": "Connected dApp \u2192 Signature request \u2192 Confirm on Trezor",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-connect-popup/src/components/ConnectConfirmOnTrezor.tsx",
+                    "symbol": "ConnectConfirmOnTrezor"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/components/ConnectConfirmOnTrezor.tsx",
+                    "detail": "The native external-call flow supports device signature confirmation for EVM eth_signTypedData_v4 through shared WalletConnect adapters. Method/network/firmware restrictions apply; detailed presentation is device-led."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/screens/ConnectPopupScreen.tsx",
+                    "detail": "Device button requests render ConnectConfirmOnTrezor."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/walletconnect/src/adapters/ethereum.ts",
+                    "detail": "Implements EVM message and typed-data signing through Connect popup actions."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/walletconnect/src/adapters/bitcoin.ts",
+                    "detail": "Implements Bitcoin message signing; Bitcoin PSBT is not supported."
+                }
+            ],
+            "reason": "The native external-call flow supports device signature confirmation for EVM eth_signTypedData_v4 through shared WalletConnect adapters. Method/network/firmware restrictions apply; detailed presentation is device-led."
+        },
+        {
+            "id": "labeling.suite-sync.authorize",
+            "mobile_status": "conditional",
+            "navigation": "Home \u2192 Secure Sync keys needed \u2192 Connect / Authorize",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/SuiteSyncKeysAlert.tsx",
+                    "symbol": "SuiteSyncKeysAlert"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/SuiteSyncKeysAlert.tsx",
+                    "detail": "Native Home alert connects an absent device or calls ensureWalletSuiteSyncOn to authorize needed synchronization keys."
+                }
+            ],
+            "reason": "Native Home alert connects an absent device or calls ensureWalletSuiteSyncOn to authorize needed synchronization keys."
+        },
+        {
+            "id": "labeling.suite-sync.local-fallback",
+            "mobile_status": "conditional",
+            "navigation": "Home \u2192 Secure Sync storage-full alert",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/OutOfQuotaAlert.tsx",
+                    "symbol": "OutOfQuotaAlert"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/OutOfQuotaAlert.tsx",
+                    "detail": "Native out-of-quota alert explains the local-only state and offers contact support or dismiss; requires a known device and the parent quota-alert visibility condition."
+                }
+            ],
+            "reason": "Native out-of-quota alert explains the local-only state and offers contact support or dismiss; requires a known device and the parent quota-alert visibility condition."
+        },
+        {
+            "id": "trade.receive.stellar-activation",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Buy / Swap \u2192 Inactive Stellar destination token \u2192 Activate token",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-trading/src/components/exchange/ExchangeConfirmation.tsx",
+                    "symbol": "ExchangeConfirmation"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/exchange/ExchangeConfirmation.tsx",
+                    "detail": "Native trading replaces continuation with an activation button when the selected Suite Stellar destination token lacks a trustline; it composes activation fees and enters token management."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/hooks/general/useTradingStellarActivateToken.tsx",
+                    "detail": "Composes trustline fees and navigates to the Stellar token activation review."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/buy/BuyConfirmation.tsx",
+                    "detail": "Buy confirmation also uses the activation hook."
+                }
+            ],
+            "reason": "Native trading replaces continuation with an activation button when the selected Suite Stellar destination token lacks a trustline; it composes activation fees and enters token management."
+        },
+        {
+            "id": "trade.contextual-entry",
+            "mobile_status": "unknown",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/hooks/earn/useEarnNoBalanceActions.ts",
+                    "detail": "Native Home/Earn can open Buy or Swap, but the audited callers pass tradingType only; account/token preselection equivalent to the desktop action has not been established."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/navigation/src/navigators.ts",
+                    "detail": "Trading route parameter contract was inspected to distinguish tab selection from explicit asset/account prefill."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioAssets/PortfolioAssetsEmptyState.tsx",
+                    "detail": "Empty portfolio Buy button opens the Buy tab without account/asset parameters."
+                }
+            ],
+            "reason": "Native Home/Earn can open Buy or Swap, but the audited callers pass tradingType only; account/token preselection equivalent to the desktop action has not been established."
+        },
+        {
+            "id": "trade.network-reserve",
+            "mobile_status": "conditional",
+            "navigation": "Trade \u2192 Sell / Swap \u2192 Amount field validation",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-trading/src/components/sell/SellForm.tsx",
+                    "symbol": "SellForm"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/components/sell/SellForm.tsx",
+                    "detail": "Native amounts above maxSpendableAmount produce a network-reserve validation message. The desktop reserve banner with a Manage-settings action is not established on mobile."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-trading/src/utils/general/validationSchemes.ts",
+                    "detail": "The network-reserve validation branch compares the converted amount with maxSpendableAmount."
+                }
+            ],
+            "reason": "Native amounts above maxSpendableAmount produce a network-reserve validation message. The desktop reserve banner with a Manage-settings action is not established on mobile."
+        },
+        {
+            "id": "earn.staking.amount",
+            "mobile_status": "conditional",
+            "navigation": "Earn \u2192 ETH / SOL opportunity or account \u2192 Stake / Stake more \u2192 Amount / Fiat-crypto switch / Max",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/module-earn/src/components/earn/EarnAmountInputs.tsx",
+                    "symbol": "EarnAmountInputs"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/earn/EarnAmountInputs.tsx",
+                    "detail": "BaseAmountInputs composes crypto/fiat entry, currency switching, error messages and EarnMaxButton; there are no percentage shortcut controls in this composition."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/earn/EarnCryptoAmountInput.tsx",
+                    "detail": "Editable amount field validates asset decimals and synchronizes the converted fiat amount."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/earn/EarnMaxButton.tsx",
+                    "detail": "Max switch fills getMaxStakeAmount using available balance and converts it to fiat; unstake variant uses unstakableBalance."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/components/earn/EarnOutputFields.tsx",
+                    "detail": "The stake amount card composes EarnAmountInputs for the selected account network."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/module-earn/src/screens/staking/StakingFormScreen.tsx",
+                    "detail": "The actual stake form mounts EarnOutputFields inside its form and adds the fee section."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+                    "detail": "Everstake ETH and SOL products have mobile access 'manage'; ADA and TRX products are 'read-only' (selectIsStakingManageableSymbol)."
+                }
+            ],
+            "reason": "Native ETH/SOL stake forms provide editable crypto and fiat amounts and a Max switch. The audited native inputs do not expose desktop 10%, 25%, or 50% shortcuts, so this is partial parity; device authorization, sufficient available balance and network/provider limits apply."
+        }
+    ],
+    "notes": [
+        "This is a source-only platform parity audit; mobile flows and tests were not executed.",
+        "conditional denotes actual native exposure with asset/account/provider/device/feature gates or explicitly stated partial parity; reasons identify differences from desktop.",
+        "no means the control is explicitly unsupported or absent from the audited complete native screen family/composition, not merely a missing filename.",
+        "unknown is retained for desktop-equivalent account export selection, continuous Sync connection indicator, and account/token-prefilled Trade entry because source inspection did not establish equivalent behavior.",
+        "ETH and SOL staking are manageable; ADA and TRX staking are explicitly view-only. Read-only Tron resources/votes are available even though mutation actions are not.",
+        "Native dApp fee selection is explicitly unfinished in TxSimulationInner, despite native Trade and Earn having their own functional fee selectors.",
+        "Minimum-received and MEV information were verified in mobile trade-history details; this does not prove matching pre-sign placement or historical MEV execution guarantees.",
+        "Native instant-staking notice parity is limited to the implemented instant-unstake banner.",
+        "Exact staking amount parity was audited separately from the generic Stake entry: native supports fiat/crypto amounts and Max, while the desktop percentage shortcuts were not found in the complete native amount-input composition."
+    ],
+    "reviewed_sources": [
+        "suite-common/walletconnect/src/adapters/bitcoin.ts",
+        "suite-common/walletconnect/src/adapters/ethereum.ts",
+        "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
+        "suite-native-app/module-activity-center/src/components/ActivityCenterTabContent.tsx",
+        "suite-native-app/module-activity-center/src/components/notifications/TransactionNotificationItem.tsx",
+        "suite-native-app/module-activity-center/src/screens/ActivityCenterScreen.tsx",
+        "suite-native-app/module-connect-popup/package.json",
+        "suite-native-app/module-connect-popup/src/components/AddressConfirmationScreenContent.tsx",
+        "suite-native-app/module-connect-popup/src/components/ConnectConfirmOnTrezor.tsx",
+        "suite-native-app/module-connect-popup/src/components/GroupedPermissionsList.tsx",
+        "suite-native-app/module-connect-popup/src/components/PermissionConfirmation.tsx",
+        "suite-native-app/module-connect-popup/src/components/TxSimulationInner.tsx",
+        "suite-native-app/module-connect-popup/src/components/WalletConnectPairBottomSheet.tsx",
+        "suite-native-app/module-connect-popup/src/screens/ConnectPermissionsScreen.tsx",
+        "suite-native-app/module-connect-popup/src/screens/ConnectPopupScreen.tsx",
+        "suite-native-app/module-connect-popup/src/screens/WalletConnectSessionPopupScreen.tsx",
+        "suite-native-app/module-device-settings/src/components/DeviceFirmwareCard.tsx",
+        "suite-native-app/module-home/src/screens/FeatureFeedbackModalScreen.tsx",
+        "suite-native-app/module-home/src/screens/HomeScreen/components/OutOfQuotaAlert.tsx",
+        "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioAssets/PortfolioAssetsEmptyState.tsx",
+        "suite-native-app/module-home/src/screens/HomeScreen/components/ReferralButton.tsx",
+        "suite-native-app/module-home/src/screens/HomeScreen/components/SuiteSyncKeysAlert.tsx",
+        "suite-native-app/module-settings/src/components/AboutUsBanners.tsx",
+        "suite-native-app/module-settings/src/components/AppTitleAndVersion.tsx",
+        "suite-native-app/module-settings/src/components/ConnectionSettings.tsx",
+        "suite-native-app/module-settings/src/components/NeedHelpSection.tsx",
+        "suite-native-app/module-settings/src/components/ToggleSuiteSyncCard.tsx",
+        "suite-native-app/module-settings/src/components/useContactSupportAlert.tsx",
+        "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+        "suite-native-app/module-settings/src/screens/SettingsExperimentalScreen.tsx",
+        "suite-native-app/module-settings/src/screens/SettingsSuiteSyncScreen.tsx",
+        "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+        "suite-native-app/module-trading/src/components/buy/BuyConfirmation.tsx",
+        "suite-native-app/module-trading/src/components/exchange/Approval/ExchangeApprovalDetails.tsx",
+        "suite-native-app/module-trading/src/components/exchange/Approval/ExchangeRevokeDetails.tsx",
+        "suite-native-app/module-trading/src/components/exchange/ExchangeConfirmation.tsx",
+        "suite-native-app/module-trading/src/components/exchange/ExchangePreview/ExchangePreviewFooter.tsx",
+        "suite-native-app/module-trading/src/components/general/AccountList/AccountList.tsx",
+        "suite-native-app/module-trading/src/components/general/AccountList/NoAccountsComponent.tsx",
+        "suite-native-app/module-trading/src/components/general/NetworkPicker/NetworkPicker.tsx",
+        "suite-native-app/module-trading/src/components/general/ProviderSheet/ProviderSheet.tsx",
+        "suite-native-app/module-trading/src/components/general/ProviderSheet/ProviderSheetSectionHeader.tsx",
+        "suite-native-app/module-trading/src/components/general/TradeInfo/TradeFeeInfoRow.tsx",
+        "suite-native-app/module-trading/src/components/general/TradingCountrySubdivisionPickerButton.tsx",
+        "suite-native-app/module-trading/src/components/general/TradingLocationPickers.tsx",
+        "suite-native-app/module-trading/src/components/sell/SellForm.tsx",
+        "suite-native-app/module-trading/src/hooks/general/useTradingStellarActivateToken.tsx",
+        "suite-native-app/module-trading/src/navigation/TradingStackNavigator.tsx",
+        "suite-native-app/module-trading/src/screens/TradingExchangePreviewScreen.tsx",
+        "suite-native-app/module-trading/src/screens/TradingHistoryDetailScreen.tsx",
+        "suite-native-app/module-trading/src/screens/TradingHistoryScreen.tsx",
+        "suite-native-app/module-trading/src/screens/TradingReceiveAccountsPickerScreen.tsx",
+        "suite-native-app/module-trading/src/screens/TradingReceiveAddressPickerScreen.tsx",
+        "suite-native-app/module-trading/src/screens/TradingTradeableAssetScreen.tsx",
+        "suite-native-app/module-trading/src/utils/general/validationSchemes.ts",
+        "suite-native/experimental-features/src/experimentalFeatures.ts",
+        "suite-native/module-earn/package.json",
+        "suite-native/module-earn/src/components/earn/EarnAmountInputs.tsx",
+        "suite-native/module-earn/src/components/earn/EarnCryptoAmountInput.tsx",
+        "suite-native/module-earn/src/components/earn/EarnEnableNetworkBottomSheet.tsx",
+        "suite-native/module-earn/src/components/earn/EarnFeeSection.tsx",
+        "suite-native/module-earn/src/components/earn/EarnMaxButton.tsx",
+        "suite-native/module-earn/src/components/earn/EarnOutputFields.tsx",
+        "suite-native/module-earn/src/components/earn/EarnPromoList.tsx",
+        "suite-native/module-earn/src/components/earn/EarnSelectAccountBottomSheet.tsx",
+        "suite-native/earn/src/components/TokenSettingsBottomSheet.tsx",
+        "suite-native/module-earn/src/components/staking/InstantUnstakeConfirmationBanner.tsx",
+        "suite-native/module-earn/src/components/staking/SolExternalStakingBanner.tsx",
+        "suite-native/module-earn/src/components/staking/StakingManagementListHeader.tsx",
+        "suite-native/module-earn/src/components/staking/StakingManagementPendingSection.tsx",
+        "suite-native/module-earn/src/components/staking/StakingManagementReadyToClaimCard.tsx",
+        "suite-native/module-earn/src/components/staking/StakingManagementStakedCard.tsx",
+        "suite-native/module-earn/src/components/staking/TronResourcesCard.tsx",
+        "suite-native/module-earn/src/components/yield/YieldClaimRewardsBottomSheet.tsx",
+        "suite-native/module-earn/src/components/yield/YieldPendingTransactionModal.tsx",
+        "suite-native/module-earn/src/hooks/earn/useEarnNoBalanceActions.ts",
+        "suite-native/module-earn/src/navigation/WrappedNativeTokenStackNavigator.tsx",
+        "suite-native/module-earn/src/navigation/YieldStackNavigator.tsx",
+        "suite-native/module-earn/src/screens/earn/EarnScreen.tsx",
+        "suite-native/module-earn/src/screens/earn/UnwrapNativeTokenScreen.tsx",
+        "suite-native/module-earn/src/screens/earn/WrapNativeTokenScreen.tsx",
+        "suite-native/module-earn/src/screens/staking/HowStakeWorksScreen.tsx",
+        "suite-native/module-earn/src/screens/staking/StakingClaimReviewScreen.tsx",
+        "suite-native/module-earn/src/screens/staking/StakingFormScreen.tsx",
+        "suite-native/module-earn/src/screens/staking/StakingManagementScreen.tsx",
+        "suite-native/module-earn/src/screens/staking/UnstakeFlowScreen.tsx",
+        "suite-native/module-earn/src/screens/yield/HowYieldWorksScreen.tsx",
+        "suite-native/module-earn/src/screens/yield/YieldClaimScreen.tsx",
+        "suite-native/module-earn/src/screens/yield/YieldDepositScreen.tsx",
+        "suite-native/module-earn/src/screens/yield/YieldWithdrawScreen.tsx",
+        "suite-native/module-earn/src/thunks/staking/stakingThunks.ts",
+        "suite-common/earn-staking/src/state/stakingAccessSelectors.ts",
+        "suite-common/earn-staking-products/src/products/cardano/everstake-native/descriptor.ts",
+        "suite-common/earn-staking-products/src/products/tron/native/descriptor.ts",
+        "suite-native/navigation/src/navigators.ts",
+        "suite-native/trading-history/src/components/TradingHistory.tsx",
+        "suite-native/trading-history/src/components/TradingHistoryDetail/TradingHistoryDetail.tsx",
+        "suite-native/trading-history/src/components/TradingHistoryDetail/TradingHistoryDetailInfo.tsx",
+        "suite-native/trading-history/src/components/TradingHistoryDetail/TradingHistoryDetailMevProtectionRow.tsx",
+        "suite-native/trading-history/src/components/TradingHistoryDetail/TradingHistoryDetailMinimumReceivedRow.tsx",
+        "suite-native/trading-history/src/components/TradingHistoryExportButton.tsx",
+        "suite-native/trading-history/src/hooks/useTradingHistoryDetailInfo.ts"
+    ]
+}

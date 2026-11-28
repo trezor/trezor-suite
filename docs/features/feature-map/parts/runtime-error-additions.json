@@ -1,0 +1,148 @@
+{
+    "area": "Generic application-error recovery proposal",
+    "new_features": [
+        {
+            "id": "app-settings.error-recovery",
+            "parent_id": "app-settings.application",
+            "name": "Recover from an application error",
+            "description": "Recover from an application render or startup-module failure by reloading Suite or clearing its local database and reloading.",
+            "level": "option",
+            "platforms": {
+                "desktop": "conditional",
+                "web": "conditional",
+                "mobile": "unknown"
+            },
+            "platform_notes": "Desktop/web show the shared generic Error component after an exception reaches Main’s error boundary; Electron module-load failure can also render it. Native composition does not establish an equivalent generic render-error recovery screen; its separately mapped MMKV storage-recovery alert must not be treated as this feature.",
+            "navigation": {
+                "desktop": "Automatic error fallback after an application render or startup-module failure > Reload window / Clear storage and reload",
+                "web": "Automatic error fallback after an application render failure > Reload window / Clear storage and reload",
+                "mobile": null
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/Error.tsx",
+                    "symbol": "Error"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/Error.tsx",
+                    "line": 12,
+                    "detail": "Generic fallback displays an error heading/message, Reload window (reloadApp), and Clear storage and reload (db.removeDatabase followed by reloadApp)."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/support/suite/ErrorBoundary.tsx",
+                    "line": 11,
+                    "detail": "React error boundary sends error.message to the generic Error component; the triggering exception need not be a database-loading failure."
+                },
+                {
+                    "kind": "route",
+                    "path": "suite-app/app/src/Main.tsx",
+                    "line": 38,
+                    "detail": "Shared desktop/web composition wraps router and application content in the generic boundary."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/desktop-app-renderer/src/createDesktopApp.tsx",
+                    "line": 91,
+                    "detail": "Electron startup also renders the shared ErrorScreen when native-module loading fails."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/support/suite/screens/ErrorScreen.tsx",
+                    "line": 11,
+                    "detail": "Startup ErrorScreen composes the same Error component in a theme provider."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/app/src/Preloader/Preloader.tsx",
+                    "line": 116,
+                    "detail": "Database corruption instead routes to DatabaseCorruptedModal, establishing a different trigger and user-facing recovery surface."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/app/src/Preloader/DatabaseCorruptedModal.tsx",
+                    "line": 10,
+                    "detail": "Database-specific recovery presents its own critical dialog and resetSuiteAppThunk action; it is already mapped as database-recovery."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/app/src/App.tsx",
+                    "line": 71,
+                    "detail": "Native root uses its own provider/navigation composition; the shared desktop/web Error component is not composed here."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/app/src/createNativeApp.tsx",
+                    "line": 73,
+                    "detail": "Native app wrapping provides no inspected custom generic recovery UI matching these two controls; native parity remains unknown."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/storage/src/mmkvStorage.ts",
+                    "line": 25,
+                    "detail": "Native Restart app/Clear app storage alert handles MMKV initialization failure and belongs to existing database-recovery, not proof of generic render-error recovery."
+                },
+                {
+                    "kind": "manual-test",
+                    "path": "suite/e2e/tests/manual/settings/application-reset.test.ts",
+                    "line": 30,
+                    "detail": "Adjacent ordinary Settings reset scenario supplies only weak ownership/domain evidence; it does not test the generic Error screen."
+                }
+            ],
+            "ownership": {
+                "team": "Growth",
+                "confidence": "inferred",
+                "basis": "Weak product-team estimate inherited from the Application maintenance domain and its reset manual TestStream.Growth; no accountable owner is explicitly declared for the generic fallback, and CODEOWNERS does not establish product ownership.",
+                "source_paths": [
+                    "CODEOWNERS",
+                    "suite/e2e/tests/manual/settings/application-reset.test.ts",
+                    "packages/suite/src/components/suite/Error.tsx"
+                ]
+            },
+            "conditions": [
+                "An error must reach the shared React error boundary, or Electron startup module loading must fail; ordinary error-free navigation does not display this screen.",
+                "The generic fallback may replace the current feature during rendering; it is not entered through the normal Settings reset control.",
+                "Reload window invokes reloadApp without deleting the database. Clear storage and reload invokes db.removeDatabase and then reloadApp; the component does not await deletion or use the comprehensive Settings reset thunk.",
+                "Native generic fallback parity is unknown after inspecting its root composition and storage recovery; the known MMKV-specific recovery remains mapped separately.",
+                "The original exception text can contain diagnostic input; capture only the authorized safe QA failure context and do not transcribe account/device values into map metadata."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "This source proposal makes no capture claim. The root runtime audit will attach its actually reached QA error-screen capture separately."
+            },
+            "related_ids": [
+                "app-settings.database-recovery",
+                "app-settings.reset",
+                "app-controls.reload"
+            ]
+        }
+    ],
+    "notes": [
+        "Distinct user-facing outcome: existing database-recovery covers explicit IndexedDB/MMKV initialization failures; this generic render/module-load fallback handles a different trigger and offers a non-destructive reload alternative alongside local-database deletion.",
+        "Existing app-settings.reset covers an ordinary Settings maintenance workflow and broader resetSuiteAppThunk behavior. Generic Error directly calls db.removeDatabase and reloadApp instead.",
+        "No dedicated automated or manual scenario asserting the generic Error screen/buttons was found in inspected Suite and native E2E/test sources. The adjacent manual Settings reset test is labeled only as ownership/domain evidence, not functional coverage.",
+        "Source-derived proposal only. The root audit reported an actually reached QA error state, but this agent did not execute the app, verify recovery actions, edit the main manifest or invent a runtime observation.",
+        "Parent IDs and related IDs intentionally reference existing canonical features for this additive extension."
+    ],
+    "reviewed_sources": [
+        "packages/suite/src/components/suite/Error.tsx",
+        "packages/suite/src/support/suite/ErrorBoundary.tsx",
+        "suite-app/app/src/Main.tsx",
+        "suite-app/desktop-app-renderer/src/createDesktopApp.tsx",
+        "packages/suite/src/support/suite/screens/ErrorScreen.tsx",
+        "suite-app/app/src/Preloader/Preloader.tsx",
+        "suite-app/app/src/Preloader/DatabaseCorruptedModal.tsx",
+        "suite-native-app/app/src/App.tsx",
+        "suite-native-app/app/src/createNativeApp.tsx",
+        "suite-native/storage/src/mmkvStorage.ts",
+        "suite/e2e/tests/manual/settings/application-reset.test.ts",
+        "packages/suite/package.json",
+        "suite-native-app/module-device-settings/package.json",
+        "CODEOWNERS"
+    ]
+}

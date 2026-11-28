@@ -1,0 +1,1533 @@
+{
+    "metadata": {
+        "title": "Trezor Suite model capability audit",
+        "created_at": "2026-11-15T07:52:18.043741+00:00",
+        "source_commit": "8d6be9edbf990465176d57b4abc007bac17ca5e6",
+        "baseline_feature_count": 569,
+        "baseline_ids_reviewed": 569,
+        "current_catalog_feature_count": 569,
+        "evidence_method": "Read implementation gates, composition, firmware compatibility config, manual scenarios and automated test/fixture sources; no application, emulator or hardware actions performed by this audit.",
+        "runtime_manifest": "../parts/runtime-observations.json",
+        "runtime_manifest_snapshot_observation_count": 31,
+        "runtime_model_observation_ids": {
+            "T1B1": [],
+            "T2T1": [],
+            "T2B1": [],
+            "T3B1": [],
+            "T3T1": [
+                "runtime-web-t3t1-authenticity-warning",
+                "runtime-web-t3t1-device-detection",
+                "runtime-web-t3t1-device-doubts",
+                "runtime-web-t3t1-onboarding-firmware",
+                "runtime-web-t3t1-controls-tutorial",
+                "runtime-web-t3t1-create-or-recover",
+                "runtime-web-t3t1-backup-type",
+                "runtime-web-t3t1-legacy-backup-types",
+                "runtime-web-t3t1-backup-safety-guide",
+                "runtime-web-t3t1-defer-backup-confirmation",
+                "runtime-web-t3t1-pin-setup",
+                "runtime-web-t3t1-skip-pin-confirmation",
+                "runtime-web-t3t1-onboarding-complete",
+                "runtime-web-t3t1-initial-network-selection",
+                "runtime-web-t3t1-funded-dashboard",
+                "runtime-web-t3t1-global-send-selection",
+                "runtime-web-t3t1-bitcoin-send-form",
+                "runtime-web-t3t1-coin-control",
+                "runtime-web-t3t1-bitcoin-fee-presets",
+                "runtime-web-t3t1-bitcoin-custom-fee",
+                "runtime-web-t3t1-send-options",
+                "runtime-web-t3t1-locktime-and-message",
+                "runtime-web-t3t1-locktime-block",
+                "runtime-web-t3t1-raw-transaction",
+                "runtime-web-t3t1-global-receive",
+                "runtime-web-t3t1-receive-account-picker",
+                "runtime-web-t3t1-bitcoin-receive",
+                "runtime-web-t3t1-receive-device-verification",
+                "runtime-web-t3t1-receive-address-device-prompt"
+            ],
+            "T3W1": []
+        },
+        "confidence_semantics": {
+            "high": "Explicit executable model/capability/version gate or composition evidence.",
+            "medium": "Gate is explicit, but a product/model assignment is inferred from tests/fixtures instead of an exhaustive runtime allowlist."
+        },
+        "scope_notes": [
+            "Preserves every baseline feature; model variants normally enrich conditions rather than creating duplicate feature nodes.",
+            "Source minima are compatibility thresholds, not historical firmware releases or hardware launch claims. A missing config key is unspecified, never a claim of universal compatibility.",
+            "Test source and fixtures are intended states, never successful test-run evidence. Fixtures can omit capabilities and may predate current firmware.",
+            "Runtime model observations are linked only from the root-maintained manifest snapshot. They document reached states, not comprehensive model or firmware-boundary verification.",
+            "No seed words, PINs, passphrases, addresses, balances, device labels or account fixture values are copied."
+        ],
+        "sources": {
+            "packages/connect-core/src/data/config.ts": "bcdda2181e03f4b9f2394da9269564471a3d1aefeea32eace543072acf84049a",
+            "packages/connect-core/src/utils/deviceFeaturesUtils.ts": "7efee4a97eec14b13a39b24f11b802eab29c804a46a4a975b4196a60b72c605c",
+            "packages/connect-data/files/coins.json": "1122089b81cdeaa2df4223eb151222fc0e02eb07b32c654969cf897e94eea570",
+            "packages/device-utils/src/models.ts": "f51dfb071e0333487039d6d945e74a3edb14a09220476cf3baced65d7658862c",
+            "packages/suite/src/components/firmware/ReconnectDevicePrompt.tsx": "4f4f094a663ee1cb9378f646b41966c54087c5fe05836d05663c3c5deb503a98",
+            "packages/suite/src/components/onboarding/Hologram.tsx": "b95c0b460943545874dec64c4d1ba5c15092e5a17eee7a79efda68cca06a4b31",
+            "packages/suite/src/components/suite/HomescreenGallery.tsx": "2c70d9b0225096c12ee7ae009a2cb00f40f527967e2f124b895056eecec60544",
+            "packages/suite/src/config/onboarding/steps.ts": "6495338c5e6a3a919f88057a371512a56f384ba55a55c1aaea809e2e2577506f",
+            "packages/suite/src/utils/device/bootloader.ts": "b43b731a718ed44319cddaa03ed3fd6524318f1e3a6f73668a2fe15fe9d6b684",
+            "packages/suite/src/utils/suite/homescreen.ts": "bea50a814b6f465e13388a2b10ab5a659c1f9b9e5ea784fd92e0f54876ff5b46",
+            "packages/suite/src/views/onboarding/steps/BackupTypeStep.tsx": "df3c3d3000857eb836f0379ecf0836fc754000f937f95067f96919cda9aaabd6",
+            "packages/suite/src/views/onboarding/steps/PinStep.tsx": "da50dc8c251fd6d604a7dd0578f947de3773ae660d4d7b450aed9d97fe17b168",
+            "packages/suite/src/views/onboarding/steps/SecurityStep.tsx": "d3049b504e4b68090e4fe1f2e534d953142ff608114c6209d9362fc639396017",
+            "packages/suite/src/views/onboarding/steps/SelectBackupType/ShamirOptions.tsx": "c8bd2533a1bd96c80438c615b83e50e387f88243306c665a52279d1610f1892f",
+            "packages/suite/src/views/recovery/Recovery.tsx": "6e58de78d390bb7b330aa450e606803770afb0333b55cd9f67f2837194aaf2ab",
+            "packages/suite/src/views/recovery/steps/InitialStep.tsx": "e1ac5a4965fb0edd4b70fabb41616e1eb3c4878236984f2d034b8b52bf69e889",
+            "packages/suite/src/views/settings/SettingsDevice/AutoLock.tsx": "448fa20a20774be67fefd8f5e3bbd3a071365c8cf07e1348868cef4cc08a7a5b",
+            "packages/suite/src/views/settings/SettingsDevice/Brightness.tsx": "875e393f97bd26e24fd8dc6787c0df8989ec22532d21ca3ca06db680588f7b88",
+            "packages/suite/src/views/settings/SettingsDevice/ChangeLanguage.tsx": "1d3c62c4567627c1ac446b9631868b04cd248e6dac41f844573b6395f66483c2",
+            "packages/suite/src/views/settings/SettingsDevice/DisplayRotation.tsx": "9d4584137001651483ef68364fe30c72042cb1a4c3656d9dba145f58d42aed51",
+            "packages/suite/src/views/settings/SettingsDevice/FirmwareTypeChange.tsx": "b5ef4f11b43059467a76d54aca33fa64ef7dafbd3c78b10243ba8e4879f4cb68",
+            "packages/suite/src/views/settings/SettingsDevice/ForgetDevice/ForgetDeviceFlows.tsx": "0ab677b348c8ebb5893cf4d80bd598a7a71ec64e799c9a4fb0b55c940577a918",
+            "packages/suite/src/views/settings/SettingsDevice/ForgetDevice/ForgetDeviceModal.tsx": "2c45ca2051aa4b55727db8699720489815928a7ff6d02e0d0c2c51712e946d2a",
+            "packages/suite/src/views/settings/SettingsDevice/ForgetDevice/OsAndTrezorCleanupModal.tsx": "5d8733d797d4e8164248ef7c1282da5d14877f53b7a153bbe7431cf13bb417e7",
+            "packages/suite/src/views/settings/SettingsDevice/HapticFeedback.tsx": "e32ecb0826a9a9ecf0e1d6fabb0272ce0a8fdf34ef6123786a9c922b623cf7bd",
+            "packages/suite/src/views/settings/SettingsDevice/ThpAutoconnect.tsx": "4aed480711baed26531c6000be8a1b4d24e0f5a510e43232cac568990fed15f1",
+            "suite-app/module-settings/src/pages/SettingsDevicePage.tsx": "35babad2d52256ad0e5b2da515325f47af9dfa926952a8c78b0da1a6aaa69b0f",
+            "suite-app/web-app/src/support/createWebDesktopApi.ts": "c0875a4dd59b605be2dc8fcdf154c9f6723cd62cb3d19dbc2086c8456e2fcf56",
+            "suite-common/backup/src/shamir.test.ts": "fa13c1885871300d93ac1baad3584a3316efbec439deb0bd732b59220319ea5d",
+            "suite-common/backup/src/shamir.ts": "51673511b2e537f36cbf441e3e16b73fde153e9add4edaf09e1f2b52d2e3276f",
+            "suite-common/device-authenticity/src/deviceAuthenticityConstants.ts": "966c40d96fb9a5c590459349d108e61238c5ab820824c683b3d79b04c28d2bef",
+            "suite-common/device-authenticity/src/utils.ts": "311012e74b9afc1f502b485147a61505c380027ea09c8f1947c4b4dafa8ac42d",
+            "suite-common/device/src/deviceConstants.ts": "d8cd939ee6f99cefdfc415b8fb6df4654360f0393b638bac38e1f1bd16e6a977",
+            "suite-common/device/src/deviceSelectors.ts": "cfbd7ab707dda21b03b085e0a97af1b3bac69182b2bfa0fcd9d168681df79b42",
+            "suite-common/firmware/src/hooks/useFirmwareInstallation.ts": "5ae575f1f178680b2112949162667bb6aa4cc972aaad19ccc063739789cce54a",
+            "suite-common/suite-utils/src/device.ts": "779aac006d860f32063c5a09ce9c2c6209ffd236980e46827b9f4fe7af4d1c7c",
+            "suite-native-app/app/e2e/fixtures/btcDiscoveryFinishedStateT3T1.ts": "93d091e4613daab92ee1d1f9ede9b15e8ffd8a2f711445e5bfdf7a8689f975f6",
+            "suite-native-app/module-device-onboarding/src/hooks/useNavigateToNextScreenAfterFirmwareInstallation.ts": "023c94af7af864b48cd2ffb7f13c1a50b05535cd3803484edfe858aa173452dc",
+            "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx": "e7699b7308411bf0c24e0cb32088d50784f915ab44f0449a3124e025885c2eaf",
+            "suite-native-app/module-device-settings/src/hooks/useForgetDevice.ts": "f768f5865be03f6d744a6e7a2b1ecdc471982c3f1689598c587ea13fb2460975",
+            "suite-native-app/module-device-settings/src/screens/ConfirmFirmwareUpdateScreen.tsx": "98ef1df2eeeda3d58efc0d63454825d431c42fa63f793de888fb926361084a73",
+            "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx": "df67e6544b9ba22cc37dcdd5d46604c7bb9d3f16bd2c4aae14e562ab22e16758",
+            "suite-native-app/module-device-settings/src/screens/ForgetDeviceGuideScreen.tsx": "cdf3a87f4ee77f5f4cd1950ee6b6976dca5b988d02519545a1302ab70141b98b",
+            "suite-native/device-authorization/src/screens/DeviceConnectionGuardScreen.tsx": "d037dc8f5fd8a6f9cce715541207dd8de0e763a839564f25fd75340a97957da6",
+            "suite-native/device/src/__fixtures__/deviceConnectionFixtures.ts": "8c3356f3477b4220a58b5c836fffbc15e0e796f3f6d8f84e39ba6f1c78d90930",
+            "suite-native/device/src/deviceConnectionMiddleware.test.ts": "079b388286524d9d73b3067f9c2f54f301730a50405c613f721e50c6bb551da7",
+            "suite-native/device/src/hooks/useDetectDeviceError.tsx": "f6d061a79f8431354f6335da9376f0b2c190c778310d447af18582f237c70806",
+            "suite-native/device/src/utils.ts": "f30b689c736e836f9488089e46b0c2cf83ea7b5db711151a7cfbd397c73e2fe1",
+            "suite/bluetooth/src/createOpenSystemSettings.test.ts": "06b1cc52f45feec0b205e49b6f4c332ca83c1506bb4a42d2c9c3a9c82263e676",
+            "suite/e2e/fixtures/remembered-wallet-db-lite.json": "2315b4665e58da3c7d94f9647a31da0fde26e739e1e4115c86cfb4798df8b34d",
+            "suite/e2e/tests/backup/t3t1-t2t1-create-additional-share.test.ts": "512318ca1415101bed3227915a880397f68b4c371da3f9999e00710c5c537c87",
+            "suite/e2e/tests/manual/connect/bluetooth-pairing.test.ts": "be81c173d785f9779a8e827033a6812f623a2a76b18c73efb24c18b974282f42",
+            "suite/e2e/tests/manual/firmware/bootloader.test.ts": "229b2a909a36f119babe48ae452b989ad14dbe2ef874b53758ab49db9bd75774",
+            "suite/e2e/tests/manual/firmware/firmware-switch.test.ts": "14ba0043ecc18206e6ceb469492d1338312b5a0fca1210d765c3d402ee0a598b",
+            "suite/e2e/tests/manual/firmware/firmware-update.test.ts": "3048010e268e2ded55986374ff8d395710980ba93e59e356d44d4368d06850c7",
+            "suite/e2e/tests/manual/settings/device-language.test.ts": "dd5fda8d6e40f754732fa537d1daedf2219dfeb97c93f12ca698b1f2630bb787",
+            "suite/e2e/tests/manual/settings/forget-device.test.ts": "21feffcbc135739996e0f76c4b4a9b490fa27cb6e372de825f0726bfc58d37df",
+            "suite/e2e/tests/manual/settings/pin-and-wipe-code.test.ts": "ac19f2146c1f3a571245a5bfc6afb4e31c5699e7bd639c2684ea2b5cc80d476b",
+            "suite/e2e/tests/onboarding/authenticity-check.test.ts": "03aba5f93dcbda88c16a05e0298f1ef33f1a60677fff467498a27717ee4cd8c4",
+            "suite/e2e/tests/onboarding/t1b1/t1b1-recovery-advanced.test.ts": "e0e3dfbb14abb3cedd8545030c93c900d27fe892cd8a16c2dc3e6bac62ebeec6",
+            "suite/e2e/tests/settings/forget-device.test.ts": "e0efab8142162efaef61df671a558c63f613f8b7542c7bad8b285cfc4ffa70cd",
+            "suite/firmware-upgrade/src/useFirmwareDesktopUpdate.ts": "3eaabebdd3debf85217363cd2e530cabc263548eee4b243080f3bde570e3e719",
+            "suite/settings/src/settingsSelectors.ts": "9f1d63b3b1eb8dcfb060be1dc51b58d3c051b3e97f3dde4d7f4339c54b21074e"
+        }
+    },
+    "models": [
+        {
+            "id": "T1B1",
+            "name": "Trezor Model One",
+            "native_minimum_firmware": "1.12.1",
+            "native_setup_supported": false,
+            "runtime_observation_ids": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/device-utils/src/models.ts",
+                    "line": 23,
+                    "repository_link": "../../../../packages/device-utils/src/models.ts#L23",
+                    "detail": "Internal identifiers map to commercial product names; T2B1 and T3B1 both name Safe 3."
+                }
+            ]
+        },
+        {
+            "id": "T2T1",
+            "name": "Trezor Model T",
+            "native_minimum_firmware": "2.6.3",
+            "native_setup_supported": true,
+            "runtime_observation_ids": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/device-utils/src/models.ts",
+                    "line": 23,
+                    "repository_link": "../../../../packages/device-utils/src/models.ts#L23",
+                    "detail": "Internal identifiers map to commercial product names; T2B1 and T3B1 both name Safe 3."
+                }
+            ]
+        },
+        {
+            "id": "T2B1",
+            "name": "Trezor Safe 3 (original internal variant)",
+            "native_minimum_firmware": "2.6.3",
+            "native_setup_supported": true,
+            "runtime_observation_ids": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/device-utils/src/models.ts",
+                    "line": 23,
+                    "repository_link": "../../../../packages/device-utils/src/models.ts#L23",
+                    "detail": "Internal identifiers map to commercial product names; T2B1 and T3B1 both name Safe 3."
+                }
+            ]
+        },
+        {
+            "id": "T3B1",
+            "name": "Trezor Safe 3",
+            "native_minimum_firmware": "2.6.3",
+            "native_setup_supported": true,
+            "runtime_observation_ids": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/device-utils/src/models.ts",
+                    "line": 23,
+                    "repository_link": "../../../../packages/device-utils/src/models.ts#L23",
+                    "detail": "Internal identifiers map to commercial product names; T2B1 and T3B1 both name Safe 3."
+                }
+            ]
+        },
+        {
+            "id": "T3T1",
+            "name": "Trezor Safe 5",
+            "native_minimum_firmware": "2.6.3",
+            "native_setup_supported": true,
+            "runtime_observation_ids": [
+                "runtime-web-t3t1-authenticity-warning",
+                "runtime-web-t3t1-device-detection",
+                "runtime-web-t3t1-device-doubts",
+                "runtime-web-t3t1-onboarding-firmware",
+                "runtime-web-t3t1-controls-tutorial",
+                "runtime-web-t3t1-create-or-recover",
+                "runtime-web-t3t1-backup-type",
+                "runtime-web-t3t1-legacy-backup-types",
+                "runtime-web-t3t1-backup-safety-guide",
+                "runtime-web-t3t1-defer-backup-confirmation",
+                "runtime-web-t3t1-pin-setup",
+                "runtime-web-t3t1-skip-pin-confirmation",
+                "runtime-web-t3t1-onboarding-complete",
+                "runtime-web-t3t1-initial-network-selection",
+                "runtime-web-t3t1-funded-dashboard",
+                "runtime-web-t3t1-global-send-selection",
+                "runtime-web-t3t1-bitcoin-send-form",
+                "runtime-web-t3t1-coin-control",
+                "runtime-web-t3t1-bitcoin-fee-presets",
+                "runtime-web-t3t1-bitcoin-custom-fee",
+                "runtime-web-t3t1-send-options",
+                "runtime-web-t3t1-locktime-and-message",
+                "runtime-web-t3t1-locktime-block",
+                "runtime-web-t3t1-raw-transaction",
+                "runtime-web-t3t1-global-receive",
+                "runtime-web-t3t1-receive-account-picker",
+                "runtime-web-t3t1-bitcoin-receive",
+                "runtime-web-t3t1-receive-device-verification",
+                "runtime-web-t3t1-receive-address-device-prompt"
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/device-utils/src/models.ts",
+                    "line": 23,
+                    "repository_link": "../../../../packages/device-utils/src/models.ts#L23",
+                    "detail": "Internal identifiers map to commercial product names; T2B1 and T3B1 both name Safe 3."
+                }
+            ]
+        },
+        {
+            "id": "T3W1",
+            "name": "Trezor Safe 7",
+            "native_minimum_firmware": "2.6.3",
+            "native_setup_supported": true,
+            "runtime_observation_ids": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/device-utils/src/models.ts",
+                    "line": 23,
+                    "repository_link": "../../../../packages/device-utils/src/models.ts#L23",
+                    "detail": "Internal identifiers map to commercial product names; T2B1 and T3B1 both name Safe 3."
+                }
+            ]
+        }
+    ],
+    "capabilities": [
+        {
+            "id": "input-method",
+            "name": "PIN, passphrase and recovery input surface",
+            "feature_ids": [
+                "onboarding.pin",
+                "connection.pin-unlock",
+                "onboarding.recovery.on-device",
+                "wallet-access.passphrase.device"
+            ],
+            "navigation": "Device onboarding / unlock prompt / Recover wallet",
+            "source_model_expectations": {
+                "T1B1": "Host PIN matrix; Model One recovery has host-assisted standard/advanced paths.",
+                "T2T1": "Touchscreen input.",
+                "T2B1": "On-device button input.",
+                "T3B1": "On-device button input.",
+                "T3T1": "Touchscreen input.",
+                "T3W1": "Touchscreen input."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "PIN entry and recovery depend on requested device workflow; never capture entered values.",
+                "On-device passphrase entry additionally depends on Capability_PassphraseEntry, not merely touchscreen/button hardware."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": ["runtime-web-t3t1-pin-setup"],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/suite-utils/src/device.ts",
+                    "line": 479,
+                    "repository_link": "../../../../suite-common/suite-utils/src/device.ts#L479",
+                    "detail": "Explicit button-only map: T1B1/T2B1/T3B1; touch models are T2T1/T3T1/T3W1."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/recovery/steps/InitialStep.tsx",
+                    "line": 11,
+                    "repository_link": "../../../../packages/suite/src/views/recovery/steps/InitialStep.tsx#L11",
+                    "detail": "Recovery instructions differ between computer, buttons and touchscreen."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/onboarding/steps/PinStep.tsx",
+                    "line": 56,
+                    "repository_link": "../../../../packages/suite/src/views/onboarding/steps/PinStep.tsx#L56",
+                    "detail": "Model One emits PIN matrix states; touchscreen device PIN setup stays on hardware."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/device/src/deviceSelectors.ts",
+                    "line": 290,
+                    "repository_link": "../../../../suite-common/device/src/deviceSelectors.ts#L290",
+                    "detail": "On-device passphrase selector checks capability."
+                }
+            ],
+            "notes": []
+        },
+        {
+            "id": "default-backup",
+            "name": "Default new-wallet backup",
+            "feature_ids": [
+                "onboarding.new-wallet.backup-type",
+                "onboarding.new-wallet.12-words",
+                "onboarding.new-wallet.24-words",
+                "onboarding.new-wallet.single-share"
+            ],
+            "navigation": "Device onboarding > Create wallet > Backup type",
+            "source_model_expectations": {
+                "T1B1": "24-word BIP39; backup-type chooser automatically skipped.",
+                "T2T1": "12-word BIP39 by default.",
+                "T2B1": "12 words for original unit_packaging=0; otherwise single-share SLIP39.",
+                "T3B1": "Single-share SLIP39.",
+                "T3T1": "Single-share SLIP39.",
+                "T3W1": "Single-share SLIP39."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "Single-share option requires firmware >=2.7.1 in the desktop/web selector.",
+                "Default differs from available alternatives; packaging must be recorded for T2B1."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": [
+                "runtime-web-t3t1-backup-type",
+                "runtime-web-t3t1-legacy-backup-types"
+            ],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/device/src/deviceSelectors.ts",
+                    "line": 553,
+                    "repository_link": "../../../../suite-common/device/src/deviceSelectors.ts#L553",
+                    "detail": "Model and original Safe 3 packaging determine default."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/onboarding/steps/BackupTypeStep.tsx",
+                    "line": 19,
+                    "repository_link": "../../../../packages/suite/src/views/onboarding/steps/BackupTypeStep.tsx#L19",
+                    "detail": "Model One cannot choose backup type and auto-continues."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/onboarding/steps/SelectBackupType/ShamirOptions.tsx",
+                    "line": 44,
+                    "repository_link": "../../../../packages/suite/src/views/onboarding/steps/SelectBackupType/ShamirOptions.tsx#L44",
+                    "detail": "Single-share creation disabled below this version."
+                }
+            ],
+            "notes": []
+        },
+        {
+            "id": "shamir-extra-shares",
+            "name": "Additional SLIP39 backup shares",
+            "feature_ids": ["device-settings.backup.multi-share"],
+            "navigation": "Settings > Device > Wallet backup > Create additional backup",
+            "source_model_expectations": {
+                "T1B1": "Requires Capability_Shamir and an extendable SLIP39 backup; model name alone is insufficient.",
+                "T2T1": "Requires Capability_Shamir and an extendable SLIP39 backup; model name alone is insufficient.",
+                "T2B1": "Requires Capability_Shamir and an extendable SLIP39 backup; model name alone is insufficient.",
+                "T3B1": "Requires Capability_Shamir and an extendable SLIP39 backup; model name alone is insufficient.",
+                "T3T1": "Requires Capability_Shamir and an extendable SLIP39 backup; model name alone is insufficient.",
+                "T3W1": "Requires Capability_Shamir and an extendable SLIP39 backup; model name alone is insufficient."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "Wallet must have extendable Slip39_Single/Basic/Advanced_Extendable backup type.",
+                "Non-extendable SLIP39 and BIP39 do not satisfy selector.",
+                "Model One normal UI does not offer Shamir new-wallet choice."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": [],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/backup/src/shamir.ts",
+                    "line": 15,
+                    "repository_link": "../../../../suite-common/backup/src/shamir.ts#L15",
+                    "detail": "Capability and backup-type gates."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite-common/backup/src/shamir.test.ts",
+                    "line": 14,
+                    "repository_link": "../../../../suite-common/backup/src/shamir.test.ts#L14",
+                    "detail": "Unit scenarios cover capability absence and non-extendable backups."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite/e2e/tests/backup/t3t1-t2t1-create-additional-share.test.ts",
+                    "line": 7,
+                    "repository_link": "../../../../suite/e2e/tests/backup/t3t1-t2t1-create-additional-share.test.ts#L7",
+                    "detail": "Additional-share scenario for T3T1/T2T1; source inspection only."
+                }
+            ],
+            "notes": []
+        },
+        {
+            "id": "recovery-standard-advanced",
+            "name": "Model One recovery mode selection",
+            "feature_ids": [
+                "onboarding.recovery.standard",
+                "onboarding.recovery.advanced",
+                "onboarding.recovery.word-count",
+                "device-settings.check-backup"
+            ],
+            "navigation": "Recover wallet or Settings > Device > Check backup",
+            "source_model_expectations": {
+                "T1B1": "24 words offers standard/advanced; 12/18 words automatically use advanced.",
+                "T2T1": "Word count and words entered on device.",
+                "T2B1": "Word count and words entered using device buttons.",
+                "T3B1": "Word count and words entered using device buttons.",
+                "T3T1": "Word count and words entered on device.",
+                "T3W1": "Word count and words entered on device."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "This distinction applies to recovery and backup-check workflows; Shamir recovery additionally requires Capability_Shamir."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": [],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/recovery/Recovery.tsx",
+                    "line": 209,
+                    "repository_link": "../../../../packages/suite/src/views/recovery/Recovery.tsx#L209",
+                    "detail": "Backup check skips recovery-type selection for smaller Model One backups."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite/e2e/tests/onboarding/t1b1/t1b1-recovery-advanced.test.ts",
+                    "line": 51,
+                    "repository_link": "../../../../suite/e2e/tests/onboarding/t1b1/t1b1-recovery-advanced.test.ts#L51",
+                    "detail": "Onboarding test explicitly covers automatic advanced mode for 12 words."
+                }
+            ],
+            "notes": []
+        },
+        {
+            "id": "hardware-authenticity",
+            "name": "Hardware authenticity verification",
+            "feature_ids": ["onboarding.authenticity", "device-settings.authenticity-check"],
+            "navigation": "Device onboarding or Settings > Device > Authenticate",
+            "source_model_expectations": {
+                "T1B1": "Not supported.",
+                "T2T1": "Not supported.",
+                "T2B1": "Supported; Optiga verification.",
+                "T3B1": "Supported; Optiga verification.",
+                "T3T1": "Supported; firmware >=2.8.0.",
+                "T3W1": "Supported; Optiga and Tropic; MCU proof is firmware-dependent."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "Authentication also depends on network/configuration and enabled security checks.",
+                "T3W1 Tropic gate starts at 2.9.3 (first production firmware); MCU/chunked proof gate is >=2.12.1."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": [],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/device-authenticity/src/deviceAuthenticityConstants.ts",
+                    "line": 3,
+                    "repository_link": "../../../../suite-common/device-authenticity/src/deviceAuthenticityConstants.ts#L3",
+                    "detail": "Explicit model support map."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/connect-core/src/data/config.ts",
+                    "line": 139,
+                    "repository_link": "../../../../packages/connect-core/src/data/config.ts#L139",
+                    "detail": "T3T1 authentication requires 2.8.0; T1B1/T2T1 unsupported."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/connect-core/src/data/config.ts",
+                    "line": 147,
+                    "repository_link": "../../../../packages/connect-core/src/data/config.ts#L147",
+                    "detail": "Tropic required for production Safe 7 from 2.9.3."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/connect-core/src/data/config.ts",
+                    "line": 159,
+                    "repository_link": "../../../../packages/connect-core/src/data/config.ts#L159",
+                    "detail": "Executable Safe 7 MCU/chunked proof boundary is 2.12.1."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite/e2e/tests/onboarding/authenticity-check.test.ts",
+                    "line": 6,
+                    "repository_link": "../../../../suite/e2e/tests/onboarding/authenticity-check.test.ts#L6",
+                    "detail": "Existing test tags cover Safe 3/Safe 5; comment explicitly leaves Safe 7 expansion outstanding."
+                }
+            ],
+            "notes": [
+                "suite-common/device-authenticity/src/utils.ts contains a stale MCU >=2.11.2 comment; executable Connect config currently uses >=2.12.1. Do not use the comment as the effective boundary."
+            ]
+        },
+        {
+            "id": "controls-tutorial",
+            "name": "On-device controls tutorial",
+            "feature_ids": ["onboarding.tutorial"],
+            "navigation": "Device onboarding > Device controls tutorial",
+            "source_model_expectations": {
+                "T1B1": "Excluded.",
+                "T2T1": "Excluded.",
+                "T2B1": "Included.",
+                "T3B1": "Included.",
+                "T3T1": "Included from firmware 2.8.0.",
+                "T3W1": "Included."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "Desktop/web explicit supportedModels list; native follows deviceUnavailableCapabilities.tutorial."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": ["runtime-web-t3t1-controls-tutorial"],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/config/onboarding/steps.ts",
+                    "line": 56,
+                    "repository_link": "../../../../packages/suite/src/config/onboarding/steps.ts#L56",
+                    "detail": "Explicit model and Safe 5 minimum firmware list."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/connect-core/src/data/config.ts",
+                    "line": 130,
+                    "repository_link": "../../../../packages/connect-core/src/data/config.ts#L130",
+                    "detail": "Connect excludes Model One/Model T and requires Safe 5 2.8.0."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/hooks/useNavigateToNextScreenAfterFirmwareInstallation.ts",
+                    "line": 29,
+                    "repository_link": "../../../../suite-native-app/module-device-onboarding/src/hooks/useNavigateToNextScreenAfterFirmwareInstallation.ts#L29",
+                    "detail": "Native routes according to unavailable capabilities."
+                }
+            ],
+            "notes": []
+        },
+        {
+            "id": "native-setup",
+            "name": "Native create/recover setup and unsupported-device handoff",
+            "feature_ids": ["onboarding", "onboarding.recovery"],
+            "navigation": "Native > Connect device > Device onboarding",
+            "source_model_expectations": {
+                "T1B1": "Native setup unsupported; initialized-device use is a separate firmware-gated path; uninitialized device offers Suite web handoff.",
+                "T2T1": "Setup supported.",
+                "T2B1": "Setup supported.",
+                "T3B1": "Setup supported.",
+                "T3T1": "Setup supported.",
+                "T3W1": "Setup supported."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "Native minimum supported firmware utility: Model One 1.12.1; all listed core models 2.6.3. These are utility thresholds, not claims that firmware versions predate a hardware launch.",
+                "An available transport and OS permissions are still required."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": [
+                "runtime-web-t3t1-device-detection",
+                "runtime-web-t3t1-device-doubts",
+                "runtime-web-t3t1-create-or-recover"
+            ],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/utils.ts",
+                    "line": 23,
+                    "repository_link": "../../../../suite-native/device/src/utils.ts#L23",
+                    "detail": "Native baseline firmware utility thresholds."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/utils.ts",
+                    "line": 50,
+                    "repository_link": "../../../../suite-native/device/src/utils.ts#L50",
+                    "detail": "Explicit setup support switch excludes Model One/UNKNOWN."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/hooks/useDetectDeviceError.tsx",
+                    "line": 181,
+                    "repository_link": "../../../../suite-native/device/src/hooks/useDetectDeviceError.tsx#L181",
+                    "detail": "Unsupported uninitialized devices offer Suite web setup guidance."
+                }
+            ],
+            "notes": []
+        },
+        {
+            "id": "packaging-check",
+            "name": "Packaging, seal and branded-wrap guidance",
+            "feature_ids": ["mobile.device-onboarding.security", "onboarding.authenticity"],
+            "navigation": "Device onboarding > Security / packaging check",
+            "source_model_expectations": {
+                "T1B1": "Dedicated Model One seal animation.",
+                "T2T1": "Model-specific seal instructions.",
+                "T2B1": "Original packaging has extra seal explanation.",
+                "T3B1": "Safe 3 current seal instructions.",
+                "T3T1": "Safe 5 seal instructions.",
+                "T3W1": "Safe 7 seal instructions and branded plastic-wrap check."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "T2B1 packaging distinction is unit_packaging absent/0.",
+                "Branded plastic-wrap check applies only to T3W1 in current constants."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": [],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/onboarding/Hologram.tsx",
+                    "line": 21,
+                    "repository_link": "../../../../packages/suite/src/components/onboarding/Hologram.tsx#L21",
+                    "detail": "Old Safe 3 packaging branch and Model One dedicated animation."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/device-authenticity/src/deviceAuthenticityConstants.ts",
+                    "line": 14,
+                    "repository_link": "../../../../suite-common/device-authenticity/src/deviceAuthenticityConstants.ts#L14",
+                    "detail": "Only Safe 7 asks for branded plastic wrapping."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx",
+                    "line": 27,
+                    "repository_link": "../../../../suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx#L27",
+                    "detail": "Native packaging steps consume branded-wrap condition."
+                }
+            ],
+            "notes": []
+        },
+        {
+            "id": "display-rotation",
+            "name": "Display orientation",
+            "feature_ids": ["device-settings.rotation"],
+            "navigation": "Settings > Device > Personalization > Display orientation",
+            "source_model_expectations": {
+                "T1B1": "Hidden.",
+                "T2T1": "North/East/South/West.",
+                "T2B1": "Hidden.",
+                "T3B1": "Hidden.",
+                "T3T1": "North/East/South/West.",
+                "T3W1": "Hidden in current Suite control."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "Explicit model gate; display_rotation feature presence does not establish support.",
+                "Native device settings composition does not expose this desktop/web control."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": [],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/DisplayRotation.tsx",
+                    "line": 59,
+                    "repository_link": "../../../../packages/suite/src/views/settings/SettingsDevice/DisplayRotation.tsx#L59",
+                    "detail": "Only Model T and Safe 5 render the control."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
+                    "line": 239,
+                    "repository_link": "../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L239",
+                    "detail": "Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards."
+                }
+            ],
+            "notes": []
+        },
+        {
+            "id": "brightness",
+            "name": "Screen brightness adjustment",
+            "feature_ids": ["device-settings.brightness"],
+            "navigation": "Settings > Device > Personalization > Screen brightness",
+            "source_model_expectations": {
+                "T1B1": "Visible only when firmware advertises Capability_Brightness; adjustment runs on Trezor.",
+                "T2T1": "Visible only when firmware advertises Capability_Brightness; adjustment runs on Trezor.",
+                "T2B1": "Visible only when firmware advertises Capability_Brightness; adjustment runs on Trezor.",
+                "T3B1": "Visible only when firmware advertises Capability_Brightness; adjustment runs on Trezor.",
+                "T3T1": "Visible only when firmware advertises Capability_Brightness; adjustment runs on Trezor.",
+                "T3W1": "Visible only when firmware advertises Capability_Brightness; adjustment runs on Trezor."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "No hardcoded Suite model allowlist or numerical minimum is present in the control.",
+                "Source fixtures demonstrate brightness on T3T1 and T3W1, but fixture absence cannot prove exclusion on another firmware/model.",
+                "Native settings composition does not expose a brightness control."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": [],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/Brightness.tsx",
+                    "line": 15,
+                    "repository_link": "../../../../packages/suite/src/views/settings/SettingsDevice/Brightness.tsx#L15",
+                    "detail": "Capability-driven control calls setBrightness with no explicit value to open device adjustment."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite-native-app/app/e2e/fixtures/btcDiscoveryFinishedStateT3T1.ts",
+                    "line": 216,
+                    "repository_link": "../../../../suite-native-app/app/e2e/fixtures/btcDiscoveryFinishedStateT3T1.ts#L216",
+                    "detail": "Safe 5 fixture advertises brightness; fixture evidence only."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite/e2e/fixtures/remembered-wallet-db-lite.json",
+                    "line": 4348,
+                    "repository_link": "../../../../suite/e2e/fixtures/remembered-wallet-db-lite.json#L4348",
+                    "detail": "Safe 7 remembered-device fixture advertises brightness."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
+                    "line": 239,
+                    "repository_link": "../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L239",
+                    "detail": "Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards."
+                }
+            ],
+            "notes": ["Hardware light output has not been verified by this audit."]
+        },
+        {
+            "id": "haptics",
+            "name": "Haptic feedback toggle",
+            "feature_ids": ["device-settings.haptics"],
+            "navigation": "Settings > Device > Personalization > Haptic feedback",
+            "source_model_expectations": {
+                "T1B1": "Visible only when firmware advertises Capability_Haptic.",
+                "T2T1": "Visible only when firmware advertises Capability_Haptic.",
+                "T2B1": "Visible only when firmware advertises Capability_Haptic.",
+                "T3B1": "Visible only when firmware advertises Capability_Haptic.",
+                "T3T1": "Visible only when firmware advertises Capability_Haptic.",
+                "T3W1": "Visible only when firmware advertises Capability_Haptic."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "Suite checks the capability; no model allowlist or numerical minimum exists in this control.",
+                "Safe 7 remembered-device fixture includes Haptic. Some older Safe 5 fixtures omit it; do not infer permanent hardware support or absence from that fixture.",
+                "Native settings composition does not expose the toggle."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": [],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/HapticFeedback.tsx",
+                    "line": 19,
+                    "repository_link": "../../../../packages/suite/src/views/settings/SettingsDevice/HapticFeedback.tsx#L19",
+                    "detail": "Visibility checks capability and toggle applies haptic_feedback."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite/e2e/fixtures/remembered-wallet-db-lite.json",
+                    "line": 4346,
+                    "repository_link": "../../../../suite/e2e/fixtures/remembered-wallet-db-lite.json#L4346",
+                    "detail": "Safe 7 fixture includes Haptic."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
+                    "line": 239,
+                    "repository_link": "../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L239",
+                    "detail": "Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards."
+                }
+            ],
+            "notes": ["Browser screenshots can document the toggle, not physical vibration."]
+        },
+        {
+            "id": "homescreen-format",
+            "name": "Homescreen upload dimensions and formats",
+            "feature_ids": [
+                "device-settings.homescreen.upload",
+                "device-settings.homescreen.gallery"
+            ],
+            "navigation": "Settings > Device > Personalization > Homescreen",
+            "source_model_expectations": {
+                "T1B1": "128×64; PNG/JPEG; 16 KiB.",
+                "T2T1": "240×240; JPEG; 16 KiB.",
+                "T2B1": "128×64; PNG/JPEG; 16 KiB.",
+                "T3B1": "128×64; PNG/JPEG; 16 KiB.",
+                "T3T1": "240×240; JPEG; 16 KiB.",
+                "T3W1": "380×520; JPEG; 64 KiB."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "These are Suite image-conversion/validation constraints, not a hardware-spec claim.",
+                "Default gallery path also differs for monochrome, 240×240 and Safe 7 formats; Bitcoin-only firmware changes defaults."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": [],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/utils/suite/homescreen.ts",
+                    "line": 24,
+                    "repository_link": "../../../../packages/suite/src/utils/suite/homescreen.ts#L24",
+                    "detail": "Explicit per-model upload constraints."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/HomescreenGallery.tsx",
+                    "line": 24,
+                    "repository_link": "../../../../packages/suite/src/components/suite/HomescreenGallery.tsx#L24",
+                    "detail": "Per-model gallery directories."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
+                    "line": 239,
+                    "repository_link": "../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L239",
+                    "detail": "Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards."
+                }
+            ],
+            "notes": []
+        },
+        {
+            "id": "language",
+            "name": "Device language selection",
+            "feature_ids": ["device-settings.language"],
+            "navigation": "Settings > Device > Firmware > Language",
+            "source_model_expectations": {
+                "T1B1": "changeLanguage unsupported by Connect.",
+                "T2T1": "Firmware >=2.7.0 plus translations capability.",
+                "T2B1": "Firmware >=2.7.0 plus translations capability.",
+                "T3B1": "Translations capability and available language packages.",
+                "T3T1": "Translations capability and available language packages.",
+                "T3W1": "Translations capability and available language packages."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "Selector requires Capability_Translations; UI hides chooser when <=1 supported language.",
+                "Connect min maps for later models are unspecified here, not a promise to support all older firmware."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": [],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/connect-core/src/data/config.ts",
+                    "line": 220,
+                    "repository_link": "../../../../packages/connect-core/src/data/config.ts#L220",
+                    "detail": "Explicit Model One exclusion and Model T / original Safe 3 minimum 2.7.0."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/device/src/deviceSelectors.ts",
+                    "line": 84,
+                    "repository_link": "../../../../suite-common/device/src/deviceSelectors.ts#L84",
+                    "detail": "Device capability gate."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/ChangeLanguage.tsx",
+                    "line": 40,
+                    "repository_link": "../../../../packages/suite/src/views/settings/SettingsDevice/ChangeLanguage.tsx#L40",
+                    "detail": "Control only appears when multiple supported languages exist."
+                },
+                {
+                    "kind": "manual-test",
+                    "path": "suite/e2e/tests/manual/settings/device-language.test.ts",
+                    "line": 8,
+                    "repository_link": "../../../../suite/e2e/tests/manual/settings/device-language.test.ts#L8",
+                    "detail": "Manual parent scenario checks updating firmware after installing a translation."
+                }
+            ],
+            "notes": []
+        },
+        {
+            "id": "auto-lock",
+            "name": "Device auto-lock interval",
+            "feature_ids": ["device-settings.auto-lock"],
+            "navigation": "Settings > Device > Security > Auto-lock",
+            "source_model_expectations": {
+                "T1B1": "Shown only when auto_lock_delay_ms is numeric.",
+                "T2T1": "Shown only when auto_lock_delay_ms is numeric.",
+                "T2B1": "Shown only when auto_lock_delay_ms is numeric.",
+                "T3B1": "Shown only when auto_lock_delay_ms is numeric.",
+                "T3T1": "Shown only when auto_lock_delay_ms is numeric.",
+                "T3W1": "Shown only when auto_lock_delay_ms is numeric."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "No Suite model allowlist; options are 1 minute, 10 minutes, 1 hour, 1 day and 6 days.",
+                "Requires connected/unlocked device for modification.",
+                "Settings page additionally requires PIN protection and normal mode."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": [],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/AutoLock.tsx",
+                    "line": 39,
+                    "repository_link": "../../../../packages/suite/src/views/settings/SettingsDevice/AutoLock.tsx#L39",
+                    "detail": "Visibility determined by reported numeric field; predefined timeout choices."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
+                    "line": 239,
+                    "repository_link": "../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L239",
+                    "detail": "Personalization requires normal mode; auto-lock additionally requires PIN protection; security and backup sections have mode guards."
+                }
+            ],
+            "notes": []
+        },
+        {
+            "id": "bluetooth-and-thp",
+            "name": "Bluetooth transport, secure pairing and autoconnect",
+            "feature_ids": [
+                "connection.bluetooth",
+                "connection.thp",
+                "device-settings.auto-connect"
+            ],
+            "navigation": "Connect Trezor / Settings > Device > Connection",
+            "source_model_expectations": {
+                "T1B1": "No Bluetooth scenario evidenced for this model; USB authorization path.",
+                "T2T1": "No Bluetooth scenario evidenced for this model; USB authorization path.",
+                "T2B1": "No Bluetooth scenario evidenced for this model; USB authorization path.",
+                "T3B1": "No Bluetooth scenario evidenced for this model; USB authorization path.",
+                "T3T1": "No Bluetooth scenario evidenced for this model; USB authorization path.",
+                "T3W1": "Bluetooth-capable model in manual and automated scenarios; THP secure host pairing and trusted autoconnect."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "Runtime Bluetooth support is gated by Capability_BLE, transport availability and OS permission.",
+                "THP support is device.thp presence, not a hardcoded product-name check. Autoconnect setting additionally requires credentials property.",
+                "Web Bluetooth navigation/control availability differs from desktop transport; do not treat desktop native Bluetooth service as browser support."
+            ],
+            "confidence": "medium",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": [],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/device/src/deviceSelectors.ts",
+                    "line": 89,
+                    "repository_link": "../../../../suite-common/device/src/deviceSelectors.ts#L89",
+                    "detail": "Bluetooth selector follows reported capability."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/suite-utils/src/device.ts",
+                    "line": 519,
+                    "repository_link": "../../../../suite-common/suite-utils/src/device.ts#L519",
+                    "detail": "THP detection is presence-based."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/ThpAutoconnect.tsx",
+                    "line": 20,
+                    "repository_link": "../../../../packages/suite/src/views/settings/SettingsDevice/ThpAutoconnect.tsx#L20",
+                    "detail": "Autoconnect setting requires THP credentials."
+                },
+                {
+                    "kind": "manual-test",
+                    "path": "suite/e2e/tests/manual/connect/bluetooth-pairing.test.ts",
+                    "line": 15,
+                    "repository_link": "../../../../suite/e2e/tests/manual/connect/bluetooth-pairing.test.ts#L15",
+                    "detail": "Manual pairing scenarios identify Safe 7."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device-authorization/src/screens/DeviceConnectionGuardScreen.tsx",
+                    "line": 27,
+                    "repository_link": "../../../../suite-native/device-authorization/src/screens/DeviceConnectionGuardScreen.tsx#L27",
+                    "detail": "Native reconnect screen checks Bluetooth permission and device support."
+                }
+            ],
+            "notes": [
+                "High confidence in gates; medium in negative model assignments because application runtime checks capability/transport rather than an exhaustive model denylist."
+            ]
+        },
+        {
+            "id": "forget-pairing",
+            "name": "Forget device and clean up pairing",
+            "feature_ids": ["device-settings.forget", "connection.bluetooth.repair"],
+            "navigation": "Settings > Device > Connection > Forget",
+            "source_model_expectations": {
+                "T1B1": "Forget remembered device; unplug when connected.",
+                "T2T1": "Forget remembered device; unplug when connected.",
+                "T2B1": "Forget remembered device; unplug when connected.",
+                "T3B1": "Forget remembered device; unplug when connected.",
+                "T3T1": "Forget remembered device; unplug when connected.",
+                "T3W1": "THP+Bluetooth connected: unpair device then remove OS pairing. Cable/disconnected with Bluetooth history: OS and on-device cleanup guidance."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "Flow selection depends on device.thp, current Bluetooth connection and persisted Bluetooth pairing history, not only model.",
+                "Native guide opens OS Bluetooth settings on Android; iOS displays instructions as text."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": [],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/ForgetDevice/ForgetDeviceModal.tsx",
+                    "line": 76,
+                    "repository_link": "../../../../packages/suite/src/views/settings/SettingsDevice/ForgetDevice/ForgetDeviceModal.tsx#L76",
+                    "detail": "Flow selection considers THP, connection and pairing history."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/ForgetDevice/ForgetDeviceFlows.tsx",
+                    "line": 79,
+                    "repository_link": "../../../../packages/suite/src/views/settings/SettingsDevice/ForgetDevice/ForgetDeviceFlows.tsx#L79",
+                    "detail": "Connected Bluetooth unpair versus USB/disconnected cleanup workflows."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/ForgetDeviceGuideScreen.tsx",
+                    "line": 19,
+                    "repository_link": "../../../../suite-native-app/module-device-settings/src/screens/ForgetDeviceGuideScreen.tsx#L19",
+                    "detail": "Android OS settings deep link versus iOS text."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite/e2e/tests/settings/forget-device.test.ts",
+                    "line": 6,
+                    "repository_link": "../../../../suite/e2e/tests/settings/forget-device.test.ts#L6",
+                    "detail": "Automated Safe 7 state variants; some Bluetooth state is mocked."
+                },
+                {
+                    "kind": "manual-test",
+                    "path": "suite/e2e/tests/manual/settings/forget-device.test.ts",
+                    "line": 100,
+                    "repository_link": "../../../../suite/e2e/tests/manual/settings/forget-device.test.ts#L100",
+                    "detail": "Manual Safe 7 paired USB/disconnected/Bluetooth state matrix."
+                }
+            ],
+            "notes": []
+        },
+        {
+            "id": "low-battery-firmware",
+            "name": "Charging guidance before firmware installation",
+            "feature_ids": ["onboarding.firmware", "device-settings.firmware.official-update"],
+            "navigation": "Firmware install/update > Install",
+            "source_model_expectations": {
+                "T1B1": "No Bluetooth battery path evidenced.",
+                "T2T1": "No Bluetooth battery path evidenced.",
+                "T2B1": "No Bluetooth battery path evidenced.",
+                "T3B1": "No Bluetooth battery path evidenced.",
+                "T3T1": "No Bluetooth battery path evidenced.",
+                "T3W1": "Firmware update blocked on Bluetooth when charge is below threshold or unreadable and device is not charging."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "Bluetooth connection required for gate; USB or wireless charging bypasses it.",
+                "Threshold is 40%; missing soc counts as low.",
+                "Both desktop/web firmware flow and native onboarding/settings firmware screens use the shared selector."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": ["runtime-web-t3t1-onboarding-firmware"],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/device/src/deviceSelectors.ts",
+                    "line": 216,
+                    "repository_link": "../../../../suite-common/device/src/deviceSelectors.ts#L216",
+                    "detail": "Checks Bluetooth, USB/wireless charging, numeric soc and threshold."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/device/src/deviceConstants.ts",
+                    "line": 14,
+                    "repository_link": "../../../../suite-common/device/src/deviceConstants.ts#L14",
+                    "detail": "Threshold = 40."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite/firmware-upgrade/src/useFirmwareDesktopUpdate.ts",
+                    "line": 62,
+                    "repository_link": "../../../../suite/firmware-upgrade/src/useFirmwareDesktopUpdate.ts#L62",
+                    "detail": "Desktop/web firmware update returns early and shows modal."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/ConfirmFirmwareUpdateScreen.tsx",
+                    "line": 28,
+                    "repository_link": "../../../../suite-native-app/module-device-settings/src/screens/ConfirmFirmwareUpdateScreen.tsx#L28",
+                    "detail": "Native update confirmation returns before installation navigation."
+                }
+            ],
+            "notes": []
+        },
+        {
+            "id": "firmware-type-switch-wipe",
+            "name": "Firmware type switch and wallet-erasure warning",
+            "feature_ids": ["device-settings.firmware-type"],
+            "navigation": "Settings > Device > Firmware > Switch firmware type",
+            "source_model_expectations": {
+                "T1B1": "Type switch does not change vendor header; FW 1.6.1 separately guaranteed to wipe.",
+                "T2T1": "Type switch does not change vendor header.",
+                "T2B1": "Type switch changes vendor header and triggers wipe warning for initialized/bootloader device.",
+                "T3B1": "Type switch changes vendor header and triggers wipe warning for initialized/bootloader device.",
+                "T3T1": "Type switch changes vendor header and triggers wipe warning for initialized/bootloader device.",
+                "T3W1": "Type switch changes vendor header and triggers wipe warning for initialized/bootloader device."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "Bitcoin-only hardware editions hide the switch-to-universal action.",
+                "This is Suite warning computation, not assurance that any other update preserves a wallet."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": [],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/firmware/src/hooks/useFirmwareInstallation.ts",
+                    "line": 37,
+                    "repository_link": "../../../../suite-common/firmware/src/hooks/useFirmwareInstallation.ts#L37",
+                    "detail": "Model-specific vendor-header wipe determination."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/FirmwareTypeChange.tsx",
+                    "line": 72,
+                    "repository_link": "../../../../packages/suite/src/views/settings/SettingsDevice/FirmwareTypeChange.tsx#L72",
+                    "detail": "Hardware Bitcoin-only variants do not offer switch action."
+                },
+                {
+                    "kind": "manual-test",
+                    "path": "suite/e2e/tests/manual/firmware/firmware-switch.test.ts",
+                    "line": 8,
+                    "repository_link": "../../../../suite/e2e/tests/manual/firmware/firmware-switch.test.ts#L8",
+                    "detail": "Manual firmware-type switching parent scenario."
+                }
+            ],
+            "notes": []
+        },
+        {
+            "id": "bootloader-instructions",
+            "name": "Manual firmware reboot and exit instructions",
+            "feature_ids": ["connection.bootloader", "device-settings.firmware.official-update"],
+            "navigation": "Firmware installation > Reconnect / device in bootloader",
+            "source_model_expectations": {
+                "T1B1": "Below 1.8.0: hold both buttons; newer: left button; reconnect normally to exit.",
+                "T2T1": "Swipe touchscreen for bootloader; reconnect without touch to exit.",
+                "T2B1": "Hold left button; reconnect without button to exit.",
+                "T3B1": "Hold left button; reconnect without button to exit.",
+                "T3T1": "Swipe touchscreen for bootloader; reconnect without touch to exit.",
+                "T3W1": "Swipe touchscreen instructions; exit bootloader by restart from device menu."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "Shared flow documentation distinguishes manual below 1.10.0/2.6.0, reboot-and-wait newer versions, reboot-and-upgrade >=2.6.3 (excludes reinstall/downgrade).",
+                "Actual UI follows emitted reconnect events and installation state."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": [],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/firmware/ReconnectDevicePrompt.tsx",
+                    "line": 150,
+                    "repository_link": "../../../../packages/suite/src/components/firmware/ReconnectDevicePrompt.tsx#L150",
+                    "detail": "Model and Model One <1.8.0 instruction mapping."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/utils/device/bootloader.ts",
+                    "line": 10,
+                    "repository_link": "../../../../packages/suite/src/utils/device/bootloader.ts#L10",
+                    "detail": "Safe 7 exit instruction differs."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/firmware/src/hooks/useFirmwareInstallation.ts",
+                    "line": 30,
+                    "repository_link": "../../../../suite-common/firmware/src/hooks/useFirmwareInstallation.ts#L30",
+                    "detail": "Documented firmware update flow thresholds."
+                },
+                {
+                    "kind": "manual-test",
+                    "path": "suite/e2e/tests/manual/firmware/bootloader.test.ts",
+                    "line": 6,
+                    "repository_link": "../../../../suite/e2e/tests/manual/firmware/bootloader.test.ts#L6",
+                    "detail": "Manual bootloader parent scenarios; not executed."
+                }
+            ],
+            "notes": []
+        },
+        {
+            "id": "nfc-backup",
+            "name": "NFC backup medium and additional NFC backup",
+            "feature_ids": ["onboarding.new-wallet.nfc", "device-settings.backup.additional-nfc"],
+            "navigation": "Device onboarding > Backup medium / Settings > Device > Additional backup",
+            "source_model_expectations": {
+                "T1B1": "Experimental/debug-gated UI; do not infer production availability or hardware support from the visible component.",
+                "T2T1": "Experimental/debug-gated UI; do not infer production availability or hardware support from the visible component.",
+                "T2B1": "Experimental/debug-gated UI; do not infer production availability or hardware support from the visible component.",
+                "T3B1": "Experimental/debug-gated UI; do not infer production availability or hardware support from the visible component.",
+                "T3T1": "Experimental/debug-gated UI; do not infer production availability or hardware support from the visible component.",
+                "T3W1": "Experimental/debug-gated UI; do not infer production availability or hardware support from the visible component."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "selectIsN4w1BackupEnabled reads suiteSettings.debug.isN4w1BackupEnabled.",
+                "NFC backup creation uses SLIP39; usable hardware and firmware support are additional prerequisites.",
+                "Safe 7 fixture advertises Capability_NFC; the inspected medium choice does not itself enforce a model allowlist."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": [],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite/settings/src/settingsSelectors.ts",
+                    "line": 59,
+                    "repository_link": "../../../../suite/settings/src/settingsSelectors.ts#L59",
+                    "detail": "NFC backup selector comes from debug state."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/onboarding/steps/BackupTypeStep.tsx",
+                    "line": 40,
+                    "repository_link": "../../../../packages/suite/src/views/onboarding/steps/BackupTypeStep.tsx#L40",
+                    "detail": "NFC medium screen initially follows debug flag."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/onboarding/steps/SecurityStep.tsx",
+                    "line": 67,
+                    "repository_link": "../../../../packages/suite/src/views/onboarding/steps/SecurityStep.tsx#L67",
+                    "detail": "NFC reset/backup branch is SLIP39-specific."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite/e2e/fixtures/remembered-wallet-db-lite.json",
+                    "line": 4350,
+                    "repository_link": "../../../../suite/e2e/fixtures/remembered-wallet-db-lite.json#L4350",
+                    "detail": "Safe 7 fixture reports NFC, not an observation or proof of product rollout."
+                }
+            ],
+            "notes": []
+        },
+        {
+            "id": "pin-safety-wipe-code",
+            "name": "PIN, safety checks and wipe code visibility",
+            "feature_ids": [
+                "device-settings.pin",
+                "device-settings.change-pin",
+                "device-settings.safety-checks",
+                "device-settings.wipe-code"
+            ],
+            "navigation": "Settings > Device > Security / Advanced",
+            "source_model_expectations": {
+                "T1B1": "Mode/feature-field gates; no model allowlist in these Suite controls.",
+                "T2T1": "Mode/feature-field gates; no model allowlist in these Suite controls.",
+                "T2B1": "Mode/feature-field gates; no model allowlist in these Suite controls.",
+                "T3B1": "Mode/feature-field gates; no model allowlist in these Suite controls.",
+                "T3T1": "Mode/feature-field gates; no model allowlist in these Suite controls.",
+                "T3W1": "Mode/feature-field gates; no model allowlist in these Suite controls."
+            },
+            "firmware_and_runtime_prerequisites": [
+                "Normal mode: PIN protection and wipe code are composed; Change PIN requires pin_protection; safety-check button requires truthy safety_checks.",
+                "Native settings composition exposes PIN management but does not compose desktop advanced safety-check/wipe-code controls.",
+                "Firmware method availability is separate from a visible button; this audit does not assert old-firmware wipe-code support."
+            ],
+            "confidence": "high",
+            "evidence_basis": "source-derived",
+            "runtime_observation_ids": [],
+            "runtime_interpretation": "Linked observations establish only the recorded UI state; they do not independently verify model exclusion, physical behavior or firmware boundaries.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
+                    "line": 219,
+                    "repository_link": "../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L219",
+                    "detail": "Security section composition checks features fields."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
+                    "line": 269,
+                    "repository_link": "../../../../suite-app/module-settings/src/pages/SettingsDevicePage.tsx#L269",
+                    "detail": "Wipe code composed only in normal mode."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx",
+                    "line": 52,
+                    "repository_link": "../../../../suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx#L52",
+                    "detail": "Native security section composition."
+                },
+                {
+                    "kind": "manual-test",
+                    "path": "suite/e2e/tests/manual/settings/pin-and-wipe-code.test.ts",
+                    "line": 8,
+                    "repository_link": "../../../../suite/e2e/tests/manual/settings/pin-and-wipe-code.test.ts#L8",
+                    "detail": "Manual PIN and wipe-code scenarios are intended behavior, not executed results."
+                }
+            ],
+            "notes": []
+        }
+    ],
+    "asset_support": {
+        "rows": [
+            {
+                "asset": "BTC",
+                "minimum_by_model": {
+                    "T1B1": "1.5.2",
+                    "T2B1": "2.6.1",
+                    "T2T1": "2.0.5",
+                    "T3B1": "2.8.1",
+                    "T3T1": "2.6.1",
+                    "T3W1": "2.6.1"
+                },
+                "interpretation": "Raw CoinInfo support minimum only; effective method minimum, firmware capabilities, firmware type and Suite asset composition also apply."
+            },
+            {
+                "asset": "ADA",
+                "minimum_by_model": {
+                    "T1B1": false,
+                    "T2B1": "2.6.1",
+                    "T2T1": "2.0.8",
+                    "T3B1": "2.8.1",
+                    "T3T1": "2.6.1",
+                    "T3W1": "2.6.1"
+                },
+                "interpretation": "Raw CoinInfo support minimum only; effective method minimum, firmware capabilities, firmware type and Suite asset composition also apply."
+            },
+            {
+                "asset": "SOL",
+                "minimum_by_model": {
+                    "T1B1": false,
+                    "T2B1": "2.6.4",
+                    "T2T1": "2.6.4",
+                    "T3B1": "2.8.1",
+                    "T3T1": "2.6.4",
+                    "T3W1": "2.6.4"
+                },
+                "interpretation": "Raw CoinInfo support minimum only; effective method minimum, firmware capabilities, firmware type and Suite asset composition also apply."
+            },
+            {
+                "asset": "TRX",
+                "minimum_by_model": {
+                    "T1B1": false,
+                    "T2B1": "2.11.0",
+                    "T2T1": "2.11.0",
+                    "T3B1": "2.11.0",
+                    "T3T1": "2.11.0",
+                    "T3W1": "2.11.0"
+                },
+                "interpretation": "Raw CoinInfo support minimum only; effective method minimum, firmware capabilities, firmware type and Suite asset composition also apply."
+            },
+            {
+                "asset": "XRP",
+                "minimum_by_model": {
+                    "T1B1": false,
+                    "T2B1": "2.6.1",
+                    "T2T1": "2.0.8",
+                    "T3B1": "2.8.1",
+                    "T3T1": "2.6.1",
+                    "T3W1": "2.6.1"
+                },
+                "interpretation": "Raw CoinInfo support minimum only; effective method minimum, firmware capabilities, firmware type and Suite asset composition also apply."
+            }
+        ],
+        "evidence": [
+            {
+                "kind": "implementation",
+                "path": "packages/connect-core/src/utils/deviceFeaturesUtils.ts",
+                "line": 42,
+                "repository_link": "../../../../packages/connect-core/src/utils/deviceFeaturesUtils.ts#L42",
+                "detail": "Combines CoinInfo model support, advertised capabilities, firmware minima and method/capability rules."
+            },
+            {
+                "kind": "implementation",
+                "path": "packages/connect-data/files/coins.json",
+                "line": 15,
+                "repository_link": "../../../../packages/connect-data/files/coins.json#L15",
+                "detail": "Raw CoinInfo support minimum table; only names and support metadata are copied."
+            }
+        ]
+    },
+    "additional_firmware_gates": {
+        "rows": [
+            {
+                "capability": "Taproot accounts",
+                "feature_ids": ["wallet.accounts.add.taproot"],
+                "minimum_by_model": {
+                    "T1B1": "1.10.4",
+                    "T2T1": "2.4.3",
+                    "T2B1": null,
+                    "T3B1": null,
+                    "T3T1": null,
+                    "T3W1": null
+                },
+                "notes": "Absent keys in this rule are unspecified; device support/capabilities still apply."
+            },
+            {
+                "capability": "EIP-1559 fees",
+                "feature_ids": ["wallet.send.fees"],
+                "minimum_by_model": {
+                    "T1B1": "1.10.4",
+                    "T2T1": "2.4.2",
+                    "T2B1": null,
+                    "T3B1": null,
+                    "T3T1": null,
+                    "T3W1": null
+                },
+                "notes": "Effective network support and firmware type also apply."
+            },
+            {
+                "capability": "EVM token approval",
+                "feature_ids": ["trade.swap.approval", "earn.yield.approval"],
+                "minimum_by_model": {
+                    "T1B1": false,
+                    "T2T1": "2.9.0",
+                    "T2B1": "2.9.0",
+                    "T3B1": "2.9.0",
+                    "T3T1": "2.9.0",
+                    "T3W1": null
+                },
+                "notes": "This refers to firmware evmApproval capability; not a claim that generic ERC20 approvals are entirely unavailable on Model One."
+            },
+            {
+                "capability": "Cardano message signing",
+                "feature_ids": ["wallet.sign-verify.sign", "wallet.sign-verify.cose"],
+                "minimum_by_model": {
+                    "T1B1": false,
+                    "T2T1": "2.9.1",
+                    "T2B1": "2.9.1",
+                    "T3B1": "2.9.1",
+                    "T3T1": "2.9.1",
+                    "T3W1": null
+                },
+                "notes": "Underlying cardanoSignMessage method; UI network support also applies."
+            }
+        ],
+        "evidence": [
+            {
+                "kind": "implementation",
+                "path": "packages/connect-core/src/data/config.ts",
+                "line": 100,
+                "repository_link": "../../../../packages/connect-core/src/data/config.ts#L100",
+                "detail": "Taproot and signing/address features have separate firmware minima."
+            }
+        ]
+    },
+    "source_conflicts": [
+        {
+            "topic": "Safe 7 MCU authenticity minimum",
+            "effective": "2.12.1",
+            "stale_comment": "2.11.2",
+            "resolution": "Executable Connect supportedFirmware config controls availability; Suite utility prose is stale.",
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/connect-core/src/data/config.ts",
+                    "line": 159,
+                    "repository_link": "../../../../packages/connect-core/src/data/config.ts#L159",
+                    "detail": "Executable gate."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/device-authenticity/src/utils.ts",
+                    "line": 18,
+                    "repository_link": "../../../../suite-common/device-authenticity/src/utils.ts#L18",
+                    "detail": "Conflicting comment only."
+                }
+            ]
+        }
+    ],
+    "map_gap_review": {
+        "existing_baseline_features_reviewed": 569,
+        "proposed_addition_ids": [
+            "device-settings.firmware.low-battery",
+            "onboarding.mobile-unsupported-setup",
+            "device-settings.forget.os-pairing",
+            "device-settings.forget.on-device-pairing"
+        ],
+        "proposal_file": "../parts/runtime-model-additions.json",
+        "already_represented": "Tutorial, backup types, Model One recovery methods, device language, brightness, haptics, rotation, homescreen, secure pairing, trusted autoconnect, firmware type/wipe warnings and bootloader states already have canonical entries. Preserve them and use this matrix as additional model-condition evidence.",
+        "not_promoted_to_features": [
+            "MCU/Tropic cryptography are mechanisms of the existing authenticity feature, not separate user actions.",
+            "Underlying Connect EIP-7702 and Solana-v1/OCMS methods were not promoted without an inspected Suite user-facing composition.",
+            "Capability_NFC plus debug medium chooser does not establish a released NFC feature on every model.",
+            "SD-card/U2F hardware and SDK capabilities are not mapped as Suite features without a visible application journey."
+        ],
+        "integration_update": {
+            "checked_at": "2026-11-15T07:57:00.546245+00:00",
+            "integrated_feature_ids": [
+                "device-settings.firmware.low-battery",
+                "onboarding.mobile-unsupported-setup",
+                "device-settings.forget.os-pairing",
+                "device-settings.forget.on-device-pairing"
+            ],
+            "interpretation": "The root audit has subsequently included these proposals in its live runtime manifest and canonical dataset. Original proposal notes document the earlier proposal stage; integration does not establish runtime observation of the new feature."
+        }
+    }
+}

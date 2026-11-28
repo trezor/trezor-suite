@@ -1,0 +1,444 @@
+{
+    "area": "Model-specific runtime audit proposals",
+    "new_features": [
+        {
+            "id": "device-settings.firmware.low-battery",
+            "parent_id": "device-settings.firmware",
+            "name": "Charge before firmware installation",
+            "description": "Review the charging requirement when a Bluetooth-connected Trezor cannot safely start firmware installation.",
+            "level": "option",
+            "platforms": {
+                "desktop": "conditional",
+                "web": "conditional",
+                "mobile": "conditional"
+            },
+            "platform_notes": "Source-derived proposal; not runtime verified. Also reachable during initial firmware onboarding; native and desktop/web use the same shared gate.",
+            "navigation": {
+                "desktop": "Settings > Device > Firmware > Install > Charge Trezor before continuing",
+                "web": "Settings > Device > Firmware > Install > Charge Trezor before continuing",
+                "mobile": "Device settings > Firmware > Confirm update > Low battery alert"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/firmware/FirmwareLowBatteryModal.tsx",
+                    "symbol": "FirmwareLowBatteryModal"
+                },
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/device/src/hooks/useDeviceLowBatteryAlert.tsx",
+                    "symbol": "useDeviceLowBatteryAlert"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/device/src/deviceSelectors.ts",
+                    "line": 216,
+                    "repository_link": "../../../../suite-common/device/src/deviceSelectors.ts#L216",
+                    "detail": "Checks Bluetooth, USB/wireless charging, numeric soc and threshold."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/device/src/deviceConstants.ts",
+                    "line": 14,
+                    "repository_link": "../../../../suite-common/device/src/deviceConstants.ts#L14",
+                    "detail": "Threshold = 40."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite/firmware-upgrade/src/useFirmwareDesktopUpdate.ts",
+                    "line": 62,
+                    "repository_link": "../../../../suite/firmware-upgrade/src/useFirmwareDesktopUpdate.ts#L62",
+                    "detail": "Desktop/web firmware update returns early and shows modal."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/ConfirmFirmwareUpdateScreen.tsx",
+                    "line": 28,
+                    "repository_link": "../../../../suite-native-app/module-device-settings/src/screens/ConfirmFirmwareUpdateScreen.tsx#L28",
+                    "detail": "Native update confirmation returns before installation navigation."
+                },
+                {
+                    "kind": "manual-test",
+                    "path": "suite/e2e/tests/manual/firmware/firmware-update.test.ts",
+                    "line": 8,
+                    "repository_link": "../../../../suite/e2e/tests/manual/firmware/firmware-update.test.ts#L8",
+                    "detail": "Parent update journey only; this manual test does not assert the low-battery gate."
+                }
+            ],
+            "ownership": {
+                "team": "Firmware",
+                "confidence": "inferred",
+                "basis": "Inferred from firmware module responsibility and manual firmware-update test stream; CODEOWNERS denotes code review ownership only.",
+                "source_paths": [
+                    "CODEOWNERS",
+                    "suite/e2e/tests/manual/firmware/firmware-update.test.ts"
+                ]
+            },
+            "conditions": [
+                "Bluetooth-connected battery device; current manual/fixture model is T3W1.",
+                "Charge below 40% or missing soc; no USB/wireless charging flag; update returns before installation.",
+                "Also reachable during initial firmware onboarding; native and desktop/web use the same shared gate."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "No runtime capture is claimed by this source audit; link a root-agent observation if this state is actually reached."
+            },
+            "related_ids": []
+        },
+        {
+            "id": "onboarding.mobile-unsupported-setup",
+            "parent_id": "onboarding",
+            "name": "Continue unsupported native setup in Suite web",
+            "description": "Open Suite web from native guidance when a connected uninitialized Trezor model cannot be set up in the mobile app.",
+            "level": "option",
+            "platforms": {
+                "desktop": "no",
+                "web": "no",
+                "mobile": "conditional"
+            },
+            "platform_notes": "Source-derived proposal; not runtime verified. Desktop/web are destinations of the external link; this guidance is native-only.",
+            "navigation": {
+                "desktop": null,
+                "web": null,
+                "mobile": "Native > Connect an uninitialized Model One > Setup guidance > Open Suite web"
+            },
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/device/src/hooks/useDetectDeviceError.tsx",
+                    "symbol": "useDetectDeviceError"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/utils.ts",
+                    "line": 50,
+                    "repository_link": "../../../../suite-native/device/src/utils.ts#L50",
+                    "detail": "Model One and unknown model do not support native setup."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/hooks/useDetectDeviceError.tsx",
+                    "line": 193,
+                    "repository_link": "../../../../suite-native/device/src/hooks/useDetectDeviceError.tsx#L193",
+                    "detail": "Uninitialized unsupported device offers Suite web external link, with installed/no-firmware variants."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite-native/device/src/__fixtures__/deviceConnectionFixtures.ts",
+                    "line": 369,
+                    "repository_link": "../../../../suite-native/device/src/__fixtures__/deviceConnectionFixtures.ts#L369",
+                    "detail": "Model One fixture blocks native setup navigation; does not itself test alert CTA."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite-native/device/src/deviceConnectionMiddleware.test.ts",
+                    "line": 217,
+                    "repository_link": "../../../../suite-native/device/src/deviceConnectionMiddleware.test.ts#L217",
+                    "detail": "Tests consume uninitialized-device navigation fixtures."
+                }
+            ],
+            "ownership": {
+                "team": null,
+                "confidence": "unknown",
+                "basis": "No accountable product team is explicitly declared in inspected sources.",
+                "source_paths": ["CODEOWNERS"]
+            },
+            "conditions": [
+                "Native app onboarding completed; connected uninitialized model with setup unsupported, not factory-reset UI or active firmware installation.",
+                "T1B1 is explicitly unsupported for native setup; initialized device use is distinct and firmware-gated.",
+                "Desktop/web are destinations of the external link; this guidance is native-only."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "No runtime capture is claimed by this source audit; link a root-agent observation if this state is actually reached."
+            },
+            "related_ids": []
+        },
+        {
+            "id": "device-settings.forget.os-pairing",
+            "parent_id": "device-settings.forget",
+            "name": "Remove operating-system Bluetooth pairing",
+            "description": "Follow the operating-system pairing-removal instructions and open Bluetooth settings where the platform supports it.",
+            "level": "option",
+            "platforms": {
+                "desktop": "conditional",
+                "web": "conditional",
+                "mobile": "conditional"
+            },
+            "platform_notes": "Source-derived proposal; not runtime verified. Native forgetting guide exposes a settings link on Android; iOS guide uses text instructions.",
+            "navigation": {
+                "desktop": "Settings > Device > Connection > Forget > Remove Bluetooth pairing",
+                "web": "Settings > Device > Connection > Forget > Pairing cleanup guidance",
+                "mobile": "Device settings > Connection > Forget device > Cleanup guide"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/ForgetDevice/RemoveFromBluetoothSettingsModal.tsx",
+                    "symbol": "RemoveFromBluetoothSettingsModal"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/ForgetDevice/OsAndTrezorCleanupModal.tsx",
+                    "symbol": "OsAndTrezorCleanupModal"
+                },
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-settings/src/screens/ForgetDeviceGuideScreen.tsx",
+                    "symbol": "ForgetDeviceGuideScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/ForgetDevice/ForgetDeviceModal.tsx",
+                    "line": 76,
+                    "repository_link": "../../../../packages/suite/src/views/settings/SettingsDevice/ForgetDevice/ForgetDeviceModal.tsx#L76",
+                    "detail": "Flow selection considers THP, connection and pairing history."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/ForgetDevice/ForgetDeviceFlows.tsx",
+                    "line": 79,
+                    "repository_link": "../../../../packages/suite/src/views/settings/SettingsDevice/ForgetDevice/ForgetDeviceFlows.tsx#L79",
+                    "detail": "Connected Bluetooth unpair versus USB/disconnected cleanup workflows."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/ForgetDeviceGuideScreen.tsx",
+                    "line": 19,
+                    "repository_link": "../../../../suite-native-app/module-device-settings/src/screens/ForgetDeviceGuideScreen.tsx#L19",
+                    "detail": "Android OS settings deep link versus iOS text."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite/e2e/tests/settings/forget-device.test.ts",
+                    "line": 6,
+                    "repository_link": "../../../../suite/e2e/tests/settings/forget-device.test.ts#L6",
+                    "detail": "Automated Safe 7 state variants; some Bluetooth state is mocked."
+                },
+                {
+                    "kind": "manual-test",
+                    "path": "suite/e2e/tests/manual/settings/forget-device.test.ts",
+                    "line": 100,
+                    "repository_link": "../../../../suite/e2e/tests/manual/settings/forget-device.test.ts#L100",
+                    "detail": "Manual Safe 7 paired USB/disconnected/Bluetooth state matrix."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-app/web-app/src/support/createWebDesktopApi.ts",
+                    "line": 63,
+                    "repository_link": "../../../../suite-app/web-app/src/support/createWebDesktopApi.ts#L63",
+                    "detail": "Browser build cannot open native OS Bluetooth settings; shared cleanup guidance does not imply a functional browser deep link."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite/bluetooth/src/createOpenSystemSettings.test.ts",
+                    "line": 26,
+                    "repository_link": "../../../../suite/bluetooth/src/createOpenSystemSettings.test.ts#L26",
+                    "detail": "Desktop Bluetooth-settings opening helper unit scenario."
+                }
+            ],
+            "ownership": {
+                "team": "Growth",
+                "confidence": "inferred",
+                "basis": "Inferred from manual/automated forgetting tests tagged Growth; CODEOWNERS is review ownership.",
+                "source_paths": [
+                    "CODEOWNERS",
+                    "suite/e2e/tests/manual/settings/forget-device.test.ts"
+                ]
+            },
+            "conditions": [
+                "THP/Bluetooth pairing history; paths vary with Bluetooth, cable or disconnected state.",
+                "Desktop deep link requires desktop OS service; browser API reports unavailable.",
+                "Native forgetting guide exposes a settings link on Android; iOS guide uses text instructions."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "No runtime capture is claimed by this source audit; link a root-agent observation if this state is actually reached."
+            },
+            "related_ids": []
+        },
+        {
+            "id": "device-settings.forget.on-device-pairing",
+            "parent_id": "device-settings.forget",
+            "name": "Remove the saved host pairing on Trezor",
+            "description": "Follow the device-side pairing cleanup instructions when forgetting a Trezor with saved Bluetooth pairing history.",
+            "level": "option",
+            "platforms": {
+                "desktop": "conditional",
+                "web": "conditional",
+                "mobile": "conditional"
+            },
+            "platform_notes": "Source-derived proposal; not runtime verified. Guidance and user confirmation do not prove the user actually removed the pairing on hardware.",
+            "navigation": {
+                "desktop": "Settings > Device > Connection > Forget > On your Trezor",
+                "web": "Settings > Device > Connection > Forget > On your Trezor",
+                "mobile": "Device settings > Connection > Forget device > Cleanup guide > On Trezor"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/ForgetDevice/OsAndTrezorCleanupModal.tsx",
+                    "symbol": "OsAndTrezorCleanupModal"
+                },
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-settings/src/screens/ForgetDeviceGuideScreen.tsx",
+                    "symbol": "ForgetDeviceGuideScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/ForgetDevice/ForgetDeviceModal.tsx",
+                    "line": 76,
+                    "repository_link": "../../../../packages/suite/src/views/settings/SettingsDevice/ForgetDevice/ForgetDeviceModal.tsx#L76",
+                    "detail": "Flow selection considers THP, connection and pairing history."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/ForgetDevice/ForgetDeviceFlows.tsx",
+                    "line": 79,
+                    "repository_link": "../../../../packages/suite/src/views/settings/SettingsDevice/ForgetDevice/ForgetDeviceFlows.tsx#L79",
+                    "detail": "Connected Bluetooth unpair versus USB/disconnected cleanup workflows."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/ForgetDeviceGuideScreen.tsx",
+                    "line": 19,
+                    "repository_link": "../../../../suite-native-app/module-device-settings/src/screens/ForgetDeviceGuideScreen.tsx#L19",
+                    "detail": "Android OS settings deep link versus iOS text."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "suite/e2e/tests/settings/forget-device.test.ts",
+                    "line": 6,
+                    "repository_link": "../../../../suite/e2e/tests/settings/forget-device.test.ts#L6",
+                    "detail": "Automated Safe 7 state variants; some Bluetooth state is mocked."
+                },
+                {
+                    "kind": "manual-test",
+                    "path": "suite/e2e/tests/manual/settings/forget-device.test.ts",
+                    "line": 100,
+                    "repository_link": "../../../../suite/e2e/tests/manual/settings/forget-device.test.ts#L100",
+                    "detail": "Manual Safe 7 paired USB/disconnected/Bluetooth state matrix."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/settings/SettingsDevice/ForgetDevice/OsAndTrezorCleanupModal.tsx",
+                    "line": 70,
+                    "repository_link": "../../../../packages/suite/src/views/settings/SettingsDevice/ForgetDevice/OsAndTrezorCleanupModal.tsx#L70",
+                    "detail": "Dedicated Trezor cleanup step and user confirmation."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/hooks/useForgetDevice.ts",
+                    "line": 74,
+                    "repository_link": "../../../../suite-native-app/module-device-settings/src/hooks/useForgetDevice.ts#L74",
+                    "detail": "Native paired non-Bluetooth path navigates to explicit cleanup guide."
+                }
+            ],
+            "ownership": {
+                "team": "Growth",
+                "confidence": "inferred",
+                "basis": "Inferred from manual forgetting scenarios tagged Growth; code review owners are not accountable product teams.",
+                "source_paths": [
+                    "CODEOWNERS",
+                    "suite/e2e/tests/manual/settings/forget-device.test.ts"
+                ]
+            },
+            "conditions": [
+                "Saved Bluetooth pairing history, typically Safe 7; THP-capable USB/disconnected branch uses manual cleanup.",
+                "Currently Bluetooth-connected path instead dispatches automatic device unpair before OS cleanup.",
+                "Guidance and user confirmation do not prove the user actually removed the pairing on hardware."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "No runtime capture is claimed by this source audit; link a root-agent observation if this state is actually reached."
+            },
+            "related_ids": []
+        }
+    ],
+    "notes": [
+        "Proposals only; not yet merged into canonical features or the live runtime manifest.",
+        "Each new feature follows the inventory contributor node contract. Parent IDs deliberately reference existing canonical nodes, as required for an additive cross-area extension.",
+        "All 569 baseline nodes were reviewed by ID/name/outcome; model-specific variants of already-covered capabilities are documented in runtime/model-capabilities.json rather than duplicating them.",
+        "No runtime verification or screenshot claim is made by this source audit. No application tests were executed.",
+        "No specific battery-gate automated test or unsupported-native-setup alert CTA test was found in the inspected suites; nearby parent/navigation scenarios are labeled precisely.",
+        "Integration update: the root audit subsequently copied all four proposal nodes into the live runtime manifest and canonical dataset; the earlier proposal-stage notes remain historical. This update does not claim runtime execution."
+    ],
+    "reviewed_sources": [
+        "packages/connect-core/src/data/config.ts",
+        "packages/connect-core/src/utils/deviceFeaturesUtils.ts",
+        "packages/connect-data/files/coins.json",
+        "packages/device-utils/src/models.ts",
+        "packages/suite/src/components/firmware/ReconnectDevicePrompt.tsx",
+        "packages/suite/src/components/onboarding/Hologram.tsx",
+        "packages/suite/src/components/suite/HomescreenGallery.tsx",
+        "packages/suite/src/config/onboarding/steps.ts",
+        "packages/suite/src/utils/device/bootloader.ts",
+        "packages/suite/src/utils/suite/homescreen.ts",
+        "packages/suite/src/views/onboarding/steps/BackupTypeStep.tsx",
+        "packages/suite/src/views/onboarding/steps/PinStep.tsx",
+        "packages/suite/src/views/onboarding/steps/SecurityStep.tsx",
+        "packages/suite/src/views/onboarding/steps/SelectBackupType/ShamirOptions.tsx",
+        "packages/suite/src/views/recovery/Recovery.tsx",
+        "packages/suite/src/views/recovery/steps/InitialStep.tsx",
+        "packages/suite/src/views/settings/SettingsDevice/AutoLock.tsx",
+        "packages/suite/src/views/settings/SettingsDevice/Brightness.tsx",
+        "packages/suite/src/views/settings/SettingsDevice/ChangeLanguage.tsx",
+        "packages/suite/src/views/settings/SettingsDevice/DisplayRotation.tsx",
+        "packages/suite/src/views/settings/SettingsDevice/FirmwareTypeChange.tsx",
+        "packages/suite/src/views/settings/SettingsDevice/ForgetDevice/ForgetDeviceFlows.tsx",
+        "packages/suite/src/views/settings/SettingsDevice/ForgetDevice/ForgetDeviceModal.tsx",
+        "packages/suite/src/views/settings/SettingsDevice/ForgetDevice/OsAndTrezorCleanupModal.tsx",
+        "packages/suite/src/views/settings/SettingsDevice/HapticFeedback.tsx",
+        "packages/suite/src/views/settings/SettingsDevice/ThpAutoconnect.tsx",
+        "suite-app/module-settings/src/pages/SettingsDevicePage.tsx",
+        "suite-app/web-app/src/support/createWebDesktopApi.ts",
+        "suite-common/backup/src/shamir.test.ts",
+        "suite-common/backup/src/shamir.ts",
+        "suite-common/device-authenticity/src/deviceAuthenticityConstants.ts",
+        "suite-common/device-authenticity/src/utils.ts",
+        "suite-common/device/src/deviceConstants.ts",
+        "suite-common/device/src/deviceSelectors.ts",
+        "suite-common/firmware/src/hooks/useFirmwareInstallation.ts",
+        "suite-common/suite-utils/src/device.ts",
+        "suite-native-app/app/e2e/fixtures/btcDiscoveryFinishedStateT3T1.ts",
+        "suite-native-app/module-device-onboarding/src/hooks/useNavigateToNextScreenAfterFirmwareInstallation.ts",
+        "suite-native-app/module-device-onboarding/src/screens/PackagingVisualCheckScreen.tsx",
+        "suite-native-app/module-device-settings/src/hooks/useForgetDevice.ts",
+        "suite-native-app/module-device-settings/src/screens/ConfirmFirmwareUpdateScreen.tsx",
+        "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx",
+        "suite-native-app/module-device-settings/src/screens/ForgetDeviceGuideScreen.tsx",
+        "suite-native/device-authorization/src/screens/DeviceConnectionGuardScreen.tsx",
+        "suite-native/device/src/__fixtures__/deviceConnectionFixtures.ts",
+        "suite-native/device/src/deviceConnectionMiddleware.test.ts",
+        "suite-native/device/src/hooks/useDetectDeviceError.tsx",
+        "suite-native/device/src/utils.ts",
+        "suite/bluetooth/src/createOpenSystemSettings.test.ts",
+        "suite/e2e/fixtures/remembered-wallet-db-lite.json",
+        "suite/e2e/tests/backup/t3t1-t2t1-create-additional-share.test.ts",
+        "suite/e2e/tests/manual/connect/bluetooth-pairing.test.ts",
+        "suite/e2e/tests/manual/firmware/bootloader.test.ts",
+        "suite/e2e/tests/manual/firmware/firmware-switch.test.ts",
+        "suite/e2e/tests/manual/firmware/firmware-update.test.ts",
+        "suite/e2e/tests/manual/settings/device-language.test.ts",
+        "suite/e2e/tests/manual/settings/forget-device.test.ts",
+        "suite/e2e/tests/manual/settings/pin-and-wipe-code.test.ts",
+        "suite/e2e/tests/onboarding/authenticity-check.test.ts",
+        "suite/e2e/tests/onboarding/t1b1/t1b1-recovery-advanced.test.ts",
+        "suite/e2e/tests/settings/forget-device.test.ts",
+        "suite/firmware-upgrade/src/useFirmwareDesktopUpdate.ts",
+        "suite/settings/src/settingsSelectors.ts"
+    ]
+}

@@ -1,0 +1,35 @@
+<div id="suite-feature-overview">
+    <style>
+        #suite-feature-overview summary {
+            padding-block: calc(var(--font-size-base, 14px) * 0.4);
+        }
+        #suite-feature-overview .children {
+            padding-left: calc(var(--font-size-base, 14px) * 1.2);
+            border-left: 1px solid var(--border, GrayText);
+        }
+        #suite-feature-overview .leaf {
+            margin-block: calc(var(--font-size-base, 14px) * 0.6);
+        }
+        #suite-feature-overview .availability {
+            display: block;
+            color: var(--muted-foreground, GrayText);
+            overflow-wrap: anywhere;
+        }
+        #suite-feature-overview h2 {
+            margin-bottom: calc(var(--font-size-base, 14px) * 0.5);
+        }
+        @media (pointer: coarse) {
+            #suite-feature-overview summary {
+                min-height: 44px;
+            }
+        }
+    </style>
+    <h2>User feature areas</h2>
+    <div class="text-small">D = desktop · W = web · M = native mobile</div>
+    <div class="text-small">
+        Test quality: 0 = no active verification, 5 = basic happy path, 10 = important intents and
+        major variants fully checked. Mobile ratings mean Android; manual ratings assess written
+        procedures. <a href="test-coverage/README.md">Scoring method and evidence</a>.
+    </div>
+    __FEATURE_OUTLINE__
+</div>
