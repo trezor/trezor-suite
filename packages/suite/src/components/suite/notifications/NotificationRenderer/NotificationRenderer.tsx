@@ -203,6 +203,13 @@ export const NotificationRenderer = ({
                 values: { error: getErrorValue(notification.error) },
             });
 
+        case 'broadcast-tx-error':
+            return renderNotificationView(render, notification, {
+                variant: 'error',
+                message: 'TOAST_BROADCAST_TX_ERROR',
+                values: { error: notification.error },
+            });
+
         case 'sign-tx-error':
             return renderNotificationView(render, notification, {
                 variant: 'error',

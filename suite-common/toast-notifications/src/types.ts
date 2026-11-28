@@ -146,6 +146,7 @@ export type ErrorToastPayload = {
         | 'sign-message-error'
         | 'verify-message-error'
         | 'sign-tx-error'
+        | 'broadcast-tx-error'
         | 'metadata-auth-error'
         | 'metadata-not-found-error'
         | 'metadata-unexpected-error'

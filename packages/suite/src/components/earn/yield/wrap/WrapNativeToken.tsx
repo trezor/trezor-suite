@@ -153,7 +153,7 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
 
         dispatch(
             notificationsActions.addToast({
-                type: 'sign-tx-error',
+                type: 'error',
                 error: 'Wrap transaction failed.',
             }),
         );

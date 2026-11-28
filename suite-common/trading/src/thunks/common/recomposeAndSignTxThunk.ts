@@ -96,9 +96,10 @@ const getSignAndPushRejectionType = (
                 : 'sign-tx-error';
         case 'fee-levels-compose-failed':
         case 'enhance-transaction-failed':
+            return 'sign-tx-error';
         case 'push-transaction-failed':
         case 'push-transaction-pending-conflict':
-            return 'sign-tx-error';
+            return 'error';
         default:
             return exhaustive(signAndPushError);
     }

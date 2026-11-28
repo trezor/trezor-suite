@@ -424,6 +424,14 @@ describe('submitWrapNativeTokenThunk', () => {
                 ...yieldFlow,
                 error: 'TR_EARN_YIELD_ERROR_PUSH_FAILED',
             });
+            expect(store.getActions().filter(notificationsActions.addToast.match)).toEqual([
+                expect.objectContaining({
+                    payload: expect.objectContaining({
+                        type: 'broadcast-tx-error',
+                        error: 'push failed',
+                    }),
+                }),
+            ]);
         });
 
         it('falls back to the generic error for an unrecognised failure', async () => {

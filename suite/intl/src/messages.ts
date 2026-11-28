@@ -4850,6 +4850,10 @@ export const messages = defineMessages({
         id: 'TOAST_TX_BUTTON',
         defaultMessage: 'View details',
     },
+    TOAST_BROADCAST_TX_ERROR: {
+        id: 'TOAST_BROADCAST_TX_ERROR',
+        defaultMessage: 'Send transaction failed: {error}',
+    },
     TOAST_SIGN_TX_ERROR: {
         id: 'TOAST_SIGN_TX_ERROR',
         defaultMessage: 'Transaction signing error: {error}',

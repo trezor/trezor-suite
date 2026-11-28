@@ -43,6 +43,7 @@ import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type PROTO } from '@trezor/connect';
 import {
     type DefinitionsChannel,
+    ERRORS,
     asCoinSymbol,
     getDefinitionsVersionForFirmware,
     getEthereumDefinitionsBaseUrl,
@@ -52,7 +53,7 @@ import { type Getter } from '@trezor/dependency-injection';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { Calldata } from '@trezor/network-ethereum-suite-common';
 import { type ActionsFromAsyncThunk, createThunk } from '@trezor/redux-utils';
-import { type Ok, exhaustive } from '@trezor/type-utils';
+import { type Ok, err, exhaustive } from '@trezor/type-utils';
 import { BigNumber, cloneObject, typedObjectEntries } from '@trezor/utils';
 
 import { sendFormActions } from './sendFormActions';
@@ -510,8 +511,16 @@ export const pushSendFormTransactionThunk = createThunk<
         // synchronizeSentTransactionThunk) shows the true nonce rather than a re-derived one.
         const resolvedEthereumNonce = selectResolvedEthereumNonce(getState());
 
+        const rejectBroadcast = (error: PushTransactionError & { message: string }) => {
+            dispatch(
+                notificationsActions.addToast({ type: 'broadcast-tx-error', error: error.message }),
+            );
+
+            return rejectWithValue(error);
+        };
+
         if (!serializedTx || !precomposedTransaction)
-            return rejectWithValue({
+            return rejectBroadcast({
                 error: 'push-transaction-failed',
                 message: 'Transaction not found.',
             });
@@ -521,7 +530,9 @@ export const pushSendFormTransactionThunk = createThunk<
             coin: asCoinSymbol(serializedTx.symbol),
             identity: tryGetAccountIdentity(selectedAccount),
             disableAlternativeRPC: !isMevProtectionEnabled,
-        });
+        }).catch((error: unknown) =>
+            err(ERRORS.serializeError(error instanceof Error ? error : new Error(String(error)))),
+        );
 
         // close modal regardless result
         dispatch(onModalCancel());
@@ -620,29 +631,19 @@ export const pushSendFormTransactionThunk = createThunk<
                     ethereumNonce: resolvedEthereumNonce,
                 }),
             );
-        } else {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-tx-error',
-                    error: pushTxResponse.error.message,
-                }),
-            );
-        }
 
-        if (pushTxResponse.success) {
             return fulfillWithValue(pushTxResponse);
         }
 
-        const isPendingConflict = pushTxResponse.error.message.includes(
-            'could not replace existing tx',
-        );
+        const { code, message } = pushTxResponse.error;
+        const isPendingConflict = message.includes('could not replace existing tx');
 
-        return rejectWithValue({
+        return rejectBroadcast({
             error: isPendingConflict
                 ? 'push-transaction-pending-conflict'
                 : 'push-transaction-failed',
-            errorCode: pushTxResponse.error.code,
-            message: pushTxResponse.error.message,
+            errorCode: code,
+            message: message || code,
         });
     },
 );
@@ -697,7 +698,7 @@ export const pushSendFormRawTransactionThunk = createThunk<
 
             dispatch(
                 notificationsActions.addToast({
-                    type: 'sign-tx-error',
+                    type: 'broadcast-tx-error',
                     error: sentTx.error.message,
                 }),
             );

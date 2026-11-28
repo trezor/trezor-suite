@@ -1812,6 +1812,7 @@ export const signAndPush: SignAndPush[] = [
         connect: [
             undefined, // updateFeeInfoThunk
             getComposeResponse(),
+            { success: true, payload: [] }, // getRawTransactions
             {
                 success: true,
                 payload: {
@@ -1832,7 +1833,7 @@ export const signAndPush: SignAndPush[] = [
             actions: [
                 {
                     type: notificationsActions.addToast.type,
-                    payload: { type: 'sign-tx-error' },
+                    payload: { type: 'broadcast-tx-error', error: 'pushTx error' },
                 },
             ],
         },
