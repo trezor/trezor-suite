@@ -243,3 +243,5 @@ export type InAppBrowserHostEvent =
           outcome: 'denied' | 'opened-in-app';
       }
     | { type: 'navigation-blocked'; url: string };
+
+export type SystemLocale = { regionCode: string | null; preferredLanguages: string[] };

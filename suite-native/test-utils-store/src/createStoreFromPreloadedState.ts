@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import { stakingInitialState } from '@suite-common/earn-staking';
+import { geolocationInitialState } from '@suite-common/geolocation';
 import { mergeDeepObject } from '@trezor/utils';
 
 import { createStaticReducer } from './createStaticReducer';
@@ -26,6 +27,7 @@ export const createStoreFromPreloadedState = <TState extends object = object>(
             settings: { localCurrency: 'usd', bitcoinAmountUnit: 0, addressDisplayType: 'chunked' },
         },
         locale: { systemLocaleCode: 'en', appLocaleCode: 'system' },
+        geolocation: geolocationInitialState,
     };
 
     // Preserve discriminated unions from the input; mergeDeepObject otherwise merges their variants.

@@ -154,6 +154,9 @@
         {
             "path": "../../suite-common/e2e-evolu-client"
         },
+        {
+            "path": "../../suite-common/geolocation"
+        },
         { "path": "../storybook" },
         {
             "path": "../../suite-native/performance-metrics"

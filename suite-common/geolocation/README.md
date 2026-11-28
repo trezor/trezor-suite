@@ -50,3 +50,26 @@ may need `countryCode`. It checks at app start and every 60 s, and refetches aft
 Suite Tor on, the endpoint returns `T1`, a missing IP.
 
 The `geolocation` slice is not persisted, and its values must not reach logs, Sentry or analytics.
+
+## Device signals
+
+The platform `refreshDevicePresenceSignalsThunk` reads them on the IP refresh schedule, in parallel with it, whatever
+the flag. Builders are in `@suite-common/regions` (`deviceSignals.ts`).
+
+| Platform | Time zone                     | Primary region                           | Secondary regions      |
+| -------- | ----------------------------- | ---------------------------------------- | ---------------------- |
+| Desktop  | `Intl` time zone              | OS region (`desktopApi.getSystemLocale`) | OS preferred languages |
+| Web      | `Intl` time zone              | first browser language                   | later languages        |
+| Mobile   | `getCalendars()`, else `Intl` | `getLocales()[0].regionCode`             | later locales          |
+
+- The OS region does not follow the UI language. The web cannot read it, so it uses the browser languages.
+- Default English (`en`, `en-US`) carries no region.
+- On web, `Atlantic/Reykjavik` counts as missing: privacy browsers (Tor Browser, Mullvad Browser, LibreWolf) report it
+  everywhere.
+
+## Restriction rule
+
+`selectIsRegionRestricted` (`@suite-common/regions`) reads `countries` and `threshold` from the
+`regions.presenceRestriction` payload. With the flag off or no valid country it is not restricted and the estimator
+does not run. It restricts when `evidence` is not `none` and `score >= threshold` (default 0.499); a threshold
+outside (0, 1) uses the default.

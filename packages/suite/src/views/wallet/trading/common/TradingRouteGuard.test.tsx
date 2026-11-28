@@ -2,6 +2,7 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
+import { mockGeolocationStateInCountry } from '@suite-common/geolocation/mocks';
 import { Feature } from '@suite-common/message-system';
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { type Localization } from '@suite-common/suite-types';
@@ -43,6 +44,7 @@ const renderGuard = ({ routeName, isRegionRestricted, content }: RenderGuardPara
                 { [Feature.regions.presenceRestriction]: { countries: ['US'] } },
                 content,
             ),
+            geolocation: mockGeolocationStateInCountry('US'),
         },
     });
 

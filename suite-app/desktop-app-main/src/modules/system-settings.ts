@@ -4,6 +4,7 @@ import { type InvokeResult } from '@suite/desktop-app-api';
 import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
 
 import { ipcMain } from '../ipcMain';
+import { app } from '../typed-electron';
 import type { ModuleInit } from './module';
 
 export const SERVICE_NAME = 'system-settings';
@@ -92,4 +93,9 @@ export const init: ModuleInit = () => {
 
         return { success: false, error: `Unknown settings: ${settings}` };
     });
+
+    ipcMain.handle('system/get-locale', () => ({
+        regionCode: app.getLocaleCountryCode() || null,
+        preferredLanguages: app.getPreferredSystemLanguages(),
+    }));
 };

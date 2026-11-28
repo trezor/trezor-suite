@@ -91,6 +91,7 @@ export type InitThunkDesktopApiDep = DesktopApiDep<
     | 'getBioAuthSettings'
     | 'getBioAuthStatus'
     | 'isBioAuthAvailable'
+    | 'getSystemLocale'
     | 'on'
 >;
 

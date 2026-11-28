@@ -4,6 +4,7 @@ import {
     selectHasBitcoinOnlyFirmware,
     selectHasOnlyPortfolioDevice,
 } from '@suite-common/device';
+import { type GeolocationRootState } from '@suite-common/geolocation';
 import {
     Feature,
     type MessageSystemRootState,
@@ -14,7 +15,6 @@ import {
     blackFridayHolidayBannerTypes,
 } from '@suite-common/suite-constants';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
-import { type LocaleSliceRootState } from '@suite-native/intl';
 import { type TradingRootState, selectIsTradingEnabled } from '@suite-native/trading-shared';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { createWeakMapSelector } from '@trezor/redux-utils';
@@ -33,7 +33,7 @@ type PromoBannersRootState = MessageSystemRootState &
     DeviceRootState &
     FeatureFlagsRootState &
     TradingRootState &
-    LocaleSliceRootState;
+    GeolocationRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<PromoBannersRootState>();
 
