@@ -1,6 +1,7 @@
 #!/usr/bin/env tsx
 
 import { type AnyDesc, DescEnum, DescExtension, DescMessage, ScalarType } from '@bufbuild/protobuf';
+import { embedFileDesc } from '@bufbuild/protobuf/codegenv2';
 import { Schema, createEcmaScriptPlugin, runNodeJs } from '@bufbuild/protoplugin';
 
 import { generateTypeBox } from '@trezor/schema-utils/src/codegen';
@@ -38,12 +39,15 @@ type PluginOptions = {
     types: Set<string>;
     // List of .proto files to be ignored for TypeBox schema generation.
     skipTypeBox: Set<string>;
+    // List of .proto files ignored for ProtobufDict generation.
+    skipDict: Set<string>;
 };
 
 const parseOptions = (rawOptions: { key: string; value: string }[]): PluginOptions => {
     const options: PluginOptions = {
         types: new Set(),
         skipTypeBox: new Set(),
+        skipDict: new Set(),
     };
 
     const getOptionsArray = (value: string) => value.split('+').filter(Boolean);
@@ -53,6 +57,8 @@ const parseOptions = (rawOptions: { key: string; value: string }[]): PluginOptio
             getOptionsArray(value).forEach(v => options.types.add(v));
         } else if (key === 'skipTypeBox') {
             getOptionsArray(value).forEach(v => options.skipTypeBox.add(v));
+        } else if (key === 'skipDict') {
+            getOptionsArray(value).forEach(v => options.skipDict.add(v));
         } else {
             throw new Error(`Unknown option: ${key}`);
         }
@@ -270,6 +276,8 @@ type SchemaContext = {
     owners: Map<string, string>;
     internalMessages: Set<string>;
     messageType: SchemaWireMessages;
+    messageTypeByFile: Map<string, SchemaWireMessages>;
+    messageIdByName: Map<string, number>;
 };
 
 // Step 1: collect all messages, enums and extensions from the schema.
@@ -280,6 +288,7 @@ const getSchemaContext = (schema: Schema<PluginOptions>): SchemaContext => {
     const wireIn = new Set<string>();
     const wireOut = new Set<string>();
     const wireMessages = new Set<string>();
+    const messageIdByName = new Map<string, number>();
     const internalMessages = new Set<string>();
     const files: string[] = [];
 
@@ -368,6 +377,8 @@ const getSchemaContext = (schema: Schema<PluginOptions>): SchemaContext => {
         if (isMessageType) {
             collectWireMessage(name, isMessageType.proto);
 
+            messageIdByName.set(name, isMessageType.number);
+
             continue;
         }
 
@@ -384,6 +395,26 @@ const getSchemaContext = (schema: Schema<PluginOptions>): SchemaContext => {
             }
 
             collectWireMessage(name, wiredMessageType.proto);
+
+            messageIdByName.set(name, wiredMessageType.number);
+        }
+    }
+
+    const messageType: SchemaWireMessages = { wireIn, wireOut, wireMessages };
+    const messageTypeByFile = new Map<string, SchemaWireMessages>();
+    for (const fileName of files) {
+        messageTypeByFile.set(fileName, {
+            wireMessages: new Set<string>(),
+            wireIn: new Set<string>(),
+            wireOut: new Set<string>(),
+        });
+    }
+
+    for (const group of ['wireMessages', 'wireIn', 'wireOut'] as const) {
+        for (const messageName of messageType[group]) {
+            const owner = owners.get(messageName);
+            const fileMessageType = owner ? messageTypeByFile.get(owner) : undefined;
+            fileMessageType?.[group].add(messageName);
         }
     }
 
@@ -391,11 +422,9 @@ const getSchemaContext = (schema: Schema<PluginOptions>): SchemaContext => {
         files,
         owners,
         internalMessages,
-        messageType: {
-            wireIn,
-            wireOut,
-            wireMessages,
-        },
+        messageType,
+        messageTypeByFile,
+        messageIdByName,
     };
 };
 
@@ -600,7 +629,167 @@ const generateIndexFile = (
     f.print(lines.join('\n'));
 };
 
-// Generate TypeBox `${file.name}.ts` file for each corresponding `_pb.js` file.
+const generateProtobufDictType = (schema: Schema<PluginOptions>) => {
+    const f = schema.generateFile('dict.ts');
+    f.print(disclaimer());
+    f.print('');
+
+    f.print(`
+            export type ProtobufDict<T extends string = string> = {
+                // base64 encoded .proto file content
+                fileContent: string;
+                // .proto file name without "messages-" prefix
+                fileName: string;
+                // list of imported .proto files, without "messages-" prefix
+                dependencies: string[];
+                // message and enum descriptors
+                messages: Record<string, ['messageDesc' | 'enumDesc', number, ...number[]]>;
+                // map of message names to their corresponding MessageType enum values
+                messageType: Record<T, number>;
+            };
+        `);
+};
+
+// Generate serializable dict files.
+const generateProtobufDict = (
+    schema: Schema<PluginOptions>,
+    { messageTypeByFile, messageIdByName }: SchemaContext,
+) => {
+    generateProtobufDictType(schema);
+
+    const serializePackageName = (fileName: string) => fileName.replace('messages-', '');
+
+    for (const file of schema.files) {
+        // `messages-` prefix removed from package name
+        const packageName = serializePackageName(file.name);
+        // same compact descriptor as protoc-gen-es: no dependencies, source info or default json names.
+        const b64 = embedFileDesc(file.proto).base64();
+
+        // compute dependency file names.
+        const dependencies = file.dependencies.map(dep => serializePackageName(dep.name));
+
+        // Build schema entries by walking messages and enums with their indices
+        const schemaEntries: string[] = [];
+
+        const walkMessages = (messages: readonly DescMessage[], parentIndices: number[]) => {
+            for (let i = 0; i < messages.length; i++) {
+                const msg = messages[i]!;
+                const indices = [...parentIndices, i];
+                const indicesStr = indices.join(', ');
+
+                // Use the full qualified name with parent prefixes for nested messages
+                const schemaName = msg.name.replace(/\./g, '_');
+                schemaEntries.push(`    ${schemaName}: ['messageDesc', ${indicesStr}],`);
+
+                // Recurse into nested messages
+                if (msg.nestedMessages.length > 0) {
+                    walkMessages(msg.nestedMessages, indices);
+                }
+
+                // Nested enums
+                for (let j = 0; j < msg.nestedEnums.length; j++) {
+                    const nestedEnum = msg.nestedEnums[j]!;
+                    const enumIndices = [...indices, j];
+                    const enumIndicesStr = enumIndices.join(', ');
+                    const enumSchemaName = nestedEnum.name.replace(/\./g, '_');
+                    schemaEntries.push(`    ${enumSchemaName}: ['enumDesc', ${enumIndicesStr}],`);
+                }
+            }
+        };
+
+        // Top-level messages
+        walkMessages(file.messages, []);
+
+        // Top-level enums
+        for (let i = 0; i < file.enums.length; i++) {
+            const enumDesc = file.enums[i]!;
+            const enumSchemaName = enumDesc.name;
+            schemaEntries.push(`    ${enumSchemaName}: ['enumDesc', ${i}],`);
+        }
+
+        const messageTypeEntries: string[] = [];
+        for (const messageName of messageTypeByFile.get(file.name)?.wireMessages ?? []) {
+            const messageId = messageIdByName.get(messageName);
+            if (messageId === undefined) {
+                throw new Error(`Wire message '${messageName}' has no MessageType enum value`);
+            }
+            messageTypeEntries.push(`        ${messageName}: ${messageId},`);
+        }
+
+        if (schema.options.skipDict.has(file.name)) {
+            continue;
+        }
+
+        // '-' replaced with CamelCase
+        const packagePrefix = packageName
+            .replace(/-(\w)/g, (_, letter: string) => letter.toUpperCase())
+            .replace(/^\w/, letter => letter.toUpperCase());
+        const packageDictName = `${packagePrefix}ProtobufDict`;
+
+        // Generate the output
+        const lines: string[] = [];
+        lines.push(`
+            import type { ProtobufDict } from './dict';
+
+            export const dict: ${packageDictName} = {
+                fileContent: '${b64}',
+                fileName: '${packageName}',
+                dependencies: [${dependencies.map(i => `'${i}'`).join(', ')}],
+                messages: {
+                    ${schemaEntries.join('\n')}
+                },
+                messageType: {
+                    ${messageTypeEntries.join('\n')}
+                },
+            };
+
+            // eslint-disable-next-line import/no-default-export
+            export default dict;
+        `);
+
+        // Generate message types
+        if (messageTypeEntries.length === 0) {
+            lines.push(`export type ${packageDictName} = ProtobufDict;`);
+        } else {
+            const wireUnion: string[] = [];
+
+            const wireInName = `${packagePrefix}WireInMessage`;
+            const wireIn = Array.from(messageTypeByFile.get(file.name)?.wireIn ?? []);
+            if (wireIn.length > 0) {
+                const wireInUnion = wireIn.map(n => `'${n}'`).join(' | ');
+                lines.push('');
+                lines.push(`export type ${wireInName} = ${wireInUnion};`);
+                lines.push('');
+                wireUnion.push(wireInName);
+            }
+
+            const wireOutName = `${packagePrefix}WireOutMessage`;
+            const wireOut = Array.from(messageTypeByFile.get(file.name)?.wireOut ?? []);
+            if (wireOut.length > 0) {
+                const wireOutUnion = wireOut.map(n => `'${n}'`).join(' | ');
+                lines.push(`export type ${wireOutName} = ${wireOutUnion};`);
+                lines.push('');
+                wireUnion.push(wireOutName);
+            }
+
+            lines.push(`export type ${packagePrefix}ProtobufMessage = ${wireUnion.join(' | ')};`);
+            lines.push('');
+            lines.push(
+                `export type ${packageDictName} = ProtobufDict<${packagePrefix}ProtobufMessage>;`,
+            );
+        }
+        lines.push('');
+
+        // write to file
+        const f = schema.generateFile(file.name + '_dict.ts');
+        f.print(disclaimer(file));
+        f.print('');
+
+        f.print(lines.join('\n'));
+    }
+};
+
+// Generate TypeBox `${file.name}.ts` file for each corresponding `_dict.ts` file.
 const generateTs = (schema: Schema<PluginOptions>) => {
     const schemaContext = getSchemaContext(schema);
 
@@ -641,23 +830,9 @@ const generateTs = (schema: Schema<PluginOptions>) => {
 
     generateTypes(schema, schemaContext);
 
+    generateProtobufDict(schema, schemaContext);
+
     generateIndexFile(schema, schemaContext);
-};
-
-const generateJs = () => {
-    // *._pb.js files are generated by the protoc-gen-es plugin. see: buf.gen.yaml
-};
-
-const generateDts = (schema: Schema<PluginOptions>) => {
-    // generate *.d.ts files for corresponding _pb.js files, declare DescFile definitions for each _pb.js file
-    for (const file of schema.files) {
-        const f = schema.generateFile(file.name + '_pb.d.ts');
-        f.print(disclaimer(file));
-        f.print("import type { DescFile } from '@bufbuild/protobuf';");
-        f.print();
-
-        f.print(`export declare const file_${file.name.replace(/-/g, '_')}: DescFile;`);
-    }
 };
 
 export const protocGenTrezor = createEcmaScriptPlugin({
@@ -665,8 +840,6 @@ export const protocGenTrezor = createEcmaScriptPlugin({
     version: PROTOC_PLUGIN_VERSION,
     parseOptions,
     generateTs,
-    generateJs,
-    generateDts,
 });
 
 runNodeJs(protocGenTrezor);

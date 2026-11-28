@@ -1,14 +1,14 @@
 import { protobufManager } from '@trezor/protobuf';
-import * as bitcoinProto from '@trezor/protobuf/src/definitions/messages-bitcoin_pb';
-import * as commonProto from '@trezor/protobuf/src/definitions/messages-common_pb';
-import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
+import bitcoinProto from '@trezor/protobuf/src/definitions/messages-bitcoin_dict';
+import commonProto from '@trezor/protobuf/src/definitions/messages-common_dict';
+import optionsProto from '@trezor/protobuf/src/definitions/options_dict';
 import { v1 as v1Protocol } from '@trezor/protocol';
 
 import { UsbApi } from '../api/usb';
 import { PathPublic, Session } from '../types';
 import { AbstractApiTransport } from './abstractApi';
 
-protobufManager.load([commonProto, messagesProto, bitcoinProto]);
+protobufManager.load([optionsProto, commonProto, bitcoinProto]);
 
 // create devices otherwise returned from navigator.usb.getDevices
 const createMockedDevice = (optional = {}) => ({

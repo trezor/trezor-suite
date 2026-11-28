@@ -4,10 +4,10 @@ import { usb } from 'usb-legacy';
 
 import { Log } from '@trezor/logger';
 import { protobufManager } from '@trezor/protobuf';
-import * as bitcoinProto from '@trezor/protobuf/src/definitions/messages-bitcoin_pb';
-import * as commonProto from '@trezor/protobuf/src/definitions/messages-common_pb';
-import * as managementProto from '@trezor/protobuf/src/definitions/messages-management_pb';
-import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
+import bitcoinProto from '@trezor/protobuf/src/definitions/messages-bitcoin_dict';
+import commonProto from '@trezor/protobuf/src/definitions/messages-common_dict';
+import managementProto from '@trezor/protobuf/src/definitions/messages-management_dict';
+import optionsProto from '@trezor/protobuf/src/definitions/options_dict';
 import { TrezordNode } from '@trezor/transport-bridge/src';
 import { BridgeTransport, TREZOR_USB_DESCRIPTORS } from '@trezor/transport-common';
 import { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
@@ -39,7 +39,7 @@ class Controller extends TrezorUserEnvLinkClass {
 
         this.logger = console;
 
-        protobufManager.load([commonProto, messagesProto, managementProto, bitcoinProto]);
+        protobufManager.load([optionsProto, commonProto, managementProto, bitcoinProto]);
 
         this.originalApi = {
             connect: super.connect.bind(this),

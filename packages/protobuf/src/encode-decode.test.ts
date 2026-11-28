@@ -2,9 +2,11 @@ import { ProtobufManager } from './manager';
 
 const protobufManager = ProtobufManager();
 protobufManager.load([
-    require('../src/definitions/messages-bitcoin_pb'),
-    require('../src/definitions/messages-cardano_pb'),
-    require('../src/definitions/messages-management_pb'),
+    require('../src/definitions/messages-bitcoin_dict').default,
+    require('../src/definitions/messages-cardano_dict').default,
+    require('../src/definitions/options_dict').default,
+    require('../src/definitions/messages-common_dict').default,
+    require('../src/definitions/messages-management_dict').default,
 ]);
 
 const fixtures = [
