@@ -168,6 +168,16 @@ export abstract class Popup extends EventEmitter {
      * Rejects pending promises so callers get an error instead of hanging forever.
      */
     protected handleOpenFailure(reason: string): void {
+        // A report can arrive after reset() has already ended this open(), e.g.
+        // when POPUP.CLOSED was handled first. reset() has recreated
+        // handshakePromise for the next open(), and rejecting it here would fail
+        // the next call() with this stale reason.
+        if (!this.locked) {
+            this.logger.debug('Ignoring open failure after reset:', reason);
+
+            return;
+        }
+
         this.logger.error('Failed to open popup:', reason);
         const error = new Error(reason);
         this.channel.abortHandshake(reason);

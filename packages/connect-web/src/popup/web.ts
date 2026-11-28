@@ -18,6 +18,15 @@ export class WebPopup extends Popup {
     private iframe = getIframeInstance();
     private channelId = getWeakRandomId(16);
 
+    // A failure after the iframe has loaded leaves its initPromise resolved, so
+    // create() would hand the same dead iframe to every retry until a page
+    // reload. The channel id changes with it, because the iframe reads the id
+    // from its own `src`.
+    private resetForRetry(): void {
+        this.iframe.destroy();
+        this.channelId = getWeakRandomId(16);
+    }
+
     protected createChannel(): AbstractMessageChannel<CoreEventMessage> {
         return new WindowWindowChannel<CoreEventMessage>({
             windowHere: window,
@@ -101,7 +110,7 @@ export class WebPopup extends Popup {
                     navigatePopup(getPopupErrorURL(`${url}/`, message.error));
                 }
 
-                this.handleOpenFailure(message.error);
+                // Rejects the awaited init() below, which reports the failure once.
                 iframeWindowChannel.abortHandshake(message.error);
             }
         });
@@ -118,6 +127,9 @@ export class WebPopup extends Popup {
         } catch (error) {
             this.handleOpenFailure(error.message);
             iframeWindowChannel.disconnect();
+            // `windowResult` stays open, so the user can read its
+            // `connect-popup-err=...` page.
+            this.resetForRetry();
 
             const isBootstrapError = Object.values(BootstrapError).includes(error.message);
             if (isBootstrapError) {
