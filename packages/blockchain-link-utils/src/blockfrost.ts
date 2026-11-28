@@ -67,6 +67,9 @@ const getSubtype = (
 ) => {
     const { withdrawal_count, stake_cert_count, delegation_count, deposit, fees } = tx.txData;
 
+    // Failed scripts consume collateral without applying staking or governance actions.
+    if (tx.txData.valid_contract === false) return;
+
     // Deregistering needs an empty reward account, so a withdrawal here means unstake, not claim.
     if (withdrawal_count > 0 && stake_cert_count === 0) {
         return 'withdrawal';
@@ -74,6 +77,7 @@ const getSubtype = (
 
     // governance_delegation is detected heuristically.
     // Blockfrost txData does not expose governance (DRep) certificates, so we infer it as:
+    // - no script redeemers
     // - no withdrawals
     // - no stake or pool delegation certificates
     // - zero deposit
@@ -82,6 +86,7 @@ const getSubtype = (
     // - non-zero fee
     // This may still misclassify rare fee-only self transactions.
     if (
+        tx.txData.redeemer_count === 0 &&
         withdrawal_count === 0 &&
         stake_cert_count === 0 &&
         delegation_count === 0 &&
@@ -270,8 +275,17 @@ const transformIndexedTransaction = (
     // refundable fee for registering staking address (sent to self tx with stake registration cert)
     let deposit: string | undefined;
 
-    const inputs = fullData ? transformInputOutput(blockfrostTxData.txUtxos.inputs) : [];
-    const outputs = fullData ? transformInputOutput(blockfrostTxData.txUtxos.outputs) : [];
+    // Ordinary rows contain the realized collateral spend and return on script failure.
+    // Supplemental collateral and reference rows do not represent additional transfers.
+    const txUtxos = fullData
+        ? {
+              ...blockfrostTxData.txUtxos,
+              inputs: blockfrostTxData.txUtxos.inputs.filter(i => !i.collateral && !i.reference),
+              outputs: blockfrostTxData.txUtxos.outputs.filter(o => !o.collateral),
+          }
+        : undefined;
+    const inputs = txUtxos ? transformInputOutput(txUtxos.inputs) : [];
+    const outputs = txUtxos ? transformInputOutput(txUtxos.outputs) : [];
     const vinLength = Array.isArray(inputs) ? inputs.length : 0;
     const voutLength = Array.isArray(outputs) ? outputs.length : 0;
     const outgoing = filterTargetsBySet(myAddressSet, inputs);
@@ -280,10 +294,8 @@ const transformIndexedTransaction = (
     const totalInput = inputs.reduce(sumVinVout, 0);
     const totalOutput = outputs.reduce(sumVinVout, 0);
     const allOutputsAreChange =
-        fullData &&
-        blockfrostTxData.txUtxos.outputs.every(o =>
-            accountAddress?.change.some(c => c.address === o.address),
-        );
+        !!txUtxos &&
+        txUtxos.outputs.every(o => accountAddress?.change.some(c => c.address === o.address));
 
     if (outgoing.length === 0 && incoming.length === 0) {
         type = 'unknown';
@@ -337,8 +349,8 @@ const transformIndexedTransaction = (
     }
 
     const tokens =
-        accountAddress && fullData
-            ? filterTokenTransfers(accountAddress, blockfrostTxData, type)
+        accountAddress && fullData && txUtxos
+            ? filterTokenTransfers(accountAddress, { ...blockfrostTxData, txUtxos }, type)
             : [];
 
     return {
