@@ -38,6 +38,40 @@ describe(lazyComponentByName.name, () => {
         await expect(load()).resolves.toBe(moduleUnderTest);
     });
 
+    it('renders a loaded component without suspending', async () => {
+        const importModule = jest.fn(() => Promise.resolve(moduleUnderTest));
+        const { LazyComponent, load } = lazyComponentByName(importModule, 'Greeting');
+
+        await load();
+        render(
+            <Suspense fallback={<p>loading</p>}>
+                <LazyComponent name="Satoshi" />
+            </Suspense>,
+        );
+
+        // A suspended render would show the fallback here, because the sync render does not flush promises.
+        expect(screen.getByText('Hello Satoshi')).not.toBeNull();
+        expect(screen.queryByText('loading')).toBeNull();
+        expect(importModule).toHaveBeenCalledTimes(1);
+    });
+
+    it('loads the module again after a failed preload', async () => {
+        const importModule = jest
+            .fn<Promise<typeof moduleUnderTest>, []>()
+            .mockRejectedValueOnce(new Error('chunk failed'))
+            .mockResolvedValueOnce(moduleUnderTest);
+        const { LazyComponent, preload } = lazyComponentByName(importModule, 'Greeting');
+
+        preload();
+        render(
+            <Suspense fallback={<p>loading</p>}>
+                <LazyComponent name="Satoshi" />
+            </Suspense>,
+        );
+        expect(await screen.findByText('Hello Satoshi')).not.toBeNull();
+        expect(importModule).toHaveBeenCalledTimes(2);
+    });
+
     it('rejects a name that does not exist, or is not callable', () => {
         // @ts-expect-error there is no such export
         lazyComponentByName(() => Promise.resolve(moduleUnderTest), 'Typo');

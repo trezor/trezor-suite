@@ -27,12 +27,37 @@ export const lazyComponentByName = <
 >(
     importModule: () => Promise<TModule>,
     name: TName,
-): LazyComponentByName<TModule, TName> => ({
-    LazyComponent: lazy(async () => ({
-        default: (await importModule())[name] as Extract<TModule[TName], ComponentType<any>>,
-    })),
-    load: importModule,
-    preload: () => {
-        importModule().catch(() => undefined);
-    },
-});
+): LazyComponentByName<TModule, TName> => {
+    type LoadedComponent = { default: Extract<TModule[TName], ComponentType<any>> };
+
+    let loaded: { module: TModule } | undefined;
+
+    const load = () =>
+        importModule().then(module => {
+            loaded = { module };
+
+            return module;
+        });
+
+    const pick = (module: TModule): LoadedComponent => ({
+        default: module[name] as LoadedComponent['default'],
+    });
+
+    return {
+        LazyComponent: lazy(() => {
+            if (!loaded) return load().then(pick);
+
+            // lazy() renders at once from a thenable that settles synchronously; a Promise settles a microtask later.
+            const component = pick(loaded.module);
+            const settled = {
+                then: (resolve: (value: LoadedComponent) => void) => resolve(component),
+            };
+
+            return settled as unknown as Promise<LoadedComponent>;
+        }),
+        load,
+        preload: () => {
+            load().catch(() => undefined);
+        },
+    };
+};

@@ -45,7 +45,9 @@ The boundary and `load` run the very same `import()`, so the bundler resolves th
 one module promise: a component that was preloaded has nothing left to fetch when it is finally
 rendered, and the two cannot drift onto different chunks.
 
-- `LazyComponent` renders behind a `Suspense` boundary, as any lazy component does.
+- `LazyComponent` renders behind a `Suspense` boundary, as any lazy component does. Once `load()`
+  or `preload()` has finished, it renders at once without suspending, so the boundary's fallback
+  never flashes (React holds a shown fallback for at least 300 ms).
 - `preload()` starts the fetch and returns, for a hover or a focus ahead of the click. It is
   deliberately silent on failure: a bundler drops a chunk it could not fetch from its registry, so
   the render that needs the component asks for it again and reports the failure itself.

@@ -36,6 +36,7 @@
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/lazy-loading" },
         { "path": "../../packages/logger" },
         { "path": "../../packages/redux-utils" },
         { "path": "../../packages/suite" },
