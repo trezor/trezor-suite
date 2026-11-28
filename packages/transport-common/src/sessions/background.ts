@@ -51,15 +51,18 @@ export class SessionsBackground
     /**
      * Dictionary where key is path and value is Descriptor
      */
-    private descriptors: DescriptorsDict = {};
-    private pathInternalPathPublicMap: Record<PathInternal, PathPublic> = {};
+    // null prototype: paths are raw USB serial numbers, so inherited keys
+    // ('toString', '__proto__', ...) must not read as existing entries
+    private descriptors: DescriptorsDict = Object.create(null);
+    private pathInternalPathPublicMap: Record<PathInternal, PathPublic> = Object.create(null);
 
     // if lock is set, somebody is doing something with device. we have to wait
     private locksQueue: Lock[] = [];
     // A *Done can come after its lock timed out and another client took over, so the *Intent
     // keeps its own lock and session for it, under the path the *Done carries.
-    private pendingAcquires: Record<PathPublic, PendingOperation> = {};
-    private pendingReleases: Record<PathInternal, PendingOperation> = {};
+    // null prototype like the dictionaries above, pendingReleases is keyed by the raw serial too
+    private pendingAcquires: Record<PathPublic, PendingOperation> = Object.create(null);
+    private pendingReleases: Record<PathInternal, PendingOperation> = Object.create(null);
     private lastSessionId = 0;
     private lastPathId = 0;
 
@@ -343,9 +346,9 @@ export class SessionsBackground
         // Release the locks too: AbstractApiTransport.init() keeps using this instance after
         // dispose, and a lock nobody clears anymore would block every later acquire forever.
         this.locksQueue.forEach(lock => this.releaseLock(lock));
-        this.pendingAcquires = {};
-        this.pendingReleases = {};
-        this.descriptors = {};
+        this.pendingAcquires = Object.create(null);
+        this.pendingReleases = Object.create(null);
+        this.descriptors = Object.create(null);
         this.lastSessionId = 0;
         this.removeAllListeners();
     }
