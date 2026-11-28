@@ -34,6 +34,7 @@ import { ConnectSelectAccountModal } from './pageObjects/connectSelectAccountMod
 import { DashboardPage } from './pageObjects/dashboardPage';
 import { DevicePrompt } from './pageObjects/devicePrompt';
 import { EarnNutshellModal } from './pageObjects/earnNutshellModal';
+import { GlobalReceiveModal } from './pageObjects/globalReceiveModal';
 import { GuidePanel } from './pageObjects/guidePanel';
 import { HomeAssetsSection } from './pageObjects/homeAssetsSection';
 import { MetadataPage } from './pageObjects/metadata/metadataPage';
@@ -66,6 +67,7 @@ type Fixtures = {
     onboardingPage: OnboardingPage;
     analyticsSection: AnalyticsSection;
     devicePrompt: DevicePrompt;
+    globalReceiveModal: GlobalReceiveModal;
     recoveryModal: RecoveryModal;
     tradingPage: TradingPage;
     feeSection: FeeSection;
@@ -139,6 +141,9 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     devicePrompt: async ({ page, device }, use) => {
         await use(new DevicePrompt(page, device));
+    },
+    globalReceiveModal: async ({ page }, use) => {
+        await use(new GlobalReceiveModal(page));
     },
     recoveryModal: async ({ page }, use) => {
         await use(new RecoveryModal(page));

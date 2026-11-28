@@ -22,6 +22,7 @@ const AccountsNoResults = () => (
         justifyContent="center"
         // Adjust for optical center.
         padding={{ bottom: 16 }}
+        data-testid="@global-receive/empty/accounts"
     >
         <H4 typographyStyle="body-md" align="center">
             <Translation id="TR_GLOBAL_RECEIVE_NO_RESULTS" />

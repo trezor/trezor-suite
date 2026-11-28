@@ -55,6 +55,7 @@ export const SubTabsItem = ({
             $isActive={isActive}
             onClick={onClick}
             data-component="SubTabsItem"
+            data-active={isActive}
             data-testid={dataTestId}
         >
             <Row gap={8} padding={{ vertical: 8, horizontal: 16 }}>
