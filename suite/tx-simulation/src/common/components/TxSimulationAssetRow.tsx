@@ -1,6 +1,10 @@
 import { type ReactNode } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
+import {
+    type TxSimulationFiatPrefix,
+    getTxSimulationFiatPrefix,
+} from '@suite-common/tx-simulation';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Text, type TextProps } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
@@ -11,7 +15,7 @@ interface TxSimulationAssetRowProps {
     fiatAmount?: {
         value: string;
         currency: string;
-        prefix?: '+' | '-';
+        prefix?: TxSimulationFiatPrefix;
     };
     dataTestId: string;
     children: ReactNode;
@@ -33,7 +37,7 @@ export function TxSimulationAssetRow({
             </Text>
             {fiatAmount && (
                 <Text intent="neutral" priority="secondary" data-testid={`${dataTestId}/fiat`}>
-                    {fiatAmount.prefix}
+                    {getTxSimulationFiatPrefix(fiatAmount.value, fiatAmount.prefix)}
                     <BaseCurrencyAmountFormatter
                         value={asBaseCurrencyAmount(new BigNumber(fiatAmount.value))}
                         currency={fiatAmount.currency}
