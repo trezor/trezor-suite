@@ -51,7 +51,7 @@ export const DeviceDangerBannerExtension = () => {
     const navigation = useNavigation<NavigationProps>();
     const openLink = useOpenLink();
     const deviceDanger = useAtomValue(deviceDangerBannerAtom);
-    const { cause } = deviceDanger ?? {};
+    const { cause, intent } = deviceDanger ?? {};
 
     const handleCtaPress = () => {
         if (cause === 'device-compromised') {
@@ -67,7 +67,7 @@ export const DeviceDangerBannerExtension = () => {
         }
     };
 
-    if (!cause) return null;
+    if (!cause || !intent) return null;
 
     const { subtitle, cta } = bannerContentPresets[cause];
 
@@ -76,7 +76,7 @@ export const DeviceDangerBannerExtension = () => {
             <Text textAlign="center">
                 <Translation id={subtitle} />
             </Text>
-            <Button intent="critical" priority="primary" onPress={handleCtaPress}>
+            <Button intent={intent} priority="primary" onPress={handleCtaPress}>
                 <Translation id={cta} />
             </Button>
         </VStack>

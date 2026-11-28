@@ -19,8 +19,18 @@ import {
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { type FirmwareRevisionCheckError } from '@trezor/connect';
 
-import { type DeviceDangerBannerCause, deviceDangerBannerAtom } from '../deviceAtoms';
+import {
+    type DeviceDangerBannerCause,
+    type DeviceDangerBannerIntent,
+    deviceDangerBannerAtom,
+} from '../deviceAtoms';
 import { selectSelectedDeviceFirmwareRevisionCheckErrorIfEnabled } from '../selectors';
+
+const bannerIntentByCause = {
+    'device-compromised': 'critical',
+    'backup-failed': 'critical',
+    'backup-needed': 'warning',
+} as const satisfies Record<DeviceDangerBannerCause, DeviceDangerBannerIntent>;
 
 /**
  * On mobile, we should skip revision check errors that are defined as skipped, but also the offline error,
@@ -84,13 +94,20 @@ export const useRenderDeviceDangerBanner = () => {
             return setBannerVariant(null);
         }
 
+        const intent =
+            revisionCheckError === 'other-error' ? 'warning' : bannerIntentByCause[dangerCause];
+
         if (dangerCause === 'device-compromised') {
             if (revisionCheckError === 'other-error') {
-                return setBannerVariant({ variant: 'other-error', cause: 'device-compromised' });
+                return setBannerVariant({
+                    variant: 'other-error',
+                    cause: 'device-compromised',
+                    intent,
+                });
             }
         }
 
-        return setBannerVariant({ variant, cause: dangerCause });
+        return setBannerVariant({ variant, cause: dangerCause, intent });
     }, [
         revisionCheckError,
         isSkippedRevisionCheckError,
